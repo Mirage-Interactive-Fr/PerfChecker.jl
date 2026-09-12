@@ -1,0 +1,8 @@
+{
+  "endpoint": "http://127.0.0.1:8081/v1/chat/completions",
+  "protocol": "chat_completions",
+  "model": "local",
+  "timeout": 120,
+  "max_tokens": 512,
+  "allow_remote": false
+}

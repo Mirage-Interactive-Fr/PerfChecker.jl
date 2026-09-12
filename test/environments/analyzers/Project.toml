@@ -1,0 +1,12 @@
+[deps]
+AllocCheck = "9b6a8646-10ed-4001-bbdc-1d2f46dfbb1a"
+JET = "c3a54625-cd67-489e-a8e7-0a5a0ff4e31b"
+PerfChecker = "6309bf6b-a531-4b08-891e-8ee981e5c424"
+SnoopCompile = "aa65fe97-06da-5843-b5b1-d5d13cad87d2"
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[compat]
+AllocCheck = "0.2"
+JET = "0.12"
+SnoopCompile = "3"
+julia = "1.12"

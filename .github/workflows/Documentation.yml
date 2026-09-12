@@ -1,0 +1,58 @@
+name: Documentation
+
+on:
+  push:
+    branches: [main, "release/**"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: documentation-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  PERFCHECKER_DOCS_BASE: '/PerfChecker/dev/'
+  JULIA_NUM_THREADS: '1'
+  JULIA_NUM_GC_THREADS: '1'
+  JULIA_NUM_PRECOMPILE_TASKS: '1'
+  JULIA_PKG_PRECOMPILE_AUTO: '0'
+  OPENBLAS_NUM_THREADS: '1'
+  OMP_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+  UV_THREADPOOL_SIZE: '1'
+  NODE_OPTIONS: '--v8-pool-size=1'
+
+jobs:
+  documentation:
+    name: Build and publish documentation
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: julia-actions/setup-julia@v3
+        with:
+          version: '1'
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: website/package-lock.json
+      - uses: julia-actions/cache@v3
+      - name: Install documentation dependencies
+        run: julia --startup-file=no --project=website -e 'using Pkg; Pkg.develop(path="."); Pkg.instantiate()'
+      - name: Build Documenter and VitePress
+        run: julia --startup-file=no --project=website website/make.jl
+      - name: Publish documentation
+        if: >-
+          github.event_name != 'pull_request' &&
+          github.ref == 'refs/heads/release/v1.0.0-rc1' &&
+          vars.PERFCHECKER_DOCS_DEPLOY == 'true'
+        run: julia --startup-file=no --project=website website/deploy.jl
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DOCUMENTER_KEY: ${{ secrets.DOCUMENTER_KEY }}

@@ -1,0 +1,4708 @@
+{
+  "correctness": "not_checked",
+  "input_manifest_sha256": "b701b9ac01ae5c1279a3f1a5213944025fef57b9176b97c7f186a4522430ca74",
+  "performance": "not_compared",
+  "plot": {
+    "data": [
+      {
+        "target_kind": "candidate",
+        "value": 32300.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 19900.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 19300.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 20100.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 18600.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 20200.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 17900.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 16500.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12500.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 16500.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13100.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13700.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 18300.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 16900.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13700.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13200.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13200.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 11100.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 10400.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 16700.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 17700.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14100.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15000.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 22900.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15600.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12000.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 9900.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 9000.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 9800.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13200.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 10500.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 9700.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 9600.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 9900.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 8500.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 8700.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 28000.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 19500.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 26200.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 17400.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 16600.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13400.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14700.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13000.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 18000.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13500.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13800.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12900.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 11000.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 11100.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15700.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 16700.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 17200.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 25400.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 24100.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 16800.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 17100.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12300.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 9500.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 8400.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 8700.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 8500.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 9100.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 9500.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 8800.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 10600.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 10200.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12000.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14700.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 21200.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 22000.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 16700.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13200.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 10700.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 10100.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 10300.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 10100.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 10000.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 10000.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 9500.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 10000.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 9700.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 9200.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 9000.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 10600.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 9600.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 19200.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 20600.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 21800.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15600.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 19400.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13000.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12300.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12200.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 16200.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12900.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13100.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12900.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 11100.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 11200.0,
+        "version": "0.1.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 26300.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 18900.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 18600.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 25300.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 21400.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15100.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13600.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14900.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12600.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12000.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12300.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 11900.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 11600.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 11400.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12000.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 18400.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14400.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 18800.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 16000.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 18900.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14600.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 16100.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15800.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13700.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 16200.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15700.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13200.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 10900.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 10500.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12300.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 10300.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 10000.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 19500.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12900.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 21900.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 23700.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15700.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15000.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13200.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13200.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12100.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 11900.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12200.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 11700.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 38200.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13000.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12100.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12200.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12300.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12900.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13800.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14100.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12700.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12300.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 11700.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12200.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13900.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12600.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 11900.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 11100.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 10200.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14700.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 11100.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12100.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 10400.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 9800.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 9600.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 17800.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 16200.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 16900.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12500.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 10400.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15200.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12100.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12300.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 11100.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 10300.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 9400.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15600.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 11800.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 11300.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12000.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 11900.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 11400.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12300.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 20300.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 17500.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 16400.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 18000.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12700.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 18100.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13400.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 11600.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 11100.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14900.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13800.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 11200.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 10500.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 9700.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 11700.0,
+        "version": "0.2.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 21300.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15800.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14000.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13600.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13000.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13200.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13300.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13600.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14100.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15300.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13400.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15300.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15100.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12900.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12100.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12000.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 10700.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 10000.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 11200.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 10900.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 10300.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 10200.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 11000.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 11800.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 11400.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 10800.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13300.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14900.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 18100.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 17700.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 16900.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 17100.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12900.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 19600.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13700.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 11700.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 10700.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 10800.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 9900.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 10900.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 11300.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 11400.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13800.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 16500.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 18800.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 21000.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15900.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14400.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14000.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15100.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 11200.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 11700.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 11200.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 11600.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 10200.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 10700.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 11700.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13000.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 11000.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14200.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14900.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 23400.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 22100.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 18400.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15700.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15200.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14900.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 11400.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 10900.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 11300.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 11100.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 10300.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 9900.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13300.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13700.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14100.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 18200.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 16600.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12900.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14100.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 25500.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13400.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12200.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12900.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12700.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14200.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12600.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12000.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 11600.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15400.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14100.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 19100.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15100.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 11600.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 11000.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 11800.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12800.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 11700.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 10500.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12000.0,
+        "version": "0.2.5"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 24700.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 21000.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 19300.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 20100.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 16900.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13800.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12600.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12400.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 11800.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13100.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14600.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 17300.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13400.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 11700.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 17300.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 24000.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 27400.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 18100.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 17500.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 17600.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 16300.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13900.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13600.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13800.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12600.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12000.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 11100.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13600.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15100.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 43400.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 27400.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 32400.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 28000.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 27300.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 18000.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14100.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12600.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12500.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15600.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 16400.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15900.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 21800.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 28300.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 19600.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 28100.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 21800.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 18100.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 17700.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 20300.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15200.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15500.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14500.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14700.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15000.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 21900.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 19900.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 18200.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 19100.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 20300.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 16900.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13600.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14200.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14300.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15900.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15700.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13800.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14100.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 19400.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 18200.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 32900.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 34200.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 27900.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 19800.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 22700.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 16900.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 20600.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13100.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13300.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14600.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12900.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12600.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12800.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 11400.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 16400.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 22600.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 25000.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 22700.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 22200.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 17000.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 20700.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15600.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 22700.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13300.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 19800.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14000.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14400.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12800.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 18000.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 17600.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 20500.0,
+        "version": "0.2.10"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 20700.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15000.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15900.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14500.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14800.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15100.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14700.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13000.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15300.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14800.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 16300.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14300.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12500.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13100.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12000.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 18000.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12600.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 17900.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 22000.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14800.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14900.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 16200.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 21400.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15200.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 22000.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 28800.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 16900.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 16100.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 16800.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12900.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13200.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14000.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13500.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14000.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15500.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15000.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 20300.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 16600.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14900.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15100.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15000.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13900.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 11500.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12500.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12200.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13100.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13600.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13900.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12700.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12700.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 16300.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14400.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14300.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 17100.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 20400.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15800.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13800.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13000.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14600.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13000.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12900.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 11400.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 11500.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 11600.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12200.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12600.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 11300.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 16400.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 17300.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 25900.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 20000.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 16600.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 17600.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 16600.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14800.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12900.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12200.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12200.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12100.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12000.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12400.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 10800.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13200.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12500.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13500.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 17800.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 19000.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 17900.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14600.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12900.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13500.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13400.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 16100.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14900.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13600.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13000.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13400.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13400.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12200.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12600.0,
+        "version": "0.2.15"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 23300.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 19600.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 18600.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 20000.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 16100.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15000.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 16900.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 19600.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13300.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 17800.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12800.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 18200.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 16200.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15400.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 16600.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14000.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14500.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13400.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13800.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14000.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13700.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12500.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13000.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13700.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13600.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13700.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13000.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13100.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12600.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15600.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14100.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 18000.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 19500.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15600.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14500.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14700.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 23000.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13500.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13300.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13100.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12300.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 11800.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12100.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12700.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 11700.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 11800.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 25500.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 22000.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 18000.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 21900.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14400.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12200.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12000.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12500.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 11400.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12500.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 18200.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 17700.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 19000.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15100.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 19100.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 23000.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 20500.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 21000.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 18200.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 20800.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14700.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 21000.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14900.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 21000.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 18000.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 17500.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 16900.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 25300.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 32100.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 20300.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 23200.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 25100.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 26900.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 25000.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 22800.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 17800.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 17000.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13500.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12800.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 11900.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12600.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 25300.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 20100.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 21400.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 17500.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 23100.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 16300.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15600.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13300.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13400.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13000.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12800.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12800.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13100.0,
+        "version": "0.2.20"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 24200.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 20400.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 20200.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 18500.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 26200.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 17800.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 21500.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 19700.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 16600.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 17100.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 16000.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15500.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14700.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15600.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14700.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15600.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14200.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15200.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 16600.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 17400.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 25000.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 19000.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 17200.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 16500.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 16400.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 16000.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15600.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 27600.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15000.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14600.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13600.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14800.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12700.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12300.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 16700.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 24900.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 21300.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 18900.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 16400.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15700.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 16800.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 16400.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15600.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14200.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15400.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14900.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14300.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14400.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13400.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 129300.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 24300.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 28700.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 17300.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 16000.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15400.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14800.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14200.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13700.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 19400.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12800.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13400.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12600.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12500.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12300.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 19000.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 16900.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 19700.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 24600.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 18700.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15900.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 16400.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15900.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15300.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 16000.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 17000.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15200.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 16700.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 16900.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14500.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 18100.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 19100.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 26800.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 26200.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 17600.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 16100.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 21700.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 17500.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15600.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13200.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13200.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12300.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14600.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12900.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12300.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14100.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14700.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15900.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 29400.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 19200.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 17400.0,
+        "version": "0.3.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 28600.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 28200.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 23600.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 23600.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 22000.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 18200.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 19100.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 16400.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13500.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13700.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13400.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13400.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13500.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13200.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15000.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 19200.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 20500.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 21500.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 24500.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 16300.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 19500.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 21900.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15600.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 22100.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15800.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14900.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13800.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13600.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 16200.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 21700.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 22600.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 36000.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 25700.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 20100.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 17900.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 16500.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 16700.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14500.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12900.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14200.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13500.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13700.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12900.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 17200.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 17900.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 20000.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 17900.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 16100.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15400.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15800.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15500.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 27000.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14300.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 21500.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14900.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15300.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14000.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 21100.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 23300.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 27000.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 17900.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15500.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15200.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14600.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15800.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15000.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14300.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 21200.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15900.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14700.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13100.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12900.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12300.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 21500.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 24200.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 25700.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 28000.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 23300.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 23200.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 18300.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 31900.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 16600.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15000.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14600.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13500.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15200.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13800.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 16400.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 16400.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 16800.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 16100.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15200.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 16000.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14200.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13700.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 18700.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15300.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14400.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13000.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13500.0,
+        "version": "0.3.1"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 24200.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 21600.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 19900.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 19800.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 17200.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15400.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13900.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14200.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13500.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14600.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 28400.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 28400.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 24800.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 21000.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 18400.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14500.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 19600.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 20200.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13600.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15200.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15700.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12000.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 11500.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14700.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 18800.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 18800.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 24300.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 25000.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15400.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15100.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14000.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15100.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14000.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13300.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12600.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12100.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12800.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 16100.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 22400.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 18900.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 23900.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 29900.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 35300.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 21300.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 24700.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 18500.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14700.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12100.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 11000.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13500.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 11100.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 23400.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15200.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 19900.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 16400.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 19600.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 16000.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15500.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14500.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12300.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12000.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12400.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 11600.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 11900.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12200.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12400.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12600.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13900.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15600.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12500.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 17600.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 21500.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 16900.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 17100.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 16000.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13000.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 17800.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13000.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12700.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12300.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12400.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 18300.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 22900.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 22800.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 22700.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 19100.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 15500.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13200.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13000.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 17300.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 19800.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 13000.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14800.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12800.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 11900.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 14300.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 12300.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 23700.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 31400.0,
+        "version": "0.4.0"
+      },
+      {
+        "target_kind": "candidate",
+        "value": 40000.0,
+        "version": "0.4.0"
+      }
+    ],
+    "description": "Sample distribution",
+    "encoding": {
+      "color": "target_kind",
+      "x": "version",
+      "y": "value"
+    },
+    "id": "distribution-2374329a727a3a2f",
+    "kind": "distribution",
+    "options": {
+      "feature": "export_bibtex",
+      "metric": "julia.wall.time",
+      "package": "Bibliography",
+      "series_id": "a3fb2e8530e01496",
+      "unit": "ns"
+    },
+    "schema_version": "perfchecker-plot/1",
+    "title": "Bibliography · export_bibtex · julia.wall.time"
+  },
+  "run_id": "a1d731d2-ad66-4a7a-b537-650e590b615b",
+  "sources": {
+    "targets": [
+      {
+        "dependencies": [
+          {
+            "name": "BibInternal",
+            "revision": "6262e9854bfe2708f6252e9ee90ddf9750a95221",
+            "url": "https://github.com/JuliaBibliographies/BibInternal.jl.git",
+            "version": "0.1.0"
+          },
+          {
+            "name": "BibParser",
+            "revision": "e2a00c531210d37250271b484381804c99fdb0ea",
+            "url": "https://github.com/JuliaBibliographies/BibParser.jl.git",
+            "version": "0.1.0"
+          }
+        ],
+        "revision": "0670e98e16fbe87aaf2e0b6b3930ae121397a2d8",
+        "url": "https://github.com/JuliaBibliographies/Bibliography.jl.git",
+        "version": "0.1.0"
+      },
+      {
+        "dependencies": [
+          {
+            "name": "BibInternal",
+            "revision": "b844848f5869b71f385da3100625484ddb8e07db",
+            "url": "https://github.com/JuliaBibliographies/BibInternal.jl.git",
+            "version": "0.2.0"
+          },
+          {
+            "name": "BibParser",
+            "revision": "5adfbef93a889d7d64a8f7944d115938ed56b550",
+            "url": "https://github.com/JuliaBibliographies/BibParser.jl.git",
+            "version": "0.1.3"
+          }
+        ],
+        "revision": "05fe8755df6d2bd39c4fd8547f31f488bc037b9b",
+        "url": "https://github.com/JuliaBibliographies/Bibliography.jl.git",
+        "version": "0.2.0"
+      },
+      {
+        "dependencies": [
+          {
+            "name": "BibInternal",
+            "revision": "c4c59e38b33c6ed4442953747b57211c9e72398d",
+            "url": "https://github.com/JuliaBibliographies/BibInternal.jl.git",
+            "version": "0.2.4"
+          },
+          {
+            "name": "BibParser",
+            "revision": "c5a2f550b6a49e582e51af8cd247504c239ba56c",
+            "url": "https://github.com/JuliaBibliographies/BibParser.jl.git",
+            "version": "0.1.9"
+          }
+        ],
+        "revision": "c3e7faea19a610a69dc9e92a81e75dc6e483dbe0",
+        "url": "https://github.com/JuliaBibliographies/Bibliography.jl.git",
+        "version": "0.2.5"
+      },
+      {
+        "dependencies": [
+          {
+            "name": "BibInternal",
+            "revision": "c4c59e38b33c6ed4442953747b57211c9e72398d",
+            "url": "https://github.com/JuliaBibliographies/BibInternal.jl.git",
+            "version": "0.2.4"
+          },
+          {
+            "name": "BibParser",
+            "revision": "b6129a226cb65ffce05dd850aae71d19e41c2dc6",
+            "url": "https://github.com/JuliaBibliographies/BibParser.jl.git",
+            "version": "0.1.10"
+          }
+        ],
+        "revision": "9913ef8382a9993ab1e80de6cf736181b7771f86",
+        "url": "https://github.com/JuliaBibliographies/Bibliography.jl.git",
+        "version": "0.2.10"
+      },
+      {
+        "dependencies": [
+          {
+            "name": "BibInternal",
+            "revision": "25a1943917d86107f5d3e60fa03e177e1631f6a6",
+            "url": "https://github.com/JuliaBibliographies/BibInternal.jl.git",
+            "version": "0.3.0"
+          },
+          {
+            "name": "BibParser",
+            "revision": "e1dbc66acf74c9ac3faa0739cf087119286246d2",
+            "url": "https://github.com/JuliaBibliographies/BibParser.jl.git",
+            "version": "0.1.16"
+          }
+        ],
+        "revision": "16fa64e5656135f577a2cd0c3a5c61a3a3ad77a7",
+        "url": "https://github.com/JuliaBibliographies/Bibliography.jl.git",
+        "version": "0.2.15"
+      },
+      {
+        "dependencies": [
+          {
+            "name": "BibInternal",
+            "revision": "fca73ef9667beccbe827d123c087c5be69fe7781",
+            "url": "https://github.com/JuliaBibliographies/BibInternal.jl.git",
+            "version": "0.3.3"
+          },
+          {
+            "name": "BibParser",
+            "revision": "f86de83796fca07c4f905a22a10dd00f10fd8c02",
+            "url": "https://github.com/JuliaBibliographies/BibParser.jl.git",
+            "version": "0.2.1"
+          }
+        ],
+        "revision": "87dca57a55ccb12b74b34e3b1a622f2518300769",
+        "url": "https://github.com/JuliaBibliographies/Bibliography.jl.git",
+        "version": "0.2.20"
+      },
+      {
+        "dependencies": [
+          {
+            "name": "BibInternal",
+            "revision": "cea8645da3be4b161404185119c67b3fea31db32",
+            "url": "https://github.com/JuliaBibliographies/BibInternal.jl.git",
+            "version": "0.3.7"
+          },
+          {
+            "name": "BibParser",
+            "revision": "1e57d0752ca5e54ef4711c24f9f1b9622aa1c359",
+            "url": "https://github.com/JuliaBibliographies/BibParser.jl.git",
+            "version": "0.2.2"
+          }
+        ],
+        "revision": "da5dbeaff616fe67fb3b3e953d819df53b1a7150",
+        "url": "https://github.com/JuliaBibliographies/Bibliography.jl.git",
+        "version": "0.3.0"
+      },
+      {
+        "dependencies": [
+          {
+            "name": "BibInternal",
+            "revision": "cea8645da3be4b161404185119c67b3fea31db32",
+            "url": "https://github.com/JuliaBibliographies/BibInternal.jl.git",
+            "version": "0.3.7"
+          },
+          {
+            "name": "BibParser",
+            "revision": "1e57d0752ca5e54ef4711c24f9f1b9622aa1c359",
+            "url": "https://github.com/JuliaBibliographies/BibParser.jl.git",
+            "version": "0.2.2"
+          }
+        ],
+        "revision": "a637522e925e3c0f1e3c7abe33ff12a529fbbfb3",
+        "url": "https://github.com/JuliaBibliographies/Bibliography.jl.git",
+        "version": "0.3.1"
+      },
+      {
+        "dependencies": [
+          {
+            "name": "BibInternal",
+            "revision": "430f726ebad73b790060bad22eb09afab5ea3cf1",
+            "url": "https://github.com/JuliaBibliographies/BibInternal.jl.git",
+            "version": "0.4.0"
+          },
+          {
+            "name": "BibParser",
+            "revision": "85a2545cbff8fae54fb3eceb1570d0ea9517b1a8",
+            "url": "https://github.com/JuliaBibliographies/BibParser.jl.git",
+            "version": "0.3.0"
+          }
+        ],
+        "revision": "73bae9d352d0326570d3ec3070ca2bb1c2996015",
+        "url": "https://github.com/JuliaBibliographies/Bibliography.jl.git",
+        "version": "0.4.0"
+      }
+    ]
+  },
+  "runtime": {
+    "language": "julia",
+    "version": "1.13.0",
+    "threads": 1
+  },
+  "os": "NT"
+}

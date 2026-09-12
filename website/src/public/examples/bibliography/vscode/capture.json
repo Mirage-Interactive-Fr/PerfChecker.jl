@@ -1,0 +1,13 @@
+{
+  "status": "passed",
+  "checks": [
+    "real extension activation",
+    "discovers the shared and perf_only Bibliography items",
+    "actual profile handler measures the selected Bibliography export item",
+    "measured duration reaches the native Testing API"
+  ],
+  "vscode_version": "1.137.0",
+  "durations_ms": [
+    1993.05
+  ]
+}

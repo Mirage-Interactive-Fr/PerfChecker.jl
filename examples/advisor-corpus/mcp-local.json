@@ -1,0 +1,13 @@
+{
+  "endpoint": "http://127.0.0.1:8083/mcp",
+  "protocol": "mcp_http",
+  "model": "external-mcp-advisor",
+  "mcp_version": "2026-07-28",
+  "mcp_tool": "ask",
+  "mcp_prompt_argument": "prompt",
+  "mcp_arguments": {},
+  "mcp_response": "text",
+  "instructions": "Privilégie les corrections du code Julia commun, utilisables sur plusieurs plateformes et backends. Propose des indices concrets et les vérifications nécessaires, sans changer l'API publique.",
+  "timeout": 120,
+  "allow_remote": false
+}

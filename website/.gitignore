@@ -1,0 +1,9 @@
+build/
+node_modules/
+Manifest.toml
+
+# Recordings are archived separately and embedded from YouTube after publication.
+# Local copies remain usable by the documentation preview, never by git add.
+*.webm
+*.mp4
+*.mov

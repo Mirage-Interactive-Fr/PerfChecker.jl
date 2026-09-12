@@ -1,0 +1,175 @@
+name: Collection qualification
+
+on:
+  pull_request:
+  push:
+    branches: [main, "release/**"]
+    tags: ['v*']
+  schedule:
+    - cron: '23 3 * * 1'
+  workflow_dispatch:
+    inputs:
+      full:
+        description: Run the extended release qualification
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: qualification-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  PERFCHECKER_QUALIFICATION_PROFILE: ${{ (github.event_name == 'schedule' || github.ref_type == 'tag' || inputs.full == true) && 'extended' || 'routine' }}
+  PERFCHECKER_DOCS_BASE: '/PerfChecker/dev/'
+  JULIA_NUM_THREADS: '1'
+  JULIA_NUM_PRECOMPILE_TASKS: '1'
+  JULIA_NUM_GC_THREADS: '1'
+  UV_THREADPOOL_SIZE: '1'
+  OPENBLAS_NUM_THREADS: '1'
+  OMP_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.plan.outputs.matrix }}
+      full: ${{ steps.plan.outputs.full }}
+      vscode_repository: ${{ steps.plan.outputs.vscode_repository }}
+      vscode_revision: ${{ steps.plan.outputs.vscode_revision }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: julia-actions/setup-julia@v3
+        with:
+          version: '1'
+      - name: Test the qualification controller
+        run: julia --startup-file=no --project=qualification qualification/test/runtests.jl
+      - id: plan
+        run: julia --startup-file=no --project=qualification qualification/scripts/plan.jl
+        env:
+          PERFCHECKER_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+      - uses: actions/upload-artifact@v7
+        with:
+          name: qualification-plan
+          path: .qualification/plan.toml
+          include-hidden-files: true
+
+  qualify:
+    needs: plan
+    name: ${{ matrix.id }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix: ${{ fromJSON(needs.plan.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@v7
+        if: matrix.suite == 'vscode'
+        with:
+          repository: ${{ needs.plan.outputs.vscode_repository }}
+          ref: ${{ needs.plan.outputs.vscode_revision }}
+          path: .qualification/vscode
+          persist-credentials: false
+      - uses: julia-actions/setup-julia@v3
+        with:
+          version: ${{ matrix.julia }}
+      - uses: actions/setup-node@v7
+        if: matrix.suite == 'vscode' || matrix.suite == 'docs' || matrix.suite == 'web'
+        with:
+          node-version: '22'
+      - uses: julia-actions/cache@v3
+      - uses: actions/download-artifact@v8
+        with:
+          name: qualification-plan
+          path: .qualification
+      - name: Execute and capture exact resolved environments
+        run: julia --startup-file=no --project=qualification qualification/scripts/run.jl '${{ matrix.id }}'
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: qualification-${{ matrix.id }}
+          path: .qualification/results/${{ matrix.id }}
+          include-hidden-files: true
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v7
+        if: success() && matrix.suite == 'docs'
+        with:
+          name: qualified-documentation-site
+          path: website/build/site
+          include-hidden-files: true
+          if-no-files-found: error
+
+  collection:
+    if: always()
+    needs: [plan, qualify]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: julia-actions/setup-julia@v3
+        with:
+          version: '1'
+      - uses: actions/download-artifact@v8
+        with:
+          name: qualification-plan
+          path: .qualification
+      - uses: actions/download-artifact@v8
+        with:
+          pattern: qualification-*
+          path: .qualification/downloads
+      - name: Arrange lane evidence
+        shell: julia --startup-file=no --project=qualification {0}
+        run: |
+          using TOML
+          for lane in TOML.parsefile(".qualification/plan.toml")["lanes"]
+              source = joinpath(".qualification/downloads", "qualification-" * lane["id"])
+              isdir(source) || error("Missing lane artifact: " * lane["id"])
+              destination = joinpath(".qualification/results", lane["id"])
+              mkpath(dirname(destination))
+              cp(source, destination)
+          end
+      - name: Reject incomplete or mismatched results
+        run: julia --startup-file=no --project=qualification qualification/scripts/collect.jl
+      - uses: actions/upload-artifact@v7
+        with:
+          name: qualified-collection
+          path: .qualification/collection.toml
+          include-hidden-files: true
+
+  release-candidate:
+    needs: [plan, qualify, collection]
+    if: >-
+      needs.plan.outputs.full == 'true' &&
+      github.event_name != 'pull_request' &&
+      github.ref == 'refs/heads/release/v1.0.0-rc1'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+      - name: Publish the qualified candidate without marking it stable
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          CANDIDATE_SHA: ${{ github.sha }}
+        run: |
+          tag="v$(python3 -c 'import tomllib; print(tomllib.load(open("Project.toml", "rb"))["version"])')"
+          [[ "$tag" == v*-rc* ]] || { echo "Expected a release-candidate version"; exit 1; }
+          if gh release view "$tag" >/dev/null 2>&1; then
+            existing="$(gh api "repos/$GH_REPO/commits/$tag" --jq .sha)"
+            [[ "$existing" == "$CANDIDATE_SHA" ]] || { echo "This RC tag already identifies another commit"; exit 1; }
+          else
+            gh release create "$tag" --target "$CANDIDATE_SHA" --prerelease --latest=false \
+              --title "PerfChecker $tag — release candidate" --notes-file CHANGELOG.md
+          fi

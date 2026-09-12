@@ -1,0 +1,303 @@
+{
+  "description": "Recorded collector execution; no correctness oracle or regression budget",
+  "platform": "Windows",
+  "julia": "1.13.0",
+  "worker_threads": 1,
+  "runs": [
+    {
+      "collector": "benchmark",
+      "state_policy": "fresh",
+      "started_at": "2026-09-12T12:26:59.031",
+      "finished_at": "2026-09-12T12:28:06.084",
+      "verdict": "executed",
+      "report_sha256": "297cc56ab3553c79da4b3114db4a1e38407a79e6c2b4cb8de4c8948575e297b9",
+      "runs": [
+        {
+          "package": "BibInternal",
+          "workload": "construct_entry",
+          "feature": "construct_entry",
+          "status": "pass",
+          "version": "dev@0.4.0"
+        },
+        {
+          "package": "BibInternal",
+          "workload": "validate_entry",
+          "feature": "validate_entry",
+          "status": "pass",
+          "version": "dev@0.4.0"
+        },
+        {
+          "package": "Bibliography",
+          "workload": "export_bibtex",
+          "feature": "export_bibtex",
+          "status": "pass",
+          "version": "dev@0.4.0"
+        },
+        {
+          "package": "Bibliography",
+          "workload": "import_bibtex",
+          "feature": "import_bibtex",
+          "status": "pass",
+          "version": "dev@0.4.0"
+        },
+        {
+          "package": "Bibliography",
+          "workload": "read_and_filter",
+          "feature": "read_and_filter",
+          "status": "pass",
+          "version": "dev@0.4.0"
+        },
+        {
+          "package": "Bibliography",
+          "workload": "web_render",
+          "feature": "web_render",
+          "status": "pass",
+          "version": "dev@0.4.0"
+        },
+        {
+          "package": "BibParser",
+          "workload": "parse_bibtex_file",
+          "feature": "parse_bibtex_file",
+          "status": "pass",
+          "version": "dev@0.3.0"
+        }
+      ]
+    },
+    {
+      "collector": "chairmark",
+      "state_policy": "fresh",
+      "started_at": "2026-09-12T14:09:25.308",
+      "finished_at": "2026-09-12T14:10:19.023",
+      "verdict": "executed",
+      "report_sha256": "75701990bad95899ccc2f3be7c1d94edea6ec5f4d455274259652fb9fbcac216",
+      "runs": [
+        {
+          "package": "BibInternal",
+          "workload": "construct_entry",
+          "feature": "construct_entry_chairmark",
+          "status": "pass",
+          "version": "dev@0.4.0"
+        },
+        {
+          "package": "BibInternal",
+          "workload": "validate_entry",
+          "feature": "validate_entry_chairmark",
+          "status": "pass",
+          "version": "dev@0.4.0"
+        },
+        {
+          "package": "Bibliography",
+          "workload": "export_bibtex",
+          "feature": "export_bibtex_chairmark",
+          "status": "pass",
+          "version": "dev@0.4.0"
+        },
+        {
+          "package": "Bibliography",
+          "workload": "import_bibtex",
+          "feature": "import_bibtex_chairmark",
+          "status": "pass",
+          "version": "dev@0.4.0"
+        },
+        {
+          "package": "Bibliography",
+          "workload": "read_and_filter",
+          "feature": "read_and_filter_chairmark",
+          "status": "pass",
+          "version": "dev@0.4.0"
+        },
+        {
+          "package": "Bibliography",
+          "workload": "web_render",
+          "feature": "web_render_chairmark",
+          "status": "pass",
+          "version": "dev@0.4.0"
+        },
+        {
+          "package": "BibParser",
+          "workload": "parse_bibtex_file",
+          "feature": "parse_bibtex_file_chairmark",
+          "status": "pass",
+          "version": "dev@0.3.0"
+        }
+      ]
+    },
+    {
+      "collector": "profile_alloc",
+      "state_policy": "fresh",
+      "started_at": "2026-09-12T14:10:34.515",
+      "finished_at": "2026-09-12T14:11:46.970",
+      "verdict": "executed",
+      "report_sha256": "e128a6f26c03e0a3e472aa5fb505c2a90fc19505f856e77b857a3ba66075ec96",
+      "runs": [
+        {
+          "package": "BibInternal",
+          "workload": "construct_entry",
+          "feature": "construct_entry_allocations",
+          "status": "pass",
+          "version": "dev@0.4.0"
+        },
+        {
+          "package": "BibInternal",
+          "workload": "validate_entry",
+          "feature": "validate_entry_allocations",
+          "status": "pass",
+          "version": "dev@0.4.0"
+        },
+        {
+          "package": "Bibliography",
+          "workload": "export_bibtex",
+          "feature": "export_bibtex_allocations",
+          "status": "pass",
+          "version": "dev@0.4.0"
+        },
+        {
+          "package": "Bibliography",
+          "workload": "import_bibtex",
+          "feature": "import_bibtex_allocations",
+          "status": "pass",
+          "version": "dev@0.4.0"
+        },
+        {
+          "package": "Bibliography",
+          "workload": "read_and_filter",
+          "feature": "read_and_filter_allocations",
+          "status": "pass",
+          "version": "dev@0.4.0"
+        },
+        {
+          "package": "Bibliography",
+          "workload": "web_render",
+          "feature": "web_render_allocations",
+          "status": "pass",
+          "version": "dev@0.4.0"
+        },
+        {
+          "package": "BibParser",
+          "workload": "parse_bibtex_file",
+          "feature": "parse_bibtex_file_allocations",
+          "status": "pass",
+          "version": "dev@0.3.0"
+        }
+      ]
+    },
+    {
+      "collector": "profile",
+      "state_policy": "reuse",
+      "started_at": "2026-09-12T14:18:10.058",
+      "finished_at": "2026-09-12T14:19:44.130",
+      "verdict": "executed",
+      "report_sha256": "86e9eb59377eb08691b3853016705621ef831671d8dc102f4378d7f5795c738a",
+      "runs": [
+        {
+          "package": "BibInternal",
+          "workload": "construct_entry",
+          "feature": "construct_entry_profile",
+          "status": "pass",
+          "version": "dev@0.4.0"
+        },
+        {
+          "package": "BibInternal",
+          "workload": "validate_entry",
+          "feature": "validate_entry_profile",
+          "status": "pass",
+          "version": "dev@0.4.0"
+        },
+        {
+          "package": "Bibliography",
+          "workload": "export_bibtex",
+          "feature": "export_bibtex_profile",
+          "status": "pass",
+          "version": "dev@0.4.0"
+        },
+        {
+          "package": "Bibliography",
+          "workload": "import_bibtex",
+          "feature": "import_bibtex_profile",
+          "status": "pass",
+          "version": "dev@0.4.0"
+        },
+        {
+          "package": "Bibliography",
+          "workload": "read_and_filter",
+          "feature": "read_and_filter_profile",
+          "status": "pass",
+          "version": "dev@0.4.0"
+        },
+        {
+          "package": "Bibliography",
+          "workload": "web_render",
+          "feature": "web_render_profile",
+          "status": "pass",
+          "version": "dev@0.4.0"
+        },
+        {
+          "package": "BibParser",
+          "workload": "parse_bibtex_file",
+          "feature": "parse_bibtex_file_profile",
+          "status": "pass",
+          "version": "dev@0.3.0"
+        }
+      ]
+    },
+    {
+      "collector": "wall_profile",
+      "state_policy": "reuse",
+      "started_at": "2026-09-12T14:19:58.930",
+      "finished_at": "2026-09-12T14:21:20.766",
+      "verdict": "executed",
+      "report_sha256": "986d65efe8eff6e11e4707c20884be160309f10a685d50f9a5365f071a2aa0e1",
+      "runs": [
+        {
+          "package": "BibInternal",
+          "workload": "construct_entry",
+          "feature": "construct_entry_wall_profile",
+          "status": "pass",
+          "version": "dev@0.4.0"
+        },
+        {
+          "package": "BibInternal",
+          "workload": "validate_entry",
+          "feature": "validate_entry_wall_profile",
+          "status": "pass",
+          "version": "dev@0.4.0"
+        },
+        {
+          "package": "Bibliography",
+          "workload": "export_bibtex",
+          "feature": "export_bibtex_wall_profile",
+          "status": "pass",
+          "version": "dev@0.4.0"
+        },
+        {
+          "package": "Bibliography",
+          "workload": "import_bibtex",
+          "feature": "import_bibtex_wall_profile",
+          "status": "pass",
+          "version": "dev@0.4.0"
+        },
+        {
+          "package": "Bibliography",
+          "workload": "read_and_filter",
+          "feature": "read_and_filter_wall_profile",
+          "status": "pass",
+          "version": "dev@0.4.0"
+        },
+        {
+          "package": "Bibliography",
+          "workload": "web_render",
+          "feature": "web_render_wall_profile",
+          "status": "pass",
+          "version": "dev@0.4.0"
+        },
+        {
+          "package": "BibParser",
+          "workload": "parse_bibtex_file",
+          "feature": "parse_bibtex_file_wall_profile",
+          "status": "pass",
+          "version": "dev@0.3.0"
+        }
+      ]
+    }
+  ]
+}

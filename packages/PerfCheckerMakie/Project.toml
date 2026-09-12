@@ -1,0 +1,36 @@
+name = "PerfCheckerMakie"
+uuid = "1039c70d-de90-4811-a202-d36e08616791"
+version = "1.0.0-rc1"
+
+[compat]
+Bonito = "4, 5"
+Makie = "0.24"
+PerfChecker = "1"
+TestItemRunner = "1.3.2"
+TestItems = "1"
+TypedTables = "1"
+WGLMakie = "0.13"
+julia = "1.10"
+
+[deps]
+Makie = "ee78f7c6-11fb-53f2-987a-cfe4a2b5a57a"
+PerfChecker = "6309bf6b-a531-4b08-891e-8ee981e5c424"
+TestItems = "1c621080-faea-4a02-84b6-bbd5e436b8fe"
+TypedTables = "9d95f2ec-7b3d-5a63-8d20-e2491e220bb9"
+
+[extensions]
+WGLMakieExt = ["WGLMakie", "Bonito"]
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+TestItemRunner = "f8b46487-2199-4994-9208-9a1283c18c0a"
+
+[sources.PerfChecker]
+path = "../.."
+
+[targets]
+test = ["Test", "TestItemRunner"]
+
+[weakdeps]
+Bonito = "824d6782-a2ef-11e9-3a09-e5662e0c26f8"
+WGLMakie = "276b4fcb-3e11-5398-bf8b-a0c2d153d008"

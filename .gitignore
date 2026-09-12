@@ -13,3 +13,11 @@
 *.swo
 
 .vscode/
+
+# Local evidence, model weights and training runtimes are never package payloads.
+/.lab/
+/.qualification/
+/.vscode-test/
+__pycache__/
+*.gguf
+*.safetensors

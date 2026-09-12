@@ -1,0 +1,105 @@
+schema = "perfchecker-collection/1"
+
+[components.analyzers]
+depends = ["core", "contracts"]
+paths = ["providers/", "test/latest_analyzers.jl", "test/environments/analyzers/"]
+suites = ["analyzers"]
+
+[components.contracts]
+depends = []
+paths = ["schemas/", "qualification/"]
+suites = ["contracts"]
+
+[components.core]
+depends = []
+paths = ["src/", "bin/", "Project.toml", "Manifest.toml", "test/", "ext/", "examples/", "data/", "perf/"]
+suites = ["core", "native", "shared", "legacy_interfaces", "legacy_protocol"]
+
+[components.docs]
+depends = ["core", "contracts", "web", "pluto", "plots", "analyzers", "vscode"]
+paths = ["website/", "ext/DocumenterExt/", "ext/DocumenterVitepressExt/"]
+suites = ["docs"]
+
+[components.plots]
+depends = ["core", "contracts"]
+paths = ["packages/PerfCheckerMakie/"]
+suites = ["plots"]
+
+[components.pluto]
+depends = ["core", "contracts"]
+paths = ["packages/PerfCheckerPluto/"]
+suites = ["pluto"]
+
+[components.vscode]
+depends = ["core", "contracts"]
+paths = ["clients/vscode/"]
+suites = ["vscode"]
+
+[components.web]
+depends = ["core", "contracts"]
+paths = ["packages/PerfCheckerWeb/"]
+suites = ["web", "advisor_http1", "advisor_http2"]
+
+[sources.vscode]
+repository = "Mirage-Interactive-Fr/PerfCheckerVSCode"
+revision = "f3b81ca80a0acef18bcb550bfd0d04ca3d43e7f9"
+
+[suites.analyzers]
+julias = ["1.12", "1"]
+oses = ["ubuntu-latest", "windows-latest"]
+
+[suites.advisor_http1]
+julias = ["1"]
+oses = ["ubuntu-latest", "windows-latest"]
+
+[suites.advisor_http2]
+julias = ["1"]
+oses = ["ubuntu-latest", "windows-latest"]
+
+[suites.contracts]
+julias = ["1.10", "1"]
+oses = ["ubuntu-latest", "windows-latest"]
+
+[suites.core]
+julias = ["1.10", "1"]
+oses = ["ubuntu-latest", "windows-latest"]
+
+[suites.docs]
+julias = ["1"]
+oses = ["ubuntu-latest"]
+
+[suites.legacy_interfaces]
+julias = ["1"]
+oses = ["ubuntu-latest", "windows-latest"]
+
+[suites.legacy_protocol]
+julias = ["1"]
+oses = ["ubuntu-latest"]
+
+[suites.native]
+julias = ["1.10", "1"]
+oses = ["ubuntu-latest", "windows-latest"]
+
+[suites.plots]
+julias = ["1"]
+oses = ["ubuntu-latest"]
+
+[suites.pluto]
+julias = ["1"]
+oses = ["ubuntu-latest", "windows-latest"]
+
+[suites.shared]
+julias = ["1"]
+oses = ["ubuntu-latest", "windows-latest"]
+
+[suites.style]
+julias = ["1"]
+oses = ["ubuntu-latest"]
+
+[suites.vscode]
+julias = ["1"]
+oses = ["ubuntu-latest", "windows-latest"]
+
+[suites.web]
+julias = ["1"]
+oses = ["ubuntu-latest", "windows-latest"]
