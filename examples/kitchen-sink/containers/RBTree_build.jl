@@ -1,0 +1,5 @@
+include(joinpath(@__DIR__, "../src/containers.jl"))
+const lifecycle = ContainerCases.container_case("RBTree", "build"; n = 512)
+perf_setup() = lifecycle.prepare()
+perf_workload(state) = lifecycle.operation(state)
+perf_oracle(state, result) = lifecycle.verify(state, result)

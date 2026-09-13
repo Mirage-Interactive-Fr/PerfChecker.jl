@@ -1,0 +1,32 @@
+Wall time (µs)
+                                                           DisjointSet
+                                 ┌                                                            ┐
+          build · BenchmarkTools ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 6.5
+              build · Chairmarks ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 10.1
+   connectivity · BenchmarkTools ┤■■■■■■■■■ 1.6
+       connectivity · Chairmarks ┤■■■■■■■■■ 1.6
+                                 └                                                            ┘
+GC share (%)
+                                                           DisjointSet
+                                 ┌                                                            ┐
+          build · BenchmarkTools ┤ 0
+              build · Chairmarks ┤ 0
+   connectivity · BenchmarkTools ┤ 0
+       connectivity · Chairmarks ┤ 0
+                                 └                                                            ┘
+Allocated bytes
+                                                           DisjointSet
+                                 ┌                                                            ┐
+          build · BenchmarkTools ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 34 426
+              build · Chairmarks ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 34 410
+   connectivity · BenchmarkTools ┤■ 352
+       connectivity · Chairmarks ┤■ 352
+                                 └                                                            ┘
+Allocation count
+                                                           DisjointSet
+                                 ┌                                                            ┐
+          build · BenchmarkTools ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 20
+              build · Chairmarks ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 20
+   connectivity · BenchmarkTools ┤■■■■■■■■ 3
+       connectivity · Chairmarks ┤■■■■■■■■ 3
+                                 └                                                            ┘

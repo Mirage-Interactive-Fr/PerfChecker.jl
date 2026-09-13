@@ -14,10 +14,15 @@ end
 include(joinpath(@__DIR__, "../src/PerfCheckerKitchenSink.jl"))
 using .PerfCheckerKitchenSink
 
+# HTTP versions can return either immutable strings or mutable byte vectors.
+# Copy bytes before String conversion because that conversion can take ownership.
+body_text(body::AbstractString) = String(body)
+body_text(body) = String(copy(body))
+
 # An independent router avoids changing the Web Studio's routes when both are loaded.
 for kind in ("heap", "counter", "buffer")
     handler = function(request::HTTP.Request)
-        raw = JSON.parse(String(copy(request.body)))
+        raw = JSON.parse(body_text(request.body))
         input = [Tuple(Int.(row)) for row in raw]
         operation = kind == "heap" ? drain_heap : kind == "counter" ? count_events : recent_events
         HTTP.Response(200, ["Content-Type" => "application/json"]; body = JSON.json(operation(input)))
@@ -47,7 +52,7 @@ function request_case(kind = "heap", n = 2048)
             ["Content-Type" => "application/json"], payload),
         operation = dispatch_request,
         verify = (request, response) -> response.status == 200 &&
-            JSON.parse(String(copy(response.body))) == expected_json,
+            JSON.parse(body_text(response.body)) == expected_json,
         payload = payload, expected = expected_json,
     )
 end
@@ -59,4 +64,5 @@ stop() = terminate()
 
 "Parameter dictionary entry point for the shared-scenario runner."
 scenario(parameters) = request_case(String(Base.get(parameters, "kind", "heap")), Int(Base.get(parameters, "n", 2048)))
+include(joinpath(@__DIR__, "feature-routes.jl"))
 end

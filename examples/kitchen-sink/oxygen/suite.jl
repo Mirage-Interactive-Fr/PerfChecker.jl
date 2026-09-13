@@ -1,6 +1,8 @@
 using PerfChecker
-const OXYGEN_VERSIONS = [v"1.0.0", v"1.1.0", v"1.2.0", v"1.3.0", v"1.4.0", v"1.5.0",
-    v"1.6.0", v"1.7.0", v"1.8.0", v"1.9.0", v"1.10.0", v"1.11.0"]
+# One point per older minor series; every patch in the two latest minor series.
+# Keep this explicit: rerunning the example must not silently select new releases.
+const OXYGEN_VERSIONS = vcat([VersionNumber(1, minor, 0) for minor in 0:9],
+    [v"1.10.0", v"1.10.1", v"1.10.2", v"1.11.0"])
 
 "Compare the same in-process HTTP requests from Oxygen's first release to HTTP.jl 2."
 function build_suite()

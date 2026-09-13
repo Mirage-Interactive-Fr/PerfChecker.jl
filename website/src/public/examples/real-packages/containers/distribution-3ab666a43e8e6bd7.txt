@@ -1,0 +1,5 @@
+                           DataStructures · OrderedSet_lookup_benchmark · julia.alloc.bytes
+                  ┌                                                                                ┐
+   [592.0, 593.0) ┤███████████████████████████████████████████████████████████████████████████  210
+                  └                                                                                ┘
+                                                       Frequency

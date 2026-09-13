@@ -1,0 +1,5 @@
+                            DataStructures · BinaryMaxHeap_build_benchmark · julia.alloc.bytes
+                    ┌                                                                                ┐
+   [6007.0, 6008.0) ┤███████████████████████████████████████████████████████████████████████████  210
+                    └                                                                                ┘
+                                                         Frequency

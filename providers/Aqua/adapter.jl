@@ -7,7 +7,7 @@ function _analyze_scenario(::Val{:aqua}, case, options)
             "status" => "unavailable", "message" => "a named package is required for Aqua")
     owner = Module(gensym(:AquaTarget))
     Base.eval(owner, Expr(:import, Expr(:., Symbol(name))))
-    target = getfield(owner, Symbol(name))
+    target = Base.invokelatest(getfield, owner, Symbol(name))
     checks = get(options, "aqua", Dict())
     supported = Set(["ambiguities", "unbound_args", "undefined_exports", "project_extras",
         "stale_deps", "deps_compat", "piracies", "persistent_tasks"])

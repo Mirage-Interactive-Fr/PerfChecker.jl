@@ -95,6 +95,19 @@ function safe_stop(worker)
         stop(worker)
     catch err
         @debug "failed to stop PerfChecker worker" exception=(err, catch_backtrace())
+    finally
+        # Malt 1.x stops the process but retains its parent-side pipe handles.
+        # On Windows, a blocked reader can retain an OS thread for each pipe.
+        # Repeated suite workers therefore need explicit connection cleanup.
+        if worker isa Worker && !Base.process_running(worker.proc)
+            for connection in (worker.stdout, worker.stderr, worker.current_socket)
+                try
+                    close(connection)
+                catch err
+                    @debug "failed to close terminated worker connection" exception=(err, catch_backtrace())
+                end
+            end
+        end
     end
 end
 
@@ -552,7 +565,9 @@ function perf_plot end
     table_to_pie(table, ::Val{backend}; kwargs...)
 
 Create a pie chart from a backend table. Currently implemented by the Makie
-extension for allocation tables with `Val(:alloc)`.
+package for allocation tables with `Val(:alloc)`. Sites below 5% of allocated
+bytes are combined by default. Use `min_percentage=0` to show smaller sites;
+`top=40` caps legend entries, including the combined remainder.
 """
 function table_to_pie end
 
@@ -568,7 +583,8 @@ function checkres_to_scatterlines end
     checkres_to_pie(result::CheckerResult, ::Val{backend}; kwargs...)
 
 Create pie charts from a `CheckerResult`. For allocation checks this returns
-pairs mapping version labels to Makie figures.
+pairs mapping version labels to Makie figures. Forwards `min_percentage` and
+`top` to [`table_to_pie`](@ref).
 """
 function checkres_to_pie end
 

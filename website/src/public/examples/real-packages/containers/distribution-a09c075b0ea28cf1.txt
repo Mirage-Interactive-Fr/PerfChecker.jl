@@ -1,0 +1,5 @@
+                       DataStructures · Accumulator_build_benchmark · julia.alloc.count
+              ┌                                                                                ┐
+   [8.0, 9.0) ┤███████████████████████████████████████████████████████████████████████████  210
+              └                                                                                ┘
+                                                   Frequency

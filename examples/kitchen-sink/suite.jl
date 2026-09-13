@@ -2,7 +2,7 @@ using PerfChecker
 
 const KITCHEN_VERSIONS = [v"0.11.0", v"0.12.0", v"0.13.0", v"0.14.0", v"0.15.0",
     v"0.16.1", v"0.17.0", v"0.17.20", v"0.18.0", v"0.18.10", v"0.18.13",
-    v"0.18.15", v"0.18.22", v"0.19.0", v"0.19.6"]
+    v"0.18.15", v"0.18.22", v"0.19.0", v"0.19.1", v"0.19.2", v"0.19.3", v"0.19.4", v"0.19.5", v"0.19.6"]
 const KITCHEN_COLLECTORS = (:benchmark, :chairmark, :alloc, :profile_alloc, :profile, :wall_profile)
 
 "The same twelve workloads across tagged DataStructures releases and six collectors."

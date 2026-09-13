@@ -60,10 +60,14 @@ repeatedly committed into source history.
 
 ## Pluto: an actual notebook
 
-Use the downloadable notebook or the same `notebook.jl` in the example checkout.
+Start with the notebook for your package. Each combines an executable oracle,
+recorded release histories, Makie figures, Unicode plots and reproduction commands.
+The generic notebook remains useful for browsing arbitrary completed bundles.
 
 ```@raw html
 <p><a href="../examples/real-packages/notebook.jl" download="notebook.jl">Download the runnable Pluto notebook (.jl)</a></p>
+<p><a href="../examples/real-packages/datastructures-notebook.jl" download="datastructures-notebook.jl">Download the DataStructures walkthrough (.jl)</a></p>
+<p><a href="../examples/real-packages/oxygen-notebook.jl" download="oxygen-notebook.jl">Download the Oxygen walkthrough (.jl)</a></p>
 ```
 
 Prepare its separate environment:

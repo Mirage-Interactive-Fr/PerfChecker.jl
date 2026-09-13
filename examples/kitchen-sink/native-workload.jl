@@ -1,6 +1,5 @@
 include(joinpath(@__DIR__, "src/PerfCheckerKitchenSink.jl"))
-case = PerfCheckerKitchenSink.event_case(Dict("kind" => "heap", "n" => 32768))
-for _ in 1:100
-    state = case.prepare()
-    @assert case.verify(state, case.operation(state))
-end
+include(joinpath(@__DIR__, "native/window.jl"))
+case = PerfCheckerKitchenSink.event_case(Dict("kind" => "heap",
+    "n" => parse(Int, get(ENV, "PERFCHECKER_NATIVE_SIZE", "2048"))))
+run_native_window(case, parse(Int, get(ENV, "PERFCHECKER_NATIVE_REPETITIONS", "10")))

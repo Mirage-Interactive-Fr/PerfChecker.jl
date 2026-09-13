@@ -1,10 +1,28 @@
 {
   "correctness": "passed",
   "performance": "not_compared",
+  "release_date_kinds": {
+    "1.0.0": "GitHub release publication date",
+    "1.1.0": "GitHub release publication date",
+    "1.10.0": "GitHub release publication date",
+    "1.10.1": "GitHub release publication date",
+    "1.10.2": "GitHub release publication date",
+    "1.11.0": "GitHub release publication date",
+    "1.2.0": "GitHub release publication date",
+    "1.3.0": "GitHub release publication date",
+    "1.4.0": "GitHub release publication date",
+    "1.5.0": "GitHub release publication date",
+    "1.6.0": "GitHub release publication date",
+    "1.7.0": "GitHub release publication date",
+    "1.8.0": "GitHub release publication date",
+    "1.9.0": "GitHub release publication date"
+  },
   "release_dates": {
     "1.0.0": "2022-05-28",
     "1.1.0": "2022-08-19",
     "1.10.0": "2026-01-01",
+    "1.10.1": "2026-02-25",
+    "1.10.2": "2026-04-18",
     "1.11.0": "2026-08-28",
     "1.2.0": "2023-09-28",
     "1.3.0": "2023-12-14",
@@ -3529,6 +3547,660 @@
       "version": "1.10.0"
     },
     {
+      "manifest_sha256": "15ffe3a00c7dcd508b849378295102c893c9eaf15e3aec3d9a46bb9a22da110f",
+      "packages": [
+        {
+          "name": "Artifacts",
+          "uuid": "56f22d72-fd6d-98f1-02f0-08ddc0907c33",
+          "version": "1.11.0"
+        },
+        {
+          "name": "Base64",
+          "uuid": "2a0f44e3-6c83-55bd-87e4-b1978d98bd5f",
+          "version": "1.11.0"
+        },
+        {
+          "git-tree-sha1": "9670d3febc2b6da60a0ae57846ba74670290653f",
+          "name": "BenchmarkTools",
+          "uuid": "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf",
+          "version": "1.8.0"
+        },
+        {
+          "git-tree-sha1": "bbe1079eecf9c9fbb52765193ad2bae27ae09bc8",
+          "name": "BitFlags",
+          "uuid": "d1d4a3ce-64b1-5f1a-9ba4-7e7e69966f35",
+          "version": "0.1.10"
+        },
+        {
+          "git-tree-sha1": "9a49491e67e7a4d6f885c43d00bb101e6e5a434b",
+          "name": "Chairmarks",
+          "uuid": "0ca39b1e-fe0b-4e98-acfc-b1656634c4de",
+          "version": "1.3.1"
+        },
+        {
+          "git-tree-sha1": "970758a3d591a2a5c2a907c53f2e2f8c1b1d3537",
+          "name": "CodecZlib",
+          "uuid": "944b1d66-785c-5afd-91f1-9de20f533193",
+          "version": "0.7.9"
+        },
+        {
+          "git-tree-sha1": "9d8a54ce4b17aa5bdce0ea5c34bc5e7c340d16ad",
+          "name": "Compat",
+          "uuid": "34da2185-b29b-5c13-b0c7-acf172513d20",
+          "version": "4.18.1"
+        },
+        {
+          "name": "CompilerSupportLibraries_jll",
+          "uuid": "e66e0078-7015-5450-92f7-15fbd957f2ae",
+          "version": "1.5.5+2"
+        },
+        {
+          "git-tree-sha1": "3c9be947934c38475bafe822c6d61aaed17f0738",
+          "name": "ConcurrentUtilities",
+          "uuid": "f0e56b4a-5159-44fe-b623-3e5288b988bb",
+          "version": "2.6.0"
+        },
+        {
+          "git-tree-sha1": "b0bc6d2cad1fed8b7fd59a1551a991cb3d2809e6",
+          "name": "DataStructures",
+          "uuid": "864edb3b-99cc-5e75-8d2d-829cb0a9cfe8",
+          "version": "0.19.6"
+        },
+        {
+          "name": "Dates",
+          "uuid": "ade2ca70-3891-5945-98fb-dc099432e06a",
+          "version": "1.11.0"
+        },
+        {
+          "git-tree-sha1": "d36f682e590a83d63d1c7dbd287573764682d12a",
+          "name": "ExceptionUnwrapping",
+          "uuid": "460bff9d-24e4-43bc-9d9f-a8973cb893f4",
+          "version": "0.1.11"
+        },
+        {
+          "git-tree-sha1": "51059d23c8bb67911a2e6fd5130229113735fc7e",
+          "name": "HTTP",
+          "uuid": "cd3eb016-35fb-5094-929b-558a96fad6f3",
+          "version": "1.11.0"
+        },
+        {
+          "name": "InteractiveUtils",
+          "uuid": "b77e0a4c-d291-57a0-90e8-8db25a27a240",
+          "version": "1.11.0"
+        },
+        {
+          "git-tree-sha1": "7204148362dafe5fe6a273f855b8ccbe4df8173e",
+          "name": "JLLWrappers",
+          "uuid": "692b3bcd-3c85-4b1f-b108-f13ce0eb3210",
+          "version": "1.8.0"
+        },
+        {
+          "git-tree-sha1": "88352712893ec50bee3680605891eaf0e9ed6368",
+          "name": "JSON",
+          "uuid": "682c06a0-de6a-54ab-a142-c8b1cf79cde6",
+          "version": "1.8.0"
+        },
+        {
+          "name": "JuliaSyntaxHighlighting",
+          "uuid": "ac6e5ff7-fb65-4e79-a425-ec3bc9c03011",
+          "version": "1.12.0"
+        },
+        {
+          "git-tree-sha1": "5519b95a490ff5fe629c4a7aa3b3dfc9160498b3",
+          "name": "LRUCache",
+          "uuid": "8ac3fa9e-de4c-5943-b1dc-09c6b5f20637",
+          "version": "1.6.2"
+        },
+        {
+          "name": "Libdl",
+          "uuid": "8f399da3-3557-5675-b5ff-fb832c97cbdb",
+          "version": "1.11.0"
+        },
+        {
+          "name": "LinearAlgebra",
+          "uuid": "37e2e46d-f89d-539d-b4ee-838fcccc9c8e",
+          "version": "1.13.0"
+        },
+        {
+          "name": "Logging",
+          "uuid": "56ddb016-857b-54e1-b83d-db4d58db5568",
+          "version": "1.11.0"
+        },
+        {
+          "git-tree-sha1": "f00544d95982ea270145636c181ceda21c4e2575",
+          "name": "LoggingExtras",
+          "uuid": "e6f89c97-d47a-5376-807f-9c37f3926c36",
+          "version": "1.2.0"
+        },
+        {
+          "git-tree-sha1": "c64d943587f7187e751162b3b84445bbbd79f691",
+          "name": "MIMEs",
+          "uuid": "6c6e2e6c-3030-632d-7369-2d6c69616d65",
+          "version": "1.1.0"
+        },
+        {
+          "name": "Markdown",
+          "uuid": "d6f4376e-aef5-505a-96c1-9c027394607a",
+          "version": "1.11.0"
+        },
+        {
+          "git-tree-sha1": "8785729fa736197687541f7053f6d8ab7fc44f92",
+          "name": "MbedTLS",
+          "uuid": "739be429-bea8-5141-9913-cc70e7f3736d",
+          "version": "1.1.10"
+        },
+        {
+          "git-tree-sha1": "ff69a2b1330bcb730b9ac1ab7dd680176f5896b8",
+          "name": "MbedTLS_jll",
+          "uuid": "c8ffd9c3-330d-5841-b78e-0817d7145fa1",
+          "version": "2.28.1010+0"
+        },
+        {
+          "name": "MozillaCACerts_jll",
+          "uuid": "14a3606d-f60d-562e-9121-12d972cd8159",
+          "version": "2026.8.13"
+        },
+        {
+          "name": "NetworkOptions",
+          "uuid": "ca575930-c2e3-43a9-ace4-1e988b2c1908",
+          "version": "1.3.0"
+        },
+        {
+          "name": "OpenBLAS_jll",
+          "uuid": "4536629a-c528-5b80-bd46-f80d51c5b363",
+          "version": "0.3.30+0"
+        },
+        {
+          "git-tree-sha1": "1d1aaa7d449b58415f97d2839c318b70ffb525a0",
+          "name": "OpenSSL",
+          "uuid": "4d8831e6-92b7-49fb-bdf8-b643e874388c",
+          "version": "1.6.1"
+        },
+        {
+          "name": "OpenSSL_jll",
+          "uuid": "458c3c95-2e84-50aa-8efc-19380b2a3a95",
+          "version": "3.5.6+0"
+        },
+        {
+          "git-tree-sha1": "05f45c2e0de6259db764adbfd2f1dc6d3f8de13c",
+          "name": "OrderedCollections",
+          "uuid": "bac558e1-5e72-5ebc-8fee-abe8a469f55d",
+          "version": "2.0.1"
+        },
+        {
+          "git-tree-sha1": "294a35cc29803a3e1fdc3da2e0bf0d8826530575",
+          "name": "Oxygen",
+          "uuid": "df9a0d86-3283-4920-82dc-4555fc0d1d8b",
+          "version": "1.10.1"
+        },
+        {
+          "git-tree-sha1": "663e8b48b789916221e0765393b289ca6c88f24e",
+          "name": "Parsers",
+          "uuid": "69de0a69-1ddd-5017-9359-2bf0b02dc9f0",
+          "version": "3.0.0"
+        },
+        {
+          "git-tree-sha1": "edbeefc7a4889f528644251bdb5fc9ab5348bc2c",
+          "name": "PrecompileTools",
+          "uuid": "aea7be01-6a6a-4083-8856-8a6e6704d82a",
+          "version": "1.3.4"
+        },
+        {
+          "git-tree-sha1": "5005266de4bfe50e53ff44a5cb5c540b6e47a254",
+          "name": "Preferences",
+          "uuid": "21216c6a-2e73-6563-6e65-726566657250",
+          "version": "1.6.0"
+        },
+        {
+          "name": "Printf",
+          "uuid": "de0858da-6303-5e67-8744-51eddeeeb8d7",
+          "version": "1.11.0"
+        },
+        {
+          "name": "Profile",
+          "uuid": "9abbd945-dff8-562f-b5e8-e1ebf5ef1b79",
+          "version": "1.11.0"
+        },
+        {
+          "name": "Random",
+          "uuid": "9a3f8284-a2c9-5f02-9a11-845980a1fd5c",
+          "version": "1.11.0"
+        },
+        {
+          "git-tree-sha1": "45e428421666073eab6f2da5c9d310d99bb12f9b",
+          "name": "Reexport",
+          "uuid": "189a3867-3050-52da-a836-e630ba90ab69",
+          "version": "1.2.2"
+        },
+        {
+          "git-tree-sha1": "ffdaf70d81cf6ff22c2b6e733c900c3321cab864",
+          "name": "RelocatableFolders",
+          "uuid": "05181044-ff0b-4ac5-8273-598c1e38db00",
+          "version": "1.0.1"
+        },
+        {
+          "name": "SHA",
+          "uuid": "ea8e919c-243c-51af-8825-aaa63cd721ce",
+          "version": "1.0.0"
+        },
+        {
+          "git-tree-sha1": "9b81b8393e50b7d4e6d0a9f14e192294d3b7c109",
+          "name": "Scratch",
+          "uuid": "6c6a2e73-6563-6170-7368-637461726353",
+          "version": "1.3.0"
+        },
+        {
+          "name": "Serialization",
+          "uuid": "9e88b42a-f829-5b0c-bbe9-9e923198166b",
+          "version": "1.11.0"
+        },
+        {
+          "git-tree-sha1": "f305871d2f381d21527c770d4788c06c097c9bc1",
+          "name": "SimpleBufferStream",
+          "uuid": "777ac1f9-54b0-4bf8-805c-2214025038e7",
+          "version": "1.2.0"
+        },
+        {
+          "name": "Sockets",
+          "uuid": "6462fe0b-24de-5631-8697-dd941f90decc",
+          "version": "1.11.0"
+        },
+        {
+          "git-tree-sha1": "e2b53ce13a53367e96601081e33d34746b571bad",
+          "name": "Statistics",
+          "uuid": "10745b16-79ce-11e8-11f9-7d13ad32a3b2",
+          "version": "1.11.5"
+        },
+        {
+          "git-tree-sha1": "159331b30e94d7b11379037feeb9b690950cace8",
+          "name": "StructTypes",
+          "uuid": "856f2bd8-1eba-4b0a-8007-ebc267875bd4",
+          "version": "1.11.0"
+        },
+        {
+          "git-tree-sha1": "2d0fc55c61321ba245c47be599570d11bac50303",
+          "name": "StructUtils",
+          "uuid": "ec057cc2-7a8d-4b58-b3b3-92acb9f63b42",
+          "version": "2.8.5"
+        },
+        {
+          "name": "StyledStrings",
+          "uuid": "f489334b-da3d-4c2e-b8f0-e476e12c162b",
+          "version": "1.11.0"
+        },
+        {
+          "name": "TOML",
+          "uuid": "fa267f1f-6049-4f14-aa54-33bafae1ed76",
+          "version": "1.0.3"
+        },
+        {
+          "name": "Test",
+          "uuid": "8dfed614-e22c-5e08-85e1-65c5234f0b40",
+          "version": "1.11.0"
+        },
+        {
+          "git-tree-sha1": "0c45878dcfdcfa8480052b6ab162cdd138781742",
+          "name": "TranscodingStreams",
+          "uuid": "3bb67fe8-82b1-5028-8e26-92a6c54297fa",
+          "version": "0.11.3"
+        },
+        {
+          "git-tree-sha1": "908fec9df6c5de98548ead82a468c95ccf6cd263",
+          "name": "URIs",
+          "uuid": "5c2747f8-b7ea-4ff2-ba2e-563bfd36b1d4",
+          "version": "1.7.0"
+        },
+        {
+          "name": "UUIDs",
+          "uuid": "cf7118a7-6976-5b1a-9a39-7adc72f591a4",
+          "version": "1.11.0"
+        },
+        {
+          "name": "Unicode",
+          "uuid": "4ec0a83e-493e-50e2-b9ac-8f72acf5a8f5",
+          "version": "1.11.0"
+        },
+        {
+          "name": "Zlib_jll",
+          "uuid": "83775a58-1f1d-513f-b197-d71354ab007a",
+          "version": "1.3.1+2"
+        },
+        {
+          "name": "libblastrampoline_jll",
+          "uuid": "8e850b90-86db-534c-a0d3-1478176c7d93",
+          "version": "5.15.0+0"
+        }
+      ],
+      "version": "1.10.1"
+    },
+    {
+      "manifest_sha256": "8ee5c71ef3ebf26c2ca85699bc636898aad411383e18d733aacd754ab5fd3017",
+      "packages": [
+        {
+          "name": "Artifacts",
+          "uuid": "56f22d72-fd6d-98f1-02f0-08ddc0907c33",
+          "version": "1.11.0"
+        },
+        {
+          "name": "Base64",
+          "uuid": "2a0f44e3-6c83-55bd-87e4-b1978d98bd5f",
+          "version": "1.11.0"
+        },
+        {
+          "git-tree-sha1": "9670d3febc2b6da60a0ae57846ba74670290653f",
+          "name": "BenchmarkTools",
+          "uuid": "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf",
+          "version": "1.8.0"
+        },
+        {
+          "git-tree-sha1": "bbe1079eecf9c9fbb52765193ad2bae27ae09bc8",
+          "name": "BitFlags",
+          "uuid": "d1d4a3ce-64b1-5f1a-9ba4-7e7e69966f35",
+          "version": "0.1.10"
+        },
+        {
+          "git-tree-sha1": "9a49491e67e7a4d6f885c43d00bb101e6e5a434b",
+          "name": "Chairmarks",
+          "uuid": "0ca39b1e-fe0b-4e98-acfc-b1656634c4de",
+          "version": "1.3.1"
+        },
+        {
+          "git-tree-sha1": "970758a3d591a2a5c2a907c53f2e2f8c1b1d3537",
+          "name": "CodecZlib",
+          "uuid": "944b1d66-785c-5afd-91f1-9de20f533193",
+          "version": "0.7.9"
+        },
+        {
+          "git-tree-sha1": "9d8a54ce4b17aa5bdce0ea5c34bc5e7c340d16ad",
+          "name": "Compat",
+          "uuid": "34da2185-b29b-5c13-b0c7-acf172513d20",
+          "version": "4.18.1"
+        },
+        {
+          "name": "CompilerSupportLibraries_jll",
+          "uuid": "e66e0078-7015-5450-92f7-15fbd957f2ae",
+          "version": "1.5.5+2"
+        },
+        {
+          "git-tree-sha1": "3c9be947934c38475bafe822c6d61aaed17f0738",
+          "name": "ConcurrentUtilities",
+          "uuid": "f0e56b4a-5159-44fe-b623-3e5288b988bb",
+          "version": "2.6.0"
+        },
+        {
+          "git-tree-sha1": "b0bc6d2cad1fed8b7fd59a1551a991cb3d2809e6",
+          "name": "DataStructures",
+          "uuid": "864edb3b-99cc-5e75-8d2d-829cb0a9cfe8",
+          "version": "0.19.6"
+        },
+        {
+          "name": "Dates",
+          "uuid": "ade2ca70-3891-5945-98fb-dc099432e06a",
+          "version": "1.11.0"
+        },
+        {
+          "git-tree-sha1": "d36f682e590a83d63d1c7dbd287573764682d12a",
+          "name": "ExceptionUnwrapping",
+          "uuid": "460bff9d-24e4-43bc-9d9f-a8973cb893f4",
+          "version": "0.1.11"
+        },
+        {
+          "git-tree-sha1": "51059d23c8bb67911a2e6fd5130229113735fc7e",
+          "name": "HTTP",
+          "uuid": "cd3eb016-35fb-5094-929b-558a96fad6f3",
+          "version": "1.11.0"
+        },
+        {
+          "name": "InteractiveUtils",
+          "uuid": "b77e0a4c-d291-57a0-90e8-8db25a27a240",
+          "version": "1.11.0"
+        },
+        {
+          "git-tree-sha1": "7204148362dafe5fe6a273f855b8ccbe4df8173e",
+          "name": "JLLWrappers",
+          "uuid": "692b3bcd-3c85-4b1f-b108-f13ce0eb3210",
+          "version": "1.8.0"
+        },
+        {
+          "git-tree-sha1": "88352712893ec50bee3680605891eaf0e9ed6368",
+          "name": "JSON",
+          "uuid": "682c06a0-de6a-54ab-a142-c8b1cf79cde6",
+          "version": "1.8.0"
+        },
+        {
+          "name": "JuliaSyntaxHighlighting",
+          "uuid": "ac6e5ff7-fb65-4e79-a425-ec3bc9c03011",
+          "version": "1.12.0"
+        },
+        {
+          "git-tree-sha1": "5519b95a490ff5fe629c4a7aa3b3dfc9160498b3",
+          "name": "LRUCache",
+          "uuid": "8ac3fa9e-de4c-5943-b1dc-09c6b5f20637",
+          "version": "1.6.2"
+        },
+        {
+          "name": "Libdl",
+          "uuid": "8f399da3-3557-5675-b5ff-fb832c97cbdb",
+          "version": "1.11.0"
+        },
+        {
+          "name": "LinearAlgebra",
+          "uuid": "37e2e46d-f89d-539d-b4ee-838fcccc9c8e",
+          "version": "1.13.0"
+        },
+        {
+          "name": "Logging",
+          "uuid": "56ddb016-857b-54e1-b83d-db4d58db5568",
+          "version": "1.11.0"
+        },
+        {
+          "git-tree-sha1": "f00544d95982ea270145636c181ceda21c4e2575",
+          "name": "LoggingExtras",
+          "uuid": "e6f89c97-d47a-5376-807f-9c37f3926c36",
+          "version": "1.2.0"
+        },
+        {
+          "git-tree-sha1": "c64d943587f7187e751162b3b84445bbbd79f691",
+          "name": "MIMEs",
+          "uuid": "6c6e2e6c-3030-632d-7369-2d6c69616d65",
+          "version": "1.1.0"
+        },
+        {
+          "name": "Markdown",
+          "uuid": "d6f4376e-aef5-505a-96c1-9c027394607a",
+          "version": "1.11.0"
+        },
+        {
+          "git-tree-sha1": "8785729fa736197687541f7053f6d8ab7fc44f92",
+          "name": "MbedTLS",
+          "uuid": "739be429-bea8-5141-9913-cc70e7f3736d",
+          "version": "1.1.10"
+        },
+        {
+          "git-tree-sha1": "ff69a2b1330bcb730b9ac1ab7dd680176f5896b8",
+          "name": "MbedTLS_jll",
+          "uuid": "c8ffd9c3-330d-5841-b78e-0817d7145fa1",
+          "version": "2.28.1010+0"
+        },
+        {
+          "name": "MozillaCACerts_jll",
+          "uuid": "14a3606d-f60d-562e-9121-12d972cd8159",
+          "version": "2026.8.13"
+        },
+        {
+          "name": "NetworkOptions",
+          "uuid": "ca575930-c2e3-43a9-ace4-1e988b2c1908",
+          "version": "1.3.0"
+        },
+        {
+          "name": "OpenBLAS_jll",
+          "uuid": "4536629a-c528-5b80-bd46-f80d51c5b363",
+          "version": "0.3.30+0"
+        },
+        {
+          "git-tree-sha1": "1d1aaa7d449b58415f97d2839c318b70ffb525a0",
+          "name": "OpenSSL",
+          "uuid": "4d8831e6-92b7-49fb-bdf8-b643e874388c",
+          "version": "1.6.1"
+        },
+        {
+          "name": "OpenSSL_jll",
+          "uuid": "458c3c95-2e84-50aa-8efc-19380b2a3a95",
+          "version": "3.5.6+0"
+        },
+        {
+          "git-tree-sha1": "05f45c2e0de6259db764adbfd2f1dc6d3f8de13c",
+          "name": "OrderedCollections",
+          "uuid": "bac558e1-5e72-5ebc-8fee-abe8a469f55d",
+          "version": "2.0.1"
+        },
+        {
+          "git-tree-sha1": "2c6a74ad15c7e55c8fc7fbd6edad9008b6fbb869",
+          "name": "Oxygen",
+          "uuid": "df9a0d86-3283-4920-82dc-4555fc0d1d8b",
+          "version": "1.10.2"
+        },
+        {
+          "git-tree-sha1": "663e8b48b789916221e0765393b289ca6c88f24e",
+          "name": "Parsers",
+          "uuid": "69de0a69-1ddd-5017-9359-2bf0b02dc9f0",
+          "version": "3.0.0"
+        },
+        {
+          "git-tree-sha1": "edbeefc7a4889f528644251bdb5fc9ab5348bc2c",
+          "name": "PrecompileTools",
+          "uuid": "aea7be01-6a6a-4083-8856-8a6e6704d82a",
+          "version": "1.3.4"
+        },
+        {
+          "git-tree-sha1": "5005266de4bfe50e53ff44a5cb5c540b6e47a254",
+          "name": "Preferences",
+          "uuid": "21216c6a-2e73-6563-6e65-726566657250",
+          "version": "1.6.0"
+        },
+        {
+          "name": "Printf",
+          "uuid": "de0858da-6303-5e67-8744-51eddeeeb8d7",
+          "version": "1.11.0"
+        },
+        {
+          "name": "Profile",
+          "uuid": "9abbd945-dff8-562f-b5e8-e1ebf5ef1b79",
+          "version": "1.11.0"
+        },
+        {
+          "name": "Random",
+          "uuid": "9a3f8284-a2c9-5f02-9a11-845980a1fd5c",
+          "version": "1.11.0"
+        },
+        {
+          "git-tree-sha1": "45e428421666073eab6f2da5c9d310d99bb12f9b",
+          "name": "Reexport",
+          "uuid": "189a3867-3050-52da-a836-e630ba90ab69",
+          "version": "1.2.2"
+        },
+        {
+          "git-tree-sha1": "ffdaf70d81cf6ff22c2b6e733c900c3321cab864",
+          "name": "RelocatableFolders",
+          "uuid": "05181044-ff0b-4ac5-8273-598c1e38db00",
+          "version": "1.0.1"
+        },
+        {
+          "name": "SHA",
+          "uuid": "ea8e919c-243c-51af-8825-aaa63cd721ce",
+          "version": "1.0.0"
+        },
+        {
+          "git-tree-sha1": "9b81b8393e50b7d4e6d0a9f14e192294d3b7c109",
+          "name": "Scratch",
+          "uuid": "6c6a2e73-6563-6170-7368-637461726353",
+          "version": "1.3.0"
+        },
+        {
+          "name": "Serialization",
+          "uuid": "9e88b42a-f829-5b0c-bbe9-9e923198166b",
+          "version": "1.11.0"
+        },
+        {
+          "git-tree-sha1": "f305871d2f381d21527c770d4788c06c097c9bc1",
+          "name": "SimpleBufferStream",
+          "uuid": "777ac1f9-54b0-4bf8-805c-2214025038e7",
+          "version": "1.2.0"
+        },
+        {
+          "name": "Sockets",
+          "uuid": "6462fe0b-24de-5631-8697-dd941f90decc",
+          "version": "1.11.0"
+        },
+        {
+          "git-tree-sha1": "e2b53ce13a53367e96601081e33d34746b571bad",
+          "name": "Statistics",
+          "uuid": "10745b16-79ce-11e8-11f9-7d13ad32a3b2",
+          "version": "1.11.5"
+        },
+        {
+          "git-tree-sha1": "159331b30e94d7b11379037feeb9b690950cace8",
+          "name": "StructTypes",
+          "uuid": "856f2bd8-1eba-4b0a-8007-ebc267875bd4",
+          "version": "1.11.0"
+        },
+        {
+          "git-tree-sha1": "2d0fc55c61321ba245c47be599570d11bac50303",
+          "name": "StructUtils",
+          "uuid": "ec057cc2-7a8d-4b58-b3b3-92acb9f63b42",
+          "version": "2.8.5"
+        },
+        {
+          "name": "StyledStrings",
+          "uuid": "f489334b-da3d-4c2e-b8f0-e476e12c162b",
+          "version": "1.11.0"
+        },
+        {
+          "name": "TOML",
+          "uuid": "fa267f1f-6049-4f14-aa54-33bafae1ed76",
+          "version": "1.0.3"
+        },
+        {
+          "name": "Test",
+          "uuid": "8dfed614-e22c-5e08-85e1-65c5234f0b40",
+          "version": "1.11.0"
+        },
+        {
+          "git-tree-sha1": "0c45878dcfdcfa8480052b6ab162cdd138781742",
+          "name": "TranscodingStreams",
+          "uuid": "3bb67fe8-82b1-5028-8e26-92a6c54297fa",
+          "version": "0.11.3"
+        },
+        {
+          "git-tree-sha1": "908fec9df6c5de98548ead82a468c95ccf6cd263",
+          "name": "URIs",
+          "uuid": "5c2747f8-b7ea-4ff2-ba2e-563bfd36b1d4",
+          "version": "1.7.0"
+        },
+        {
+          "name": "UUIDs",
+          "uuid": "cf7118a7-6976-5b1a-9a39-7adc72f591a4",
+          "version": "1.11.0"
+        },
+        {
+          "name": "Unicode",
+          "uuid": "4ec0a83e-493e-50e2-b9ac-8f72acf5a8f5",
+          "version": "1.11.0"
+        },
+        {
+          "name": "Zlib_jll",
+          "uuid": "83775a58-1f1d-513f-b197-d71354ab007a",
+          "version": "1.3.1+2"
+        },
+        {
+          "name": "libblastrampoline_jll",
+          "uuid": "8e850b90-86db-534c-a0d3-1478176c7d93",
+          "version": "5.15.0+0"
+        }
+      ],
+      "version": "1.10.2"
+    },
+    {
       "manifest_sha256": "eb303be0ee4ad1d4136e3461f0cdbe176d64ecba106eb8981f68e70e84097daf",
       "packages": [
         {
@@ -4053,6 +4725,54 @@
       "feature": "buffer_benchmark",
       "package": "Oxygen",
       "status": "pass",
+      "version": "1.10.1"
+    },
+    {
+      "feature": "counter_benchmark",
+      "package": "Oxygen",
+      "status": "pass",
+      "version": "1.10.1"
+    },
+    {
+      "feature": "heap_benchmark",
+      "package": "Oxygen",
+      "status": "pass",
+      "version": "1.10.1"
+    },
+    {
+      "feature": "heap_chairmark",
+      "package": "Oxygen",
+      "status": "pass",
+      "version": "1.10.1"
+    },
+    {
+      "feature": "buffer_benchmark",
+      "package": "Oxygen",
+      "status": "pass",
+      "version": "1.10.2"
+    },
+    {
+      "feature": "counter_benchmark",
+      "package": "Oxygen",
+      "status": "pass",
+      "version": "1.10.2"
+    },
+    {
+      "feature": "heap_benchmark",
+      "package": "Oxygen",
+      "status": "pass",
+      "version": "1.10.2"
+    },
+    {
+      "feature": "heap_chairmark",
+      "package": "Oxygen",
+      "status": "pass",
+      "version": "1.10.2"
+    },
+    {
+      "feature": "buffer_benchmark",
+      "package": "Oxygen",
+      "status": "pass",
       "version": "1.11.0"
     },
     {
@@ -4092,6 +4812,8 @@
     "1.8.0",
     "1.9.0",
     "1.10.0",
+    "1.10.1",
+    "1.10.2",
     "1.11.0"
   ],
   "views": [
@@ -4105,6 +4827,13 @@
       "label": "Overlaid measurements · minimum = 1",
       "metric": "benchmark metrics",
       "package": "Oxygen",
+      "patch_windows": [
+        {
+          "json": "normalized-metrics-991dcbde40e45f3b-1.10.json",
+          "label": "1.10 patches",
+          "svg": "normalized-metrics-991dcbde40e45f3b-1.10.svg"
+        }
+      ],
       "svg": "normalized-metrics-991dcbde40e45f3b.svg",
       "terminal": "normalized-metrics-991dcbde40e45f3b.txt",
       "title": "Oxygen · buffer_benchmark · relative to minimum",
@@ -4119,6 +4848,7 @@
       "label": "Sample distribution",
       "metric": "julia.gc.time",
       "package": "Oxygen",
+      "patch_windows": [],
       "series_id": "9051570c691c6c0a",
       "svg": "distribution-6836d0acb9eb4ed1.svg",
       "terminal": "distribution-6836d0acb9eb4ed1.txt",
@@ -4133,6 +4863,7 @@
       "label": "Sample distribution",
       "metric": "julia.alloc.bytes",
       "package": "Oxygen",
+      "patch_windows": [],
       "series_id": "2acba4fa326410c4",
       "svg": "distribution-956d26ee9983c32b.svg",
       "terminal": "distribution-956d26ee9983c32b.txt",
@@ -4147,6 +4878,7 @@
       "label": "Sample distribution",
       "metric": "julia.wall.time",
       "package": "Oxygen",
+      "patch_windows": [],
       "series_id": "de4af3a9568ce765",
       "svg": "distribution-9d0d66a7d850ee78.svg",
       "terminal": "distribution-9d0d66a7d850ee78.txt",
@@ -4161,6 +4893,7 @@
       "label": "Sample distribution",
       "metric": "julia.alloc.count",
       "package": "Oxygen",
+      "patch_windows": [],
       "series_id": "631583ccb89dd8fd",
       "svg": "distribution-cea9e158e17961ab.svg",
       "terminal": "distribution-cea9e158e17961ab.txt",
@@ -4176,6 +4909,7 @@
       "label": "Time vs allocations",
       "metric": "julia.wall.time+julia.alloc.bytes",
       "package": "Oxygen",
+      "patch_windows": [],
       "svg": "time-allocation-tradeoff-38c8e791038f198a.svg",
       "terminal": "time-allocation-tradeoff-38c8e791038f198a.txt",
       "title": "Oxygen · buffer_benchmark · time/allocation trade-off",
@@ -4189,6 +4923,7 @@
       "label": "Regression deltas",
       "metric": "julia.gc.time",
       "package": "Oxygen",
+      "patch_windows": [],
       "series_id": "9051570c691c6c0a",
       "svg": "version-delta-4aaaf411984f3fbd.svg",
       "terminal": "version-delta-4aaaf411984f3fbd.txt",
@@ -4203,6 +4938,7 @@
       "label": "Regression deltas",
       "metric": "julia.alloc.count",
       "package": "Oxygen",
+      "patch_windows": [],
       "series_id": "631583ccb89dd8fd",
       "svg": "version-delta-5aa5f06c7f83a296.svg",
       "terminal": "version-delta-5aa5f06c7f83a296.txt",
@@ -4217,6 +4953,7 @@
       "label": "Regression deltas",
       "metric": "julia.alloc.bytes",
       "package": "Oxygen",
+      "patch_windows": [],
       "series_id": "2acba4fa326410c4",
       "svg": "version-delta-992d632bb0cf4a90.svg",
       "terminal": "version-delta-992d632bb0cf4a90.txt",
@@ -4231,6 +4968,7 @@
       "label": "Regression deltas",
       "metric": "julia.wall.time",
       "package": "Oxygen",
+      "patch_windows": [],
       "series_id": "de4af3a9568ce765",
       "svg": "version-delta-e73ab39a4ff23aec.svg",
       "terminal": "version-delta-e73ab39a4ff23aec.txt",
@@ -4245,6 +4983,7 @@
       "label": "Version trajectory",
       "metric": "julia.alloc.count",
       "package": "Oxygen",
+      "patch_windows": [],
       "series_id": "631583ccb89dd8fd",
       "svg": "version-series-0ac93d675a1386bb.svg",
       "terminal": "version-series-0ac93d675a1386bb.txt",
@@ -4259,6 +4998,7 @@
       "label": "Version trajectory",
       "metric": "julia.gc.time",
       "package": "Oxygen",
+      "patch_windows": [],
       "series_id": "9051570c691c6c0a",
       "svg": "version-series-1ff75566e08c97fd.svg",
       "terminal": "version-series-1ff75566e08c97fd.txt",
@@ -4273,6 +5013,7 @@
       "label": "Version trajectory",
       "metric": "julia.alloc.bytes",
       "package": "Oxygen",
+      "patch_windows": [],
       "series_id": "2acba4fa326410c4",
       "svg": "version-series-57bb4e1b7938ada1.svg",
       "terminal": "version-series-57bb4e1b7938ada1.txt",
@@ -4287,6 +5028,7 @@
       "label": "Version trajectory",
       "metric": "julia.wall.time",
       "package": "Oxygen",
+      "patch_windows": [],
       "series_id": "de4af3a9568ce765",
       "svg": "version-series-b137bab7690c51d3.svg",
       "terminal": "version-series-b137bab7690c51d3.txt",
@@ -4303,6 +5045,13 @@
       "label": "Overlaid measurements · minimum = 1",
       "metric": "benchmark metrics",
       "package": "Oxygen",
+      "patch_windows": [
+        {
+          "json": "normalized-metrics-aef2136eb8d7d485-1.10.json",
+          "label": "1.10 patches",
+          "svg": "normalized-metrics-aef2136eb8d7d485-1.10.svg"
+        }
+      ],
       "svg": "normalized-metrics-aef2136eb8d7d485.svg",
       "terminal": "normalized-metrics-aef2136eb8d7d485.txt",
       "title": "Oxygen · counter_benchmark · relative to minimum",
@@ -4317,6 +5066,7 @@
       "label": "Sample distribution",
       "metric": "julia.wall.time",
       "package": "Oxygen",
+      "patch_windows": [],
       "series_id": "1584ad8fbc17139f",
       "svg": "distribution-26ddec5825122b13.svg",
       "terminal": "distribution-26ddec5825122b13.txt",
@@ -4331,6 +5081,7 @@
       "label": "Sample distribution",
       "metric": "julia.alloc.count",
       "package": "Oxygen",
+      "patch_windows": [],
       "series_id": "a2ccf97c320d09c7",
       "svg": "distribution-9afe04cd5cfc0299.svg",
       "terminal": "distribution-9afe04cd5cfc0299.txt",
@@ -4345,6 +5096,7 @@
       "label": "Sample distribution",
       "metric": "julia.alloc.bytes",
       "package": "Oxygen",
+      "patch_windows": [],
       "series_id": "a3030f9edd38dad0",
       "svg": "distribution-df7fddcc8cf1438d.svg",
       "terminal": "distribution-df7fddcc8cf1438d.txt",
@@ -4359,6 +5111,7 @@
       "label": "Sample distribution",
       "metric": "julia.gc.time",
       "package": "Oxygen",
+      "patch_windows": [],
       "series_id": "cfeb0ce24da1ab33",
       "svg": "distribution-fb1ad5fb8cf7ec74.svg",
       "terminal": "distribution-fb1ad5fb8cf7ec74.txt",
@@ -4374,6 +5127,7 @@
       "label": "Time vs allocations",
       "metric": "julia.wall.time+julia.alloc.bytes",
       "package": "Oxygen",
+      "patch_windows": [],
       "svg": "time-allocation-tradeoff-223f9b24e999d748.svg",
       "terminal": "time-allocation-tradeoff-223f9b24e999d748.txt",
       "title": "Oxygen · counter_benchmark · time/allocation trade-off",
@@ -4387,6 +5141,7 @@
       "label": "Regression deltas",
       "metric": "julia.alloc.bytes",
       "package": "Oxygen",
+      "patch_windows": [],
       "series_id": "a3030f9edd38dad0",
       "svg": "version-delta-1624ef71288cd337.svg",
       "terminal": "version-delta-1624ef71288cd337.txt",
@@ -4401,6 +5156,7 @@
       "label": "Regression deltas",
       "metric": "julia.alloc.count",
       "package": "Oxygen",
+      "patch_windows": [],
       "series_id": "a2ccf97c320d09c7",
       "svg": "version-delta-3cdb5bf39ced9042.svg",
       "terminal": "version-delta-3cdb5bf39ced9042.txt",
@@ -4415,6 +5171,7 @@
       "label": "Regression deltas",
       "metric": "julia.gc.time",
       "package": "Oxygen",
+      "patch_windows": [],
       "series_id": "cfeb0ce24da1ab33",
       "svg": "version-delta-7d7fd54a7ac45ed0.svg",
       "terminal": "version-delta-7d7fd54a7ac45ed0.txt",
@@ -4429,6 +5186,7 @@
       "label": "Regression deltas",
       "metric": "julia.wall.time",
       "package": "Oxygen",
+      "patch_windows": [],
       "series_id": "1584ad8fbc17139f",
       "svg": "version-delta-b87d59218ceab5d0.svg",
       "terminal": "version-delta-b87d59218ceab5d0.txt",
@@ -4443,6 +5201,7 @@
       "label": "Version trajectory",
       "metric": "julia.alloc.count",
       "package": "Oxygen",
+      "patch_windows": [],
       "series_id": "a2ccf97c320d09c7",
       "svg": "version-series-242a86d2b8179a73.svg",
       "terminal": "version-series-242a86d2b8179a73.txt",
@@ -4457,6 +5216,7 @@
       "label": "Version trajectory",
       "metric": "julia.alloc.bytes",
       "package": "Oxygen",
+      "patch_windows": [],
       "series_id": "a3030f9edd38dad0",
       "svg": "version-series-7e1d8823a8f25fe5.svg",
       "terminal": "version-series-7e1d8823a8f25fe5.txt",
@@ -4471,6 +5231,7 @@
       "label": "Version trajectory",
       "metric": "julia.gc.time",
       "package": "Oxygen",
+      "patch_windows": [],
       "series_id": "cfeb0ce24da1ab33",
       "svg": "version-series-8e6a5992b1538be0.svg",
       "terminal": "version-series-8e6a5992b1538be0.txt",
@@ -4485,6 +5246,7 @@
       "label": "Version trajectory",
       "metric": "julia.wall.time",
       "package": "Oxygen",
+      "patch_windows": [],
       "series_id": "1584ad8fbc17139f",
       "svg": "version-series-da0a43a4b614fec3.svg",
       "terminal": "version-series-da0a43a4b614fec3.txt",
@@ -4501,6 +5263,13 @@
       "label": "Overlaid measurements · minimum = 1",
       "metric": "benchmark metrics",
       "package": "Oxygen",
+      "patch_windows": [
+        {
+          "json": "normalized-metrics-708bc15499924df0-1.10.json",
+          "label": "1.10 patches",
+          "svg": "normalized-metrics-708bc15499924df0-1.10.svg"
+        }
+      ],
       "svg": "normalized-metrics-708bc15499924df0.svg",
       "terminal": "normalized-metrics-708bc15499924df0.txt",
       "title": "Oxygen · heap_benchmark · relative to minimum",
@@ -4515,6 +5284,7 @@
       "label": "Sample distribution",
       "metric": "julia.alloc.count",
       "package": "Oxygen",
+      "patch_windows": [],
       "series_id": "d6d95538e8203955",
       "svg": "distribution-38f699adf978c577.svg",
       "terminal": "distribution-38f699adf978c577.txt",
@@ -4529,6 +5299,7 @@
       "label": "Sample distribution",
       "metric": "julia.gc.time",
       "package": "Oxygen",
+      "patch_windows": [],
       "series_id": "a2e65583714bf0c9",
       "svg": "distribution-4fb73a5f6697cc7a.svg",
       "terminal": "distribution-4fb73a5f6697cc7a.txt",
@@ -4543,6 +5314,7 @@
       "label": "Sample distribution",
       "metric": "julia.wall.time",
       "package": "Oxygen",
+      "patch_windows": [],
       "series_id": "eb6ee2f165a793d5",
       "svg": "distribution-725f40e1fb459a87.svg",
       "terminal": "distribution-725f40e1fb459a87.txt",
@@ -4557,6 +5329,7 @@
       "label": "Sample distribution",
       "metric": "julia.alloc.bytes",
       "package": "Oxygen",
+      "patch_windows": [],
       "series_id": "4ae4348525f679ee",
       "svg": "distribution-de82200f0066acb5.svg",
       "terminal": "distribution-de82200f0066acb5.txt",
@@ -4572,6 +5345,7 @@
       "label": "Time vs allocations",
       "metric": "julia.wall.time+julia.alloc.bytes",
       "package": "Oxygen",
+      "patch_windows": [],
       "svg": "time-allocation-tradeoff-1ce2ceab9ae5a879.svg",
       "terminal": "time-allocation-tradeoff-1ce2ceab9ae5a879.txt",
       "title": "Oxygen · heap_benchmark · time/allocation trade-off",
@@ -4585,6 +5359,7 @@
       "label": "Regression deltas",
       "metric": "julia.alloc.count",
       "package": "Oxygen",
+      "patch_windows": [],
       "series_id": "d6d95538e8203955",
       "svg": "version-delta-2474f27198a715f1.svg",
       "terminal": "version-delta-2474f27198a715f1.txt",
@@ -4599,6 +5374,7 @@
       "label": "Regression deltas",
       "metric": "julia.alloc.bytes",
       "package": "Oxygen",
+      "patch_windows": [],
       "series_id": "4ae4348525f679ee",
       "svg": "version-delta-28445e0e6cfe16c2.svg",
       "terminal": "version-delta-28445e0e6cfe16c2.txt",
@@ -4613,6 +5389,7 @@
       "label": "Regression deltas",
       "metric": "julia.gc.time",
       "package": "Oxygen",
+      "patch_windows": [],
       "series_id": "a2e65583714bf0c9",
       "svg": "version-delta-44f944787e13628e.svg",
       "terminal": "version-delta-44f944787e13628e.txt",
@@ -4627,6 +5404,7 @@
       "label": "Regression deltas",
       "metric": "julia.wall.time",
       "package": "Oxygen",
+      "patch_windows": [],
       "series_id": "eb6ee2f165a793d5",
       "svg": "version-delta-532356b8c694efa5.svg",
       "terminal": "version-delta-532356b8c694efa5.txt",
@@ -4641,6 +5419,7 @@
       "label": "Version trajectory",
       "metric": "julia.alloc.bytes",
       "package": "Oxygen",
+      "patch_windows": [],
       "series_id": "4ae4348525f679ee",
       "svg": "version-series-4f0738df51359062.svg",
       "terminal": "version-series-4f0738df51359062.txt",
@@ -4655,6 +5434,7 @@
       "label": "Version trajectory",
       "metric": "julia.wall.time",
       "package": "Oxygen",
+      "patch_windows": [],
       "series_id": "eb6ee2f165a793d5",
       "svg": "version-series-7afa11656abffa5d.svg",
       "terminal": "version-series-7afa11656abffa5d.txt",
@@ -4669,6 +5449,7 @@
       "label": "Version trajectory",
       "metric": "julia.gc.time",
       "package": "Oxygen",
+      "patch_windows": [],
       "series_id": "a2e65583714bf0c9",
       "svg": "version-series-bafcf956d1295f2e.svg",
       "terminal": "version-series-bafcf956d1295f2e.txt",
@@ -4683,6 +5464,7 @@
       "label": "Version trajectory",
       "metric": "julia.alloc.count",
       "package": "Oxygen",
+      "patch_windows": [],
       "series_id": "d6d95538e8203955",
       "svg": "version-series-fd754037dbc4f63b.svg",
       "terminal": "version-series-fd754037dbc4f63b.txt",
@@ -4699,6 +5481,13 @@
       "label": "Overlaid measurements · minimum = 1",
       "metric": "benchmark metrics",
       "package": "Oxygen",
+      "patch_windows": [
+        {
+          "json": "normalized-metrics-05d37271dd506a1e-1.10.json",
+          "label": "1.10 patches",
+          "svg": "normalized-metrics-05d37271dd506a1e-1.10.svg"
+        }
+      ],
       "svg": "normalized-metrics-05d37271dd506a1e.svg",
       "terminal": "normalized-metrics-05d37271dd506a1e.txt",
       "title": "Oxygen · heap_chairmark · relative to minimum",
@@ -4713,6 +5502,7 @@
       "label": "Sample distribution",
       "metric": "julia.gc.fraction",
       "package": "Oxygen",
+      "patch_windows": [],
       "series_id": "92b0c9bee8a287af",
       "svg": "distribution-06fd43270e327848.svg",
       "terminal": "distribution-06fd43270e327848.txt",
@@ -4727,6 +5517,7 @@
       "label": "Sample distribution",
       "metric": "julia.wall.time",
       "package": "Oxygen",
+      "patch_windows": [],
       "series_id": "60eb7709e4e0b81d",
       "svg": "distribution-a0dfff321833f05f.svg",
       "terminal": "distribution-a0dfff321833f05f.txt",
@@ -4741,6 +5532,7 @@
       "label": "Sample distribution",
       "metric": "julia.alloc.bytes",
       "package": "Oxygen",
+      "patch_windows": [],
       "series_id": "0ae7aaab8c9cef0d",
       "svg": "distribution-b895312664482b26.svg",
       "terminal": "distribution-b895312664482b26.txt",
@@ -4755,6 +5547,7 @@
       "label": "Sample distribution",
       "metric": "julia.alloc.count",
       "package": "Oxygen",
+      "patch_windows": [],
       "series_id": "d2a48a8b940335c9",
       "svg": "distribution-f8faf9e310b999c5.svg",
       "terminal": "distribution-f8faf9e310b999c5.txt",
@@ -4770,6 +5563,7 @@
       "label": "Time vs allocations",
       "metric": "julia.wall.time+julia.alloc.bytes",
       "package": "Oxygen",
+      "patch_windows": [],
       "svg": "time-allocation-tradeoff-621759797c06b671.svg",
       "terminal": "time-allocation-tradeoff-621759797c06b671.txt",
       "title": "Oxygen · heap_chairmark · time/allocation trade-off",
@@ -4783,6 +5577,7 @@
       "label": "Regression deltas",
       "metric": "julia.alloc.count",
       "package": "Oxygen",
+      "patch_windows": [],
       "series_id": "d2a48a8b940335c9",
       "svg": "version-delta-059550086b8714fc.svg",
       "terminal": "version-delta-059550086b8714fc.txt",
@@ -4797,6 +5592,7 @@
       "label": "Regression deltas",
       "metric": "julia.gc.fraction",
       "package": "Oxygen",
+      "patch_windows": [],
       "series_id": "92b0c9bee8a287af",
       "svg": "version-delta-47102608e9a64607.svg",
       "terminal": "version-delta-47102608e9a64607.txt",
@@ -4811,6 +5607,7 @@
       "label": "Regression deltas",
       "metric": "julia.alloc.bytes",
       "package": "Oxygen",
+      "patch_windows": [],
       "series_id": "0ae7aaab8c9cef0d",
       "svg": "version-delta-df3ca7d6aa94c570.svg",
       "terminal": "version-delta-df3ca7d6aa94c570.txt",
@@ -4825,6 +5622,7 @@
       "label": "Regression deltas",
       "metric": "julia.wall.time",
       "package": "Oxygen",
+      "patch_windows": [],
       "series_id": "60eb7709e4e0b81d",
       "svg": "version-delta-fadc9752606542bc.svg",
       "terminal": "version-delta-fadc9752606542bc.txt",
@@ -4839,6 +5637,7 @@
       "label": "Version trajectory",
       "metric": "julia.gc.fraction",
       "package": "Oxygen",
+      "patch_windows": [],
       "series_id": "92b0c9bee8a287af",
       "svg": "version-series-5ab55a8d8d6fd2b7.svg",
       "terminal": "version-series-5ab55a8d8d6fd2b7.txt",
@@ -4853,6 +5652,7 @@
       "label": "Version trajectory",
       "metric": "julia.wall.time",
       "package": "Oxygen",
+      "patch_windows": [],
       "series_id": "60eb7709e4e0b81d",
       "svg": "version-series-8aa93f1ff1d5e32e.svg",
       "terminal": "version-series-8aa93f1ff1d5e32e.txt",
@@ -4867,6 +5667,7 @@
       "label": "Version trajectory",
       "metric": "julia.alloc.count",
       "package": "Oxygen",
+      "patch_windows": [],
       "series_id": "d2a48a8b940335c9",
       "svg": "version-series-a2e53db47f007efb.svg",
       "terminal": "version-series-a2e53db47f007efb.txt",
@@ -4881,6 +5682,7 @@
       "label": "Version trajectory",
       "metric": "julia.alloc.bytes",
       "package": "Oxygen",
+      "patch_windows": [],
       "series_id": "0ae7aaab8c9cef0d",
       "svg": "version-series-f75241b47c230885.svg",
       "terminal": "version-series-f75241b47c230885.txt",

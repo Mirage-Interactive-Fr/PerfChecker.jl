@@ -9,6 +9,28 @@ This page maps the example to the extension catalogue. A runnable recipe is
 not automatically evidence that an optional tool is installed or supported on
 your machine. Each tool's report retains that distinction.
 
+The complete package pages now contain the figures and explanations in reading
+order. Use this page as an index when looking for a particular capability.
+
+| Capability | Recorded use in these examples | Where to continue |
+| --- | --- | --- |
+| BenchmarkTools and Chairmarks | Separate timing collectors, fresh state, 30 warmed samples | Both package histories; all container operations also have a Chairmarks run |
+| TestItemRunner | Tagged construction/use and HTTP items, measured in isolated workers | Each package's TestItems instructions |
+| UnicodePlots | Terminal rendering of every exported catalogue view | The Unicode download beside each figure |
+| Makie and WGLMakie | Static SVG figures and interactive replay of saved plot models | Each package's notebook and interface instructions |
+| PProf and FlameGraphs | Exported recorded CPU/allocation stacks | `profiles.jl` and the profile figures on both pages |
+| JET, AllocCheck, SnoopCompile | Executed operation diagnostics with findings and scope | Diagnostic records on both pages |
+| Latency, GC, memory and locks | Executed diagnostics, separately plotted | Both package pages |
+| Aqua and heap snapshots | Quality findings and redacted whole-worker GC snapshots | Quality reports and heap-category figures |
+| DrWatson | A measured, cached heap experiment for each package | `drwatson.jl run PACKAGE` |
+| PropCheck and Supposition | Frozen seeded input corpora and correctness replay | `corpus.jl` |
+| Documenter and DocumenterVitepress | Rendering a saved bundle; no campaign during the doc build | `documenter.jl` |
+| Network counters and isolation | Real loopback requests plus an executed namespace capture | Oxygen's network section |
+| Valgrind and heaptrack | Executed native captures with individual completion/timeout statuses | Native reports on both pages |
+| Linux perf and VTune | Not installed on the recording host; runnable plans are provided | `native.jl` / `native-run.jl` |
+| HTTPAdvisor | Optional provider transport; no model request in this experiment | [Advice setup](../advisor-ui.md) |
+| GPU and multi-machine transfer | No suitable GPU or multi-host calibration dataset in this example | Add the corresponding hardware-backed experiment before making a claim |
+
 ## Timing: BenchmarkTools and Chairmarks
 
 Both historical campaigns exercise both collectors. Each has its own definition
@@ -173,6 +195,16 @@ establish WSL availability. No native profiler is claimed to have been executed
 by merely exporting a plan. See [native profiling](../native-profiling.md) for
 the supported scope and the [external-memory guide](../process-memory.md) for
 the difference between Julia allocations and process memory.
+
+The package pages also show actual Linux executions of `native-run.jl`, their
+Massif timelines, and explicit timeout or availability results. To reproduce:
+
+```sh
+julia --startup-file=no setup-linux.jl
+julia --startup-file=no --project=.controller/linux setup-native.jl
+julia --startup-file=no --project=.controller/linux native-run.jl datastructures
+julia --startup-file=no --project=.controller/linux native-run.jl oxygen
+```
 
 ## Machines, documentation and advice
 

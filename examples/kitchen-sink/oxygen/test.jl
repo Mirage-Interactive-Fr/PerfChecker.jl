@@ -1,5 +1,13 @@
 using Test, HTTP, JSON
 include(joinpath(@__DIR__, "service.jl"))
+@testset "Independent HTTP feature oracles" begin
+    for kind in EventService.HTTP_FEATURES
+        case = EventService.feature_case(kind)
+        request = case.prepare()
+        @test case.verify(request, case.operation(request))
+        @test !case.verify(request, HTTP.Response(500))
+    end
+end
 @testset "Oxygen request oracles" begin
     for kind in ("heap", "counter", "buffer"), n in (0, 1, 64, 2048)
         case = EventService.request_case(kind, n)

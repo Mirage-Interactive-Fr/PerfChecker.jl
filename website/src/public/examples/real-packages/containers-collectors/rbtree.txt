@@ -1,0 +1,32 @@
+Wall time (µs)
+                                                       RBTree
+                           ┌                                                            ┐
+    build · BenchmarkTools ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 27.4
+        build · Chairmarks ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 48
+   lookup · BenchmarkTools ┤■■■■■■■ 5.7
+       lookup · Chairmarks ┤■■■■■■■■■■ 8.8
+                           └                                                            ┘
+GC share (%)
+                                                       RBTree
+                           ┌                                                            ┐
+    build · BenchmarkTools ┤ 0
+        build · Chairmarks ┤ 0
+   lookup · BenchmarkTools ┤ 0
+       lookup · Chairmarks ┤ 0
+                           └                                                            ┘
+Allocated bytes
+                                                       RBTree
+                           ┌                                                            ┐
+    build · BenchmarkTools ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 32 880
+        build · Chairmarks ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 32 880
+   lookup · BenchmarkTools ┤■ 576
+       lookup · Chairmarks ┤■ 576
+                           └                                                            ┘
+Allocation count
+                                                       RBTree
+                           ┌                                                            ┐
+    build · BenchmarkTools ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 515
+        build · Chairmarks ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 515
+   lookup · BenchmarkTools ┤ 2
+       lookup · Chairmarks ┤ 2
+                           └                                                            ┘

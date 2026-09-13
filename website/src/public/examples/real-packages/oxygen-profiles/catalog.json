@@ -1,6 +1,19 @@
 {
   "correctness": "passed",
   "performance": "not_compared",
+  "release_date_kinds": {
+    "1.11.0": "GitHub release publication date"
+  },
+  "release_dates": {
+    "1.11.0": "2026-08-28"
+  },
+  "resolved_environments": [
+    {
+      "manifest_sha256": "9d8c1eefca3cd583a3a37924386096ba4cac23c6659677661adf99b8daeafc29",
+      "packages": [],
+      "version": "1.11.0"
+    }
+  ],
   "runs": [
     {
       "feature": "heap_profile",
@@ -58,6 +71,7 @@
       "label": "CPU flame graph",
       "metric": "julia.cpu.samples",
       "package": "Oxygen",
+      "patch_windows": [],
       "svg": "cpu-flamegraph-0bf86e14522bb509.svg",
       "terminal": "cpu-flamegraph-0bf86e14522bb509.txt",
       "title": "Oxygen · heap_profile · CPU flame graph",
@@ -71,6 +85,7 @@
       "label": "Version trajectory",
       "metric": "julia.cpu.samples",
       "package": "Oxygen",
+      "patch_windows": [],
       "series_id": "1ad90a75208595f8",
       "svg": "version-series-5513036ec0aade22.svg",
       "terminal": "version-series-5513036ec0aade22.txt",
@@ -86,6 +101,7 @@
       "label": "Allocations by file",
       "metric": "julia.alloc.bytes",
       "package": "Oxygen",
+      "patch_windows": [],
       "svg": "allocation-files-b8a643aada0ef878.svg",
       "terminal": "allocation-files-b8a643aada0ef878.txt",
       "title": "Oxygen · heap_profile_alloc · allocations",
@@ -100,6 +116,7 @@
       "label": "Allocation flame graph",
       "metric": "julia.alloc.bytes",
       "package": "Oxygen",
+      "patch_windows": [],
       "svg": "allocation-flamegraph-762692b0102f2fc2.svg",
       "terminal": "allocation-flamegraph-762692b0102f2fc2.txt",
       "title": "Oxygen · heap_profile_alloc · allocation flame graph",
@@ -114,6 +131,7 @@
       "label": "Allocation line heatmap",
       "metric": "julia.alloc.bytes",
       "package": "Oxygen",
+      "patch_windows": [],
       "svg": "allocation-heatmap-fd88b8007532c93e.svg",
       "terminal": "allocation-heatmap-fd88b8007532c93e.txt",
       "title": "Oxygen · heap_profile_alloc · allocations",
@@ -128,6 +146,7 @@
       "label": "Allocation hotspots by line",
       "metric": "julia.alloc.bytes",
       "package": "Oxygen",
+      "patch_windows": [],
       "svg": "allocation-lines-cdd3342245e37dc1.svg",
       "terminal": "allocation-lines-cdd3342245e37dc1.txt",
       "title": "Oxygen · heap_profile_alloc · allocations",
@@ -142,6 +161,7 @@
       "label": "Allocation share by line (%)",
       "metric": "julia.alloc.bytes",
       "package": "Oxygen",
+      "patch_windows": [],
       "svg": "allocation-pie-25c4965602ef4e58.svg",
       "terminal": "allocation-pie-25c4965602ef4e58.txt",
       "title": "Oxygen · heap_profile_alloc · allocations",
@@ -155,6 +175,7 @@
       "label": "Version trajectory",
       "metric": "julia.alloc.bytes",
       "package": "Oxygen",
+      "patch_windows": [],
       "series_id": "18158e4ecb83a261",
       "svg": "version-series-753b13eecf14e21f.svg",
       "terminal": "version-series-753b13eecf14e21f.txt",
@@ -169,6 +190,7 @@
       "label": "Version trajectory",
       "metric": "julia.alloc.count",
       "package": "Oxygen",
+      "patch_windows": [],
       "series_id": "aa7dc6f804b55646",
       "svg": "version-series-d51e72e65f7c1a84.svg",
       "terminal": "version-series-d51e72e65f7c1a84.txt",
@@ -183,6 +205,7 @@
       "label": "Version trajectory",
       "metric": "julia.wall.samples",
       "package": "Oxygen",
+      "patch_windows": [],
       "series_id": "c2345cbada8e82b2",
       "svg": "version-series-3235f39cb9eb3d57.svg",
       "terminal": "version-series-3235f39cb9eb3d57.txt",
@@ -199,6 +222,7 @@
       "label": "Wall-time flame graph",
       "metric": "julia.wall.samples",
       "package": "Oxygen",
+      "patch_windows": [],
       "svg": "wall-flamegraph-1d1ccc603e7534c8.svg",
       "terminal": "wall-flamegraph-1d1ccc603e7534c8.txt",
       "title": "Oxygen · heap_wall_profile · wall-time flame graph",

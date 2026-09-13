@@ -316,6 +316,11 @@
       }
     },
     "Oxygen": {
+      "1.1.4": {
+        "date": "2023-01-14",
+        "date_kind": "tag commit date; no GitHub release publication",
+        "url": "https://github.com/OxygenFramework/Oxygen.jl/tree/v1.1.4"
+      },
       "1.11.0": {
         "date": "2026-08-28",
         "url": "https://github.com/OxygenFramework/Oxygen.jl/releases/tag/v1.11.0"

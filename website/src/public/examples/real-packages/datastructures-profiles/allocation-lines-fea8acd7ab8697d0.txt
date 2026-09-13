@@ -1,4 +1,4 @@
-                                              DataStructures · heap_32768_profile_alloc · allocations (bytes)
-                                    ┌                                                                                ┐
-   src/heaps/arrays_as_heaps.jl:115 ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 1.57302e⁶
-                                    └                                                                                ┘
+                                                DataStructures · heap_32768_profile_alloc · allocations (bytes)
+                                      ┌                                                                                ┐
+   DataStructures/src/heaps/arrays_as ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 1.57302e⁶
+                                      └                                                                                ┘

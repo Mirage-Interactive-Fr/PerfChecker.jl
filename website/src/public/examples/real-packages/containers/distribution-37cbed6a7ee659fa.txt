@@ -1,0 +1,5 @@
+                         DataStructures · MutableBinaryMinHeap_drain_benchmark · julia.alloc.bytes
+                    ┌                                                                                ┐
+   [4167.0, 4168.0) ┤███████████████████████████████████████████████████████████████████████████  210
+                    └                                                                                ┘
+                                                         Frequency

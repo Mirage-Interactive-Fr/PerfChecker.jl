@@ -18,7 +18,7 @@ To serve the completed artifact locally, run `npm run docs:preview` from this
 directory and open `http://127.0.0.1:8870/`. Set `PORT` to choose another port.
 The preview binds only to loopback and serves clean page URLs as well as assets.
 
-`website/deploy.jl` accepts only a complete qualified collection and its matching
-site artifact. Deployment destination and credentials remain separately configured.
-See `DEPLOYMENT.md` for publication setup and `../qualification/README.md`
-for the publication gate and exact environment records.
+The independent `Documentation` workflow builds and publishes development
+documentation without running benchmarks or package qualification. Examples use
+saved measurements. See `DEPLOYMENT.md` for publication setup; release qualification
+is a separate workflow described in `../qualification/README.md`.

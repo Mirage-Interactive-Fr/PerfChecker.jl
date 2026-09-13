@@ -8,157 +8,183 @@
       {
         "metric": "julia.wall.time",
         "normalization_status": "ratio",
-        "ratio": 1.0043610547667343,
-        "reference_value": 986000.0,
+        "ratio": 1.0157047506870829,
+        "reference_value": 1.0188e6,
         "reference_version": "minimum",
         "samples": 30,
         "statistic": "minimum",
         "target_kind": "release",
         "unit": "ns",
-        "value": 990300.0,
+        "value": 1.0348e6,
         "version": "1.0.0"
       },
       {
         "metric": "julia.wall.time",
         "normalization_status": "ratio",
-        "ratio": 1.0519269776876268,
-        "reference_value": 986000.0,
+        "ratio": 1.1507656065959952,
+        "reference_value": 1.0188e6,
+        "reference_version": "minimum",
+        "samples": 30,
+        "statistic": "minimum",
+        "target_kind": "release",
+        "unit": "ns",
+        "value": 1.1724e6,
+        "version": "1.1.0"
+      },
+      {
+        "metric": "julia.wall.time",
+        "normalization_status": "ratio",
+        "ratio": 1.7652139772281115,
+        "reference_value": 1.0188e6,
+        "reference_version": "minimum",
+        "samples": 30,
+        "statistic": "minimum",
+        "target_kind": "release",
+        "unit": "ns",
+        "value": 1.7984e6,
+        "version": "1.2.0"
+      },
+      {
+        "metric": "julia.wall.time",
+        "normalization_status": "ratio",
+        "ratio": 1.0288574793875147,
+        "reference_value": 1.0188e6,
+        "reference_version": "minimum",
+        "samples": 30,
+        "statistic": "minimum",
+        "target_kind": "release",
+        "unit": "ns",
+        "value": 1.0482e6,
+        "version": "1.3.0"
+      },
+      {
+        "metric": "julia.wall.time",
+        "normalization_status": "ratio",
+        "ratio": 1.0180604632901453,
+        "reference_value": 1.0188e6,
         "reference_version": "minimum",
         "samples": 30,
         "statistic": "minimum",
         "target_kind": "release",
         "unit": "ns",
         "value": 1.0372e6,
-        "version": "1.1.0"
-      },
-      {
-        "metric": "julia.wall.time",
-        "normalization_status": "ratio",
-        "ratio": 1.0441176470588236,
-        "reference_value": 986000.0,
-        "reference_version": "minimum",
-        "samples": 30,
-        "statistic": "minimum",
-        "target_kind": "release",
-        "unit": "ns",
-        "value": 1.0295e6,
-        "version": "1.2.0"
-      },
-      {
-        "metric": "julia.wall.time",
-        "normalization_status": "ratio",
-        "ratio": 1.012576064908722,
-        "reference_value": 986000.0,
-        "reference_version": "minimum",
-        "samples": 30,
-        "statistic": "minimum",
-        "target_kind": "release",
-        "unit": "ns",
-        "value": 998400.0,
-        "version": "1.3.0"
-      },
-      {
-        "metric": "julia.wall.time",
-        "normalization_status": "ratio",
-        "ratio": 1.0217038539553753,
-        "reference_value": 986000.0,
-        "reference_version": "minimum",
-        "samples": 30,
-        "statistic": "minimum",
-        "target_kind": "release",
-        "unit": "ns",
-        "value": 1.0074e6,
         "version": "1.4.0"
       },
       {
         "metric": "julia.wall.time",
         "normalization_status": "ratio",
-        "ratio": 1.0490872210953346,
-        "reference_value": 986000.0,
+        "ratio": 1.039163722025913,
+        "reference_value": 1.0188e6,
         "reference_version": "minimum",
         "samples": 30,
         "statistic": "minimum",
         "target_kind": "release",
         "unit": "ns",
-        "value": 1.0344e6,
+        "value": 1.0587e6,
         "version": "1.5.0"
       },
       {
         "metric": "julia.wall.time",
         "normalization_status": "ratio",
-        "ratio": 1.0599391480730223,
-        "reference_value": 986000.0,
+        "ratio": 2.1229878288182173,
+        "reference_value": 1.0188e6,
         "reference_version": "minimum",
         "samples": 30,
         "statistic": "minimum",
         "target_kind": "release",
         "unit": "ns",
-        "value": 1.0451e6,
+        "value": 2.1629e6,
         "version": "1.6.0"
       },
       {
         "metric": "julia.wall.time",
         "normalization_status": "ratio",
-        "ratio": 1.0223123732251522,
-        "reference_value": 986000.0,
+        "ratio": 1.0159010600706713,
+        "reference_value": 1.0188e6,
         "reference_version": "minimum",
         "samples": 30,
         "statistic": "minimum",
         "target_kind": "release",
         "unit": "ns",
-        "value": 1.008e6,
+        "value": 1.035e6,
         "version": "1.7.0"
       },
       {
         "metric": "julia.wall.time",
         "normalization_status": "ratio",
-        "ratio": 1.0489858012170385,
-        "reference_value": 986000.0,
+        "ratio": 1.0,
+        "reference_value": 1.0188e6,
         "reference_version": "minimum",
         "samples": 30,
         "statistic": "minimum",
         "target_kind": "release",
         "unit": "ns",
-        "value": 1.0343e6,
+        "value": 1.0188e6,
         "version": "1.8.0"
       },
       {
         "metric": "julia.wall.time",
         "normalization_status": "ratio",
-        "ratio": 1.0,
-        "reference_value": 986000.0,
+        "ratio": 1.0349430702787594,
+        "reference_value": 1.0188e6,
         "reference_version": "minimum",
         "samples": 30,
         "statistic": "minimum",
         "target_kind": "release",
         "unit": "ns",
-        "value": 986000.0,
+        "value": 1.0544e6,
         "version": "1.9.0"
       },
       {
         "metric": "julia.wall.time",
         "normalization_status": "ratio",
-        "ratio": 1.0670385395537525,
-        "reference_value": 986000.0,
+        "ratio": 1.1133686690223792,
+        "reference_value": 1.0188e6,
         "reference_version": "minimum",
         "samples": 30,
         "statistic": "minimum",
         "target_kind": "release",
         "unit": "ns",
-        "value": 1.0521e6,
+        "value": 1.1343e6,
         "version": "1.10.0"
       },
       {
         "metric": "julia.wall.time",
         "normalization_status": "ratio",
-        "ratio": 1.0383367139959432,
-        "reference_value": 986000.0,
+        "ratio": 1.9711425206124853,
+        "reference_value": 1.0188e6,
         "reference_version": "minimum",
         "samples": 30,
         "statistic": "minimum",
         "target_kind": "release",
         "unit": "ns",
-        "value": 1.0238e6,
+        "value": 2.0082e6,
+        "version": "1.10.1"
+      },
+      {
+        "metric": "julia.wall.time",
+        "normalization_status": "ratio",
+        "ratio": 1.0262073027090695,
+        "reference_value": 1.0188e6,
+        "reference_version": "minimum",
+        "samples": 30,
+        "statistic": "minimum",
+        "target_kind": "release",
+        "unit": "ns",
+        "value": 1.0455e6,
+        "version": "1.10.2"
+      },
+      {
+        "metric": "julia.wall.time",
+        "normalization_status": "ratio",
+        "ratio": 1.1036513545347468,
+        "reference_value": 1.0188e6,
+        "reference_version": "minimum",
+        "samples": 30,
+        "statistic": "minimum",
+        "target_kind": "release",
+        "unit": "ns",
+        "value": 1.1244e6,
         "version": "1.11.0"
       },
       {
@@ -315,65 +341,91 @@
         "target_kind": "release",
         "unit": "ns",
         "value": 0.0,
+        "version": "1.10.1"
+      },
+      {
+        "metric": "julia.gc.time",
+        "normalization_status": "both_zero",
+        "ratio": 1.0,
+        "reference_value": 0.0,
+        "reference_version": "minimum",
+        "samples": 30,
+        "statistic": "minimum",
+        "target_kind": "release",
+        "unit": "ns",
+        "value": 0.0,
+        "version": "1.10.2"
+      },
+      {
+        "metric": "julia.gc.time",
+        "normalization_status": "both_zero",
+        "ratio": 1.0,
+        "reference_value": 0.0,
+        "reference_version": "minimum",
+        "samples": 30,
+        "statistic": "minimum",
+        "target_kind": "release",
+        "unit": "ns",
+        "value": 0.0,
         "version": "1.11.0"
       },
       {
         "metric": "julia.alloc.bytes",
         "normalization_status": "ratio",
         "ratio": 1.0,
-        "reference_value": 888842.0,
+        "reference_value": 888858.0,
         "reference_version": "minimum",
         "samples": 30,
         "statistic": "minimum",
         "target_kind": "release",
         "unit": "By",
-        "value": 888842.0,
+        "value": 888858.0,
         "version": "1.0.0"
       },
       {
         "metric": "julia.alloc.bytes",
         "normalization_status": "ratio",
-        "ratio": 1.000846044628854,
-        "reference_value": 888842.0,
+        "ratio": 1.000900031276087,
+        "reference_value": 888858.0,
         "reference_version": "minimum",
         "samples": 30,
         "statistic": "minimum",
         "target_kind": "release",
         "unit": "By",
-        "value": 889594.0,
+        "value": 889658.0,
         "version": "1.1.0"
       },
       {
         "metric": "julia.alloc.bytes",
         "normalization_status": "ratio",
-        "ratio": 1.0009540503261547,
-        "reference_value": 888842.0,
+        "ratio": 1.000900031276087,
+        "reference_value": 888858.0,
         "reference_version": "minimum",
         "samples": 30,
         "statistic": "minimum",
         "target_kind": "release",
         "unit": "By",
-        "value": 889690.0,
+        "value": 889658.0,
         "version": "1.2.0"
       },
       {
         "metric": "julia.alloc.bytes",
         "normalization_status": "ratio",
-        "ratio": 1.0009720512757048,
-        "reference_value": 888842.0,
+        "ratio": 1.0009180319016087,
+        "reference_value": 888858.0,
         "reference_version": "minimum",
         "samples": 30,
         "statistic": "minimum",
         "target_kind": "release",
         "unit": "By",
-        "value": 889706.0,
+        "value": 889674.0,
         "version": "1.3.0"
       },
       {
         "metric": "julia.alloc.bytes",
         "normalization_status": "ratio",
-        "ratio": 1.0009900522252548,
-        "reference_value": 888842.0,
+        "ratio": 1.0009720337781738,
+        "reference_value": 888858.0,
         "reference_version": "minimum",
         "samples": 30,
         "statistic": "minimum",
@@ -385,34 +437,34 @@
       {
         "metric": "julia.alloc.bytes",
         "normalization_status": "ratio",
-        "ratio": 1.0009900522252548,
-        "reference_value": 888842.0,
+        "ratio": 1.0009900344036955,
+        "reference_value": 888858.0,
         "reference_version": "minimum",
         "samples": 30,
         "statistic": "minimum",
         "target_kind": "release",
         "unit": "By",
-        "value": 889722.0,
+        "value": 889738.0,
         "version": "1.5.0"
       },
       {
         "metric": "julia.alloc.bytes",
         "normalization_status": "ratio",
-        "ratio": 1.001026054124355,
-        "reference_value": 888842.0,
+        "ratio": 1.0009900344036955,
+        "reference_value": 888858.0,
         "reference_version": "minimum",
         "samples": 30,
         "statistic": "minimum",
         "target_kind": "release",
         "unit": "By",
-        "value": 889754.0,
+        "value": 889738.0,
         "version": "1.6.0"
       },
       {
         "metric": "julia.alloc.bytes",
         "normalization_status": "ratio",
-        "ratio": 1.001008053174805,
-        "reference_value": 888842.0,
+        "ratio": 1.0009900344036955,
+        "reference_value": 888858.0,
         "reference_version": "minimum",
         "samples": 30,
         "statistic": "minimum",
@@ -424,53 +476,79 @@
       {
         "metric": "julia.alloc.bytes",
         "normalization_status": "ratio",
-        "ratio": 1.0010620560234553,
-        "reference_value": 888842.0,
+        "ratio": 1.0010080350292172,
+        "reference_value": 888858.0,
         "reference_version": "minimum",
         "samples": 30,
         "statistic": "minimum",
         "target_kind": "release",
         "unit": "By",
-        "value": 889786.0,
+        "value": 889754.0,
         "version": "1.8.0"
       },
       {
         "metric": "julia.alloc.bytes",
         "normalization_status": "ratio",
-        "ratio": 1.0015660826108577,
-        "reference_value": 888842.0,
+        "ratio": 1.001566054420391,
+        "reference_value": 888858.0,
         "reference_version": "minimum",
         "samples": 30,
         "statistic": "minimum",
         "target_kind": "release",
         "unit": "By",
-        "value": 890234.0,
+        "value": 890250.0,
         "version": "1.9.0"
       },
       {
         "metric": "julia.alloc.bytes",
         "normalization_status": "ratio",
-        "ratio": 1.0015660826108577,
-        "reference_value": 888842.0,
+        "ratio": 1.001566054420391,
+        "reference_value": 888858.0,
+        "reference_version": "minimum",
+        "samples": 30,
+        "statistic": "minimum",
+        "target_kind": "release",
+        "unit": "By",
+        "value": 890250.0,
+        "version": "1.10.0"
+      },
+      {
+        "metric": "julia.alloc.bytes",
+        "normalization_status": "ratio",
+        "ratio": 1.0015480537948693,
+        "reference_value": 888858.0,
         "reference_version": "minimum",
         "samples": 30,
         "statistic": "minimum",
         "target_kind": "release",
         "unit": "By",
         "value": 890234.0,
-        "version": "1.10.0"
+        "version": "1.10.1"
       },
       {
         "metric": "julia.alloc.bytes",
         "normalization_status": "ratio",
-        "ratio": 1.0018000949550088,
-        "reference_value": 888842.0,
+        "ratio": 1.0015480537948693,
+        "reference_value": 888858.0,
         "reference_version": "minimum",
         "samples": 30,
         "statistic": "minimum",
         "target_kind": "release",
         "unit": "By",
-        "value": 890442.0,
+        "value": 890234.0,
+        "version": "1.10.2"
+      },
+      {
+        "metric": "julia.alloc.bytes",
+        "normalization_status": "ratio",
+        "ratio": 1.001836063803217,
+        "reference_value": 888858.0,
+        "reference_version": "minimum",
+        "samples": 30,
+        "statistic": "minimum",
+        "target_kind": "release",
+        "unit": "By",
+        "value": 890490.0,
         "version": "1.11.0"
       },
       {
@@ -619,6 +697,32 @@
       {
         "metric": "julia.alloc.count",
         "normalization_status": "ratio",
+        "ratio": 1.0016033254156769,
+        "reference_value": 16840.0,
+        "reference_version": "minimum",
+        "samples": 30,
+        "statistic": "minimum",
+        "target_kind": "release",
+        "unit": "1",
+        "value": 16867.0,
+        "version": "1.10.1"
+      },
+      {
+        "metric": "julia.alloc.count",
+        "normalization_status": "ratio",
+        "ratio": 1.0016033254156769,
+        "reference_value": 16840.0,
+        "reference_version": "minimum",
+        "samples": 30,
+        "statistic": "minimum",
+        "target_kind": "release",
+        "unit": "1",
+        "value": 16867.0,
+        "version": "1.10.2"
+      },
+      {
+        "metric": "julia.alloc.count",
+        "normalization_status": "ratio",
         "ratio": 1.0020783847980999,
         "reference_value": 16840.0,
         "reference_version": "minimum",
@@ -657,6 +761,8 @@
         "1.8.0",
         "1.9.0",
         "1.10.0",
+        "1.10.1",
+        "1.10.2",
         "1.11.0"
       ],
       "workload": "counter_request",
@@ -665,10 +771,28 @@
     "schema_version": "perfchecker-plot/1",
     "title": "Oxygen · counter_benchmark · relative to minimum"
   },
+  "release_date_kinds": {
+    "1.0.0": "GitHub release publication date",
+    "1.1.0": "GitHub release publication date",
+    "1.10.0": "GitHub release publication date",
+    "1.10.1": "GitHub release publication date",
+    "1.10.2": "GitHub release publication date",
+    "1.11.0": "GitHub release publication date",
+    "1.2.0": "GitHub release publication date",
+    "1.3.0": "GitHub release publication date",
+    "1.4.0": "GitHub release publication date",
+    "1.5.0": "GitHub release publication date",
+    "1.6.0": "GitHub release publication date",
+    "1.7.0": "GitHub release publication date",
+    "1.8.0": "GitHub release publication date",
+    "1.9.0": "GitHub release publication date"
+  },
   "release_dates": {
     "1.0.0": "2022-05-28",
     "1.1.0": "2022-08-19",
     "1.10.0": "2026-01-01",
+    "1.10.1": "2026-02-25",
+    "1.10.2": "2026-04-18",
     "1.11.0": "2026-08-28",
     "1.2.0": "2023-09-28",
     "1.3.0": "2023-12-14",
@@ -679,29 +803,17 @@
     "1.8.0": "2025-11-19",
     "1.9.0": "2025-12-14"
   },
-  "run_id": "211e9c74-783b-41f2-9ef6-3909e3ff6b56",
+  "run_id": "4d223264-9351-4431-85b6-8c81f2bde47e",
   "runtime": {
     "language": "julia",
     "threads": 1,
     "version": "1.13.0"
   },
   "scope": "One local machine; illustrative history, not a package regression verdict",
-  "started_at": "2026-09-13T08:50:48.851",
+  "started_at": "2026-09-13T11:08:13.162",
   "worker_environments": [
     {
-      "manifest_sha256": "023efbb4d41bb5dbcd69f9c79edce94a507299d4d61300e231e8b86cbb627f6c",
-      "project_sha256": "f4297a96b2c6e940ea15876a6bba21ce6e6402f771854a5842963d3ee89e5d80"
-    },
-    {
-      "manifest_sha256": "87191dd4a9a52ce02ea4b7c4d0c0a79d2229f315fe9d0a535042431cc17e5825",
-      "project_sha256": "f4297a96b2c6e940ea15876a6bba21ce6e6402f771854a5842963d3ee89e5d80"
-    },
-    {
-      "manifest_sha256": "37610bd2419a75ccef7e88c7062050342954b9b6e3651b3125b8d4638e5054d4",
-      "project_sha256": "f4297a96b2c6e940ea15876a6bba21ce6e6402f771854a5842963d3ee89e5d80"
-    },
-    {
-      "manifest_sha256": "07efe7b4d60d9ca8c7ff9b57f4e0c902067c5581184fac86f0db69596742717a",
+      "manifest_sha256": "9c89f70360da971e2112c94d9dcc637b04b1a421484c0b2eb744ba033e1be04b",
       "project_sha256": "f4297a96b2c6e940ea15876a6bba21ce6e6402f771854a5842963d3ee89e5d80"
     },
     {
@@ -709,15 +821,11 @@
       "project_sha256": "f4297a96b2c6e940ea15876a6bba21ce6e6402f771854a5842963d3ee89e5d80"
     },
     {
-      "manifest_sha256": "9c89f70360da971e2112c94d9dcc637b04b1a421484c0b2eb744ba033e1be04b",
+      "manifest_sha256": "23cb1787c756286bc0c388ae57a8341634d106bd7dde6bef8d343ec951dac15b",
       "project_sha256": "f4297a96b2c6e940ea15876a6bba21ce6e6402f771854a5842963d3ee89e5d80"
     },
     {
-      "manifest_sha256": "6a2cea7be47d3a347aa8d8d1bd2baa7513aa5c0f7fe1129e3cb20ceeead0eab6",
-      "project_sha256": "f4297a96b2c6e940ea15876a6bba21ce6e6402f771854a5842963d3ee89e5d80"
-    },
-    {
-      "manifest_sha256": "eb303be0ee4ad1d4136e3461f0cdbe176d64ecba106eb8981f68e70e84097daf",
+      "manifest_sha256": "37610bd2419a75ccef7e88c7062050342954b9b6e3651b3125b8d4638e5054d4",
       "project_sha256": "f4297a96b2c6e940ea15876a6bba21ce6e6402f771854a5842963d3ee89e5d80"
     },
     {
@@ -725,15 +833,39 @@
       "project_sha256": "f4297a96b2c6e940ea15876a6bba21ce6e6402f771854a5842963d3ee89e5d80"
     },
     {
-      "manifest_sha256": "a22211905892a558108923e4267c857acdd8452b9c1a29643e8b6432eca8469e",
+      "manifest_sha256": "07efe7b4d60d9ca8c7ff9b57f4e0c902067c5581184fac86f0db69596742717a",
       "project_sha256": "f4297a96b2c6e940ea15876a6bba21ce6e6402f771854a5842963d3ee89e5d80"
     },
     {
-      "manifest_sha256": "23cb1787c756286bc0c388ae57a8341634d106bd7dde6bef8d343ec951dac15b",
+      "manifest_sha256": "87191dd4a9a52ce02ea4b7c4d0c0a79d2229f315fe9d0a535042431cc17e5825",
+      "project_sha256": "f4297a96b2c6e940ea15876a6bba21ce6e6402f771854a5842963d3ee89e5d80"
+    },
+    {
+      "manifest_sha256": "eb303be0ee4ad1d4136e3461f0cdbe176d64ecba106eb8981f68e70e84097daf",
+      "project_sha256": "f4297a96b2c6e940ea15876a6bba21ce6e6402f771854a5842963d3ee89e5d80"
+    },
+    {
+      "manifest_sha256": "8ee5c71ef3ebf26c2ca85699bc636898aad411383e18d733aacd754ab5fd3017",
+      "project_sha256": "f4297a96b2c6e940ea15876a6bba21ce6e6402f771854a5842963d3ee89e5d80"
+    },
+    {
+      "manifest_sha256": "15ffe3a00c7dcd508b849378295102c893c9eaf15e3aec3d9a46bb9a22da110f",
+      "project_sha256": "f4297a96b2c6e940ea15876a6bba21ce6e6402f771854a5842963d3ee89e5d80"
+    },
+    {
+      "manifest_sha256": "023efbb4d41bb5dbcd69f9c79edce94a507299d4d61300e231e8b86cbb627f6c",
       "project_sha256": "f4297a96b2c6e940ea15876a6bba21ce6e6402f771854a5842963d3ee89e5d80"
     },
     {
       "manifest_sha256": "30b933a76fbf03f57dec28a5768f66ac557a48b9c0cd7deb4a135a07c8e75429",
+      "project_sha256": "f4297a96b2c6e940ea15876a6bba21ce6e6402f771854a5842963d3ee89e5d80"
+    },
+    {
+      "manifest_sha256": "6a2cea7be47d3a347aa8d8d1bd2baa7513aa5c0f7fe1129e3cb20ceeead0eab6",
+      "project_sha256": "f4297a96b2c6e940ea15876a6bba21ce6e6402f771854a5842963d3ee89e5d80"
+    },
+    {
+      "manifest_sha256": "a22211905892a558108923e4267c857acdd8452b9c1a29643e8b6432eca8469e",
       "project_sha256": "f4297a96b2c6e940ea15876a6bba21ce6e6402f771854a5842963d3ee89e5d80"
     }
   ]

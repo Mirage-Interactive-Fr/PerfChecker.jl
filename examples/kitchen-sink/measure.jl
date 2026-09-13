@@ -1,5 +1,6 @@
 using PerfChecker, BenchmarkTools, Chairmarks
 include(joinpath(@__DIR__, "suite.jl"))
+include(joinpath(@__DIR__, "history.jl"))
 
 # Listing is the default. A complete campaign is explicitly requested.
 mode = isempty(ARGS) ? "plan" : ARGS[1]
@@ -22,8 +23,9 @@ if mode != "plan"
     parent = joinpath(@__DIR__, "results")
     mkpath(parent)
     output = mktempdir(parent; prefix = mode * "-", cleanup = false)
-    result = run_suite_repl(plan; reports = output, strict = false,
-        overrides = Dict{Symbol, Any}(:threads => 1, :samples => 30, :evals => 1, :seconds => 0.25))
+    overrides = Dict{Symbol, Any}(:threads => 1, :samples => 30, :evals => 1, :seconds => 0.25)
+    result = mode == "history" ? checkpointed_history(plan, output; overrides) :
+        run_suite_repl(plan; reports = output, strict = false, overrides)
     println("Reports: ", output)
     suite_passed(result) || error("At least one check failed; inspect the saved report")
 end

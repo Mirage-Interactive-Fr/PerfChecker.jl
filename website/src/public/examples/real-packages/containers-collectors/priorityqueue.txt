@@ -1,0 +1,32 @@
+Wall time (µs)
+                                                   PriorityQueue
+                          ┌                                                            ┐
+   build · BenchmarkTools ┤■■■■■■■■■■■■■■■■■■ 16.7
+       build · Chairmarks ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 32.5
+   drain · BenchmarkTools ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 27.6
+       drain · Chairmarks ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 50.4
+                          └                                                            ┘
+GC share (%)
+                                                   PriorityQueue
+                          ┌                                                            ┐
+   build · BenchmarkTools ┤ 0
+       build · Chairmarks ┤ 0
+   drain · BenchmarkTools ┤ 0
+       drain · Chairmarks ┤ 0
+                          └                                                            ┘
+Allocated bytes
+                                                   PriorityQueue
+                          ┌                                                            ┐
+   build · BenchmarkTools ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 35 418
+       build · Chairmarks ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 35 450
+   drain · BenchmarkTools ┤■■■■■■■■■■■■ 8 295
+       drain · Chairmarks ┤■■■■■■■■■■■■ 8 295
+                          └                                                            ┘
+Allocation count
+                                                   PriorityQueue
+                          ┌                                                            ┐
+   build · BenchmarkTools ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 26
+       build · Chairmarks ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 26
+   drain · BenchmarkTools ┤■■■■■■■■■ 4
+       drain · Chairmarks ┤■■■■■■■■■ 4
+                          └                                                            ┘

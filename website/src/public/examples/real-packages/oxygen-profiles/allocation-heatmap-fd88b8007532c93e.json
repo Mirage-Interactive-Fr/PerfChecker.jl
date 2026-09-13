@@ -1,162 +1,163 @@
 {
   "correctness": "passed",
+  "date_kind": "GitHub release publication date",
   "os": "NT",
   "performance": "not_compared",
   "plot": {
     "data": [
       {
         "bytes": 493583.5418978267,
-        "label": "tMaHX/src/parse.jl:355",
+        "label": "JSON/src/parse.jl:355",
         "version": "1.11.0"
       },
       {
         "bytes": 435726.03764113074,
-        "label": "Eglkz/src/handlers.jl:75",
+        "label": "Oxygen/src/handlers.jl:75",
         "version": "1.11.0"
       },
       {
         "bytes": 355770.6428396404,
-        "label": "tMaHX/src/write.jl:350",
+        "label": "JSON/src/write.jl:350",
         "version": "1.11.0"
       },
       {
         "bytes": 123331.8990770352,
-        "label": "tMaHX/src/write.jl:617",
+        "label": "JSON/src/write.jl:617",
         "version": "1.11.0"
       },
       {
         "bytes": 89450.47432474035,
-        "label": "tMaHX/src/parse.jl:358",
+        "label": "JSON/src/parse.jl:358",
         "version": "1.11.0"
       },
       {
         "bytes": 61738.09106502221,
-        "label": "src/heaps/arrays_as_heaps.jl:115",
+        "label": "DataStructures/src/heaps/arrays_as_heaps.jl:115",
         "version": "1.11.0"
       },
       {
         "bytes": 34382.02421447465,
-        "label": "VmtQB/src/http_core.jl:1467",
+        "label": "HTTP/src/http_core.jl:1467",
         "version": "1.11.0"
       },
       {
         "bytes": 863.1890475681857,
-        "label": "Eglkz/src/core.jl:430",
+        "label": "Oxygen/src/core.jl:430",
         "version": "1.11.0"
       },
       {
         "bytes": 723.9245355332022,
-        "label": "tMaHX/src/write.jl:572",
+        "label": "JSON/src/write.jl:572",
         "version": "1.11.0"
       },
       {
         "bytes": 557.0580481399339,
-        "label": "Eglkz/src/core.jl:362",
+        "label": "Oxygen/src/core.jl:362",
         "version": "1.11.0"
       },
       {
         "bytes": 150.5562292270091,
-        "label": "VmtQB/src/http_handlers.jl:304",
+        "label": "HTTP/src/http_handlers.jl:304",
         "version": "1.11.0"
       },
       {
         "bytes": 120.4449833816073,
-        "label": "VmtQB/src/http_core.jl:674",
+        "label": "HTTP/src/http_core.jl:674",
         "version": "1.11.0"
       },
       {
         "bytes": 120.4449833816073,
-        "label": "VmtQB/src/http_core.jl:1819",
+        "label": "HTTP/src/http_core.jl:1819",
         "version": "1.11.0"
       },
       {
         "bytes": 100.37081948467275,
-        "label": "VmtQB/src/http_core.jl:1328",
+        "label": "HTTP/src/http_handlers.jl:306",
         "version": "1.11.0"
       },
       {
         "bytes": 100.37081948467275,
-        "label": "VmtQB/src/http_handlers.jl:306",
+        "label": "HTTP/src/http_core.jl:1328",
         "version": "1.11.0"
       },
       {
         "bytes": 80.2966555877382,
-        "label": "VmtQB/src/http_core.jl:653",
+        "label": "HTTP/src/http_core.jl:649",
         "version": "1.11.0"
       },
       {
         "bytes": 80.2966555877382,
-        "label": "Eglkz/src/core.jl:348",
+        "label": "HTTP/src/http_core.jl:653",
         "version": "1.11.0"
       },
       {
         "bytes": 80.2966555877382,
-        "label": "VmtQB/src/http_core.jl:962",
+        "label": "JSON/src/write.jl:584",
         "version": "1.11.0"
       },
       {
         "bytes": 80.2966555877382,
-        "label": "VmtQB/src/http_core.jl:649",
+        "label": "HTTP/src/http_core.jl:962",
         "version": "1.11.0"
       },
       {
         "bytes": 80.2966555877382,
-        "label": "tMaHX/src/write.jl:584",
+        "label": "Oxygen/src/core.jl:348",
         "version": "1.11.0"
       },
       {
         "bytes": 40.1483277938691,
-        "label": "Eglkz/src/methods.jl:284",
+        "label": "Oxygen/src/core.jl:331",
         "version": "1.11.0"
       },
       {
         "bytes": 40.1483277938691,
-        "label": "Eglkz/src/routerhof.jl:24",
+        "label": "Oxygen/src/core.jl:358",
         "version": "1.11.0"
       },
       {
         "bytes": 40.1483277938691,
-        "label": "Eglkz/src/core.jl:358",
+        "label": "Oxygen/src/core.jl:345",
         "version": "1.11.0"
       },
       {
         "bytes": 40.1483277938691,
-        "label": "Eglkz/src/routerhof.jl:15",
+        "label": "Oxygen/src/routerhof.jl:15",
         "version": "1.11.0"
       },
       {
         "bytes": 40.1483277938691,
-        "label": "Eglkz/src/core.jl:345",
+        "label": "Oxygen/src/routerhof.jl:24",
         "version": "1.11.0"
       },
       {
         "bytes": 40.1483277938691,
-        "label": "VmtQB/src/http_core.jl:1424",
+        "label": "Oxygen/src/methods.jl:284",
         "version": "1.11.0"
       },
       {
         "bytes": 40.1483277938691,
-        "label": "Eglkz/src/core.jl:331",
+        "label": "Oxygen/src/core.jl:351",
         "version": "1.11.0"
       },
       {
         "bytes": 40.1483277938691,
-        "label": "Eglkz/src/core.jl:351",
+        "label": "Oxygen/src/core.jl:342",
         "version": "1.11.0"
       },
       {
         "bytes": 40.1483277938691,
-        "label": "Eglkz/src/core.jl:342",
+        "label": "HTTP/src/http_core.jl:1424",
         "version": "1.11.0"
       },
       {
         "bytes": 20.07416389693455,
-        "label": "tMaHX/src/parse.jl:280",
+        "label": "JSON/src/parse.jl:280",
         "version": "1.11.0"
       },
       {
         "bytes": 10.037081948467275,
-        "label": "VmtQB/src/http_handlers.jl:313",
+        "label": "HTTP/src/http_handlers.jl:313",
         "version": "1.11.0"
       }
     ],
@@ -171,37 +172,37 @@
     "options": {
       "feature": "heap_profile_alloc",
       "labels": [
-        "tMaHX/src/parse.jl:355",
-        "Eglkz/src/handlers.jl:75",
-        "tMaHX/src/write.jl:350",
-        "tMaHX/src/write.jl:617",
-        "tMaHX/src/parse.jl:358",
-        "src/heaps/arrays_as_heaps.jl:115",
-        "VmtQB/src/http_core.jl:1467",
-        "Eglkz/src/core.jl:430",
-        "tMaHX/src/write.jl:572",
-        "Eglkz/src/core.jl:362",
-        "VmtQB/src/http_handlers.jl:304",
-        "VmtQB/src/http_core.jl:674",
-        "VmtQB/src/http_core.jl:1819",
-        "VmtQB/src/http_core.jl:1328",
-        "VmtQB/src/http_handlers.jl:306",
-        "VmtQB/src/http_core.jl:653",
-        "Eglkz/src/core.jl:348",
-        "VmtQB/src/http_core.jl:962",
-        "VmtQB/src/http_core.jl:649",
-        "tMaHX/src/write.jl:584",
-        "Eglkz/src/methods.jl:284",
-        "Eglkz/src/routerhof.jl:24",
-        "Eglkz/src/core.jl:358",
-        "Eglkz/src/routerhof.jl:15",
-        "Eglkz/src/core.jl:345",
-        "VmtQB/src/http_core.jl:1424",
-        "Eglkz/src/core.jl:331",
-        "Eglkz/src/core.jl:351",
-        "Eglkz/src/core.jl:342",
-        "tMaHX/src/parse.jl:280",
-        "VmtQB/src/http_handlers.jl:313"
+        "JSON/src/parse.jl:355",
+        "Oxygen/src/handlers.jl:75",
+        "JSON/src/write.jl:350",
+        "JSON/src/write.jl:617",
+        "JSON/src/parse.jl:358",
+        "DataStructures/src/heaps/arrays_as_heaps.jl:115",
+        "HTTP/src/http_core.jl:1467",
+        "Oxygen/src/core.jl:430",
+        "JSON/src/write.jl:572",
+        "Oxygen/src/core.jl:362",
+        "HTTP/src/http_handlers.jl:304",
+        "HTTP/src/http_core.jl:674",
+        "HTTP/src/http_core.jl:1819",
+        "HTTP/src/http_handlers.jl:306",
+        "HTTP/src/http_core.jl:1328",
+        "HTTP/src/http_core.jl:649",
+        "HTTP/src/http_core.jl:653",
+        "JSON/src/write.jl:584",
+        "HTTP/src/http_core.jl:962",
+        "Oxygen/src/core.jl:348",
+        "Oxygen/src/core.jl:331",
+        "Oxygen/src/core.jl:358",
+        "Oxygen/src/core.jl:345",
+        "Oxygen/src/routerhof.jl:15",
+        "Oxygen/src/routerhof.jl:24",
+        "Oxygen/src/methods.jl:284",
+        "Oxygen/src/core.jl:351",
+        "Oxygen/src/core.jl:342",
+        "HTTP/src/http_core.jl:1424",
+        "JSON/src/parse.jl:280",
+        "HTTP/src/http_handlers.jl:313"
       ],
       "package": "Oxygen",
       "top": 40,
@@ -212,6 +213,12 @@
     },
     "schema_version": "perfchecker-plot/1",
     "title": "Oxygen · heap_profile_alloc · allocations"
+  },
+  "release_date_kinds": {
+    "1.11.0": "GitHub release publication date"
+  },
+  "release_dates": {
+    "1.11.0": "2026-08-28"
   },
   "run_id": "c4a79ae5-6f29-43d0-8b0c-74c925ddce05",
   "runtime": {

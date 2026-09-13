@@ -1,0 +1,5 @@
+                         DataStructures · MultiDict_traverse_benchmark · julia.alloc.count
+                ┌                                                                                ┐
+   [37.0, 38.0) ┤███████████████████████████████████████████████████████████████████████████  210
+                └                                                                                ┘
+                                                     Frequency

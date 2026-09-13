@@ -13,4 +13,7 @@ for package in ("datastructures", "oxygen")
     end
 end
 cp(joinpath(@__DIR__, "notebook.jl"), joinpath(root, "notebook.jl"); force = true)
-println("Published the two overlay aliases and the downloadable notebook")
+for name in ("datastructures-notebook.jl", "oxygen-notebook.jl")
+    cp(joinpath(@__DIR__, name), joinpath(root, name); force = true)
+end
+println("Published the overlay aliases and the three downloadable notebooks")

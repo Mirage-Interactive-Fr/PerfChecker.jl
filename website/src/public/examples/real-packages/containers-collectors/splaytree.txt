@@ -1,0 +1,32 @@
+Wall time (µs)
+                                                      SplayTree
+                           ┌                                                            ┐
+    build · BenchmarkTools ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 86
+        build · Chairmarks ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 88.4
+   lookup · BenchmarkTools ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 73.4
+       lookup · Chairmarks ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 72.3
+                           └                                                            ┘
+GC share (%)
+                                                      SplayTree
+                           ┌                                                            ┐
+    build · BenchmarkTools ┤ 0
+        build · Chairmarks ┤ 0
+   lookup · BenchmarkTools ┤ 0
+       lookup · Chairmarks ┤ 0
+                           └                                                            ┘
+Allocated bytes
+                                                      SplayTree
+                           ┌                                                            ┐
+    build · BenchmarkTools ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 24 624
+        build · Chairmarks ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 24 624
+   lookup · BenchmarkTools ┤■ 576
+       lookup · Chairmarks ┤■ 576
+                           └                                                            ┘
+Allocation count
+                                                      SplayTree
+                           ┌                                                            ┐
+    build · BenchmarkTools ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 514
+        build · Chairmarks ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 514
+   lookup · BenchmarkTools ┤ 2
+       lookup · Chairmarks ┤ 2
+                           └                                                            ┘

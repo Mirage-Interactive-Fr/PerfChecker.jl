@@ -1,0 +1,32 @@
+Wall time (µs)
+                                                       DiBitVector
+                             ┌                                                            ┐
+      build · BenchmarkTools ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 1
+          build · Chairmarks ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 1.0
+   traverse · BenchmarkTools ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 0.6
+       traverse · Chairmarks ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 0.6
+                             └                                                            ┘
+GC share (%)
+                                                       DiBitVector
+                             ┌                                                            ┐
+      build · BenchmarkTools ┤ 0
+          build · Chairmarks ┤ 0
+   traverse · BenchmarkTools ┤ 0
+       traverse · Chairmarks ┤ 0
+                             └                                                            ┘
+Allocated bytes
+                                                       DiBitVector
+                             ┌                                                            ┐
+      build · BenchmarkTools ┤■■■■■■■■■■■■■■■■■■■■■ 224
+          build · Chairmarks ┤■■■■■■■■■■■■■■■■■■■■■ 224
+   traverse · BenchmarkTools ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 576
+       traverse · Chairmarks ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 576
+                             └                                                            ┘
+Allocation count
+                                                       DiBitVector
+                             ┌                                                            ┐
+      build · BenchmarkTools ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 3
+          build · Chairmarks ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 3
+   traverse · BenchmarkTools ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 2
+       traverse · Chairmarks ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 2
+                             └                                                            ┘

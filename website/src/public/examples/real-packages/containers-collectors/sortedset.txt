@@ -1,0 +1,32 @@
+Wall time (µs)
+                                                      SortedSet
+                           ┌                                                            ┐
+    build · BenchmarkTools ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 30.5
+        build · Chairmarks ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 25.8
+   lookup · BenchmarkTools ┤■■■■■■■■■■■■■ 7.3
+       lookup · Chairmarks ┤■■■■■■■■■■■■■■■■■■ 10
+                           └                                                            ┘
+GC share (%)
+                                                      SortedSet
+                           ┌                                                            ┐
+    build · BenchmarkTools ┤ 0
+        build · Chairmarks ┤ 0
+   lookup · BenchmarkTools ┤ 0
+       lookup · Chairmarks ┤ 0
+                           └                                                            ┘
+Allocated bytes
+                                                      SortedSet
+                           ┌                                                            ┐
+    build · BenchmarkTools ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 62 563
+        build · Chairmarks ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 62 563
+   lookup · BenchmarkTools ┤ 576
+       lookup · Chairmarks ┤ 576
+                           └                                                            ┘
+Allocation count
+                                                      SortedSet
+                           ┌                                                            ┐
+    build · BenchmarkTools ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 34
+        build · Chairmarks ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 34
+   lookup · BenchmarkTools ┤■■■ 2
+       lookup · Chairmarks ┤■■■ 2
+                           └                                                            ┘

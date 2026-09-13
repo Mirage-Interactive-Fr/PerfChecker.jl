@@ -1,0 +1,5 @@
+                         DataStructures · DisjointSet_build_benchmark · julia.alloc.count
+                ┌                                                                                ┐
+   [20.0, 21.0) ┤███████████████████████████████████████████████████████████████████████████  210
+                └                                                                                ┘
+                                                     Frequency

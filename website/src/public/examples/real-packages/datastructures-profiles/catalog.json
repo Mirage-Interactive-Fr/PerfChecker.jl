@@ -1,6 +1,19 @@
 {
   "correctness": "passed",
   "performance": "not_compared",
+  "release_date_kinds": {
+    "0.19.6": "GitHub release publication date"
+  },
+  "release_dates": {
+    "0.19.6": "2026-07-17"
+  },
+  "resolved_environments": [
+    {
+      "manifest_sha256": "e956f9d3af72872a9d43e6dc3fdac644b73223bd6b5e4ac250e7c0cc02eb97d5",
+      "packages": [],
+      "version": "0.19.6"
+    }
+  ],
   "runs": [
     {
       "feature": "heap_32768_alloc",
@@ -59,6 +72,7 @@
       "label": "Allocations by file",
       "metric": "julia.alloc.bytes",
       "package": "DataStructures",
+      "patch_windows": [],
       "svg": "allocation-files-36aa887d312fb2ab.svg",
       "terminal": "allocation-files-36aa887d312fb2ab.txt",
       "title": "DataStructures · heap_32768_alloc · allocations",
@@ -73,6 +87,7 @@
       "label": "Allocation line heatmap",
       "metric": "julia.alloc.bytes",
       "package": "DataStructures",
+      "patch_windows": [],
       "svg": "allocation-heatmap-cb164d1392b342ff.svg",
       "terminal": "allocation-heatmap-cb164d1392b342ff.txt",
       "title": "DataStructures · heap_32768_alloc · allocations",
@@ -87,6 +102,7 @@
       "label": "Allocation hotspots by line",
       "metric": "julia.alloc.bytes",
       "package": "DataStructures",
+      "patch_windows": [],
       "svg": "allocation-lines-9e4fd4f7f3be40ea.svg",
       "terminal": "allocation-lines-9e4fd4f7f3be40ea.txt",
       "title": "DataStructures · heap_32768_alloc · allocations",
@@ -101,6 +117,7 @@
       "label": "Allocation share by line (%)",
       "metric": "julia.alloc.bytes",
       "package": "DataStructures",
+      "patch_windows": [],
       "svg": "allocation-pie-a7f205960a815ab7.svg",
       "terminal": "allocation-pie-a7f205960a815ab7.txt",
       "title": "DataStructures · heap_32768_alloc · allocations",
@@ -114,6 +131,7 @@
       "label": "Version trajectory",
       "metric": "julia.alloc.bytes",
       "package": "DataStructures",
+      "patch_windows": [],
       "series_id": "f8c688fc1f65aa37",
       "svg": "version-series-7fabdc6fa9d4d0f3.svg",
       "terminal": "version-series-7fabdc6fa9d4d0f3.txt",
@@ -130,6 +148,7 @@
       "label": "CPU flame graph",
       "metric": "julia.cpu.samples",
       "package": "DataStructures",
+      "patch_windows": [],
       "svg": "cpu-flamegraph-054b5e59c351c558.svg",
       "terminal": "cpu-flamegraph-054b5e59c351c558.txt",
       "title": "DataStructures · heap_32768_profile · CPU flame graph",
@@ -144,6 +163,7 @@
       "label": "Allocations by file",
       "metric": "julia.alloc.bytes",
       "package": "DataStructures",
+      "patch_windows": [],
       "svg": "allocation-files-9fe5fe0534069cf7.svg",
       "terminal": "allocation-files-9fe5fe0534069cf7.txt",
       "title": "DataStructures · heap_32768_profile_alloc · allocations",
@@ -158,6 +178,7 @@
       "label": "Allocation flame graph",
       "metric": "julia.alloc.bytes",
       "package": "DataStructures",
+      "patch_windows": [],
       "svg": "allocation-flamegraph-6d6354c132248fdf.svg",
       "terminal": "allocation-flamegraph-6d6354c132248fdf.txt",
       "title": "DataStructures · heap_32768_profile_alloc · allocation flame graph",
@@ -172,6 +193,7 @@
       "label": "Allocation line heatmap",
       "metric": "julia.alloc.bytes",
       "package": "DataStructures",
+      "patch_windows": [],
       "svg": "allocation-heatmap-bdf4e07782ac84ea.svg",
       "terminal": "allocation-heatmap-bdf4e07782ac84ea.txt",
       "title": "DataStructures · heap_32768_profile_alloc · allocations",
@@ -186,6 +208,7 @@
       "label": "Allocation hotspots by line",
       "metric": "julia.alloc.bytes",
       "package": "DataStructures",
+      "patch_windows": [],
       "svg": "allocation-lines-fea8acd7ab8697d0.svg",
       "terminal": "allocation-lines-fea8acd7ab8697d0.txt",
       "title": "DataStructures · heap_32768_profile_alloc · allocations",
@@ -200,6 +223,7 @@
       "label": "Allocation share by line (%)",
       "metric": "julia.alloc.bytes",
       "package": "DataStructures",
+      "patch_windows": [],
       "svg": "allocation-pie-5fa622ca80b2df9b.svg",
       "terminal": "allocation-pie-5fa622ca80b2df9b.txt",
       "title": "DataStructures · heap_32768_profile_alloc · allocations",
@@ -213,6 +237,7 @@
       "label": "Version trajectory",
       "metric": "julia.alloc.count",
       "package": "DataStructures",
+      "patch_windows": [],
       "series_id": "bd172137b2bf7332",
       "svg": "version-series-a6dc60f82624a0f2.svg",
       "terminal": "version-series-a6dc60f82624a0f2.txt",
@@ -227,6 +252,7 @@
       "label": "Version trajectory",
       "metric": "julia.alloc.bytes",
       "package": "DataStructures",
+      "patch_windows": [],
       "series_id": "ebb6fbdffcfc852f",
       "svg": "version-series-b3bd3fce6a1b6673.svg",
       "terminal": "version-series-b3bd3fce6a1b6673.txt",
@@ -243,6 +269,7 @@
       "label": "Wall-time flame graph",
       "metric": "julia.wall.samples",
       "package": "DataStructures",
+      "patch_windows": [],
       "svg": "wall-flamegraph-1a28318cdf1f7700.svg",
       "terminal": "wall-flamegraph-1a28318cdf1f7700.txt",
       "title": "DataStructures · heap_32768_wall_profile · wall-time flame graph",

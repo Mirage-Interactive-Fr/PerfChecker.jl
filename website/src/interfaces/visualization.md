@@ -151,6 +151,13 @@ timeline or a list of exact function durations.
 Every catalog entry is derived from evidence actually present in the bundle.
 An unavailable collector therefore does not produce an empty decorative chart.
 
+Allocation pies group source lines contributing **less than 5% of allocated
+bytes** into **Other allocation sites**. A line at exactly 5% keeps its own legend
+entry. The combined slice preserves the total; the line table and flame graph
+remain available to inspect the small sites individually. To change the threshold,
+use `performance_plot(bundle, pie_id; min_percentage=2)` or set it to `0` to
+disable this grouping. `top=40` still limits the total number of legend entries.
+
 ## Linked inspection
 
 Standalone HTML overlays use SVG curves with metric toggles, keyboard-accessible

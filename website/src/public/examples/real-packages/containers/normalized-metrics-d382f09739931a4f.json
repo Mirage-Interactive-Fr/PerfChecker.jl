@@ -1,0 +1,459 @@
+{
+  "correctness": "passed",
+  "date_kind": "GitHub release publication date",
+  "os": "NT",
+  "performance": "not_compared",
+  "plot": {
+    "data": [
+      {
+        "metric": "julia.wall.time",
+        "normalization_status": "ratio",
+        "ratio": 1.0212765957446808,
+        "reference_value": 4700.0,
+        "reference_version": "minimum",
+        "samples": 30,
+        "statistic": "minimum",
+        "target_kind": "release",
+        "unit": "ns",
+        "value": 4800.0,
+        "version": "0.19.0"
+      },
+      {
+        "metric": "julia.wall.time",
+        "normalization_status": "ratio",
+        "ratio": 1.0,
+        "reference_value": 4700.0,
+        "reference_version": "minimum",
+        "samples": 30,
+        "statistic": "minimum",
+        "target_kind": "release",
+        "unit": "ns",
+        "value": 4700.0,
+        "version": "0.19.1"
+      },
+      {
+        "metric": "julia.wall.time",
+        "normalization_status": "ratio",
+        "ratio": 1.0212765957446808,
+        "reference_value": 4700.0,
+        "reference_version": "minimum",
+        "samples": 30,
+        "statistic": "minimum",
+        "target_kind": "release",
+        "unit": "ns",
+        "value": 4800.0,
+        "version": "0.19.2"
+      },
+      {
+        "metric": "julia.wall.time",
+        "normalization_status": "ratio",
+        "ratio": 1.0,
+        "reference_value": 4700.0,
+        "reference_version": "minimum",
+        "samples": 30,
+        "statistic": "minimum",
+        "target_kind": "release",
+        "unit": "ns",
+        "value": 4700.0,
+        "version": "0.19.3"
+      },
+      {
+        "metric": "julia.wall.time",
+        "normalization_status": "ratio",
+        "ratio": 1.0,
+        "reference_value": 4700.0,
+        "reference_version": "minimum",
+        "samples": 30,
+        "statistic": "minimum",
+        "target_kind": "release",
+        "unit": "ns",
+        "value": 4700.0,
+        "version": "0.19.4"
+      },
+      {
+        "metric": "julia.wall.time",
+        "normalization_status": "ratio",
+        "ratio": 1.2553191489361701,
+        "reference_value": 4700.0,
+        "reference_version": "minimum",
+        "samples": 30,
+        "statistic": "minimum",
+        "target_kind": "release",
+        "unit": "ns",
+        "value": 5900.0,
+        "version": "0.19.5"
+      },
+      {
+        "metric": "julia.wall.time",
+        "normalization_status": "ratio",
+        "ratio": 1.0,
+        "reference_value": 4700.0,
+        "reference_version": "minimum",
+        "samples": 30,
+        "statistic": "minimum",
+        "target_kind": "release",
+        "unit": "ns",
+        "value": 4700.0,
+        "version": "0.19.6"
+      },
+      {
+        "metric": "julia.gc.time",
+        "normalization_status": "both_zero",
+        "ratio": 1.0,
+        "reference_value": 0.0,
+        "reference_version": "minimum",
+        "samples": 30,
+        "statistic": "minimum",
+        "target_kind": "release",
+        "unit": "ns",
+        "value": 0.0,
+        "version": "0.19.0"
+      },
+      {
+        "metric": "julia.gc.time",
+        "normalization_status": "both_zero",
+        "ratio": 1.0,
+        "reference_value": 0.0,
+        "reference_version": "minimum",
+        "samples": 30,
+        "statistic": "minimum",
+        "target_kind": "release",
+        "unit": "ns",
+        "value": 0.0,
+        "version": "0.19.1"
+      },
+      {
+        "metric": "julia.gc.time",
+        "normalization_status": "both_zero",
+        "ratio": 1.0,
+        "reference_value": 0.0,
+        "reference_version": "minimum",
+        "samples": 30,
+        "statistic": "minimum",
+        "target_kind": "release",
+        "unit": "ns",
+        "value": 0.0,
+        "version": "0.19.2"
+      },
+      {
+        "metric": "julia.gc.time",
+        "normalization_status": "both_zero",
+        "ratio": 1.0,
+        "reference_value": 0.0,
+        "reference_version": "minimum",
+        "samples": 30,
+        "statistic": "minimum",
+        "target_kind": "release",
+        "unit": "ns",
+        "value": 0.0,
+        "version": "0.19.3"
+      },
+      {
+        "metric": "julia.gc.time",
+        "normalization_status": "both_zero",
+        "ratio": 1.0,
+        "reference_value": 0.0,
+        "reference_version": "minimum",
+        "samples": 30,
+        "statistic": "minimum",
+        "target_kind": "release",
+        "unit": "ns",
+        "value": 0.0,
+        "version": "0.19.4"
+      },
+      {
+        "metric": "julia.gc.time",
+        "normalization_status": "both_zero",
+        "ratio": 1.0,
+        "reference_value": 0.0,
+        "reference_version": "minimum",
+        "samples": 30,
+        "statistic": "minimum",
+        "target_kind": "release",
+        "unit": "ns",
+        "value": 0.0,
+        "version": "0.19.5"
+      },
+      {
+        "metric": "julia.gc.time",
+        "normalization_status": "both_zero",
+        "ratio": 1.0,
+        "reference_value": 0.0,
+        "reference_version": "minimum",
+        "samples": 30,
+        "statistic": "minimum",
+        "target_kind": "release",
+        "unit": "ns",
+        "value": 0.0,
+        "version": "0.19.6"
+      },
+      {
+        "metric": "julia.alloc.bytes",
+        "normalization_status": "ratio",
+        "ratio": 1.0,
+        "reference_value": 1648.0,
+        "reference_version": "minimum",
+        "samples": 30,
+        "statistic": "minimum",
+        "target_kind": "release",
+        "unit": "By",
+        "value": 1648.0,
+        "version": "0.19.0"
+      },
+      {
+        "metric": "julia.alloc.bytes",
+        "normalization_status": "ratio",
+        "ratio": 1.0,
+        "reference_value": 1648.0,
+        "reference_version": "minimum",
+        "samples": 30,
+        "statistic": "minimum",
+        "target_kind": "release",
+        "unit": "By",
+        "value": 1648.0,
+        "version": "0.19.1"
+      },
+      {
+        "metric": "julia.alloc.bytes",
+        "normalization_status": "ratio",
+        "ratio": 1.0,
+        "reference_value": 1648.0,
+        "reference_version": "minimum",
+        "samples": 30,
+        "statistic": "minimum",
+        "target_kind": "release",
+        "unit": "By",
+        "value": 1648.0,
+        "version": "0.19.2"
+      },
+      {
+        "metric": "julia.alloc.bytes",
+        "normalization_status": "ratio",
+        "ratio": 1.0,
+        "reference_value": 1648.0,
+        "reference_version": "minimum",
+        "samples": 30,
+        "statistic": "minimum",
+        "target_kind": "release",
+        "unit": "By",
+        "value": 1648.0,
+        "version": "0.19.3"
+      },
+      {
+        "metric": "julia.alloc.bytes",
+        "normalization_status": "ratio",
+        "ratio": 1.0,
+        "reference_value": 1648.0,
+        "reference_version": "minimum",
+        "samples": 30,
+        "statistic": "minimum",
+        "target_kind": "release",
+        "unit": "By",
+        "value": 1648.0,
+        "version": "0.19.4"
+      },
+      {
+        "metric": "julia.alloc.bytes",
+        "normalization_status": "ratio",
+        "ratio": 1.0,
+        "reference_value": 1648.0,
+        "reference_version": "minimum",
+        "samples": 30,
+        "statistic": "minimum",
+        "target_kind": "release",
+        "unit": "By",
+        "value": 1648.0,
+        "version": "0.19.5"
+      },
+      {
+        "metric": "julia.alloc.bytes",
+        "normalization_status": "ratio",
+        "ratio": 1.0,
+        "reference_value": 1648.0,
+        "reference_version": "minimum",
+        "samples": 30,
+        "statistic": "minimum",
+        "target_kind": "release",
+        "unit": "By",
+        "value": 1648.0,
+        "version": "0.19.6"
+      },
+      {
+        "metric": "julia.alloc.count",
+        "normalization_status": "ratio",
+        "ratio": 1.0,
+        "reference_value": 8.0,
+        "reference_version": "minimum",
+        "samples": 30,
+        "statistic": "minimum",
+        "target_kind": "release",
+        "unit": "1",
+        "value": 8.0,
+        "version": "0.19.0"
+      },
+      {
+        "metric": "julia.alloc.count",
+        "normalization_status": "ratio",
+        "ratio": 1.0,
+        "reference_value": 8.0,
+        "reference_version": "minimum",
+        "samples": 30,
+        "statistic": "minimum",
+        "target_kind": "release",
+        "unit": "1",
+        "value": 8.0,
+        "version": "0.19.1"
+      },
+      {
+        "metric": "julia.alloc.count",
+        "normalization_status": "ratio",
+        "ratio": 1.0,
+        "reference_value": 8.0,
+        "reference_version": "minimum",
+        "samples": 30,
+        "statistic": "minimum",
+        "target_kind": "release",
+        "unit": "1",
+        "value": 8.0,
+        "version": "0.19.2"
+      },
+      {
+        "metric": "julia.alloc.count",
+        "normalization_status": "ratio",
+        "ratio": 1.0,
+        "reference_value": 8.0,
+        "reference_version": "minimum",
+        "samples": 30,
+        "statistic": "minimum",
+        "target_kind": "release",
+        "unit": "1",
+        "value": 8.0,
+        "version": "0.19.3"
+      },
+      {
+        "metric": "julia.alloc.count",
+        "normalization_status": "ratio",
+        "ratio": 1.0,
+        "reference_value": 8.0,
+        "reference_version": "minimum",
+        "samples": 30,
+        "statistic": "minimum",
+        "target_kind": "release",
+        "unit": "1",
+        "value": 8.0,
+        "version": "0.19.4"
+      },
+      {
+        "metric": "julia.alloc.count",
+        "normalization_status": "ratio",
+        "ratio": 1.0,
+        "reference_value": 8.0,
+        "reference_version": "minimum",
+        "samples": 30,
+        "statistic": "minimum",
+        "target_kind": "release",
+        "unit": "1",
+        "value": 8.0,
+        "version": "0.19.5"
+      },
+      {
+        "metric": "julia.alloc.count",
+        "normalization_status": "ratio",
+        "ratio": 1.0,
+        "reference_value": 8.0,
+        "reference_version": "minimum",
+        "samples": 30,
+        "statistic": "minimum",
+        "target_kind": "release",
+        "unit": "1",
+        "value": 8.0,
+        "version": "0.19.6"
+      }
+    ],
+    "description": "minimum per version / reference (minimum) for each metric; 1 = reference, above 1 = more, below 1 = less. equal zeros = 1 (unchanged); nonzero / zero = unavailable",
+    "encoding": {
+      "color": "metric",
+      "x": "version",
+      "y": "ratio"
+    },
+    "id": "normalized-metrics-d382f09739931a4f",
+    "kind": "normalized_metrics",
+    "options": {
+      "collector": "benchmarktools-v1/fresh-state-evals1-v1",
+      "feature": "Accumulator_build_benchmark",
+      "package": "DataStructures",
+      "reference_version": "minimum",
+      "statistic": "minimum",
+      "unit": "ratio",
+      "versions": [
+        "0.19.0",
+        "0.19.1",
+        "0.19.2",
+        "0.19.3",
+        "0.19.4",
+        "0.19.5",
+        "0.19.6"
+      ],
+      "workload": "Accumulator_build",
+      "zero_reference_policy": "equal zeros = 1 (unchanged); nonzero / zero = unavailable"
+    },
+    "schema_version": "perfchecker-plot/1",
+    "title": "DataStructures · Accumulator_build_benchmark · relative to minimum"
+  },
+  "release_date_kinds": {
+    "0.19.0": "GitHub release publication date",
+    "0.19.1": "GitHub release publication date",
+    "0.19.2": "GitHub release publication date",
+    "0.19.3": "GitHub release publication date",
+    "0.19.4": "GitHub release publication date",
+    "0.19.5": "GitHub release publication date",
+    "0.19.6": "GitHub release publication date"
+  },
+  "release_dates": {
+    "0.19.0": "2025-08-01",
+    "0.19.1": "2025-08-26",
+    "0.19.2": "2025-11-04",
+    "0.19.3": "2025-11-04",
+    "0.19.4": "2026-03-27",
+    "0.19.5": "2026-06-01",
+    "0.19.6": "2026-07-17"
+  },
+  "run_id": "51ef987b-fda5-41d4-be72-19bf54d88d53",
+  "runtime": {
+    "language": "julia",
+    "threads": 1,
+    "version": "1.13.0"
+  },
+  "scope": "One local machine; illustrative history, not a package regression verdict",
+  "started_at": "2026-09-13T10:08:37.468",
+  "worker_environments": [
+    {
+      "manifest_sha256": "68c5f5d93eb9d9d9877548e2bb3fceffd83349fec6885d74b2c342413c4593b5",
+      "project_sha256": "0cda28da6203fe2eda79d372cdabb8862f3e829e34e1eb1c78c61f64fe9878e2"
+    },
+    {
+      "manifest_sha256": "b041a81979db2c04b1712a9279c696766cdaf1f135c11ea13042cddd1a504946",
+      "project_sha256": "0cda28da6203fe2eda79d372cdabb8862f3e829e34e1eb1c78c61f64fe9878e2"
+    },
+    {
+      "manifest_sha256": "1bebd84446beae26719ec373aa8c9cad9b9fde44a029e5892c461c9c2e563929",
+      "project_sha256": "0cda28da6203fe2eda79d372cdabb8862f3e829e34e1eb1c78c61f64fe9878e2"
+    },
+    {
+      "manifest_sha256": "53c704b69b69edf67c297bc8a67daa6cf7ee3505f2e0fd6c563e51bfdae67583",
+      "project_sha256": "0cda28da6203fe2eda79d372cdabb8862f3e829e34e1eb1c78c61f64fe9878e2"
+    },
+    {
+      "manifest_sha256": "e956f9d3af72872a9d43e6dc3fdac644b73223bd6b5e4ac250e7c0cc02eb97d5",
+      "project_sha256": "0cda28da6203fe2eda79d372cdabb8862f3e829e34e1eb1c78c61f64fe9878e2"
+    },
+    {
+      "manifest_sha256": "3a6ff09abdd5fd4d092a100cf42e8f9e807975054baf8daaa0903d9387a46c6f",
+      "project_sha256": "0cda28da6203fe2eda79d372cdabb8862f3e829e34e1eb1c78c61f64fe9878e2"
+    },
+    {
+      "manifest_sha256": "7bf9a7905865409ad2408110c6d8642e3e70772131e800d948e7d68b9aaf83e9",
+      "project_sha256": "0cda28da6203fe2eda79d372cdabb8862f3e829e34e1eb1c78c61f64fe9878e2"
+    }
+  ]
+}

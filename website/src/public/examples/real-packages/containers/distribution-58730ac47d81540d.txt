@@ -1,0 +1,5 @@
+                        DataStructures · PriorityQueue_build_benchmark · julia.alloc.count
+                ┌                                                                                ┐
+   [26.0, 27.0) ┤███████████████████████████████████████████████████████████████████████████  210
+                └                                                                                ┘
+                                                     Frequency

@@ -7,22 +7,24 @@ An assistant, a hosted service and a GPU are not required.
 
 | Example | Work performed | What the measurements include |
 | --- | --- | --- |
-| [DataStructures](datastructures.md) | Order events, count categories, retain recent events | The selected data-structure operation on a prepared input |
-| [Oxygen](oxygen.md) | Accept the event stream through three HTTP routes | Routing, JSON decoding, the operation and response encoding; a separate recipe adds loopback transport |
+| [DataStructures](datastructures.md) | Construct and use 35 containers, then investigate event processing | 70 separate operations across every 0.19 patch, plus a longer historical comparison |
+| [Oxygen](oxygen.md) | Compare seven HTTP features, three application routes and real traffic | Older minor releases and every recent patch; network latency, bytes, packets and throughput have their own figures |
 
-The event stream is the same in both examples. It contains a priority, a unique
+The application workloads share an event stream. It contains a priority, a unique
 identifier and a category for every event. A fixed seed reproduces the input;
 an independently computed expected answer checks each workload. This lets you
 ask whether time is spent processing data or serving the request around it.
 
 ## Choose a starting point
 
-1. Read [DataStructures](datastructures.md) for the smallest complete run.
-2. Follow [Oxygen](oxygen.md) to add a real service and discuss network boundaries.
-3. [Replay the results](interfaces.md) in the terminal, Makie, Pluto, Web Studio
-   or VS Code.
-4. Add [profiles and optional experiments](extensions.md) when you have a
-   specific question about a result.
+Choose either [DataStructures](datastructures.md) or [Oxygen](oxygen.md).
+Each page is a complete walkthrough: check an answer, select releases, measure,
+read the figures, investigate costs and replay the evidence in every interface.
+Each also has its own downloadable Pluto notebook. You do not need to jump
+between pages to finish the experiment.
+
+The [interface reference](interfaces.md) and [tool map](extensions.md) collect
+the shared recipes for later use.
 
 The plots on these pages come from local executions. The documentation build
 only copies the recorded data and figures. It does **not** install the example

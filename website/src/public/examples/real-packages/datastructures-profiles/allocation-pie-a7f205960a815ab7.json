@@ -1,13 +1,14 @@
 {
   "correctness": "passed",
+  "date_kind": "GitHub release publication date",
   "os": "NT",
   "performance": "not_compared",
   "plot": {
     "data": [
       {
         "bytes": 786551.0,
-        "file": "src/heaps/arrays_as_heaps.jl",
-        "label": "src/heaps/arrays_as_heaps.jl:115",
+        "file": "DataStructures/src/heaps/arrays_as_heaps.jl",
+        "label": "DataStructures/src/heaps/arrays_as_heaps.jl:115",
         "line": 115,
         "percentage": 100.0,
         "version": "0.19.6"
@@ -23,6 +24,7 @@
     "kind": "allocation_pie",
     "options": {
       "feature": "heap_32768_alloc",
+      "min_percentage": 5.0,
       "package": "DataStructures",
       "selected_version": "0.19.6",
       "top": 40,
@@ -33,6 +35,12 @@
     },
     "schema_version": "perfchecker-plot/1",
     "title": "DataStructures · heap_32768_alloc · allocations"
+  },
+  "release_date_kinds": {
+    "0.19.6": "GitHub release publication date"
+  },
+  "release_dates": {
+    "0.19.6": "2026-07-17"
   },
   "run_id": "11480c99-82a0-44bf-8432-f9b4e39702f5",
   "runtime": {

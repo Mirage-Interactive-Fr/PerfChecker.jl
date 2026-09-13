@@ -15,7 +15,7 @@ else
     append!(specs, [Pkg.PackageSpec(path = joinpath(root, "packages", name)) for name in names])
     Pkg.develop(specs)
     Pkg.add(["BenchmarkTools", "Chairmarks", "DataStructures", "JSON", "UnicodePlots", "TestItemRunner"])
-    mode in ("oxygen", "web", "analyzers") && Pkg.add(["Oxygen", "HTTP"])
+    mode in ("oxygen", "web", "pluto", "analyzers") && Pkg.add(["Oxygen", "HTTP"])
     mode == "web" && Pkg.add(["WGLMakie"])
     mode == "pluto" && Pkg.add(["Pluto", "PlutoUI", "WGLMakie"])
     mode == "plots" && Pkg.add(["CairoMakie", "WGLMakie"])

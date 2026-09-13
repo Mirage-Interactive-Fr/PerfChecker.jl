@@ -1,52 +1,53 @@
 {
   "correctness": "passed",
+  "date_kind": "GitHub release publication date",
   "os": "NT",
   "performance": "not_compared",
   "plot": {
     "data": [
       {
-        "bytes": 1701.2853902652037,
-        "file": "Eglkz/src/core.jl",
-        "version": "1.11.0"
-      },
-      {
-        "bytes": 435726.03764113074,
-        "file": "Eglkz/src/handlers.jl",
-        "version": "1.11.0"
-      },
-      {
-        "bytes": 40.1483277938691,
-        "file": "Eglkz/src/methods.jl",
-        "version": "1.11.0"
-      },
-      {
-        "bytes": 80.2966555877382,
-        "file": "Eglkz/src/routerhof.jl",
+        "bytes": 61738.09106502221,
+        "file": "DataStructures/src/heaps/arrays_as_heaps.jl",
         "version": "1.11.0"
       },
       {
         "bytes": 35004.32329527961,
-        "file": "VmtQB/src/http_core.jl",
+        "file": "HTTP/src/http_core.jl",
         "version": "1.11.0"
       },
       {
         "bytes": 260.9641306601492,
-        "file": "VmtQB/src/http_handlers.jl",
-        "version": "1.11.0"
-      },
-      {
-        "bytes": 61738.09106502221,
-        "file": "src/heaps/arrays_as_heaps.jl",
+        "file": "HTTP/src/http_handlers.jl",
         "version": "1.11.0"
       },
       {
         "bytes": 583054.0903864641,
-        "file": "tMaHX/src/parse.jl",
+        "file": "JSON/src/parse.jl",
         "version": "1.11.0"
       },
       {
         "bytes": 479906.76310779643,
-        "file": "tMaHX/src/write.jl",
+        "file": "JSON/src/write.jl",
+        "version": "1.11.0"
+      },
+      {
+        "bytes": 1701.2853902652037,
+        "file": "Oxygen/src/core.jl",
+        "version": "1.11.0"
+      },
+      {
+        "bytes": 435726.03764113074,
+        "file": "Oxygen/src/handlers.jl",
+        "version": "1.11.0"
+      },
+      {
+        "bytes": 40.1483277938691,
+        "file": "Oxygen/src/methods.jl",
+        "version": "1.11.0"
+      },
+      {
+        "bytes": 80.2966555877382,
+        "file": "Oxygen/src/routerhof.jl",
         "version": "1.11.0"
       }
     ],
@@ -65,6 +66,12 @@
     },
     "schema_version": "perfchecker-plot/1",
     "title": "Oxygen · heap_profile_alloc · allocations"
+  },
+  "release_date_kinds": {
+    "1.11.0": "GitHub release publication date"
+  },
+  "release_dates": {
+    "1.11.0": "2026-08-28"
   },
   "run_id": "c4a79ae5-6f29-43d0-8b0c-74c925ddce05",
   "runtime": {

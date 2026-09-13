@@ -6,14 +6,14 @@
   "plot": {
     "data": [
       {
-        "absolute_delta": 10500.0,
-        "baseline_median": 994700.0,
+        "absolute_delta": 28950.0,
+        "baseline_median": 1.102e6,
         "baseline_samples": 30,
-        "baseline_value": 994700.0,
+        "baseline_value": 1.102e6,
         "baseline_version": "1.0.0",
-        "candidate_median": 1.0052e6,
+        "candidate_median": 1.13095e6,
         "candidate_samples": 30,
-        "candidate_value": 1.0052e6,
+        "candidate_value": 1.13095e6,
         "candidate_version": "1.1.0",
         "comparison_key": "oxygen/events/buffer/2048/seed42/v1::julia.wall.time/benchmarktools-v1/fresh-state-evals1-v1",
         "feature": "buffer_benchmark",
@@ -22,7 +22,7 @@
         "package": "Oxygen",
         "reason": "no CI policy configured for this metric",
         "relation": "adjacent-release",
-        "relative_delta": 0.01055594651653765,
+        "relative_delta": 0.026270417422867513,
         "relative_limit": null,
         "sample_statistic": "median",
         "sample_statistic_definition": "exact/v1",
@@ -32,14 +32,14 @@
         "workload": "buffer_request"
       },
       {
-        "absolute_delta": 41150.0,
-        "baseline_median": 1.0052e6,
+        "absolute_delta": 737300.0,
+        "baseline_median": 1.13095e6,
         "baseline_samples": 30,
-        "baseline_value": 1.0052e6,
+        "baseline_value": 1.13095e6,
         "baseline_version": "1.1.0",
-        "candidate_median": 1.04635e6,
+        "candidate_median": 1.86825e6,
         "candidate_samples": 30,
-        "candidate_value": 1.04635e6,
+        "candidate_value": 1.86825e6,
         "candidate_version": "1.2.0",
         "comparison_key": "oxygen/events/buffer/2048/seed42/v1::julia.wall.time/benchmarktools-v1/fresh-state-evals1-v1",
         "feature": "buffer_benchmark",
@@ -48,7 +48,7 @@
         "package": "Oxygen",
         "reason": "no CI policy configured for this metric",
         "relation": "adjacent-release",
-        "relative_delta": 0.04093712693991246,
+        "relative_delta": 0.6519297935364075,
         "relative_limit": null,
         "sample_statistic": "median",
         "sample_statistic_definition": "exact/v1",
@@ -58,14 +58,14 @@
         "workload": "buffer_request"
       },
       {
-        "absolute_delta": -12250.0,
-        "baseline_median": 1.04635e6,
+        "absolute_delta": -736000.0,
+        "baseline_median": 1.86825e6,
         "baseline_samples": 30,
-        "baseline_value": 1.04635e6,
+        "baseline_value": 1.86825e6,
         "baseline_version": "1.2.0",
-        "candidate_median": 1.0341e6,
+        "candidate_median": 1.13225e6,
         "candidate_samples": 30,
-        "candidate_value": 1.0341e6,
+        "candidate_value": 1.13225e6,
         "candidate_version": "1.3.0",
         "comparison_key": "oxygen/events/buffer/2048/seed42/v1::julia.wall.time/benchmarktools-v1/fresh-state-evals1-v1",
         "feature": "buffer_benchmark",
@@ -74,7 +74,7 @@
         "package": "Oxygen",
         "reason": "no CI policy configured for this metric",
         "relation": "adjacent-release",
-        "relative_delta": -0.011707363692837005,
+        "relative_delta": -0.3939515589455373,
         "relative_limit": null,
         "sample_statistic": "median",
         "sample_statistic_definition": "exact/v1",
@@ -84,14 +84,14 @@
         "workload": "buffer_request"
       },
       {
-        "absolute_delta": -1100.0,
-        "baseline_median": 1.0341e6,
+        "absolute_delta": -57850.0,
+        "baseline_median": 1.13225e6,
         "baseline_samples": 30,
-        "baseline_value": 1.0341e6,
+        "baseline_value": 1.13225e6,
         "baseline_version": "1.3.0",
-        "candidate_median": 1.033e6,
+        "candidate_median": 1.0744e6,
         "candidate_samples": 30,
-        "candidate_value": 1.033e6,
+        "candidate_value": 1.0744e6,
         "candidate_version": "1.4.0",
         "comparison_key": "oxygen/events/buffer/2048/seed42/v1::julia.wall.time/benchmarktools-v1/fresh-state-evals1-v1",
         "feature": "buffer_benchmark",
@@ -100,7 +100,7 @@
         "package": "Oxygen",
         "reason": "no CI policy configured for this metric",
         "relation": "adjacent-release",
-        "relative_delta": -0.001063726912290881,
+        "relative_delta": -0.05109295650253919,
         "relative_limit": null,
         "sample_statistic": "median",
         "sample_statistic_definition": "exact/v1",
@@ -110,14 +110,14 @@
         "workload": "buffer_request"
       },
       {
-        "absolute_delta": 4300.0,
-        "baseline_median": 1.033e6,
+        "absolute_delta": 712350.0,
+        "baseline_median": 1.0744e6,
         "baseline_samples": 30,
-        "baseline_value": 1.033e6,
+        "baseline_value": 1.0744e6,
         "baseline_version": "1.4.0",
-        "candidate_median": 1.0373e6,
+        "candidate_median": 1.78675e6,
         "candidate_samples": 30,
-        "candidate_value": 1.0373e6,
+        "candidate_value": 1.78675e6,
         "candidate_version": "1.5.0",
         "comparison_key": "oxygen/events/buffer/2048/seed42/v1::julia.wall.time/benchmarktools-v1/fresh-state-evals1-v1",
         "feature": "buffer_benchmark",
@@ -126,7 +126,7 @@
         "package": "Oxygen",
         "reason": "no CI policy configured for this metric",
         "relation": "adjacent-release",
-        "relative_delta": 0.004162633107454018,
+        "relative_delta": 0.6630212211466865,
         "relative_limit": null,
         "sample_statistic": "median",
         "sample_statistic_definition": "exact/v1",
@@ -136,14 +136,14 @@
         "workload": "buffer_request"
       },
       {
-        "absolute_delta": -900.0,
-        "baseline_median": 1.0373e6,
+        "absolute_delta": 179600.0,
+        "baseline_median": 1.78675e6,
         "baseline_samples": 30,
-        "baseline_value": 1.0373e6,
+        "baseline_value": 1.78675e6,
         "baseline_version": "1.5.0",
-        "candidate_median": 1.0364e6,
+        "candidate_median": 1.96635e6,
         "candidate_samples": 30,
-        "candidate_value": 1.0364e6,
+        "candidate_value": 1.96635e6,
         "candidate_version": "1.6.0",
         "comparison_key": "oxygen/events/buffer/2048/seed42/v1::julia.wall.time/benchmarktools-v1/fresh-state-evals1-v1",
         "feature": "buffer_benchmark",
@@ -152,7 +152,7 @@
         "package": "Oxygen",
         "reason": "no CI policy configured for this metric",
         "relation": "adjacent-release",
-        "relative_delta": -0.0008676371348693724,
+        "relative_delta": 0.10051769973415418,
         "relative_limit": null,
         "sample_statistic": "median",
         "sample_statistic_definition": "exact/v1",
@@ -162,14 +162,14 @@
         "workload": "buffer_request"
       },
       {
-        "absolute_delta": -7500.0,
-        "baseline_median": 1.0364e6,
+        "absolute_delta": -215250.0,
+        "baseline_median": 1.96635e6,
         "baseline_samples": 30,
-        "baseline_value": 1.0364e6,
+        "baseline_value": 1.96635e6,
         "baseline_version": "1.6.0",
-        "candidate_median": 1.0289e6,
+        "candidate_median": 1.7511e6,
         "candidate_samples": 30,
-        "candidate_value": 1.0289e6,
+        "candidate_value": 1.7511e6,
         "candidate_version": "1.7.0",
         "comparison_key": "oxygen/events/buffer/2048/seed42/v1::julia.wall.time/benchmarktools-v1/fresh-state-evals1-v1",
         "feature": "buffer_benchmark",
@@ -178,7 +178,7 @@
         "package": "Oxygen",
         "reason": "no CI policy configured for this metric",
         "relation": "adjacent-release",
-        "relative_delta": -0.007236588189888074,
+        "relative_delta": -0.10946677854908841,
         "relative_limit": null,
         "sample_statistic": "median",
         "sample_statistic_definition": "exact/v1",
@@ -188,14 +188,14 @@
         "workload": "buffer_request"
       },
       {
-        "absolute_delta": 13350.0,
-        "baseline_median": 1.0289e6,
+        "absolute_delta": -701500.0,
+        "baseline_median": 1.7511e6,
         "baseline_samples": 30,
-        "baseline_value": 1.0289e6,
+        "baseline_value": 1.7511e6,
         "baseline_version": "1.7.0",
-        "candidate_median": 1.04225e6,
+        "candidate_median": 1.0496e6,
         "candidate_samples": 30,
-        "candidate_value": 1.04225e6,
+        "candidate_value": 1.0496e6,
         "candidate_version": "1.8.0",
         "comparison_key": "oxygen/events/buffer/2048/seed42/v1::julia.wall.time/benchmarktools-v1/fresh-state-evals1-v1",
         "feature": "buffer_benchmark",
@@ -204,7 +204,7 @@
         "package": "Oxygen",
         "reason": "no CI policy configured for this metric",
         "relation": "adjacent-release",
-        "relative_delta": 0.012975021868014384,
+        "relative_delta": -0.40060533379018903,
         "relative_limit": null,
         "sample_statistic": "median",
         "sample_statistic_definition": "exact/v1",
@@ -214,14 +214,14 @@
         "workload": "buffer_request"
       },
       {
-        "absolute_delta": -2000.0,
-        "baseline_median": 1.04225e6,
+        "absolute_delta": 29000.0,
+        "baseline_median": 1.0496e6,
         "baseline_samples": 30,
-        "baseline_value": 1.04225e6,
+        "baseline_value": 1.0496e6,
         "baseline_version": "1.8.0",
-        "candidate_median": 1.04025e6,
+        "candidate_median": 1.0786e6,
         "candidate_samples": 30,
-        "candidate_value": 1.04025e6,
+        "candidate_value": 1.0786e6,
         "candidate_version": "1.9.0",
         "comparison_key": "oxygen/events/buffer/2048/seed42/v1::julia.wall.time/benchmarktools-v1/fresh-state-evals1-v1",
         "feature": "buffer_benchmark",
@@ -230,7 +230,7 @@
         "package": "Oxygen",
         "reason": "no CI policy configured for this metric",
         "relation": "adjacent-release",
-        "relative_delta": -0.001918925401775006,
+        "relative_delta": 0.027629573170731708,
         "relative_limit": null,
         "sample_statistic": "median",
         "sample_statistic_definition": "exact/v1",
@@ -240,14 +240,14 @@
         "workload": "buffer_request"
       },
       {
-        "absolute_delta": -750.0,
-        "baseline_median": 1.04025e6,
+        "absolute_delta": 818800.0,
+        "baseline_median": 1.0786e6,
         "baseline_samples": 30,
-        "baseline_value": 1.04025e6,
+        "baseline_value": 1.0786e6,
         "baseline_version": "1.9.0",
-        "candidate_median": 1.0395e6,
+        "candidate_median": 1.8974e6,
         "candidate_samples": 30,
-        "candidate_value": 1.0395e6,
+        "candidate_value": 1.8974e6,
         "candidate_version": "1.10.0",
         "comparison_key": "oxygen/events/buffer/2048/seed42/v1::julia.wall.time/benchmarktools-v1/fresh-state-evals1-v1",
         "feature": "buffer_benchmark",
@@ -256,7 +256,7 @@
         "package": "Oxygen",
         "reason": "no CI policy configured for this metric",
         "relation": "adjacent-release",
-        "relative_delta": -0.0007209805335255948,
+        "relative_delta": 0.7591322084183201,
         "relative_limit": null,
         "sample_statistic": "median",
         "sample_statistic_definition": "exact/v1",
@@ -266,14 +266,66 @@
         "workload": "buffer_request"
       },
       {
-        "absolute_delta": 6450.0,
-        "baseline_median": 1.0395e6,
+        "absolute_delta": -727300.0,
+        "baseline_median": 1.8974e6,
         "baseline_samples": 30,
-        "baseline_value": 1.0395e6,
+        "baseline_value": 1.8974e6,
         "baseline_version": "1.10.0",
-        "candidate_median": 1.04595e6,
+        "candidate_median": 1.1701e6,
         "candidate_samples": 30,
-        "candidate_value": 1.04595e6,
+        "candidate_value": 1.1701e6,
+        "candidate_version": "1.10.1",
+        "comparison_key": "oxygen/events/buffer/2048/seed42/v1::julia.wall.time/benchmarktools-v1/fresh-state-evals1-v1",
+        "feature": "buffer_benchmark",
+        "measurement_definition": "julia.wall.time/benchmarktools-v1/fresh-state-evals1-v1",
+        "metric": "julia.wall.time",
+        "package": "Oxygen",
+        "reason": "no CI policy configured for this metric",
+        "relation": "adjacent-release",
+        "relative_delta": -0.38331400864340676,
+        "relative_limit": null,
+        "sample_statistic": "median",
+        "sample_statistic_definition": "exact/v1",
+        "series_id": "de4af3a9568ce765",
+        "status": "diagnostic",
+        "unit": "ns",
+        "workload": "buffer_request"
+      },
+      {
+        "absolute_delta": -84750.0,
+        "baseline_median": 1.1701e6,
+        "baseline_samples": 30,
+        "baseline_value": 1.1701e6,
+        "baseline_version": "1.10.1",
+        "candidate_median": 1.08535e6,
+        "candidate_samples": 30,
+        "candidate_value": 1.08535e6,
+        "candidate_version": "1.10.2",
+        "comparison_key": "oxygen/events/buffer/2048/seed42/v1::julia.wall.time/benchmarktools-v1/fresh-state-evals1-v1",
+        "feature": "buffer_benchmark",
+        "measurement_definition": "julia.wall.time/benchmarktools-v1/fresh-state-evals1-v1",
+        "metric": "julia.wall.time",
+        "package": "Oxygen",
+        "reason": "no CI policy configured for this metric",
+        "relation": "adjacent-release",
+        "relative_delta": -0.07242970686266131,
+        "relative_limit": null,
+        "sample_statistic": "median",
+        "sample_statistic_definition": "exact/v1",
+        "series_id": "de4af3a9568ce765",
+        "status": "diagnostic",
+        "unit": "ns",
+        "workload": "buffer_request"
+      },
+      {
+        "absolute_delta": -5450.0,
+        "baseline_median": 1.08535e6,
+        "baseline_samples": 30,
+        "baseline_value": 1.08535e6,
+        "baseline_version": "1.10.2",
+        "candidate_median": 1.0799e6,
+        "candidate_samples": 30,
+        "candidate_value": 1.0799e6,
         "candidate_version": "1.11.0",
         "comparison_key": "oxygen/events/buffer/2048/seed42/v1::julia.wall.time/benchmarktools-v1/fresh-state-evals1-v1",
         "feature": "buffer_benchmark",
@@ -282,7 +334,7 @@
         "package": "Oxygen",
         "reason": "no CI policy configured for this metric",
         "relation": "adjacent-release",
-        "relative_delta": 0.006204906204906205,
+        "relative_delta": -0.005021421661215276,
         "relative_limit": null,
         "sample_statistic": "median",
         "sample_statistic_definition": "exact/v1",
@@ -310,10 +362,28 @@
     "schema_version": "perfchecker-plot/1",
     "title": "Oxygen · buffer_benchmark · julia.wall.time"
   },
+  "release_date_kinds": {
+    "1.0.0": "GitHub release publication date",
+    "1.1.0": "GitHub release publication date",
+    "1.10.0": "GitHub release publication date",
+    "1.10.1": "GitHub release publication date",
+    "1.10.2": "GitHub release publication date",
+    "1.11.0": "GitHub release publication date",
+    "1.2.0": "GitHub release publication date",
+    "1.3.0": "GitHub release publication date",
+    "1.4.0": "GitHub release publication date",
+    "1.5.0": "GitHub release publication date",
+    "1.6.0": "GitHub release publication date",
+    "1.7.0": "GitHub release publication date",
+    "1.8.0": "GitHub release publication date",
+    "1.9.0": "GitHub release publication date"
+  },
   "release_dates": {
     "1.0.0": "2022-05-28",
     "1.1.0": "2022-08-19",
     "1.10.0": "2026-01-01",
+    "1.10.1": "2026-02-25",
+    "1.10.2": "2026-04-18",
     "1.11.0": "2026-08-28",
     "1.2.0": "2023-09-28",
     "1.3.0": "2023-12-14",
@@ -324,29 +394,17 @@
     "1.8.0": "2025-11-19",
     "1.9.0": "2025-12-14"
   },
-  "run_id": "211e9c74-783b-41f2-9ef6-3909e3ff6b56",
+  "run_id": "4d223264-9351-4431-85b6-8c81f2bde47e",
   "runtime": {
     "language": "julia",
     "threads": 1,
     "version": "1.13.0"
   },
   "scope": "One local machine; illustrative history, not a package regression verdict",
-  "started_at": "2026-09-13T08:50:48.851",
+  "started_at": "2026-09-13T11:08:13.162",
   "worker_environments": [
     {
-      "manifest_sha256": "023efbb4d41bb5dbcd69f9c79edce94a507299d4d61300e231e8b86cbb627f6c",
-      "project_sha256": "f4297a96b2c6e940ea15876a6bba21ce6e6402f771854a5842963d3ee89e5d80"
-    },
-    {
-      "manifest_sha256": "87191dd4a9a52ce02ea4b7c4d0c0a79d2229f315fe9d0a535042431cc17e5825",
-      "project_sha256": "f4297a96b2c6e940ea15876a6bba21ce6e6402f771854a5842963d3ee89e5d80"
-    },
-    {
-      "manifest_sha256": "37610bd2419a75ccef7e88c7062050342954b9b6e3651b3125b8d4638e5054d4",
-      "project_sha256": "f4297a96b2c6e940ea15876a6bba21ce6e6402f771854a5842963d3ee89e5d80"
-    },
-    {
-      "manifest_sha256": "07efe7b4d60d9ca8c7ff9b57f4e0c902067c5581184fac86f0db69596742717a",
+      "manifest_sha256": "9c89f70360da971e2112c94d9dcc637b04b1a421484c0b2eb744ba033e1be04b",
       "project_sha256": "f4297a96b2c6e940ea15876a6bba21ce6e6402f771854a5842963d3ee89e5d80"
     },
     {
@@ -354,15 +412,11 @@
       "project_sha256": "f4297a96b2c6e940ea15876a6bba21ce6e6402f771854a5842963d3ee89e5d80"
     },
     {
-      "manifest_sha256": "9c89f70360da971e2112c94d9dcc637b04b1a421484c0b2eb744ba033e1be04b",
+      "manifest_sha256": "23cb1787c756286bc0c388ae57a8341634d106bd7dde6bef8d343ec951dac15b",
       "project_sha256": "f4297a96b2c6e940ea15876a6bba21ce6e6402f771854a5842963d3ee89e5d80"
     },
     {
-      "manifest_sha256": "6a2cea7be47d3a347aa8d8d1bd2baa7513aa5c0f7fe1129e3cb20ceeead0eab6",
-      "project_sha256": "f4297a96b2c6e940ea15876a6bba21ce6e6402f771854a5842963d3ee89e5d80"
-    },
-    {
-      "manifest_sha256": "eb303be0ee4ad1d4136e3461f0cdbe176d64ecba106eb8981f68e70e84097daf",
+      "manifest_sha256": "37610bd2419a75ccef7e88c7062050342954b9b6e3651b3125b8d4638e5054d4",
       "project_sha256": "f4297a96b2c6e940ea15876a6bba21ce6e6402f771854a5842963d3ee89e5d80"
     },
     {
@@ -370,15 +424,39 @@
       "project_sha256": "f4297a96b2c6e940ea15876a6bba21ce6e6402f771854a5842963d3ee89e5d80"
     },
     {
-      "manifest_sha256": "a22211905892a558108923e4267c857acdd8452b9c1a29643e8b6432eca8469e",
+      "manifest_sha256": "07efe7b4d60d9ca8c7ff9b57f4e0c902067c5581184fac86f0db69596742717a",
       "project_sha256": "f4297a96b2c6e940ea15876a6bba21ce6e6402f771854a5842963d3ee89e5d80"
     },
     {
-      "manifest_sha256": "23cb1787c756286bc0c388ae57a8341634d106bd7dde6bef8d343ec951dac15b",
+      "manifest_sha256": "87191dd4a9a52ce02ea4b7c4d0c0a79d2229f315fe9d0a535042431cc17e5825",
+      "project_sha256": "f4297a96b2c6e940ea15876a6bba21ce6e6402f771854a5842963d3ee89e5d80"
+    },
+    {
+      "manifest_sha256": "eb303be0ee4ad1d4136e3461f0cdbe176d64ecba106eb8981f68e70e84097daf",
+      "project_sha256": "f4297a96b2c6e940ea15876a6bba21ce6e6402f771854a5842963d3ee89e5d80"
+    },
+    {
+      "manifest_sha256": "8ee5c71ef3ebf26c2ca85699bc636898aad411383e18d733aacd754ab5fd3017",
+      "project_sha256": "f4297a96b2c6e940ea15876a6bba21ce6e6402f771854a5842963d3ee89e5d80"
+    },
+    {
+      "manifest_sha256": "15ffe3a00c7dcd508b849378295102c893c9eaf15e3aec3d9a46bb9a22da110f",
+      "project_sha256": "f4297a96b2c6e940ea15876a6bba21ce6e6402f771854a5842963d3ee89e5d80"
+    },
+    {
+      "manifest_sha256": "023efbb4d41bb5dbcd69f9c79edce94a507299d4d61300e231e8b86cbb627f6c",
       "project_sha256": "f4297a96b2c6e940ea15876a6bba21ce6e6402f771854a5842963d3ee89e5d80"
     },
     {
       "manifest_sha256": "30b933a76fbf03f57dec28a5768f66ac557a48b9c0cd7deb4a135a07c8e75429",
+      "project_sha256": "f4297a96b2c6e940ea15876a6bba21ce6e6402f771854a5842963d3ee89e5d80"
+    },
+    {
+      "manifest_sha256": "6a2cea7be47d3a347aa8d8d1bd2baa7513aa5c0f7fe1129e3cb20ceeead0eab6",
+      "project_sha256": "f4297a96b2c6e940ea15876a6bba21ce6e6402f771854a5842963d3ee89e5d80"
+    },
+    {
+      "manifest_sha256": "a22211905892a558108923e4267c857acdd8452b9c1a29643e8b6432eca8469e",
       "project_sha256": "f4297a96b2c6e940ea15876a6bba21ce6e6402f771854a5842963d3ee89e5d80"
     }
   ]

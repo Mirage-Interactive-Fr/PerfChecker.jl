@@ -1,0 +1,27 @@
+{
+  "date": "2026-09-13T10:20:55.083",
+  "julia_version": "1.13.0",
+  "os": "Linux",
+  "records": [
+    {
+      "artifacts": [
+        "callgrind.1288",
+        "callgrind.log"
+      ],
+      "availability": "executable_found",
+      "correctness": "passed",
+      "cpu_target": "generic",
+      "elapsed_seconds": 14.010738044,
+      "executed": true,
+      "exit_code": 0,
+      "package": "datastructures",
+      "repetitions": 3,
+      "scope": "three warmed lifecycles including preparation and oracle; startup excluded",
+      "size": 512,
+      "status": "completed",
+      "suppression_sha256": "26b9cd139938b7c99cfecbe9297e987c08461a9a3a53cee0a20493291c71508f",
+      "tool": "callgrind",
+      "instrumented_instructions": 550591
+    }
+  ]
+}

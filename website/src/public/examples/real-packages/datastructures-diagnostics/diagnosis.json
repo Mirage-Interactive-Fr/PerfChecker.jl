@@ -1,0 +1,462 @@
+{
+  "records": [
+    {
+      "analysis_scope": "operation specialized for prepared state type; synchronization excluded",
+      "correctness": "passed",
+      "findings": [],
+      "runtime": {
+        "language": "julia",
+        "threads": 1,
+        "version": "1.13.0"
+      },
+      "status": "complete",
+      "summary": "",
+      "tool": "jet",
+      "tool_version": "0.12.1"
+    },
+    {
+      "analysis_scope": "static operation specialization; tool exception-path defaults; not a universal allocation guarantee",
+      "correctness": "passed",
+      "findings": [
+        {
+          "evidence": {
+            "analysis": "AllocCheck.check_allocs",
+            "report_type": "AllocCheck.AllocationSite"
+          },
+          "location": {
+            "file": ".\\boot.jl",
+            "line": 649
+          },
+          "message": "Allocation of Vector{Tuple{Int64, Int64, Int64}} in .\\boot.jl:649\n  | return $(Expr(:new, :self, :(memoryref(mem)), :((m,))))\n\nStacktrace:\n [1] Array\n   @ .\\boot.jl:649 [inlined]\n [2] similar\n   @ .\\array.jl:406 [inlined]\n [3] drain_heap(input::Vector{Tuple{Int64, Int64, Int64}})\n   @ Main.var\"##SharedCase#142\".PerfCheckerKitchenSink <local-source>\n",
+          "rule_id": "allocation.potential",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "AllocCheck.check_allocs",
+            "report_type": "AllocCheck.AllocationSite"
+          },
+          "location": {
+            "file": ".\\boot.jl",
+            "line": 588
+          },
+          "message": "Allocation of Memory{Tuple{Int64, Int64, Int64}} in .\\boot.jl:588\n  | (self::Type{GenericMemory{kind,T,addrspace}})(::UndefInitializer, m::Int) where {T,addrspace,kind} = memorynew(self, m)\n\nStacktrace:\n [1] GenericMemory\n   @ .\\boot.jl:588 [inlined]\n [2] array_new_memory\n   @ .\\array.jl:1101 [inlined]\n [3] _growend_internal!(a::Vector{Tuple{Int64, Int64, Int64}}, delta::Int64, len::Int64)\n   @ Base .\\array.jl:1181\n [4] multiple call sites\n   @ unknown:0\n",
+          "rule_id": "allocation.potential",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "AllocCheck.check_allocs",
+            "report_type": "AllocCheck.AllocationSite"
+          },
+          "location": {
+            "file": ".\\boot.jl",
+            "line": 588
+          },
+          "message": "Allocation of Memory{Tuple{Int64, Int64, Int64}} in .\\boot.jl:588\n  | (self::Type{GenericMemory{kind,T,addrspace}})(::UndefInitializer, m::Int) where {T,addrspace,kind} = memorynew(self, m)\n\nStacktrace:\n [1] GenericMemory\n   @ .\\boot.jl:588 [inlined]\n [2] array_new_memory\n   @ .\\array.jl:1101 [inlined]\n [3] sizehint!(a::Vector{Tuple{Int64, Int64, Int64}}, sz::Int64; first::Bool, shrink::Bool)\n   @ Base .\\array.jl:1598\n [4] sizehint!\n   @ .\\array.jl:1586 [inlined]\n [5] drain_heap(input::Vector{Tuple{Int64, Int64, Int64}})\n   @ Main.var\"##SharedCase#142\".PerfCheckerKitchenSink <local-source>\n",
+          "rule_id": "allocation.potential",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "AllocCheck.check_allocs",
+            "report_type": "AllocCheck.AllocationSite"
+          },
+          "location": {
+            "file": ".\\boot.jl",
+            "line": 588
+          },
+          "message": "Allocation of Memory{Tuple{Int64, Int64, Int64}} in .\\boot.jl:588\n  | (self::Type{GenericMemory{kind,T,addrspace}})(::UndefInitializer, m::Int) where {T,addrspace,kind} = memorynew(self, m)\n\nStacktrace:\n [1] GenericMemory\n   @ .\\boot.jl:588 [inlined]\n [2] array_new_memory\n   @ .\\array.jl:1101 [inlined]\n [3] _growbeg_internal!(a::Vector{Tuple{Int64, Int64, Int64}}, delta::Int64, len::Int64)\n   @ Base .\\array.jl:1129\n [4] _growbeg!\n   @ .\\array.jl:1152 [inlined]\n [5] sizehint!(a::Vector{Tuple{Int64, Int64, Int64}}, sz::Int64; first::Bool, shrink::Bool)\n   @ Base .\\array.jl:1607\n [6] sizehint!\n   @ .\\array.jl:1586 [inlined]\n [7] drain_heap(input::Vector{Tuple{Int64, Int64, Int64}})\n   @ Main.var\"##SharedCase#142\".PerfCheckerKitchenSink <local-source>\n",
+          "rule_id": "allocation.potential",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "AllocCheck.check_allocs",
+            "report_type": "AllocCheck.AllocationSite"
+          },
+          "location": {
+            "file": ".\\boot.jl",
+            "line": 588
+          },
+          "message": "Allocation of Memory{Tuple{Int64, Int64, Int64}} in .\\boot.jl:588\n  | (self::Type{GenericMemory{kind,T,addrspace}})(::UndefInitializer, m::Int) where {T,addrspace,kind} = memorynew(self, m)\n\nStacktrace:\n [1] GenericMemory\n   @ .\\boot.jl:588 [inlined]\n [2] Array\n   @ .\\boot.jl:648 [inlined]\n [3] similar\n   @ .\\array.jl:402 [inlined]\n [4] heapify(xs::Vector{Tuple{Int64, Int64, Int64}}, o::Base.Order.ForwardOrdering)\n   @ DataStructures <local-source>\n [5] BinaryHeap\n   @ <local-source> [inlined]\n [6] BinaryHeap\n   @ <local-source> [inlined]\n [7] BinaryHeap\n   @ <local-source> [inlined]\n [8] drain_heap(input::Vector{Tuple{Int64, Int64, Int64}})\n   @ Main.var\"##SharedCase#142\".PerfCheckerKitchenSink <local-source>\n",
+          "rule_id": "allocation.potential",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "AllocCheck.check_allocs",
+            "report_type": "AllocCheck.AllocationSite"
+          },
+          "location": {
+            "file": ".\\boot.jl",
+            "line": 649
+          },
+          "message": "Allocation of Vector{Tuple{Int64, Int64, Int64}} in .\\boot.jl:649\n  | return $(Expr(:new, :self, :(memoryref(mem)), :((m,))))\n\nStacktrace:\n [1] Array\n   @ .\\boot.jl:649 [inlined]\n [2] similar\n   @ .\\array.jl:402 [inlined]\n [3] heapify(xs::Vector{Tuple{Int64, Int64, Int64}}, o::Base.Order.ForwardOrdering)\n   @ DataStructures <local-source>\n [4] BinaryHeap\n   @ <local-source> [inlined]\n [5] BinaryHeap\n   @ <local-source> [inlined]\n [6] BinaryHeap\n   @ <local-source> [inlined]\n [7] drain_heap(input::Vector{Tuple{Int64, Int64, Int64}})\n   @ Main.var\"##SharedCase#142\".PerfCheckerKitchenSink <local-source>\n",
+          "rule_id": "allocation.potential",
+          "severity": "warning"
+        }
+      ],
+      "runtime": {
+        "language": "julia",
+        "threads": 1,
+        "version": "1.13.0"
+      },
+      "status": "complete",
+      "summary": "",
+      "tool": "alloccheck",
+      "tool_version": "0.2.6"
+    },
+    {
+      "analysis_scope": "first complete scenario lifecycle in diagnostic process",
+      "correctness": "passed",
+      "findings": [
+        {
+          "evidence": {
+            "inference_seconds": 4.708766937255859e-6
+          },
+          "location": {
+            "file": "",
+            "line": 0
+          },
+          "message": "InferenceTimingNode: 0.000004/0.000005 on Base.Compiler.Timings.ROOT() with 0 direct children",
+          "rule_id": "compilation.inference",
+          "severity": "warning"
+        }
+      ],
+      "measurements": {
+        "inference_seconds": 4.708766937255859e-6
+      },
+      "runtime": {
+        "language": "julia",
+        "threads": 1,
+        "version": "1.13.0"
+      },
+      "status": "complete",
+      "summary": "",
+      "tool": "snoopcompile",
+      "tool_version": "3.2.9"
+    },
+    {
+      "correctness": "passed",
+      "findings": [],
+      "measurements": {
+        "first_case_seconds": 0.1709083,
+        "load_seconds": 0.6490315,
+        "warm_case_seconds": 0.0002009
+      },
+      "runtime": {
+        "language": "julia",
+        "threads": 1,
+        "version": "1.13.0"
+      },
+      "status": "complete",
+      "summary": "",
+      "tool": "latency"
+    },
+    {
+      "analysis_scope": "warmed operation and synchronization; fresh state; preparation, verification and cleanup excluded",
+      "correctness": "passed",
+      "findings": [],
+      "measurements": {
+        "samples": [
+          {
+            "allocated_bytes": 98494,
+            "bigalloc": 0,
+            "compile_time": 0.0,
+            "full_sweep": 0,
+            "gc_seconds": 0.0,
+            "lock_conflicts": 0,
+            "malloc": 2,
+            "operation_seconds": 0.0001555,
+            "pause": 0,
+            "poolalloc": 4,
+            "realloc": 0,
+            "recompile_time": 0.0
+          },
+          {
+            "allocated_bytes": 98526,
+            "bigalloc": 0,
+            "compile_time": 0.0,
+            "full_sweep": 0,
+            "gc_seconds": 0.0,
+            "lock_conflicts": 0,
+            "malloc": 2,
+            "operation_seconds": 0.0001936,
+            "pause": 0,
+            "poolalloc": 4,
+            "realloc": 0,
+            "recompile_time": 0.0
+          },
+          {
+            "allocated_bytes": 98462,
+            "bigalloc": 0,
+            "compile_time": 0.0,
+            "full_sweep": 0,
+            "gc_seconds": 0.0,
+            "lock_conflicts": 0,
+            "malloc": 2,
+            "operation_seconds": 0.0001759,
+            "pause": 0,
+            "poolalloc": 4,
+            "realloc": 0,
+            "recompile_time": 0.0
+          },
+          {
+            "allocated_bytes": 98494,
+            "bigalloc": 0,
+            "compile_time": 0.0,
+            "full_sweep": 0,
+            "gc_seconds": 0.0,
+            "lock_conflicts": 0,
+            "malloc": 2,
+            "operation_seconds": 0.0001706,
+            "pause": 0,
+            "poolalloc": 4,
+            "realloc": 0,
+            "recompile_time": 0.0
+          },
+          {
+            "allocated_bytes": 98494,
+            "bigalloc": 0,
+            "compile_time": 0.0,
+            "full_sweep": 0,
+            "gc_seconds": 0.0,
+            "lock_conflicts": 0,
+            "malloc": 2,
+            "operation_seconds": 0.0001761,
+            "pause": 0,
+            "poolalloc": 4,
+            "realloc": 0,
+            "recompile_time": 0.0
+          }
+        ]
+      },
+      "runtime": {
+        "language": "julia",
+        "threads": 1,
+        "version": "1.13.0"
+      },
+      "status": "complete",
+      "summary": "5 operations: 0.0 ms in GC, 492470 allocated bytes in total. Diagnostic counters are process-wide.",
+      "tool": "gc"
+    },
+    {
+      "correctness": "passed",
+      "findings": [],
+      "measurements": {
+        "samples": [
+          {
+            "process_after": {
+              "message": "",
+              "peak_rss_bytes": 265232384,
+              "private_bytes": 276750336,
+              "provider": "windows-psapi",
+              "rss_bytes": 262213632,
+              "schema_version": "perfchecker-process-memory/1",
+              "status": "observed"
+            },
+            "process_before": {
+              "message": "",
+              "peak_rss_bytes": 265232384,
+              "private_bytes": 277852160,
+              "provider": "windows-psapi",
+              "rss_bytes": 262897664,
+              "schema_version": "perfchecker-process-memory/1",
+              "status": "observed"
+            },
+            "state_after_bytes": 49192,
+            "state_and_result_bytes": 98400,
+            "state_before_bytes": 49192
+          },
+          {
+            "process_after": {
+              "message": "",
+              "peak_rss_bytes": 265232384,
+              "private_bytes": 277409792,
+              "provider": "windows-psapi",
+              "rss_bytes": 262582272,
+              "schema_version": "perfchecker-process-memory/1",
+              "status": "observed"
+            },
+            "process_before": {
+              "message": "",
+              "peak_rss_bytes": 265232384,
+              "private_bytes": 277270528,
+              "provider": "windows-psapi",
+              "rss_bytes": 262483968,
+              "schema_version": "perfchecker-process-memory/1",
+              "status": "observed"
+            },
+            "state_after_bytes": 49192,
+            "state_and_result_bytes": 98400,
+            "state_before_bytes": 49192
+          },
+          {
+            "process_after": {
+              "message": "",
+              "peak_rss_bytes": 265232384,
+              "private_bytes": 277516288,
+              "provider": "windows-psapi",
+              "rss_bytes": 262631424,
+              "schema_version": "perfchecker-process-memory/1",
+              "status": "observed"
+            },
+            "process_before": {
+              "message": "",
+              "peak_rss_bytes": 265232384,
+              "private_bytes": 277409792,
+              "provider": "windows-psapi",
+              "rss_bytes": 262582272,
+              "schema_version": "perfchecker-process-memory/1",
+              "status": "observed"
+            },
+            "state_after_bytes": 49192,
+            "state_and_result_bytes": 98400,
+            "state_before_bytes": 49192
+          },
+          {
+            "process_after": {
+              "message": "",
+              "peak_rss_bytes": 265232384,
+              "private_bytes": 277516288,
+              "provider": "windows-psapi",
+              "rss_bytes": 262680576,
+              "schema_version": "perfchecker-process-memory/1",
+              "status": "observed"
+            },
+            "process_before": {
+              "message": "",
+              "peak_rss_bytes": 265232384,
+              "private_bytes": 277516288,
+              "provider": "windows-psapi",
+              "rss_bytes": 262680576,
+              "schema_version": "perfchecker-process-memory/1",
+              "status": "observed"
+            },
+            "state_after_bytes": 49192,
+            "state_and_result_bytes": 98400,
+            "state_before_bytes": 49192
+          },
+          {
+            "process_after": {
+              "message": "",
+              "peak_rss_bytes": 265232384,
+              "private_bytes": 277516288,
+              "provider": "windows-psapi",
+              "rss_bytes": 262688768,
+              "schema_version": "perfchecker-process-memory/1",
+              "status": "observed"
+            },
+            "process_before": {
+              "message": "",
+              "peak_rss_bytes": 265232384,
+              "private_bytes": 277516288,
+              "provider": "windows-psapi",
+              "rss_bytes": 262680576,
+              "schema_version": "perfchecker-process-memory/1",
+              "status": "observed"
+            },
+            "state_after_bytes": 49192,
+            "state_and_result_bytes": 98400,
+            "state_before_bytes": 49192
+          }
+        ]
+      },
+      "runtime": {
+        "language": "julia",
+        "threads": 1,
+        "version": "1.13.0"
+      },
+      "status": "complete",
+      "summary": "5 operations: reachable state changed by 0 to 0 bytes. Growth may be intended output or a cache; it does not establish a leak.",
+      "tool": "memory"
+    },
+    {
+      "correctness": "passed",
+      "findings": [],
+      "measurements": {
+        "samples": [
+          {
+            "allocated_bytes": 98510,
+            "bigalloc": 0,
+            "compile_time": 0.0,
+            "full_sweep": 0,
+            "gc_seconds": 0.0,
+            "lock_conflicts": 0,
+            "malloc": 2,
+            "operation_seconds": 0.0002074,
+            "pause": 0,
+            "poolalloc": 4,
+            "realloc": 0,
+            "recompile_time": 0.0
+          },
+          {
+            "allocated_bytes": 98526,
+            "bigalloc": 0,
+            "compile_time": 0.0,
+            "full_sweep": 0,
+            "gc_seconds": 0.0,
+            "lock_conflicts": 0,
+            "malloc": 2,
+            "operation_seconds": 0.0001695,
+            "pause": 0,
+            "poolalloc": 4,
+            "realloc": 0,
+            "recompile_time": 0.0
+          },
+          {
+            "allocated_bytes": 98510,
+            "bigalloc": 0,
+            "compile_time": 0.0,
+            "full_sweep": 0,
+            "gc_seconds": 0.0,
+            "lock_conflicts": 0,
+            "malloc": 2,
+            "operation_seconds": 0.000185,
+            "pause": 0,
+            "poolalloc": 4,
+            "realloc": 0,
+            "recompile_time": 0.0
+          },
+          {
+            "allocated_bytes": 98526,
+            "bigalloc": 0,
+            "compile_time": 0.0,
+            "full_sweep": 0,
+            "gc_seconds": 0.0,
+            "lock_conflicts": 0,
+            "malloc": 2,
+            "operation_seconds": 0.0001754,
+            "pause": 0,
+            "poolalloc": 4,
+            "realloc": 0,
+            "recompile_time": 0.0
+          },
+          {
+            "allocated_bytes": 98494,
+            "bigalloc": 0,
+            "compile_time": 0.0,
+            "full_sweep": 0,
+            "gc_seconds": 0.0,
+            "lock_conflicts": 0,
+            "malloc": 2,
+            "operation_seconds": 0.0001457,
+            "pause": 0,
+            "poolalloc": 4,
+            "realloc": 0,
+            "recompile_time": 0.0
+          }
+        ]
+      },
+      "runtime": {
+        "language": "julia",
+        "threads": 1,
+        "version": "1.13.0"
+      },
+      "status": "complete",
+      "summary": "5 operations: 0 observed lock conflicts. Counts do not measure waiting duration.",
+      "tool": "locks"
+    }
+  ]
+}

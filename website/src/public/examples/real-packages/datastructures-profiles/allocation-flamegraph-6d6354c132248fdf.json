@@ -1,5 +1,6 @@
 {
   "correctness": "passed",
+  "date_kind": "GitHub release publication date",
   "os": "NT",
   "performance": "not_compared",
   "plot": {
@@ -434,6 +435,12 @@
     },
     "schema_version": "perfchecker-plot/1",
     "title": "DataStructures · heap_32768_profile_alloc · allocation flame graph"
+  },
+  "release_date_kinds": {
+    "0.19.6": "GitHub release publication date"
+  },
+  "release_dates": {
+    "0.19.6": "2026-07-17"
   },
   "run_id": "11480c99-82a0-44bf-8432-f9b4e39702f5",
   "runtime": {

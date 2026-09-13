@@ -1,0 +1,291 @@
+{
+  "collectors": [
+    "BenchmarkTools",
+    "Chairmarks"
+  ],
+  "operations": 70,
+  "samples": 30,
+  "version": "0.19.6",
+  "views": [
+    {
+      "id": "avltree",
+      "json": "avltree.json",
+      "label": "BenchmarkTools and Chairmarks",
+      "svg": "avltree.svg",
+      "terminal": "avltree.txt",
+      "title": "AVLTree"
+    },
+    {
+      "id": "accumulator",
+      "json": "accumulator.json",
+      "label": "BenchmarkTools and Chairmarks",
+      "svg": "accumulator.svg",
+      "terminal": "accumulator.txt",
+      "title": "Accumulator"
+    },
+    {
+      "id": "binarymaxheap",
+      "json": "binarymaxheap.json",
+      "label": "BenchmarkTools and Chairmarks",
+      "svg": "binarymaxheap.svg",
+      "terminal": "binarymaxheap.txt",
+      "title": "BinaryMaxHeap"
+    },
+    {
+      "id": "binaryminheap",
+      "json": "binaryminheap.json",
+      "label": "BenchmarkTools and Chairmarks",
+      "svg": "binaryminheap.svg",
+      "terminal": "binaryminheap.txt",
+      "title": "BinaryMinHeap"
+    },
+    {
+      "id": "binaryminmaxheap",
+      "json": "binaryminmaxheap.json",
+      "label": "BenchmarkTools and Chairmarks",
+      "svg": "binaryminmaxheap.svg",
+      "terminal": "binaryminmaxheap.txt",
+      "title": "BinaryMinMaxHeap"
+    },
+    {
+      "id": "circularbuffer",
+      "json": "circularbuffer.json",
+      "label": "BenchmarkTools and Chairmarks",
+      "svg": "circularbuffer.svg",
+      "terminal": "circularbuffer.txt",
+      "title": "CircularBuffer"
+    },
+    {
+      "id": "circulardeque",
+      "json": "circulardeque.json",
+      "label": "BenchmarkTools and Chairmarks",
+      "svg": "circulardeque.svg",
+      "terminal": "circulardeque.txt",
+      "title": "CircularDeque"
+    },
+    {
+      "id": "defaultdict",
+      "json": "defaultdict.json",
+      "label": "BenchmarkTools and Chairmarks",
+      "svg": "defaultdict.svg",
+      "terminal": "defaultdict.txt",
+      "title": "DefaultDict"
+    },
+    {
+      "id": "defaultordereddict",
+      "json": "defaultordereddict.json",
+      "label": "BenchmarkTools and Chairmarks",
+      "svg": "defaultordereddict.svg",
+      "terminal": "defaultordereddict.txt",
+      "title": "DefaultOrderedDict"
+    },
+    {
+      "id": "deque",
+      "json": "deque.json",
+      "label": "BenchmarkTools and Chairmarks",
+      "svg": "deque.svg",
+      "terminal": "deque.txt",
+      "title": "Deque"
+    },
+    {
+      "id": "dibitvector",
+      "json": "dibitvector.json",
+      "label": "BenchmarkTools and Chairmarks",
+      "svg": "dibitvector.svg",
+      "terminal": "dibitvector.txt",
+      "title": "DiBitVector"
+    },
+    {
+      "id": "disjointset",
+      "json": "disjointset.json",
+      "label": "BenchmarkTools and Chairmarks",
+      "svg": "disjointset.svg",
+      "terminal": "disjointset.txt",
+      "title": "DisjointSet"
+    },
+    {
+      "id": "fenwicktree",
+      "json": "fenwicktree.json",
+      "label": "BenchmarkTools and Chairmarks",
+      "svg": "fenwicktree.svg",
+      "terminal": "fenwicktree.txt",
+      "title": "FenwickTree"
+    },
+    {
+      "id": "intdisjointset",
+      "json": "intdisjointset.json",
+      "label": "BenchmarkTools and Chairmarks",
+      "svg": "intdisjointset.svg",
+      "terminal": "intdisjointset.txt",
+      "title": "IntDisjointSet"
+    },
+    {
+      "id": "linkedlist",
+      "json": "linkedlist.json",
+      "label": "BenchmarkTools and Chairmarks",
+      "svg": "linkedlist.svg",
+      "terminal": "linkedlist.txt",
+      "title": "LinkedList"
+    },
+    {
+      "id": "littledict",
+      "json": "littledict.json",
+      "label": "BenchmarkTools and Chairmarks",
+      "svg": "littledict.svg",
+      "terminal": "littledict.txt",
+      "title": "LittleDict"
+    },
+    {
+      "id": "multidict",
+      "json": "multidict.json",
+      "label": "BenchmarkTools and Chairmarks",
+      "svg": "multidict.svg",
+      "terminal": "multidict.txt",
+      "title": "MultiDict"
+    },
+    {
+      "id": "mutablebinarymaxheap",
+      "json": "mutablebinarymaxheap.json",
+      "label": "BenchmarkTools and Chairmarks",
+      "svg": "mutablebinarymaxheap.svg",
+      "terminal": "mutablebinarymaxheap.txt",
+      "title": "MutableBinaryMaxHeap"
+    },
+    {
+      "id": "mutablebinaryminheap",
+      "json": "mutablebinaryminheap.json",
+      "label": "BenchmarkTools and Chairmarks",
+      "svg": "mutablebinaryminheap.svg",
+      "terminal": "mutablebinaryminheap.txt",
+      "title": "MutableBinaryMinHeap"
+    },
+    {
+      "id": "mutablelinkedlist",
+      "json": "mutablelinkedlist.json",
+      "label": "BenchmarkTools and Chairmarks",
+      "svg": "mutablelinkedlist.svg",
+      "terminal": "mutablelinkedlist.txt",
+      "title": "MutableLinkedList"
+    },
+    {
+      "id": "ordereddict",
+      "json": "ordereddict.json",
+      "label": "BenchmarkTools and Chairmarks",
+      "svg": "ordereddict.svg",
+      "terminal": "ordereddict.txt",
+      "title": "OrderedDict"
+    },
+    {
+      "id": "orderedrobindict",
+      "json": "orderedrobindict.json",
+      "label": "BenchmarkTools and Chairmarks",
+      "svg": "orderedrobindict.svg",
+      "terminal": "orderedrobindict.txt",
+      "title": "OrderedRobinDict"
+    },
+    {
+      "id": "orderedset",
+      "json": "orderedset.json",
+      "label": "BenchmarkTools and Chairmarks",
+      "svg": "orderedset.svg",
+      "terminal": "orderedset.txt",
+      "title": "OrderedSet"
+    },
+    {
+      "id": "priorityqueue",
+      "json": "priorityqueue.json",
+      "label": "BenchmarkTools and Chairmarks",
+      "svg": "priorityqueue.svg",
+      "terminal": "priorityqueue.txt",
+      "title": "PriorityQueue"
+    },
+    {
+      "id": "queue",
+      "json": "queue.json",
+      "label": "BenchmarkTools and Chairmarks",
+      "svg": "queue.svg",
+      "terminal": "queue.txt",
+      "title": "Queue"
+    },
+    {
+      "id": "rbtree",
+      "json": "rbtree.json",
+      "label": "BenchmarkTools and Chairmarks",
+      "svg": "rbtree.svg",
+      "terminal": "rbtree.txt",
+      "title": "RBTree"
+    },
+    {
+      "id": "robindict",
+      "json": "robindict.json",
+      "label": "BenchmarkTools and Chairmarks",
+      "svg": "robindict.svg",
+      "terminal": "robindict.txt",
+      "title": "RobinDict"
+    },
+    {
+      "id": "sorteddict",
+      "json": "sorteddict.json",
+      "label": "BenchmarkTools and Chairmarks",
+      "svg": "sorteddict.svg",
+      "terminal": "sorteddict.txt",
+      "title": "SortedDict"
+    },
+    {
+      "id": "sortedmultidict",
+      "json": "sortedmultidict.json",
+      "label": "BenchmarkTools and Chairmarks",
+      "svg": "sortedmultidict.svg",
+      "terminal": "sortedmultidict.txt",
+      "title": "SortedMultiDict"
+    },
+    {
+      "id": "sortedset",
+      "json": "sortedset.json",
+      "label": "BenchmarkTools and Chairmarks",
+      "svg": "sortedset.svg",
+      "terminal": "sortedset.txt",
+      "title": "SortedSet"
+    },
+    {
+      "id": "sparseintset",
+      "json": "sparseintset.json",
+      "label": "BenchmarkTools and Chairmarks",
+      "svg": "sparseintset.svg",
+      "terminal": "sparseintset.txt",
+      "title": "SparseIntSet"
+    },
+    {
+      "id": "splaytree",
+      "json": "splaytree.json",
+      "label": "BenchmarkTools and Chairmarks",
+      "svg": "splaytree.svg",
+      "terminal": "splaytree.txt",
+      "title": "SplayTree"
+    },
+    {
+      "id": "stack",
+      "json": "stack.json",
+      "label": "BenchmarkTools and Chairmarks",
+      "svg": "stack.svg",
+      "terminal": "stack.txt",
+      "title": "Stack"
+    },
+    {
+      "id": "swissdict",
+      "json": "swissdict.json",
+      "label": "BenchmarkTools and Chairmarks",
+      "svg": "swissdict.svg",
+      "terminal": "swissdict.txt",
+      "title": "SwissDict"
+    },
+    {
+      "id": "trie",
+      "json": "trie.json",
+      "label": "BenchmarkTools and Chairmarks",
+      "svg": "trie.svg",
+      "terminal": "trie.txt",
+      "title": "Trie"
+    }
+  ]
+}

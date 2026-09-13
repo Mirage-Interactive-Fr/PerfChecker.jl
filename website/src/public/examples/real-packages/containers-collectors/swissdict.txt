@@ -1,0 +1,32 @@
+Wall time (µs)
+                                                      SwissDict
+                           ┌                                                            ┐
+    build · BenchmarkTools ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 16.3
+        build · Chairmarks ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 30.9
+   lookup · BenchmarkTools ┤■■■ 1.6
+       lookup · Chairmarks ┤■■■■■ 2.6
+                           └                                                            ┘
+GC share (%)
+                                                      SwissDict
+                           ┌                                                            ┐
+    build · BenchmarkTools ┤ 0
+        build · Chairmarks ┤ 0
+   lookup · BenchmarkTools ┤ 0
+       lookup · Chairmarks ┤ 0
+                           └                                                            ┘
+Allocated bytes
+                                                      SwissDict
+                           ┌                                                            ┐
+    build · BenchmarkTools ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 29 532
+        build · Chairmarks ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 29 532
+   lookup · BenchmarkTools ┤■■■■■■■ 4 167
+       lookup · Chairmarks ┤■■■■■■■ 4 167
+                           └                                                            ┘
+Allocation count
+                                                      SwissDict
+                           ┌                                                            ┐
+    build · BenchmarkTools ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 372
+        build · Chairmarks ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 372
+   lookup · BenchmarkTools ┤ 3
+       lookup · Chairmarks ┤ 3
+                           └                                                            ┘

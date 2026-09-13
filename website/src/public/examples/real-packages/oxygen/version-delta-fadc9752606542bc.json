@@ -6,14 +6,14 @@
   "plot": {
     "data": [
       {
-        "absolute_delta": 5.9449999999999954e-5,
-        "baseline_median": 0.0014735,
+        "absolute_delta": -0.0008129999999999999,
+        "baseline_median": 0.00255755,
         "baseline_samples": 30,
-        "baseline_value": 0.0014735,
+        "baseline_value": 0.00255755,
         "baseline_version": "1.0.0",
-        "candidate_median": 0.00153295,
+        "candidate_median": 0.00174455,
         "candidate_samples": 30,
-        "candidate_value": 0.00153295,
+        "candidate_value": 0.00174455,
         "candidate_version": "1.1.0",
         "comparison_key": "oxygen/events/heap/2048/seed42/v1::julia.wall.time/chairmarks-v1/fresh-state-evals1-v1",
         "feature": "heap_chairmark",
@@ -22,7 +22,7 @@
         "package": "Oxygen",
         "reason": "no CI policy configured for this metric",
         "relation": "adjacent-release",
-        "relative_delta": 0.04034611469290801,
+        "relative_delta": -0.3178823483411859,
         "relative_limit": null,
         "sample_statistic": "median",
         "sample_statistic_definition": "exact/v1",
@@ -32,14 +32,14 @@
         "workload": "heap_request"
       },
       {
-        "absolute_delta": -7.949999999999841e-6,
-        "baseline_median": 0.00153295,
+        "absolute_delta": 0.0008283500000000003,
+        "baseline_median": 0.00174455,
         "baseline_samples": 30,
-        "baseline_value": 0.00153295,
+        "baseline_value": 0.00174455,
         "baseline_version": "1.1.0",
-        "candidate_median": 0.001525,
+        "candidate_median": 0.0025729000000000004,
         "candidate_samples": 30,
-        "candidate_value": 0.001525,
+        "candidate_value": 0.0025729000000000004,
         "candidate_version": "1.2.0",
         "comparison_key": "oxygen/events/heap/2048/seed42/v1::julia.wall.time/chairmarks-v1/fresh-state-evals1-v1",
         "feature": "heap_chairmark",
@@ -48,7 +48,7 @@
         "package": "Oxygen",
         "reason": "no CI policy configured for this metric",
         "relation": "adjacent-release",
-        "relative_delta": -0.005186079128477668,
+        "relative_delta": 0.47482158722879836,
         "relative_limit": null,
         "sample_statistic": "median",
         "sample_statistic_definition": "exact/v1",
@@ -58,14 +58,14 @@
         "workload": "heap_request"
       },
       {
-        "absolute_delta": 0.00014555000000000015,
-        "baseline_median": 0.001525,
+        "absolute_delta": -0.00029060000000000023,
+        "baseline_median": 0.0025729000000000004,
         "baseline_samples": 30,
-        "baseline_value": 0.001525,
+        "baseline_value": 0.0025729000000000004,
         "baseline_version": "1.2.0",
-        "candidate_median": 0.0016705500000000002,
+        "candidate_median": 0.0022823,
         "candidate_samples": 30,
-        "candidate_value": 0.0016705500000000002,
+        "candidate_value": 0.0022823,
         "candidate_version": "1.3.0",
         "comparison_key": "oxygen/events/heap/2048/seed42/v1::julia.wall.time/chairmarks-v1/fresh-state-evals1-v1",
         "feature": "heap_chairmark",
@@ -74,7 +74,7 @@
         "package": "Oxygen",
         "reason": "no CI policy configured for this metric",
         "relation": "adjacent-release",
-        "relative_delta": 0.09544262295081976,
+        "relative_delta": -0.11294648062497578,
         "relative_limit": null,
         "sample_statistic": "median",
         "sample_statistic_definition": "exact/v1",
@@ -84,14 +84,14 @@
         "workload": "heap_request"
       },
       {
-        "absolute_delta": -0.00014535000000000025,
-        "baseline_median": 0.0016705500000000002,
+        "absolute_delta": -0.0006545499999999998,
+        "baseline_median": 0.0022823,
         "baseline_samples": 30,
-        "baseline_value": 0.0016705500000000002,
+        "baseline_value": 0.0022823,
         "baseline_version": "1.3.0",
-        "candidate_median": 0.0015252,
+        "candidate_median": 0.0016277500000000003,
         "candidate_samples": 30,
-        "candidate_value": 0.0015252,
+        "candidate_value": 0.0016277500000000003,
         "candidate_version": "1.4.0",
         "comparison_key": "oxygen/events/heap/2048/seed42/v1::julia.wall.time/chairmarks-v1/fresh-state-evals1-v1",
         "feature": "heap_chairmark",
@@ -100,7 +100,7 @@
         "package": "Oxygen",
         "reason": "no CI policy configured for this metric",
         "relation": "adjacent-release",
-        "relative_delta": -0.08700727305378482,
+        "relative_delta": -0.28679402357271166,
         "relative_limit": null,
         "sample_statistic": "median",
         "sample_statistic_definition": "exact/v1",
@@ -110,14 +110,14 @@
         "workload": "heap_request"
       },
       {
-        "absolute_delta": -5.37999999999999e-5,
-        "baseline_median": 0.0015252,
+        "absolute_delta": -2.8000000000000247e-5,
+        "baseline_median": 0.0016277500000000003,
         "baseline_samples": 30,
-        "baseline_value": 0.0015252,
+        "baseline_value": 0.0016277500000000003,
         "baseline_version": "1.4.0",
-        "candidate_median": 0.0014714,
+        "candidate_median": 0.00159975,
         "candidate_samples": 30,
-        "candidate_value": 0.0014714,
+        "candidate_value": 0.00159975,
         "candidate_version": "1.5.0",
         "comparison_key": "oxygen/events/heap/2048/seed42/v1::julia.wall.time/chairmarks-v1/fresh-state-evals1-v1",
         "feature": "heap_chairmark",
@@ -126,7 +126,7 @@
         "package": "Oxygen",
         "reason": "no CI policy configured for this metric",
         "relation": "adjacent-release",
-        "relative_delta": -0.03527406241804347,
+        "relative_delta": -0.017201658731377818,
         "relative_limit": null,
         "sample_statistic": "median",
         "sample_statistic_definition": "exact/v1",
@@ -136,14 +136,14 @@
         "workload": "heap_request"
       },
       {
-        "absolute_delta": -1.3500000000000057e-6,
-        "baseline_median": 0.0014714,
+        "absolute_delta": 0.00096795,
+        "baseline_median": 0.00159975,
         "baseline_samples": 30,
-        "baseline_value": 0.0014714,
+        "baseline_value": 0.00159975,
         "baseline_version": "1.5.0",
-        "candidate_median": 0.00147005,
+        "candidate_median": 0.0025677,
         "candidate_samples": 30,
-        "candidate_value": 0.00147005,
+        "candidate_value": 0.0025677,
         "candidate_version": "1.6.0",
         "comparison_key": "oxygen/events/heap/2048/seed42/v1::julia.wall.time/chairmarks-v1/fresh-state-evals1-v1",
         "feature": "heap_chairmark",
@@ -152,7 +152,7 @@
         "package": "Oxygen",
         "reason": "no CI policy configured for this metric",
         "relation": "adjacent-release",
-        "relative_delta": -0.0009174935435639566,
+        "relative_delta": 0.6050632911392405,
         "relative_limit": null,
         "sample_statistic": "median",
         "sample_statistic_definition": "exact/v1",
@@ -162,14 +162,14 @@
         "workload": "heap_request"
       },
       {
-        "absolute_delta": -1.8000000000001522e-6,
-        "baseline_median": 0.00147005,
+        "absolute_delta": -0.0001324500000000001,
+        "baseline_median": 0.0025677,
         "baseline_samples": 30,
-        "baseline_value": 0.00147005,
+        "baseline_value": 0.0025677,
         "baseline_version": "1.6.0",
-        "candidate_median": 0.00146825,
+        "candidate_median": 0.00243525,
         "candidate_samples": 30,
-        "candidate_value": 0.00146825,
+        "candidate_value": 0.00243525,
         "candidate_version": "1.7.0",
         "comparison_key": "oxygen/events/heap/2048/seed42/v1::julia.wall.time/chairmarks-v1/fresh-state-evals1-v1",
         "feature": "heap_chairmark",
@@ -178,7 +178,7 @@
         "package": "Oxygen",
         "reason": "no CI policy configured for this metric",
         "relation": "adjacent-release",
-        "relative_delta": -0.0012244481480222795,
+        "relative_delta": -0.05158312887019516,
         "relative_limit": null,
         "sample_statistic": "median",
         "sample_statistic_definition": "exact/v1",
@@ -188,14 +188,14 @@
         "workload": "heap_request"
       },
       {
-        "absolute_delta": 1.9850000000000076e-5,
-        "baseline_median": 0.00146825,
+        "absolute_delta": -0.0009515999999999999,
+        "baseline_median": 0.00243525,
         "baseline_samples": 30,
-        "baseline_value": 0.00146825,
+        "baseline_value": 0.00243525,
         "baseline_version": "1.7.0",
-        "candidate_median": 0.0014881,
+        "candidate_median": 0.00148365,
         "candidate_samples": 30,
-        "candidate_value": 0.0014881,
+        "candidate_value": 0.00148365,
         "candidate_version": "1.8.0",
         "comparison_key": "oxygen/events/heap/2048/seed42/v1::julia.wall.time/chairmarks-v1/fresh-state-evals1-v1",
         "feature": "heap_chairmark",
@@ -204,7 +204,7 @@
         "package": "Oxygen",
         "reason": "no CI policy configured for this metric",
         "relation": "adjacent-release",
-        "relative_delta": 0.013519495998637887,
+        "relative_delta": -0.3907607021866338,
         "relative_limit": null,
         "sample_statistic": "median",
         "sample_statistic_definition": "exact/v1",
@@ -214,14 +214,14 @@
         "workload": "heap_request"
       },
       {
-        "absolute_delta": -5.409999999999985e-5,
-        "baseline_median": 0.0014881,
+        "absolute_delta": 4.264999999999998e-5,
+        "baseline_median": 0.00148365,
         "baseline_samples": 30,
-        "baseline_value": 0.0014881,
+        "baseline_value": 0.00148365,
         "baseline_version": "1.8.0",
-        "candidate_median": 0.0014340000000000002,
+        "candidate_median": 0.0015263,
         "candidate_samples": 30,
-        "candidate_value": 0.0014340000000000002,
+        "candidate_value": 0.0015263,
         "candidate_version": "1.9.0",
         "comparison_key": "oxygen/events/heap/2048/seed42/v1::julia.wall.time/chairmarks-v1/fresh-state-evals1-v1",
         "feature": "heap_chairmark",
@@ -230,7 +230,7 @@
         "package": "Oxygen",
         "reason": "no CI policy configured for this metric",
         "relation": "adjacent-release",
-        "relative_delta": -0.03635508366373218,
+        "relative_delta": 0.028746672058773955,
         "relative_limit": null,
         "sample_statistic": "median",
         "sample_statistic_definition": "exact/v1",
@@ -240,14 +240,14 @@
         "workload": "heap_request"
       },
       {
-        "absolute_delta": 6.830000000000009e-5,
-        "baseline_median": 0.0014340000000000002,
+        "absolute_delta": 0.00016800000000000018,
+        "baseline_median": 0.0015263,
         "baseline_samples": 30,
-        "baseline_value": 0.0014340000000000002,
+        "baseline_value": 0.0015263,
         "baseline_version": "1.9.0",
-        "candidate_median": 0.0015023000000000002,
+        "candidate_median": 0.0016943000000000001,
         "candidate_samples": 30,
-        "candidate_value": 0.0015023000000000002,
+        "candidate_value": 0.0016943000000000001,
         "candidate_version": "1.10.0",
         "comparison_key": "oxygen/events/heap/2048/seed42/v1::julia.wall.time/chairmarks-v1/fresh-state-evals1-v1",
         "feature": "heap_chairmark",
@@ -256,7 +256,7 @@
         "package": "Oxygen",
         "reason": "no CI policy configured for this metric",
         "relation": "adjacent-release",
-        "relative_delta": 0.047629009762901034,
+        "relative_delta": 0.11007010417349157,
         "relative_limit": null,
         "sample_statistic": "median",
         "sample_statistic_definition": "exact/v1",
@@ -266,14 +266,66 @@
         "workload": "heap_request"
       },
       {
-        "absolute_delta": 1.949999999999695e-6,
-        "baseline_median": 0.0015023000000000002,
+        "absolute_delta": -3.850000000000121e-6,
+        "baseline_median": 0.0016943000000000001,
         "baseline_samples": 30,
-        "baseline_value": 0.0015023000000000002,
+        "baseline_value": 0.0016943000000000001,
         "baseline_version": "1.10.0",
-        "candidate_median": 0.00150425,
+        "candidate_median": 0.00169045,
         "candidate_samples": 30,
-        "candidate_value": 0.00150425,
+        "candidate_value": 0.00169045,
+        "candidate_version": "1.10.1",
+        "comparison_key": "oxygen/events/heap/2048/seed42/v1::julia.wall.time/chairmarks-v1/fresh-state-evals1-v1",
+        "feature": "heap_chairmark",
+        "measurement_definition": "julia.wall.time/chairmarks-v1/fresh-state-evals1-v1",
+        "metric": "julia.wall.time",
+        "package": "Oxygen",
+        "reason": "no CI policy configured for this metric",
+        "relation": "adjacent-release",
+        "relative_delta": -0.0022723248539220447,
+        "relative_limit": null,
+        "sample_statistic": "median",
+        "sample_statistic_definition": "exact/v1",
+        "series_id": "60eb7709e4e0b81d",
+        "status": "diagnostic",
+        "unit": "s",
+        "workload": "heap_request"
+      },
+      {
+        "absolute_delta": -7.004999999999989e-5,
+        "baseline_median": 0.00169045,
+        "baseline_samples": 30,
+        "baseline_value": 0.00169045,
+        "baseline_version": "1.10.1",
+        "candidate_median": 0.0016204000000000001,
+        "candidate_samples": 30,
+        "candidate_value": 0.0016204000000000001,
+        "candidate_version": "1.10.2",
+        "comparison_key": "oxygen/events/heap/2048/seed42/v1::julia.wall.time/chairmarks-v1/fresh-state-evals1-v1",
+        "feature": "heap_chairmark",
+        "measurement_definition": "julia.wall.time/chairmarks-v1/fresh-state-evals1-v1",
+        "metric": "julia.wall.time",
+        "package": "Oxygen",
+        "reason": "no CI policy configured for this metric",
+        "relation": "adjacent-release",
+        "relative_delta": -0.041438670176580136,
+        "relative_limit": null,
+        "sample_statistic": "median",
+        "sample_statistic_definition": "exact/v1",
+        "series_id": "60eb7709e4e0b81d",
+        "status": "diagnostic",
+        "unit": "s",
+        "workload": "heap_request"
+      },
+      {
+        "absolute_delta": -5.674999999999994e-5,
+        "baseline_median": 0.0016204000000000001,
+        "baseline_samples": 30,
+        "baseline_value": 0.0016204000000000001,
+        "baseline_version": "1.10.2",
+        "candidate_median": 0.0015636500000000002,
+        "candidate_samples": 30,
+        "candidate_value": 0.0015636500000000002,
         "candidate_version": "1.11.0",
         "comparison_key": "oxygen/events/heap/2048/seed42/v1::julia.wall.time/chairmarks-v1/fresh-state-evals1-v1",
         "feature": "heap_chairmark",
@@ -282,7 +334,7 @@
         "package": "Oxygen",
         "reason": "no CI policy configured for this metric",
         "relation": "adjacent-release",
-        "relative_delta": 0.0012980097184315349,
+        "relative_delta": -0.03502221673660821,
         "relative_limit": null,
         "sample_statistic": "median",
         "sample_statistic_definition": "exact/v1",
@@ -310,10 +362,28 @@
     "schema_version": "perfchecker-plot/1",
     "title": "Oxygen · heap_chairmark · julia.wall.time"
   },
+  "release_date_kinds": {
+    "1.0.0": "GitHub release publication date",
+    "1.1.0": "GitHub release publication date",
+    "1.10.0": "GitHub release publication date",
+    "1.10.1": "GitHub release publication date",
+    "1.10.2": "GitHub release publication date",
+    "1.11.0": "GitHub release publication date",
+    "1.2.0": "GitHub release publication date",
+    "1.3.0": "GitHub release publication date",
+    "1.4.0": "GitHub release publication date",
+    "1.5.0": "GitHub release publication date",
+    "1.6.0": "GitHub release publication date",
+    "1.7.0": "GitHub release publication date",
+    "1.8.0": "GitHub release publication date",
+    "1.9.0": "GitHub release publication date"
+  },
   "release_dates": {
     "1.0.0": "2022-05-28",
     "1.1.0": "2022-08-19",
     "1.10.0": "2026-01-01",
+    "1.10.1": "2026-02-25",
+    "1.10.2": "2026-04-18",
     "1.11.0": "2026-08-28",
     "1.2.0": "2023-09-28",
     "1.3.0": "2023-12-14",
@@ -324,29 +394,17 @@
     "1.8.0": "2025-11-19",
     "1.9.0": "2025-12-14"
   },
-  "run_id": "211e9c74-783b-41f2-9ef6-3909e3ff6b56",
+  "run_id": "4d223264-9351-4431-85b6-8c81f2bde47e",
   "runtime": {
     "language": "julia",
     "threads": 1,
     "version": "1.13.0"
   },
   "scope": "One local machine; illustrative history, not a package regression verdict",
-  "started_at": "2026-09-13T08:50:48.851",
+  "started_at": "2026-09-13T11:08:13.162",
   "worker_environments": [
     {
-      "manifest_sha256": "023efbb4d41bb5dbcd69f9c79edce94a507299d4d61300e231e8b86cbb627f6c",
-      "project_sha256": "f4297a96b2c6e940ea15876a6bba21ce6e6402f771854a5842963d3ee89e5d80"
-    },
-    {
-      "manifest_sha256": "87191dd4a9a52ce02ea4b7c4d0c0a79d2229f315fe9d0a535042431cc17e5825",
-      "project_sha256": "f4297a96b2c6e940ea15876a6bba21ce6e6402f771854a5842963d3ee89e5d80"
-    },
-    {
-      "manifest_sha256": "37610bd2419a75ccef7e88c7062050342954b9b6e3651b3125b8d4638e5054d4",
-      "project_sha256": "f4297a96b2c6e940ea15876a6bba21ce6e6402f771854a5842963d3ee89e5d80"
-    },
-    {
-      "manifest_sha256": "07efe7b4d60d9ca8c7ff9b57f4e0c902067c5581184fac86f0db69596742717a",
+      "manifest_sha256": "9c89f70360da971e2112c94d9dcc637b04b1a421484c0b2eb744ba033e1be04b",
       "project_sha256": "f4297a96b2c6e940ea15876a6bba21ce6e6402f771854a5842963d3ee89e5d80"
     },
     {
@@ -354,15 +412,11 @@
       "project_sha256": "f4297a96b2c6e940ea15876a6bba21ce6e6402f771854a5842963d3ee89e5d80"
     },
     {
-      "manifest_sha256": "9c89f70360da971e2112c94d9dcc637b04b1a421484c0b2eb744ba033e1be04b",
+      "manifest_sha256": "23cb1787c756286bc0c388ae57a8341634d106bd7dde6bef8d343ec951dac15b",
       "project_sha256": "f4297a96b2c6e940ea15876a6bba21ce6e6402f771854a5842963d3ee89e5d80"
     },
     {
-      "manifest_sha256": "6a2cea7be47d3a347aa8d8d1bd2baa7513aa5c0f7fe1129e3cb20ceeead0eab6",
-      "project_sha256": "f4297a96b2c6e940ea15876a6bba21ce6e6402f771854a5842963d3ee89e5d80"
-    },
-    {
-      "manifest_sha256": "eb303be0ee4ad1d4136e3461f0cdbe176d64ecba106eb8981f68e70e84097daf",
+      "manifest_sha256": "37610bd2419a75ccef7e88c7062050342954b9b6e3651b3125b8d4638e5054d4",
       "project_sha256": "f4297a96b2c6e940ea15876a6bba21ce6e6402f771854a5842963d3ee89e5d80"
     },
     {
@@ -370,15 +424,39 @@
       "project_sha256": "f4297a96b2c6e940ea15876a6bba21ce6e6402f771854a5842963d3ee89e5d80"
     },
     {
-      "manifest_sha256": "a22211905892a558108923e4267c857acdd8452b9c1a29643e8b6432eca8469e",
+      "manifest_sha256": "07efe7b4d60d9ca8c7ff9b57f4e0c902067c5581184fac86f0db69596742717a",
       "project_sha256": "f4297a96b2c6e940ea15876a6bba21ce6e6402f771854a5842963d3ee89e5d80"
     },
     {
-      "manifest_sha256": "23cb1787c756286bc0c388ae57a8341634d106bd7dde6bef8d343ec951dac15b",
+      "manifest_sha256": "87191dd4a9a52ce02ea4b7c4d0c0a79d2229f315fe9d0a535042431cc17e5825",
+      "project_sha256": "f4297a96b2c6e940ea15876a6bba21ce6e6402f771854a5842963d3ee89e5d80"
+    },
+    {
+      "manifest_sha256": "eb303be0ee4ad1d4136e3461f0cdbe176d64ecba106eb8981f68e70e84097daf",
+      "project_sha256": "f4297a96b2c6e940ea15876a6bba21ce6e6402f771854a5842963d3ee89e5d80"
+    },
+    {
+      "manifest_sha256": "8ee5c71ef3ebf26c2ca85699bc636898aad411383e18d733aacd754ab5fd3017",
+      "project_sha256": "f4297a96b2c6e940ea15876a6bba21ce6e6402f771854a5842963d3ee89e5d80"
+    },
+    {
+      "manifest_sha256": "15ffe3a00c7dcd508b849378295102c893c9eaf15e3aec3d9a46bb9a22da110f",
+      "project_sha256": "f4297a96b2c6e940ea15876a6bba21ce6e6402f771854a5842963d3ee89e5d80"
+    },
+    {
+      "manifest_sha256": "023efbb4d41bb5dbcd69f9c79edce94a507299d4d61300e231e8b86cbb627f6c",
       "project_sha256": "f4297a96b2c6e940ea15876a6bba21ce6e6402f771854a5842963d3ee89e5d80"
     },
     {
       "manifest_sha256": "30b933a76fbf03f57dec28a5768f66ac557a48b9c0cd7deb4a135a07c8e75429",
+      "project_sha256": "f4297a96b2c6e940ea15876a6bba21ce6e6402f771854a5842963d3ee89e5d80"
+    },
+    {
+      "manifest_sha256": "6a2cea7be47d3a347aa8d8d1bd2baa7513aa5c0f7fe1129e3cb20ceeead0eab6",
+      "project_sha256": "f4297a96b2c6e940ea15876a6bba21ce6e6402f771854a5842963d3ee89e5d80"
+    },
+    {
+      "manifest_sha256": "a22211905892a558108923e4267c857acdd8452b9c1a29643e8b6432eca8469e",
       "project_sha256": "f4297a96b2c6e940ea15876a6bba21ce6e6402f771854a5842963d3ee89e5d80"
     }
   ]

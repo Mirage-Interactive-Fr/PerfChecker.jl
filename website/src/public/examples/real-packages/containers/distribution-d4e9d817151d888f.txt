@@ -1,0 +1,5 @@
+                            DataStructures · SwissDict_build_benchmark · julia.alloc.count
+                  ┌                                                                                ┐
+   [372.0, 373.0) ┤███████████████████████████████████████████████████████████████████████████  210
+                  └                                                                                ┘
+                                                       Frequency

@@ -379,6 +379,12 @@ end
 function _short_source_path(path::AbstractString)
     normalized = replace(normpath(String(path)), '\\' => '/')
     parts = split(normalized, '/')
+    depot = findlast(==("packages"), parts)
+    if depot !== nothing && depot + 3 <= length(parts) &&
+       occursin(r"^[A-Za-z0-9]{5}$", parts[depot + 2])
+        # Julia's package cache includes a content slug, not a meaningful source label.
+        return join(vcat(parts[depot + 1], parts[(depot + 3):end]), '/')
+    end
     return join(last(parts, min(length(parts), 3)), '/')
 end
 
@@ -400,22 +406,39 @@ function _allocation_file_records(bundle, case_id)
             for version in versions for file in files if haskey(grouped, (version, file))]
 end
 
-function _allocation_pie_records(bundle, case_id; version = nothing, top::Integer = 40)
-    records, versions, selected = _allocation_line_records(bundle, case_id;
-        version, top = typemax(Int))
+function _group_allocation_pie(records; min_percentage::Real = 5, top::Integer = 40)
+    isfinite(min_percentage) && 0 <= min_percentage <= 100 ||
+        throw(ArgumentError("min_percentage must be between 0 and 100"))
+    records = sort(copy(records); by = item -> (-Float64(item["bytes"]), String(item["label"])))
     total = sum(item -> Float64(item["bytes"]), records; init = 0.0)
     limit = max(Int(top), 2)
-    selected_records = length(records) <= limit ? records : copy(records[1:(limit - 1)])
-    if length(records) > limit
-        other_bytes = sum(item -> Float64(item["bytes"]), records[limit:end]; init = 0.0)
-        push!(selected_records,
-            Dict{String, Any}(
-                "version" => selected, "file" => "other", "line" => 0,
-                "label" => "Other allocation sites", "bytes" => other_bytes))
+    kept = filter(item -> total > 0 &&
+        100 * Float64(item["bytes"]) / total >= min_percentage, records)
+    # Reserve one legend entry for the combined remainder when necessary.
+    count = length(kept)
+    if count < length(records) || count > limit
+        count = min(count, limit - 1)
+    end
+    selected_records = [copy(item) for item in first(kept, count)]
+    remainder = records[(count + 1):end]
+    if !isempty(remainder)
+        push!(selected_records, Dict{String, Any}(
+            "version" => get(first(remainder), "version", ""),
+            "file" => "other", "line" => 0, "label" => "Other allocation sites",
+            "bytes" => sum(item -> Float64(item["bytes"]), remainder; init = 0.0),
+            "grouped_sites" => length(remainder)))
     end
     for item in selected_records
         item["percentage"] = total == 0 ? 0.0 : 100 * Float64(item["bytes"]) / total
     end
+    return selected_records
+end
+
+function _allocation_pie_records(bundle, case_id; version = nothing, top::Integer = 40,
+        min_percentage::Real = 5)
+    records, versions, selected = _allocation_line_records(bundle, case_id;
+        version, top = typemax(Int))
+    selected_records = _group_allocation_pie(records; min_percentage, top)
     return selected_records, versions, selected
 end
 
@@ -598,7 +621,7 @@ function _tradeoff_records(bundle, entry)
 end
 
 """
-    performance_plot(bundle, [id]; reference_version=nothing, version=nothing, top=40)
+    performance_plot(bundle, [id]; reference_version=nothing, version=nothing, top=40, min_percentage=5)
 
 Build a backend-neutral plot. With no identifier, prefer overlaid BenchmarkTools
 or Chairmarks metrics. By default, use each version's minimum sample, divided by
@@ -610,10 +633,14 @@ of the minimum. Raw measurements and
 units remain in every record. Equal zeros appear at 1 (unchanged), by convention;
 a nonzero value over a zero reference, or a missing reference, has no finite ratio.
 Separate absolute plots remain available through `plot_catalog`.
+Allocation pies combine sites contributing strictly less than `min_percentage`
+percent of the selected version's allocated bytes into "Other allocation sites".
+The default is 5%; exactly 5% remains separate. Set `min_percentage=0` to disable
+this threshold. `top` still caps legend entries, including the combined remainder.
 """
 function performance_plot(bundle::RunBundle, id::AbstractString; version = nothing,
         reference_version = nothing, statistic::Symbol = :minimum,
-        top::Integer = 40)
+        top::Integer = 40, min_percentage::Real = 5)
     entry = _catalog_entry(bundle, id)
     kind = Symbol(entry["kind"])
     data = Dict{String, Any}[]
@@ -636,10 +663,11 @@ function performance_plot(bundle::RunBundle, id::AbstractString; version = nothi
                    Dict("x" => "version", "y" => "value", "color" => "target_kind")
     elseif kind === :allocation_pie
         data, versions, selected = _allocation_pie_records(bundle, entry["case_id"];
-            version, top)
+            version, top, min_percentage)
         options["versions"] = versions
         options["selected_version"] = selected
         options["top"] = Int(top)
+        options["min_percentage"] = Float64(min_percentage)
         encoding = Dict("theta" => "bytes", "color" => "label", "label" => "percentage")
     elseif kind === :allocation_files
         data = _allocation_file_records(bundle, entry["case_id"])

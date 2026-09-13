@@ -1,5 +1,6 @@
 {
   "correctness": "passed",
+  "date_kind": "GitHub release publication date",
   "os": "NT",
   "performance": "not_compared",
   "plot": {
@@ -29,6 +30,12 @@
     },
     "schema_version": "perfchecker-plot/1",
     "title": "Oxygen · heap_profile_alloc · julia.alloc.count"
+  },
+  "release_date_kinds": {
+    "1.11.0": "GitHub release publication date"
+  },
+  "release_dates": {
+    "1.11.0": "2026-08-28"
   },
   "run_id": "c4a79ae5-6f29-43d0-8b0c-74c925ddce05",
   "runtime": {
