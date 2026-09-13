@@ -21,7 +21,8 @@ This lets us compare the same operation across versions. We will read its
 timings and allocations, profile the calls inside it, and use the comparison
 in CI.
 
-Begin with [installation](installation.md), then [measure the test](first-check.md).
+For code you can copy and run, start with the [quickstart](first-check.md).
+For other installation choices, see [installation](installation.md).
 The **Next page** links follow this sequence. If you already have a runnable
 benchmark, start at [understanding the result](understanding-measurements.md).
 

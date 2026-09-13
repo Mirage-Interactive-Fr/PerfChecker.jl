@@ -1,31 +1,46 @@
 # Julia and native performance tools
 
-Start with the question in the table below, then read the corresponding tool
-section. For a reproducible Julia profile, use the [Bibliography collector commands](tutorials/bibliography.md#Select-a-package,-workload-and-collector).
-Native tools additionally need a compatible installation and a workload script.
+A benchmark tells you whether an operation is slow. A profiler helps you find
+where it spends time or allocates memory. Start with Julia's tools; use a native
+profiler when you need to inspect a C, C++ or Fortran dependency, or activity
+outside Julia such as operating-system scheduling.
 
-`tool_catalog()` lists PerfChecker collectors, optional extensions and external
-tools, using `data/tool-catalog.json`. The web and VS Code interfaces display
-the same list. Check an entry's integration and platform fields before using
-it. This inventory was reviewed on 12 September 2026.
+For runnable Julia examples, see [investigate a change](guide/investigate.md).
+The native tools below require a separate installation. PerfChecker can prepare
+commands for some of them; listing a tool does not mean it can run it or import
+its output. The [tool catalogue](tool-catalog.md) records that distinction.
 
 ## Choose an instrument from the question
 
-| Question | First measurement | Follow-up evidence | Main limitation |
-| --- | --- | --- | --- |
-| Is an operation slower? | BenchmarkTools or Chairmarks distribution | Same input and oracle, repeated sessions | Setup, JIT and environment differences can dominate |
-| Where does CPU time go? | Julia Profile, with C frames when needed | perf or VTune; symbols for native libraries | Sampling noise; unresolved/inlined frames |
-| Why is wall time larger than CPU time? | Wall profile plus workload timeline | ETW/WPR on Windows; perf/bpftrace on Linux | Other processes, scheduling and I/O attribution |
-| Why does the Julia heap allocate? | Profile.Allocs, GC counters, heap snapshots | AllocCheck and inference inspection | Native allocations are a different quantity |
-| Why does native memory grow? | RSS/private memory and explicit resource ledgers | Memcheck, Massif, heaptrack | Allocator pools, mappings and retained capacity differ |
-| Why is startup slow? | Fresh-process startup/first-call measurement | SnoopCompile; runtime timing zones | Warm measurements conceal compilation and imports |
-| Why does threading scale badly? | Same workload across declared thread counts | Counters, affinity, lock events and timelines | NUMA, quotas and oversubscription confound results |
-| Is a device doing the work? | Verified device identity and synchronized operation | CUDA/Nsight, ROCm tools, VTune | Async launch time is not completed device execution |
-| Is a native dependency incorrect? | Functional oracle and dependency provenance | Sanitizers or Memcheck | Instrumented execution does not measure native speed |
+- **Did my change make this operation slower?** Run BenchmarkTools or Chairmarks
+  on the same input before and after the change. Compare repeated timings;
+  a profile is not needed to establish the difference.
+- **Which calls take the time?** Start with Julia's CPU profiler. It samples
+  running call stacks and can include C and Fortran frames. If native frames
+  remain unclear, try perf on Linux or VTune, with debug symbols for the library.
+- **Is the operation waiting?** A wall-time profile includes task stacks while
+  they wait. For file I/O or scheduling questions, use a system trace: WPR/WPA
+  on Windows, or perf/bpftrace on Linux. Waiting time is not CPU execution time.
+- **Which Julia code allocates?** Use Profile.Allocs to find allocation sites.
+  To study objects that remain alive, use a heap snapshot instead. Allocation
+  profiling does not account for memory allocated directly by native libraries.
+- **Why does process memory keep growing?** First inspect the
+  [process-memory counters](process-memory.md). Use Massif or heaptrack to
+  investigate native heap growth, and Memcheck for suspected leaks.
+- **Why is the first call slow?** Measure startup and the first call separately
+  from repeated execution. Then use SnoopCompile to investigate compilation.
+- **Why do more threads fail to help?** Repeat the same workload at several
+  thread counts. Inspect scheduling and lock events in a system trace; threads
+  may be waiting or competing for the same resources.
+- **What happens on the GPU?** Use the device's profiler, such as Nsight for
+  CUDA. Wait for device work to finish when timing it: launching a kernel is
+  not the same as completing it.
+- **Does a native dependency access memory incorrectly?** Use Memcheck or a
+  sanitizer build. These diagnose errors; their instrumented timings do not
+  represent ordinary execution speed.
 
-Julia's own profiler can include native C/Fortran frames. Allocation profiling
-describes Julia allocations; it must not be presented as all process memory.
-Keep warmup and asynchronous completion explicit. See the [Julia profiling manual](https://docs.julialang.org/en/v1/manual/profile/).
+See the [Julia profiling manual](https://docs.julialang.org/en/v1/manual/profile/)
+for the built-in profilers. The sections below explain the additional tools.
 
 ## Static analysis and compilation
 

@@ -24,7 +24,7 @@ makedocs(;
         "Manual" => [
             "Introduction" => "guide/overview.md",
             "Installation" => "guide/installation.md",
-            "Measure a test" => "guide/first-check.md",
+            "Quickstart: measure a test" => "guide/first-check.md",
             "Measure an operation" => "tutorials/quick-tour.md",
             "Understand the result" => "guide/understanding-measurements.md",
             "Group workloads in a suite" => "suites-and-comparisons.md",

@@ -11,8 +11,8 @@ hero:
     alt: PerfChecker
   actions:
     - theme: brand
-      text: Read the manual
-      link: /guide/overview
+      text: Quickstart
+      link: /guide/first-check
     - theme: alt
       text: Explore examples
       link: /real-packages/

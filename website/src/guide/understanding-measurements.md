@@ -134,15 +134,27 @@ benchmarks prepare fresh state. Keep the policy visible when comparing results.
 
 ## Read a result across several tools
 
-| Tool or view | Question it answers | Read first | Do not infer |
-| --- | --- | --- | --- |
-| BenchmarkTools | How long does this operation take, and what does it allocate? | Time distribution, bytes, allocation count, GC time | Time spent in each internal function |
-| Chairmarks | What repeated cost does this operation have under this sampling configuration? | Sample timing, bytes, allocations, GC fraction | Identical sampling semantics to another collector |
-| CPU profiler | Which call paths appear frequently while profiling execution? | Stack weight and source location | Exact duration or invocation count of every function |
-| Wall-time profiler | Which task stacks occupy the observed interval? | Task states and call paths | That every wide branch consumed CPU |
-| Allocation profiler | Where do sampled Julia allocations originate? | Bytes or events, type, stack, sampling rate | Total native memory or a proven memory leak |
-| Process memory | How does the worker's memory envelope change? | Counter definition, before/after, scope | That the endpoint delta equals all bytes allocated |
-| Static analyzer | What potential code issue deserves investigation? | Diagnostic, source and analysis assumptions | A measured number of nanoseconds saved |
+- **BenchmarkTools** records elapsed time, allocated bytes, allocation count
+  and GC time. Read the timing distribution to see how much repeated runs vary.
+  It does not show which internal function took the time.
+- **Chairmarks** records elapsed time, allocated bytes, allocation count and
+  GC fraction. GC fraction is the share of elapsed time spent collecting
+  garbage. Sampling settings differ between collectors, so keep them visible
+  when comparing results.
+- **CPU profiling** shows frequently sampled call paths and their source
+  locations. Sample counts indicate where execution concentrates; they are
+  not exact call counts or durations.
+- **Wall-time profiling** also shows task stacks while they wait. A wide
+  branch can therefore indicate waiting rather than CPU work.
+- **Allocation profiling** shows where sampled Julia allocations originate,
+  with their types, sizes and stacks. Check the sampling rate. This does not
+  measure all native memory or establish that memory leaks.
+- **Process-memory counters** describe memory used by the worker process.
+  Read the counter definition and the interval: memory left at the end is
+  different from all the bytes allocated along the way.
+- **Static analysis** reports potential code problems and source locations
+  without timing the operation. Use a benchmark to find out whether fixing
+  a diagnostic improves performance.
 
 The [check catalog](../reference/checks.md) explains these collectors individually.
 VS Code, Oxygen, Pluto and the REPL present the same saved evidence; changing
