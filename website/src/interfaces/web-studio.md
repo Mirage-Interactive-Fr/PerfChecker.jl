@@ -1,8 +1,8 @@
 # Oxygen web studio
 
-The Oxygen studio configures, launches, filters, and investigates PerfChecker
-runs in a browser. WGLMakie and the built-in interactive SVG renderer provide
-drill-down views without changing what runs inside a measurement worker.
+The web studio lets you select workloads and versions, start measurements and
+browse completed runs. It uses Oxygen to serve the interface and Makie or SVG
+plots to display the results.
 
 ## Start with one Bibliography check
 
@@ -23,9 +23,9 @@ opening the page does not start a benchmark.
 ## Reopen existing suite reports
 
 For your own report store, use the API below in an environment containing the
-listed interface packages. Here `perf/results` must be the directory containing
-your already saved suite results. To launch a new suite, use its suite launcher
-as above rather than expecting a report directory to define its workloads.
+listed interface packages. Replace `perf/results` with the directory containing
+your saved suite results. To launch new measurements, use a suite launcher such
+as the Bibliography example above.
 
 ```julia
 using PerfChecker, PerfCheckerWeb, PerfCheckerMakie, Oxygen, WGLMakie

@@ -5,10 +5,8 @@ with [your first result](../guide/first-check.md) for an executable introduction
 Use `discover_testitems` and `run_testitems` for existing tests, `@check` for a
 direct experiment, or `SoftwareSuite`, `plan_suite` and `run_suite` for custom
 workloads and version matrices.
-Some entry points gain methods only after their extension or satellite package
-is loaded. The shared function belongs to PerfChecker, so its docstring remains
-available from a minimal controller. Loading all UI frameworks is not required
-to build this reference.
+Some functions require an extension or interface package to supply their
+methods. Their docstrings state which package to load.
 
 ## Interface API ownership
 

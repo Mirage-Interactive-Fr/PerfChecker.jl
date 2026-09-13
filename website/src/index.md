@@ -4,105 +4,57 @@ layout: home
 
 hero:
   name: "PerfChecker.jl"
-  text: "Performance checks from your Julia tests"
-  tagline: Run one item, inspect its measurements, and compare results with an explicit performance budget.
+  text: "Measure how your Julia code changes"
+  tagline: Compare execution time and allocations across versions, then profile the operations that need attention.
   image:
     src: /assets/perfchecker.svg
-    alt: PerfChecker performance pulse
+    alt: PerfChecker
   actions:
     - theme: brand
-      text: Start measuring
-      link: /guide/first-check
+      text: Read the manual
+      link: /guide/overview
+    - theme: alt
+      text: Explore examples
+      link: /real-packages/
     - theme: alt
       text: Use VS Code
       link: /interfaces/vscode
-    - theme: alt
-      text: View on GitHub
-      link: https://github.com/Mirage-Interactive-Fr/PerfChecker.jl
-
-features:
-  - icon: "⚗️"
-    title: Reuse existing tests
-    details: Discover ordinary TestItemRunner items. Share them between correctness and performance, or separate them with tags.
-    link: /test-items
-  - icon: "↔️"
-    title: Compare measured results
-    details: Define a baseline, matching measurement scope and regression limits before deciding whether a change passes.
-    link: /tutorials/comparisons
-  - icon: "🔥"
-    title: Investigate a regression
-    details: Inspect Julia timings, allocations and profiles, then choose diagnostics for the target and its native dependencies.
-    link: /native-profiling
-  - icon: "▦"
-    title: Run one item in VS Code
-    details: Discover items in the Testing view, select a check and retain its measurements and source identity.
-    link: /interfaces/vscode
-  - icon: "✓"
-    title: Automate the same checks
-    details: Use scripts and CI with JSON, Markdown and JUnit reports. Keep execution, correctness and regression verdicts separate.
-    link: /tutorials/ci
-  - icon: "⌘"
-    title: Reopen saved evidence
-    details: Read portable run bundles in Web Studio, Pluto, plots or reports without repeating the measurement.
-    link: /reference/run-bundles
 ---
 ```
 
-
 ```@raw html
 <MaintainerLink />
+```
+
+## From a passing test to a performance comparison
+
+Your tests check that a package produces the right answer. PerfChecker measures
+what that answer costs. Start with an existing TestItem, or define an operation
+such as importing a file or solving a model. Run it on selected versions and
+inspect the changes in time and allocations.
+
+The [manual](guide/overview.md) follows one Bibliography example through these
+steps. It starts with a test, separates the export operation from its setup,
+compares two revisions and uses a profile to locate expensive calls.
+
+```@raw html
 <HomeMeasurements />
 ```
 
-[Read the short Bibliography tutorial](tutorials/quick-tour.md) or [explore the interactive plots](interfaces/visualization.md).
+## Use the results in your own workflow
 
-For a larger runnable example, [compare DataStructures and Oxygen across releases](real-packages/index.md),
-then reuse their measurements in the terminal, notebooks and graphical interfaces.
+Run checks from Julia or [VS Code](interfaces/vscode.md), select workloads in
+[Web Studio](interfaces/web-studio.md), or explore a saved run in
+[Pluto](interfaces/repl-pluto.md). The reports retain the measurements and
+their settings, so changing interface does not require a new benchmark.
 
-## Performance checks as software tests
+For larger experiments, the [DataStructures example](real-packages/datastructures.md)
+compares 35 containers and the [Oxygen example](real-packages/oxygen.md)
+adds HTTP and network measurements. Both include scripts and notebooks to adapt.
 
-PerfChecker treats performance as a versioned contract attached to a **business
-feature**. `import_bibtex`, `solve_model`, or `render_frame` is the feature;
-BenchmarkTools, Chairmarks, allocation tracking, profiling and network accounting
-are selectable ways to evaluate it. This separation keeps the suite readable and
-lets every interface offer the same choices.
+## Contribute
 
-```text
-software suite
-  └─ package
-      └─ business feature
-          ├─ check type
-          └─ target: release | working tree | branch | tag | commit
-```
-
-The controller resolves this plan, performs compatibility checks and launches
-bounded workers. The measured worker loads only the target package, workload and
-collector. Results return as a portable run bundle consumed by every UI and CI
-adapter.
-
-## Pick a path
-
-```@raw html
-<div class="feature-grid">
-  <div><strong>I maintain one package</strong>Start with <a href="/guide/first-check">your first test item</a>, then add versions and CI.</div>
-  <div><strong>I maintain a software suite</strong>Model package boundaries and version pins in <a href="/suites-and-comparisons">suites and comparisons</a>.</div>
-  <div><strong>I am investigating a regression</strong>Compare <a href="/tutorials/comparisons">releases and Git revisions</a> or <a href="/tutorials/julia-runtimes">Julia runtimes</a>.</div>
-  <div><strong>I need interactive analysis</strong>Choose <a href="/interfaces/vscode">VS Code</a>, <a href="/interfaces/web-studio">Oxygen</a>, or <a href="/interfaces/visualization">Makie</a>.</div>
-  <div><strong>I run a hosted service</strong>Review the <a href="/operations/hosted">controller, authentication and remote-agent model</a>.</div>
-  <div><strong>I build automation</strong>Consume <a href="/reference/run-bundles">run bundles</a> and <a href="/report-queries">bounded queries</a>.</div>
-</div>
-```
-
-## Try a small example
-
-Follow the [short Bibliography tutorial](tutorials/quick-tour.md) to read a real
-plot, run one export check and compare nine tagged versions. You can inspect the
-recorded results before installing anything.
-
-## Take part
-
-PerfChecker is open source. Bug reports, examples, measurement tools and clearer
-documentation are all useful contributions. [Open an issue](https://github.com/Mirage-Interactive-Fr/PerfChecker.jl/issues)
-or follow the [documentation contribution guide](contributing/documentation.md).
-
-Community contributions are welcome.
+PerfChecker is open source. [Report a problem](https://github.com/Mirage-Interactive-Fr/PerfChecker.jl/issues),
+[contribute an example](real-packages/contributing.md), or
+[improve a page](contributing/documentation.md). The source is available
+[on GitHub](https://github.com/Mirage-Interactive-Fr/PerfChecker.jl).

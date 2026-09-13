@@ -1,10 +1,9 @@
 # Makie and interactive plots
 
-Makie draws the recorded measurements; it does not collect another benchmark
-when you open a plot. Choose a view according to your question: version curves
-show how a summary changes, distributions expose individual observations, and
-relative deltas express a change against a baseline. If terms such as wall time,
-GC or flame graph are unfamiliar, read
+PerfCheckerMakie turns saved measurements into figures. Version curves show
+changes across releases, distributions show the variation between samples, and
+relative deltas compare a result with a baseline. For an introduction to wall
+time, GC and flame graphs, see
 [Understand performance measurements](../guide/understanding-measurements.md).
 
 ## Compare nine Bibliography versions
@@ -25,10 +24,9 @@ These curves therefore compare the versioned package stack. To isolate one code
 change while holding dependencies fixed, follow the
 [streaming export comparison](../tutorials/bibliography.md#Extend-to-historical-comparisons).
 
-The availability table retains workloads that did not yet exist. Missing
-measurements never become zero-valued points. The published data omits local
-paths, machine identifiers and logs; each download retains its source manifest
-digest. Opening the page starts no Julia server.
+The availability table identifies workloads absent from older releases. Their
+points are omitted from the curves. Downloads contain the measurements and a
+digest of the source manifest; local paths and machine identifiers are removed.
 
 ### Read the recorded evolution
 
@@ -41,10 +39,12 @@ from pixel distances.
 
 In this campaign, export allocations rise from **4,480 bytes at tag 0.1.0 to
 8,352 bytes at tag 0.4.0**. The median export timings are **13.15 µs and 15.45 µs**
-respectively, with variation across the intermediate releases. This is evidence
-about the small recorded workload and its versioned dependencies; it does not
-establish that every Bibliography operation regressed. Inspect the distributions
-and repeat important timing comparisons on your own inputs.
+respectively. Allocated bytes nearly double, while the median time increases
+by about 17%. Time and allocated bytes therefore tell different parts of the
+story. Inspect the intermediate releases and sample distributions to choose
+a pair to investigate, then repeat it with your own inputs.
+These values describe the one-article export workload and its resolved
+dependencies; other Bibliography operations may evolve differently.
 
 The streaming-export example uses later development commits. A package can
 still declare version `0.4.0` after the `v0.4.0` tag was created, so its declared

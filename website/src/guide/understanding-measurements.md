@@ -1,16 +1,14 @@
 # Understand performance measurements
 
-A performance measurement answers a question about a particular operation.
-For Bibliography, that operation might be exporting one prepared bibliography
-to BibTeX. Its input size, output and measurement boundary matter as much as the
-number on the screen. Timing that export answers a different question from
-timing Julia startup, package loading, input construction and export together.
+Suppose exporting a bibliography has become slow. A benchmark can tell us how
+long the export takes and how much memory it allocates. A profile can then
+show which calls account for those costs. After changing the code, we repeat
+the benchmark and check that the exported document is still correct.
 
-Start with a benchmark to see whether the operation became slower or allocated
-more memory. Then use a profiler to investigate where the cost comes from.
-Finally, repeat the benchmark after a change and check that the output is still
-correct. A useful profile identifies a place to investigate; it does not by
-itself demonstrate an improvement.
+The examples below use that export operation to explain timing, allocation
+and profiling results. The input is already prepared when timing starts.
+Loading Julia, loading Bibliography and constructing the input are measured
+separately when we investigate startup latency.
 
 ## Wall time: how long the operation takes
 
@@ -23,9 +21,8 @@ before interpreting the timing.
 
 Time units are easy to confuse: one second is 1,000 milliseconds (ms), one
 millisecond is 1,000 microseconds (µs), and one microsecond is 1,000 nanoseconds
-(ns). A displayed value of 7,000 ns means 7 µs. This is an illustrative conversion,
-not a performance guarantee for Bibliography. PerfChecker's plot labels and
-measurement definitions state the unit; raw collector formats can differ.
+(ns). For example, 7,000 ns is 7 µs. Check the unit in the plot label or
+measurement definition when comparing outputs from different collectors.
 
 In exported data, `By` denotes bytes and `1` denotes a dimensionless quantity,
 such as a count or fraction. These are unit labels. They differ from the `/1`
@@ -110,63 +107,16 @@ interval already contains the collection work that took place in it.
 
 ## Flame graphs: where sampled work accumulates
 
-A **call stack** records the chain of calls leading to the current function.
-A **flame graph** aggregates many such stacks into nested rectangles. Width
-represents the selected weight, such as CPU samples or allocated bytes. Depth
-shows the calling relationship. The horizontal position is generally not a
-timeline: neighbouring rectangles need not represent operations that happened
-one after the other. See [Brendan Gregg's flame graph explanation](https://www.brendangregg.com/flamegraphs.html).
-
-A wide parent includes the weight of its descendants. Do not add parent and
-child percentages as if they were independent costs. Start with a wide branch,
-follow it into the relevant Bibliography function, then inspect its source line
-and full call path. The same function can occur under different callers.
-PerfChecker's hover or keyboard-focus details retain that path.
-
-For a CPU flame graph, width concerns sampled execution. For a wall-time flame
-graph, it concerns sampled task stacks, including waiting tasks where supported.
-For an allocation flame graph, it concerns sampled allocation bytes or events.
-The geometry is similar, but the quantity is different. Colours follow the
-view's legend; they are not a universal temperature scale or a verdict that a
-function is defective.
+A flame graph shows which call paths account for sampled time or allocations.
+Wide rectangles have more samples or bytes; rectangles above them represent
+nested calls. Once a comparison shows a change worth investigating, use a
+profile to find the relevant code.
 
 ### Inspect three recorded Bibliography profiles
 
-These graphs come from three completed runs of `export_bibtex` on the recorded
-development revision `575ec810042cc791fd47a2c025a80246ccf039b5`. They explain how
-to read a profile at one revision. The [nine-version gallery](../interfaces/visualization.md)
-answers the separate question of how measured cost changes across releases.
-All three captures used Windows, Julia 1.13.0 and one worker thread.
-
-Select a weight below and inspect a wide rectangle. Each view retains at most
-the 40 highest-weight distinct stacks; its percentages use the retained total.
-The source filters and this selection can omit other work. The three runs have
-different collection methods, so their weights must not be added or compared
-as durations. No correctness oracle or regression threshold was evaluated by
-these recorded profile runs.
-
-```@raw html
-<MeasuredProfiles />
-```
-
-In the recorded CPU view, `export_bibtex` at `Bibliography/src/bibtex.jl:211`
-has weight **156 CPU samples out of 159 retained**, or about **98.1%**.
-That is a share of this filtered capture, not 156 function calls or 156 ns.
-Its `_write_bibtex` child at line 162 accounts for 100 of those samples: this
-is work already included in the parent's weight. Follow that branch to see
-the string-writing and buffer-growth paths, then use the allocation view to
-investigate their memory cost.
-
-To reproduce these views from your own completed walkthrough runs, pass the
-CPU, wall-time and allocation report directories in that order:
-
-```sh
-julia --startup-file=no --project=examples/bibliography/.controller/web examples/bibliography/export-profiles.jl CPU_REPORT WALL_REPORT ALLOCATION_REPORT profile-html
-```
-
-`CPU_REPORT`, `WALL_REPORT` and `ALLOCATION_REPORT` are placeholders for the
-directories printed by the [Bibliography runner](../tutorials/bibliography.md).
-The exporter reads saved evidence; it does not launch a new measurement.
+The [chapter on investigating a change](investigate.md) works through
+Bibliography's CPU, wall-time and allocation profiles, including the figures
+and the commands to reproduce them.
 
 ## Warm code, first calls and state
 
@@ -206,9 +156,11 @@ allocated bytes** to ask whether the memory cost follows the same pattern.
 Switch to **Export · sample distribution** to examine variation hidden by the
 summary curve, then **Export · change from 0.1.0** for the relative difference.
 
-Before calling a change a regression, check the source and dependency revisions,
-available workloads, input contract and correctness result. A negative relative
-change means a decrease for these cost metrics. It is not automatically a pass:
-the comparison still needs a declared acceptance policy. Follow the
-[complete walkthrough](../tutorials/bibliography.md) to reproduce the measurements
-and the fixed-dependency comparison that investigates a specific export change.
+Before treating a difference as a regression, check that the inputs, source and
+dependency revisions, measurement settings and correctness checks match the
+comparison you intend. A decrease in time is an observation; a CI pass also
+requires a declared acceptance policy.
+
+Next, [group workloads in a suite](../suites-and-comparisons.md). The suite
+records the inputs, versions and measurement settings used by the example,
+so you can repeat the same comparison as your package changes.

@@ -1,8 +1,8 @@
 # Choose an interface
 
-Choose where you want to run a check or read a result. The Julia API and scripts
-work with PerfChecker alone; the graphical interfaces add controls around the
-same execution and report APIs. You can start with one interface.
+PerfChecker includes a Julia API, command-line entry point and terminal
+selector. Optional packages add a web interface, notebooks and plots. The
+VS Code extension runs individual items from the editor's Testing view.
 
 | I want to… | Use | Try it with Bibliography |
 | --- | --- | --- |
@@ -42,11 +42,10 @@ See [installation](../guide/installation.md) for what to add and current V1
 availability. The interface packages' first General registrations are pending.
 VS Code is an editor extension with a separate installation, described on its page.
 
-Loading Oxygen, Pluto or Makie alone does not load the PerfChecker interface.
-Use separate environments if their dependency versions conflict; saved suite
-bundles can be read by each environment. Opening a notebook does not redirect
-an existing VS Code or web run to a different backend.
+Load the corresponding PerfChecker package to use an interface. If dependency
+versions conflict, put the interfaces in separate environments and open the
+same saved suite bundle in each.
 
-The repository arrangement is a maintainer concern: the interfaces are ordinary
-Julia packages with separate identities. See [package registration](../architecture-roadmap.md#Register-packages-from-the-shared-repository)
-for the General/subdirectory details.
+The interfaces are ordinary Julia packages with their own UUIDs and versions.
+See [package registration](../architecture-roadmap.md#Register-packages-from-the-shared-repository)
+for how they are registered from the shared repository.

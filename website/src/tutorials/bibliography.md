@@ -1,9 +1,13 @@
 # Bibliography: run the complete suite
 
-This walkthrough uses real Bibliography code and the performance suites owned
-by its three packages. Prepare the sources, inspect the available checks, run a
-selection, then open the results through the different interfaces. The runnable
-files are in `examples/bibliography/` in the PerfChecker checkout.
+Bibliography imports, processes and exports bibliographic entries. Its parser
+and internal data model live in two additional packages, BibParser and
+BibInternal. Measuring them separately helps locate a change: a slower export
+need not come from the parser, for example.
+
+The scripts in `examples/bibliography/` load the three packages' suites. They
+let you select one operation, compare releases and inspect the resulting
+timings and profiles in each interface.
 
 New to profiling? Read [Understand performance measurements](../guide/understanding-measurements.md)
 alongside this walkthrough. It explains wall time, GC, allocations, samples and
@@ -13,8 +17,8 @@ tools even when their labels look similar.
 
 ## Choose a task
 
-You do not need to execute this whole page in one session. Each route has its
-own commands and result; start with one item or one export benchmark.
+Start with one item or the export benchmark. The table links to the commands
+for each task.
 
 | Task | Start here | What you obtain |
 | --- | --- | --- |
@@ -25,10 +29,8 @@ own commands and result; start with one item or one export benchmark.
 | Compare released package stacks | [Nine-version history](#Compare-the-package-history) | Timing distributions, allocation curves and availability |
 | Evaluate one source change | [Fixed-dependency comparison](#Extend-to-historical-comparisons) | Before/after observations with dependency revisions held fixed |
 
-The rest of this page uses files shipped with the PerfChecker source checkout
-to reproduce the recorded suite. That example preparation is not part of
-installing PerfChecker. The downloadable TestItem above is the shorter path
-when you just want to write and run a test in your own project.
+The suite examples below use files from the PerfChecker checkout. The
+downloadable TestItem is self-contained and can be added to your own project.
 
 ## Prepare the example once
 
@@ -53,7 +55,7 @@ examples/bibliography/
 └─ results/                 # created when a run starts
 ```
 
-The sources are public commits, rather than whatever happens to be on `main`:
+`sources.toml` selects these public commits:
 
 | Package | Declared version | Source revision |
 | --- | --- | --- |
@@ -87,10 +89,10 @@ commit is still fixed by `sources.toml`.
 | Bibliography | `web_render` | Convert a bibliography into its web representation |
 | Bibliography | `read_and_filter` | Read a document and filter its entries |
 
-The small inputs make this a practical walkthrough. They are not a substitute
-for checking your own document sizes and entry distributions. For example,
-`export_bibtex` prepares a one-entry bibliography outside the measured call,
-then measures `Bibliography.export_bibtex(bibliography)`.
+The inputs are small enough to run quickly. For example, `export_bibtex`
+prepares a one-entry bibliography, then measures
+`Bibliography.export_bibtex(bibliography)`. Increase the number and variety
+of entries to test the documents your application processes.
 
 | Collector argument | What it records |
 | --- | --- |
@@ -464,53 +466,7 @@ the source checkouts; `:historical` includes all declared releases. Inspect and
 filter those plans before launching a large campaign. Inclusive version bounds
 are available through `filter_suite_plan`.
 
-For a focused code change, Bibliography's
-[streaming export commit](https://github.com/JuliaBibliographies/Bibliography.jl/commit/575ec810042cc791fd47a2c025a80246ccf039b5)
-replaces concatenated per-entry strings with writes to one buffer. Comparing
-that revision with its parent is a useful experiment; the code change alone
-does not establish a speedup. Hold the workload, dependency revisions, Julia
-runtime and machine fixed, then inspect both allocation and timing differences.
-See [revision comparisons](comparisons.md) for candidate and baseline selection.
-
-The example includes that two-revision experiment. From `examples/bibliography/`:
-
-```sh
-julia --project=.controller/core compare-exports.jl plan
-julia --project=.controller/core compare-exports.jl run
-```
-
-It selects only `export_bibtex` with BenchmarkTools, fixes the BibInternal and
-BibParser revisions from `sources.toml`, and records 100 samples per revision,
-with one evaluation per sample and one worker thread. It leaves your source
-checkouts untouched. Reports go to a new `results/export-comparison-*` directory.
-
-One Windows run on Julia 1.13.0, recorded on 12 September 2026, produced:
-
-| Median measurement | Parent `6a4cc90` | Streaming export `575ec81` | Change |
-| --- | ---: | ---: | ---: |
-| Allocated bytes | 3,904 B | 2,976 B | −23.77% |
-| Allocation count | 27 | 23 | −14.81% |
-| Elapsed time | 7,600 ns | 6,800 ns | −10.53% |
-| Garbage collection time | 0 ns | 0 ns | No relative change defined |
-
-
-```@raw html
-<DocMedia src="/examples/bibliography/figures/streaming-comparison.svg" alt="Before and after a Bibliography streaming export change: bytes 3904 to 2976, allocations 27 to 23, median time 7.6 to 6.8 microseconds" caption="Two development revisions with fixed dependency pins, 100 samples each, Windows and Julia 1.13.0. These medians do not describe the earlier 0.4.0 release tag; timing distributions overlap." />
-```
-
-```@raw html
-<p><a href="../examples/bibliography/streaming-comparison.json">Download the comparison measurements</a>.</p>
-```
-
-These are measurements of the checked-in small fixture on one machine. The
-timing samples overlap, and the experiment does not estimate a confidence
-interval or establish a general speedup. The report's verdict is
-`inconclusive`, with `diagnostic` records: the example selects the reference
-revision but deliberately sets no acceptance thresholds. A zero GC baseline
-also makes a relative GC percentage undefined. The workload has no correctness
-oracle, so these numbers do not establish output equivalence.
-
-To turn a comparison into a CI decision, choose metric limits and a minimum
-sample count for your workload before measuring; see
-[comparison policies](comparisons.md). Keep the original bundle with its
-environment and source revisions alongside the report.
+The [two-revision comparison](comparisons.md) follows the streaming-export
+change with BibInternal and BibParser held fixed. It includes the commands,
+measurements and explanation of the result. To locate the calls responsible
+for an operation's costs, continue with [profiling the export](../guide/investigate.md).

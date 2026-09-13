@@ -4,10 +4,10 @@ Start with the question in the table below, then read the corresponding tool
 section. For a reproducible Julia profile, use the [Bibliography collector commands](tutorials/bibliography.md#Select-a-package,-workload-and-collector).
 Native tools additionally need a compatible installation and a workload script.
 
-The inventory in `data/tool-catalog.json`, available through `tool_catalog()` and
-the web/VS Code catalogue, distinguishes implemented collectors, optional
-extensions and external tools. Inventory membership never implies qualification.
-This review was refreshed on 12 September 2026.
+`tool_catalog()` lists PerfChecker collectors, optional extensions and external
+tools, using `data/tool-catalog.json`. The web and VS Code interfaces display
+the same list. Check an entry's integration and platform fields before using
+it. This inventory was reviewed on 12 September 2026.
 
 ## Choose an instrument from the question
 

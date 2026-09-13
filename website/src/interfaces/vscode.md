@@ -1,5 +1,9 @@
 # VS Code
 
+The PerfChecker extension adds performance items to VS Code's Testing view.
+You can run one item, inspect its measurements, or select a suite and compare
+package versions without leaving the editor.
+
 ## Prepare the workspace
 
 Install the PerfChecker editor extension and use a Julia environment containing
@@ -33,9 +37,8 @@ for environment setup, tags and the distinction between correctness and budgets.
 <DocMedia src="/examples/bibliography/vscode/native-items.png" alt="Bibliography export workload passed in VS Code while its format API item remains unrun" caption="One selected Bibliography item executed through PerfChecker's native Testing controller. Follow the Bibliography walkthrough to prepare the same workspace." />
 ```
 
-The VS Code extension is PerfChecker's central graphical workspace. It reads the
-same plan and UI configuration as the CLI, Oxygen, Pluto, and documentation
-adapters; it does not invent a second suite format.
+The extension reads the same suite definitions and saved results as the Julia
+API, Web Studio and Pluto.
 
 ## Read the result before comparing it
 

@@ -7,14 +7,21 @@ with the page address and the step that was difficult to follow.
 
 ## Write for someone trying the tool
 
-Start a tutorial with one concrete outcome and the few commands needed to reach
-it. Use [Bibliography](../tutorials/quick-tour.md) so readers can run the same
-example. Put a real plot beside a measured comparison, explain its axes and
-describe what the reader should notice. Link advanced options at the end.
+Introduce the operation before its configuration. Show a runnable example,
+then explain what the code does and how to read its output. The Julia manual's
+[profiling chapter](https://docs.julialang.org/en/v1.14-dev/manual/profile/)
+is a useful example of this sequence.
 
-Describe available behavior and its limits. Keep personal work notes, release
-checklists and proposed features out of the user guides. A reader should not
-need to know how the documentation was produced to use PerfChecker.
+Use familiar names and concrete statements: “The worker times `operation`”
+is clearer than “The lifecycle preserves the measurement boundary.” Explain
+technical terms when they are needed. Keep limitations beside the operation
+or result they affect, rather than repeating general warnings in every section.
+
+Use [Bibliography](../tutorials/quick-tour.md), [DataStructures](../real-packages/datastructures.md)
+or [Oxygen](../real-packages/oxygen.md) for examples. Put a plot beside each
+measured comparison, explain its axes and discuss the values readers can see.
+Link to a reference for additional options. Keep work notes and proposed
+features outside the user guides.
 
 ## Local build
 
@@ -38,15 +45,24 @@ an existing docstring is not proof that its arguments and guarantees are correct
 
 ## Information architecture
 
-- **Get started** supplies installation, a downloadable item and a first result.
-- **Suites and comparisons** introduces the experiment before its configuration.
-- **Measurements** explains what quantities and tools mean, with recorded plots.
-- **Interfaces** starts with a choice, then preparation, actions and saved output.
-- **Automation and hosting** repeats a working local workflow in CI or on workers.
-- **Advanced experiments** adds shared contracts, runtime and machine comparisons.
-- **Optional advice** keeps model configuration separate from ordinary testing.
-- **Contracts and API** is a lookup reference for formats, options and functions.
-- **Contribute** covers package architecture and maintaining this documentation.
+- **Manual** follows Bibliography from a test to an operation benchmark, then
+  explains the results, suites, comparisons, profiling and CI. Each chapter
+  continues the previous one; its ending points to the next operation.
+- **Examples** develops complete experiments for Bibliography, DataStructures
+  and Oxygen, with saved measurements and runnable notebooks.
+- **Interfaces** describes the controls and setup for each UI.
+- **Further topics** covers additional measurements, larger experiments,
+  remote execution and optional advisors.
+- **Reference** documents arguments, formats and integration details.
+- **Contributing** covers architecture, collection tests and documentation.
+
+Keep each detailed explanation in one place and link to it from other pages.
+The sidebar and previous/next links come from `website/make.jl`; update their
+order when moving a chapter. Follow the approaches used by the
+[Julia manual](https://docs.julialang.org/en/v1.14-dev/),
+[JuMP tutorials](https://jump.dev/JuMP.jl/stable/tutorials/getting_started/getting_started_with_JuMP/)
+and [Julia Constraints introduction](https://juliaconstraints.github.io/dev/cp/30_getting_started):
+introduce a problem, add the concepts needed to solve it, and inspect the result.
 
 Before adding a code block, say whether it is a complete runnable example, a
 fragment using earlier variables, or a format illustration. Give the working

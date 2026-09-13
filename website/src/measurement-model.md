@@ -6,8 +6,8 @@ For an introduction with plots, start with
 Use this page when defining a collector or deciding whether two records describe
 the same measurement.
 
-PerfChecker models performance as a product of dimensions, not as one generic
-time or memory number:
+Each metric describes the resource measured, the part of execution observed
+and the method used to summarize it:
 
 ```text
 resource × lifecycle phase × execution regime × scope × method × statistic
@@ -15,8 +15,8 @@ resource × lifecycle phase × execution regime × scope × method × statistic
 
 For example, startup, import, compilation, first execution, and steady-state
 time are different measurements. Julia heap bytes, native heap bytes, process
-RSS, and GPU memory are also different resources. A report may display them
-together, but it may not silently add or compare them.
+RSS, and GPU memory describe different resources. Their definitions determine
+which values can be compared or combined in a report.
 
 ## Required measurement context
 
@@ -41,13 +41,13 @@ Every measurement definition should state:
 Values are numerically comparable only when their versioned measurement
 definitions and comparison keys permit it.
 
-Suite bundles now retain controller thread count, hardware fingerprint, local
+Suite bundles retain controller thread count, hardware fingerprint, local
 Git revision/branch/dirty state, and SHA-256 fingerprints of the effective
 Project and Manifest. Different OS, architecture, Julia thread count or known
 hardware fingerprints make a comparison `incomparable`. A changed Julia
 runtime or resolved environment remains visible as a warning because controlled
-runtime campaigns may intentionally vary one of those axes. Missing legacy
-fingerprints never silently become proof that two machines are identical.
+runtime campaigns may intentionally vary one of those settings. Older bundles
+with missing fingerprints provide less information for checking comparability.
 
 ## Julia performance families
 

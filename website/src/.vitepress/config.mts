@@ -43,52 +43,49 @@ const config = defineConfig({
   themeConfig: {
     logo: '/assets/perfchecker.svg',
     sidebarDrawer: 'REPLACE_ME_DOCUMENTER_VITEPRESS_SIDEBAR_DRAWER',
-    outline: { level: 'deep', label: 'On this page' },
+    outline: { level: [2, 3], label: 'On this page' },
     search: {
       provider: 'local',
       options: { detailedView: true },
     },
     nav: [
-      { text: 'Get started', items: [
-        { text: 'Overview', link: '/guide/overview' },
-        { text: 'Installation', link: '/guide/installation' },
-        { text: 'Your first result', link: '/guide/first-check' },
-        { text: 'Short Bibliography tutorial', link: '/tutorials/quick-tour' },
-        { text: 'Understand the measurements', link: '/guide/understanding-measurements' },
-        { text: 'Bibliography walkthrough', link: '/tutorials/bibliography' },
-        { text: 'Real package examples', link: '/real-packages/' },
+      { text: 'Manual', link: '/guide/overview' },
+      { text: 'Examples', items: [
+        { text: 'Choose an example', link: '/real-packages/' },
+        { text: 'Bibliography', link: '/tutorials/bibliography' },
+        { text: 'DataStructures', link: '/real-packages/datastructures' },
+        { text: 'Oxygen', link: '/real-packages/oxygen' },
       ] },
-      { text: 'Use PerfChecker', items: [
-        { text: 'Interfaces', items: [
+      { text: 'Interfaces', items: [
         { text: 'Choose an interface', link: '/interfaces/packages' },
         { text: 'VS Code', link: '/interfaces/vscode' },
         { text: 'Web Studio', link: '/interfaces/web-studio' },
         { text: 'REPL and Pluto', link: '/interfaces/repl-pluto' },
         { text: 'Plots', link: '/interfaces/visualization' },
-        ] },
-        { text: 'Guides', items: [
-        { text: 'Suites and comparisons: start here', link: '/suites-and-comparisons' },
-        { text: 'Existing test items', link: '/test-items' },
-        { text: 'Software suites', link: '/software-suites' },
-        { text: 'Comparisons', link: '/tutorials/comparisons' },
-        { text: 'DataStructures and Oxygen experiments', link: '/real-packages/' },
-        { text: 'Advanced experiments', link: '/experiments' },
-        { text: 'Profiling Julia and native code', link: '/native-profiling' },
-        { text: 'Automation and hosting', link: '/operations/overview' },
-        { text: 'Optional advice', link: '/advisors' },
-        ] },
+        { text: 'Documenter', link: '/interfaces/documentation' },
       ] },
-      { text: 'Reference', items: [
+      { text: 'API & reference', items: [
+        { text: 'Reference index', link: '/reference/' },
         { text: 'Julia API', link: '/reference/api' },
         { text: 'Command line', link: '/reference/cli' },
         { text: 'Checks and tools', link: '/reference/checks' },
         { text: 'Run bundles', link: '/reference/run-bundles' },
-        { text: 'Qualified collections', link: '/reference/qualification' },
+        { text: 'Comparison options', link: '/reference/comparisons' },
       ] },
-      { text: 'Contribute', items: [
+      { text: 'More', items: [
+        { text: 'Further topics', items: [
+          { text: 'Experiments', link: '/experiments' },
+          { text: 'Native profiling', link: '/native-profiling' },
+          { text: 'Network traffic', link: '/network-measurement' },
+          { text: 'Remote workers', link: '/operations/hosted' },
+          { text: 'Optional advisors', link: '/advisors' },
+        ] },
+        { text: 'Contributing', items: [
         { text: 'Architecture', link: '/architecture-roadmap' },
         { text: 'Report an issue', link: 'https://github.com/Mirage-Interactive-Fr/PerfChecker.jl/issues' },
         { text: 'Contributing documentation', link: '/contributing/documentation' },
+        { text: 'Contribute an example', link: '/real-packages/contributing' },
+        ] },
       ] },
       { component: 'VersionPicker' },
     ],
@@ -125,12 +122,13 @@ if (config.base !== '/') {
   ]
 }
 
-// Documenter generates the groups from make.jl. Keep the introduction open;
-// readers can expand the other sections as they choose their workflow.
+// Keep the whole documentation visible from every page.
 const sidebar = config.themeConfig?.sidebar
 if (Array.isArray(sidebar)) {
   for (const group of sidebar) {
-    if (group.items) group.collapsed = group.text !== 'Get started'
+    if (!group.items) continue
+    group.collapsed = false
+    for (const child of group.items) if (child.items) child.collapsed = false
   }
 }
 export default config

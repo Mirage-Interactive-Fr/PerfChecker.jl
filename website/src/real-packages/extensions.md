@@ -1,16 +1,9 @@
 # Profiles, extensions and experiments
 
-Start with the historical timing run, then choose an instrument that can answer
-your next question. Profiling, inference diagnostics and native memory tools
-observe different things; enabling all of them at once would both perturb the
-workload and make its results difficult to interpret.
-
-This page maps the example to the extension catalogue. A runnable recipe is
-not automatically evidence that an optional tool is installed or supported on
-your machine. Each tool's report retains that distinction.
-
-The complete package pages now contain the figures and explanations in reading
-order. Use this page as an index when looking for a particular capability.
+The DataStructures and Oxygen examples use the tools listed below. Follow
+either package's tutorial for the commands and results, or use this index to
+find a particular collector. Profiling and diagnostic tools run separately
+from the timing benchmarks because their instrumentation changes execution costs.
 
 | Capability | Recorded use in these examples | Where to continue |
 | --- | --- | --- |
@@ -57,7 +50,7 @@ performance with the ordinary timing collector after making a change.
 A flame graph aggregates call stacks. Its width is the selected weight—samples
 or bytes—and its vertical direction follows nested calls. It is not a timeline.
 Very short operations may produce too few samples to draw a useful flame graph;
-increase workload size or the profiling window rather than inventing detail.
+increase the workload size or profiling window to collect more samples.
 
 These are the recorded profiles of the DataStructures heap and Oxygen heap
 request. Open the catalogue to switch between allocation and sampling views.

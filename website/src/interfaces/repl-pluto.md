@@ -6,9 +6,7 @@ notebook with controls and plots. For existing `@testitem` declarations, the
 selection and execution commands. The suite workflows below use the separate
 Bibliography benchmark example.
 
-PerfChecker keeps interactive selection available when VS Code or a web browser
-is not the right tool. Both interfaces operate on `SuitePlan` and produce the
-same bundles and reports as CI.
+Both interfaces let you select a `SuitePlan` and save its results for later use.
 
 Shared scenarios additionally support `write_investigation_notebook` with explicit
 Launch, Cancel and Refresh controls. `investigation_view` displays saved reports
@@ -23,10 +21,9 @@ declared operation, and allocated bytes are allocation activity during that
 operation. A table of samples reveals variation that a single median hides.
 Changing interface does not change these definitions.
 
-For Bibliography, compare the saved export benchmark with its profile to move
-from “how much does it cost?” to “where might that cost come from?”. Running a
-Pluto cell or opening a notebook can have its own startup and rendering cost;
-it is outside that saved export measurement. See the
+For Bibliography, inspect the export timings first, then open the allocation
+profile to locate temporary strings and buffers. The notebook's own loading
+and rendering time is separate from the saved export measurement. See the
 [measurement tutorial](../guide/understanding-measurements.md) for GC, memory
 and flame-graph interpretation.
 

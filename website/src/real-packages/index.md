@@ -1,12 +1,12 @@
 # Real package examples
 
-Start with a real workload, prove that its answer is right, then measure the
-same work across package versions. This section follows that sequence with two
-packages. You can run the scripts yourself or explore the recorded plots first.
-An assistant, a hosted service and a GPU are not required.
+The examples develop the steps introduced in the manual into larger
+experiments. Each provides the scripts and saved measurements used by its
+figures, plus instructions for the terminal and graphical interfaces.
 
 | Example | Work performed | What the measurements include |
 | --- | --- | --- |
+| [Bibliography](../tutorials/bibliography.md) | Import, parse and export bibliography entries | The manual's example extended to three related packages and nine releases |
 | [DataStructures](datastructures.md) | Construct and use 35 containers, then investigate event processing | 70 separate operations across every 0.19 patch, plus a longer historical comparison |
 | [Oxygen](oxygen.md) | Compare seven HTTP features, three application routes and real traffic | Older minor releases and every recent patch; network latency, bytes, packets and throughput have their own figures |
 
@@ -17,26 +17,23 @@ ask whether time is spent processing data or serving the request around it.
 
 ## Choose a starting point
 
-Choose either [DataStructures](datastructures.md) or [Oxygen](oxygen.md).
-Each page is a complete walkthrough: check an answer, select releases, measure,
-read the figures, investigate costs and replay the evidence in every interface.
-Each also has its own downloadable Pluto notebook. You do not need to jump
-between pages to finish the experiment.
+Continue with [Bibliography](../tutorials/bibliography.md) to extend the manual's
+example. Choose [DataStructures](datastructures.md) for CPU and allocation costs,
+or [Oxygen](oxygen.md) for request handling and network measurements. Both pages
+include profiling, diagnostics and commands for the graphical interfaces.
 
 The [interface reference](interfaces.md) and [tool map](extensions.md) collect
 the shared recipes for later use.
 
-The plots on these pages come from local executions. The documentation build
-only copies the recorded data and figures. It does **not** install the example
-environments, start a server or rerun a performance campaign.
+The documentation build reads saved data and figures; its duration is independent
+of the time spent running the original benchmarks.
 
 ## Get the runnable examples
 
-The scripts are in
+The DataStructures and Oxygen scripts are in
 [`examples/kitchen-sink`](https://github.com/Mirage-Interactive-Fr/PerfChecker.jl/tree/release/v1.0.0-rc1/examples/kitchen-sink).
 During the release candidate, use a checkout of that branch so the examples and
-PerfChecker agree. This is preparation for these experiments, not an extra step
-in [installing PerfChecker](../guide/installation.md).
+PerfChecker use matching APIs.
 
 ```sh
 git clone --branch release/v1.0.0-rc1 https://github.com/Mirage-Interactive-Fr/PerfChecker.jl.git
@@ -44,7 +41,7 @@ cd PerfChecker.jl/examples/kitchen-sink
 julia setup.jl core
 ```
 
-Run the following commands from this directory. The example controller requires
+Run the DataStructures and Oxygen commands from this directory. The example controller requires
 Julia 1.12 or newer. `setup.jl core` activates this directory's `Project.toml`,
 links the checked-out PerfChecker and installs the example dependencies. Optional
 interfaces get their own `.controller/NAME` environments when requested.
@@ -62,8 +59,7 @@ $env:JULIA_NUM_PRECOMPILE_TASKS = '1'
 
 These variables bound the components individually; an operating-system affinity
 or CI CPU allocation bounds the whole process tree. The recorded Windows runs
-used at most four logical CPUs. They illustrate the workflow on one machine, not a
-universal performance ranking.
+used at most four logical CPUs.
 
 ## Understand the output
 
@@ -72,7 +68,6 @@ a human-readable report, JUnit output and an integrity-checked run bundle.
 Keep that directory: every interface can reuse its observations. In command
 examples, replace `results/ACTUAL-RUN` with the printed directory.
 
-Correctness and performance are separate. A successful run means the selected
-checks and their required oracles passed. A regression verdict additionally
-requires a baseline, a comparison policy and enough comparable samples.
-The recorded history does not impose a CI performance budget.
+A successful run means the selected measurements completed and their result
+checks passed. To fail CI on a slowdown, add a baseline and limits as described
+in [performance comparisons](../tutorials/comparisons.md).

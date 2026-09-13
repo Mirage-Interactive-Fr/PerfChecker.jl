@@ -1,10 +1,8 @@
 # Existing TestItemRunner items
 
-For the overall workflow and the difference between a workload, suite, run and
-comparison, start with [suites and comparisons](suites-and-comparisons.md).
-
-PerfChecker measures existing `@testitem` declarations directly. No generated
-performance catalogue or duplicated workload is needed. Load both packages:
+PerfChecker discovers `@testitem` declarations and measures selected items in
+worker processes. The same item can be used by TestItemRunner to check
+correctness and by PerfChecker to record time and allocations. Load both packages:
 
 ```julia
 using PerfChecker, TestItemRunner

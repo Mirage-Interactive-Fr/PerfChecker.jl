@@ -1,14 +1,16 @@
 # Software suites
 
-A `SoftwareSuite` keeps the choices for a repeatable experiment: packages,
-workloads, collectors and versions. Use one when measuring a whole existing
-test item is not enough. [Suites and comparisons](suites-and-comparisons.md)
-introduces these terms; [your first result](guide/first-check.md) is the shorter
-path for ordinary tests.
+A `SoftwareSuite` specifies the packages, workloads, collectors and versions
+to measure. For example, a Bibliography suite can measure import and export
+with BenchmarkTools on several releases, using the same inputs throughout.
 
-This page follows one Bibliography export benchmark from its definition to a
-saved report, then explains what to change for your package. You do not install
-a suite to enable PerfChecker.
+The example below loads that suite, inspects its plan and saves a report.
+[Suites and comparisons](suites-and-comparisons.md) introduces the terminology;
+for existing TestItems, see [your first result](guide/first-check.md).
+
+A suite is a Julia configuration object, not another package to install.
+You can write it by hand or distribute it with a package. This chapter first
+uses the supplied configuration, then builds a smaller suite from its parts.
 
 ## Open the supplied suite
 
@@ -31,8 +33,7 @@ print_suite_plan(plan)
 The supplied `suite.jl` exposes `build_suite()`, which returns a `SoftwareSuite`.
 Loading it constructs the configuration. Planning lists the checks; it does not
 time a workload. The quick example lists seven workloads with five collectors
-each. A row marked unavailable explains a missing capability rather than giving
-a fabricated measurement.
+each. Rows marked unavailable give the reason a check cannot run.
 
 ## Understand its workload definition
 
@@ -117,12 +118,40 @@ export_feature = FeatureSpec(:export_bibtex;
     options=Dict(:samples=>50, :evals=>1, :seconds=>0.5))
 ```
 
-This creates a definition; it does not add it to `suite` or execute it. In your
-own package, point `entrypoint` to your workload file, attach the feature to its
-`PackageSuite`, and return the enclosing `SoftwareSuite` from `build_suite()`.
-The existing `suite.jl` and pinned upstream `perf/suite.jl` files are editable
-examples of that composition. Keep your adapted files outside `.sources/`:
-the example setup verifies those pinned checkouts and refuses local changes.
+This creates a definition; it does not add it to `suite` or execute it. Continue
+in the same session to assemble a suite containing just this export check.
+Reuse the package paths already prepared by the example:
+
+```julia
+bibliography = only(filter(package -> package.package == "Bibliography", suite.packages))
+export_package = PackageSuite("Bibliography";
+    source=bibliography.source,
+    worker_environment=worker_environment(bibliography),
+    dev_sources=bibliography.dev_sources,
+    versions=VersionNumber[],
+    include_dev=true,
+    features=[export_feature])
+export_suite = SoftwareSuite(:bibliography_export, [export_package];
+    description="Measure export of one prepared bibliography")
+export_plan = plan_suite(export_suite; profile=:quick)
+print_suite_plan(export_plan)
+```
+
+The plan contains one check against the local Bibliography source. The empty
+`versions` list adds no release targets; `include_dev=true` includes the local
+source. Use `export_plan` in place of `selected` in [Run and save](#Run-and-save)
+to execute it. Defining the objects above does not start a worker.
+
+For your own package, replace the package name, source path and workload file,
+then give the worker a project containing that workload's dependencies. A suite
+file should expose `build_suite()` returning the resulting `SoftwareSuite`, so
+`load_software_suite` and the interfaces can open it. The supplied `suite.jl`
+shows this entry point. Keep your adapted files outside `.sources/`: the example
+setup verifies those pinned checkouts and refuses local changes.
+
+`write_software_suite_template` and the CLI `init` command can write starter
+files if useful. They are optional file generators; they do not enable an
+otherwise unavailable PerfChecker feature.
 
 `FeatureSpec.id` identifies a concrete check. Set the same `workload` on several
 features to group timing, allocation and profile collectors under one operation
@@ -163,20 +192,15 @@ remain visible in the plan. `release_pins` fixes historical dependency versions;
 `dev_sources` chooses coherent local dependency sources.
 
 `SuiteCandidate` selects a named Git revision. `ComparisonPolicy` selects its
-reference and aggregation. Follow [compare versions and revisions](tutorials/comparisons.md)
-for these APIs, or run the supplied
+reference and aggregation. The [comparison reference](reference/comparisons.md)
+documents these APIs; [compare versions and revisions](tutorials/comparisons.md)
+uses them in a complete experiment. You can also run the supplied
 [nine-version history](tutorials/bibliography.md#Compare-the-package-history).
 A comparison needs explicit limits to act as a performance gate; a plot alone
 does not decide whether a change is acceptable.
 
 ## Continue with the same experiment
 
-- [Interfaces](interfaces/packages.md): select the suite from VS Code, Oxygen or Pluto.
-- [CI/CD](tutorials/ci.md): repeat the local command and keep its artifacts.
-- [Native dependencies](reference/native-external.md): inspect libraries and external providers.
-- [Process memory](process-memory.md): add process and explicit native-memory observations.
-- [Shared workload contracts](shared-scenarios.md): compare implementations with an explicit oracle.
-- [API reference](reference/api.md): complete constructor and execution arguments.
-
-`write_software_suite_template` and the CLI `init` command can optionally write
-starter files. They are editing conveniences, not required setup steps.
+Next, [compare two revisions](tutorials/comparisons.md) of the export function.
+We will keep the dependency versions fixed so the comparison focuses on the
+source change. Constructor options are listed in the [API reference](reference/api.md).

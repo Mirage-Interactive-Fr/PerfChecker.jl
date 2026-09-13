@@ -1,8 +1,9 @@
 # Documenter integration
 
-PerfChecker can materialize selected run evidence inside any documentation
-project without rerunning the workload during the docs build. The selection is
-described by the same language-neutral query grammar used by Oxygen and agents.
+PerfChecker can generate documentation pages from saved measurements. A query
+selects the records to include, and a document block specifies the tables and
+figures to display. The documentation build reads those results without
+rerunning the benchmark.
 
 ## Build one performance page
 

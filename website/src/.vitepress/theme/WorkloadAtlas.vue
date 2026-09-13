@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import { withBase } from 'vitepress'
+import WorkloadGroup from './WorkloadGroup.vue'
 const props = defineProps<{ directory: string; containers?: boolean }>()
 const catalog = ref<any>(null), records = ref<Record<string, any>>({}), error = ref('')
 const purposes: Record<string, string> = {
@@ -72,7 +73,10 @@ function observations(id:string) {
     if (rows[i-1].value > 0 && rows[i].value / rows[i-1].value > pair[1].value / pair[0].value) pair = [rows[i-1], rows[i]]
   }
   const change = pair[0].value > 0 ? 100 * (pair[1].value / pair[0].value - 1) : null
-  return `Lowest observed time: ${(best.value / 1000).toFixed(2)} µs at ${best.version}. ` +
+  const microsecondFactor:Record<string,number>={ns:.001,'µs':1,us:1,ms:1000,s:1000000}
+  const factor=microsecondFactor[best.unit]
+  const formatted=factor===undefined?`${best.value} ${best.unit}`:`${(best.value*factor).toFixed(2)} µs`
+  return `Lowest observed time: ${formatted} at ${best.version}. ` +
     (change !== null && change > 0 ? `Largest adjacent increase: ${change.toFixed(1)}% from ${pair[0].version} to ${pair[1].version}. Recheck that pair before calling it a regression.` : 'No adjacent time increase was observed in these minima.')
 }
 onMounted(async () => {
@@ -100,19 +104,7 @@ onMounted(async () => {
       <section v-for="group in groups" :key="group.name" :id="'case-'+group.name">
         <h3>{{ group.name }}</h3>
         <p>{{ purposes[group.name] }}</p>
-        <figure v-for="view in group.cases" :key="view.id">
-          <h4>{{ view.workload.replaceAll('_',' ') }} · {{ view.collector?.startsWith('chairmarks-v1') ? 'Chairmarks' : 'BenchmarkTools' }}</h4>
-          <img :src="withBase(directory+'/'+view.svg)" :alt="view.workload+' — time, garbage collection, allocated bytes and allocation count across releases'" loading="lazy" />
-          <figcaption>{{ observations(view.id) }}</figcaption>
-          <p><a :href="withBase(directory+'/'+view.json)" download>Measurements and provenance</a> ·
-            <a :href="withBase(directory+'/'+view.terminal)">Unicode plot</a> ·
-            <a :href="withBase(directory+'/'+view.svg)">Full-size figure</a></p>
-          <div v-for="window in view.patch_windows" :key="window.json">
-            <h5>{{ window.label }}</h5>
-            <img :src="withBase(directory+'/'+window.svg)" :alt="view.workload+' — '+window.label" loading="lazy" />
-            <p><a :href="withBase(directory+'/'+window.json)">Patch-window data</a>. Ratios retain the reference minimum from the complete history.</p>
-          </div>
-        </figure>
+        <WorkloadGroup :directory="directory" :group="group" :observations="observations" />
       </section>
     </template>
   </section>

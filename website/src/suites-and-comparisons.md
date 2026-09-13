@@ -1,14 +1,13 @@
 # Suites and comparisons
 
-PerfChecker measures code you choose. A **workload** is one operation with its
+A **workload** is one operation with its
 inputs: for example, exporting a Bibliography document containing a fixed set of
 entries. A **suite** groups workloads and the settings needed to repeat their
 measurements: which package versions to use and which tools should measure them.
 
-A suite is an experiment description. You do not install one to enable
-PerfChecker. You can measure existing tests directly or write a single inline
-`@check`. A suite becomes useful when you want several operations or versions
-to share a repeatable configuration.
+A suite is useful when several operations or versions share a configuration.
+For a single measurement, you can also run an existing TestItem or write an
+inline `@check`.
 
 ## A concrete example: Bibliography
 
@@ -33,10 +32,10 @@ The recorded example produced this export-time series:
 <DocMedia src="/examples/bibliography/figures/history-time.svg" alt="Bibliography export timing across nine tagged versions, from 0.1.0 to 0.4.0" caption="Actual recorded measurements: 100 samples per version, Windows, Julia 1.13.0, one worker thread. Each point is a median; lower means less elapsed time." />
 ```
 
-A plot shows what was measured. A **comparison** asks how a candidate differs
-from a chosen reference. Deciding whether that difference is acceptable requires
-a policy: which metric matters and how much change is allowed. Finishing a run
-does not by itself establish that performance improved or that a release passed.
+A **comparison** calculates the change from a chosen reference. For example,
+a CI check might allow export time to increase by at most 10% while requiring
+allocation bytes to stay unchanged. Those limits form the comparison policy;
+the historical plot above has no such pass/fail limits.
 
 In this historical example, dependencies evolve with the versions, so the
 graph describes the package stacks together. The
@@ -77,10 +76,6 @@ numbers mean.
 
 ## Continue from here
 
-1. [Measure existing test items](test-items.md) to reuse functional tests.
-2. [Define custom workloads](software-suites.md) when you need more control.
-3. [Compare versions and revisions](tutorials/comparisons.md) with a chosen baseline.
-4. [Follow the complete Bibliography example](tutorials/bibliography.md) across interfaces.
-
-[Machine calibration](machine-transfer.md) and [optional advice](advisors.md)
-are additional topics once you have measurements you can reproduce and interpret.
+Next, [open and adapt the Bibliography suite](software-suites.md). We will
+inspect its workload definition, select the export operation and save a result
+before adding a candidate revision to compare.

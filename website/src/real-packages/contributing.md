@@ -1,10 +1,9 @@
 # Contribute an experiment
 
-An example is most useful when another maintainer can reproduce both the
-original observation and the change that followed. Contributions can add a
-package, a workload or a documented improvement to an existing example.
-Open a pull request with the scripts, a small set of plots and the evidence
-needed to interpret them.
+To contribute an example, open a pull request with the workload code, its
+measurements and plots. You can add a package, an operation or an improvement
+to an existing example. Include enough information for another maintainer
+to repeat the comparison.
 
 Start from `examples/kitchen-sink`. Keep the lifecycle small: prepare the input,
 perform one meaningful operation, verify the answer independently. Existing
@@ -23,17 +22,13 @@ Include these facts with the result:
 | Raw observations or a downloadable bundle | Replot and inspect variation |
 | Baseline, change and repeated confirmation | Separate an improvement from noise |
 
-Keep plotting and measurement separate. A documentation build should render
-saved evidence quickly. Put large bundles, interactive exports and recordings
-in release assets or another durable location. YouTube embeds can accompany a
-written walkthrough, but a notebook should be provided as a notebook, not only
-as a video of someone using it.
+Generate the plots from saved measurements so documentation builds stay fast.
+Attach large bundles and recordings to a release or another durable download
+location. Include notebooks as `.jl` files that readers can edit and run.
 
-Explain unsuccessful or unsupported checks. An absent native tool, a missing
-GPU or an incompatible runtime is not a passing test. Avoid claiming coverage
-of a whole platform from a successful local smoke test.
+List unsuccessful checks with their errors, and identify tools or platforms
+you could not test.
 
-A good contribution ends with a concrete conclusion: what changed, how much
-the repeated measurement changed, what remained correct, and under which
-conditions the result was observed. The community can then test the same
-change on other machines rather than relying on a screenshot alone.
+For an optimization, explain the code change and compare the repeated
+measurements before and after it. Include the correctness-check result and
+machine settings so others can try the change on their own systems.

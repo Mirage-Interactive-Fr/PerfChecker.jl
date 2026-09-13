@@ -1,14 +1,13 @@
 # DataStructures: a complete container investigation
 
-This guide starts with an independently checkable operation, follows its release
-history, investigates its costs, and opens the saved results in each interface.
-It covers **35 containers**, with construction and use measured separately.
-The detailed matrix includes **every 0.19 release, from 0.19.0 through 0.19.6**.
-A second experiment follows representative operations back to 0.11.0.
+Constructing a container and using it can have quite different costs. For
+example, a deque may be cheap to drain but expensive to build. Measuring the
+two operations separately lets us see which one changes between releases.
 
-The examples are runnable Julia files, TestItems and a dedicated Pluto notebook.
-The figures below contain recorded measurements. Opening this page or building
-the documentation does not execute a benchmark.
+This example measures **35 containers** across **DataStructures 0.19.0–0.19.6**,
+then follows a smaller set of workloads back to 0.11.0. It includes scripts,
+TestItems and a Pluto notebook. The figures use saved results, which you can
+explore before running the benchmarks yourself.
 
 ## 1. Open the example and check one answer
 
@@ -21,12 +20,11 @@ julia --project=. containers.jl check
 julia --project=. test/runtests.jl
 ```
 
-`setup.jl core` prepares this example's environment. It is not a required suite
-installation step for ordinary PerfChecker users. The correctness check covers
+`setup.jl core` installs the dependencies used by this example. The correctness check covers
 empty, singleton, 32-element and 512-element inputs for every container operation.
 It compares results with ordinary Julia arrays, dictionaries or explicit answers.
 
-Here is the complete lifecycle for one case:
+For example, the deque test has three parts:
 
 ```julia
 include("src/containers.jl")
@@ -81,11 +79,12 @@ julia --project=. items.jl run deque
 structure, tagged `:perf_only`, `:containers` and the structure's name. The
 ordinary test runner excludes `:perf_only`. PerfChecker can select them by tag.
 Timing a TestItem includes its setup and assertions; the narrower suite lifecycle
-above excludes them. These are two useful measurement boundaries, not identical results.
+above excludes them. Choose the TestItem when you want the cost of the whole
+test, or the suite case when you want the cost of the container operation alone.
 
 ## 3. Inspect every container separately
 
-Each container has two visible figures. Wall time is elapsed operation time.
+Each container has a tab for construction and a tab for use. Wall time is elapsed operation time.
 GC time is the portion attributed to Julia's garbage collector. Allocated bytes
 and allocation count measure allocation activity; neither measures the resident
 memory of the process.
@@ -96,14 +95,17 @@ value for that metric. A zero GC minimum means that a short sample contained no
 collection, not that garbage collection is free. An all-zero metric is shown at
 one by convention; a ratio against zero is otherwise unavailable.
 
-The captions identify candidate release boundaries from the recorded time minima.
-They are observations, not automatic regression verdicts. Inspect the distribution
-and repeat the adjacent pair on an otherwise idle machine before attributing a
-change to a commit. The cases below use 512 unique integer keys, except counters
-and multidictionaries, which group them into 16 categories. Different sizes,
-key distributions and operation mixes can change the result.
+Each caption identifies the largest increase in minimum time between adjacent
+releases. Rerun that pair on an otherwise idle machine and compare the sample
+distributions before investigating the source change.
+
+The cases use 512 unique integer keys. Counters and multidictionaries group
+those keys into 16 categories. To adapt the example, try the sizes and key
+distributions used by your application; they affect the relative costs of
+construction, lookup and mutation.
 
 ```@raw html
+<p>Choose an operation in each container's tabs. Hover or focus a point for its value; use the metric buttons to show or hide curves.</p>
 <WorkloadAtlas directory="/examples/real-packages/containers" containers />
 ```
 
@@ -115,27 +117,27 @@ same saved observations:
 <PackageGallery package-name="DataStructures container catalogue" directory="/examples/real-packages/containers" />
 ```
 
-To corroborate a selected case with Chairmarks:
+To measure the same operation with Chairmarks:
 
 ```sh
 julia --project=. containers.jl chairmarks Deque_drain_chairmark
 ```
 
-Omit the case name to measure all 70 operations on 0.19.6 with Chairmarks. Keep
-BenchmarkTools and Chairmarks results separate: their collector identities and
-sampling machinery differ.
+Omit the case name to measure all 70 operations on 0.19.6 with Chairmarks.
+Keep the two collectors' samples separate: they use different sampling
+procedures, even when their output units have been converted to match.
 
-The following figures place the **70 operations on 0.19.6** side by side for
-both collectors. Each container has four panels with absolute values: time,
-GC share, allocated bytes and allocation count. Each panel separates construction
-from use. The bars show minima from 30 samples, without merging the two collectors'
-observations or treating one collector's overhead as a package improvement.
-Zero GC bars mean no collection occurred in the selected minimum sample.
-Time is converted to microseconds: BenchmarkTools records nanoseconds, while
-Chairmarks records seconds. For GC, BenchmarkTools' paired time samples are
-converted to per-sample GC fractions before taking the minimum; Chairmarks already
-records a GC fraction. The panel shows both as percentages. This conversion does
-not make their sampling machinery identical.
+The figures below compare both collectors on **all 70 operations at 0.19.6**.
+Each group of bars shows construction and use, with one color per collector.
+Select time, GC share, allocated bytes or allocation count above each figure.
+Each bar is the minimum of 30 samples collected by that tool.
+
+The exporters convert time to microseconds because BenchmarkTools records
+nanoseconds and Chairmarks records seconds. For the GC view, they divide each
+BenchmarkTools GC time by its matching elapsed time, then take the minimum;
+Chairmarks already supplies that fraction. Both are displayed as percentages.
+A zero bar means at least one sample completed without a collection. Differences
+between the bars can also reflect how the two tools collect samples.
 
 ```@raw html
 <RecordedFigures directory="/examples/real-packages/containers-collectors" />
@@ -190,52 +192,40 @@ does not represent elapsed calendar time. The downloaded values include the date
 Before 0.15, the public min-heap constructor was `binary_minheap(input)`.
 The example selects it or `BinaryMinHeap(input)` once when the module loads;
 the measured operation still constructs and drains a min-heap in both cases.
-The sorted-output oracle is unchanged. This bridges a spelling change without
-substituting a modern implementation into an old package.
+Both cases check that the output is sorted. This lets the same workload use
+each release's public API.
 
 The [0.18 release](https://github.com/JuliaCollections/DataStructures.jl/releases/tag/v0.18.0)
 changed heap ordering and optimized circular containers. The
 [0.19 release](https://github.com/JuliaCollections/DataStructures.jl/releases/tag/v0.19.0)
-also changed queue and disjoint-set APIs. The present workloads do not exercise
-every changed API: a stable counter curve cannot establish that all containers
-are unchanged. Compare 0.17.20 with 0.18.0 for the heap transition, and 0.18.22
-with 0.19.0 for the next major package generation.
+also changed queue and disjoint-set APIs. Compare 0.17.20 with 0.18.0 to examine
+the heap transition, and 0.18.22 with 0.19.0 for the next series. The five
+historical workloads cover only some of those API changes; the 70-operation
+matrix above provides more detail within 0.19.
 
 ### Where the history stops
 
 `compatibility.jl DataStructures` checks old releases in separate processes,
 including empty and singleton cases. **0.9.0 and 0.10.0 fail to load on Julia
 1.13** because they define methods for the removed `Base.start` iteration API.
-They are omitted, rather than plotted as zero or patched inside the package.
-0.11.0 passes. Going further back would require a separate historical-Julia
-experiment; mixing that into this curve would change both the package and runtime.
-
-All points here are measured *today* on the same Julia runtime and local machine.
-They are not measurements of what a machine running Julia in 2018 achieved.
+The history therefore starts at 0.11.0. Testing earlier versions requires an
+older Julia runtime; see [Julia runtime comparisons](../tutorials/julia-runtimes.md).
+All points here use Julia 1.13 on the same machine, including the older package
+releases.
 
 ### Four measurements on one plot
 
-Elapsed time measures how long the operation took. GC time measures the part
-attributed to Julia's garbage collector, which reclaims unreachable objects.
-Allocated bytes and allocation count measure allocation activity, not the size
-of the live heap or total resident memory.
-
-Each curve below uses the minimum sample for each version, divided by that
-metric's minimum across versions. Thus each metric has a reference value of
-one despite having a different unit. You can hide a curve and inspect its raw
-values. A zero GC sample is common for a short operation; it does not prove
-that the workload never triggers garbage collection.
+The overlay uses the same normalization as the container plots: divide each
+version's minimum by the lowest minimum across releases, separately for each
+metric. A value of two means twice that metric's lowest observed value. Toggle
+a curve to hide it, or select a point to inspect the raw value and unit.
 
 ```@raw html
 <NormalizedMeasurements source="/examples/real-packages/datastructures/normalized.json" figure="/examples/real-packages/datastructures/normalized.svg" package-name="DataStructures" />
 ```
 
-Compare 0.17.20 and 0.18.0 alongside the heap refactor, then examine each 0.19
-patch for smaller changes. The interactive figure exposes the recorded values.
-Repeat a candidate pair, inspect the distributions and compare the vector
-control before attributing a speedup to a particular implementation change.
-
-Here are all four event workloads, plus the independent Chairmarks heap capture:
+The following figures show all four event workloads and the separate Chairmarks
+heap measurements:
 
 ```@raw html
 <WorkloadAtlas directory="/examples/real-packages/datastructures" />
@@ -243,10 +233,9 @@ Here are all four event workloads, plus the independent Chairmarks heap capture:
 
 ### Explore the separate curves and distributions
 
-The gallery also retains each measure on its own scale. A distribution exposes
-sample variation hidden by one summary value. The version trajectory uses its
-documented aggregation; do not assume that its median equals the overlay's
-minimum. BenchmarkTools and Chairmarks remain separate measurement definitions.
+Use the gallery to inspect individual metrics and sample distributions.
+The trajectory views use the statistic named in their labels; a median
+trajectory will generally differ from the minimum used in the overlay.
 
 ```@raw html
 <PackageGallery package-name="DataStructures" directory="/examples/real-packages/datastructures" />
@@ -260,10 +249,10 @@ improvement before attributing it to a release.
 
 ## 5. Explain the cost with profiles and diagnostics
 
-A timing history tells you where to investigate. A profiler helps explain which
-call paths consume a resource. The following diagnostic example uses the heap
-workload with 2,048 events; CPU/allocation profile runs use their recorded sizes.
-It is separate from the 512-key container matrix above.
+A profile helps locate the calls responsible for a workload's time or
+allocations. The diagnostics below use the heap workload with 2,048 events.
+The CPU and allocation profile sizes are recorded with each figure; they
+are separate runs from the 512-key container benchmarks.
 
 ```sh
 julia --project=. measure.jl profiles
@@ -282,10 +271,9 @@ chosen weight, while vertical position represents nested calls. It is not a time
 <RecordedFigures directory="/examples/real-packages/datastructures-profiles" />
 ```
 
-The profiler changes execution costs. After changing a suspicious allocation or
-call path, return to the ordinary timing collector and rerun its correctness oracle.
-Very short operations may produce sparse CPU profiles; a blank profile is not
-proof that no work occurred.
+If an operation is too short to collect useful CPU samples, increase the input
+size or profile repeated calls. Use the resulting call paths to choose a change,
+then measure it again with BenchmarkTools or Chairmarks to avoid profiling overhead.
 
 ```@raw html
 <DiagnosticReports source="/examples/real-packages/datastructures-diagnostics/diagnosis.json" />
@@ -294,8 +282,8 @@ proof that no work occurred.
 ### Loading, compilation and warm execution
 
 JET examines inferred execution paths for possible errors. AllocCheck identifies
-statically visible allocation sites. SnoopCompile measures inference work in its
-recorded scope. They answer different questions from a stopwatch.
+statically visible allocation sites. SnoopCompile measures inference work, which
+can explain why the first call takes longer than subsequent calls.
 
 The latency diagnostic separates source loading, the first operation, and a warm
 operation. These three values explain why a fast repeated operation can still
@@ -320,9 +308,9 @@ observations are separate from the 30-sample timing campaigns.
 
 Reachable-object size estimates the objects retained by the input and result.
 Resident set size (RSS) is the memory currently resident for the entire process,
-including Julia and native libraries. A flat input size with a larger result is
-not a memory leak. A leak investigation requires repeated retention evidence
-and an understanding of intended caches and outputs.
+including Julia and native libraries. When investigating memory growth, repeat
+the operation and check which objects remain reachable after discarding its
+result. Account for caches that are expected to retain data between calls.
 
 ```@raw html
 <PluginTabs>
@@ -331,10 +319,9 @@ and an understanding of intended caches and outputs.
 </PluginTabs>
 ```
 
-The lock diagnostic counts observed conflicts; it does not measure waiting duration.
-This single-threaded heap case is a baseline, not a contention stress test.
-The downloadable records contain tool versions, findings, scopes and the numerical
-observations behind these figures.
+The lock diagnostic counts conflicts. This example runs on one thread; testing
+contention requires a workload with concurrent access. The download contains
+the numerical observations, tool versions and full diagnostic messages.
 
 ```@raw html
 <p><a href="../examples/real-packages/datastructures-diagnostics/diagnosis.json" download>Download the complete diagnostic records</a></p>
@@ -343,10 +330,10 @@ observations behind these figures.
 ### Native tools and non-Julia dependencies
 
 Valgrind Callgrind counts instrumented instructions and calls; Cachegrind models
-cache activity; Massif samples native heap usage. Those values include Julia
-startup and JIT work in the whole-process captures. They must not be substituted for native
-wall-time measurements. Memcheck checks memory accesses and leaks; heaptrack
-tracks native allocation activity. A tool exit does not replace the workload oracle.
+cache activity; Massif samples native heap usage. The whole-process captures
+include Julia startup and JIT work. Memcheck checks memory accesses and leaks,
+while heaptrack tracks native allocations. These tools can inspect runtime and
+library costs that Julia's allocation profiler does not record.
 
 On Linux or WSL:
 
@@ -361,8 +348,8 @@ budget. The script records unavailable tools, unsuccessful executions and oracle
 results explicitly. Large raw profiles remain local; share them as release assets
 when useful. The following capture completed Callgrind, Cachegrind, Massif and
 heaptrack with a passing workload oracle. Memcheck completed the workload but
-reported findings: these need investigation, not a blanket claim that
-DataStructures has a memory error. Julia's runtime and JIT are also in scope.
+reported findings. Inspect their call stacks to locate the affected code;
+the capture includes Julia's runtime and JIT as well as DataStructures.
 
 ```@raw html
 <DiagnosticReports source="/examples/real-packages/datastructures-native/summary.json" />
@@ -375,7 +362,9 @@ GC object graph. Each process has its own timeline.
 
 A second Callgrind capture excludes startup and counts three warmed lifecycles,
 including their preparation and oracle. It recorded 550,591 instrumented
-instructions for this fixed fixture. This is neither CPU time nor a release comparison.
+instructions for this fixed fixture.
+The count is instrumented instructions, not CPU time, and this capture measures
+one revision rather than a change between releases.
 
 ```@raw html
 <DiagnosticReports source="/examples/real-packages/datastructures-callgrind/summary.json" />
@@ -387,9 +376,9 @@ instructions for this fixed fixture. This is neither CPU time nor a release comp
 julia --project=.controller/analyzers additional-diagnostics.jl datastructures
 ```
 
-Aqua found three methods with unbound type parameters in the default-dictionary
-family. This is a package-quality finding, not evidence that the measured heap
-operation became slower. The tool output below identifies the methods.
+Aqua checks package quality. It found three methods with unbound type parameters
+in the default-dictionary family. Expand the report to see the methods; this
+check is independent of the heap timings above.
 
 The heap snapshot records GC-managed objects in the whole worker. The chart
 groups their **shallow sizes** by object category; it does not compute the memory
@@ -404,9 +393,8 @@ local because it is large. The smaller exported summary can be shared.
 ## 6. Keep inputs and experiment provenance
 
 PropCheck and Supposition generate additional correctness cases. Freezing their
-corpus lets every release receive the same inputs, rather than a different random
-test. The provided corpus has 40 seeded cases. It supplements the explicit oracles;
-it is not statistical evidence of a speedup.
+corpus gives every release the same inputs. The provided corpus has 40 seeded
+cases, each checked against the reference answer.
 
 ```sh
 julia setup.jl extras
@@ -416,7 +404,7 @@ julia --project=.controller/extras drwatson.jl run datastructures
 
 DrWatson keeps experiment parameters with cached results. A second invocation
 can reuse a result; set `PERFCHECKER_FORCE=true` to request a fresh execution.
-Do not count a cache hit as another independent measurement.
+A reused result contributes no new samples to the experiment.
 
 For a shared scenario catalog and its portable bundles:
 
@@ -425,11 +413,10 @@ julia --project=. scenarios.jl plan datastructures
 julia --project=. scenarios.jl run datastructures
 ```
 
-The scenario file describes parameters, fixture paths, preparation, operation and
-verification. Its JSON report identifies completed observations and failed oracles.
-Use report provenance when comparing machines; similar CPU specifications alone
-do not establish equivalent performance. Cross-machine prediction needs a calibration
-matrix measured on several machines, which this one-machine example does not provide.
+The scenario file describes the parameters, fixture paths, preparation,
+operation and verification. Its JSON report stores the measurements and check
+results. For comparisons between machines, see [machine calibration](../machine-transfer.md);
+that workflow needs additional measurements from each participating machine.
 
 ## 7. Replay the same experiment in each interface
 

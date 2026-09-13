@@ -11,10 +11,11 @@ const figures = [
 
 <template>
   <section class="home-measurements" aria-labelledby="home-measurements-title">
-    <div class="measurement-eyebrow">A recorded Bibliography experiment</div>
-    <h2 id="home-measurements-title">One workload, four overlaid measurements</h2>
-    <p>Export the same bibliography across nine tagged versions. Compare all four
-      measurements on one axis, each normalized by its own minimum.</p>
+    <div class="measurement-eyebrow">Example</div>
+    <h2 id="home-measurements-title">Bibliography export across nine releases</h2>
+    <p>These curves show the time, GC time, allocated bytes and allocation count
+      for exporting the same bibliography. Each metric is divided by its lowest
+      value across the nine releases, so their changes fit on one plot.</p>
     <NormalizedMeasurements />
     <details class="absolute-measurements"><summary>Read the absolute measurements separately</summary>
     <div class="measurement-grid">
@@ -27,9 +28,8 @@ const figures = [
     </div>
     </details>
     <p class="measurement-context">100 samples per version · Windows · Julia 1.13.0 · one worker thread.
-      GC time is zero in these samples; that does not mean the package never triggers GC.
-      Allocations measure Julia allocation activity, not retained process memory.
-      The dependency stack changes with each tag; no correctness oracle or regression budget was configured.</p>
+      The dependency versions follow each tag. None of these samples triggered GC.
+      The run collected timings and allocations without a correctness check or CI regression limit.</p>
     <div class="measurement-links">
       <a :href="withBase('/interfaces/visualization')">Explore the interactive plots →</a>
       <a :href="withBase('/examples/bibliography/history/overview.json')" download>Download measurements and revisions</a>

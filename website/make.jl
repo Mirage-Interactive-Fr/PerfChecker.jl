@@ -21,75 +21,77 @@ makedocs(;
     checkdocs = :exports,
     pages = [
         "Home" => "index.md",
-        "Get started" => [
-            "Overview" => "guide/overview.md",
+        "Manual" => [
+            "Introduction" => "guide/overview.md",
             "Installation" => "guide/installation.md",
-            "Your first result" => "guide/first-check.md",
-            "Short Bibliography tutorial" => "tutorials/quick-tour.md"
+            "Measure a test" => "guide/first-check.md",
+            "Measure an operation" => "tutorials/quick-tour.md",
+            "Understand the result" => "guide/understanding-measurements.md",
+            "Group workloads in a suite" => "suites-and-comparisons.md",
+            "Define a suite" => "software-suites.md",
+            "Compare two versions" => "tutorials/comparisons.md",
+            "Investigate a change" => "guide/investigate.md",
+            "Run checks in CI" => "tutorials/ci.md",
         ],
-        "Suites and comparisons" => [
-            "What is a suite?" => "suites-and-comparisons.md",
-            "Existing test items" => "test-items.md",
-            "Software suites" => "software-suites.md",
-            "Compare versions and revisions" => "tutorials/comparisons.md",
-            "Bibliography walkthrough" => "tutorials/bibliography.md"
-        ],
-        "Real package examples" => [
-            "Start with a real package" => "real-packages/index.md",
-            "DataStructures: event processing" => "real-packages/datastructures.md",
-            "Oxygen: requests and a local server" => "real-packages/oxygen.md",
-            "Replay in every interface" => "real-packages/interfaces.md",
-            "Profiles, extensions and experiments" => "real-packages/extensions.md",
-            "Contribute an experiment" => "real-packages/contributing.md"
-        ],
-        "Measurements" => [
-            "Understand the measurements" => "guide/understanding-measurements.md",
-            "Check catalog" => "reference/checks.md",
-            "Tool integration catalogue" => "tool-catalog.md",
-            "Julia and native profiling review" => "native-profiling.md",
-            "Process and external memory" => "process-memory.md",
-            "Network measurement" => "network-measurement.md",
-            "Native and external dependencies" => "reference/native-external.md"
+        "Examples" => [
+            "Choose an example" => "real-packages/index.md",
+            "Bibliography" => "tutorials/bibliography.md",
+            "DataStructures" => "real-packages/datastructures.md",
+            "Oxygen" => "real-packages/oxygen.md",
+            "Interface recipes" => "real-packages/interfaces.md",
+            "Tool recipes" => "real-packages/extensions.md",
         ],
         "Interfaces" => [
             "Choose an interface" => "interfaces/packages.md",
             "VS Code" => "interfaces/vscode.md",
-            "Oxygen web studio" => "interfaces/web-studio.md",
+            "Web Studio" => "interfaces/web-studio.md",
             "REPL and Pluto" => "interfaces/repl-pluto.md",
-            "Makie and interactive plots" => "interfaces/visualization.md",
-            "Documenter integration" => "interfaces/documentation.md"
+            "Plots with Makie" => "interfaces/visualization.md",
+            "Documenter" => "interfaces/documentation.md",
         ],
-        "Automation and hosting" => [
-            "Choose an automation workflow" => "operations/overview.md",
-            "CI/CD" => "tutorials/ci.md",
-            "Qualified collections" => "reference/qualification.md",
-            "Hosted controller and agents" => "operations/hosted.md"
+        "Further topics" => [
+            "Additional measurements" => [
+                "Julia and native profiling" => "native-profiling.md",
+                "Process memory" => "process-memory.md",
+                "Network traffic" => "network-measurement.md",
+            ],
+            "Larger experiments" => [
+                "Choose an experiment" => "experiments.md",
+                "Shared scenarios" => "shared-scenarios.md",
+                "Julia runtimes" => "tutorials/julia-runtimes.md",
+                "Machine calibration" => "machine-transfer.md",
+            ],
+            "Remote execution" => [
+                "Automation workflows" => "operations/overview.md",
+                "Controllers and workers" => "operations/hosted.md",
+            ],
+            "Optional advisors" => [
+                "How advisors work" => "advisors.md",
+                "Provider setup" => "advisor-ui.md",
+                "MCP tools" => "mcp-advisor.md",
+                "Specialized models" => "model-specialization.md",
+            ],
         ],
-        "Advanced experiments" => [
-            "Choose an experiment" => "experiments.md",
-            "Shared workload contracts" => "shared-scenarios.md",
-            "Julia RC and nightly" => "tutorials/julia-runtimes.md",
-            "Machine calibration" => "machine-transfer.md"
-        ],
-        "Optional advice" => [
-            "Optional models and investigations" => "advisors.md",
-            "MCP advice tools" => "mcp-advisor.md",
-            "Advisor setup and models" => "advisor-ui.md",
-            "Specializing a local model" => "model-specialization.md"
-        ],
-        "Contracts and API" => [
-            "How to use this reference" => "reference/index.md",
-            "Measurement model" => "measurement-model.md",
+        "Reference" => [
+            "Reference index" => "reference/index.md",
+            "Julia API" => "reference/api.md",
+            "TestItems and tags" => "test-items.md",
+            "Collectors" => "reference/checks.md",
+            "Tool catalogue" => "tool-catalog.md",
+            "Comparison configuration" => "reference/comparisons.md",
+            "Measurement definitions" => "measurement-model.md",
+            "Native dependencies" => "reference/native-external.md",
             "Run bundles" => "reference/run-bundles.md",
-            "Queries and documentation blocks" => "report-queries.md",
+            "Report queries" => "report-queries.md",
             "Command line" => "reference/cli.md",
             "Extensions and providers" => "reference/extensions.md",
-            "Julia API" => "reference/api.md"
         ],
-        "Contribute" => [
+        "Contributing" => [
             "Architecture" => "architecture-roadmap.md",
-            "Documentation guide" => "contributing/documentation.md"
-        ]
+            "Collection qualification" => "reference/qualification.md",
+            "Documentation" => "contributing/documentation.md",
+            "Contribute an example" => "real-packages/contributing.md",
+        ],
     ],
     warnonly = false
 )

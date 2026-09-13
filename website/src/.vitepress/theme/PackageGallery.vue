@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import { withBase } from 'vitepress'
+import InteractiveRecordedPlot from './InteractiveRecordedPlot.vue'
 const props = defineProps<{ packageName: string; directory: string }>()
 const catalog = ref<any>(null), selected = ref(''), error = ref('')
 const view = computed(()=>catalog.value?.views.find((v:any)=>v.id===selected.value))
@@ -23,7 +24,7 @@ onMounted(async()=>{
       </label>
       <p>{{ catalog.runs.length }} completed checks · {{ catalog.versions.length }} tagged versions · Julia {{ catalog.runtime.version }}</p>
       <template v-if="view">
-        <img :src="withBase(directory+'/'+view.svg)" :alt="view.title+' — '+view.label" loading="lazy" />
+        <InteractiveRecordedPlot :key="view.id" :source="directory+'/'+view.json" :figure="directory+'/'+view.svg" :title="view.title+' — '+view.label" :kind="view.kind" :time-unit="catalog.views.find((v:any)=>v.feature===view.feature && v.metric==='julia.wall.time')?.unit" />
         <p><a :href="withBase(directory+'/'+view.json)" download>Plot data (JSON)</a> · <a :href="withBase(directory+'/'+view.terminal)">Unicode terminal plot</a> · <a :href="withBase(directory+'/'+view.svg)">Full-size SVG</a></p>
       </template>
       <details v-if="environments.length">

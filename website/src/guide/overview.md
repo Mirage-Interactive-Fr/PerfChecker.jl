@@ -1,91 +1,79 @@
 # Overview
 
-PerfChecker answers four different questions that are often mixed together:
+A test can pass while the code it checks becomes slower. The result is still
+correct, but a new temporary array, an extra parse or a different algorithm
+may have increased its cost. PerfChecker helps measure those changes and find
+where they come from.
 
-1. **What is being measured?** A stable business feature and a representative workload.
-2. **How is it measured?** A benchmark, allocation tracker, profiler, network collector, or provider.
-3. **Which implementation is measured?** A release, working tree, branch, tag, commit, or Julia runtime.
-4. **How is evidence consumed?** A CI gate, interactive plot, report, documentation block, human review, or agent workflow.
+It runs existing Julia TestItems or operations defined in a performance suite.
+You can compare package releases, Git revisions and Julia runtimes, then open
+the saved timings and profiles in the terminal, VS Code, a browser or a notebook.
 
-Keeping these axes independent is the central design rule. A feature such as
-`import_bibtex` should not be duplicated into names such as
-`import_bibtex_allocations` and `import_bibtex_profile` in the user interface.
-Those are check types attached to one feature.
+## Start with one operation
 
-## Find your way through the documentation
+The manual uses Bibliography, a package for importing and exporting
+bibliographic entries. We first measure a test that imports an article,
+exports it and checks that its title and citation key survive. That gives
+us the cost of the whole test.
 
-Start with **Installation**, then **Your first result**: a downloadable test item,
-one execution and its output. **Suites and comparisons** explains how to group
-workloads and compare versions. **Measurements** explains the numbers and tools.
-**Interfaces** lets you choose where to run and inspect those same experiments.
+Next, we measure export alone, with the input prepared before timing starts.
+This lets us compare the same operation across versions. We will read its
+timings and allocations, profile the calls inside it, and use the comparison
+in CI.
 
-Once the local example works, use **Automation and hosting** to repeat it in CI.
-**Advanced experiments** adds runtime and machine comparisons. **Optional advice**
-is a separate path; no model is needed to follow any of the tutorials.
-**Contracts and API** is a lookup reference, not a prerequisite reading sequence.
+Begin with [installation](installation.md), then [measure the test](first-check.md).
+The **Next page** links follow this sequence. If you already have a runnable
+benchmark, start at [understanding the result](understanding-measurements.md).
 
-## Execution model
+## Adapt the example
 
-PerfChecker has a controller/worker boundary:
-
-| Component | Responsibilities | Included in measurements? |
-|---|---|---:|
-| Controller | Resolve versions, build plans, schedule jobs, write reports, serve UIs | No |
-| Malt worker | Load one target, one workload and one collector | Yes |
-| Reporter | Convert bundles into tables, plots, documentation and CI evidence | No |
-| Oxygen agent | Lease work from a controller and launch local isolated workers | No |
-
-A worker is fresh for every planned feature/target pair. Startup and compilation
-can be measured deliberately, but controller compilation, Makie, Oxygen, Pluto
-and VS Code never leak into the timed workload by accident.
-
-## Choose what to measure
-
-### Existing test items
-
-Load PerfChecker and TestItemRunner, then call `run_testitems(pwd())` from your
-package root in its prepared test environment. This reuses its `@testitem`
-declarations. No generated suite is required; the
-[first-result tutorial](first-check.md) shows selection and result inspection.
+Replace the Bibliography input and operation with code from your own package.
+Keep a check of the result: an optimization should still produce the expected
+answer. When you need several workloads or versions, put those choices in a
+[suite](../suites-and-comparisons.md).
 
 ### Direct `@check`
 
-`@check` is the compact API for a single experiment. `PerfConfig` validates the
-configuration before processes start, and the legacy `Dict` form remains
-supported. A preparation block creates the input; a second block contains the
-operation to measure. For example, import a bibliography during preparation,
-then time only its export. The [Julia API](../reference/api.md) documents the
-macro and its configuration. The [short Bibliography tutorial](../tutorials/quick-tour.md)
-provides a complete operation benchmark through the supplied suite.
+For an inline experiment, `@check` accepts a preparation block and an operation
+to measure. Its [API reference](../reference/api.md) describes the configuration.
+`PerfConfig` validates that configuration before execution; the older `Dict`
+form is also supported.
+The manual uses TestItems and suites because their definitions can also be
+selected from the graphical interfaces.
 
-### Feature suites
+## What runs, and where
 
-`SoftwareSuite` describes a repeatable set of experiments: which operations,
-inputs, collectors and versions to use. For example, compare Bibliography export
-time and allocations across nine releases with the same input. It produces a
-plan and saved results. Define one when that additional configuration is useful;
-it is not something to install before measuring an item or using `@check`.
+The workload, collector and version are separate choices. For example,
+`export_bibtex` remains one operation when you switch from timing it to collecting
+allocation stacks. You do not need to copy its implementation for each tool.
+
+PerfChecker's **controller** prepares the selected versions, schedules work and
+writes reports. A **worker** is a separate Julia process that loads and measures
+the target. The interface and plotting code run outside that measurement.
+Within the worker, the collector determines the boundary: an operation benchmark
+can exclude input preparation, whereas a TestItem measurement includes its setup
+and assertions. Startup and compilation can also be measured explicitly.
+The [suite chapter](../software-suites.md#Why-the-worker-has-its-own-environment)
+explains which dependencies belong in each environment.
 
 ## Save a result and reopen it
 
-The saved result contains your measurements, the code version, the Julia runtime
-and the measurement settings. You can reopen it in another interface without
-running the benchmark again. Its plots display those saved values.
+A **plan** lists the checks you selected. Executing it creates a **run** whose
+saved result contains the measurements, source revision, Julia runtime and
+measurement settings. A plot reads those saved values. You can reopen the same
+run in another interface without executing the workload again.
 
-You will mainly work with a **plan** (the selected checks), **progress** (what is
-running), a **saved run** (measurements and context) and **plots** (views of those
-measurements). The interfaces handle their file formats for you.
+The interfaces handle the report files for you. If you need to read their JSON
+directly, the [format reference](../reference/run-bundles.md) explains the fields
+and format-version identifiers such as `schema_version`.
 
-If you write a tool that reads the JSON files directly, see the
-[format reference](../reference/run-bundles.md). It explains identifiers such as
-`schema_version`, which tell software how to read a file and do not affect which
-tests you select.
+## Explore a larger example
 
-## What to read next
+[DataStructures](../real-packages/datastructures.md) compares construction and
+use of 35 containers. [Oxygen](../real-packages/oxygen.md) compares HTTP handlers
+and adds network measurements. Both include the scripts, saved results and
+Pluto notebooks, so you can inspect the figures or run the experiments yourself.
 
-- [Install PerfChecker](installation.md).
-- Follow the [short Bibliography tutorial](../tutorials/quick-tour.md).
-- Measure [your first test item](first-check.md).
-- Understand [suites and comparisons](../suites-and-comparisons.md).
-- Browse the [measurement catalog](../reference/checks.md).
-- Choose an [interface](../interfaces/packages.md).
+Use the **Interfaces** section to choose where to work, and **Reference** to
+look up a function or option. **Further topics** covers native tools, remote
+workers and comparisons between machines.

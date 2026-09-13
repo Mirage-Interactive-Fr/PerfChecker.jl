@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, watch, ref } from 'vue'
 import { withBase } from 'vitepress'
-const props = withDefaults(defineProps<{ source?: string; figure?: string; packageName?: string }>(), {
+const props = withDefaults(defineProps<{ source?: string; figure?: string; packageName?: string; compact?: boolean }>(), {
   source: '/examples/bibliography/history/normalized.json',
   figure: '/examples/bibliography/figures/normalized.svg', packageName: 'Bibliography'
 })
@@ -9,8 +9,8 @@ const plot = ref<any>(null), selected = ref<any>(null)
 const releaseDates = ref<Record<string,string>>({})
 const hidden = ref<string[]>([])
 const colors = ['#087e8b', '#b46a22', '#7655ad', '#3372b7']
-const order = ['julia.wall.time', 'julia.gc.time', 'julia.alloc.bytes', 'julia.alloc.count']
-const names:Record<string,string> = {'julia.wall.time':'Elapsed time', 'julia.gc.time':'GC time', 'julia.alloc.bytes':'Allocated bytes', 'julia.alloc.count':'Allocation count'}
+const order = ['julia.wall.time', 'julia.gc.time', 'julia.gc.fraction', 'julia.alloc.bytes', 'julia.alloc.count']
+const names:Record<string,string> = {'julia.wall.time':'Elapsed time', 'julia.gc.time':'GC time', 'julia.gc.fraction':'GC share', 'julia.alloc.bytes':'Allocated bytes', 'julia.alloc.count':'Allocation count'}
 const metrics = computed(()=>order.filter(metric=>plot.value?.data.some((row:any)=>row.metric===metric)))
 const rows = (metric:string)=>plot.value.data.filter((row:any)=>row.metric===metric)
 const maximum = computed(()=>Math.max(1, ...(plot.value?.data??[]).filter((row:any)=>!hidden.value.includes(row.metric)).map((row:any)=>row.ratio??0))*1.15)
@@ -25,7 +25,14 @@ const path = (metric:string)=>{
 }
 const describe = (row:any)=>`${row.version}${releaseDates.value[row.version]?' ('+releaseDates.value[row.version]+')':''} · ${names[row.metric]}: ${row.value} ${row.unit} · ${row.ratio===null?'ratio unavailable':row.ratio.toFixed(3)+'× minimum'}${row.normalization_status==='both_zero'?' (zero throughout; shown at 1 as unchanged)':''}`
 const toggle = (metric:string)=>hidden.value=hidden.value.includes(metric)?hidden.value.filter(item=>item!==metric):[...hidden.value,metric]
-onMounted(async()=>{try{const response=await fetch(withBase(props.source));if(response.ok){const record=await response.json();plot.value=record.plot;releaseDates.value=record.release_dates??{}}}catch{/* Static measured figure remains available. */}})
+const error = ref('')
+watch(()=>props.source, async(source, _, cleanup)=>{
+  if(typeof window==='undefined') return
+  const controller=new AbortController();cleanup(()=>controller.abort())
+  plot.value=null;selected.value=null;hidden.value=[];error.value=''
+  try{const response=await fetch(withBase(source),{signal:controller.signal});if(!response.ok)throw Error('Recorded values could not be loaded.');const record=await response.json();plot.value=record.plot;releaseDates.value=record.release_dates??{}}
+  catch(e){if(!controller.signal.aborted)error.value=String(e)}
+},{immediate:true})
 </script>
 
 <template>
@@ -59,7 +66,8 @@ onMounted(async()=>{try{const response=await fetch(withBase(props.source));if(re
       <p class="point-reading" aria-live="polite">{{ selected?describe(selected):'Hover or focus a point to read its raw value. Toggle a measure to isolate its curve.' }}</p>
     </template>
     <img v-else :src="withBase(figure)" :alt="`${packageName} metrics overlaid across versions, each normalized by its minimum.`" />
-    <p class="normalization-note">Each curve has its own minimum at <strong>1</strong>. A value of <strong>1.5</strong> means 50% more than that minimum. The minima can belong to different versions. Equal zeros are displayed at 1 by convention; a nonzero value divided by zero has no finite ratio and is left unplotted. Inspect the raw values before interpreting GC.</p>
+    <p v-if="error" role="alert">{{ error }} The static figure remains available.</p>
+    <p v-if="!compact" class="normalization-note">Each curve has its own minimum at <strong>1</strong>. A value of <strong>1.5</strong> means 50% more than that minimum. The minima can belong to different versions. Equal zeros are displayed at 1 by convention; a nonzero value divided by zero has no finite ratio and is left unplotted. Inspect the raw values before interpreting GC.</p>
     <a :href="withBase(source)" download>Download the plotted values</a>
     · <a :href="withBase(figure)">Open the full-size plot</a>
   </section>

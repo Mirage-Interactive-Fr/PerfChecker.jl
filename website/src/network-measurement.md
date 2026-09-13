@@ -1,9 +1,15 @@
 # Network measurement
 
-Use network accounting when the workload sends or receives data. The result says
-where the counter came from and which execution scope it can be attributed to.
-Latency remains contextual evidence; byte and packet budgets can gate CI only
-when attribution is strong enough.
+Network collectors measure the data sent and received by a workload. Application
+counters report payload sizes; operating-system counters also capture packets
+and protocol overhead. For a runnable example with both, see the
+[Oxygen network measurements](real-packages/oxygen.md#4.-Measure-real-network-traffic).
+
+Before using a byte or packet limit in CI, choose a collector that can attribute
+the traffic to your workload. A shared interface may also carry other processes'
+traffic. The attribution table below describes the available collectors.
+Latency is retained as contextual evidence; byte and packet budgets can gate
+CI only when the collector's attribution is strong enough.
 
 ## Read the network numbers
 

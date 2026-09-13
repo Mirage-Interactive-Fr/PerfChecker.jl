@@ -1,15 +1,14 @@
 # Oxygen: from individual routes to real network traffic
 
-This guide follows one HTTP experiment from a verified request through release
-comparisons, network counters, profiling and replay in each interface. Seven
-HTTP features are measured independently. An application example then adds JSON
-event processing with a heap, a counter and a circular buffer.
+An HTTP request involves several operations: matching a route, parsing its
+parameters, running a handler and writing a response. We can measure these
+operations inside Oxygen first, then add a client and server to measure the
+cost of sending the request over a socket.
 
-The routing history covers **14 Oxygen releases from 1.0.0 to 1.11.0**:
-one point per older minor series, then every patch in 1.10 and 1.11.
-The socket experiment follows the recent server
-API from **1.7.0 to 1.11.0**, including the intermediate patches. These are two
-separate measurement boundaries: an in-process request cannot measure network traffic.
+The examples below compare seven HTTP features across **14 Oxygen releases,
+from 1.0.0 to 1.11.0**. They also cover three routes that process JSON events,
+network measurements from **1.7.0 to 1.11.0**, and profiles of the event handler.
+The scripts and the downloadable notebook use the data shown in the figures.
 
 ## 1. Start with a request whose answer is known
 
@@ -21,9 +20,8 @@ julia setup.jl oxygen
 julia --project=.controller/oxygen oxygen/test.jl
 ```
 
-The service lives in its own Oxygen router. Target workers also run in separate
-processes, so measuring an old Oxygen version cannot modify the Web Studio's
-router or dependency environment.
+Each worker loads the selected Oxygen version in a separate process. Its router
+and dependencies are therefore independent of the Web Studio used to launch it.
 
 ```julia
 include("oxygen/service.jl")
@@ -34,8 +32,9 @@ response = case.operation(request)
 ```
 
 This request calls `/features/add/19/23`. Oxygen parses the two typed path
-parameters, calls the handler and serializes the answer. The oracle independently
-expects HTTP 200 and the value 42. Each timing sample gets a fresh request;
+parameters, calls the handler and serializes the answer. `verify` checks for
+HTTP 200 and the value 42. This check is the experiment's *correctness oracle*.
+Each timing sample gets a fresh request;
 preparation and verification are outside the timed operation.
 
 | Case | Measured feature | Independent oracle |
@@ -48,9 +47,8 @@ preparation and verification are outside the timed operation.
 | `binary` | `Oxygen.binary`, 4 KiB echo | Response equals the submitted bytes |
 | `not_found` | Missing-route dispatch | HTTP 404 |
 
-These are controlled feature baselines, not an exhaustive test of Oxygen's API.
-For example, a binary echo does not test file uploads, streaming or WebSockets.
-Add such a lifecycle when it matches your application, retaining an independent oracle.
+The binary case echoes a fixed body. To investigate file uploads, streaming or
+WebSockets, add a case that performs that operation and checks the response.
 
 ## 2. Follow recent patches and locate a candidate regression
 
@@ -62,12 +60,10 @@ julia --project=.controller/oxygen oxygen/features.jl history
 
 The feature matrix contains 98 checks: seven features on 14 releases.
 It selects 1.0.0 through 1.9.0, then 1.10.0, 1.10.1, 1.10.2 and 1.11.0.
-There is no registered 1.11.1 in this recorded selection.
 Every check takes **30 samples after warmup, with `evals=1`**. The historical
 adapter uses public macros on old releases and isolated routers where supported.
-It does not rewrite Oxygen internals or alter old source code.
 
-A broad history locates a boundary; a small repeatable comparison investigates it:
+If the plot shows a jump between two releases, rerun that smaller range:
 
 ```sh
 julia --project=.controller/oxygen oxygen/features.jl history 1.10.0 1.10.2
@@ -85,14 +81,14 @@ selected = filter_suite_plan(plan; features=[:binary_benchmark],
 result = run_suite_repl(selected; reports="results/binary-pair")
 ```
 
-Only Oxygen is explicitly varied. Julia resolves HTTP, DataStructures and other
-dependencies from Oxygen's declared compatibility bounds. The recorded manifests
-identify the resulting application stack. A dependency transition can explain a
-change, but a coincident version boundary does not prove which commit caused it.
+Only Oxygen's version is selected explicitly. Pkg resolves HTTP, DataStructures
+and the other dependencies using that release's compatibility bounds. Check the
+saved manifests when investigating a change: a new Oxygen release may also use
+a different dependency version.
 
-The historical stack crosses HTTP 0.9, HTTP 1 and HTTP 2. Here, **HTTP 2 means
-version 2 of HTTP.jl**, not proof that a request used the HTTP/2 wire protocol.
-The loopback benchmark below does not claim protocol negotiation or TLS coverage.
+The resolved dependencies include HTTP.jl 0.9, 1 and 2. These are package
+versions; the HTTP/2 network protocol is a separate matter. The loopback
+experiment below uses plain HTTP without testing TLS or protocol negotiation.
 
 ### Separate figures for every feature
 
@@ -108,13 +104,13 @@ An all-zero GC metric appears at one by convention; other ratios against zero
 remain unavailable. Inspect raw values before interpreting a normalized curve.
 
 ```@raw html
+<p>Each feature has tabs for the complete history and the 1.10 patches. Hover or focus a point for its value; use the metric buttons to show or hide curves.</p>
 <WorkloadAtlas directory="/examples/real-packages/oxygen-features" />
 ```
 
-A caption identifies the largest adjacent increase in recorded time minima as
-a candidate for investigation. Repeat that pair and inspect the distributions
-before declaring a regression. A one-machine history is evidence to investigate,
-not a general ranking of package releases.
+Each caption points to the largest increase in minimum time between adjacent
+releases. Use it to select a pair to rerun, then inspect the sample distributions
+below to see how much the timings vary.
 
 The separate units, distributions and version deltas remain available:
 
@@ -146,9 +142,9 @@ julia --project=.controller/oxygen oxygen/measure.jl history
 ```
 
 This matrix follows the same 14 Oxygen releases with the three BenchmarkTools cases
-and a separate Chairmarks heap case. It does **not** pair chosen DataStructures
-versions with Oxygen. The gallery lists the dependencies actually resolved for
-each target release.
+and a separate Chairmarks heap case. As in the feature comparison, Pkg resolves
+DataStructures from Oxygen's compatibility bounds. The gallery lists the
+dependencies for each release.
 
 ```@raw html
 <NormalizedMeasurements source="/examples/real-packages/oxygen/normalized.json" figure="/examples/real-packages/oxygen/normalized.svg" package-name="Oxygen event service" />
@@ -156,10 +152,9 @@ each target release.
 <WorkloadAtlas directory="/examples/real-packages/oxygen" />
 ```
 
-Compare the three routes independently. A faster heap route with unchanged
-plain-text routing may point toward JSON or application processing; it does not
-by itself establish that Oxygen's router improved. Compare matching collector
-identities and parameters before interpreting two records together.
+Compare the heap route with the plain-text case above. If only the heap route
+changes, JSON handling and event processing are useful places to look next.
+If both change, inspect the routing path and shared dependencies as well.
 
 ## 4. Measure real network traffic
 
@@ -171,8 +166,8 @@ julia --project=.controller/oxygen oxygen/loopback.jl
 
 It starts a loopback service, warms the connection, checks responses and records
 30 round trips before stopping the server in `finally`. Its body sizes are
-application bytes. It deliberately records packet and wire-byte fields as
-unavailable because it does not read operating-system counters.
+application bytes. Packet and wire-byte fields are unavailable in this example;
+collecting them requires the operating-system counters used below.
 
 For actual packet counters, run the following **inside Linux or WSL**, from the
 same example directory. A separate environment avoids reusing a Windows manifest:
@@ -205,11 +200,10 @@ bytes and transmit packets separately from application throughput. Dots show all
 <DocMedia src="/examples/real-packages/oxygen-network/network.svg" alt="Actual loopback latency, throughput, transmitted bytes and packets for four Oxygen payload sizes" />
 ```
 
-The saved network observations include the idle controls, response checks,
-tool/runtime versions and counter scope.
-The interface is shared by the host: a quiet idle control is useful evidence but
-not a proof that later traffic belongs exclusively to the measured process.
-A remote server, concurrent clients and a saturated link require separate experiments.
+The download includes the idle measurements, response checks and tool versions.
+Other processes can send traffic over the host's loopback interface during a
+sample. The namespace example below isolates that traffic. To study a remote
+server or concurrent clients, change the workload to reproduce those conditions.
 
 ```@raw html
 <p><a href="../examples/real-packages/oxygen-network/latest.json" download>Download the network observations</a></p>
@@ -237,9 +231,8 @@ latencies; the request-level observations remain in `requests.json`.
 ### Compare socket measurements across releases
 
 The server history covers every release from 1.7.0 through 1.11.0, including
-1.7.1–1.7.5 and 1.10.1–1.10.2. Earlier releases remain in the in-process history;
-they are not silently presented as socket measurements. Each panel below uses
-one fixed payload size across the server releases.
+1.7.1–1.7.5 and 1.10.1–1.10.2. Each tab shows one payload size across these
+releases. The older releases were measured only in the in-process experiment.
 
 ```@raw html
 <PluginTabs>
@@ -257,8 +250,8 @@ julia setup.jl plots
 julia --project=.controller/plots network-export.jl results/YOUR-NETWORK-HISTORY exports/network
 ```
 
-No HTTP request is made by the exporter. Keep Linux network results separate from
-Windows in-process timing results: their runtime environment and measurement scope differ.
+The exporter reads the saved counters. These Linux socket measurements belong
+to a separate experiment from the Windows in-process timings above.
 
 ## 5. Find the expensive call paths
 
@@ -278,10 +271,9 @@ scope and can be opened without rerunning the request.
 <RecordedFigures directory="/examples/real-packages/oxygen-profiles" />
 ```
 
-The profiler perturbs execution. Use it to choose a change, then return to the
-ordinary timing collector and verify the response again. Very short requests may
-produce sparse CPU samples; increasing the profiling workload is more informative
-than interpreting an empty graph as zero cost.
+Profiling adds overhead, so measure a proposed change again with BenchmarkTools
+or Chairmarks. If a short request produces too few CPU samples, profile a larger
+input or repeat the operation for longer.
 
 ## 6. Diagnose inference, startup, allocation and retention
 
@@ -291,14 +283,15 @@ julia --project=.controller/analyzers scenarios.jl diagnose oxygen oxygen-heap
 julia --project=.controller/analyzers additional-diagnostics.jl oxygen
 ```
 
-The seven diagnostic records below use 2,048 events, as does the application
-timing history. The reusable scenario now defaults to 64 events to keep full
-allocation stacks manageable. The additional Aqua/heap experiment uses that
-smaller fixture. Always check the recorded parameters before comparing results.
+The seven reports below use 2,048 events, matching the application timing
+history. The scenario script defaults to 64 events because collecting full
+allocation stacks for the larger input produces a much larger report. The
+additional Aqua and heap-snapshot results also use 64 events.
 
-JET checks inferred execution for possible errors. AllocCheck reports possible
-allocation sites; SnoopCompile examines inference work. The records below show
-what each instrument actually reported, including its version and scope.
+JET analyzes the types inferred for the handler and reports possible errors or
+runtime dispatch. AllocCheck identifies allocation sites in compiled code.
+SnoopCompile records inference work, which can help explain a slow first request.
+Expand a report to inspect the affected methods and source locations.
 
 ```@raw html
 <DiagnosticReports source="/examples/real-packages/oxygen-diagnostics/diagnosis.json" />
@@ -338,15 +331,17 @@ heap snapshot can help inspect retention; the large snapshot stays outside Git.
 </PluginTabs>
 ```
 
-Lock-conflict counts do not measure waiting duration. This sequential fixture
-cannot qualify behavior under concurrent traffic. Aqua separately checks package
-quality; a quality finding is not a measured performance regression.
+The Locks tab reports conflict counts. To measure contention, extend this
+sequential example with concurrent requests and record waiting time too.
 
-Aqua reported an ambiguity between Oxygen's dictionary and vector overloads
-of `recursive_merge` for a zero-argument call. That does not establish a failure
-of the HTTP routes measured above. The heap snapshot reports shallow GC-object
-sizes across the worker, not retained dominator sizes or native allocations.
-The large raw snapshot stays local; this figure uses its exported category totals.
+Aqua checks package quality. Here it reported that a zero-argument call to
+`recursive_merge` is ambiguous between the dictionary and vector overloads.
+The routes above do not make that call.
+
+The heap figure groups GC-managed objects by their shallow size: the size of
+each object itself, excluding the objects it refers to. Native allocations are
+outside this snapshot. The download contains the category totals; the full
+snapshot is kept with the local results because of its size.
 
 ```@raw html
 <DiagnosticReports source="/examples/real-packages/oxygen-diagnostics/additional.json" />
@@ -370,10 +365,8 @@ heaptrack follows native allocations. The Callgrind helper starts collection aft
 warmup and includes three complete lifecycles, including preparation and the oracle.
 Other profiles include startup and JIT work. Their costs are not native wall-time benchmarks.
 
-Every result records tool availability, timeout/failure status and whether the
-workload oracle completed. A partial profile or failed startup is not a successful
-package test. GPU, remote-host and hardware-counter qualification require the
-corresponding hardware and permissions; no such result is fabricated here.
+The reports list the tool version, exit status and response-check result.
+GPU, remote-host and hardware-counter measurements were not run for this example.
 
 ```@raw html
 <DiagnosticReports source="/examples/real-packages/oxygen-native/summary.json" />
@@ -382,7 +375,7 @@ corresponding hardware and permissions; no such result is fabricated here.
 
 The recorded native run completed Callgrind, Massif and heaptrack with a passing
 oracle. Memcheck and Cachegrind reached their time limit during Julia compilation;
-their partial captures do not establish package correctness or native memory safety.
+their reports are incomplete and cannot be used to assess memory errors.
 The Massif axis counts instrumented instructions rather than wall-clock seconds.
 
 ## 7. Preserve experiments and reuse the same evidence
@@ -392,12 +385,12 @@ julia --project=.controller/oxygen scenarios.jl run oxygen
 julia --project=.controller/extras drwatson.jl run oxygen
 ```
 
-A shared scenario catalog records parameters and correctness boundaries. DrWatson
-keeps parameters with a cached experiment; repeating its command can reuse a saved
-result. Set `PERFCHECKER_FORCE=true` when you deliberately want fresh measurements.
-Property-generated event inputs can be frozen with `corpus.jl` and replayed by the
-application oracle. Reusing a corpus improves comparability; reusing a result is
-not another independent observation.
+The scenario catalog stores the input parameters and response checks. DrWatson
+caches a result under those parameters, so repeating the command can return the
+previous run. Set `PERFCHECKER_FORCE=true` to collect new measurements.
+
+Use `corpus.jl` to save inputs generated by the property tests. Replaying that
+corpus gives each package version the same cases to process and verify.
 
 ### REPL and Unicode plots
 
@@ -479,6 +472,5 @@ keep JSON/JUnit reports with the input, runtime and environment fingerprints.
 Documenter and DocumenterVitepress render saved evidence without requiring a
 fresh network test during a documentation build.
 
-When a patch appears slower, narrow the range, repeat the pair and verify the
-response semantics before proposing a fix. The [contribution guide](contributing.md)
-explains how to contribute the experiment, figures and interpretation together.
+To share an improvement found with this example, include the before/after
+results and the change that produced them. See [contributing an experiment](contributing.md).

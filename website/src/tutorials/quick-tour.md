@@ -1,14 +1,12 @@
 # Bibliography in three small steps
 
-If your goal is to measure an existing test, begin with
-[your first result](../guide/first-check.md). This tutorial takes the next step:
-timing a single operation after preparing its input. It uses the supplied
-Bibliography suite files; [what a suite means](../suites-and-comparisons.md)
-explains why this extra experiment description is useful.
+This example measures the export of a one-article bibliography to BibTeX.
+The input is prepared before timing starts, so the result gives the cost of
+export alone. We will inspect the saved results, run the benchmark, and compare
+Bibliography releases using the same input.
 
-Start by reading a result, then run one check and compare versions. The example
-exports a prepared bibliography containing one article to BibTeX. You can explore
-the recorded plots below without installing Julia or starting a server.
+To measure a whole test, including preparation and assertions, see
+[your first result](../guide/first-check.md).
 
 ## 1. Read a measured result
 
@@ -46,10 +44,9 @@ At the end, the terminal prints the directory containing your saved result:
 Reports: .../results/benchmark-<unique suffix>
 ```
 
-That line is output, not another command. Keep the printed directory: it contains
-the measurements and the source and environment information needed to reopen
-them. A completed measurement does not automatically pass a regression budget;
-this example does not configure one.
+Keep the printed directory. It contains the measurements, source revisions and
+environment information needed to reopen the run. This example records timings;
+the [comparison tutorial](comparisons.md) shows how to compare two revisions.
 
 To investigate allocations instead of time, keep the same selection and change
 only the collector:
@@ -58,7 +55,7 @@ only the collector:
 julia --startup-file=no --project=.controller/core run.jl profile_alloc Bibliography export_bibtex
 ```
 
-Read the [allocation profile](../guide/understanding-measurements.md#Inspect-three-recorded-Bibliography-profiles)
+Read the [allocation profile](../guide/investigate.md#Inspect-three-recorded-Bibliography-profiles)
 to see which call paths allocate objects. CPU samples, allocation bytes and
 elapsed timings answer different questions even when they describe the same code.
 
@@ -86,7 +83,8 @@ comparison on your own inputs and machine before setting a CI threshold.
 
 ## Choose your next step
 
-- **Prefer clicking?** Follow the [Web Studio walkthrough](bibliography.md#Open-the-web-studio) or the [VS Code guide](../interfaces/vscode.md).
-- **Want to understand the numbers?** Read [wall time, allocations, GC and flame graphs](../guide/understanding-measurements.md).
-- **Investigating a code change?** Follow the [fixed-dependency export comparison](bibliography.md#Extend-to-historical-comparisons).
-- **Ready for the full example?** The [complete suite walkthrough](bibliography.md) covers selection, every collector, saved results and the interfaces.
+The benchmark has given us timings and allocation measurements for the export.
+Next, [read those measurements](../guide/understanding-measurements.md): what a
+sample contains, why timings vary, and how allocated memory relates to GC.
+The [interface guide](../interfaces/packages.md) has the equivalent controls
+for VS Code, Web Studio and Pluto.

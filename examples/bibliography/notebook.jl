@@ -36,7 +36,7 @@ Run `julia --startup-file=no setup.jl pluto` from that folder once, then open
 the notebook with `julia --startup-file=no --project=.controller/pluto pluto.jl`.
 
 Choose the pinned development suite or nine tagged versions below. Preparation,
-input size and source revisions are described in the [Bibliography tutorial](https://mirage-interactive-fr.github.io/PerfChecker.jl/dev/tutorials/bibliography).
+input size and source revisions are described in the [Bibliography tutorial](https://mirage-interactive-fr.github.io/PerfChecker/dev/tutorials/bibliography).
 
 Filter the plan, then press **Launch selected checks**. Changing controls never starts workers. Use **Refresh status** while a job runs, then **Save completed reports**."""
 

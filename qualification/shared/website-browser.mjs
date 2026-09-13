@@ -6,6 +6,7 @@ import {fileURLToPath} from 'node:url';
 import path from 'node:path';
 import assert from 'node:assert/strict';
 import {execFileSync} from 'node:child_process';
+import {checkRecordedInteractions} from './recorded-plots.mjs';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
 execFileSync(process.execPath,['--test',path.join(root,'qualification/shared/preview.test.mjs')],{stdio:'inherit',windowsHide:true});
@@ -40,14 +41,14 @@ try {
         assert(await burger.isVisible());await burger.focus();await page.keyboard.press('Enter');
         assert.equal(await burger.getAttribute('aria-expanded'),'true');
         const screen=page.locator('.VPNavScreen');
-        await screen.getByRole('button',{name:'Use PerfChecker',exact:true}).click();
+        await screen.getByRole('button',{name:'Interfaces',exact:true}).click();
         await screen.getByRole('link',{name:'Web Studio',exact:true}).click();
         await page.waitForURL('**/interfaces/web-studio');
         assert.equal(await burger.getAttribute('aria-expanded'),'false');
       }else{
         assert(!(await burger.isVisible()));
         assert.equal(await page.locator('.VPNavBarMenu > .VPNavBarMenuGroup:not(.VPVersionPicker)').count(),4);
-        await page.locator('.VPNavBarMenu').getByRole('button',{name:'Use PerfChecker',exact:true}).hover();
+        await page.locator('.VPNavBarMenu').getByRole('button',{name:'Interfaces',exact:true}).hover();
         await page.locator('.VPNavBarMenu').getByRole('link',{name:'Web Studio',exact:true}).waitFor();
       }
       checks.push(`navigation:${width}:${route||'home'}`);
@@ -146,10 +147,11 @@ try {
   checks.push('community-facing content excludes internal release and training worklogs');
   await page.goto(base+'guide/overview',{waitUntil:'networkidle'});
   assert(!(await page.locator('.vp-doc').innerText()).includes('perfchecker-suite-plan/1'));
+  await page.goto(base+'interfaces/vscode',{waitUntil:'networkidle'});
   const firstList=page.locator('.vp-doc ol').first();
   assert.equal(await firstList.locator(':scope > li').count(),4);
   assert.equal(await firstList.evaluate(list=>list.start),1);
-  assert((await firstList.locator('li').first().innerText()).includes('What is being measured?'));
+  assert((await firstList.locator('li').first().innerText()).includes('Discover existing test items'));
   await page.goto(base+'contributing/documentation',{waitUntil:'networkidle'});
   const screenshotPolicy=page.locator('.vp-doc ol').first();
   assert.equal(await screenshotPolicy.locator(':scope > li').count(),7);
@@ -169,11 +171,29 @@ try {
   await page.goto(base+'suites-and-comparisons',{waitUntil:'networkidle'});
   const suiteIntro=await page.locator('.vp-doc').innerText();
   assert(suiteIntro.includes('workload')&&suiteIntro.includes('plan')&&suiteIntro.includes('comparison'));
-  const suiteGroup=page.locator('.VPSidebar .group').filter({has:page.getByText('Suites and comparisons',{exact:true})});
+  const suiteGroup=page.locator('.VPSidebar .group').filter({has:page.getByText('Manual',{exact:true})});
   assert.equal(await suiteGroup.count(),1);
-  assert((await suiteGroup.locator('a').first().getAttribute('href')).endsWith('/suites-and-comparisons'));
+  assert((await suiteGroup.locator('a').first().getAttribute('href')).endsWith('/guide/overview'));
   assert.equal(await suiteGroup.locator('a[href*="advisor"], a[href*="machine-transfer"]').count(),0);
-  checks.push('suite navigation starts with an explanation and separates advanced advice');
+  const manualRoutes=['guide/overview','guide/installation','guide/first-check',
+    'tutorials/quick-tour','guide/understanding-measurements','suites-and-comparisons',
+    'software-suites','tutorials/comparisons','guide/investigate','tutorials/ci'];
+  const completeSidebar=await page.locator('.VPSidebar a').evaluateAll(links=>links.map(a=>new URL(a.href).pathname));
+  for(let i=0;i<manualRoutes.length;i++){
+    await page.goto(base+manualRoutes[i],{waitUntil:'networkidle'});
+    const sidebarLinks=await page.locator('.VPSidebar a').evaluateAll(links=>links.map(a=>new URL(a.href).pathname));
+    assert.deepEqual(sidebarLinks,completeSidebar);
+    for(const route of ['reference/api','real-packages/oxygen','real-packages/datastructures','interfaces/web-studio'])
+      assert(sidebarLinks.includes(new URL(base+route).pathname),`${route} must remain accessible from every manual page`);
+    const next=page.locator('.pager-link.next');
+    if(i+1<manualRoutes.length) assert.equal(new URL(await next.getAttribute('href'),base).pathname,new URL(base+manualRoutes[i+1]).pathname);
+    else assert.equal(new URL(await next.getAttribute('href'),base).pathname,new URL(base+'real-packages/index').pathname);
+  }
+  await page.goto(base+'real-packages/oxygen',{waitUntil:'networkidle'});
+  assert.equal(await page.locator('.VPSidebar a[href$="/reference/api"]').count(),1);
+  assert.equal(await page.locator('.VPSidebar a[href$="/real-packages/datastructures"]').count(),1);
+  assert.deepEqual(await page.locator('.VPSidebar a').evaluateAll(links=>links.map(a=>new URL(a.href).pathname)),completeSidebar);
+  checks.push('every page keeps the complete sidebar, including the API, both package examples and interfaces');
   await page.goto(base+'guide/first-check',{waitUntil:'networkidle'});
   const itemDownload=page.locator('a[download="bibliography-testitems.jl"]');
   assert.equal(await itemDownload.count(),1);
@@ -260,7 +280,8 @@ try {
     const response=await page.request.get(new URL(await download.getAttribute('href'),page.url()).href);
     assert.equal(response.status(),200);
     const notebook=await response.text();
-    assert.equal(notebook,await readFile(path.join(root,'examples/bibliography/notebook.jl'),'utf8'));
+    assert.equal(notebook.replaceAll('\r\n','\n'),
+      (await readFile(path.join(root,'examples/bibliography/notebook.jl'),'utf8')).replaceAll('\r\n','\n'));
     assert(notebook.startsWith('### A Pluto.jl notebook ###'));
     assert(!/[A-Z]:\\|\/Users\/|\/home\//.test(notebook));
     assert(notebook.includes('historical')&&notebook.includes('history-suite.jl'));
@@ -339,6 +360,7 @@ try {
     await page.getByRole('heading',{name:new RegExp('^'+heading)}).waitFor();
   assert((await page.locator('.vp-doc').innerText()).includes('GC fraction'));
   checks.push('measurement tutorial is built and exposes timing, GC and flame-graph explanations');
+  await page.goto(base+'guide/investigate',{waitUntil:'networkidle'});
   for(const id of ['cpu','wall','allocations']){
     await page.getByRole('combobox',{name:'Choose profile weight'}).selectOption(id);
     const iframe=page.locator('.measured-profiles iframe');
@@ -420,6 +442,7 @@ try {
   await page.locator('.VPLocalSearchBox .result').first().waitFor();
   checks.push('local API search');
   assert.deepEqual(errors,[]);
+  checks.push(...await checkRecordedInteractions(page,base,output));
   await writeFile(path.join(output,'website-browser.json'),JSON.stringify({status:'passed',browser:browser.version(),checks,errors},null,2));
   console.log(`Documentation: ${checks.length} browser checks passed`);
 }finally{

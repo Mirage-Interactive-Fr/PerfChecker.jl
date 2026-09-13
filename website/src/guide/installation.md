@@ -41,7 +41,6 @@ Pkg.add(Pkg.PackageSpec(
 ```
 
 Use `packages/PerfCheckerPluto` or `packages/PerfCheckerMakie` for those interfaces.
-No local clone or generated suite is needed to install a package.
 
 For interactive Makie plots, also add `WGLMakie` and `Bonito`.
 For the editor interface, install the [VS Code extension](../interfaces/vscode.md)

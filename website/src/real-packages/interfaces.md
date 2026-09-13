@@ -1,7 +1,7 @@
 # Replay the experiment in every interface
 
-A measurement should not have to be rerun because you changed interface. The
-example runner saves a bundle and a suite report; plotters read that evidence.
+The example runner saves a bundle and a suite report that you can reopen in
+any interface. Plotters read the measurements from that bundle.
 The scripts below work for either DataStructures or Oxygen. Choose a completed
 directory printed by the runner wherever you see `results/ACTUAL-RUN`.
 

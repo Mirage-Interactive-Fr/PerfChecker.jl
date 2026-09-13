@@ -1,9 +1,9 @@
 # Check catalog
 
-PerfChecker attaches one or more **check types** to a business feature. A feature
-such as `import_bibtex` stays one feature whether you measure latency,
-allocations, CPU samples, or network traffic. The backend only changes the
-evidence collected by its isolated worker.
+A **check type** selects how a workload is measured. For example, `:benchmark`
+records timings and allocations for `import_bibtex`, while `:profile_alloc`
+collects allocation stacks for that operation. Each check runs in an isolated
+worker with the selected collector.
 
 If these terms are new to you, start with
 [Understand performance measurements](../guide/understanding-measurements.md).
