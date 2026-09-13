@@ -111,7 +111,7 @@ locate allocated objects. JET, AllocCheck and SnoopCompile address inference,
 allocation sites and compilation. These observations are not interchangeable
 with ordinary timing. Run the same correctness oracle after changing a handler.
 
-The Web Studio uses its own Oxygen instance. It does not force the target worker
+The Web interface (Oxygen) uses its own Oxygen instance. It does not force the target worker
 to run that version. VS Code and the terminal read the same saved suite reports;
 `controller-notebook.jl oxygen-features` generates a Pluto controller for launching selected cases.
 """

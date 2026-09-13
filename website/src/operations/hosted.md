@@ -1,7 +1,7 @@
 # Hosted controller and remote agents
 
 This guide is for operating a shared service. Start with a working
-[local Web Studio](../interfaces/web-studio.md); a local test or CI job does not
+[local Web interface (Oxygen)](../interfaces/web-studio.md); a local test or CI job does not
 require remote hosting. Here an **agent** is a worker service on another machine,
 not an AI assistant. The controller and that service need compatible installed
 packages and the intended suite revision before accepting jobs.

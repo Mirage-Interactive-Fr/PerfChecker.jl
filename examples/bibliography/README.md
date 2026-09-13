@@ -61,7 +61,7 @@ julia --project=.controller/items items.jl functional
 julia --project=.controller/items items.jl performance
 ```
 
-Open the web studio at <http://127.0.0.1:8871/perfchecker/v1/>. For VS Code, open
+Open the web interface at <http://127.0.0.1:8871/perfchecker/v1/>. For VS Code, open
 this directory, set `perfchecker.runnerProject` to the absolute path of
 `.controller/core`, and choose `suite.jl` in the suite editor.
 For native items in the Testing view, use `.controller/items` instead. The two

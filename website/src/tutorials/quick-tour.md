@@ -87,4 +87,4 @@ The benchmark has given us timings and allocation measurements for the export.
 Next, [read those measurements](../guide/understanding-measurements.md): what a
 sample contains, why timings vary, and how allocated memory relates to GC.
 The [interface guide](../interfaces/packages.md) has the equivalent controls
-for VS Code, Web Studio and Pluto.
+for VS Code, Web interface (Oxygen) and Pluto.

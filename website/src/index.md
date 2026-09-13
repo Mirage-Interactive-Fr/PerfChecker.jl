@@ -44,7 +44,7 @@ compares two revisions and uses a profile to locate expensive calls.
 ## Use the results in your own workflow
 
 Run checks from Julia or [VS Code](interfaces/vscode.md), select workloads in
-[Web Studio](interfaces/web-studio.md), or explore a saved run in
+[Web interface (Oxygen)](interfaces/web-studio.md), or explore a saved run in
 [Pluto](interfaces/repl-pluto.md). The reports retain the measurements and
 their settings, so changing interface does not require a new benchmark.
 

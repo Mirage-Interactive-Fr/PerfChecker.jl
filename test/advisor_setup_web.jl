@@ -16,6 +16,9 @@ function postsetup(input; authenticated = true)
 end
 @testset "Advisor setup studio UI" begin
     @test getpage("/advisor").status == 200
+    page = String(getpage("/advisor").body)
+    @test occursin("lang=\"en\"", page)
+    @test occursin("Advisor and models", page)
     for file in ("advisor-panel.js", "advisor-panel.css", "advisor-web.js")
         @test getpage("/assets/" * file).status == 200
     end
@@ -23,11 +26,11 @@ end
     @test postsetup(
         Dict("action" => "save", "config" => nothing); authenticated = false).status == 403
     config = Dict("protocol" => "mcp_http", "endpoint" => "http://127.0.0.1:8083/mcp",
-        "mcp_tool" => "ask", "instructions" => "Préserver l’API")
+        "mcp_tool" => "ask", "instructions" => "Preserve the API")
     @test postsetup(Dict("action" => "save", "config" => config)).status == 200
     saved = PerfChecker._json_parsefile(joinpath(store, "advisor-settings.json"))
     @test saved["enabled"]
-    @test saved["config"]["instructions"] == "Préserver l’API"
+    @test saved["config"]["instructions"] == "Preserve the API"
     @test !saved["investigates"]
     @test postsetup(Dict(
         "action" => "save", "config" => config, "investigates" => true)).status == 400

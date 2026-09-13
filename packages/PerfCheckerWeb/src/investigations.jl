@@ -41,7 +41,7 @@ function _scenario_studio_html(prefix, token)
 <body data-api="$base" data-token="$(_html_escape(token))"><header><p class="eyebrow">PerfChecker</p><h1>Understand. Improve. Verify.</h1><p>Shared scenarios, separate qualifications, evidence-based advice.</p></header>
 <main><section class="card"><h2>Declared scenarios</h2><div id="scenarios"></div><fieldset id="tools"><legend>Analyzers</legend></fieldset><div class="controls"><label>Samples<input id="samples" type="number" min="1" max="10000" value="10"></label><label>Seconds per worker<input id="timeout" type="number" min="1" max="3600" value="120"></label><label>Threads<input id="threads" type="number" min="1" value="1"></label></div><div class="controls"><label>Maximum experiments<input id="max_experiments" type="number" min="1" max="100" value="4"></label><label>Total seconds<input id="budget_seconds" type="number" min="1" max="86400" value="300"></label></div><p id="advisor-status"></p><div class="toolbar"><button id="discover">Discover tests</button><button id="measure">Measure selected</button><button id="diagnose">Diagnose selected</button><button id="investigate">Investigate selected</button><button id="sync">Relate to CI</button><button id="inventory">Tool catalogue</button><button id="cancel" disabled>Cancel</button></div><p id="status" role="status">Ready</p></section>
 <section class="card"><h2>Saved evidence</h2><div class="toolbar"><select id="history" aria-label="Saved investigation"></select><button id="open">Open evidence</button><button id="advise">Read advice</button><button id="narrate">Explain with configured model</button><button id="json">Open JSON</button><button id="markdown">Open Markdown</button></div><div class="toolbar"><select id="baseline" aria-label="Baseline measurements"></select><select id="candidate" aria-label="Candidate measurements"></select><button id="compare">Compare before / after</button></div></section>
-<p><a href="$base/advisor">Configurer le conseiller et gérer les modèles</a></p><section id="evidence" aria-live="polite"></section></main><script src="$base/assets/investigations.js"></script></body></html>"""
+<p><a href="$base/advisor">Configure the advisor and manage models</a></p><section id="evidence" aria-live="polite"></section></main><script src="$base/assets/investigations.js"></script></body></html>"""
 end
 
 function PerfChecker.register_oxygen_routes!(catalog::PerfChecker.ScenarioCatalog;
@@ -207,7 +207,7 @@ function PerfChecker.register_oxygen_routes!(catalog::PerfChecker.ScenarioCatalo
             evidence = nothing
             if action == :narrate
                 advisor === nothing &&
-                    throw(ArgumentError("Configure an advisor in Conseiller et modèles."))
+                    throw(ArgumentError("Configure an advisor in Advisor and models."))
                 source_directory, _ = saved(String(get(payload, "evidence_id", "")))
                 evidence = PerfChecker._json_parsefile(joinpath(
                     source_directory, "advice", "advice.json"))

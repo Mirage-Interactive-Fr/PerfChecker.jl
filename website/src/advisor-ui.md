@@ -12,9 +12,9 @@ in **Scenarios & advice**, or choose **Model settings** in an investigation.
 1. Select a provider and enter its endpoint. Remote connections require an
    explicit HTTPS opt-in. Enter only the *name* of a credential environment
    variable; never paste a token into the panel.
-2. Choose **Tester la connexion / découvrir**. This reads the available models
+2. Choose **Test connection / discover**. This reads the available models
    or MCP tools, without sending project evidence or generating advice.
-3. Choose **Utiliser** beside a model/tool. For MCP, check the prompt argument
+3. Choose **Use** beside a model/tool. For MCP, check the prompt argument
    and any other required arguments shown in its schema. The selection remains
    explicit; a tool name is not a guarantee that the server contains an assistant.
 4. Customize the instructions and save. The panel updates the configured advisor
@@ -23,7 +23,7 @@ in **Scenarios & advice**, or choose **Model settings** in an investigation.
 5. Diagnose a scenario and choose **Explain with configured model**. The displayed
    saved evidence is used directly; otherwise the extension offers its history.
 
-Choose **Conseils déterministes uniquement** and save to disable optional advice.
+Choose **Rule-based advice only** and save to disable optional advice.
 This does not remove model files. Choosing experiments is separately enabled
 and bounded by count and duration. MCP requires structured responses for this
 mode; free text is displayed as unverified advice and never executed.
@@ -47,9 +47,13 @@ Refresh its inventory before deciding whether another operation is needed.
 Deleting a model affects every project using that Ollama installation. Management
 is disabled for remote servers and other providers.
 
-## Web studio and Pluto
+```@raw html
+<a id="Web-studio-and-Pluto"></a>
+```
 
-The web studio links to the **same panel**. Saving applies to that studio and
+## Web interface (Oxygen) and Pluto
+
+The web interface links to the **same panel**. Saving applies to that studio and
 persists under its reports directory in `advisor-settings.json`. Investigation
 and model-management jobs cannot run concurrently in that studio. Requests use
 the studio session token and are restricted to the existing loopback service.

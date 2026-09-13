@@ -7,7 +7,7 @@
   "mcp_prompt_argument": "prompt",
   "mcp_arguments": {},
   "mcp_response": "text",
-  "instructions": "Privilégie les corrections du code Julia commun, utilisables sur plusieurs plateformes et backends. Propose des indices concrets et les vérifications nécessaires, sans changer l'API publique.",
+  "instructions": "Prioritize improvements to shared Julia code that work across platforms and backends. Suggest concrete changes and the checks needed to verify them, without changing the public API.",
   "timeout": 120,
   "allow_remote": false
 }

@@ -8,7 +8,7 @@
     mode = Ref(:structured)
     answer = Dict(
         "cards" => [Dict("evidence_id" => "e1",
-            "explanation" => "Observation, expérience et vérification.")],
+            "explanation" => "Observation, experiment and verification.")],
         "experiment_id" => "stop")
     encode(value) = sprint(io -> PerfChecker.JSON.print(io, value))
     server = HTTP.serve!("127.0.0.1", port; verbose = false) do request
@@ -66,8 +66,8 @@
             "action" => "Inspect temporaries", "validation" => "Repeat measurements")])
     config(version = "2026-07-28"; kwargs...) = AdvisorConfig(protocol = :mcp_http,
         endpoint = "http://127.0.0.1:$port/mcp", mcp_tool = "advise", mcp_prompt_argument = "question",
-        mcp_arguments = Dict("locale" => "français"), mcp_version = version, mcp_response = :structured,
-        instructions = "Privilégie les corrections du code commun.", timeout = 60; kwargs...)
+        mcp_arguments = Dict("locale" => "English ✓"), mcp_version = version, mcp_response = :structured,
+        instructions = "Prioritize improvements to shared code.", timeout = 60; kwargs...)
     try
         HTTP.get("http://127.0.0.1:$port/ready")
         # Real worker transport, not just a parser test.
@@ -87,12 +87,13 @@
             @test occursin(
                 config().instructions, call.body["params"]["arguments"]["question"])
             @test occursin("Observed bytes", call.body["params"]["arguments"]["question"])
+            @test occursin("in English", call.body["params"]["arguments"]["question"])
             if version == "2026-07-28"
                 @test call.body["params"]["_meta"]["io.modelcontextprotocol/clientCapabilities"] ==
                       Dict()
                 @test HTTP.header(
                     HTTP.Request("POST", "/", call.headers), "Mcp-Param-Locale") ==
-                      "=?base64?" * base64encode("français") * "?="
+                      "=?base64?" * base64encode("English ✓") * "?="
                 @test !any(r -> r.body["method"] == "initialize", requests)
             else
                 @test any(r -> r.body["method"] == "notifications/initialized", requests)
@@ -112,7 +113,7 @@
         mode[] = :structured
         text_config = AdvisorConfig(protocol = :mcp_http, endpoint = config().endpoint,
             mcp_tool = "advise", mcp_prompt_argument = "question",
-            mcp_arguments = Dict("locale" => "fr"), timeout = 60)
+            mcp_arguments = Dict("locale" => "en"), timeout = 60)
         mode[] = :plain
         text_result = narrate_advice(advice; config = text_config)
         @test text_result["status"] == "complete"

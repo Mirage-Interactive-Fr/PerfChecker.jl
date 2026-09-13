@@ -27,7 +27,7 @@ function completed(id; timeout = 180)
     error("studio job exceeded test deadline")
 end
 
-@testset "Shared scenario web studio" begin
+@testset "Shared scenario web interface" begin
     @test page.status == 200
     @test length(decode_response(get_response("/catalog"))["scenarios"]) == 3
     @test get_response("/assets/investigations.js").status == 200

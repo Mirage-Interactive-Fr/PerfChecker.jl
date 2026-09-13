@@ -34,9 +34,9 @@ function advise(bundle::RunBundle; min_samples::Integer = 10)
        get(qualification, "correctness", "not_checked") != "passed"
         push!(recommendations,
             _recommendation("evidence.correctness", scenario, implementation,
-                reference, "La correction ou l'exécution n'est pas qualifiée.",
-                "Examiner l'erreur et établir un oracle avant d'interpréter les performances.",
-                "Rejouer le scénario et son oracle avec le même corpus."))
+                reference, "Correctness or execution has not been validated.",
+                "Inspect the error and define a correctness check before interpreting performance.",
+                "Rerun the scenario and its correctness check with the same inputs."))
     else
         times = [o["value"]
                  for o in bundle.observations if o["metric"] == "julia.wall.time"]
@@ -46,17 +46,17 @@ function advise(bundle::RunBundle; min_samples::Integer = 10)
                     merge(reference,
                         Dict(
                             "samples" => length(times), "requested_minimum" => min_samples)),
-                    "La série est trop courte pour la politique d'analyse demandée.",
-                    "Collecter davantage d'échantillons comparables.",
-                    "Examiner la distribution et comparer à une référence explicite.",
-                    limitations = ["Atteindre ce nombre ne garantit pas la précision d'un p99."]))
+                    "There are too few samples for the requested analysis policy.",
+                    "Collect more comparable samples.",
+                    "Inspect the distribution and compare it with an explicit baseline.",
+                    limitations = ["Reaching this sample count does not guarantee an accurate p99 estimate."]))
         end
         if get(raw, "collector", "") == "profile" && get(raw, "profile_samples", 0) == 0
             push!(recommendations,
                 _recommendation("evidence.profile", scenario, implementation,
-                    reference, "Le profil CPU ne contient aucun échantillon exploitable.",
-                    "Augmenter la durée ou le nombre d'opérations profilées avec un état frais.",
-                    "Vérifier que des piles sont collectées avant d'attribuer un coût à une fonction."))
+                    reference, "The CPU profile contains no usable samples.",
+                    "Increase the profiling duration or operation count, using fresh state.",
+                    "Check that stacks were collected before attributing a cost to a function."))
         end
         sites = get(raw, "allocation_sites", Any[])
         if isempty(sites)
@@ -84,11 +84,11 @@ function advise(bundle::RunBundle; min_samples::Integer = 10)
                         merge(reference,
                             Dict("sampled_bytes" => bytes,
                                 "sampled_fraction" => bytes / total)),
-                        "Ce chemin représente une part importante des allocations observées.",
-                        "Examiner les temporaires, copies et conversions ; tester une réutilisation si la sémantique le permet.",
-                        "Vérifier l'oracle, le temps, les allocations et la mémoire retenue après modification.",
+                        "This call path accounts for a large share of observed allocations.",
+                        "Inspect temporary objects, copies and conversions; try reusing storage if the operation permits it.",
+                        "Check correctness, elapsed time, allocations and retained memory after the change.",
                         location = Dict("file" => location[1], "line" => location[2]),
-                        limitations = ["Une allocation peut être nécessaire ; la supprimer ne garantit pas un gain de temps."]))
+                        limitations = ["An allocation may be necessary; removing it does not guarantee a speedup."]))
             end
         end
     end
@@ -109,17 +109,17 @@ function advise(diagnosis::AbstractDict; bundles::AbstractVector{RunBundle} = Ru
             if get(record, "correctness", "not_checked") == "failed"
                 push!(recommendations,
                     _recommendation("evidence.correctness", scenario, implementation,
-                        reference, "L'opération ou son oracle a échoué.",
-                        "Corriger le cas fonctionnel avant d'interpréter les performances.",
-                        "Rejouer les tests, le scénario et son oracle avec les mêmes entrées.",
+                        reference, "The operation or its correctness check failed.",
+                        "Fix the functional failure before interpreting performance.",
+                        "Rerun the tests, scenario and correctness check with the same inputs.",
                         limitations = [get(record, "message", record["status"])]))
                 continue
             end
             push!(recommendations,
                 _recommendation("evidence.analyzer", scenario, implementation,
-                    reference, "L'analyse n'a pas fourni de résultat exploitable.",
-                    "Consulter la disponibilité, la compatibilité ou la limite de durée de l'analyseur.",
-                    "Relancer uniquement l'analyse concernée dans un environnement compatible.",
+                    reference, "The analysis did not produce a usable result.",
+                    "Check the analyzer's availability, compatibility and time limit.",
+                    "Rerun the affected analysis in a compatible environment.",
                     limitations = [get(record, "message", record["status"])]))
             continue
         end
@@ -136,26 +136,26 @@ function advise(diagnosis::AbstractDict; bundles::AbstractVector{RunBundle} = Ru
                     bundles)
                 push!(recommendations,
                     _recommendation(rule, scenario, implementation, evidence,
-                        "JET signale une difficulté d'inférence sur cette spécialisation.",
+                        "JET reports an inference issue for this specialization.",
                         measured ?
-                        "Localiser le chemin dans le profil avant de tester une amélioration des types ou une frontière de fonction." :
-                        "Mesurer et profiler ce scénario pour déterminer si le diagnostic touche un chemin coûteux.",
-                        "Rejouer JET, l'oracle et les mesures sur chaque implémentation concernée.";
-                        location, limitations = ["Le diagnostic statique ne prouve ni un coût dominant ni une régression."]))
+                        "Locate the call path in the profile before trying more precise types or a function barrier." :
+                        "Benchmark and profile this scenario to find out whether the diagnostic affects an expensive call path.",
+                        "Rerun JET, correctness checks and measurements for each affected implementation.";
+                        location, limitations = ["A static diagnostic does not establish a dominant cost or a regression."]))
             elseif rule in (
                 "memory.gc_pressure", "memory.state_growth", "concurrency.lock_contention")
                 hypothesis, action, verification = if rule == "memory.gc_pressure"
-                    ("Le GC occupe une part mesurable des opérations observées.",
-                        "Localiser les allocations dominantes et tester un espace de travail réutilisable quand le contrat le permet.",
-                        "Comparer allocations, temps de GC et durée avec l'oracle inchangé, sur plusieurs exécutions.")
+                    ("Garbage collection takes a measurable share of the observed execution time.",
+                        "Locate the largest allocation sources and try reusable workspace where the operation permits it.",
+                        "Compare allocations, GC time and elapsed time across repeated runs, keeping correctness checks unchanged.")
                 elseif rule == "memory.state_growth"
-                    ("L'état accessible grossit après l'opération dans les cas observés.",
-                        "Vérifier si cette croissance est voulue ; examiner caches, références conservées et nettoyage avant de parler de fuite.",
-                        "Comparer état, résultat et snapshots sur un scénario représentatif avec la même politique de durée de vie.")
+                    ("Reachable state grows after the operation in the observed cases.",
+                        "Check whether the growth is intended; inspect caches, retained references and cleanup before concluding that memory leaks.",
+                        "Compare state, results and snapshots on a representative scenario with the same lifetime policy.")
                 else
-                    ("Des acquisitions de verrou ont dû attendre pendant l'opération.",
-                        "Profiler l'attente et comparer la granularité des sections critiques sur plusieurs nombres de threads.",
-                        "Vérifier les invariants concurrents et comparer débit, latence et conflits sans modifier l'oracle.")
+                    ("Some lock acquisitions had to wait during the operation.",
+                        "Profile the waiting time and compare critical-section sizes at several thread counts.",
+                        "Check concurrency invariants and compare throughput, latency and contention without changing correctness checks.")
                 end
                 push!(recommendations,
                     _recommendation(rule, scenario, implementation,
@@ -164,23 +164,23 @@ function advise(diagnosis::AbstractDict; bundles::AbstractVector{RunBundle} = Ru
             elseif rule == "allocation.potential"
                 push!(recommendations,
                     _recommendation(rule, scenario, implementation, evidence,
-                        "L'analyse statique signale une allocation potentielle.",
-                        "Confirmer le chemin concerné avec un profil d'allocations et un cas représentatif.",
-                        "Comparer allocations et temps après correction, avec le même oracle.";
+                        "Static analysis reports a possible allocation.",
+                        "Confirm the call path with an allocation profile and a representative case.",
+                        "Compare allocations and elapsed time after the change, using the same correctness check.";
                         location, limitations = [get(
                             record, "analysis_scope", "specialization-specific analysis")]))
             elseif rule == "compilation.inference"
                 push!(recommendations,
                     _recommendation(rule, scenario, implementation, evidence,
-                        "De l'inférence a été observée pendant le premier scénario.",
-                        "Comparer première exécution et régime chaud ; examiner les spécialisations coûteuses.",
-                        "Mesurer dans de nouveaux processus le chargement, la première opération et le coût de précompilation.";
-                        location, limitations = ["L'inférence observée peut être normale et utile."]))
+                        "Type inference was observed during the first scenario.",
+                        "Compare first-call and warm execution; inspect expensive specializations.",
+                        "Measure loading, the first operation and precompilation cost in fresh processes.";
+                        location, limitations = ["The observed inference may be expected and useful."]))
             elseif rule == "quality.aqua"
                 push!(recommendations,
                     _recommendation(rule, scenario, implementation, evidence,
-                        "Un contrôle de qualité Aqua a échoué.", "Examiner le contrôle et ses exclusions explicites.",
-                        "Rejouer Aqua et les tests fonctionnels ; évaluer séparément les performances."; location))
+                        "An Aqua quality check failed.", "Inspect the check and its explicit exclusions.",
+                        "Rerun Aqua and functional tests; evaluate performance separately."; location))
             end
         end
         if record["tool"] == "latency"
@@ -191,10 +191,10 @@ function advise(diagnosis::AbstractDict; bundles::AbstractVector{RunBundle} = Ru
                 push!(recommendations,
                     _recommendation("latency.first_case", scenario, implementation,
                         merge(reference, Dict("measurements" => metrics)),
-                        "La première exécution observée coûte davantage que la suivante.",
-                        "Séparer compilation, initialisation et effets des caches avec plusieurs processus neufs.",
-                        "Vérifier le gain sur le démarrage et le régime chaud.",
-                        limitations = ["Deux observations exploratoires ne suffisent pas à attribuer la différence à la compilation."]))
+                        "The first observed execution costs more than the next one.",
+                        "Separate compilation, initialization and cache effects using several fresh processes.",
+                        "Check the improvement in both startup and warm execution.",
+                        limitations = ["Two exploratory observations are not enough to attribute the difference to compilation."]))
             end
         end
     end
@@ -273,7 +273,7 @@ function write_investigation_report(
                 end
             end
             isempty(payload["recommendations"]) && println(io,
-                "Aucune recommandation étayée par ces règles. Cela ne constitue pas une qualification générale.")
+                "These rules produced no supported recommendation. This does not establish overall qualification.")
         elseif schema == "perfchecker-scenario-run/1"
             show(io, MIME"text/plain"(), investigation_view(payload))
         elseif schema == "perfchecker-scenario-comparison/1"
@@ -303,8 +303,8 @@ function write_investigation_report(
                 end
             end
             if schema == DISCOVERY_SCHEMA
-                println(io, "\nDéclarations : ", length(payload["declared"]),
-                    "; propositions : ", length(payload["candidates"]))
+                println(io, "\nDeclarations: ", length(payload["declared"]),
+                    "; candidates: ", length(payload["candidates"]))
                 for warning in payload["warnings"]
                     println(io, "\n- ", warning["file"], ":",
                         warning["line"], " — ", warning["message"])

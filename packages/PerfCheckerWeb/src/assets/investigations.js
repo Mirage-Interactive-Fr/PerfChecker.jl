@@ -55,7 +55,7 @@
   bind('markdown', () => {if ($('history').value) window.open(`${base}/evidence?id=${encodeURIComponent($('history').value)}&format=markdown`, '_blank', 'noopener');});
   async function initialize() {
     catalogue = await request('/catalog');
-    $('advisor-status').textContent = `Conseiller facultatif : ${catalogue.advisor}. Configure-le dans « Conseiller et modèles ». Ses explications restent à vérifier.`;
+    $('advisor-status').textContent = `Optional advisor: ${catalogue.advisor}. Configure it in Advisor and models. Verify its explanations against the evidence.`;
     if (catalogue.advisor_limits) {
       $('max_experiments').value = catalogue.advisor_limits.max_experiments;
       $('budget_seconds').value = catalogue.advisor_limits.budget_seconds;

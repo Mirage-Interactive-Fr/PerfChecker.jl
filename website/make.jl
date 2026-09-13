@@ -44,7 +44,7 @@ makedocs(;
         "Interfaces" => [
             "Choose an interface" => "interfaces/packages.md",
             "VS Code" => "interfaces/vscode.md",
-            "Web Studio" => "interfaces/web-studio.md",
+            "Web interface (Oxygen)" => "interfaces/web-studio.md",
             "REPL and Pluto" => "interfaces/repl-pluto.md",
             "Plots with Makie" => "interfaces/visualization.md",
             "Documenter" => "interfaces/documentation.md",

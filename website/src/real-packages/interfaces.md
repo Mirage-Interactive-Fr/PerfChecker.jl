@@ -101,7 +101,11 @@ collector and target selectors filter the plan; **Launch selected checks**
 starts it explicitly. The notebook environment stays separate from the newest
 Oxygen web stack because their HTTP.jl compatibility constraints differ.
 
-## Oxygen Web Studio
+```@raw html
+<a id="Oxygen-Web-Studio"></a>
+```
+
+## Web interface (Oxygen)
 
 ```sh
 julia setup.jl web
@@ -126,7 +130,7 @@ unrelated diagnostic artifacts. Stop the Julia command when you finish using
 the studio.
 
 ```@raw html
-<DocMedia src="/examples/real-packages/oxygen-web-studio.png" alt="Web Studio displaying the Oxygen heap request across twelve releases, with feature and view filters and four measurement toggles" caption="The recorded Oxygen campaign reopened in Web Studio: twelve releases from 1.0.0 to 1.11.0. The feature and view selectors filter saved observations; the checkboxes isolate individual curves." />
+<DocMedia src="/examples/real-packages/oxygen-web-studio.png" alt="Web interface (Oxygen) displaying the Oxygen heap request across twelve releases, with feature and view filters and four measurement toggles" caption="The recorded Oxygen campaign reopened in Web interface (Oxygen): twelve releases from 1.0.0 to 1.11.0. The feature and view selectors filter saved observations; the checkboxes isolate individual curves." />
 ```
 
 Here, Oxygen hosts the interface that controls measurements of Oxygen in

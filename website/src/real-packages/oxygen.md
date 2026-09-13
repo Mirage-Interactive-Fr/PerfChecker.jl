@@ -21,7 +21,7 @@ julia --project=.controller/oxygen oxygen/test.jl
 ```
 
 Each worker loads the selected Oxygen version in a separate process. Its router
-and dependencies are therefore independent of the Web Studio used to launch it.
+and dependencies are therefore independent of the Web interface (Oxygen) used to launch it.
 
 ```julia
 include("oxygen/service.jl")
@@ -434,7 +434,11 @@ and Unicode views, and read the network counters. The notebook uses the publishe
 data included in the checkout. It does not start a historical campaign when opened.
 Its renderer environment can use a different Oxygen version from the recorded workers.
 
-### Oxygen Web Studio and VS Code
+```@raw html
+<a id="Oxygen-Web-Studio-and-VS-Code"></a>
+```
+
+### Web interface (Oxygen) and VS Code
 
 ```sh
 julia setup.jl web
@@ -443,7 +447,7 @@ julia --project=.controller/web web.jl oxygen-features
 julia --project=.controller/web web.jl results/YOUR-OXYGEN-RUN
 ```
 
-The Web Studio runs on port 8873 by default; the loopback experiment uses a
+The Web interface (Oxygen) runs on port 8873 by default; the loopback experiment uses a
 separate port and router. Select the feature and version range before launching.
 Choose the **historical** profile to expose the 14 releases, then set **Samples =
 30**, **Evals = 1**, **Seconds = 0.25** and **Threads = 1** to reproduce the

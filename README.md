@@ -34,7 +34,7 @@ The Julia API, command line and text REPL are included in PerfChecker.
 
 | Optional package | Interface |
 | --- | --- |
-| [PerfCheckerWeb](packages/PerfCheckerWeb) | Oxygen web studio |
+| [PerfCheckerWeb](packages/PerfCheckerWeb) | Web interface (Oxygen) |
 | [PerfCheckerPluto](packages/PerfCheckerPluto) | Reactive notebooks |
 | [PerfCheckerMakie](packages/PerfCheckerMakie) | Individual and overlaid plots |
 | [PerfChecker for VS Code](https://github.com/Mirage-Interactive-Fr/PerfCheckerVSCode/tree/release/v0.1.0) | Test Explorer, results and profiling |

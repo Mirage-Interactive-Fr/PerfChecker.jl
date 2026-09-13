@@ -7,7 +7,7 @@ VS Code extension runs individual items from the editor's Testing view.
 | I want to… | Use | Try it with Bibliography |
 | --- | --- | --- |
 | Run an existing test individually while editing code | [VS Code](vscode.md) | Discover the two example items and run only the export item |
-| Select workloads and versions in a browser | [Oxygen Web Studio](web-studio.md) | Select one export benchmark, then reopen its plot |
+| Select workloads and versions in a browser | [Web interface (Oxygen)](web-studio.md) | Select one export benchmark, then reopen its plot |
 | Choose checks from a terminal | [REPL](repl-pluto.md) | Filter the pinned suite before launching it |
 | Keep editable analysis in a notebook | [Pluto](repl-pluto.md#Pluto-dashboard) | Download the notebook, choose a version set and save the result |
 | Explore or export measured curves and profiles | [Makie](visualization.md) | Inspect nine versions and download their measurements |

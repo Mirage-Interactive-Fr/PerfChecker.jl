@@ -59,7 +59,7 @@ const config = defineConfig({
       { text: 'Interfaces', items: [
         { text: 'Choose an interface', link: '/interfaces/packages' },
         { text: 'VS Code', link: '/interfaces/vscode' },
-        { text: 'Web Studio', link: '/interfaces/web-studio' },
+        { text: 'Web interface (Oxygen)', link: '/interfaces/web-studio' },
         { text: 'REPL and Pluto', link: '/interfaces/repl-pluto' },
         { text: 'Plots', link: '/interfaces/visualization' },
         { text: 'Documenter', link: '/interfaces/documentation' },

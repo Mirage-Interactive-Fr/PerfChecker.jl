@@ -1,7 +1,7 @@
 # Report queries and documentation blocks
 
 A query selects existing results by package, feature, metric or another field.
-The same selection can be used by scripts, Web Studio, documentation and advisors.
+The same selection can be used by scripts, Web interface (Oxygen), documentation and advisors.
 It contains no Julia expressions and never launches a worker.
 
 Serialized queries carry `"schema_version": "perfchecker-query/1"`: the name and

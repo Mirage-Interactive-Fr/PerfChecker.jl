@@ -4,7 +4,7 @@ function _register_advisor_setup(api, base, token, guarded, denied, failure, hea
     setup_lock = ReentrantLock()
     Oxygen.get(api("/advisor")) do
         Oxygen.html(
-            """<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Conseiller et modèles · PerfChecker</title><link rel="stylesheet" href="$base/assets/investigations.css"><link rel="stylesheet" href="$base/assets/advisor-panel.css"></head><body data-api="$base" data-token="$token"><a href="$base/">Retour aux investigations</a><main id="advisor-root"></main><script src="$base/assets/advisor-panel.js"></script><script src="$base/assets/advisor-web.js"></script></body></html>""";
+            """<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Advisor and models · PerfChecker</title><link rel="stylesheet" href="$base/assets/investigations.css"><link rel="stylesheet" href="$base/assets/advisor-panel.css"></head><body data-api="$base" data-token="$token"><a href="$base/">Back to investigations</a><main id="advisor-root"></main><script src="$base/assets/advisor-panel.js"></script><script src="$base/assets/advisor-web.js"></script></body></html>""";
             headers)
     end
     for (file, format) in (
@@ -36,7 +36,7 @@ function _register_advisor_setup(api, base, token, guarded, denied, failure, hea
                 if action == :save
                     save_settings(input)
                     return Oxygen.json(Dict("status" => "complete",
-                        "message" => "Configuration enregistrée pour ce studio. Aucun appel de génération effectué."))
+                        "message" => "Configuration saved for this studio. No generation request was made."))
                 end
                 config = input["config"]
                 config isa AbstractDict ||

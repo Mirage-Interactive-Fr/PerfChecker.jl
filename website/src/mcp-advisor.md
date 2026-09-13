@@ -7,7 +7,7 @@ select a provider before configuring protocol details.
 
 This integration sends a customizable request and bounded PerfChecker evidence
 to one explicitly configured MCP advice tool. The default request asks, in
-French, for performance-improvement clues, distinguishes observations from
+English, for performance-improvement clues, distinguishes observations from
 hypotheses, and asks how to verify a proposed correction. It does not require
 local model weights.
 

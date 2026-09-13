@@ -18,7 +18,7 @@
     end
     good = Dict(
         "cards" => [Dict(
-            "evidence_id" => "e1", "explanation" => "Vérifier les allocations.")],
+            "evidence_id" => "e1", "explanation" => "Check allocations.")],
         "experiment_id" => "x1")
     @test PerfChecker._validate_narrative(good, ["e1"]; allowed_experiments = ["x1"])["experiment_id"] ==
           "x1"

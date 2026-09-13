@@ -42,7 +42,7 @@ suites = ["web", "advisor_http1", "advisor_http2"]
 
 [sources.vscode]
 repository = "Mirage-Interactive-Fr/PerfCheckerVSCode"
-revision = "f3b81ca80a0acef18bcb550bfd0d04ca3d43e7f9"
+revision = "ba854aa1f0d145f9ee29f3fd3cdedcb4301537c0"
 
 [suites.analyzers]
 julias = ["1.12", "1"]

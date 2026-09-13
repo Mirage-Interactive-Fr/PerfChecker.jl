@@ -17,7 +17,7 @@ profiles. The deterministic advisor also works without a download. Start there,
 then add a model only if its explanations help your workflow.
 
 To connect an existing inference server, follow [Advisor setup](advisor-ui.md).
-The same configured endpoint can serve VS Code, Web Studio, Pluto and scripts.
+The same configured endpoint can serve VS Code, Web interface (Oxygen), Pluto and scripts.
 The model and its server stay outside the measured package environment.
 
 ## Connect a model with an adapter

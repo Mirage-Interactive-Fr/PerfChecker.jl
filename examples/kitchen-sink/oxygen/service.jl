@@ -8,7 +8,7 @@ elseif isdefined(Oxygen, Symbol("@oxidise"))
     Core.eval(@__MODULE__, :(Oxygen.@oxidise))
 else
     # Early Oxygen releases have a process-global router. Suite workers are
-    # isolated processes, so these routes cannot modify the Web Studio.
+    # isolated processes, so these routes cannot modify the Web interface (Oxygen).
     Core.eval(@__MODULE__, :(using Oxygen))
 end
 include(joinpath(@__DIR__, "../src/PerfCheckerKitchenSink.jl"))
@@ -19,7 +19,7 @@ using .PerfCheckerKitchenSink
 body_text(body::AbstractString) = String(body)
 body_text(body) = String(copy(body))
 
-# An independent router avoids changing the Web Studio's routes when both are loaded.
+# An independent router avoids changing the Web interface (Oxygen)'s routes when both are loaded.
 for kind in ("heap", "counter", "buffer")
     handler = function(request::HTTP.Request)
         raw = JSON.parse(body_text(request.body))

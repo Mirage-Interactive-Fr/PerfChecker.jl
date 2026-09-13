@@ -16,7 +16,7 @@
         content = sprint(io -> PerfChecker.JSON.print(io,
             Dict(
                 "cards" => [Dict(
-                    "evidence_id" => id, "explanation" => "Observation et vérification.")],
+                    "evidence_id" => id, "explanation" => "Observation and verification.")],
                 "experiment_id" => "stop")))
         payload = request.target == "/api/chat" ?
                   Dict("message" => Dict("content" => content)) :
@@ -47,6 +47,7 @@
             @test result["status"] == "complete"
             @test only(result["cards"])["evidence_id"] == "e1"
             @test isempty(result["usage"])
+            @test occursin("in English", first(last(requested)["messages"])["content"])
             if protocol == :chat_completions_schema
                 schema = last(requested)["response_format"]["json_schema"]["schema"]
                 @test schema["properties"]["cards"]["items"]["properties"]["evidence_id"]["enum"] ==

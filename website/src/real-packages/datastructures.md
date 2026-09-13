@@ -463,7 +463,11 @@ It also contains the commands for measuring your own cases and investigating cos
 The profile selector and diagnostic figures let you inspect the recorded heap
 experiment alongside the container histories, with their different scopes stated.
 
-### Web Studio and VS Code
+```@raw html
+<a id="Web-Studio-and-VS-Code"></a>
+```
+
+### Web interface (Oxygen) and VS Code
 
 ```sh
 julia setup.jl web

@@ -234,7 +234,11 @@ check with 50 samples, a 0.5-second budget and one thread. It reached `1/1 compl
 and saved its report. The configurator rejects an empty selection and nonpositive
 numeric settings before execution; answering `no` cancels the selection.
 
-## Open the web studio
+```@raw html
+<a id="Open-the-web-studio"></a>
+```
+
+## Open the web interface
 
 ```sh
 julia setup.jl web
@@ -248,7 +252,7 @@ loads the same suite and saves below the same `results/` directory. The web
 controller has its own environment containing PerfCheckerWeb and
 PerfCheckerMakie; those packages are not added to the measured worker.
 
-See [Web Studio](../interfaces/web-studio.md) for execution and result inspection.
+See [Web interface (Oxygen)](../interfaces/web-studio.md) for execution and result inspection.
 
 ### Explore all nine versions in Oxygen
 

@@ -38,7 +38,7 @@ for environment setup, tags and the distinction between correctness and budgets.
 ```
 
 The extension reads the same suite definitions and saved results as the Julia
-API, Web Studio and Pluto.
+API, Web interface (Oxygen) and Pluto.
 
 ## Read the result before comparing it
 

@@ -1,7 +1,7 @@
 # Run bundles
 
 A run bundle is a directory containing the measurements, diagnostics and context
-of one run. The CLI, Web Studio, VS Code and report tools read the same files.
+of one run. The CLI, Web interface (Oxygen), VS Code and report tools read the same files.
 You can archive this directory as a CI artifact and inspect it later.
 
 ## What does `/1` mean?

@@ -1,6 +1,10 @@
-# Oxygen web studio
+```@raw html
+<a id="Oxygen-web-studio"></a>
+```
 
-The web studio lets you select workloads and versions, start measurements and
+# Web interface (Oxygen)
+
+The web interface lets you select workloads and versions, start measurements and
 browse completed runs. It uses Oxygen to serve the interface and Makie or SVG
 plots to display the results.
 

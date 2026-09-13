@@ -208,7 +208,7 @@ before using [machine transfer](../machine-transfer.md) for CI estimates.
 
 The Documenter and DocumenterVitepress integrations publish recorded plots;
 this documentation is one consumer. They need not rerun the example suites.
-UnicodePlots, Makie, WGLMakie, Pluto and Web Studio share the
+UnicodePlots, Makie, WGLMakie, Pluto and Web interface (Oxygen) share the
 [replay recipes](interfaces.md).
 
 ```sh

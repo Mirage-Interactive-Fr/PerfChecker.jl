@@ -138,7 +138,7 @@ function Base.show(io::IO, ::MIME"text/html", view::InvestigationView)
     print(io, "</section>")
 end
 
-"An asynchronous investigation shared by the web studio and notebook interfaces."
+"An asynchronous investigation shared by the web interface and notebook interfaces."
 mutable struct InvestigationJob
     id::String
     action::Symbol

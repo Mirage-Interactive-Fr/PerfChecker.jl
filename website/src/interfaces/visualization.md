@@ -56,7 +56,7 @@ comparing or reporting a result.
 The usual Makie 2D zoom and Julia `DataInspector` callbacks require a live Julia
 session. The standalone export adds its own offline point inspection, using
 WGLMakie tooltips and JavaScript point selection. This distinction also applies to
-HTML plots opened by the web studio. See the
+HTML plots opened by the web interface. See the
 [WGLMakie export documentation](https://docs.makie.org/stable/explanations/backends/wglmakie).
 
 To export your own completed timing run, use the web controller environment
