@@ -1,0 +1,29 @@
+WEBVTT
+
+00:00.000 --> 00:06.500
+Open Results and select the recorded historical Bibliography campaign.
+No new benchmark is launched during this recording.
+
+00:06.500 --> 00:15.000
+Filter to export_bibtex and julia.wall.time.
+Choose version_series to compare the nine tagged versions.
+
+00:15.000 --> 00:48.000
+The first saved graph is being rendered by Julia and WGLMakie.
+This wait is rendering time, not the export benchmark's measured time.
+
+00:48.000 --> 00:53.000
+Inspect the last point: the 0.4.0 tag has a median of 15,450 ns.
+The curve retains all nine versions and their measured values.
+
+00:53.000 --> 01:00.000
+Switch the metric to julia.alloc.bytes.
+This compares Julia allocation activity, not live process RAM.
+
+01:00.000 --> 01:07.000
+Switch back to time and select distribution.
+The graph shows 100 recorded samples per version, 900 in total.
+
+01:07.000 --> 01:18.000
+Choose version_delta to compare each later tag with 0.1.0.
+These differences are diagnostic: no CI acceptance threshold was configured.

@@ -1,0 +1,14 @@
+[deps]
+Bonito = "824d6782-a2ef-11e9-3a09-e5662e0c26f8"
+Makie = "ee78f7c6-11fb-53f2-987a-cfe4a2b5a57a"
+PerfChecker = "6309bf6b-a531-4b08-891e-8ee981e5c424"
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+TestItemRunner = "f8b46487-2199-4994-9208-9a1283c18c0a"
+WGLMakie = "276b4fcb-3e11-5398-bf8b-a0c2d153d008"
+
+[compat]
+Bonito = "4, 5"
+Makie = "0.21, 0.22, 0.23, 0.24"
+TestItemRunner = "1"
+WGLMakie = "0.11, 0.12, 0.13"
+julia = "1.10"

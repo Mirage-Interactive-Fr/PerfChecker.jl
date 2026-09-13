@@ -1,0 +1,30 @@
+schema_version = "perfchecker-scenario-catalog/1"
+root = "."
+
+[[scenarios]]
+id = "sort-values"
+source = "cases.jl"
+factory = "SharedCases.sorting"
+implementation = "inplace"
+collectors = ["benchmark", "chairmark", "profile_alloc"]
+[scenarios.parameters]
+n = 1000
+seed = 42
+method = "inplace"
+
+[[scenarios]]
+id = "sort-values"
+source = "cases.jl"
+factory = "SharedCases.sorting"
+implementation = "copy"
+collectors = ["benchmark", "chairmark", "profile_alloc"]
+[scenarios.parameters]
+n = 1000
+seed = 42
+method = "copy"
+
+[[scenarios]]
+id = "async-result"
+source = "cases.jl"
+factory = "SharedCases.asynchronous"
+collectors = ["benchmark"]

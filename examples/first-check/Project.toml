@@ -1,0 +1,10 @@
+name = "PerfCheckerDemo"
+uuid = "0f0b6c85-150f-4cd7-8a9a-990ad034dbaa"
+version = "0.1.0"
+
+[deps]
+TestItems = "1c621080-faea-4a02-84b6-bbd5e436b8fe"
+
+[compat]
+TestItems = "1"
+julia = "1.10"

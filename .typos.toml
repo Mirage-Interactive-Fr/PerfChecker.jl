@@ -1,0 +1,10 @@
+[files]
+extend-exclude = [
+    "examples/advisor-corpus/mcp-local.json",
+    "packages/PerfCheckerWeb/src/assets/advisor-panel.js",
+    "src/advice.jl",
+    "src/advisor.jl",
+    "test/advisor_mcp.jl",
+    "website/documentation-plan.md",
+    "website/src/public/examples/bibliography/timing-evidence.json",
+]

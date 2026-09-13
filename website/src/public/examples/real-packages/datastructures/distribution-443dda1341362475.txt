@@ -1,0 +1,5 @@
+                            DataStructures · counter_2048_benchmark · julia.alloc.count
+                ┌                                                                                ┐
+   [11.0, 12.0) ┤███████████████████████████████████████████████████████████████████████████  600
+                └                                                                                ┘
+                                                     Frequency

@@ -1,0 +1,55 @@
+{
+  "capabilities": {
+    "attribution": "isolated_process_tree",
+    "capture_layer": "isolated_interface",
+    "counter_providers": [
+      "nftables",
+      "sysfs"
+    ],
+    "counters": [
+      "bytes_sent",
+      "bytes_received",
+      "packets_sent",
+      "packets_received",
+      "discarded_sent",
+      "discarded_received"
+    ],
+    "dns_servers": [],
+    "external_connectivity": false,
+    "interface": "lo",
+    "provider": "linux_netns",
+    "reason": "",
+    "requires_prepared_environment": true,
+    "schema_version": "perfchecker-network-isolation-capabilities/1",
+    "supported": true
+  },
+  "capture": {
+    "counter_provider": "linux-netns-nftables",
+    "exit_code": 0,
+    "measurement_phase": "process_lifecycle",
+    "provider": "linux_netns",
+    "sample": {
+      "attribution_scope": "isolated_process_tree",
+      "bytes_received": 6.9466045e7,
+      "bytes_sent": 6.9465109e7,
+      "capture_layer": "isolated_interface",
+      "discarded_received": 0.0,
+      "discarded_sent": 0.0,
+      "interface": "lo",
+      "latency_context": "process_lifecycle_informative",
+      "packets_received": 2075.0,
+      "packets_sent": 2057.0,
+      "seconds": 13.662857426,
+      "workload_seconds": 13.662857426
+    },
+    "schema_version": "perfchecker-isolated-network-result/1",
+    "stderr": "",
+    "stdout": ""
+  },
+  "correctness": "passed",
+  "executed": true,
+  "exit_code": 0,
+  "http_version": "1.11.0",
+  "oxygen_version": "1.10.2",
+  "verified_requests": 120
+}

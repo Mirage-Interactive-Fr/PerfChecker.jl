@@ -1,0 +1,2225 @@
+{
+  "correctness": "passed",
+  "date_kind": "GitHub release publication date",
+  "os": "NT",
+  "performance": "not_compared",
+  "plot": {
+    "data": [
+      {
+        "target_kind": "release",
+        "value": 0.0025930000000000003,
+        "version": "1.0.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0076493,
+        "version": "1.0.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0026626,
+        "version": "1.0.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0025938000000000003,
+        "version": "1.0.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0026161,
+        "version": "1.0.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0025007000000000002,
+        "version": "1.0.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0025634,
+        "version": "1.0.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0025814,
+        "version": "1.0.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0025855,
+        "version": "1.0.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015894000000000001,
+        "version": "1.0.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015846,
+        "version": "1.0.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0022211,
+        "version": "1.0.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0025569,
+        "version": "1.0.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0025985,
+        "version": "1.0.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0026467,
+        "version": "1.0.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0026775,
+        "version": "1.0.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0025582,
+        "version": "1.0.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0027315,
+        "version": "1.0.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0019782000000000003,
+        "version": "1.0.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015617,
+        "version": "1.0.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0203614,
+        "version": "1.0.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0024365000000000003,
+        "version": "1.0.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.010723400000000001,
+        "version": "1.0.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015171000000000002,
+        "version": "1.0.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015403,
+        "version": "1.0.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015113000000000001,
+        "version": "1.0.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015830000000000002,
+        "version": "1.0.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015294,
+        "version": "1.0.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015886000000000001,
+        "version": "1.0.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0018058000000000002,
+        "version": "1.0.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015756000000000001,
+        "version": "1.1.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015656,
+        "version": "1.1.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015599000000000001,
+        "version": "1.1.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0018299000000000002,
+        "version": "1.1.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015985,
+        "version": "1.1.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0026273,
+        "version": "1.1.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0026642000000000002,
+        "version": "1.1.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0026678,
+        "version": "1.1.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0028229,
+        "version": "1.1.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0025259,
+        "version": "1.1.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0025862000000000003,
+        "version": "1.1.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0025739,
+        "version": "1.1.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0027427000000000003,
+        "version": "1.1.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0024008000000000002,
+        "version": "1.1.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0016106,
+        "version": "1.1.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015886000000000001,
+        "version": "1.1.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015945,
+        "version": "1.1.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015978000000000001,
+        "version": "1.1.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015663,
+        "version": "1.1.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0018591,
+        "version": "1.1.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0016285000000000002,
+        "version": "1.1.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0016017000000000002,
+        "version": "1.1.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0016093000000000001,
+        "version": "1.1.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0016592,
+        "version": "1.1.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015941000000000002,
+        "version": "1.1.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015977,
+        "version": "1.1.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0019152000000000001,
+        "version": "1.1.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0026459,
+        "version": "1.1.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0027377,
+        "version": "1.1.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0026385000000000002,
+        "version": "1.1.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0025879,
+        "version": "1.2.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.002497,
+        "version": "1.2.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0026499,
+        "version": "1.2.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0021424,
+        "version": "1.2.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0016219000000000001,
+        "version": "1.2.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0016061,
+        "version": "1.2.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015470000000000002,
+        "version": "1.2.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015424000000000002,
+        "version": "1.2.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015042,
+        "version": "1.2.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0024387000000000002,
+        "version": "1.2.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0027733000000000002,
+        "version": "1.2.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0025015000000000003,
+        "version": "1.2.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0025922000000000002,
+        "version": "1.2.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0025171,
+        "version": "1.2.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0025362,
+        "version": "1.2.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0025959000000000004,
+        "version": "1.2.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0026524,
+        "version": "1.2.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0026387000000000003,
+        "version": "1.2.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0025891,
+        "version": "1.2.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0026138000000000003,
+        "version": "1.2.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0026516,
+        "version": "1.2.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0025799,
+        "version": "1.2.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0026365,
+        "version": "1.2.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0026014000000000002,
+        "version": "1.2.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0205947,
+        "version": "1.2.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0025997000000000004,
+        "version": "1.2.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0025659000000000003,
+        "version": "1.2.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0025619,
+        "version": "1.2.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.00256,
+        "version": "1.2.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0024660000000000003,
+        "version": "1.2.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015572000000000001,
+        "version": "1.3.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0025053000000000002,
+        "version": "1.3.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0024126,
+        "version": "1.3.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0024245,
+        "version": "1.3.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0024723,
+        "version": "1.3.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0026434,
+        "version": "1.3.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0025254,
+        "version": "1.3.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0024351,
+        "version": "1.3.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0024425000000000002,
+        "version": "1.3.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0024265000000000003,
+        "version": "1.3.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0024566,
+        "version": "1.3.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015373000000000001,
+        "version": "1.3.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015026,
+        "version": "1.3.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015213000000000002,
+        "version": "1.3.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015341,
+        "version": "1.3.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0014846000000000002,
+        "version": "1.3.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0018746000000000001,
+        "version": "1.3.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015813000000000001,
+        "version": "1.3.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0025531,
+        "version": "1.3.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0024886,
+        "version": "1.3.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0024258,
+        "version": "1.3.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0024172,
+        "version": "1.3.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0024864,
+        "version": "1.3.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0021520000000000003,
+        "version": "1.3.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015546000000000002,
+        "version": "1.3.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0016942,
+        "version": "1.3.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0016413,
+        "version": "1.3.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0017844,
+        "version": "1.3.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0017809000000000002,
+        "version": "1.3.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0018529000000000002,
+        "version": "1.3.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0039264,
+        "version": "1.4.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0025840000000000004,
+        "version": "1.4.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0024776,
+        "version": "1.4.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0016115,
+        "version": "1.4.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015630000000000002,
+        "version": "1.4.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015212000000000001,
+        "version": "1.4.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015753000000000002,
+        "version": "1.4.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.001567,
+        "version": "1.4.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015470000000000002,
+        "version": "1.4.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015176,
+        "version": "1.4.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015432,
+        "version": "1.4.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0017691,
+        "version": "1.4.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015256,
+        "version": "1.4.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015290000000000002,
+        "version": "1.4.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015702000000000001,
+        "version": "1.4.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0025381,
+        "version": "1.4.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0025808000000000003,
+        "version": "1.4.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0025870000000000003,
+        "version": "1.4.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0026427,
+        "version": "1.4.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0025813000000000003,
+        "version": "1.4.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0023934,
+        "version": "1.4.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0025868,
+        "version": "1.4.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0017467000000000001,
+        "version": "1.4.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0016300000000000002,
+        "version": "1.4.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0016212000000000002,
+        "version": "1.4.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0016462,
+        "version": "1.4.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0016255000000000002,
+        "version": "1.4.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015730000000000002,
+        "version": "1.4.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015731,
+        "version": "1.4.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0016461000000000002,
+        "version": "1.4.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0016151000000000002,
+        "version": "1.5.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015811,
+        "version": "1.5.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015533,
+        "version": "1.5.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0017532000000000001,
+        "version": "1.5.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015555,
+        "version": "1.5.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015545000000000001,
+        "version": "1.5.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015844000000000001,
+        "version": "1.5.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0017761,
+        "version": "1.5.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015485000000000002,
+        "version": "1.5.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015259000000000002,
+        "version": "1.5.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015677,
+        "version": "1.5.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015587,
+        "version": "1.5.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015638000000000002,
+        "version": "1.5.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.001575,
+        "version": "1.5.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0022760000000000002,
+        "version": "1.5.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0021328000000000002,
+        "version": "1.5.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0018379000000000002,
+        "version": "1.5.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.002585,
+        "version": "1.5.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0025144,
+        "version": "1.5.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0026944,
+        "version": "1.5.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0026206000000000003,
+        "version": "1.5.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0025902,
+        "version": "1.5.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0025257,
+        "version": "1.5.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0025109000000000004,
+        "version": "1.5.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0025510000000000003,
+        "version": "1.5.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0021661000000000002,
+        "version": "1.5.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015593,
+        "version": "1.5.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015416000000000002,
+        "version": "1.5.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015455,
+        "version": "1.5.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015206,
+        "version": "1.5.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0026023,
+        "version": "1.6.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0025854000000000003,
+        "version": "1.6.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0025574,
+        "version": "1.6.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0025323000000000003,
+        "version": "1.6.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0025865000000000003,
+        "version": "1.6.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0025639,
+        "version": "1.6.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.002778,
+        "version": "1.6.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0025676,
+        "version": "1.6.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0025328,
+        "version": "1.6.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0026026,
+        "version": "1.6.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0031032000000000004,
+        "version": "1.6.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0328446,
+        "version": "1.6.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0026213,
+        "version": "1.6.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0025631,
+        "version": "1.6.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0024934000000000002,
+        "version": "1.6.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0029821,
+        "version": "1.6.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0027274,
+        "version": "1.6.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0025671,
+        "version": "1.6.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0025678000000000003,
+        "version": "1.6.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015437,
+        "version": "1.6.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0018488,
+        "version": "1.6.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0025271,
+        "version": "1.6.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0024675,
+        "version": "1.6.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0025546,
+        "version": "1.6.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0024379000000000002,
+        "version": "1.6.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0029081000000000003,
+        "version": "1.6.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.002496,
+        "version": "1.6.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0026063,
+        "version": "1.6.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0028089,
+        "version": "1.6.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0029923000000000003,
+        "version": "1.6.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0025688,
+        "version": "1.7.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0024586,
+        "version": "1.7.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0024467,
+        "version": "1.7.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0024577,
+        "version": "1.7.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0025311,
+        "version": "1.7.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0024129,
+        "version": "1.7.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0024182,
+        "version": "1.7.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0023841,
+        "version": "1.7.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0024226,
+        "version": "1.7.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.016232,
+        "version": "1.7.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0025722,
+        "version": "1.7.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0024985000000000003,
+        "version": "1.7.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0024662,
+        "version": "1.7.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0025221,
+        "version": "1.7.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0018949000000000001,
+        "version": "1.7.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0014521,
+        "version": "1.7.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0014821,
+        "version": "1.7.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0014762,
+        "version": "1.7.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0014518,
+        "version": "1.7.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0060374,
+        "version": "1.7.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0024896000000000002,
+        "version": "1.7.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0024980000000000002,
+        "version": "1.7.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0024447,
+        "version": "1.7.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0024258,
+        "version": "1.7.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0064308,
+        "version": "1.7.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015557000000000001,
+        "version": "1.7.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0014911000000000002,
+        "version": "1.7.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0014654000000000002,
+        "version": "1.7.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0014724,
+        "version": "1.7.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0016673,
+        "version": "1.7.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015271000000000002,
+        "version": "1.8.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0014713,
+        "version": "1.8.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0016572000000000002,
+        "version": "1.8.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0022243000000000002,
+        "version": "1.8.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0014404,
+        "version": "1.8.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0013901,
+        "version": "1.8.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0014717,
+        "version": "1.8.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0014141000000000002,
+        "version": "1.8.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0014464,
+        "version": "1.8.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0014682,
+        "version": "1.8.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0014192,
+        "version": "1.8.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015948000000000002,
+        "version": "1.8.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0017775000000000002,
+        "version": "1.8.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0014836,
+        "version": "1.8.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0014108,
+        "version": "1.8.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0014837000000000001,
+        "version": "1.8.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0016063000000000002,
+        "version": "1.8.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0014941000000000002,
+        "version": "1.8.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0016244,
+        "version": "1.8.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0014855,
+        "version": "1.8.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015201000000000001,
+        "version": "1.8.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0207799,
+        "version": "1.8.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015,
+        "version": "1.8.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0014823000000000002,
+        "version": "1.8.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.00177,
+        "version": "1.8.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0014794,
+        "version": "1.8.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0014500000000000001,
+        "version": "1.8.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0014542000000000001,
+        "version": "1.8.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0014857000000000002,
+        "version": "1.8.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0014397000000000001,
+        "version": "1.8.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0019916,
+        "version": "1.9.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015275,
+        "version": "1.9.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0014952000000000001,
+        "version": "1.9.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0014454000000000001,
+        "version": "1.9.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0014993,
+        "version": "1.9.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015017000000000001,
+        "version": "1.9.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015810000000000002,
+        "version": "1.9.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015184,
+        "version": "1.9.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015208,
+        "version": "1.9.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015226,
+        "version": "1.9.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015063000000000001,
+        "version": "1.9.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0016580000000000002,
+        "version": "1.9.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0014822000000000001,
+        "version": "1.9.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0016753,
+        "version": "1.9.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015228000000000002,
+        "version": "1.9.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015026,
+        "version": "1.9.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0014688000000000001,
+        "version": "1.9.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0014827,
+        "version": "1.9.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015357,
+        "version": "1.9.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015372,
+        "version": "1.9.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0016153,
+        "version": "1.9.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015623000000000002,
+        "version": "1.9.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015256,
+        "version": "1.9.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015668000000000001,
+        "version": "1.9.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015450000000000001,
+        "version": "1.9.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015168,
+        "version": "1.9.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015549000000000001,
+        "version": "1.9.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015270000000000001,
+        "version": "1.9.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0018448000000000002,
+        "version": "1.9.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0017613000000000001,
+        "version": "1.9.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0018346,
+        "version": "1.10.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0022014,
+        "version": "1.10.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0016993000000000002,
+        "version": "1.10.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0017026,
+        "version": "1.10.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0017101000000000002,
+        "version": "1.10.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.001899,
+        "version": "1.10.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0016532,
+        "version": "1.10.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0017173000000000002,
+        "version": "1.10.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0016627,
+        "version": "1.10.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0016002000000000002,
+        "version": "1.10.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0016233,
+        "version": "1.10.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.001897,
+        "version": "1.10.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0018159,
+        "version": "1.10.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0018578000000000002,
+        "version": "1.10.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0016365000000000002,
+        "version": "1.10.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0016384000000000001,
+        "version": "1.10.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.001623,
+        "version": "1.10.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0016265000000000001,
+        "version": "1.10.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0018317000000000001,
+        "version": "1.10.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0018186,
+        "version": "1.10.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0019884,
+        "version": "1.10.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0016893000000000001,
+        "version": "1.10.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0016709000000000001,
+        "version": "1.10.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0016706000000000002,
+        "version": "1.10.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0018642,
+        "version": "1.10.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0019966000000000003,
+        "version": "1.10.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0016638,
+        "version": "1.10.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.001624,
+        "version": "1.10.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0016,
+        "version": "1.10.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0016004,
+        "version": "1.10.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0020497000000000002,
+        "version": "1.10.1"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.00174,
+        "version": "1.10.1"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0016835,
+        "version": "1.10.1"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0016690000000000001,
+        "version": "1.10.1"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0016216000000000002,
+        "version": "1.10.1"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.001623,
+        "version": "1.10.1"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0016304000000000002,
+        "version": "1.10.1"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0019522,
+        "version": "1.10.1"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0016119,
+        "version": "1.10.1"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015907,
+        "version": "1.10.1"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0016341,
+        "version": "1.10.1"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0017311000000000002,
+        "version": "1.10.1"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0023356,
+        "version": "1.10.1"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0023373,
+        "version": "1.10.1"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0027149,
+        "version": "1.10.1"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0020072,
+        "version": "1.10.1"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0017036000000000002,
+        "version": "1.10.1"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0017651000000000001,
+        "version": "1.10.1"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0017013000000000002,
+        "version": "1.10.1"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0019711,
+        "version": "1.10.1"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0017098,
+        "version": "1.10.1"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0016517,
+        "version": "1.10.1"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0016175,
+        "version": "1.10.1"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0021884,
+        "version": "1.10.1"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0016974000000000002,
+        "version": "1.10.1"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0016259,
+        "version": "1.10.1"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0016088,
+        "version": "1.10.1"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0016121000000000002,
+        "version": "1.10.1"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0016229,
+        "version": "1.10.1"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0016538000000000002,
+        "version": "1.10.1"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0016035,
+        "version": "1.10.2"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015925000000000002,
+        "version": "1.10.2"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015356,
+        "version": "1.10.2"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015299,
+        "version": "1.10.2"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015637000000000001,
+        "version": "1.10.2"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.001642,
+        "version": "1.10.2"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.001631,
+        "version": "1.10.2"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015939,
+        "version": "1.10.2"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015209000000000002,
+        "version": "1.10.2"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015711000000000002,
+        "version": "1.10.2"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015347000000000002,
+        "version": "1.10.2"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015761000000000002,
+        "version": "1.10.2"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0016380000000000001,
+        "version": "1.10.2"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0019806000000000003,
+        "version": "1.10.2"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0016946,
+        "version": "1.10.2"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0016369000000000002,
+        "version": "1.10.2"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0016054,
+        "version": "1.10.2"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0016128000000000002,
+        "version": "1.10.2"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0017765,
+        "version": "1.10.2"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0019911,
+        "version": "1.10.2"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0019949,
+        "version": "1.10.2"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0016485,
+        "version": "1.10.2"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0016070000000000001,
+        "version": "1.10.2"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0016309,
+        "version": "1.10.2"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015668000000000001,
+        "version": "1.10.2"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015333,
+        "version": "1.10.2"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0021498000000000003,
+        "version": "1.10.2"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0018113,
+        "version": "1.10.2"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.001628,
+        "version": "1.10.2"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0016287,
+        "version": "1.10.2"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0016074000000000001,
+        "version": "1.11.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015916,
+        "version": "1.11.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015434000000000001,
+        "version": "1.11.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015124000000000001,
+        "version": "1.11.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015555,
+        "version": "1.11.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0016604,
+        "version": "1.11.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0016007,
+        "version": "1.11.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015654,
+        "version": "1.11.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0014921000000000001,
+        "version": "1.11.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015115,
+        "version": "1.11.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015235000000000001,
+        "version": "1.11.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015732,
+        "version": "1.11.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015824,
+        "version": "1.11.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015399,
+        "version": "1.11.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015619000000000002,
+        "version": "1.11.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015367,
+        "version": "1.11.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015332000000000002,
+        "version": "1.11.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015367,
+        "version": "1.11.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0018984000000000002,
+        "version": "1.11.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015839,
+        "version": "1.11.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015975000000000002,
+        "version": "1.11.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0016469000000000002,
+        "version": "1.11.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0016105000000000002,
+        "version": "1.11.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015454000000000002,
+        "version": "1.11.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015866,
+        "version": "1.11.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015265,
+        "version": "1.11.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015337,
+        "version": "1.11.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0017046000000000001,
+        "version": "1.11.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015713,
+        "version": "1.11.0"
+      },
+      {
+        "target_kind": "release",
+        "value": 0.0015279,
+        "version": "1.11.0"
+      }
+    ],
+    "description": "Sample distribution",
+    "encoding": {
+      "color": "target_kind",
+      "x": "version",
+      "y": "value"
+    },
+    "id": "distribution-a0dfff321833f05f",
+    "kind": "distribution",
+    "options": {
+      "feature": "heap_chairmark",
+      "metric": "julia.wall.time",
+      "package": "Oxygen",
+      "series_id": "60eb7709e4e0b81d",
+      "unit": "s"
+    },
+    "schema_version": "perfchecker-plot/1",
+    "title": "Oxygen · heap_chairmark · julia.wall.time"
+  },
+  "release_date_kinds": {
+    "1.0.0": "GitHub release publication date",
+    "1.1.0": "GitHub release publication date",
+    "1.10.0": "GitHub release publication date",
+    "1.10.1": "GitHub release publication date",
+    "1.10.2": "GitHub release publication date",
+    "1.11.0": "GitHub release publication date",
+    "1.2.0": "GitHub release publication date",
+    "1.3.0": "GitHub release publication date",
+    "1.4.0": "GitHub release publication date",
+    "1.5.0": "GitHub release publication date",
+    "1.6.0": "GitHub release publication date",
+    "1.7.0": "GitHub release publication date",
+    "1.8.0": "GitHub release publication date",
+    "1.9.0": "GitHub release publication date"
+  },
+  "release_dates": {
+    "1.0.0": "2022-05-28",
+    "1.1.0": "2022-08-19",
+    "1.10.0": "2026-01-01",
+    "1.10.1": "2026-02-25",
+    "1.10.2": "2026-04-18",
+    "1.11.0": "2026-08-28",
+    "1.2.0": "2023-09-28",
+    "1.3.0": "2023-12-14",
+    "1.4.0": "2024-01-13",
+    "1.5.0": "2024-02-27",
+    "1.6.0": "2025-01-11",
+    "1.7.0": "2025-02-05",
+    "1.8.0": "2025-11-19",
+    "1.9.0": "2025-12-14"
+  },
+  "run_id": "4d223264-9351-4431-85b6-8c81f2bde47e",
+  "runtime": {
+    "language": "julia",
+    "threads": 1,
+    "version": "1.13.0"
+  },
+  "scope": "One local machine; illustrative history, not a package regression verdict",
+  "started_at": "2026-09-13T11:08:13.162",
+  "worker_environments": [
+    {
+      "manifest_sha256": "9c89f70360da971e2112c94d9dcc637b04b1a421484c0b2eb744ba033e1be04b",
+      "project_sha256": "f4297a96b2c6e940ea15876a6bba21ce6e6402f771854a5842963d3ee89e5d80"
+    },
+    {
+      "manifest_sha256": "14422b29110b2903c31b17b69e6eea9260e84a238ba69f47caf363db655df329",
+      "project_sha256": "f4297a96b2c6e940ea15876a6bba21ce6e6402f771854a5842963d3ee89e5d80"
+    },
+    {
+      "manifest_sha256": "23cb1787c756286bc0c388ae57a8341634d106bd7dde6bef8d343ec951dac15b",
+      "project_sha256": "f4297a96b2c6e940ea15876a6bba21ce6e6402f771854a5842963d3ee89e5d80"
+    },
+    {
+      "manifest_sha256": "37610bd2419a75ccef7e88c7062050342954b9b6e3651b3125b8d4638e5054d4",
+      "project_sha256": "f4297a96b2c6e940ea15876a6bba21ce6e6402f771854a5842963d3ee89e5d80"
+    },
+    {
+      "manifest_sha256": "ef1f077c2860604c0dc04a7bfe670bd26d1456e556c00f96ef196e33b46e6f4a",
+      "project_sha256": "f4297a96b2c6e940ea15876a6bba21ce6e6402f771854a5842963d3ee89e5d80"
+    },
+    {
+      "manifest_sha256": "07efe7b4d60d9ca8c7ff9b57f4e0c902067c5581184fac86f0db69596742717a",
+      "project_sha256": "f4297a96b2c6e940ea15876a6bba21ce6e6402f771854a5842963d3ee89e5d80"
+    },
+    {
+      "manifest_sha256": "87191dd4a9a52ce02ea4b7c4d0c0a79d2229f315fe9d0a535042431cc17e5825",
+      "project_sha256": "f4297a96b2c6e940ea15876a6bba21ce6e6402f771854a5842963d3ee89e5d80"
+    },
+    {
+      "manifest_sha256": "eb303be0ee4ad1d4136e3461f0cdbe176d64ecba106eb8981f68e70e84097daf",
+      "project_sha256": "f4297a96b2c6e940ea15876a6bba21ce6e6402f771854a5842963d3ee89e5d80"
+    },
+    {
+      "manifest_sha256": "8ee5c71ef3ebf26c2ca85699bc636898aad411383e18d733aacd754ab5fd3017",
+      "project_sha256": "f4297a96b2c6e940ea15876a6bba21ce6e6402f771854a5842963d3ee89e5d80"
+    },
+    {
+      "manifest_sha256": "15ffe3a00c7dcd508b849378295102c893c9eaf15e3aec3d9a46bb9a22da110f",
+      "project_sha256": "f4297a96b2c6e940ea15876a6bba21ce6e6402f771854a5842963d3ee89e5d80"
+    },
+    {
+      "manifest_sha256": "023efbb4d41bb5dbcd69f9c79edce94a507299d4d61300e231e8b86cbb627f6c",
+      "project_sha256": "f4297a96b2c6e940ea15876a6bba21ce6e6402f771854a5842963d3ee89e5d80"
+    },
+    {
+      "manifest_sha256": "30b933a76fbf03f57dec28a5768f66ac557a48b9c0cd7deb4a135a07c8e75429",
+      "project_sha256": "f4297a96b2c6e940ea15876a6bba21ce6e6402f771854a5842963d3ee89e5d80"
+    },
+    {
+      "manifest_sha256": "6a2cea7be47d3a347aa8d8d1bd2baa7513aa5c0f7fe1129e3cb20ceeead0eab6",
+      "project_sha256": "f4297a96b2c6e940ea15876a6bba21ce6e6402f771854a5842963d3ee89e5d80"
+    },
+    {
+      "manifest_sha256": "a22211905892a558108923e4267c857acdd8452b9c1a29643e8b6432eca8469e",
+      "project_sha256": "f4297a96b2c6e940ea15876a6bba21ce6e6402f771854a5842963d3ee89e5d80"
+    }
+  ]
+}

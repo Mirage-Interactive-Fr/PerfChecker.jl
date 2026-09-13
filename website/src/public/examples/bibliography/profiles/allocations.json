@@ -1,0 +1,4040 @@
+{
+  "correctness": "not_checked",
+  "description": "Recorded Bibliography export profile; diagnostic evidence, not a timing or regression verdict",
+  "input_manifest_sha256": "1c3f0148bde3ba2c6b574527e41de4c0ec30984beef42589a08339618f152e28",
+  "performance": "not_compared",
+  "plot": {
+    "data": [
+      {
+        "depth": 1,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "export_bibtex (Bibliography/src/bibtex.jl:211)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)"
+        ],
+        "percentage": 94.0590405904059,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 2799.19704797048,
+        "x0": 0.0,
+        "x1": 0.9405904059040591
+      },
+      {
+        "depth": 2,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "_write_bibtex (Bibliography/src/bibtex.jl:143)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:143)"
+        ],
+        "percentage": 41.91881918819188,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 1247.5040590405906,
+        "x0": 0.0,
+        "x1": 0.4191881918819188
+      },
+      {
+        "depth": 3,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "sizehint! (dict.jl:194)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:143)",
+          "sizehint! (dict.jl:194)"
+        ],
+        "percentage": 41.91881918819188,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 1247.5040590405906,
+        "x0": 0.0,
+        "x1": 0.4191881918819188
+      },
+      {
+        "depth": 4,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "#sizehint!#304 (dict.jl:201)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:143)",
+          "sizehint! (dict.jl:194)",
+          "#sizehint!#304 (dict.jl:201)"
+        ],
+        "percentage": 41.91881918819188,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 1247.5040590405906,
+        "x0": 0.0,
+        "x1": 0.4191881918819188
+      },
+      {
+        "depth": 5,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "rehash! (dict.jl:151)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:143)",
+          "sizehint! (dict.jl:194)",
+          "#sizehint!#304 (dict.jl:201)",
+          "rehash! (dict.jl:151)"
+        ],
+        "percentage": 19.48339483394834,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 579.8258302583026,
+        "x0": 0.0,
+        "x1": 0.1948339483394834
+      },
+      {
+        "depth": 6,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "GenericMemory (boot.jl:588)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:143)",
+          "sizehint! (dict.jl:194)",
+          "#sizehint!#304 (dict.jl:201)",
+          "rehash! (dict.jl:151)",
+          "GenericMemory (boot.jl:588)"
+        ],
+        "percentage": 19.48339483394834,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 579.8258302583026,
+        "x0": 0.0,
+        "x1": 0.1948339483394834
+      },
+      {
+        "depth": 7,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "jl_alloc_genericmemory_unchecked (workdir/src/genericmemory.c:41)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:143)",
+          "sizehint! (dict.jl:194)",
+          "#sizehint!#304 (dict.jl:201)",
+          "rehash! (dict.jl:151)",
+          "GenericMemory (boot.jl:588)",
+          "jl_alloc_genericmemory_unchecked (workdir/src/genericmemory.c:41)"
+        ],
+        "percentage": 19.48339483394834,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 579.8258302583026,
+        "x0": 0.0,
+        "x1": 0.1948339483394834
+      },
+      {
+        "depth": 8,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "jl_gc_alloc_ (workdir/src/gc-stock.c:811)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:143)",
+          "sizehint! (dict.jl:194)",
+          "#sizehint!#304 (dict.jl:201)",
+          "rehash! (dict.jl:151)",
+          "GenericMemory (boot.jl:588)",
+          "jl_alloc_genericmemory_unchecked (workdir/src/genericmemory.c:41)",
+          "jl_gc_alloc_ (workdir/src/gc-stock.c:811)"
+        ],
+        "percentage": 19.48339483394834,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 579.8258302583026,
+        "x0": 0.0,
+        "x1": 0.1948339483394834
+      },
+      {
+        "depth": 9,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "maybe_record_alloc_to_profile (workdir/src/gc-alloc-profiler.h:43)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:143)",
+          "sizehint! (dict.jl:194)",
+          "#sizehint!#304 (dict.jl:201)",
+          "rehash! (dict.jl:151)",
+          "GenericMemory (boot.jl:588)",
+          "jl_alloc_genericmemory_unchecked (workdir/src/genericmemory.c:41)",
+          "jl_gc_alloc_ (workdir/src/gc-stock.c:811)",
+          "maybe_record_alloc_to_profile (workdir/src/gc-alloc-profiler.h:43)"
+        ],
+        "percentage": 19.48339483394834,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 579.8258302583026,
+        "x0": 0.0,
+        "x1": 0.1948339483394834
+      },
+      {
+        "depth": 5,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "rehash! (dict.jl:150)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:143)",
+          "sizehint! (dict.jl:194)",
+          "#sizehint!#304 (dict.jl:201)",
+          "rehash! (dict.jl:150)"
+        ],
+        "percentage": 19.48339483394834,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 579.8258302583026,
+        "x0": 0.1948339483394834,
+        "x1": 0.3896678966789668
+      },
+      {
+        "depth": 6,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "GenericMemory (boot.jl:588)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:143)",
+          "sizehint! (dict.jl:194)",
+          "#sizehint!#304 (dict.jl:201)",
+          "rehash! (dict.jl:150)",
+          "GenericMemory (boot.jl:588)"
+        ],
+        "percentage": 19.48339483394834,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 579.8258302583026,
+        "x0": 0.1948339483394834,
+        "x1": 0.3896678966789668
+      },
+      {
+        "depth": 7,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "jl_alloc_genericmemory_unchecked (workdir/src/genericmemory.c:41)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:143)",
+          "sizehint! (dict.jl:194)",
+          "#sizehint!#304 (dict.jl:201)",
+          "rehash! (dict.jl:150)",
+          "GenericMemory (boot.jl:588)",
+          "jl_alloc_genericmemory_unchecked (workdir/src/genericmemory.c:41)"
+        ],
+        "percentage": 19.48339483394834,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 579.8258302583026,
+        "x0": 0.1948339483394834,
+        "x1": 0.3896678966789668
+      },
+      {
+        "depth": 8,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "jl_gc_alloc_ (workdir/src/gc-stock.c:811)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:143)",
+          "sizehint! (dict.jl:194)",
+          "#sizehint!#304 (dict.jl:201)",
+          "rehash! (dict.jl:150)",
+          "GenericMemory (boot.jl:588)",
+          "jl_alloc_genericmemory_unchecked (workdir/src/genericmemory.c:41)",
+          "jl_gc_alloc_ (workdir/src/gc-stock.c:811)"
+        ],
+        "percentage": 19.48339483394834,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 579.8258302583026,
+        "x0": 0.1948339483394834,
+        "x1": 0.3896678966789668
+      },
+      {
+        "depth": 9,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "maybe_record_alloc_to_profile (workdir/src/gc-alloc-profiler.h:43)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:143)",
+          "sizehint! (dict.jl:194)",
+          "#sizehint!#304 (dict.jl:201)",
+          "rehash! (dict.jl:150)",
+          "GenericMemory (boot.jl:588)",
+          "jl_alloc_genericmemory_unchecked (workdir/src/genericmemory.c:41)",
+          "jl_gc_alloc_ (workdir/src/gc-stock.c:811)",
+          "maybe_record_alloc_to_profile (workdir/src/gc-alloc-profiler.h:43)"
+        ],
+        "percentage": 19.48339483394834,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 579.8258302583026,
+        "x0": 0.1948339483394834,
+        "x1": 0.3896678966789668
+      },
+      {
+        "depth": 5,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "rehash! (dict.jl:148)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:143)",
+          "sizehint! (dict.jl:194)",
+          "#sizehint!#304 (dict.jl:201)",
+          "rehash! (dict.jl:148)"
+        ],
+        "percentage": 2.952029520295203,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 87.85239852398524,
+        "x0": 0.3896678966789668,
+        "x1": 0.4191881918819188
+      },
+      {
+        "depth": 6,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "GenericMemory (boot.jl:588)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:143)",
+          "sizehint! (dict.jl:194)",
+          "#sizehint!#304 (dict.jl:201)",
+          "rehash! (dict.jl:148)",
+          "GenericMemory (boot.jl:588)"
+        ],
+        "percentage": 2.952029520295203,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 87.85239852398524,
+        "x0": 0.3896678966789668,
+        "x1": 0.4191881918819188
+      },
+      {
+        "depth": 7,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "jl_alloc_genericmemory_unchecked (workdir/src/genericmemory.c:41)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:143)",
+          "sizehint! (dict.jl:194)",
+          "#sizehint!#304 (dict.jl:201)",
+          "rehash! (dict.jl:148)",
+          "GenericMemory (boot.jl:588)",
+          "jl_alloc_genericmemory_unchecked (workdir/src/genericmemory.c:41)"
+        ],
+        "percentage": 2.952029520295203,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 87.85239852398524,
+        "x0": 0.3896678966789668,
+        "x1": 0.4191881918819188
+      },
+      {
+        "depth": 8,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "jl_gc_alloc_ (workdir/src/gc-stock.c:811)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:143)",
+          "sizehint! (dict.jl:194)",
+          "#sizehint!#304 (dict.jl:201)",
+          "rehash! (dict.jl:148)",
+          "GenericMemory (boot.jl:588)",
+          "jl_alloc_genericmemory_unchecked (workdir/src/genericmemory.c:41)",
+          "jl_gc_alloc_ (workdir/src/gc-stock.c:811)"
+        ],
+        "percentage": 2.952029520295203,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 87.85239852398524,
+        "x0": 0.3896678966789668,
+        "x1": 0.4191881918819188
+      },
+      {
+        "depth": 9,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "maybe_record_alloc_to_profile (workdir/src/gc-alloc-profiler.h:43)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:143)",
+          "sizehint! (dict.jl:194)",
+          "#sizehint!#304 (dict.jl:201)",
+          "rehash! (dict.jl:148)",
+          "GenericMemory (boot.jl:588)",
+          "jl_alloc_genericmemory_unchecked (workdir/src/genericmemory.c:41)",
+          "jl_gc_alloc_ (workdir/src/gc-stock.c:811)",
+          "maybe_record_alloc_to_profile (workdir/src/gc-alloc-profiler.h:43)"
+        ],
+        "percentage": 2.952029520295203,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 87.85239852398524,
+        "x0": 0.3896678966789668,
+        "x1": 0.4191881918819188
+      },
+      {
+        "depth": 2,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "_write_bibtex (Bibliography/src/bibtex.jl:162)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:162)"
+        ],
+        "percentage": 27.45387453874538,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 817.0273062730628,
+        "x0": 0.4191881918819188,
+        "x1": 0.6937269372693726
+      },
+      {
+        "depth": 3,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "print (strings/io.jl:48)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:162)",
+          "print (strings/io.jl:48)"
+        ],
+        "percentage": 27.45387453874538,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 817.0273062730628,
+        "x0": 0.4191881918819188,
+        "x1": 0.6937269372693726
+      },
+      {
+        "depth": 4,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "print (strings/io.jl:241)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:162)",
+          "print (strings/io.jl:48)",
+          "print (strings/io.jl:241)"
+        ],
+        "percentage": 27.45387453874538,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 817.0273062730628,
+        "x0": 0.4191881918819188,
+        "x1": 0.6937269372693726
+      },
+      {
+        "depth": 5,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "write (strings/io.jl:239)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:162)",
+          "print (strings/io.jl:48)",
+          "print (strings/io.jl:241)",
+          "write (strings/io.jl:239)"
+        ],
+        "percentage": 27.45387453874538,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 817.0273062730628,
+        "x0": 0.4191881918819188,
+        "x1": 0.6937269372693726
+      },
+      {
+        "depth": 6,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "unsafe_write (iobuffer.jl:897)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:162)",
+          "print (strings/io.jl:48)",
+          "print (strings/io.jl:241)",
+          "write (strings/io.jl:239)",
+          "unsafe_write (iobuffer.jl:897)"
+        ],
+        "percentage": 27.45387453874538,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 817.0273062730628,
+        "x0": 0.4191881918819188,
+        "x1": 0.6937269372693726
+      },
+      {
+        "depth": 7,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "ensureroom (iobuffer.jl:611)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:162)",
+          "print (strings/io.jl:48)",
+          "print (strings/io.jl:241)",
+          "write (strings/io.jl:239)",
+          "unsafe_write (iobuffer.jl:897)",
+          "ensureroom (iobuffer.jl:611)"
+        ],
+        "percentage": 27.45387453874538,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 817.0273062730628,
+        "x0": 0.4191881918819188,
+        "x1": 0.6937269372693726
+      },
+      {
+        "depth": 8,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "ensureroom_slowpath (iobuffer.jl:654)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:162)",
+          "print (strings/io.jl:48)",
+          "print (strings/io.jl:241)",
+          "write (strings/io.jl:239)",
+          "unsafe_write (iobuffer.jl:897)",
+          "ensureroom (iobuffer.jl:611)",
+          "ensureroom_slowpath (iobuffer.jl:654)"
+        ],
+        "percentage": 27.45387453874538,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 817.0273062730628,
+        "x0": 0.4191881918819188,
+        "x1": 0.6937269372693726
+      },
+      {
+        "depth": 9,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "_resize! (iobuffer.jl:544)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:162)",
+          "print (strings/io.jl:48)",
+          "print (strings/io.jl:241)",
+          "write (strings/io.jl:239)",
+          "unsafe_write (iobuffer.jl:897)",
+          "ensureroom (iobuffer.jl:611)",
+          "ensureroom_slowpath (iobuffer.jl:654)",
+          "_resize! (iobuffer.jl:544)"
+        ],
+        "percentage": 27.45387453874538,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 817.0273062730628,
+        "x0": 0.4191881918819188,
+        "x1": 0.6937269372693726
+      },
+      {
+        "depth": 10,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "_similar_data (iobuffer.jl:296)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:162)",
+          "print (strings/io.jl:48)",
+          "print (strings/io.jl:241)",
+          "write (strings/io.jl:239)",
+          "unsafe_write (iobuffer.jl:897)",
+          "ensureroom (iobuffer.jl:611)",
+          "ensureroom_slowpath (iobuffer.jl:654)",
+          "_resize! (iobuffer.jl:544)",
+          "_similar_data (iobuffer.jl:296)"
+        ],
+        "percentage": 27.45387453874538,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 817.0273062730628,
+        "x0": 0.4191881918819188,
+        "x1": 0.6937269372693726
+      },
+      {
+        "depth": 11,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "StringMemory (iobuffer.jl:167)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:162)",
+          "print (strings/io.jl:48)",
+          "print (strings/io.jl:241)",
+          "write (strings/io.jl:239)",
+          "unsafe_write (iobuffer.jl:897)",
+          "ensureroom (iobuffer.jl:611)",
+          "ensureroom_slowpath (iobuffer.jl:654)",
+          "_resize! (iobuffer.jl:544)",
+          "_similar_data (iobuffer.jl:296)",
+          "StringMemory (iobuffer.jl:167)"
+        ],
+        "percentage": 27.45387453874538,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 817.0273062730628,
+        "x0": 0.4191881918819188,
+        "x1": 0.6937269372693726
+      },
+      {
+        "depth": 12,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "_string_n (strings/string.jl:136)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:162)",
+          "print (strings/io.jl:48)",
+          "print (strings/io.jl:241)",
+          "write (strings/io.jl:239)",
+          "unsafe_write (iobuffer.jl:897)",
+          "ensureroom (iobuffer.jl:611)",
+          "ensureroom_slowpath (iobuffer.jl:654)",
+          "_resize! (iobuffer.jl:544)",
+          "_similar_data (iobuffer.jl:296)",
+          "StringMemory (iobuffer.jl:167)",
+          "_string_n (strings/string.jl:136)"
+        ],
+        "percentage": 25.682656826568262,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 764.3158671586716,
+        "x0": 0.4191881918819188,
+        "x1": 0.6760147601476014
+      },
+      {
+        "depth": 13,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "ijl_alloc_string (workdir/src/array.c:300)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:162)",
+          "print (strings/io.jl:48)",
+          "print (strings/io.jl:241)",
+          "write (strings/io.jl:239)",
+          "unsafe_write (iobuffer.jl:897)",
+          "ensureroom (iobuffer.jl:611)",
+          "ensureroom_slowpath (iobuffer.jl:654)",
+          "_resize! (iobuffer.jl:544)",
+          "_similar_data (iobuffer.jl:296)",
+          "StringMemory (iobuffer.jl:167)",
+          "_string_n (strings/string.jl:136)",
+          "ijl_alloc_string (workdir/src/array.c:300)"
+        ],
+        "percentage": 25.682656826568262,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 764.3158671586716,
+        "x0": 0.4191881918819188,
+        "x1": 0.6760147601476014
+      },
+      {
+        "depth": 14,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "jl_gc_alloc_ (workdir/src/gc-stock.c:811)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:162)",
+          "print (strings/io.jl:48)",
+          "print (strings/io.jl:241)",
+          "write (strings/io.jl:239)",
+          "unsafe_write (iobuffer.jl:897)",
+          "ensureroom (iobuffer.jl:611)",
+          "ensureroom_slowpath (iobuffer.jl:654)",
+          "_resize! (iobuffer.jl:544)",
+          "_similar_data (iobuffer.jl:296)",
+          "StringMemory (iobuffer.jl:167)",
+          "_string_n (strings/string.jl:136)",
+          "ijl_alloc_string (workdir/src/array.c:300)",
+          "jl_gc_alloc_ (workdir/src/gc-stock.c:811)"
+        ],
+        "percentage": 25.682656826568262,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 764.3158671586716,
+        "x0": 0.4191881918819188,
+        "x1": 0.6760147601476014
+      },
+      {
+        "depth": 15,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "maybe_record_alloc_to_profile (workdir/src/gc-alloc-profiler.h:43)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:162)",
+          "print (strings/io.jl:48)",
+          "print (strings/io.jl:241)",
+          "write (strings/io.jl:239)",
+          "unsafe_write (iobuffer.jl:897)",
+          "ensureroom (iobuffer.jl:611)",
+          "ensureroom_slowpath (iobuffer.jl:654)",
+          "_resize! (iobuffer.jl:544)",
+          "_similar_data (iobuffer.jl:296)",
+          "StringMemory (iobuffer.jl:167)",
+          "_string_n (strings/string.jl:136)",
+          "ijl_alloc_string (workdir/src/array.c:300)",
+          "jl_gc_alloc_ (workdir/src/gc-stock.c:811)",
+          "maybe_record_alloc_to_profile (workdir/src/gc-alloc-profiler.h:43)"
+        ],
+        "percentage": 25.682656826568262,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 764.3158671586716,
+        "x0": 0.4191881918819188,
+        "x1": 0.6760147601476014
+      },
+      {
+        "depth": 12,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "unsafe_wrap (strings/string.jl:147)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:162)",
+          "print (strings/io.jl:48)",
+          "print (strings/io.jl:241)",
+          "write (strings/io.jl:239)",
+          "unsafe_write (iobuffer.jl:897)",
+          "ensureroom (iobuffer.jl:611)",
+          "ensureroom_slowpath (iobuffer.jl:654)",
+          "_resize! (iobuffer.jl:544)",
+          "_similar_data (iobuffer.jl:296)",
+          "StringMemory (iobuffer.jl:167)",
+          "unsafe_wrap (strings/string.jl:147)"
+        ],
+        "percentage": 1.7712177121771213,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 52.71143911439114,
+        "x0": 0.6760147601476014,
+        "x1": 0.6937269372693726
+      },
+      {
+        "depth": 13,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "jl_string_to_genericmemory (workdir/src/genericmemory.c:110)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:162)",
+          "print (strings/io.jl:48)",
+          "print (strings/io.jl:241)",
+          "write (strings/io.jl:239)",
+          "unsafe_write (iobuffer.jl:897)",
+          "ensureroom (iobuffer.jl:611)",
+          "ensureroom_slowpath (iobuffer.jl:654)",
+          "_resize! (iobuffer.jl:544)",
+          "_similar_data (iobuffer.jl:296)",
+          "StringMemory (iobuffer.jl:167)",
+          "unsafe_wrap (strings/string.jl:147)",
+          "jl_string_to_genericmemory (workdir/src/genericmemory.c:110)"
+        ],
+        "percentage": 1.7712177121771213,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 52.71143911439114,
+        "x0": 0.6760147601476014,
+        "x1": 0.6937269372693726
+      },
+      {
+        "depth": 14,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "jl_gc_alloc_ (workdir/src/gc-stock.c:811)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:162)",
+          "print (strings/io.jl:48)",
+          "print (strings/io.jl:241)",
+          "write (strings/io.jl:239)",
+          "unsafe_write (iobuffer.jl:897)",
+          "ensureroom (iobuffer.jl:611)",
+          "ensureroom_slowpath (iobuffer.jl:654)",
+          "_resize! (iobuffer.jl:544)",
+          "_similar_data (iobuffer.jl:296)",
+          "StringMemory (iobuffer.jl:167)",
+          "unsafe_wrap (strings/string.jl:147)",
+          "jl_string_to_genericmemory (workdir/src/genericmemory.c:110)",
+          "jl_gc_alloc_ (workdir/src/gc-stock.c:811)"
+        ],
+        "percentage": 1.7712177121771213,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 52.71143911439114,
+        "x0": 0.6760147601476014,
+        "x1": 0.6937269372693726
+      },
+      {
+        "depth": 15,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "maybe_record_alloc_to_profile (workdir/src/gc-alloc-profiler.h:43)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:162)",
+          "print (strings/io.jl:48)",
+          "print (strings/io.jl:241)",
+          "write (strings/io.jl:239)",
+          "unsafe_write (iobuffer.jl:897)",
+          "ensureroom (iobuffer.jl:611)",
+          "ensureroom_slowpath (iobuffer.jl:654)",
+          "_resize! (iobuffer.jl:544)",
+          "_similar_data (iobuffer.jl:296)",
+          "StringMemory (iobuffer.jl:167)",
+          "unsafe_wrap (strings/string.jl:147)",
+          "jl_string_to_genericmemory (workdir/src/genericmemory.c:110)",
+          "jl_gc_alloc_ (workdir/src/gc-stock.c:811)",
+          "maybe_record_alloc_to_profile (workdir/src/gc-alloc-profiler.h:43)"
+        ],
+        "percentage": 1.7712177121771213,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 52.71143911439114,
+        "x0": 0.6760147601476014,
+        "x1": 0.6937269372693726
+      },
+      {
+        "depth": 2,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "_write_bibtex (Bibliography/src/bibtex.jl:142)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:142)"
+        ],
+        "percentage": 14.760147601476014,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 439.2619926199262,
+        "x0": 0.6937269372693726,
+        "x1": 0.8413284132841328
+      },
+      {
+        "depth": 3,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "copy (dict.jl:110)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:142)",
+          "copy (dict.jl:110)"
+        ],
+        "percentage": 14.760147601476014,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 439.2619926199262,
+        "x0": 0.6937269372693726,
+        "x1": 0.8413284132841328
+      },
+      {
+        "depth": 4,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "Dict (dict.jl:117)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:142)",
+          "copy (dict.jl:110)",
+          "Dict (dict.jl:117)"
+        ],
+        "percentage": 14.760147601476014,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 439.2619926199262,
+        "x0": 0.6937269372693726,
+        "x1": 0.8413284132841328
+      },
+      {
+        "depth": 5,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "dict_with_eltype (abstractdict.jl:637)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:142)",
+          "copy (dict.jl:110)",
+          "Dict (dict.jl:117)",
+          "dict_with_eltype (abstractdict.jl:637)"
+        ],
+        "percentage": 14.760147601476014,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 439.2619926199262,
+        "x0": 0.6937269372693726,
+        "x1": 0.8413284132841328
+      },
+      {
+        "depth": 6,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "Dict (dict.jl:83)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:142)",
+          "copy (dict.jl:110)",
+          "Dict (dict.jl:117)",
+          "dict_with_eltype (abstractdict.jl:637)",
+          "Dict (dict.jl:83)"
+        ],
+        "percentage": 14.760147601476014,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 439.2619926199262,
+        "x0": 0.6937269372693726,
+        "x1": 0.8413284132841328
+      },
+      {
+        "depth": 7,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "copy (genericmemory.jl:193)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:142)",
+          "copy (dict.jl:110)",
+          "Dict (dict.jl:117)",
+          "dict_with_eltype (abstractdict.jl:637)",
+          "Dict (dict.jl:83)",
+          "copy (genericmemory.jl:193)"
+        ],
+        "percentage": 11.808118081180812,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 351.409594095941,
+        "x0": 0.6937269372693726,
+        "x1": 0.8118081180811807
+      },
+      {
+        "depth": 8,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "GenericMemory (boot.jl:588)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:142)",
+          "copy (dict.jl:110)",
+          "Dict (dict.jl:117)",
+          "dict_with_eltype (abstractdict.jl:637)",
+          "Dict (dict.jl:83)",
+          "copy (genericmemory.jl:193)",
+          "GenericMemory (boot.jl:588)"
+        ],
+        "percentage": 11.808118081180812,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 351.409594095941,
+        "x0": 0.6937269372693726,
+        "x1": 0.8118081180811807
+      },
+      {
+        "depth": 9,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "jl_alloc_genericmemory_unchecked (workdir/src/genericmemory.c:41)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:142)",
+          "copy (dict.jl:110)",
+          "Dict (dict.jl:117)",
+          "dict_with_eltype (abstractdict.jl:637)",
+          "Dict (dict.jl:83)",
+          "copy (genericmemory.jl:193)",
+          "GenericMemory (boot.jl:588)",
+          "jl_alloc_genericmemory_unchecked (workdir/src/genericmemory.c:41)"
+        ],
+        "percentage": 11.808118081180812,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 351.409594095941,
+        "x0": 0.6937269372693726,
+        "x1": 0.8118081180811807
+      },
+      {
+        "depth": 10,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "jl_gc_alloc_ (workdir/src/gc-stock.c:811)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:142)",
+          "copy (dict.jl:110)",
+          "Dict (dict.jl:117)",
+          "dict_with_eltype (abstractdict.jl:637)",
+          "Dict (dict.jl:83)",
+          "copy (genericmemory.jl:193)",
+          "GenericMemory (boot.jl:588)",
+          "jl_alloc_genericmemory_unchecked (workdir/src/genericmemory.c:41)",
+          "jl_gc_alloc_ (workdir/src/gc-stock.c:811)"
+        ],
+        "percentage": 11.808118081180812,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 351.409594095941,
+        "x0": 0.6937269372693726,
+        "x1": 0.8118081180811807
+      },
+      {
+        "depth": 11,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "maybe_record_alloc_to_profile (workdir/src/gc-alloc-profiler.h:43)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:142)",
+          "copy (dict.jl:110)",
+          "Dict (dict.jl:117)",
+          "dict_with_eltype (abstractdict.jl:637)",
+          "Dict (dict.jl:83)",
+          "copy (genericmemory.jl:193)",
+          "GenericMemory (boot.jl:588)",
+          "jl_alloc_genericmemory_unchecked (workdir/src/genericmemory.c:41)",
+          "jl_gc_alloc_ (workdir/src/gc-stock.c:811)",
+          "maybe_record_alloc_to_profile (workdir/src/gc-alloc-profiler.h:43)"
+        ],
+        "percentage": 11.808118081180812,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 351.409594095941,
+        "x0": 0.6937269372693726,
+        "x1": 0.8118081180811807
+      },
+      {
+        "depth": 7,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "ijl_gc_small_alloc (workdir/src/gc-stock.c:781)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:142)",
+          "copy (dict.jl:110)",
+          "Dict (dict.jl:117)",
+          "dict_with_eltype (abstractdict.jl:637)",
+          "Dict (dict.jl:83)",
+          "ijl_gc_small_alloc (workdir/src/gc-stock.c:781)"
+        ],
+        "percentage": 2.952029520295203,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 87.85239852398524,
+        "x0": 0.8118081180811807,
+        "x1": 0.8413284132841328
+      },
+      {
+        "depth": 8,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "maybe_record_alloc_to_profile (workdir/src/gc-alloc-profiler.h:43)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:142)",
+          "copy (dict.jl:110)",
+          "Dict (dict.jl:117)",
+          "dict_with_eltype (abstractdict.jl:637)",
+          "Dict (dict.jl:83)",
+          "ijl_gc_small_alloc (workdir/src/gc-stock.c:781)",
+          "maybe_record_alloc_to_profile (workdir/src/gc-alloc-profiler.h:43)"
+        ],
+        "percentage": 2.952029520295203,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 87.85239852398524,
+        "x0": 0.8118081180811807,
+        "x1": 0.8413284132841328
+      },
+      {
+        "depth": 2,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "_write_bibtex (Bibliography/src/bibtex.jl:145)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:145)"
+        ],
+        "percentage": 7.564575645756457,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 225.1217712177122,
+        "x0": 0.8413284132841328,
+        "x1": 0.9169741697416973
+      },
+      {
+        "depth": 3,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "names_to_strings (Bibliography/src/bibtex.jl:78)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:145)",
+          "names_to_strings (Bibliography/src/bibtex.jl:78)"
+        ],
+        "percentage": 7.564575645756457,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 225.1217712177122,
+        "x0": 0.8413284132841328,
+        "x1": 0.9169741697416973
+      },
+      {
+        "depth": 4,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "join (strings/io.jl:370)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:145)",
+          "names_to_strings (Bibliography/src/bibtex.jl:78)",
+          "join (strings/io.jl:370)"
+        ],
+        "percentage": 7.564575645756457,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 225.1217712177122,
+        "x0": 0.8413284132841328,
+        "x1": 0.9169741697416973
+      },
+      {
+        "depth": 5,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "_join_preserve_annotations (strings/io.jl:352)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:145)",
+          "names_to_strings (Bibliography/src/bibtex.jl:78)",
+          "join (strings/io.jl:370)",
+          "_join_preserve_annotations (strings/io.jl:352)"
+        ],
+        "percentage": 7.564575645756457,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 225.1217712177122,
+        "x0": 0.8413284132841328,
+        "x1": 0.9169741697416973
+      },
+      {
+        "depth": 6,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "sprint (strings/io.jl:104)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:145)",
+          "names_to_strings (Bibliography/src/bibtex.jl:78)",
+          "join (strings/io.jl:370)",
+          "_join_preserve_annotations (strings/io.jl:352)",
+          "sprint (strings/io.jl:104)"
+        ],
+        "percentage": 7.564575645756457,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 225.1217712177122,
+        "x0": 0.8413284132841328,
+        "x1": 0.9169741697416973
+      },
+      {
+        "depth": 7,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "#sprint#429 (strings/io.jl:111)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:145)",
+          "names_to_strings (Bibliography/src/bibtex.jl:78)",
+          "join (strings/io.jl:370)",
+          "_join_preserve_annotations (strings/io.jl:352)",
+          "sprint (strings/io.jl:104)",
+          "#sprint#429 (strings/io.jl:111)"
+        ],
+        "percentage": 5.2029520295202945,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 154.839852398524,
+        "x0": 0.8413284132841328,
+        "x1": 0.8933579335793357
+      },
+      {
+        "depth": 8,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "join (strings/io.jl:345)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:145)",
+          "names_to_strings (Bibliography/src/bibtex.jl:78)",
+          "join (strings/io.jl:370)",
+          "_join_preserve_annotations (strings/io.jl:352)",
+          "sprint (strings/io.jl:104)",
+          "#sprint#429 (strings/io.jl:111)",
+          "join (strings/io.jl:345)"
+        ],
+        "percentage": 2.619926199261992,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 77.9690036900369,
+        "x0": 0.8413284132841328,
+        "x1": 0.8675276752767527
+      },
+      {
+        "depth": 9,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "print (strings/io.jl:241)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:145)",
+          "names_to_strings (Bibliography/src/bibtex.jl:78)",
+          "join (strings/io.jl:370)",
+          "_join_preserve_annotations (strings/io.jl:352)",
+          "sprint (strings/io.jl:104)",
+          "#sprint#429 (strings/io.jl:111)",
+          "join (strings/io.jl:345)",
+          "print (strings/io.jl:241)"
+        ],
+        "percentage": 2.619926199261992,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 77.9690036900369,
+        "x0": 0.8413284132841328,
+        "x1": 0.8675276752767527
+      },
+      {
+        "depth": 10,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "write (strings/io.jl:239)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:145)",
+          "names_to_strings (Bibliography/src/bibtex.jl:78)",
+          "join (strings/io.jl:370)",
+          "_join_preserve_annotations (strings/io.jl:352)",
+          "sprint (strings/io.jl:104)",
+          "#sprint#429 (strings/io.jl:111)",
+          "join (strings/io.jl:345)",
+          "print (strings/io.jl:241)",
+          "write (strings/io.jl:239)"
+        ],
+        "percentage": 2.619926199261992,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 77.9690036900369,
+        "x0": 0.8413284132841328,
+        "x1": 0.8675276752767527
+      },
+      {
+        "depth": 11,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "unsafe_write (iobuffer.jl:897)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:145)",
+          "names_to_strings (Bibliography/src/bibtex.jl:78)",
+          "join (strings/io.jl:370)",
+          "_join_preserve_annotations (strings/io.jl:352)",
+          "sprint (strings/io.jl:104)",
+          "#sprint#429 (strings/io.jl:111)",
+          "join (strings/io.jl:345)",
+          "print (strings/io.jl:241)",
+          "write (strings/io.jl:239)",
+          "unsafe_write (iobuffer.jl:897)"
+        ],
+        "percentage": 2.619926199261992,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 77.9690036900369,
+        "x0": 0.8413284132841328,
+        "x1": 0.8675276752767527
+      },
+      {
+        "depth": 12,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "ensureroom (iobuffer.jl:611)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:145)",
+          "names_to_strings (Bibliography/src/bibtex.jl:78)",
+          "join (strings/io.jl:370)",
+          "_join_preserve_annotations (strings/io.jl:352)",
+          "sprint (strings/io.jl:104)",
+          "#sprint#429 (strings/io.jl:111)",
+          "join (strings/io.jl:345)",
+          "print (strings/io.jl:241)",
+          "write (strings/io.jl:239)",
+          "unsafe_write (iobuffer.jl:897)",
+          "ensureroom (iobuffer.jl:611)"
+        ],
+        "percentage": 2.619926199261992,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 77.9690036900369,
+        "x0": 0.8413284132841328,
+        "x1": 0.8675276752767527
+      },
+      {
+        "depth": 13,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "ensureroom_slowpath (iobuffer.jl:654)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:145)",
+          "names_to_strings (Bibliography/src/bibtex.jl:78)",
+          "join (strings/io.jl:370)",
+          "_join_preserve_annotations (strings/io.jl:352)",
+          "sprint (strings/io.jl:104)",
+          "#sprint#429 (strings/io.jl:111)",
+          "join (strings/io.jl:345)",
+          "print (strings/io.jl:241)",
+          "write (strings/io.jl:239)",
+          "unsafe_write (iobuffer.jl:897)",
+          "ensureroom (iobuffer.jl:611)",
+          "ensureroom_slowpath (iobuffer.jl:654)"
+        ],
+        "percentage": 2.619926199261992,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 77.9690036900369,
+        "x0": 0.8413284132841328,
+        "x1": 0.8675276752767527
+      },
+      {
+        "depth": 14,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "_resize! (iobuffer.jl:544)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:145)",
+          "names_to_strings (Bibliography/src/bibtex.jl:78)",
+          "join (strings/io.jl:370)",
+          "_join_preserve_annotations (strings/io.jl:352)",
+          "sprint (strings/io.jl:104)",
+          "#sprint#429 (strings/io.jl:111)",
+          "join (strings/io.jl:345)",
+          "print (strings/io.jl:241)",
+          "write (strings/io.jl:239)",
+          "unsafe_write (iobuffer.jl:897)",
+          "ensureroom (iobuffer.jl:611)",
+          "ensureroom_slowpath (iobuffer.jl:654)",
+          "_resize! (iobuffer.jl:544)"
+        ],
+        "percentage": 2.619926199261992,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 77.9690036900369,
+        "x0": 0.8413284132841328,
+        "x1": 0.8675276752767527
+      },
+      {
+        "depth": 15,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "_similar_data (iobuffer.jl:296)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:145)",
+          "names_to_strings (Bibliography/src/bibtex.jl:78)",
+          "join (strings/io.jl:370)",
+          "_join_preserve_annotations (strings/io.jl:352)",
+          "sprint (strings/io.jl:104)",
+          "#sprint#429 (strings/io.jl:111)",
+          "join (strings/io.jl:345)",
+          "print (strings/io.jl:241)",
+          "write (strings/io.jl:239)",
+          "unsafe_write (iobuffer.jl:897)",
+          "ensureroom (iobuffer.jl:611)",
+          "ensureroom_slowpath (iobuffer.jl:654)",
+          "_resize! (iobuffer.jl:544)",
+          "_similar_data (iobuffer.jl:296)"
+        ],
+        "percentage": 2.619926199261992,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 77.9690036900369,
+        "x0": 0.8413284132841328,
+        "x1": 0.8675276752767527
+      },
+      {
+        "depth": 16,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "StringMemory (iobuffer.jl:167)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:145)",
+          "names_to_strings (Bibliography/src/bibtex.jl:78)",
+          "join (strings/io.jl:370)",
+          "_join_preserve_annotations (strings/io.jl:352)",
+          "sprint (strings/io.jl:104)",
+          "#sprint#429 (strings/io.jl:111)",
+          "join (strings/io.jl:345)",
+          "print (strings/io.jl:241)",
+          "write (strings/io.jl:239)",
+          "unsafe_write (iobuffer.jl:897)",
+          "ensureroom (iobuffer.jl:611)",
+          "ensureroom_slowpath (iobuffer.jl:654)",
+          "_resize! (iobuffer.jl:544)",
+          "_similar_data (iobuffer.jl:296)",
+          "StringMemory (iobuffer.jl:167)"
+        ],
+        "percentage": 2.619926199261992,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 77.9690036900369,
+        "x0": 0.8413284132841328,
+        "x1": 0.8675276752767527
+      },
+      {
+        "depth": 17,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "_string_n (strings/string.jl:136)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:145)",
+          "names_to_strings (Bibliography/src/bibtex.jl:78)",
+          "join (strings/io.jl:370)",
+          "_join_preserve_annotations (strings/io.jl:352)",
+          "sprint (strings/io.jl:104)",
+          "#sprint#429 (strings/io.jl:111)",
+          "join (strings/io.jl:345)",
+          "print (strings/io.jl:241)",
+          "write (strings/io.jl:239)",
+          "unsafe_write (iobuffer.jl:897)",
+          "ensureroom (iobuffer.jl:611)",
+          "ensureroom_slowpath (iobuffer.jl:654)",
+          "_resize! (iobuffer.jl:544)",
+          "_similar_data (iobuffer.jl:296)",
+          "StringMemory (iobuffer.jl:167)",
+          "_string_n (strings/string.jl:136)"
+        ],
+        "percentage": 1.7343173431734313,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 51.61328413284133,
+        "x0": 0.8413284132841328,
+        "x1": 0.8586715867158671
+      },
+      {
+        "depth": 18,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "ijl_alloc_string (workdir/src/array.c:300)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:145)",
+          "names_to_strings (Bibliography/src/bibtex.jl:78)",
+          "join (strings/io.jl:370)",
+          "_join_preserve_annotations (strings/io.jl:352)",
+          "sprint (strings/io.jl:104)",
+          "#sprint#429 (strings/io.jl:111)",
+          "join (strings/io.jl:345)",
+          "print (strings/io.jl:241)",
+          "write (strings/io.jl:239)",
+          "unsafe_write (iobuffer.jl:897)",
+          "ensureroom (iobuffer.jl:611)",
+          "ensureroom_slowpath (iobuffer.jl:654)",
+          "_resize! (iobuffer.jl:544)",
+          "_similar_data (iobuffer.jl:296)",
+          "StringMemory (iobuffer.jl:167)",
+          "_string_n (strings/string.jl:136)",
+          "ijl_alloc_string (workdir/src/array.c:300)"
+        ],
+        "percentage": 1.7343173431734313,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 51.61328413284133,
+        "x0": 0.8413284132841328,
+        "x1": 0.8586715867158671
+      },
+      {
+        "depth": 19,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "jl_gc_alloc_ (workdir/src/gc-stock.c:811)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:145)",
+          "names_to_strings (Bibliography/src/bibtex.jl:78)",
+          "join (strings/io.jl:370)",
+          "_join_preserve_annotations (strings/io.jl:352)",
+          "sprint (strings/io.jl:104)",
+          "#sprint#429 (strings/io.jl:111)",
+          "join (strings/io.jl:345)",
+          "print (strings/io.jl:241)",
+          "write (strings/io.jl:239)",
+          "unsafe_write (iobuffer.jl:897)",
+          "ensureroom (iobuffer.jl:611)",
+          "ensureroom_slowpath (iobuffer.jl:654)",
+          "_resize! (iobuffer.jl:544)",
+          "_similar_data (iobuffer.jl:296)",
+          "StringMemory (iobuffer.jl:167)",
+          "_string_n (strings/string.jl:136)",
+          "ijl_alloc_string (workdir/src/array.c:300)",
+          "jl_gc_alloc_ (workdir/src/gc-stock.c:811)"
+        ],
+        "percentage": 1.7343173431734313,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 51.61328413284133,
+        "x0": 0.8413284132841328,
+        "x1": 0.8586715867158671
+      },
+      {
+        "depth": 20,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "maybe_record_alloc_to_profile (workdir/src/gc-alloc-profiler.h:43)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:145)",
+          "names_to_strings (Bibliography/src/bibtex.jl:78)",
+          "join (strings/io.jl:370)",
+          "_join_preserve_annotations (strings/io.jl:352)",
+          "sprint (strings/io.jl:104)",
+          "#sprint#429 (strings/io.jl:111)",
+          "join (strings/io.jl:345)",
+          "print (strings/io.jl:241)",
+          "write (strings/io.jl:239)",
+          "unsafe_write (iobuffer.jl:897)",
+          "ensureroom (iobuffer.jl:611)",
+          "ensureroom_slowpath (iobuffer.jl:654)",
+          "_resize! (iobuffer.jl:544)",
+          "_similar_data (iobuffer.jl:296)",
+          "StringMemory (iobuffer.jl:167)",
+          "_string_n (strings/string.jl:136)",
+          "ijl_alloc_string (workdir/src/array.c:300)",
+          "jl_gc_alloc_ (workdir/src/gc-stock.c:811)",
+          "maybe_record_alloc_to_profile (workdir/src/gc-alloc-profiler.h:43)"
+        ],
+        "percentage": 1.7343173431734313,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 51.61328413284133,
+        "x0": 0.8413284132841328,
+        "x1": 0.8586715867158671
+      },
+      {
+        "depth": 17,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "unsafe_wrap (strings/string.jl:147)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:145)",
+          "names_to_strings (Bibliography/src/bibtex.jl:78)",
+          "join (strings/io.jl:370)",
+          "_join_preserve_annotations (strings/io.jl:352)",
+          "sprint (strings/io.jl:104)",
+          "#sprint#429 (strings/io.jl:111)",
+          "join (strings/io.jl:345)",
+          "print (strings/io.jl:241)",
+          "write (strings/io.jl:239)",
+          "unsafe_write (iobuffer.jl:897)",
+          "ensureroom (iobuffer.jl:611)",
+          "ensureroom_slowpath (iobuffer.jl:654)",
+          "_resize! (iobuffer.jl:544)",
+          "_similar_data (iobuffer.jl:296)",
+          "StringMemory (iobuffer.jl:167)",
+          "unsafe_wrap (strings/string.jl:147)"
+        ],
+        "percentage": 0.8856088560885607,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 26.35571955719557,
+        "x0": 0.8586715867158671,
+        "x1": 0.8675276752767527
+      },
+      {
+        "depth": 18,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "jl_string_to_genericmemory (workdir/src/genericmemory.c:110)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:145)",
+          "names_to_strings (Bibliography/src/bibtex.jl:78)",
+          "join (strings/io.jl:370)",
+          "_join_preserve_annotations (strings/io.jl:352)",
+          "sprint (strings/io.jl:104)",
+          "#sprint#429 (strings/io.jl:111)",
+          "join (strings/io.jl:345)",
+          "print (strings/io.jl:241)",
+          "write (strings/io.jl:239)",
+          "unsafe_write (iobuffer.jl:897)",
+          "ensureroom (iobuffer.jl:611)",
+          "ensureroom_slowpath (iobuffer.jl:654)",
+          "_resize! (iobuffer.jl:544)",
+          "_similar_data (iobuffer.jl:296)",
+          "StringMemory (iobuffer.jl:167)",
+          "unsafe_wrap (strings/string.jl:147)",
+          "jl_string_to_genericmemory (workdir/src/genericmemory.c:110)"
+        ],
+        "percentage": 0.8856088560885607,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 26.35571955719557,
+        "x0": 0.8586715867158671,
+        "x1": 0.8675276752767527
+      },
+      {
+        "depth": 19,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "jl_gc_alloc_ (workdir/src/gc-stock.c:811)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:145)",
+          "names_to_strings (Bibliography/src/bibtex.jl:78)",
+          "join (strings/io.jl:370)",
+          "_join_preserve_annotations (strings/io.jl:352)",
+          "sprint (strings/io.jl:104)",
+          "#sprint#429 (strings/io.jl:111)",
+          "join (strings/io.jl:345)",
+          "print (strings/io.jl:241)",
+          "write (strings/io.jl:239)",
+          "unsafe_write (iobuffer.jl:897)",
+          "ensureroom (iobuffer.jl:611)",
+          "ensureroom_slowpath (iobuffer.jl:654)",
+          "_resize! (iobuffer.jl:544)",
+          "_similar_data (iobuffer.jl:296)",
+          "StringMemory (iobuffer.jl:167)",
+          "unsafe_wrap (strings/string.jl:147)",
+          "jl_string_to_genericmemory (workdir/src/genericmemory.c:110)",
+          "jl_gc_alloc_ (workdir/src/gc-stock.c:811)"
+        ],
+        "percentage": 0.8856088560885607,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 26.35571955719557,
+        "x0": 0.8586715867158671,
+        "x1": 0.8675276752767527
+      },
+      {
+        "depth": 20,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "maybe_record_alloc_to_profile (workdir/src/gc-alloc-profiler.h:43)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:145)",
+          "names_to_strings (Bibliography/src/bibtex.jl:78)",
+          "join (strings/io.jl:370)",
+          "_join_preserve_annotations (strings/io.jl:352)",
+          "sprint (strings/io.jl:104)",
+          "#sprint#429 (strings/io.jl:111)",
+          "join (strings/io.jl:345)",
+          "print (strings/io.jl:241)",
+          "write (strings/io.jl:239)",
+          "unsafe_write (iobuffer.jl:897)",
+          "ensureroom (iobuffer.jl:611)",
+          "ensureroom_slowpath (iobuffer.jl:654)",
+          "_resize! (iobuffer.jl:544)",
+          "_similar_data (iobuffer.jl:296)",
+          "StringMemory (iobuffer.jl:167)",
+          "unsafe_wrap (strings/string.jl:147)",
+          "jl_string_to_genericmemory (workdir/src/genericmemory.c:110)",
+          "jl_gc_alloc_ (workdir/src/gc-stock.c:811)",
+          "maybe_record_alloc_to_profile (workdir/src/gc-alloc-profiler.h:43)"
+        ],
+        "percentage": 0.8856088560885607,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 26.35571955719557,
+        "x0": 0.8586715867158671,
+        "x1": 0.8675276752767527
+      },
+      {
+        "depth": 8,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "join (strings/io.jl:343)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:145)",
+          "names_to_strings (Bibliography/src/bibtex.jl:78)",
+          "join (strings/io.jl:370)",
+          "_join_preserve_annotations (strings/io.jl:352)",
+          "sprint (strings/io.jl:104)",
+          "#sprint#429 (strings/io.jl:111)",
+          "join (strings/io.jl:343)"
+        ],
+        "percentage": 2.5830258302583022,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 76.87084870848709,
+        "x0": 0.8675276752767527,
+        "x1": 0.8933579335793357
+      },
+      {
+        "depth": 9,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "iterate (generator.jl:48)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:145)",
+          "names_to_strings (Bibliography/src/bibtex.jl:78)",
+          "join (strings/io.jl:370)",
+          "_join_preserve_annotations (strings/io.jl:352)",
+          "sprint (strings/io.jl:104)",
+          "#sprint#429 (strings/io.jl:111)",
+          "join (strings/io.jl:343)",
+          "iterate (generator.jl:48)"
+        ],
+        "percentage": 2.5830258302583022,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 76.87084870848709,
+        "x0": 0.8675276752767527,
+        "x1": 0.8933579335793357
+      },
+      {
+        "depth": 10,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "name_to_string (Bibliography/src/bibtex.jl:64)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:145)",
+          "names_to_strings (Bibliography/src/bibtex.jl:78)",
+          "join (strings/io.jl:370)",
+          "_join_preserve_annotations (strings/io.jl:352)",
+          "sprint (strings/io.jl:104)",
+          "#sprint#429 (strings/io.jl:111)",
+          "join (strings/io.jl:343)",
+          "iterate (generator.jl:48)",
+          "name_to_string (Bibliography/src/bibtex.jl:64)"
+        ],
+        "percentage": 1.328413284132841,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 39.533579335793355,
+        "x0": 0.8675276752767527,
+        "x1": 0.8808118081180811
+      },
+      {
+        "depth": 11,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "* (strings/basic.jl:261)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:145)",
+          "names_to_strings (Bibliography/src/bibtex.jl:78)",
+          "join (strings/io.jl:370)",
+          "_join_preserve_annotations (strings/io.jl:352)",
+          "sprint (strings/io.jl:104)",
+          "#sprint#429 (strings/io.jl:111)",
+          "join (strings/io.jl:343)",
+          "iterate (generator.jl:48)",
+          "name_to_string (Bibliography/src/bibtex.jl:64)",
+          "* (strings/basic.jl:261)"
+        ],
+        "percentage": 0.8118081180811807,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 24.15940959409594,
+        "x0": 0.8675276752767527,
+        "x1": 0.8756457564575645
+      },
+      {
+        "depth": 12,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "string (strings/substring.jl:234)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:145)",
+          "names_to_strings (Bibliography/src/bibtex.jl:78)",
+          "join (strings/io.jl:370)",
+          "_join_preserve_annotations (strings/io.jl:352)",
+          "sprint (strings/io.jl:104)",
+          "#sprint#429 (strings/io.jl:111)",
+          "join (strings/io.jl:343)",
+          "iterate (generator.jl:48)",
+          "name_to_string (Bibliography/src/bibtex.jl:64)",
+          "* (strings/basic.jl:261)",
+          "string (strings/substring.jl:234)"
+        ],
+        "percentage": 0.8118081180811807,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 24.15940959409594,
+        "x0": 0.8675276752767527,
+        "x1": 0.8756457564575645
+      },
+      {
+        "depth": 13,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "_string (strings/substring.jl:253)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:145)",
+          "names_to_strings (Bibliography/src/bibtex.jl:78)",
+          "join (strings/io.jl:370)",
+          "_join_preserve_annotations (strings/io.jl:352)",
+          "sprint (strings/io.jl:104)",
+          "#sprint#429 (strings/io.jl:111)",
+          "join (strings/io.jl:343)",
+          "iterate (generator.jl:48)",
+          "name_to_string (Bibliography/src/bibtex.jl:64)",
+          "* (strings/basic.jl:261)",
+          "string (strings/substring.jl:234)",
+          "_string (strings/substring.jl:253)"
+        ],
+        "percentage": 0.8118081180811807,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 24.15940959409594,
+        "x0": 0.8675276752767527,
+        "x1": 0.8756457564575645
+      },
+      {
+        "depth": 14,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "_string_n (strings/string.jl:136)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:145)",
+          "names_to_strings (Bibliography/src/bibtex.jl:78)",
+          "join (strings/io.jl:370)",
+          "_join_preserve_annotations (strings/io.jl:352)",
+          "sprint (strings/io.jl:104)",
+          "#sprint#429 (strings/io.jl:111)",
+          "join (strings/io.jl:343)",
+          "iterate (generator.jl:48)",
+          "name_to_string (Bibliography/src/bibtex.jl:64)",
+          "* (strings/basic.jl:261)",
+          "string (strings/substring.jl:234)",
+          "_string (strings/substring.jl:253)",
+          "_string_n (strings/string.jl:136)"
+        ],
+        "percentage": 0.8118081180811807,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 24.15940959409594,
+        "x0": 0.8675276752767527,
+        "x1": 0.8756457564575645
+      },
+      {
+        "depth": 15,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "ijl_alloc_string (workdir/src/array.c:300)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:145)",
+          "names_to_strings (Bibliography/src/bibtex.jl:78)",
+          "join (strings/io.jl:370)",
+          "_join_preserve_annotations (strings/io.jl:352)",
+          "sprint (strings/io.jl:104)",
+          "#sprint#429 (strings/io.jl:111)",
+          "join (strings/io.jl:343)",
+          "iterate (generator.jl:48)",
+          "name_to_string (Bibliography/src/bibtex.jl:64)",
+          "* (strings/basic.jl:261)",
+          "string (strings/substring.jl:234)",
+          "_string (strings/substring.jl:253)",
+          "_string_n (strings/string.jl:136)",
+          "ijl_alloc_string (workdir/src/array.c:300)"
+        ],
+        "percentage": 0.8118081180811807,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 24.15940959409594,
+        "x0": 0.8675276752767527,
+        "x1": 0.8756457564575645
+      },
+      {
+        "depth": 16,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "jl_gc_alloc_ (workdir/src/gc-stock.c:811)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:145)",
+          "names_to_strings (Bibliography/src/bibtex.jl:78)",
+          "join (strings/io.jl:370)",
+          "_join_preserve_annotations (strings/io.jl:352)",
+          "sprint (strings/io.jl:104)",
+          "#sprint#429 (strings/io.jl:111)",
+          "join (strings/io.jl:343)",
+          "iterate (generator.jl:48)",
+          "name_to_string (Bibliography/src/bibtex.jl:64)",
+          "* (strings/basic.jl:261)",
+          "string (strings/substring.jl:234)",
+          "_string (strings/substring.jl:253)",
+          "_string_n (strings/string.jl:136)",
+          "ijl_alloc_string (workdir/src/array.c:300)",
+          "jl_gc_alloc_ (workdir/src/gc-stock.c:811)"
+        ],
+        "percentage": 0.8118081180811807,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 24.15940959409594,
+        "x0": 0.8675276752767527,
+        "x1": 0.8756457564575645
+      },
+      {
+        "depth": 17,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "maybe_record_alloc_to_profile (workdir/src/gc-alloc-profiler.h:43)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:145)",
+          "names_to_strings (Bibliography/src/bibtex.jl:78)",
+          "join (strings/io.jl:370)",
+          "_join_preserve_annotations (strings/io.jl:352)",
+          "sprint (strings/io.jl:104)",
+          "#sprint#429 (strings/io.jl:111)",
+          "join (strings/io.jl:343)",
+          "iterate (generator.jl:48)",
+          "name_to_string (Bibliography/src/bibtex.jl:64)",
+          "* (strings/basic.jl:261)",
+          "string (strings/substring.jl:234)",
+          "_string (strings/substring.jl:253)",
+          "_string_n (strings/string.jl:136)",
+          "ijl_alloc_string (workdir/src/array.c:300)",
+          "jl_gc_alloc_ (workdir/src/gc-stock.c:811)",
+          "maybe_record_alloc_to_profile (workdir/src/gc-alloc-profiler.h:43)"
+        ],
+        "percentage": 0.8118081180811807,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 24.15940959409594,
+        "x0": 0.8675276752767527,
+        "x1": 0.8756457564575645
+      },
+      {
+        "depth": 11,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "string (strings/substring.jl:234)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:145)",
+          "names_to_strings (Bibliography/src/bibtex.jl:78)",
+          "join (strings/io.jl:370)",
+          "_join_preserve_annotations (strings/io.jl:352)",
+          "sprint (strings/io.jl:104)",
+          "#sprint#429 (strings/io.jl:111)",
+          "join (strings/io.jl:343)",
+          "iterate (generator.jl:48)",
+          "name_to_string (Bibliography/src/bibtex.jl:64)",
+          "string (strings/substring.jl:234)"
+        ],
+        "percentage": 0.5166051660516604,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 15.374169741697417,
+        "x0": 0.8756457564575645,
+        "x1": 0.8808118081180811
+      },
+      {
+        "depth": 12,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "_string (strings/substring.jl:253)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:145)",
+          "names_to_strings (Bibliography/src/bibtex.jl:78)",
+          "join (strings/io.jl:370)",
+          "_join_preserve_annotations (strings/io.jl:352)",
+          "sprint (strings/io.jl:104)",
+          "#sprint#429 (strings/io.jl:111)",
+          "join (strings/io.jl:343)",
+          "iterate (generator.jl:48)",
+          "name_to_string (Bibliography/src/bibtex.jl:64)",
+          "string (strings/substring.jl:234)",
+          "_string (strings/substring.jl:253)"
+        ],
+        "percentage": 0.5166051660516604,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 15.374169741697417,
+        "x0": 0.8756457564575645,
+        "x1": 0.8808118081180811
+      },
+      {
+        "depth": 13,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "_string_n (strings/string.jl:136)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:145)",
+          "names_to_strings (Bibliography/src/bibtex.jl:78)",
+          "join (strings/io.jl:370)",
+          "_join_preserve_annotations (strings/io.jl:352)",
+          "sprint (strings/io.jl:104)",
+          "#sprint#429 (strings/io.jl:111)",
+          "join (strings/io.jl:343)",
+          "iterate (generator.jl:48)",
+          "name_to_string (Bibliography/src/bibtex.jl:64)",
+          "string (strings/substring.jl:234)",
+          "_string (strings/substring.jl:253)",
+          "_string_n (strings/string.jl:136)"
+        ],
+        "percentage": 0.5166051660516604,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 15.374169741697417,
+        "x0": 0.8756457564575645,
+        "x1": 0.8808118081180811
+      },
+      {
+        "depth": 14,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "ijl_alloc_string (workdir/src/array.c:300)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:145)",
+          "names_to_strings (Bibliography/src/bibtex.jl:78)",
+          "join (strings/io.jl:370)",
+          "_join_preserve_annotations (strings/io.jl:352)",
+          "sprint (strings/io.jl:104)",
+          "#sprint#429 (strings/io.jl:111)",
+          "join (strings/io.jl:343)",
+          "iterate (generator.jl:48)",
+          "name_to_string (Bibliography/src/bibtex.jl:64)",
+          "string (strings/substring.jl:234)",
+          "_string (strings/substring.jl:253)",
+          "_string_n (strings/string.jl:136)",
+          "ijl_alloc_string (workdir/src/array.c:300)"
+        ],
+        "percentage": 0.5166051660516604,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 15.374169741697417,
+        "x0": 0.8756457564575645,
+        "x1": 0.8808118081180811
+      },
+      {
+        "depth": 15,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "jl_gc_alloc_ (workdir/src/gc-stock.c:811)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:145)",
+          "names_to_strings (Bibliography/src/bibtex.jl:78)",
+          "join (strings/io.jl:370)",
+          "_join_preserve_annotations (strings/io.jl:352)",
+          "sprint (strings/io.jl:104)",
+          "#sprint#429 (strings/io.jl:111)",
+          "join (strings/io.jl:343)",
+          "iterate (generator.jl:48)",
+          "name_to_string (Bibliography/src/bibtex.jl:64)",
+          "string (strings/substring.jl:234)",
+          "_string (strings/substring.jl:253)",
+          "_string_n (strings/string.jl:136)",
+          "ijl_alloc_string (workdir/src/array.c:300)",
+          "jl_gc_alloc_ (workdir/src/gc-stock.c:811)"
+        ],
+        "percentage": 0.5166051660516604,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 15.374169741697417,
+        "x0": 0.8756457564575645,
+        "x1": 0.8808118081180811
+      },
+      {
+        "depth": 16,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "maybe_record_alloc_to_profile (workdir/src/gc-alloc-profiler.h:43)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:145)",
+          "names_to_strings (Bibliography/src/bibtex.jl:78)",
+          "join (strings/io.jl:370)",
+          "_join_preserve_annotations (strings/io.jl:352)",
+          "sprint (strings/io.jl:104)",
+          "#sprint#429 (strings/io.jl:111)",
+          "join (strings/io.jl:343)",
+          "iterate (generator.jl:48)",
+          "name_to_string (Bibliography/src/bibtex.jl:64)",
+          "string (strings/substring.jl:234)",
+          "_string (strings/substring.jl:253)",
+          "_string_n (strings/string.jl:136)",
+          "ijl_alloc_string (workdir/src/array.c:300)",
+          "jl_gc_alloc_ (workdir/src/gc-stock.c:811)",
+          "maybe_record_alloc_to_profile (workdir/src/gc-alloc-profiler.h:43)"
+        ],
+        "percentage": 0.5166051660516604,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 15.374169741697417,
+        "x0": 0.8756457564575645,
+        "x1": 0.8808118081180811
+      },
+      {
+        "depth": 10,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "name_to_string (Bibliography/src/bibtex.jl:62)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:145)",
+          "names_to_strings (Bibliography/src/bibtex.jl:78)",
+          "join (strings/io.jl:370)",
+          "_join_preserve_annotations (strings/io.jl:352)",
+          "sprint (strings/io.jl:104)",
+          "#sprint#429 (strings/io.jl:111)",
+          "join (strings/io.jl:343)",
+          "iterate (generator.jl:48)",
+          "name_to_string (Bibliography/src/bibtex.jl:62)"
+        ],
+        "percentage": 0.6273062730627306,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 18.668634686346863,
+        "x0": 0.8808118081180811,
+        "x1": 0.8870848708487085
+      },
+      {
+        "depth": 11,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "* (strings/basic.jl:261)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:145)",
+          "names_to_strings (Bibliography/src/bibtex.jl:78)",
+          "join (strings/io.jl:370)",
+          "_join_preserve_annotations (strings/io.jl:352)",
+          "sprint (strings/io.jl:104)",
+          "#sprint#429 (strings/io.jl:111)",
+          "join (strings/io.jl:343)",
+          "iterate (generator.jl:48)",
+          "name_to_string (Bibliography/src/bibtex.jl:62)",
+          "* (strings/basic.jl:261)"
+        ],
+        "percentage": 0.6273062730627306,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 18.668634686346863,
+        "x0": 0.8808118081180811,
+        "x1": 0.8870848708487085
+      },
+      {
+        "depth": 12,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "string (strings/substring.jl:234)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:145)",
+          "names_to_strings (Bibliography/src/bibtex.jl:78)",
+          "join (strings/io.jl:370)",
+          "_join_preserve_annotations (strings/io.jl:352)",
+          "sprint (strings/io.jl:104)",
+          "#sprint#429 (strings/io.jl:111)",
+          "join (strings/io.jl:343)",
+          "iterate (generator.jl:48)",
+          "name_to_string (Bibliography/src/bibtex.jl:62)",
+          "* (strings/basic.jl:261)",
+          "string (strings/substring.jl:234)"
+        ],
+        "percentage": 0.6273062730627306,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 18.668634686346863,
+        "x0": 0.8808118081180811,
+        "x1": 0.8870848708487085
+      },
+      {
+        "depth": 13,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "_string (strings/substring.jl:253)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:145)",
+          "names_to_strings (Bibliography/src/bibtex.jl:78)",
+          "join (strings/io.jl:370)",
+          "_join_preserve_annotations (strings/io.jl:352)",
+          "sprint (strings/io.jl:104)",
+          "#sprint#429 (strings/io.jl:111)",
+          "join (strings/io.jl:343)",
+          "iterate (generator.jl:48)",
+          "name_to_string (Bibliography/src/bibtex.jl:62)",
+          "* (strings/basic.jl:261)",
+          "string (strings/substring.jl:234)",
+          "_string (strings/substring.jl:253)"
+        ],
+        "percentage": 0.6273062730627306,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 18.668634686346863,
+        "x0": 0.8808118081180811,
+        "x1": 0.8870848708487085
+      },
+      {
+        "depth": 14,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "_string_n (strings/string.jl:136)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:145)",
+          "names_to_strings (Bibliography/src/bibtex.jl:78)",
+          "join (strings/io.jl:370)",
+          "_join_preserve_annotations (strings/io.jl:352)",
+          "sprint (strings/io.jl:104)",
+          "#sprint#429 (strings/io.jl:111)",
+          "join (strings/io.jl:343)",
+          "iterate (generator.jl:48)",
+          "name_to_string (Bibliography/src/bibtex.jl:62)",
+          "* (strings/basic.jl:261)",
+          "string (strings/substring.jl:234)",
+          "_string (strings/substring.jl:253)",
+          "_string_n (strings/string.jl:136)"
+        ],
+        "percentage": 0.6273062730627306,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 18.668634686346863,
+        "x0": 0.8808118081180811,
+        "x1": 0.8870848708487085
+      },
+      {
+        "depth": 15,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "ijl_alloc_string (workdir/src/array.c:300)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:145)",
+          "names_to_strings (Bibliography/src/bibtex.jl:78)",
+          "join (strings/io.jl:370)",
+          "_join_preserve_annotations (strings/io.jl:352)",
+          "sprint (strings/io.jl:104)",
+          "#sprint#429 (strings/io.jl:111)",
+          "join (strings/io.jl:343)",
+          "iterate (generator.jl:48)",
+          "name_to_string (Bibliography/src/bibtex.jl:62)",
+          "* (strings/basic.jl:261)",
+          "string (strings/substring.jl:234)",
+          "_string (strings/substring.jl:253)",
+          "_string_n (strings/string.jl:136)",
+          "ijl_alloc_string (workdir/src/array.c:300)"
+        ],
+        "percentage": 0.6273062730627306,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 18.668634686346863,
+        "x0": 0.8808118081180811,
+        "x1": 0.8870848708487085
+      },
+      {
+        "depth": 16,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "jl_gc_alloc_ (workdir/src/gc-stock.c:811)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:145)",
+          "names_to_strings (Bibliography/src/bibtex.jl:78)",
+          "join (strings/io.jl:370)",
+          "_join_preserve_annotations (strings/io.jl:352)",
+          "sprint (strings/io.jl:104)",
+          "#sprint#429 (strings/io.jl:111)",
+          "join (strings/io.jl:343)",
+          "iterate (generator.jl:48)",
+          "name_to_string (Bibliography/src/bibtex.jl:62)",
+          "* (strings/basic.jl:261)",
+          "string (strings/substring.jl:234)",
+          "_string (strings/substring.jl:253)",
+          "_string_n (strings/string.jl:136)",
+          "ijl_alloc_string (workdir/src/array.c:300)",
+          "jl_gc_alloc_ (workdir/src/gc-stock.c:811)"
+        ],
+        "percentage": 0.6273062730627306,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 18.668634686346863,
+        "x0": 0.8808118081180811,
+        "x1": 0.8870848708487085
+      },
+      {
+        "depth": 17,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "maybe_record_alloc_to_profile (workdir/src/gc-alloc-profiler.h:43)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:145)",
+          "names_to_strings (Bibliography/src/bibtex.jl:78)",
+          "join (strings/io.jl:370)",
+          "_join_preserve_annotations (strings/io.jl:352)",
+          "sprint (strings/io.jl:104)",
+          "#sprint#429 (strings/io.jl:111)",
+          "join (strings/io.jl:343)",
+          "iterate (generator.jl:48)",
+          "name_to_string (Bibliography/src/bibtex.jl:62)",
+          "* (strings/basic.jl:261)",
+          "string (strings/substring.jl:234)",
+          "_string (strings/substring.jl:253)",
+          "_string_n (strings/string.jl:136)",
+          "ijl_alloc_string (workdir/src/array.c:300)",
+          "jl_gc_alloc_ (workdir/src/gc-stock.c:811)",
+          "maybe_record_alloc_to_profile (workdir/src/gc-alloc-profiler.h:43)"
+        ],
+        "percentage": 0.6273062730627306,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 18.668634686346863,
+        "x0": 0.8808118081180811,
+        "x1": 0.8870848708487085
+      },
+      {
+        "depth": 10,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "name_to_string (Bibliography/src/bibtex.jl:61)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:145)",
+          "names_to_strings (Bibliography/src/bibtex.jl:78)",
+          "join (strings/io.jl:370)",
+          "_join_preserve_annotations (strings/io.jl:352)",
+          "sprint (strings/io.jl:104)",
+          "#sprint#429 (strings/io.jl:111)",
+          "join (strings/io.jl:343)",
+          "iterate (generator.jl:48)",
+          "name_to_string (Bibliography/src/bibtex.jl:61)"
+        ],
+        "percentage": 0.6273062730627306,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 18.668634686346863,
+        "x0": 0.8870848708487085,
+        "x1": 0.8933579335793358
+      },
+      {
+        "depth": 11,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "* (strings/basic.jl:261)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:145)",
+          "names_to_strings (Bibliography/src/bibtex.jl:78)",
+          "join (strings/io.jl:370)",
+          "_join_preserve_annotations (strings/io.jl:352)",
+          "sprint (strings/io.jl:104)",
+          "#sprint#429 (strings/io.jl:111)",
+          "join (strings/io.jl:343)",
+          "iterate (generator.jl:48)",
+          "name_to_string (Bibliography/src/bibtex.jl:61)",
+          "* (strings/basic.jl:261)"
+        ],
+        "percentage": 0.6273062730627306,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 18.668634686346863,
+        "x0": 0.8870848708487085,
+        "x1": 0.8933579335793358
+      },
+      {
+        "depth": 12,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "string (strings/substring.jl:234)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:145)",
+          "names_to_strings (Bibliography/src/bibtex.jl:78)",
+          "join (strings/io.jl:370)",
+          "_join_preserve_annotations (strings/io.jl:352)",
+          "sprint (strings/io.jl:104)",
+          "#sprint#429 (strings/io.jl:111)",
+          "join (strings/io.jl:343)",
+          "iterate (generator.jl:48)",
+          "name_to_string (Bibliography/src/bibtex.jl:61)",
+          "* (strings/basic.jl:261)",
+          "string (strings/substring.jl:234)"
+        ],
+        "percentage": 0.6273062730627306,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 18.668634686346863,
+        "x0": 0.8870848708487085,
+        "x1": 0.8933579335793358
+      },
+      {
+        "depth": 13,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "_string (strings/substring.jl:253)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:145)",
+          "names_to_strings (Bibliography/src/bibtex.jl:78)",
+          "join (strings/io.jl:370)",
+          "_join_preserve_annotations (strings/io.jl:352)",
+          "sprint (strings/io.jl:104)",
+          "#sprint#429 (strings/io.jl:111)",
+          "join (strings/io.jl:343)",
+          "iterate (generator.jl:48)",
+          "name_to_string (Bibliography/src/bibtex.jl:61)",
+          "* (strings/basic.jl:261)",
+          "string (strings/substring.jl:234)",
+          "_string (strings/substring.jl:253)"
+        ],
+        "percentage": 0.6273062730627306,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 18.668634686346863,
+        "x0": 0.8870848708487085,
+        "x1": 0.8933579335793358
+      },
+      {
+        "depth": 14,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "_string_n (strings/string.jl:136)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:145)",
+          "names_to_strings (Bibliography/src/bibtex.jl:78)",
+          "join (strings/io.jl:370)",
+          "_join_preserve_annotations (strings/io.jl:352)",
+          "sprint (strings/io.jl:104)",
+          "#sprint#429 (strings/io.jl:111)",
+          "join (strings/io.jl:343)",
+          "iterate (generator.jl:48)",
+          "name_to_string (Bibliography/src/bibtex.jl:61)",
+          "* (strings/basic.jl:261)",
+          "string (strings/substring.jl:234)",
+          "_string (strings/substring.jl:253)",
+          "_string_n (strings/string.jl:136)"
+        ],
+        "percentage": 0.6273062730627306,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 18.668634686346863,
+        "x0": 0.8870848708487085,
+        "x1": 0.8933579335793358
+      },
+      {
+        "depth": 15,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "ijl_alloc_string (workdir/src/array.c:300)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:145)",
+          "names_to_strings (Bibliography/src/bibtex.jl:78)",
+          "join (strings/io.jl:370)",
+          "_join_preserve_annotations (strings/io.jl:352)",
+          "sprint (strings/io.jl:104)",
+          "#sprint#429 (strings/io.jl:111)",
+          "join (strings/io.jl:343)",
+          "iterate (generator.jl:48)",
+          "name_to_string (Bibliography/src/bibtex.jl:61)",
+          "* (strings/basic.jl:261)",
+          "string (strings/substring.jl:234)",
+          "_string (strings/substring.jl:253)",
+          "_string_n (strings/string.jl:136)",
+          "ijl_alloc_string (workdir/src/array.c:300)"
+        ],
+        "percentage": 0.6273062730627306,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 18.668634686346863,
+        "x0": 0.8870848708487085,
+        "x1": 0.8933579335793358
+      },
+      {
+        "depth": 16,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "jl_gc_alloc_ (workdir/src/gc-stock.c:811)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:145)",
+          "names_to_strings (Bibliography/src/bibtex.jl:78)",
+          "join (strings/io.jl:370)",
+          "_join_preserve_annotations (strings/io.jl:352)",
+          "sprint (strings/io.jl:104)",
+          "#sprint#429 (strings/io.jl:111)",
+          "join (strings/io.jl:343)",
+          "iterate (generator.jl:48)",
+          "name_to_string (Bibliography/src/bibtex.jl:61)",
+          "* (strings/basic.jl:261)",
+          "string (strings/substring.jl:234)",
+          "_string (strings/substring.jl:253)",
+          "_string_n (strings/string.jl:136)",
+          "ijl_alloc_string (workdir/src/array.c:300)",
+          "jl_gc_alloc_ (workdir/src/gc-stock.c:811)"
+        ],
+        "percentage": 0.6273062730627306,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 18.668634686346863,
+        "x0": 0.8870848708487085,
+        "x1": 0.8933579335793358
+      },
+      {
+        "depth": 17,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "maybe_record_alloc_to_profile (workdir/src/gc-alloc-profiler.h:43)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:145)",
+          "names_to_strings (Bibliography/src/bibtex.jl:78)",
+          "join (strings/io.jl:370)",
+          "_join_preserve_annotations (strings/io.jl:352)",
+          "sprint (strings/io.jl:104)",
+          "#sprint#429 (strings/io.jl:111)",
+          "join (strings/io.jl:343)",
+          "iterate (generator.jl:48)",
+          "name_to_string (Bibliography/src/bibtex.jl:61)",
+          "* (strings/basic.jl:261)",
+          "string (strings/substring.jl:234)",
+          "_string (strings/substring.jl:253)",
+          "_string_n (strings/string.jl:136)",
+          "ijl_alloc_string (workdir/src/array.c:300)",
+          "jl_gc_alloc_ (workdir/src/gc-stock.c:811)",
+          "maybe_record_alloc_to_profile (workdir/src/gc-alloc-profiler.h:43)"
+        ],
+        "percentage": 0.6273062730627306,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 18.668634686346863,
+        "x0": 0.8870848708487085,
+        "x1": 0.8933579335793358
+      },
+      {
+        "depth": 7,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "#sprint#429 (strings/io.jl:105)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:145)",
+          "names_to_strings (Bibliography/src/bibtex.jl:78)",
+          "join (strings/io.jl:370)",
+          "_join_preserve_annotations (strings/io.jl:352)",
+          "sprint (strings/io.jl:104)",
+          "#sprint#429 (strings/io.jl:105)"
+        ],
+        "percentage": 2.361623616236162,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 70.28191881918819,
+        "x0": 0.8933579335793357,
+        "x1": 0.9169741697416973
+      },
+      {
+        "depth": 8,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "GenericIOBuffer (iobuffer.jl:245)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:145)",
+          "names_to_strings (Bibliography/src/bibtex.jl:78)",
+          "join (strings/io.jl:370)",
+          "_join_preserve_annotations (strings/io.jl:352)",
+          "sprint (strings/io.jl:104)",
+          "#sprint#429 (strings/io.jl:105)",
+          "GenericIOBuffer (iobuffer.jl:245)"
+        ],
+        "percentage": 2.361623616236162,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 70.28191881918819,
+        "x0": 0.8933579335793357,
+        "x1": 0.9169741697416973
+      },
+      {
+        "depth": 9,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "#IOBuffer#384 (iobuffer.jl:266)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:145)",
+          "names_to_strings (Bibliography/src/bibtex.jl:78)",
+          "join (strings/io.jl:370)",
+          "_join_preserve_annotations (strings/io.jl:352)",
+          "sprint (strings/io.jl:104)",
+          "#sprint#429 (strings/io.jl:105)",
+          "GenericIOBuffer (iobuffer.jl:245)",
+          "#IOBuffer#384 (iobuffer.jl:266)"
+        ],
+        "percentage": 2.361623616236162,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 70.28191881918819,
+        "x0": 0.8933579335793357,
+        "x1": 0.9169741697416973
+      },
+      {
+        "depth": 10,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "_new_generic_iobuffer (iobuffer.jl:106)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:145)",
+          "names_to_strings (Bibliography/src/bibtex.jl:78)",
+          "join (strings/io.jl:370)",
+          "_join_preserve_annotations (strings/io.jl:352)",
+          "sprint (strings/io.jl:104)",
+          "#sprint#429 (strings/io.jl:105)",
+          "GenericIOBuffer (iobuffer.jl:245)",
+          "#IOBuffer#384 (iobuffer.jl:266)",
+          "_new_generic_iobuffer (iobuffer.jl:106)"
+        ],
+        "percentage": 2.361623616236162,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 70.28191881918819,
+        "x0": 0.8933579335793357,
+        "x1": 0.9169741697416973
+      },
+      {
+        "depth": 11,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "ijl_gc_small_alloc (workdir/src/gc-stock.c:781)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:145)",
+          "names_to_strings (Bibliography/src/bibtex.jl:78)",
+          "join (strings/io.jl:370)",
+          "_join_preserve_annotations (strings/io.jl:352)",
+          "sprint (strings/io.jl:104)",
+          "#sprint#429 (strings/io.jl:105)",
+          "GenericIOBuffer (iobuffer.jl:245)",
+          "#IOBuffer#384 (iobuffer.jl:266)",
+          "_new_generic_iobuffer (iobuffer.jl:106)",
+          "ijl_gc_small_alloc (workdir/src/gc-stock.c:781)"
+        ],
+        "percentage": 2.361623616236162,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 70.28191881918819,
+        "x0": 0.8933579335793357,
+        "x1": 0.9169741697416973
+      },
+      {
+        "depth": 12,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "maybe_record_alloc_to_profile (workdir/src/gc-alloc-profiler.h:43)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:145)",
+          "names_to_strings (Bibliography/src/bibtex.jl:78)",
+          "join (strings/io.jl:370)",
+          "_join_preserve_annotations (strings/io.jl:352)",
+          "sprint (strings/io.jl:104)",
+          "#sprint#429 (strings/io.jl:105)",
+          "GenericIOBuffer (iobuffer.jl:245)",
+          "#IOBuffer#384 (iobuffer.jl:266)",
+          "_new_generic_iobuffer (iobuffer.jl:106)",
+          "ijl_gc_small_alloc (workdir/src/gc-stock.c:781)",
+          "maybe_record_alloc_to_profile (workdir/src/gc-alloc-profiler.h:43)"
+        ],
+        "percentage": 2.361623616236162,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 70.28191881918819,
+        "x0": 0.8933579335793357,
+        "x1": 0.9169741697416973
+      },
+      {
+        "depth": 2,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "_write_bibtex (Bibliography/src/bibtex.jl:148)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:148)"
+        ],
+        "percentage": 2.361623616236162,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 70.28191881918819,
+        "x0": 0.9169741697416973,
+        "x1": 0.940590405904059
+      },
+      {
+        "depth": 3,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "names_to_strings (Bibliography/src/bibtex.jl:78)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:148)",
+          "names_to_strings (Bibliography/src/bibtex.jl:78)"
+        ],
+        "percentage": 2.361623616236162,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 70.28191881918819,
+        "x0": 0.9169741697416973,
+        "x1": 0.940590405904059
+      },
+      {
+        "depth": 4,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "join (strings/io.jl:370)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:148)",
+          "names_to_strings (Bibliography/src/bibtex.jl:78)",
+          "join (strings/io.jl:370)"
+        ],
+        "percentage": 2.361623616236162,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 70.28191881918819,
+        "x0": 0.9169741697416973,
+        "x1": 0.940590405904059
+      },
+      {
+        "depth": 5,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "_join_preserve_annotations (strings/io.jl:352)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:148)",
+          "names_to_strings (Bibliography/src/bibtex.jl:78)",
+          "join (strings/io.jl:370)",
+          "_join_preserve_annotations (strings/io.jl:352)"
+        ],
+        "percentage": 2.361623616236162,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 70.28191881918819,
+        "x0": 0.9169741697416973,
+        "x1": 0.940590405904059
+      },
+      {
+        "depth": 6,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "sprint (strings/io.jl:104)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:148)",
+          "names_to_strings (Bibliography/src/bibtex.jl:78)",
+          "join (strings/io.jl:370)",
+          "_join_preserve_annotations (strings/io.jl:352)",
+          "sprint (strings/io.jl:104)"
+        ],
+        "percentage": 2.361623616236162,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 70.28191881918819,
+        "x0": 0.9169741697416973,
+        "x1": 0.940590405904059
+      },
+      {
+        "depth": 7,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "#sprint#429 (strings/io.jl:105)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:148)",
+          "names_to_strings (Bibliography/src/bibtex.jl:78)",
+          "join (strings/io.jl:370)",
+          "_join_preserve_annotations (strings/io.jl:352)",
+          "sprint (strings/io.jl:104)",
+          "#sprint#429 (strings/io.jl:105)"
+        ],
+        "percentage": 2.361623616236162,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 70.28191881918819,
+        "x0": 0.9169741697416973,
+        "x1": 0.940590405904059
+      },
+      {
+        "depth": 8,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "GenericIOBuffer (iobuffer.jl:245)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:148)",
+          "names_to_strings (Bibliography/src/bibtex.jl:78)",
+          "join (strings/io.jl:370)",
+          "_join_preserve_annotations (strings/io.jl:352)",
+          "sprint (strings/io.jl:104)",
+          "#sprint#429 (strings/io.jl:105)",
+          "GenericIOBuffer (iobuffer.jl:245)"
+        ],
+        "percentage": 2.361623616236162,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 70.28191881918819,
+        "x0": 0.9169741697416973,
+        "x1": 0.940590405904059
+      },
+      {
+        "depth": 9,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "#IOBuffer#384 (iobuffer.jl:266)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:148)",
+          "names_to_strings (Bibliography/src/bibtex.jl:78)",
+          "join (strings/io.jl:370)",
+          "_join_preserve_annotations (strings/io.jl:352)",
+          "sprint (strings/io.jl:104)",
+          "#sprint#429 (strings/io.jl:105)",
+          "GenericIOBuffer (iobuffer.jl:245)",
+          "#IOBuffer#384 (iobuffer.jl:266)"
+        ],
+        "percentage": 2.361623616236162,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 70.28191881918819,
+        "x0": 0.9169741697416973,
+        "x1": 0.940590405904059
+      },
+      {
+        "depth": 10,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "_new_generic_iobuffer (iobuffer.jl:106)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:148)",
+          "names_to_strings (Bibliography/src/bibtex.jl:78)",
+          "join (strings/io.jl:370)",
+          "_join_preserve_annotations (strings/io.jl:352)",
+          "sprint (strings/io.jl:104)",
+          "#sprint#429 (strings/io.jl:105)",
+          "GenericIOBuffer (iobuffer.jl:245)",
+          "#IOBuffer#384 (iobuffer.jl:266)",
+          "_new_generic_iobuffer (iobuffer.jl:106)"
+        ],
+        "percentage": 2.361623616236162,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 70.28191881918819,
+        "x0": 0.9169741697416973,
+        "x1": 0.940590405904059
+      },
+      {
+        "depth": 11,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "ijl_gc_small_alloc (workdir/src/gc-stock.c:781)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:148)",
+          "names_to_strings (Bibliography/src/bibtex.jl:78)",
+          "join (strings/io.jl:370)",
+          "_join_preserve_annotations (strings/io.jl:352)",
+          "sprint (strings/io.jl:104)",
+          "#sprint#429 (strings/io.jl:105)",
+          "GenericIOBuffer (iobuffer.jl:245)",
+          "#IOBuffer#384 (iobuffer.jl:266)",
+          "_new_generic_iobuffer (iobuffer.jl:106)",
+          "ijl_gc_small_alloc (workdir/src/gc-stock.c:781)"
+        ],
+        "percentage": 2.361623616236162,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 70.28191881918819,
+        "x0": 0.9169741697416973,
+        "x1": 0.940590405904059
+      },
+      {
+        "depth": 12,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "maybe_record_alloc_to_profile (workdir/src/gc-alloc-profiler.h:43)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:211)",
+          "_write_bibtex (Bibliography/src/bibtex.jl:148)",
+          "names_to_strings (Bibliography/src/bibtex.jl:78)",
+          "join (strings/io.jl:370)",
+          "_join_preserve_annotations (strings/io.jl:352)",
+          "sprint (strings/io.jl:104)",
+          "#sprint#429 (strings/io.jl:105)",
+          "GenericIOBuffer (iobuffer.jl:245)",
+          "#IOBuffer#384 (iobuffer.jl:266)",
+          "_new_generic_iobuffer (iobuffer.jl:106)",
+          "ijl_gc_small_alloc (workdir/src/gc-stock.c:781)",
+          "maybe_record_alloc_to_profile (workdir/src/gc-alloc-profiler.h:43)"
+        ],
+        "percentage": 2.361623616236162,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 70.28191881918819,
+        "x0": 0.9169741697416973,
+        "x1": 0.940590405904059
+      },
+      {
+        "depth": 1,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "export_bibtex (Bibliography/src/bibtex.jl:207)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:207)"
+        ],
+        "percentage": 4.760147601476014,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 141.6619926199262,
+        "x0": 0.9405904059040591,
+        "x1": 0.9881918819188192
+      },
+      {
+        "depth": 2,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "GenericIOBuffer (iobuffer.jl:245)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:207)",
+          "GenericIOBuffer (iobuffer.jl:245)"
+        ],
+        "percentage": 4.760147601476014,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 141.6619926199262,
+        "x0": 0.9405904059040591,
+        "x1": 0.9881918819188192
+      },
+      {
+        "depth": 3,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "#IOBuffer#384 (iobuffer.jl:266)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:207)",
+          "GenericIOBuffer (iobuffer.jl:245)",
+          "#IOBuffer#384 (iobuffer.jl:266)"
+        ],
+        "percentage": 4.760147601476014,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 141.6619926199262,
+        "x0": 0.9405904059040591,
+        "x1": 0.9881918819188192
+      },
+      {
+        "depth": 4,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "StringMemory (iobuffer.jl:167)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:207)",
+          "GenericIOBuffer (iobuffer.jl:245)",
+          "#IOBuffer#384 (iobuffer.jl:266)",
+          "StringMemory (iobuffer.jl:167)"
+        ],
+        "percentage": 2.398523985239852,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 71.380073800738,
+        "x0": 0.9405904059040591,
+        "x1": 0.9645756457564576
+      },
+      {
+        "depth": 5,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "_string_n (strings/string.jl:136)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:207)",
+          "GenericIOBuffer (iobuffer.jl:245)",
+          "#IOBuffer#384 (iobuffer.jl:266)",
+          "StringMemory (iobuffer.jl:167)",
+          "_string_n (strings/string.jl:136)"
+        ],
+        "percentage": 1.512915129151291,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 45.02435424354243,
+        "x0": 0.9405904059040591,
+        "x1": 0.955719557195572
+      },
+      {
+        "depth": 6,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "ijl_alloc_string (workdir/src/array.c:300)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:207)",
+          "GenericIOBuffer (iobuffer.jl:245)",
+          "#IOBuffer#384 (iobuffer.jl:266)",
+          "StringMemory (iobuffer.jl:167)",
+          "_string_n (strings/string.jl:136)",
+          "ijl_alloc_string (workdir/src/array.c:300)"
+        ],
+        "percentage": 1.512915129151291,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 45.02435424354243,
+        "x0": 0.9405904059040591,
+        "x1": 0.955719557195572
+      },
+      {
+        "depth": 7,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "jl_gc_alloc_ (workdir/src/gc-stock.c:811)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:207)",
+          "GenericIOBuffer (iobuffer.jl:245)",
+          "#IOBuffer#384 (iobuffer.jl:266)",
+          "StringMemory (iobuffer.jl:167)",
+          "_string_n (strings/string.jl:136)",
+          "ijl_alloc_string (workdir/src/array.c:300)",
+          "jl_gc_alloc_ (workdir/src/gc-stock.c:811)"
+        ],
+        "percentage": 1.512915129151291,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 45.02435424354243,
+        "x0": 0.9405904059040591,
+        "x1": 0.955719557195572
+      },
+      {
+        "depth": 8,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "maybe_record_alloc_to_profile (workdir/src/gc-alloc-profiler.h:43)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:207)",
+          "GenericIOBuffer (iobuffer.jl:245)",
+          "#IOBuffer#384 (iobuffer.jl:266)",
+          "StringMemory (iobuffer.jl:167)",
+          "_string_n (strings/string.jl:136)",
+          "ijl_alloc_string (workdir/src/array.c:300)",
+          "jl_gc_alloc_ (workdir/src/gc-stock.c:811)",
+          "maybe_record_alloc_to_profile (workdir/src/gc-alloc-profiler.h:43)"
+        ],
+        "percentage": 1.512915129151291,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 45.02435424354243,
+        "x0": 0.9405904059040591,
+        "x1": 0.955719557195572
+      },
+      {
+        "depth": 5,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "unsafe_wrap (strings/string.jl:147)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:207)",
+          "GenericIOBuffer (iobuffer.jl:245)",
+          "#IOBuffer#384 (iobuffer.jl:266)",
+          "StringMemory (iobuffer.jl:167)",
+          "unsafe_wrap (strings/string.jl:147)"
+        ],
+        "percentage": 0.8856088560885607,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 26.35571955719557,
+        "x0": 0.955719557195572,
+        "x1": 0.9645756457564576
+      },
+      {
+        "depth": 6,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "jl_string_to_genericmemory (workdir/src/genericmemory.c:110)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:207)",
+          "GenericIOBuffer (iobuffer.jl:245)",
+          "#IOBuffer#384 (iobuffer.jl:266)",
+          "StringMemory (iobuffer.jl:167)",
+          "unsafe_wrap (strings/string.jl:147)",
+          "jl_string_to_genericmemory (workdir/src/genericmemory.c:110)"
+        ],
+        "percentage": 0.8856088560885607,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 26.35571955719557,
+        "x0": 0.955719557195572,
+        "x1": 0.9645756457564576
+      },
+      {
+        "depth": 7,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "jl_gc_alloc_ (workdir/src/gc-stock.c:811)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:207)",
+          "GenericIOBuffer (iobuffer.jl:245)",
+          "#IOBuffer#384 (iobuffer.jl:266)",
+          "StringMemory (iobuffer.jl:167)",
+          "unsafe_wrap (strings/string.jl:147)",
+          "jl_string_to_genericmemory (workdir/src/genericmemory.c:110)",
+          "jl_gc_alloc_ (workdir/src/gc-stock.c:811)"
+        ],
+        "percentage": 0.8856088560885607,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 26.35571955719557,
+        "x0": 0.955719557195572,
+        "x1": 0.9645756457564576
+      },
+      {
+        "depth": 8,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "maybe_record_alloc_to_profile (workdir/src/gc-alloc-profiler.h:43)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:207)",
+          "GenericIOBuffer (iobuffer.jl:245)",
+          "#IOBuffer#384 (iobuffer.jl:266)",
+          "StringMemory (iobuffer.jl:167)",
+          "unsafe_wrap (strings/string.jl:147)",
+          "jl_string_to_genericmemory (workdir/src/genericmemory.c:110)",
+          "jl_gc_alloc_ (workdir/src/gc-stock.c:811)",
+          "maybe_record_alloc_to_profile (workdir/src/gc-alloc-profiler.h:43)"
+        ],
+        "percentage": 0.8856088560885607,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 26.35571955719557,
+        "x0": 0.955719557195572,
+        "x1": 0.9645756457564576
+      },
+      {
+        "depth": 4,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "_new_generic_iobuffer (iobuffer.jl:106)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:207)",
+          "GenericIOBuffer (iobuffer.jl:245)",
+          "#IOBuffer#384 (iobuffer.jl:266)",
+          "_new_generic_iobuffer (iobuffer.jl:106)"
+        ],
+        "percentage": 2.361623616236162,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 70.28191881918819,
+        "x0": 0.9645756457564576,
+        "x1": 0.9881918819188192
+      },
+      {
+        "depth": 5,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "ijl_gc_small_alloc (workdir/src/gc-stock.c:781)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:207)",
+          "GenericIOBuffer (iobuffer.jl:245)",
+          "#IOBuffer#384 (iobuffer.jl:266)",
+          "_new_generic_iobuffer (iobuffer.jl:106)",
+          "ijl_gc_small_alloc (workdir/src/gc-stock.c:781)"
+        ],
+        "percentage": 2.361623616236162,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 70.28191881918819,
+        "x0": 0.9645756457564576,
+        "x1": 0.9881918819188192
+      },
+      {
+        "depth": 6,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "maybe_record_alloc_to_profile (workdir/src/gc-alloc-profiler.h:43)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:207)",
+          "GenericIOBuffer (iobuffer.jl:245)",
+          "#IOBuffer#384 (iobuffer.jl:266)",
+          "_new_generic_iobuffer (iobuffer.jl:106)",
+          "ijl_gc_small_alloc (workdir/src/gc-stock.c:781)",
+          "maybe_record_alloc_to_profile (workdir/src/gc-alloc-profiler.h:43)"
+        ],
+        "percentage": 2.361623616236162,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 70.28191881918819,
+        "x0": 0.9645756457564576,
+        "x1": 0.9881918819188192
+      },
+      {
+        "depth": 1,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "export_bibtex (Bibliography/src/bibtex.jl:215)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:215)"
+        ],
+        "percentage": 1.180811808118081,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 35.140959409594096,
+        "x0": 0.9881918819188192,
+        "x1": 1.0
+      },
+      {
+        "depth": 2,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "take! (iobuffer.jl:764)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:215)",
+          "take! (iobuffer.jl:764)"
+        ],
+        "percentage": 1.180811808118081,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 35.140959409594096,
+        "x0": 0.9881918819188192,
+        "x1": 1.0
+      },
+      {
+        "depth": 3,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "wrap (array.jl:3237)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:215)",
+          "take! (iobuffer.jl:764)",
+          "wrap (array.jl:3237)"
+        ],
+        "percentage": 1.180811808118081,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 35.140959409594096,
+        "x0": 0.9881918819188192,
+        "x1": 1.0
+      },
+      {
+        "depth": 4,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "ijl_gc_small_alloc (workdir/src/gc-stock.c:781)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:215)",
+          "take! (iobuffer.jl:764)",
+          "wrap (array.jl:3237)",
+          "ijl_gc_small_alloc (workdir/src/gc-stock.c:781)"
+        ],
+        "percentage": 1.180811808118081,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 35.140959409594096,
+        "x0": 0.9881918819188192,
+        "x1": 1.0
+      },
+      {
+        "depth": 5,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "maybe_record_alloc_to_profile (workdir/src/gc-alloc-profiler.h:43)",
+        "path": [
+          "export_bibtex (Bibliography/src/bibtex.jl:215)",
+          "take! (iobuffer.jl:764)",
+          "wrap (array.jl:3237)",
+          "ijl_gc_small_alloc (workdir/src/gc-stock.c:781)",
+          "maybe_record_alloc_to_profile (workdir/src/gc-alloc-profiler.h:43)"
+        ],
+        "percentage": 1.180811808118081,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 35.140959409594096,
+        "x0": 0.9881918819188192,
+        "x1": 1.0
+      }
+    ],
+    "description": "Allocation flame graph",
+    "encoding": {
+      "color": "status",
+      "x": "percentage",
+      "y": "depth"
+    },
+    "id": "allocation-flamegraph-a614b46c6114dd13",
+    "kind": "allocation_flamegraph",
+    "options": {
+      "feature": "export_bibtex_allocations",
+      "package": "Bibliography",
+      "selected_version": "dev@0.4.0",
+      "top": 40,
+      "total": 2976.0000000000005,
+      "unit": "By",
+      "value_label": "allocated bytes",
+      "versions": [
+        "dev@0.4.0"
+      ]
+    },
+    "schema_version": "perfchecker-plot/1",
+    "title": "Bibliography · export_bibtex_allocations · allocation flame graph"
+  },
+  "publication_scope": "Plot frames and package-relative source labels; raw observations and local paths omitted",
+  "run_id": "024a7ab0-2d13-42ce-b688-2d1b00923cdd",
+  "runtime": {
+    "language": "julia",
+    "version": "1.13.0",
+    "threads": 1
+  },
+  "sources": [
+    {
+      "source_name": "BibInternal",
+      "revision": "792d8c709169505f998f7d70bfa092551dd4089f",
+      "target_label": "dev@0.4.0",
+      "dirty": false
+    },
+    {
+      "source_name": "BibParser",
+      "revision": "cf1eb4446b986a23ed444963dcdb4c6ecc2da90f",
+      "target_label": "dev@0.3.0",
+      "dirty": false
+    },
+    {
+      "source_name": "Bibliography",
+      "revision": "575ec810042cc791fd47a2c025a80246ccf039b5",
+      "target_label": "dev@0.4.0",
+      "dirty": false
+    }
+  ],
+  "started_at": "2026-09-12T14:10:34.515",
+  "top_stacks": 40,
+  "os": "NT"
+}

@@ -1,0 +1,1058 @@
+{
+  "correctness": "not_checked",
+  "description": "Bibliography tutorial: measured timing samples, not a regression verdict",
+  "finished_at": "2026-09-12T12:28:06.084",
+  "input_manifest_sha256": "a2523f25c0eed22ef6c80bd59ce18534ad0cbf54c2c836f275c6805297371258",
+  "performance": "not_compared",
+  "plot": {
+    "data": [
+      {
+        "target_kind": "dev",
+        "value": 16500.0,
+        "version": "dev@0.4.0"
+      },
+      {
+        "target_kind": "dev",
+        "value": 18700.0,
+        "version": "dev@0.4.0"
+      },
+      {
+        "target_kind": "dev",
+        "value": 14600.0,
+        "version": "dev@0.4.0"
+      },
+      {
+        "target_kind": "dev",
+        "value": 34100.0,
+        "version": "dev@0.4.0"
+      },
+      {
+        "target_kind": "dev",
+        "value": 9700.0,
+        "version": "dev@0.4.0"
+      },
+      {
+        "target_kind": "dev",
+        "value": 9300.0,
+        "version": "dev@0.4.0"
+      },
+      {
+        "target_kind": "dev",
+        "value": 13400.0,
+        "version": "dev@0.4.0"
+      },
+      {
+        "target_kind": "dev",
+        "value": 12500.0,
+        "version": "dev@0.4.0"
+      },
+      {
+        "target_kind": "dev",
+        "value": 11400.0,
+        "version": "dev@0.4.0"
+      },
+      {
+        "target_kind": "dev",
+        "value": 11200.0,
+        "version": "dev@0.4.0"
+      },
+      {
+        "target_kind": "dev",
+        "value": 9800.0,
+        "version": "dev@0.4.0"
+      },
+      {
+        "target_kind": "dev",
+        "value": 10700.0,
+        "version": "dev@0.4.0"
+      },
+      {
+        "target_kind": "dev",
+        "value": 10000.0,
+        "version": "dev@0.4.0"
+      },
+      {
+        "target_kind": "dev",
+        "value": 10700.0,
+        "version": "dev@0.4.0"
+      },
+      {
+        "target_kind": "dev",
+        "value": 23400.0,
+        "version": "dev@0.4.0"
+      },
+      {
+        "target_kind": "dev",
+        "value": 20500.0,
+        "version": "dev@0.4.0"
+      },
+      {
+        "target_kind": "dev",
+        "value": 18400.0,
+        "version": "dev@0.4.0"
+      },
+      {
+        "target_kind": "dev",
+        "value": 14500.0,
+        "version": "dev@0.4.0"
+      },
+      {
+        "target_kind": "dev",
+        "value": 16500.0,
+        "version": "dev@0.4.0"
+      },
+      {
+        "target_kind": "dev",
+        "value": 14600.0,
+        "version": "dev@0.4.0"
+      },
+      {
+        "target_kind": "dev",
+        "value": 10400.0,
+        "version": "dev@0.4.0"
+      },
+      {
+        "target_kind": "dev",
+        "value": 8900.0,
+        "version": "dev@0.4.0"
+      },
+      {
+        "target_kind": "dev",
+        "value": 7500.0,
+        "version": "dev@0.4.0"
+      },
+      {
+        "target_kind": "dev",
+        "value": 6900.0,
+        "version": "dev@0.4.0"
+      },
+      {
+        "target_kind": "dev",
+        "value": 9500.0,
+        "version": "dev@0.4.0"
+      },
+      {
+        "target_kind": "dev",
+        "value": 8500.0,
+        "version": "dev@0.4.0"
+      },
+      {
+        "target_kind": "dev",
+        "value": 8500.0,
+        "version": "dev@0.4.0"
+      },
+      {
+        "target_kind": "dev",
+        "value": 18200.0,
+        "version": "dev@0.4.0"
+      },
+      {
+        "target_kind": "dev",
+        "value": 12000.0,
+        "version": "dev@0.4.0"
+      },
+      {
+        "target_kind": "dev",
+        "value": 9000.0,
+        "version": "dev@0.4.0"
+      },
+      {
+        "target_kind": "dev",
+        "value": 8000.0,
+        "version": "dev@0.4.0"
+      },
+      {
+        "target_kind": "dev",
+        "value": 7000.0,
+        "version": "dev@0.4.0"
+      },
+      {
+        "target_kind": "dev",
+        "value": 9600.0,
+        "version": "dev@0.4.0"
+      },
+      {
+        "target_kind": "dev",
+        "value": 9300.0,
+        "version": "dev@0.4.0"
+      },
+      {
+        "target_kind": "dev",
+        "value": 17900.0,
+        "version": "dev@0.4.0"
+      },
+      {
+        "target_kind": "dev",
+        "value": 14200.0,
+        "version": "dev@0.4.0"
+      },
+      {
+        "target_kind": "dev",
+        "value": 11200.0,
+        "version": "dev@0.4.0"
+      },
+      {
+        "target_kind": "dev",
+        "value": 15500.0,
+        "version": "dev@0.4.0"
+      },
+      {
+        "target_kind": "dev",
+        "value": 11900.0,
+        "version": "dev@0.4.0"
+      },
+      {
+        "target_kind": "dev",
+        "value": 10200.0,
+        "version": "dev@0.4.0"
+      },
+      {
+        "target_kind": "dev",
+        "value": 17800.0,
+        "version": "dev@0.4.0"
+      },
+      {
+        "target_kind": "dev",
+        "value": 14100.0,
+        "version": "dev@0.4.0"
+      },
+      {
+        "target_kind": "dev",
+        "value": 12400.0,
+        "version": "dev@0.4.0"
+      },
+      {
+        "target_kind": "dev",
+        "value": 7800.0,
+        "version": "dev@0.4.0"
+      },
+      {
+        "target_kind": "dev",
+        "value": 9600.0,
+        "version": "dev@0.4.0"
+      },
+      {
+        "target_kind": "dev",
+        "value": 10500.0,
+        "version": "dev@0.4.0"
+      },
+      {
+        "target_kind": "dev",
+        "value": 9900.0,
+        "version": "dev@0.4.0"
+      },
+      {
+        "target_kind": "dev",
+        "value": 8800.0,
+        "version": "dev@0.4.0"
+      },
+      {
+        "target_kind": "dev",
+        "value": 8300.0,
+        "version": "dev@0.4.0"
+      },
+      {
+        "target_kind": "dev",
+        "value": 7100.0,
+        "version": "dev@0.4.0"
+      }
+    ],
+    "description": "Sample distribution",
+    "encoding": {
+      "color": "target_kind",
+      "x": "version",
+      "y": "value"
+    },
+    "id": "distribution-2374329a727a3a2f",
+    "kind": "distribution",
+    "options": {
+      "feature": "export_bibtex",
+      "metric": "julia.wall.time",
+      "package": "Bibliography",
+      "series_id": "a3fb2e8530e01496",
+      "unit": "ns"
+    },
+    "schema_version": "perfchecker-plot/1",
+    "title": "Bibliography · export_bibtex · julia.wall.time"
+  },
+  "publication_scope": "Numeric series and plot data only; local paths, host identifiers and logs omitted",
+  "run_id": "7f142c4b-7c47-417e-9c50-3a3c1e74c6dc",
+  "runtime": {
+    "language": "julia",
+    "threads": 1,
+    "version": "1.13.0"
+  },
+  "series": [
+    {
+      "comparison_key": "entry-construction/v1::julia.alloc.bytes/benchmarktools-v1/fresh-state-evals1-v1",
+      "feature": "construct_entry",
+      "measurement_definition": "julia.alloc.bytes/benchmarktools-v1/fresh-state-evals1-v1",
+      "metric": "julia.alloc.bytes",
+      "package": "BibInternal",
+      "points": [
+        {
+          "aggregation": "median",
+          "median": 2144.0,
+          "samples": 50,
+          "statistics": {
+            "maximum": 2144.0,
+            "mean": 2144.0,
+            "median": 2144.0,
+            "minimum": 2144.0,
+            "p95": 2144.0,
+            "p99": 2144.0
+          },
+          "target_kind": "dev",
+          "version": "dev@0.4.0"
+        }
+      ],
+      "series_id": "b82291e6a9e14f74",
+      "unit": "By",
+      "workload": "construct_entry"
+    },
+    {
+      "comparison_key": "entry-construction/v1::julia.alloc.count/benchmarktools-v1/fresh-state-evals1-v1",
+      "feature": "construct_entry",
+      "measurement_definition": "julia.alloc.count/benchmarktools-v1/fresh-state-evals1-v1",
+      "metric": "julia.alloc.count",
+      "package": "BibInternal",
+      "points": [
+        {
+          "aggregation": "median",
+          "median": 31.0,
+          "samples": 50,
+          "statistics": {
+            "maximum": 31.0,
+            "mean": 31.0,
+            "median": 31.0,
+            "minimum": 31.0,
+            "p95": 31.0,
+            "p99": 31.0
+          },
+          "target_kind": "dev",
+          "version": "dev@0.4.0"
+        }
+      ],
+      "series_id": "1e5d0a42e837947c",
+      "unit": "1",
+      "workload": "construct_entry"
+    },
+    {
+      "comparison_key": "entry-construction/v1::julia.gc.time/benchmarktools-v1/fresh-state-evals1-v1",
+      "feature": "construct_entry",
+      "measurement_definition": "julia.gc.time/benchmarktools-v1/fresh-state-evals1-v1",
+      "metric": "julia.gc.time",
+      "package": "BibInternal",
+      "points": [
+        {
+          "aggregation": "median",
+          "median": 0.0,
+          "samples": 50,
+          "statistics": {
+            "maximum": 0.0,
+            "mean": 0.0,
+            "median": 0.0,
+            "minimum": 0.0,
+            "p95": 0.0,
+            "p99": 0.0
+          },
+          "target_kind": "dev",
+          "version": "dev@0.4.0"
+        }
+      ],
+      "series_id": "4b803ac507fbc746",
+      "unit": "ns",
+      "workload": "construct_entry"
+    },
+    {
+      "comparison_key": "entry-construction/v1::julia.wall.time/benchmarktools-v1/fresh-state-evals1-v1",
+      "feature": "construct_entry",
+      "measurement_definition": "julia.wall.time/benchmarktools-v1/fresh-state-evals1-v1",
+      "metric": "julia.wall.time",
+      "package": "BibInternal",
+      "points": [
+        {
+          "aggregation": "median",
+          "median": 2500.0,
+          "samples": 50,
+          "statistics": {
+            "maximum": 30400.0,
+            "mean": 3102.0,
+            "median": 2500.0,
+            "minimum": 2100.0,
+            "p95": 2954.9999999999995,
+            "p99": 18051.99999999995
+          },
+          "target_kind": "dev",
+          "version": "dev@0.4.0"
+        }
+      ],
+      "series_id": "a62926317cd4cfc9",
+      "unit": "ns",
+      "workload": "construct_entry"
+    },
+    {
+      "comparison_key": "entry-validation/v1::julia.alloc.bytes/benchmarktools-v1/fresh-state-evals1-v1",
+      "feature": "validate_entry",
+      "measurement_definition": "julia.alloc.bytes/benchmarktools-v1/fresh-state-evals1-v1",
+      "metric": "julia.alloc.bytes",
+      "package": "BibInternal",
+      "points": [
+        {
+          "aggregation": "median",
+          "median": 560.0,
+          "samples": 50,
+          "statistics": {
+            "maximum": 560.0,
+            "mean": 560.0,
+            "median": 560.0,
+            "minimum": 560.0,
+            "p95": 560.0,
+            "p99": 560.0
+          },
+          "target_kind": "dev",
+          "version": "dev@0.4.0"
+        }
+      ],
+      "series_id": "f5b291c281c55424",
+      "unit": "By",
+      "workload": "validate_entry"
+    },
+    {
+      "comparison_key": "entry-validation/v1::julia.alloc.count/benchmarktools-v1/fresh-state-evals1-v1",
+      "feature": "validate_entry",
+      "measurement_definition": "julia.alloc.count/benchmarktools-v1/fresh-state-evals1-v1",
+      "metric": "julia.alloc.count",
+      "package": "BibInternal",
+      "points": [
+        {
+          "aggregation": "median",
+          "median": 10.0,
+          "samples": 50,
+          "statistics": {
+            "maximum": 10.0,
+            "mean": 10.0,
+            "median": 10.0,
+            "minimum": 10.0,
+            "p95": 10.0,
+            "p99": 10.0
+          },
+          "target_kind": "dev",
+          "version": "dev@0.4.0"
+        }
+      ],
+      "series_id": "41c033cb0ad53391",
+      "unit": "1",
+      "workload": "validate_entry"
+    },
+    {
+      "comparison_key": "entry-validation/v1::julia.gc.time/benchmarktools-v1/fresh-state-evals1-v1",
+      "feature": "validate_entry",
+      "measurement_definition": "julia.gc.time/benchmarktools-v1/fresh-state-evals1-v1",
+      "metric": "julia.gc.time",
+      "package": "BibInternal",
+      "points": [
+        {
+          "aggregation": "median",
+          "median": 0.0,
+          "samples": 50,
+          "statistics": {
+            "maximum": 0.0,
+            "mean": 0.0,
+            "median": 0.0,
+            "minimum": 0.0,
+            "p95": 0.0,
+            "p99": 0.0
+          },
+          "target_kind": "dev",
+          "version": "dev@0.4.0"
+        }
+      ],
+      "series_id": "c537893d79e378e1",
+      "unit": "ns",
+      "workload": "validate_entry"
+    },
+    {
+      "comparison_key": "entry-validation/v1::julia.wall.time/benchmarktools-v1/fresh-state-evals1-v1",
+      "feature": "validate_entry",
+      "measurement_definition": "julia.wall.time/benchmarktools-v1/fresh-state-evals1-v1",
+      "metric": "julia.wall.time",
+      "package": "BibInternal",
+      "points": [
+        {
+          "aggregation": "median",
+          "median": 400.0,
+          "samples": 50,
+          "statistics": {
+            "maximum": 5200.0,
+            "mean": 536.0,
+            "median": 400.0,
+            "minimum": 400.0,
+            "p95": 600.0,
+            "p99": 3092.9999999999914
+          },
+          "target_kind": "dev",
+          "version": "dev@0.4.0"
+        }
+      ],
+      "series_id": "bf1b93ba0eb141a7",
+      "unit": "ns",
+      "workload": "validate_entry"
+    },
+    {
+      "comparison_key": "bibtex-file-parse/v1::julia.alloc.bytes/benchmarktools-v1/fresh-state-evals1-v1",
+      "feature": "parse_bibtex_file",
+      "measurement_definition": "julia.alloc.bytes/benchmarktools-v1/fresh-state-evals1-v1",
+      "metric": "julia.alloc.bytes",
+      "package": "BibParser",
+      "points": [
+        {
+          "aggregation": "median",
+          "median": 8848.0,
+          "samples": 50,
+          "statistics": {
+            "maximum": 8848.0,
+            "mean": 8848.0,
+            "median": 8848.0,
+            "minimum": 8848.0,
+            "p95": 8848.0,
+            "p99": 8848.0
+          },
+          "target_kind": "dev",
+          "version": "dev@0.3.0"
+        }
+      ],
+      "series_id": "04c153139ed8fabe",
+      "unit": "By",
+      "workload": "parse_bibtex_file"
+    },
+    {
+      "comparison_key": "bibtex-file-parse/v1::julia.alloc.count/benchmarktools-v1/fresh-state-evals1-v1",
+      "feature": "parse_bibtex_file",
+      "measurement_definition": "julia.alloc.count/benchmarktools-v1/fresh-state-evals1-v1",
+      "metric": "julia.alloc.count",
+      "package": "BibParser",
+      "points": [
+        {
+          "aggregation": "median",
+          "median": 163.0,
+          "samples": 50,
+          "statistics": {
+            "maximum": 163.0,
+            "mean": 163.0,
+            "median": 163.0,
+            "minimum": 163.0,
+            "p95": 163.0,
+            "p99": 163.0
+          },
+          "target_kind": "dev",
+          "version": "dev@0.3.0"
+        }
+      ],
+      "series_id": "af69e3aceacdd861",
+      "unit": "1",
+      "workload": "parse_bibtex_file"
+    },
+    {
+      "comparison_key": "bibtex-file-parse/v1::julia.gc.time/benchmarktools-v1/fresh-state-evals1-v1",
+      "feature": "parse_bibtex_file",
+      "measurement_definition": "julia.gc.time/benchmarktools-v1/fresh-state-evals1-v1",
+      "metric": "julia.gc.time",
+      "package": "BibParser",
+      "points": [
+        {
+          "aggregation": "median",
+          "median": 0.0,
+          "samples": 50,
+          "statistics": {
+            "maximum": 0.0,
+            "mean": 0.0,
+            "median": 0.0,
+            "minimum": 0.0,
+            "p95": 0.0,
+            "p99": 0.0
+          },
+          "target_kind": "dev",
+          "version": "dev@0.3.0"
+        }
+      ],
+      "series_id": "af62c8384a28372d",
+      "unit": "ns",
+      "workload": "parse_bibtex_file"
+    },
+    {
+      "comparison_key": "bibtex-file-parse/v1::julia.wall.time/benchmarktools-v1/fresh-state-evals1-v1",
+      "feature": "parse_bibtex_file",
+      "measurement_definition": "julia.wall.time/benchmarktools-v1/fresh-state-evals1-v1",
+      "metric": "julia.wall.time",
+      "package": "BibParser",
+      "points": [
+        {
+          "aggregation": "median",
+          "median": 572550.0,
+          "samples": 50,
+          "statistics": {
+            "maximum": 1.3072e6,
+            "mean": 622546.0,
+            "median": 572550.0,
+            "minimum": 461400.0,
+            "p95": 1.0307299999999999e6,
+            "p99": 1.2084159999999995e6
+          },
+          "target_kind": "dev",
+          "version": "dev@0.3.0"
+        }
+      ],
+      "series_id": "22aba34a9022fbd3",
+      "unit": "ns",
+      "workload": "parse_bibtex_file"
+    },
+    {
+      "comparison_key": "bibliography-export/v1::julia.alloc.bytes/benchmarktools-v1/fresh-state-evals1-v1",
+      "feature": "export_bibtex",
+      "measurement_definition": "julia.alloc.bytes/benchmarktools-v1/fresh-state-evals1-v1",
+      "metric": "julia.alloc.bytes",
+      "package": "Bibliography",
+      "points": [
+        {
+          "aggregation": "median",
+          "median": 2976.0,
+          "samples": 50,
+          "statistics": {
+            "maximum": 2976.0,
+            "mean": 2976.0,
+            "median": 2976.0,
+            "minimum": 2976.0,
+            "p95": 2976.0,
+            "p99": 2976.0
+          },
+          "target_kind": "dev",
+          "version": "dev@0.4.0"
+        }
+      ],
+      "series_id": "0556a281378d7cde",
+      "unit": "By",
+      "workload": "export_bibtex"
+    },
+    {
+      "comparison_key": "bibliography-export/v1::julia.alloc.count/benchmarktools-v1/fresh-state-evals1-v1",
+      "feature": "export_bibtex",
+      "measurement_definition": "julia.alloc.count/benchmarktools-v1/fresh-state-evals1-v1",
+      "metric": "julia.alloc.count",
+      "package": "Bibliography",
+      "points": [
+        {
+          "aggregation": "median",
+          "median": 23.0,
+          "samples": 50,
+          "statistics": {
+            "maximum": 23.0,
+            "mean": 23.0,
+            "median": 23.0,
+            "minimum": 23.0,
+            "p95": 23.0,
+            "p99": 23.0
+          },
+          "target_kind": "dev",
+          "version": "dev@0.4.0"
+        }
+      ],
+      "series_id": "6b1f59deb17504a7",
+      "unit": "1",
+      "workload": "export_bibtex"
+    },
+    {
+      "comparison_key": "bibliography-export/v1::julia.gc.time/benchmarktools-v1/fresh-state-evals1-v1",
+      "feature": "export_bibtex",
+      "measurement_definition": "julia.gc.time/benchmarktools-v1/fresh-state-evals1-v1",
+      "metric": "julia.gc.time",
+      "package": "Bibliography",
+      "points": [
+        {
+          "aggregation": "median",
+          "median": 0.0,
+          "samples": 50,
+          "statistics": {
+            "maximum": 0.0,
+            "mean": 0.0,
+            "median": 0.0,
+            "minimum": 0.0,
+            "p95": 0.0,
+            "p99": 0.0
+          },
+          "target_kind": "dev",
+          "version": "dev@0.4.0"
+        }
+      ],
+      "series_id": "0dd8a6fa4c2fac7f",
+      "unit": "ns",
+      "workload": "export_bibtex"
+    },
+    {
+      "comparison_key": "bibliography-export/v1::julia.wall.time/benchmarktools-v1/fresh-state-evals1-v1",
+      "feature": "export_bibtex",
+      "measurement_definition": "julia.wall.time/benchmarktools-v1/fresh-state-evals1-v1",
+      "metric": "julia.wall.time",
+      "package": "Bibliography",
+      "points": [
+        {
+          "aggregation": "median",
+          "median": 10700.0,
+          "samples": 50,
+          "statistics": {
+            "maximum": 34100.0,
+            "mean": 12420.0,
+            "median": 10700.0,
+            "minimum": 6900.0,
+            "p95": 19689.999999999996,
+            "p99": 28856.999999999978
+          },
+          "target_kind": "dev",
+          "version": "dev@0.4.0"
+        }
+      ],
+      "series_id": "a3fb2e8530e01496",
+      "unit": "ns",
+      "workload": "export_bibtex"
+    },
+    {
+      "comparison_key": "bibliography-import/v1::julia.alloc.bytes/benchmarktools-v1/fresh-state-evals1-v1",
+      "feature": "import_bibtex",
+      "measurement_definition": "julia.alloc.bytes/benchmarktools-v1/fresh-state-evals1-v1",
+      "metric": "julia.alloc.bytes",
+      "package": "Bibliography",
+      "points": [
+        {
+          "aggregation": "median",
+          "median": 8992.0,
+          "samples": 50,
+          "statistics": {
+            "maximum": 8992.0,
+            "mean": 8992.0,
+            "median": 8992.0,
+            "minimum": 8992.0,
+            "p95": 8992.0,
+            "p99": 8992.0
+          },
+          "target_kind": "dev",
+          "version": "dev@0.4.0"
+        }
+      ],
+      "series_id": "376f70666359178c",
+      "unit": "By",
+      "workload": "import_bibtex"
+    },
+    {
+      "comparison_key": "bibliography-import/v1::julia.alloc.count/benchmarktools-v1/fresh-state-evals1-v1",
+      "feature": "import_bibtex",
+      "measurement_definition": "julia.alloc.count/benchmarktools-v1/fresh-state-evals1-v1",
+      "metric": "julia.alloc.count",
+      "package": "Bibliography",
+      "points": [
+        {
+          "aggregation": "median",
+          "median": 162.0,
+          "samples": 50,
+          "statistics": {
+            "maximum": 162.0,
+            "mean": 162.0,
+            "median": 162.0,
+            "minimum": 162.0,
+            "p95": 162.0,
+            "p99": 162.0
+          },
+          "target_kind": "dev",
+          "version": "dev@0.4.0"
+        }
+      ],
+      "series_id": "466229de1a04eac3",
+      "unit": "1",
+      "workload": "import_bibtex"
+    },
+    {
+      "comparison_key": "bibliography-import/v1::julia.gc.time/benchmarktools-v1/fresh-state-evals1-v1",
+      "feature": "import_bibtex",
+      "measurement_definition": "julia.gc.time/benchmarktools-v1/fresh-state-evals1-v1",
+      "metric": "julia.gc.time",
+      "package": "Bibliography",
+      "points": [
+        {
+          "aggregation": "median",
+          "median": 0.0,
+          "samples": 50,
+          "statistics": {
+            "maximum": 0.0,
+            "mean": 0.0,
+            "median": 0.0,
+            "minimum": 0.0,
+            "p95": 0.0,
+            "p99": 0.0
+          },
+          "target_kind": "dev",
+          "version": "dev@0.4.0"
+        }
+      ],
+      "series_id": "6ed49aa122871bd4",
+      "unit": "ns",
+      "workload": "import_bibtex"
+    },
+    {
+      "comparison_key": "bibliography-import/v1::julia.wall.time/benchmarktools-v1/fresh-state-evals1-v1",
+      "feature": "import_bibtex",
+      "measurement_definition": "julia.wall.time/benchmarktools-v1/fresh-state-evals1-v1",
+      "metric": "julia.wall.time",
+      "package": "Bibliography",
+      "points": [
+        {
+          "aggregation": "median",
+          "median": 580500.0,
+          "samples": 50,
+          "statistics": {
+            "maximum": 2.0211e6,
+            "mean": 754080.0,
+            "median": 580500.0,
+            "minimum": 469200.0,
+            "p95": 1.6533099999999993e6,
+            "p99": 1.9021279999999995e6
+          },
+          "target_kind": "dev",
+          "version": "dev@0.4.0"
+        }
+      ],
+      "series_id": "5c7c57d2d37d7dc1",
+      "unit": "ns",
+      "workload": "import_bibtex"
+    },
+    {
+      "comparison_key": "bibliography-query/v1::julia.alloc.bytes/benchmarktools-v1/fresh-state-evals1-v1",
+      "feature": "read_and_filter",
+      "measurement_definition": "julia.alloc.bytes/benchmarktools-v1/fresh-state-evals1-v1",
+      "metric": "julia.alloc.bytes",
+      "package": "Bibliography",
+      "points": [
+        {
+          "aggregation": "median",
+          "median": 15312.0,
+          "samples": 50,
+          "statistics": {
+            "maximum": 15312.0,
+            "mean": 15312.0,
+            "median": 15312.0,
+            "minimum": 15312.0,
+            "p95": 15312.0,
+            "p99": 15312.0
+          },
+          "target_kind": "dev",
+          "version": "dev@0.4.0"
+        }
+      ],
+      "series_id": "c1efe47ab43477cb",
+      "unit": "By",
+      "workload": "read_and_filter"
+    },
+    {
+      "comparison_key": "bibliography-query/v1::julia.alloc.count/benchmarktools-v1/fresh-state-evals1-v1",
+      "feature": "read_and_filter",
+      "measurement_definition": "julia.alloc.count/benchmarktools-v1/fresh-state-evals1-v1",
+      "metric": "julia.alloc.count",
+      "package": "Bibliography",
+      "points": [
+        {
+          "aggregation": "median",
+          "median": 257.0,
+          "samples": 50,
+          "statistics": {
+            "maximum": 257.0,
+            "mean": 257.0,
+            "median": 257.0,
+            "minimum": 257.0,
+            "p95": 257.0,
+            "p99": 257.0
+          },
+          "target_kind": "dev",
+          "version": "dev@0.4.0"
+        }
+      ],
+      "series_id": "702809d2d2fb10a9",
+      "unit": "1",
+      "workload": "read_and_filter"
+    },
+    {
+      "comparison_key": "bibliography-query/v1::julia.gc.time/benchmarktools-v1/fresh-state-evals1-v1",
+      "feature": "read_and_filter",
+      "measurement_definition": "julia.gc.time/benchmarktools-v1/fresh-state-evals1-v1",
+      "metric": "julia.gc.time",
+      "package": "Bibliography",
+      "points": [
+        {
+          "aggregation": "median",
+          "median": 0.0,
+          "samples": 50,
+          "statistics": {
+            "maximum": 0.0,
+            "mean": 0.0,
+            "median": 0.0,
+            "minimum": 0.0,
+            "p95": 0.0,
+            "p99": 0.0
+          },
+          "target_kind": "dev",
+          "version": "dev@0.4.0"
+        }
+      ],
+      "series_id": "e5dfdc111de7bb73",
+      "unit": "ns",
+      "workload": "read_and_filter"
+    },
+    {
+      "comparison_key": "bibliography-query/v1::julia.wall.time/benchmarktools-v1/fresh-state-evals1-v1",
+      "feature": "read_and_filter",
+      "measurement_definition": "julia.wall.time/benchmarktools-v1/fresh-state-evals1-v1",
+      "metric": "julia.wall.time",
+      "package": "Bibliography",
+      "points": [
+        {
+          "aggregation": "median",
+          "median": 39000.0,
+          "samples": 50,
+          "statistics": {
+            "maximum": 111700.0,
+            "mean": 41168.0,
+            "median": 39000.0,
+            "minimum": 31200.0,
+            "p95": 47614.99999999997,
+            "p99": 93226.99999999993
+          },
+          "target_kind": "dev",
+          "version": "dev@0.4.0"
+        }
+      ],
+      "series_id": "d4ee882a794d9ea5",
+      "unit": "ns",
+      "workload": "read_and_filter"
+    },
+    {
+      "comparison_key": "bibliography-web/v1::julia.alloc.bytes/benchmarktools-v1/fresh-state-evals1-v1",
+      "feature": "web_render",
+      "measurement_definition": "julia.alloc.bytes/benchmarktools-v1/fresh-state-evals1-v1",
+      "metric": "julia.alloc.bytes",
+      "package": "Bibliography",
+      "points": [
+        {
+          "aggregation": "median",
+          "median": 13968.0,
+          "samples": 50,
+          "statistics": {
+            "maximum": 13968.0,
+            "mean": 13968.0,
+            "median": 13968.0,
+            "minimum": 13968.0,
+            "p95": 13968.0,
+            "p99": 13968.0
+          },
+          "target_kind": "dev",
+          "version": "dev@0.4.0"
+        }
+      ],
+      "series_id": "8c093365fecd707c",
+      "unit": "By",
+      "workload": "web_render"
+    },
+    {
+      "comparison_key": "bibliography-web/v1::julia.alloc.count/benchmarktools-v1/fresh-state-evals1-v1",
+      "feature": "web_render",
+      "measurement_definition": "julia.alloc.count/benchmarktools-v1/fresh-state-evals1-v1",
+      "metric": "julia.alloc.count",
+      "package": "Bibliography",
+      "points": [
+        {
+          "aggregation": "median",
+          "median": 227.0,
+          "samples": 50,
+          "statistics": {
+            "maximum": 227.0,
+            "mean": 227.0,
+            "median": 227.0,
+            "minimum": 227.0,
+            "p95": 227.0,
+            "p99": 227.0
+          },
+          "target_kind": "dev",
+          "version": "dev@0.4.0"
+        }
+      ],
+      "series_id": "d4bb962cf0911bbc",
+      "unit": "1",
+      "workload": "web_render"
+    },
+    {
+      "comparison_key": "bibliography-web/v1::julia.gc.time/benchmarktools-v1/fresh-state-evals1-v1",
+      "feature": "web_render",
+      "measurement_definition": "julia.gc.time/benchmarktools-v1/fresh-state-evals1-v1",
+      "metric": "julia.gc.time",
+      "package": "Bibliography",
+      "points": [
+        {
+          "aggregation": "median",
+          "median": 0.0,
+          "samples": 50,
+          "statistics": {
+            "maximum": 0.0,
+            "mean": 0.0,
+            "median": 0.0,
+            "minimum": 0.0,
+            "p95": 0.0,
+            "p99": 0.0
+          },
+          "target_kind": "dev",
+          "version": "dev@0.4.0"
+        }
+      ],
+      "series_id": "fa3b80faee2dccb1",
+      "unit": "ns",
+      "workload": "web_render"
+    },
+    {
+      "comparison_key": "bibliography-web/v1::julia.wall.time/benchmarktools-v1/fresh-state-evals1-v1",
+      "feature": "web_render",
+      "measurement_definition": "julia.wall.time/benchmarktools-v1/fresh-state-evals1-v1",
+      "metric": "julia.wall.time",
+      "package": "Bibliography",
+      "points": [
+        {
+          "aggregation": "median",
+          "median": 511200.0,
+          "samples": 50,
+          "statistics": {
+            "maximum": 1.6319e6,
+            "mean": 618486.0,
+            "median": 511200.0,
+            "minimum": 443600.0,
+            "p95": 1.2172149999999998e6,
+            "p99": 1.6074e6
+          },
+          "target_kind": "dev",
+          "version": "dev@0.4.0"
+        }
+      ],
+      "series_id": "ddcd52c069c4a520",
+      "unit": "ns",
+      "workload": "web_render"
+    }
+  ],
+  "sources": {
+    "BibInternal": {
+      "revision": "792d8c709169505f998f7d70bfa092551dd4089f",
+      "url": "https://github.com/JuliaBibliographies/BibInternal.jl.git"
+    },
+    "BibParser": {
+      "revision": "cf1eb4446b986a23ed444963dcdb4c6ecc2da90f",
+      "url": "https://github.com/JuliaBibliographies/BibParser.jl.git"
+    },
+    "Bibliography": {
+      "revision": "575ec810042cc791fd47a2c025a80246ccf039b5",
+      "url": "https://github.com/JuliaBibliographies/Bibliography.jl.git"
+    }
+  },
+  "started_at": "2026-09-12T12:26:59.031"
+}

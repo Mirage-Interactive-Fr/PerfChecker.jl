@@ -1,0 +1,5 @@
+                           DataStructures · DefaultDict_build_benchmark · julia.alloc.count
+                  ┌                                                                                ┐
+   [370.0, 371.0) ┤███████████████████████████████████████████████████████████████████████████  210
+                  └                                                                                ┘
+                                                       Frequency

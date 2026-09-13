@@ -1,0 +1,5 @@
+                                DataStructures · Trie_lookup_benchmark · julia.alloc.count
+                    ┌                                                                                ┐
+   [1027.0, 1028.0) ┤███████████████████████████████████████████████████████████████████████████  210
+                    └                                                                                ┘
+                                                         Frequency

@@ -1,5 +1,7 @@
 """
-Finds all versions of a package in all the installed registries and returns it as a vector.
+    get_pkg_versions(name::String, regname=nothing) -> Vector{VersionNumber}
+
+Find all registered versions of `name` in the installed registries.
 
 Example:
 
@@ -14,6 +16,7 @@ julia> get_pkg_versions("ConstraintLearning")
  v"0.1.3"
  v"0.1.2"
 ```
+The optional `regname` argument restricts the lookup to registry names.
 """
 function get_pkg_versions(name::String,
         regname::Union{Nothing, Vector{String}} = nothing)::Vector{VersionNumber}
@@ -21,19 +24,33 @@ function get_pkg_versions(name::String,
     indexes = isnothing(regname) ? collect(1:length(regs)) :
               findall(x -> x.name in regname, regs)
 
-    versions::Set{String} = Set([])
+    versions = Set{String}()
     for i in indexes
-        push!(versions,
-            keys(parse(regs[i].in_memory_registry[join(
-                [first(name), name, "Versions.toml"], '/')]))...)
+        # Accessing pkgs initializes lazy registries on Julia 1.13. The package
+        # entry also owns its actual path; custom registries need not use A/Name.
+        packages = filter(pkg -> pkg.name == name, collect(values(regs[i].pkgs)))
+        registry = isdefined(regs[i], :in_memory_registry) ? regs[i].in_memory_registry :
+                   nothing
+        for package in packages
+            key = replace(joinpath(package.path, "Versions.toml"), '\\' => '/')
+            if registry isa Dict && haskey(registry, key)
+                push!(versions, keys(parse(registry[key]))...)
+            else
+                path = joinpath(regs[i].path, key)
+                isfile(path) || continue
+                push!(versions, keys(parse(read(path, String)))...)
+            end
+        end
     end
-    return VersionNumber.(versions)
+    return sort!(VersionNumber.(collect(versions)))
 end
 
 const VerConfig = Tuple{String, Symbol, Vector{VersionNumber}, Bool}
 
 """
-Outputs the last patch or first patch of a version.
+    arrange_patches(version, versions, prefer_latest)
+
+Return all versions with the same major and minor version.
 """
 function arrange_patches(a::VersionNumber, v::Vector{VersionNumber}, ::Bool)
     a = filter(x -> a.minor == x.minor && a.major == x.major, v)
@@ -54,7 +71,10 @@ function arrange_minor(a::VersionNumber, v::Vector{VersionNumber}, maxo::Bool)
 end
 
 """
-Outputs the last breaking or next breaking version.
+    arrange_breaking(version, versions, prefer_latest)
+
+Return the first or last compatible breaking-version group. For `0.x` packages,
+minor versions are treated as breaking; otherwise major versions are used.
 """
 function arrange_breaking(a::VersionNumber, v::Vector{VersionNumber}, maxo::Bool)
     if a.major == 0
@@ -65,7 +85,9 @@ function arrange_breaking(a::VersionNumber, v::Vector{VersionNumber}, maxo::Bool
 end
 
 """
-Outputs the earlier or next major version.
+    arrange_major(version, versions, prefer_latest)
+
+Return the first or last version with the same major version.
 """
 function arrange_major(a::VersionNumber, v::Vector{VersionNumber}, maxo::Bool)
     p = filter(x -> a.major == x.major, v)
@@ -85,6 +107,12 @@ function arrange_custom(a::VersionNumber, v::Vector{VersionNumber}, ::Bool)
     end
 end
 
+"""
+Select registered versions using the legacy version-selection configuration.
+The configuration supplies package name, grouping mode, requested versions and
+whether to prefer the latest representative. Registry lookup reads installed
+registry metadata; it does not measure or install the selected versions.
+"""
 function get_versions(pkgconf::VerConfig, regname::Union{Nothing, Vector{String}} = nothing)
     versions = get_pkg_versions(pkgconf[1], regname)
 
@@ -102,5 +130,22 @@ function get_versions(pkgconf::VerConfig, regname::Union{Nothing, Vector{String}
     else
         error("Unknown option provided $s")
     end
-    return pkgconf[1], Iterators.flatten(map(x -> f(x, versions, pkgconf[4]), pkgconf[3]))
+    return pkgconf[1],
+    collect(Iterators.flatten(map(x -> f(x, versions, pkgconf[4]), pkgconf[3])))
+end
+
+function get_versions(pkgconf::PackageVersionSpec,
+        regname::Union{Nothing, Vector{String}} = nothing)
+    return get_versions(
+        (pkgconf.name, pkgconf.selector, pkgconf.versions, pkgconf.prefer_latest), regname)
+end
+
+@testitem "Version selection" tags=[:unit, :versions] begin
+    import PerfChecker
+
+    _, versions = PerfChecker.get_versions(
+        ("PatternFolds", :custom, [v"0.2.1", v"0.2.4"], true))
+    @test versions == [v"0.2.1", v"0.2.4"]
+    @test PerfChecker.arrange_patches(v"1.2.3",
+        [v"1.2.1", v"1.2.3", v"1.3.0"], false) == [v"1.2.1", v"1.2.3"]
 end

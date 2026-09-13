@@ -1,0 +1,4 @@
+                                                      DataStructures · heap_32768_alloc · allocations (%)
+                                      ┌                                                                                ┐
+   DataStructures/src/heaps/arrays_as ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 100
+                                      └                                                                                ┘

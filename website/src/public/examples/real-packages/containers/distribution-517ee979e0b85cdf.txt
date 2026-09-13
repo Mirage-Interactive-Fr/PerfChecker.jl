@@ -1,0 +1,5 @@
+                          DataStructures · Stack_build_benchmark · julia.alloc.count
+              ┌                                                                                ┐
+   [7.0, 8.0) ┤███████████████████████████████████████████████████████████████████████████  210
+              └                                                                                ┘
+                                                   Frequency

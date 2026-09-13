@@ -1,0 +1,5 @@
+                           DataStructures · FenwickTree_prefixsum_benchmark · julia.alloc.bytes
+                    ┌                                                                                ┐
+   [4199.0, 4200.0) ┤███████████████████████████████████████████████████████████████████████████  210
+                    └                                                                                ┘
+                                                         Frequency

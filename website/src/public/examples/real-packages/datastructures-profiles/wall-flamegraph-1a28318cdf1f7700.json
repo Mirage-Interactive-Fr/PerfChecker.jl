@@ -1,0 +1,1301 @@
+{
+  "correctness": "passed",
+  "date_kind": "GitHub release publication date",
+  "os": "NT",
+  "performance": "not_compared",
+  "plot": {
+    "data": [
+      {
+        "depth": 1,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "pop! (src/heaps/binary_heap.jl:107)",
+        "path": [
+          "pop! (src/heaps/binary_heap.jl:107)"
+        ],
+        "percentage": 72.1311475409836,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 44.0,
+        "x0": 0.0,
+        "x1": 0.7213114754098361
+      },
+      {
+        "depth": 2,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "concrete"
+        ],
+        "inferred_return_type": [
+          "Tuple{Int64, Int64, Int64}"
+        ],
+        "label": "heappop! (src/heaps/arrays_as_heaps.jl:57)",
+        "path": [
+          "pop! (src/heaps/binary_heap.jl:107)",
+          "heappop! (src/heaps/arrays_as_heaps.jl:57)"
+        ],
+        "percentage": 67.21311475409836,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 41.0,
+        "x0": 0.0,
+        "x1": 0.6721311475409836
+      },
+      {
+        "depth": 3,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "percolate_down! (src/heaps/arrays_as_heaps.jl:18)",
+        "path": [
+          "pop! (src/heaps/binary_heap.jl:107)",
+          "heappop! (src/heaps/arrays_as_heaps.jl:57)",
+          "percolate_down! (src/heaps/arrays_as_heaps.jl:18)"
+        ],
+        "percentage": 67.21311475409836,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 41.0,
+        "x0": 0.0,
+        "x1": 0.6721311475409836
+      },
+      {
+        "depth": 4,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "percolate_down! (src/heaps/arrays_as_heaps.jl:24)",
+        "path": [
+          "pop! (src/heaps/binary_heap.jl:107)",
+          "heappop! (src/heaps/arrays_as_heaps.jl:57)",
+          "percolate_down! (src/heaps/arrays_as_heaps.jl:18)",
+          "percolate_down! (src/heaps/arrays_as_heaps.jl:24)"
+        ],
+        "percentage": 19.672131147540984,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 12.0,
+        "x0": 0.0,
+        "x1": 0.19672131147540983
+      },
+      {
+        "depth": 5,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "lt (ordering.jl:118)",
+        "path": [
+          "pop! (src/heaps/binary_heap.jl:107)",
+          "heappop! (src/heaps/arrays_as_heaps.jl:57)",
+          "percolate_down! (src/heaps/arrays_as_heaps.jl:18)",
+          "percolate_down! (src/heaps/arrays_as_heaps.jl:24)",
+          "lt (ordering.jl:118)"
+        ],
+        "percentage": 14.754098360655737,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 9.0,
+        "x0": 0.0,
+        "x1": 0.14754098360655737
+      },
+      {
+        "depth": 6,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "isless (tuple.jl:623)",
+        "path": [
+          "pop! (src/heaps/binary_heap.jl:107)",
+          "heappop! (src/heaps/arrays_as_heaps.jl:57)",
+          "percolate_down! (src/heaps/arrays_as_heaps.jl:18)",
+          "percolate_down! (src/heaps/arrays_as_heaps.jl:24)",
+          "lt (ordering.jl:118)",
+          "isless (tuple.jl:623)"
+        ],
+        "percentage": 14.754098360655737,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 9.0,
+        "x0": 0.0,
+        "x1": 0.14754098360655737
+      },
+      {
+        "depth": 7,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "isless (operators.jl:487)",
+        "path": [
+          "pop! (src/heaps/binary_heap.jl:107)",
+          "heappop! (src/heaps/arrays_as_heaps.jl:57)",
+          "percolate_down! (src/heaps/arrays_as_heaps.jl:18)",
+          "percolate_down! (src/heaps/arrays_as_heaps.jl:24)",
+          "lt (ordering.jl:118)",
+          "isless (tuple.jl:623)",
+          "isless (operators.jl:487)"
+        ],
+        "percentage": 14.754098360655737,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 9.0,
+        "x0": 0.0,
+        "x1": 0.14754098360655737
+      },
+      {
+        "depth": 8,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "< (int.jl:83)",
+        "path": [
+          "pop! (src/heaps/binary_heap.jl:107)",
+          "heappop! (src/heaps/arrays_as_heaps.jl:57)",
+          "percolate_down! (src/heaps/arrays_as_heaps.jl:18)",
+          "percolate_down! (src/heaps/arrays_as_heaps.jl:24)",
+          "lt (ordering.jl:118)",
+          "isless (tuple.jl:623)",
+          "isless (operators.jl:487)",
+          "< (int.jl:83)"
+        ],
+        "percentage": 14.754098360655737,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 9.0,
+        "x0": 0.0,
+        "x1": 0.14754098360655737
+      },
+      {
+        "depth": 5,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "getindex (essentials.jl:970)",
+        "path": [
+          "pop! (src/heaps/binary_heap.jl:107)",
+          "heappop! (src/heaps/arrays_as_heaps.jl:57)",
+          "percolate_down! (src/heaps/arrays_as_heaps.jl:18)",
+          "percolate_down! (src/heaps/arrays_as_heaps.jl:24)",
+          "getindex (essentials.jl:970)"
+        ],
+        "percentage": 4.918032786885246,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 3.0,
+        "x0": 0.14754098360655737,
+        "x1": 0.19672131147540983
+      },
+      {
+        "depth": 4,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "percolate_down! (src/heaps/arrays_as_heaps.jl:23)",
+        "path": [
+          "pop! (src/heaps/binary_heap.jl:107)",
+          "heappop! (src/heaps/arrays_as_heaps.jl:57)",
+          "percolate_down! (src/heaps/arrays_as_heaps.jl:18)",
+          "percolate_down! (src/heaps/arrays_as_heaps.jl:23)"
+        ],
+        "percentage": 11.475409836065573,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 7.0,
+        "x0": 0.19672131147540983,
+        "x1": 0.3114754098360656
+      },
+      {
+        "depth": 5,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "lt (ordering.jl:118)",
+        "path": [
+          "pop! (src/heaps/binary_heap.jl:107)",
+          "heappop! (src/heaps/arrays_as_heaps.jl:57)",
+          "percolate_down! (src/heaps/arrays_as_heaps.jl:18)",
+          "percolate_down! (src/heaps/arrays_as_heaps.jl:23)",
+          "lt (ordering.jl:118)"
+        ],
+        "percentage": 9.836065573770492,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 6.0,
+        "x0": 0.19672131147540983,
+        "x1": 0.29508196721311475
+      },
+      {
+        "depth": 6,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "isless (tuple.jl:623)",
+        "path": [
+          "pop! (src/heaps/binary_heap.jl:107)",
+          "heappop! (src/heaps/arrays_as_heaps.jl:57)",
+          "percolate_down! (src/heaps/arrays_as_heaps.jl:18)",
+          "percolate_down! (src/heaps/arrays_as_heaps.jl:23)",
+          "lt (ordering.jl:118)",
+          "isless (tuple.jl:623)"
+        ],
+        "percentage": 9.836065573770492,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 6.0,
+        "x0": 0.19672131147540983,
+        "x1": 0.29508196721311475
+      },
+      {
+        "depth": 7,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "isless (operators.jl:487)",
+        "path": [
+          "pop! (src/heaps/binary_heap.jl:107)",
+          "heappop! (src/heaps/arrays_as_heaps.jl:57)",
+          "percolate_down! (src/heaps/arrays_as_heaps.jl:18)",
+          "percolate_down! (src/heaps/arrays_as_heaps.jl:23)",
+          "lt (ordering.jl:118)",
+          "isless (tuple.jl:623)",
+          "isless (operators.jl:487)"
+        ],
+        "percentage": 1.639344262295082,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 1.0,
+        "x0": 0.19672131147540983,
+        "x1": 0.21311475409836064
+      },
+      {
+        "depth": 8,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "< (int.jl:83)",
+        "path": [
+          "pop! (src/heaps/binary_heap.jl:107)",
+          "heappop! (src/heaps/arrays_as_heaps.jl:57)",
+          "percolate_down! (src/heaps/arrays_as_heaps.jl:18)",
+          "percolate_down! (src/heaps/arrays_as_heaps.jl:23)",
+          "lt (ordering.jl:118)",
+          "isless (tuple.jl:623)",
+          "isless (operators.jl:487)",
+          "< (int.jl:83)"
+        ],
+        "percentage": 1.639344262295082,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 1.0,
+        "x0": 0.19672131147540983,
+        "x1": 0.21311475409836064
+      },
+      {
+        "depth": 4,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "percolate_down! (src/heaps/arrays_as_heaps.jl:21)",
+        "path": [
+          "pop! (src/heaps/binary_heap.jl:107)",
+          "heappop! (src/heaps/arrays_as_heaps.jl:57)",
+          "percolate_down! (src/heaps/arrays_as_heaps.jl:18)",
+          "percolate_down! (src/heaps/arrays_as_heaps.jl:21)"
+        ],
+        "percentage": 8.19672131147541,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 5.0,
+        "x0": 0.3114754098360656,
+        "x1": 0.39344262295081966
+      },
+      {
+        "depth": 5,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "heapleft (src/heaps/arrays_as_heaps.jl:12)",
+        "path": [
+          "pop! (src/heaps/binary_heap.jl:107)",
+          "heappop! (src/heaps/arrays_as_heaps.jl:57)",
+          "percolate_down! (src/heaps/arrays_as_heaps.jl:18)",
+          "percolate_down! (src/heaps/arrays_as_heaps.jl:21)",
+          "heapleft (src/heaps/arrays_as_heaps.jl:12)"
+        ],
+        "percentage": 8.19672131147541,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 5.0,
+        "x0": 0.3114754098360656,
+        "x1": 0.39344262295081966
+      },
+      {
+        "depth": 6,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "* (int.jl:88)",
+        "path": [
+          "pop! (src/heaps/binary_heap.jl:107)",
+          "heappop! (src/heaps/arrays_as_heaps.jl:57)",
+          "percolate_down! (src/heaps/arrays_as_heaps.jl:18)",
+          "percolate_down! (src/heaps/arrays_as_heaps.jl:21)",
+          "heapleft (src/heaps/arrays_as_heaps.jl:12)",
+          "* (int.jl:88)"
+        ],
+        "percentage": 8.19672131147541,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 5.0,
+        "x0": 0.3114754098360656,
+        "x1": 0.39344262295081966
+      },
+      {
+        "depth": 4,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "percolate_down! (src/heaps/arrays_as_heaps.jl:25)",
+        "path": [
+          "pop! (src/heaps/binary_heap.jl:107)",
+          "heappop! (src/heaps/arrays_as_heaps.jl:57)",
+          "percolate_down! (src/heaps/arrays_as_heaps.jl:18)",
+          "percolate_down! (src/heaps/arrays_as_heaps.jl:25)"
+        ],
+        "percentage": 4.918032786885246,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 3.0,
+        "x0": 0.39344262295081966,
+        "x1": 0.4426229508196721
+      },
+      {
+        "depth": 5,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "setindex! (array.jl:1020)",
+        "path": [
+          "pop! (src/heaps/binary_heap.jl:107)",
+          "heappop! (src/heaps/arrays_as_heaps.jl:57)",
+          "percolate_down! (src/heaps/arrays_as_heaps.jl:18)",
+          "percolate_down! (src/heaps/arrays_as_heaps.jl:25)",
+          "setindex! (array.jl:1020)"
+        ],
+        "percentage": 4.918032786885246,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 3.0,
+        "x0": 0.39344262295081966,
+        "x1": 0.4426229508196721
+      },
+      {
+        "depth": 6,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "_setindex! (array.jl:1025)",
+        "path": [
+          "pop! (src/heaps/binary_heap.jl:107)",
+          "heappop! (src/heaps/arrays_as_heaps.jl:57)",
+          "percolate_down! (src/heaps/arrays_as_heaps.jl:18)",
+          "percolate_down! (src/heaps/arrays_as_heaps.jl:25)",
+          "setindex! (array.jl:1020)",
+          "_setindex! (array.jl:1025)"
+        ],
+        "percentage": 4.918032786885246,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 3.0,
+        "x0": 0.39344262295081966,
+        "x1": 0.4426229508196721
+      },
+      {
+        "depth": 4,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "percolate_down! (src/heaps/arrays_as_heaps.jl:28)",
+        "path": [
+          "pop! (src/heaps/binary_heap.jl:107)",
+          "heappop! (src/heaps/arrays_as_heaps.jl:57)",
+          "percolate_down! (src/heaps/arrays_as_heaps.jl:18)",
+          "percolate_down! (src/heaps/arrays_as_heaps.jl:28)"
+        ],
+        "percentage": 4.918032786885246,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 3.0,
+        "x0": 0.4426229508196721,
+        "x1": 0.4918032786885246
+      },
+      {
+        "depth": 5,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "setindex! (array.jl:1020)",
+        "path": [
+          "pop! (src/heaps/binary_heap.jl:107)",
+          "heappop! (src/heaps/arrays_as_heaps.jl:57)",
+          "percolate_down! (src/heaps/arrays_as_heaps.jl:18)",
+          "percolate_down! (src/heaps/arrays_as_heaps.jl:28)",
+          "setindex! (array.jl:1020)"
+        ],
+        "percentage": 4.918032786885246,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 3.0,
+        "x0": 0.4426229508196721,
+        "x1": 0.4918032786885246
+      },
+      {
+        "depth": 6,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "_setindex! (array.jl:1025)",
+        "path": [
+          "pop! (src/heaps/binary_heap.jl:107)",
+          "heappop! (src/heaps/arrays_as_heaps.jl:57)",
+          "percolate_down! (src/heaps/arrays_as_heaps.jl:18)",
+          "percolate_down! (src/heaps/arrays_as_heaps.jl:28)",
+          "setindex! (array.jl:1020)",
+          "_setindex! (array.jl:1025)"
+        ],
+        "percentage": 4.918032786885246,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 3.0,
+        "x0": 0.4426229508196721,
+        "x1": 0.4918032786885246
+      },
+      {
+        "depth": 2,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "concrete"
+        ],
+        "inferred_return_type": [
+          "Tuple{Int64, Int64, Int64}"
+        ],
+        "label": "heappop! (src/heaps/arrays_as_heaps.jl:59)",
+        "path": [
+          "pop! (src/heaps/binary_heap.jl:107)",
+          "heappop! (src/heaps/arrays_as_heaps.jl:59)"
+        ],
+        "percentage": 3.278688524590164,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 2.0,
+        "x0": 0.6721311475409836,
+        "x1": 0.7049180327868853
+      },
+      {
+        "depth": 2,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "concrete"
+        ],
+        "inferred_return_type": [
+          "Tuple{Int64, Int64, Int64}"
+        ],
+        "label": "heappop! (src/heaps/arrays_as_heaps.jl:52)",
+        "path": [
+          "pop! (src/heaps/binary_heap.jl:107)",
+          "heappop! (src/heaps/arrays_as_heaps.jl:52)"
+        ],
+        "percentage": 1.639344262295082,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 1.0,
+        "x0": 0.7049180327868853,
+        "x1": 0.7213114754098361
+      },
+      {
+        "depth": 1,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "BinaryHeap (src/heaps/binary_heap.jl:61)",
+        "path": [
+          "BinaryHeap (src/heaps/binary_heap.jl:61)"
+        ],
+        "percentage": 27.868852459016395,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 17.0,
+        "x0": 0.7213114754098361,
+        "x1": 1.0
+      },
+      {
+        "depth": 2,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "BinaryHeap (src/heaps/binary_heap.jl:51)",
+        "path": [
+          "BinaryHeap (src/heaps/binary_heap.jl:61)",
+          "BinaryHeap (src/heaps/binary_heap.jl:51)"
+        ],
+        "percentage": 27.868852459016395,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 17.0,
+        "x0": 0.7213114754098361,
+        "x1": 1.0
+      },
+      {
+        "depth": 3,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "BinaryHeap (src/heaps/binary_heap.jl:42)",
+        "path": [
+          "BinaryHeap (src/heaps/binary_heap.jl:61)",
+          "BinaryHeap (src/heaps/binary_heap.jl:51)",
+          "BinaryHeap (src/heaps/binary_heap.jl:42)"
+        ],
+        "percentage": 27.868852459016395,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 17.0,
+        "x0": 0.7213114754098361,
+        "x1": 1.0
+      },
+      {
+        "depth": 4,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "concrete"
+        ],
+        "inferred_return_type": [
+          "Vector{Tuple{Int64, Int64, Int64}}"
+        ],
+        "label": "heapify (src/heaps/arrays_as_heaps.jl:115)",
+        "path": [
+          "BinaryHeap (src/heaps/binary_heap.jl:61)",
+          "BinaryHeap (src/heaps/binary_heap.jl:51)",
+          "BinaryHeap (src/heaps/binary_heap.jl:42)",
+          "heapify (src/heaps/arrays_as_heaps.jl:115)"
+        ],
+        "percentage": 27.868852459016395,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 17.0,
+        "x0": 0.7213114754098361,
+        "x1": 1.0
+      },
+      {
+        "depth": 5,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "heapify! (src/heaps/arrays_as_heaps.jl:85)",
+        "path": [
+          "BinaryHeap (src/heaps/binary_heap.jl:61)",
+          "BinaryHeap (src/heaps/binary_heap.jl:51)",
+          "BinaryHeap (src/heaps/binary_heap.jl:42)",
+          "heapify (src/heaps/arrays_as_heaps.jl:115)",
+          "heapify! (src/heaps/arrays_as_heaps.jl:85)"
+        ],
+        "percentage": 14.754098360655737,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 9.0,
+        "x0": 0.7213114754098361,
+        "x1": 0.8688524590163935
+      },
+      {
+        "depth": 6,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "percolate_down! (src/heaps/arrays_as_heaps.jl:30)",
+        "path": [
+          "BinaryHeap (src/heaps/binary_heap.jl:61)",
+          "BinaryHeap (src/heaps/binary_heap.jl:51)",
+          "BinaryHeap (src/heaps/binary_heap.jl:42)",
+          "heapify (src/heaps/arrays_as_heaps.jl:115)",
+          "heapify! (src/heaps/arrays_as_heaps.jl:85)",
+          "percolate_down! (src/heaps/arrays_as_heaps.jl:30)"
+        ],
+        "percentage": 14.754098360655737,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 9.0,
+        "x0": 0.7213114754098361,
+        "x1": 0.8688524590163935
+      },
+      {
+        "depth": 7,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "percolate_down! (src/heaps/arrays_as_heaps.jl:30)",
+        "path": [
+          "BinaryHeap (src/heaps/binary_heap.jl:61)",
+          "BinaryHeap (src/heaps/binary_heap.jl:51)",
+          "BinaryHeap (src/heaps/binary_heap.jl:42)",
+          "heapify (src/heaps/arrays_as_heaps.jl:115)",
+          "heapify! (src/heaps/arrays_as_heaps.jl:85)",
+          "percolate_down! (src/heaps/arrays_as_heaps.jl:30)",
+          "percolate_down! (src/heaps/arrays_as_heaps.jl:30)"
+        ],
+        "percentage": 14.754098360655737,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 9.0,
+        "x0": 0.7213114754098361,
+        "x1": 0.8688524590163935
+      },
+      {
+        "depth": 8,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "percolate_down! (src/heaps/arrays_as_heaps.jl:28)",
+        "path": [
+          "BinaryHeap (src/heaps/binary_heap.jl:61)",
+          "BinaryHeap (src/heaps/binary_heap.jl:51)",
+          "BinaryHeap (src/heaps/binary_heap.jl:42)",
+          "heapify (src/heaps/arrays_as_heaps.jl:115)",
+          "heapify! (src/heaps/arrays_as_heaps.jl:85)",
+          "percolate_down! (src/heaps/arrays_as_heaps.jl:30)",
+          "percolate_down! (src/heaps/arrays_as_heaps.jl:30)",
+          "percolate_down! (src/heaps/arrays_as_heaps.jl:28)"
+        ],
+        "percentage": 4.918032786885246,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 3.0,
+        "x0": 0.7213114754098361,
+        "x1": 0.7704918032786885
+      },
+      {
+        "depth": 9,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "setindex! (array.jl:1020)",
+        "path": [
+          "BinaryHeap (src/heaps/binary_heap.jl:61)",
+          "BinaryHeap (src/heaps/binary_heap.jl:51)",
+          "BinaryHeap (src/heaps/binary_heap.jl:42)",
+          "heapify (src/heaps/arrays_as_heaps.jl:115)",
+          "heapify! (src/heaps/arrays_as_heaps.jl:85)",
+          "percolate_down! (src/heaps/arrays_as_heaps.jl:30)",
+          "percolate_down! (src/heaps/arrays_as_heaps.jl:30)",
+          "percolate_down! (src/heaps/arrays_as_heaps.jl:28)",
+          "setindex! (array.jl:1020)"
+        ],
+        "percentage": 4.918032786885246,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 3.0,
+        "x0": 0.7213114754098361,
+        "x1": 0.7704918032786885
+      },
+      {
+        "depth": 10,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "_setindex! (array.jl:1025)",
+        "path": [
+          "BinaryHeap (src/heaps/binary_heap.jl:61)",
+          "BinaryHeap (src/heaps/binary_heap.jl:51)",
+          "BinaryHeap (src/heaps/binary_heap.jl:42)",
+          "heapify (src/heaps/arrays_as_heaps.jl:115)",
+          "heapify! (src/heaps/arrays_as_heaps.jl:85)",
+          "percolate_down! (src/heaps/arrays_as_heaps.jl:30)",
+          "percolate_down! (src/heaps/arrays_as_heaps.jl:30)",
+          "percolate_down! (src/heaps/arrays_as_heaps.jl:28)",
+          "setindex! (array.jl:1020)",
+          "_setindex! (array.jl:1025)"
+        ],
+        "percentage": 4.918032786885246,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 3.0,
+        "x0": 0.7213114754098361,
+        "x1": 0.7704918032786885
+      },
+      {
+        "depth": 8,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "percolate_down! (src/heaps/arrays_as_heaps.jl:21)",
+        "path": [
+          "BinaryHeap (src/heaps/binary_heap.jl:61)",
+          "BinaryHeap (src/heaps/binary_heap.jl:51)",
+          "BinaryHeap (src/heaps/binary_heap.jl:42)",
+          "heapify (src/heaps/arrays_as_heaps.jl:115)",
+          "heapify! (src/heaps/arrays_as_heaps.jl:85)",
+          "percolate_down! (src/heaps/arrays_as_heaps.jl:30)",
+          "percolate_down! (src/heaps/arrays_as_heaps.jl:30)",
+          "percolate_down! (src/heaps/arrays_as_heaps.jl:21)"
+        ],
+        "percentage": 1.639344262295082,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 1.0,
+        "x0": 0.7704918032786885,
+        "x1": 0.7868852459016393
+      },
+      {
+        "depth": 9,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "heapleft (src/heaps/arrays_as_heaps.jl:12)",
+        "path": [
+          "BinaryHeap (src/heaps/binary_heap.jl:61)",
+          "BinaryHeap (src/heaps/binary_heap.jl:51)",
+          "BinaryHeap (src/heaps/binary_heap.jl:42)",
+          "heapify (src/heaps/arrays_as_heaps.jl:115)",
+          "heapify! (src/heaps/arrays_as_heaps.jl:85)",
+          "percolate_down! (src/heaps/arrays_as_heaps.jl:30)",
+          "percolate_down! (src/heaps/arrays_as_heaps.jl:30)",
+          "percolate_down! (src/heaps/arrays_as_heaps.jl:21)",
+          "heapleft (src/heaps/arrays_as_heaps.jl:12)"
+        ],
+        "percentage": 1.639344262295082,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 1.0,
+        "x0": 0.7704918032786885,
+        "x1": 0.7868852459016393
+      },
+      {
+        "depth": 10,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "* (int.jl:88)",
+        "path": [
+          "BinaryHeap (src/heaps/binary_heap.jl:61)",
+          "BinaryHeap (src/heaps/binary_heap.jl:51)",
+          "BinaryHeap (src/heaps/binary_heap.jl:42)",
+          "heapify (src/heaps/arrays_as_heaps.jl:115)",
+          "heapify! (src/heaps/arrays_as_heaps.jl:85)",
+          "percolate_down! (src/heaps/arrays_as_heaps.jl:30)",
+          "percolate_down! (src/heaps/arrays_as_heaps.jl:30)",
+          "percolate_down! (src/heaps/arrays_as_heaps.jl:21)",
+          "heapleft (src/heaps/arrays_as_heaps.jl:12)",
+          "* (int.jl:88)"
+        ],
+        "percentage": 1.639344262295082,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 1.0,
+        "x0": 0.7704918032786885,
+        "x1": 0.7868852459016393
+      },
+      {
+        "depth": 8,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "percolate_down! (src/heaps/arrays_as_heaps.jl:23)",
+        "path": [
+          "BinaryHeap (src/heaps/binary_heap.jl:61)",
+          "BinaryHeap (src/heaps/binary_heap.jl:51)",
+          "BinaryHeap (src/heaps/binary_heap.jl:42)",
+          "heapify (src/heaps/arrays_as_heaps.jl:115)",
+          "heapify! (src/heaps/arrays_as_heaps.jl:85)",
+          "percolate_down! (src/heaps/arrays_as_heaps.jl:30)",
+          "percolate_down! (src/heaps/arrays_as_heaps.jl:30)",
+          "percolate_down! (src/heaps/arrays_as_heaps.jl:23)"
+        ],
+        "percentage": 1.639344262295082,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 1.0,
+        "x0": 0.7868852459016393,
+        "x1": 0.8032786885245902
+      },
+      {
+        "depth": 9,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "getindex (essentials.jl:970)",
+        "path": [
+          "BinaryHeap (src/heaps/binary_heap.jl:61)",
+          "BinaryHeap (src/heaps/binary_heap.jl:51)",
+          "BinaryHeap (src/heaps/binary_heap.jl:42)",
+          "heapify (src/heaps/arrays_as_heaps.jl:115)",
+          "heapify! (src/heaps/arrays_as_heaps.jl:85)",
+          "percolate_down! (src/heaps/arrays_as_heaps.jl:30)",
+          "percolate_down! (src/heaps/arrays_as_heaps.jl:30)",
+          "percolate_down! (src/heaps/arrays_as_heaps.jl:23)",
+          "getindex (essentials.jl:970)"
+        ],
+        "percentage": 1.639344262295082,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 1.0,
+        "x0": 0.7868852459016393,
+        "x1": 0.8032786885245902
+      },
+      {
+        "depth": 8,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "getindex (essentials.jl:970)",
+        "path": [
+          "BinaryHeap (src/heaps/binary_heap.jl:61)",
+          "BinaryHeap (src/heaps/binary_heap.jl:51)",
+          "BinaryHeap (src/heaps/binary_heap.jl:42)",
+          "heapify (src/heaps/arrays_as_heaps.jl:115)",
+          "heapify! (src/heaps/arrays_as_heaps.jl:85)",
+          "percolate_down! (src/heaps/arrays_as_heaps.jl:30)",
+          "percolate_down! (src/heaps/arrays_as_heaps.jl:30)",
+          "getindex (essentials.jl:970)"
+        ],
+        "percentage": 1.639344262295082,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 1.0,
+        "x0": 0.8032786885245902,
+        "x1": 0.819672131147541
+      },
+      {
+        "depth": 5,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "similar (array.jl:402)",
+        "path": [
+          "BinaryHeap (src/heaps/binary_heap.jl:61)",
+          "BinaryHeap (src/heaps/binary_heap.jl:51)",
+          "BinaryHeap (src/heaps/binary_heap.jl:42)",
+          "heapify (src/heaps/arrays_as_heaps.jl:115)",
+          "similar (array.jl:402)"
+        ],
+        "percentage": 11.475409836065573,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 7.0,
+        "x0": 0.8688524590163935,
+        "x1": 0.9836065573770493
+      },
+      {
+        "depth": 6,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "Array (boot.jl:648)",
+        "path": [
+          "BinaryHeap (src/heaps/binary_heap.jl:61)",
+          "BinaryHeap (src/heaps/binary_heap.jl:51)",
+          "BinaryHeap (src/heaps/binary_heap.jl:42)",
+          "heapify (src/heaps/arrays_as_heaps.jl:115)",
+          "similar (array.jl:402)",
+          "Array (boot.jl:648)"
+        ],
+        "percentage": 11.475409836065573,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 7.0,
+        "x0": 0.8688524590163935,
+        "x1": 0.9836065573770493
+      },
+      {
+        "depth": 7,
+        "gc_event_percentage": 100.0,
+        "gc_event_value": 7.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "GenericMemory (boot.jl:588)",
+        "path": [
+          "BinaryHeap (src/heaps/binary_heap.jl:61)",
+          "BinaryHeap (src/heaps/binary_heap.jl:51)",
+          "BinaryHeap (src/heaps/binary_heap.jl:42)",
+          "heapify (src/heaps/arrays_as_heaps.jl:115)",
+          "similar (array.jl:402)",
+          "Array (boot.jl:648)",
+          "GenericMemory (boot.jl:588)"
+        ],
+        "percentage": 11.475409836065573,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "gc_event",
+        "value": 7.0,
+        "x0": 0.8688524590163935,
+        "x1": 0.9836065573770493
+      },
+      {
+        "depth": 5,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "copyto! (array.jl:318)",
+        "path": [
+          "BinaryHeap (src/heaps/binary_heap.jl:61)",
+          "BinaryHeap (src/heaps/binary_heap.jl:51)",
+          "BinaryHeap (src/heaps/binary_heap.jl:42)",
+          "heapify (src/heaps/arrays_as_heaps.jl:115)",
+          "copyto! (array.jl:318)"
+        ],
+        "percentage": 1.639344262295082,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 1.0,
+        "x0": 0.9836065573770493,
+        "x1": 1.0
+      },
+      {
+        "depth": 6,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "_copyto2arg! (array.jl:311)",
+        "path": [
+          "BinaryHeap (src/heaps/binary_heap.jl:61)",
+          "BinaryHeap (src/heaps/binary_heap.jl:51)",
+          "BinaryHeap (src/heaps/binary_heap.jl:42)",
+          "heapify (src/heaps/arrays_as_heaps.jl:115)",
+          "copyto! (array.jl:318)",
+          "_copyto2arg! (array.jl:311)"
+        ],
+        "percentage": 1.639344262295082,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 1.0,
+        "x0": 0.9836065573770493,
+        "x1": 1.0
+      },
+      {
+        "depth": 7,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "copyto! (array.jl:291)",
+        "path": [
+          "BinaryHeap (src/heaps/binary_heap.jl:61)",
+          "BinaryHeap (src/heaps/binary_heap.jl:51)",
+          "BinaryHeap (src/heaps/binary_heap.jl:42)",
+          "heapify (src/heaps/arrays_as_heaps.jl:115)",
+          "copyto! (array.jl:318)",
+          "_copyto2arg! (array.jl:311)",
+          "copyto! (array.jl:291)"
+        ],
+        "percentage": 1.639344262295082,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 1.0,
+        "x0": 0.9836065573770493,
+        "x1": 1.0
+      },
+      {
+        "depth": 8,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "_copyto_impl! (array.jl:300)",
+        "path": [
+          "BinaryHeap (src/heaps/binary_heap.jl:61)",
+          "BinaryHeap (src/heaps/binary_heap.jl:51)",
+          "BinaryHeap (src/heaps/binary_heap.jl:42)",
+          "heapify (src/heaps/arrays_as_heaps.jl:115)",
+          "copyto! (array.jl:318)",
+          "_copyto2arg! (array.jl:311)",
+          "copyto! (array.jl:291)",
+          "_copyto_impl! (array.jl:300)"
+        ],
+        "percentage": 1.639344262295082,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 1.0,
+        "x0": 0.9836065573770493,
+        "x1": 1.0
+      },
+      {
+        "depth": 9,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "unsafe_copyto! (genericmemory.jl:139)",
+        "path": [
+          "BinaryHeap (src/heaps/binary_heap.jl:61)",
+          "BinaryHeap (src/heaps/binary_heap.jl:51)",
+          "BinaryHeap (src/heaps/binary_heap.jl:42)",
+          "heapify (src/heaps/arrays_as_heaps.jl:115)",
+          "copyto! (array.jl:318)",
+          "_copyto2arg! (array.jl:311)",
+          "copyto! (array.jl:291)",
+          "_copyto_impl! (array.jl:300)",
+          "unsafe_copyto! (genericmemory.jl:139)"
+        ],
+        "percentage": 1.639344262295082,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 1.0,
+        "x0": 0.9836065573770493,
+        "x1": 1.0
+      },
+      {
+        "depth": 10,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "memmove (cmem.jl:28)",
+        "path": [
+          "BinaryHeap (src/heaps/binary_heap.jl:61)",
+          "BinaryHeap (src/heaps/binary_heap.jl:51)",
+          "BinaryHeap (src/heaps/binary_heap.jl:42)",
+          "heapify (src/heaps/arrays_as_heaps.jl:115)",
+          "copyto! (array.jl:318)",
+          "_copyto2arg! (array.jl:311)",
+          "copyto! (array.jl:291)",
+          "_copyto_impl! (array.jl:300)",
+          "unsafe_copyto! (genericmemory.jl:139)",
+          "memmove (cmem.jl:28)"
+        ],
+        "percentage": 1.639344262295082,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 1.0,
+        "x0": 0.9836065573770493,
+        "x1": 1.0
+      }
+    ],
+    "description": "Wall-time flame graph",
+    "encoding": {
+      "color": "status",
+      "x": "percentage",
+      "y": "depth"
+    },
+    "id": "wall-flamegraph-1a28318cdf1f7700",
+    "kind": "wall_flamegraph",
+    "options": {
+      "diagnostic_semantics": "runtime dispatch and cached Julia inference metadata",
+      "feature": "heap_32768_wall_profile",
+      "package": "DataStructures",
+      "selected_version": "0.19.6",
+      "top": 40,
+      "total": 61.0,
+      "unit": "samples",
+      "value_label": "wall-time task samples",
+      "versions": [
+        "0.19.6"
+      ]
+    },
+    "schema_version": "perfchecker-plot/1",
+    "title": "DataStructures · heap_32768_wall_profile · wall-time flame graph"
+  },
+  "release_date_kinds": {
+    "0.19.6": "GitHub release publication date"
+  },
+  "release_dates": {
+    "0.19.6": "2026-07-17"
+  },
+  "run_id": "11480c99-82a0-44bf-8432-f9b4e39702f5",
+  "runtime": {
+    "language": "julia",
+    "threads": 1,
+    "version": "1.13.0"
+  },
+  "scope": "One local machine; illustrative history, not a package regression verdict",
+  "started_at": "2026-09-13T08:06:15.124",
+  "worker_environments": [
+    {
+      "manifest_sha256": "e956f9d3af72872a9d43e6dc3fdac644b73223bd6b5e4ac250e7c0cc02eb97d5",
+      "project_sha256": "0cda28da6203fe2eda79d372cdabb8862f3e829e34e1eb1c78c61f64fe9878e2"
+    }
+  ]
+}

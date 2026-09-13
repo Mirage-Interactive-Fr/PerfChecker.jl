@@ -1,0 +1,90 @@
+{
+  "correctness": "passed",
+  "date_kind": "GitHub release publication date",
+  "os": "NT",
+  "performance": "not_compared",
+  "plot": {
+    "data": [
+      {
+        "bytes": 61738.09106502221,
+        "file": "DataStructures/src/heaps/arrays_as_heaps.jl",
+        "version": "1.11.0"
+      },
+      {
+        "bytes": 35004.32329527961,
+        "file": "HTTP/src/http_core.jl",
+        "version": "1.11.0"
+      },
+      {
+        "bytes": 260.9641306601492,
+        "file": "HTTP/src/http_handlers.jl",
+        "version": "1.11.0"
+      },
+      {
+        "bytes": 583054.0903864641,
+        "file": "JSON/src/parse.jl",
+        "version": "1.11.0"
+      },
+      {
+        "bytes": 479906.76310779643,
+        "file": "JSON/src/write.jl",
+        "version": "1.11.0"
+      },
+      {
+        "bytes": 1701.2853902652037,
+        "file": "Oxygen/src/core.jl",
+        "version": "1.11.0"
+      },
+      {
+        "bytes": 435726.03764113074,
+        "file": "Oxygen/src/handlers.jl",
+        "version": "1.11.0"
+      },
+      {
+        "bytes": 40.1483277938691,
+        "file": "Oxygen/src/methods.jl",
+        "version": "1.11.0"
+      },
+      {
+        "bytes": 80.2966555877382,
+        "file": "Oxygen/src/routerhof.jl",
+        "version": "1.11.0"
+      }
+    ],
+    "description": "Allocations by file",
+    "encoding": {
+      "color": "file",
+      "x": "version",
+      "y": "bytes"
+    },
+    "id": "allocation-files-b8a643aada0ef878",
+    "kind": "allocation_files",
+    "options": {
+      "feature": "heap_profile_alloc",
+      "package": "Oxygen",
+      "unit": "By"
+    },
+    "schema_version": "perfchecker-plot/1",
+    "title": "Oxygen · heap_profile_alloc · allocations"
+  },
+  "release_date_kinds": {
+    "1.11.0": "GitHub release publication date"
+  },
+  "release_dates": {
+    "1.11.0": "2026-08-28"
+  },
+  "run_id": "c4a79ae5-6f29-43d0-8b0c-74c925ddce05",
+  "runtime": {
+    "language": "julia",
+    "threads": 1,
+    "version": "1.13.0"
+  },
+  "scope": "One local machine; illustrative history, not a package regression verdict",
+  "started_at": "2026-09-13T08:07:00.850",
+  "worker_environments": [
+    {
+      "manifest_sha256": "9d8c1eefca3cd583a3a37924386096ba4cac23c6659677661adf99b8daeafc29",
+      "project_sha256": "7ed3e2423069063c7a3926984952a50dda661a89ed4f3beb42623f9241bea020"
+    }
+  ]
+}

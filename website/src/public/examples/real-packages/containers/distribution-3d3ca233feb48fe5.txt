@@ -1,0 +1,5 @@
+                         DataStructures · AVLTree_lookup_benchmark · julia.alloc.count
+              ┌                                                                                ┐
+   [2.0, 3.0) ┤███████████████████████████████████████████████████████████████████████████  210
+              └                                                                                ┘
+                                                   Frequency

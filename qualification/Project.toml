@@ -1,0 +1,20 @@
+name = "PerfCheckerQualification"
+uuid = "fc9b0329-a6b2-4777-9938-81642d9743b4"
+version = "1.0.0-rc1"
+
+[deps]
+SHA = "ea8e919c-243c-51af-8825-aaa63cd721ce"
+TOML = "fa267f1f-6049-4f14-aa54-33bafae1ed76"
+UUIDs = "cf7118a7-6976-5b1a-9a39-7adc72f591a4"
+
+[compat]
+SHA = "0.7, 1"
+TOML = "1"
+UUIDs = "1"
+julia = "1.10"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]

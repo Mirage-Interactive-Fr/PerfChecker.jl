@@ -1,0 +1,610 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mirage-interactive-fr.github.io/PerfChecker.jl/schemas/perfchecker-investigation-v1.schema.json",
+  "title": "Shared scenarios and deterministic investigations v1",
+  "type": "object",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/catalog"
+    },
+    {
+      "$ref": "#/$defs/discovery"
+    },
+    {
+      "$ref": "#/$defs/diagnosis"
+    },
+    {
+      "$ref": "#/$defs/advice"
+    },
+    {
+      "$ref": "#/$defs/agentEvidence"
+    },
+    {
+      "$ref": "#/$defs/comparison"
+    },
+    {
+      "$ref": "#/$defs/run"
+    },
+    {
+      "$ref": "#/$defs/job"
+    },
+    {
+      "$ref": "#/$defs/tools"
+    },
+    {
+      "$ref": "#/$defs/narrative"
+    },
+    {
+      "$ref": "#/$defs/investigation"
+    },
+    {
+      "$ref": "#/$defs/evaluation"
+    },
+    {
+      "$ref": "#/$defs/sync"
+    }
+  ],
+  "$defs": {
+    "job": {
+      "type": "object",
+      "required": [
+        "schema_version",
+        "id",
+        "action",
+        "status",
+        "elapsed_seconds",
+        "error"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "perfchecker-investigation-job/1"
+        },
+        "id": {
+          "type": "string"
+        },
+        "action": {
+          "enum": [
+            "discover",
+            "run",
+            "diagnose",
+            "sync",
+            "tools",
+            "narrate",
+            "investigate"
+          ]
+        },
+        "status": {
+          "enum": [
+            "running",
+            "complete",
+            "cancelled",
+            "error"
+          ]
+        },
+        "elapsed_seconds": {
+          "type": "number",
+          "minimum": 0
+        },
+        "error": {
+          "type": "string"
+        }
+      }
+    },
+    "scenario": {
+      "type": "object",
+      "required": [
+        "id",
+        "source",
+        "factory",
+        "implementation",
+        "parameters",
+        "collectors"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source": {
+          "type": "string",
+          "minLength": 1
+        },
+        "factory": {
+          "type": "string",
+          "minLength": 1
+        },
+        "implementation": {
+          "type": "string",
+          "minLength": 1
+        },
+        "parameters": {
+          "type": "object"
+        },
+        "fixtures": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "repeatable": {
+          "type": "boolean"
+        },
+        "collectors": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "enum": [
+              "benchmark",
+              "chairmark",
+              "profile",
+              "profile_alloc"
+            ]
+          }
+        },
+        "requirements": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Za-z_][A-Za-z_0-9]*$"
+          }
+        }
+      }
+    },
+    "catalog": {
+      "type": "object",
+      "required": [
+        "schema_version",
+        "root",
+        "scenarios"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "perfchecker-scenario-catalog/1"
+        },
+        "root": {
+          "type": "string"
+        },
+        "scenarios": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/scenario"
+          }
+        }
+      }
+    },
+    "discovery": {
+      "type": "object",
+      "required": [
+        "schema_version",
+        "root",
+        "declared",
+        "candidates",
+        "warnings",
+        "fingerprints",
+        "changes",
+        "ci"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "perfchecker-discovery/1"
+        },
+        "root": {
+          "type": "string"
+        },
+        "declared": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/scenario"
+          }
+        },
+        "candidates": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "status",
+              "origin",
+              "missing",
+              "definition_sha256"
+            ],
+            "properties": {
+              "status": {
+                "const": "proposed"
+              }
+            }
+          }
+        },
+        "warnings": {
+          "type": "array"
+        },
+        "ci": {
+          "type": "array"
+        },
+        "fingerprints": {
+          "type": "object"
+        },
+        "changes": {
+          "type": "array"
+        }
+      }
+    },
+    "diagnosis": {
+      "type": "object",
+      "required": [
+        "schema_version",
+        "records",
+        "source_provenance"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "perfchecker-diagnosis/1"
+        },
+        "source_provenance": {
+          "type": "object"
+        },
+        "records": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "tool",
+              "scenario",
+              "implementation",
+              "status"
+            ],
+            "properties": {
+              "status": {
+                "enum": [
+                  "complete",
+                  "unavailable",
+                  "invalid",
+                  "error",
+                  "timeout",
+                  "cancelled"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "recommendation": {
+      "type": "object",
+      "required": [
+        "id",
+        "rule_id",
+        "scenario",
+        "implementation",
+        "location",
+        "evidence",
+        "hypothesis",
+        "action",
+        "validation",
+        "limitations",
+        "predicted_gain"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "rule_id": {
+          "type": "string"
+        },
+        "evidence": {
+          "type": "object"
+        },
+        "location": {
+          "type": "object"
+        },
+        "hypothesis": {
+          "type": "string"
+        },
+        "action": {
+          "type": "string"
+        },
+        "validation": {
+          "type": "string"
+        },
+        "limitations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "predicted_gain": {
+          "const": "not_measured"
+        }
+      }
+    },
+    "advice": {
+      "type": "object",
+      "required": [
+        "schema_version",
+        "recommendations",
+        "authority",
+        "rules_version"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "perfchecker-advice/1"
+        },
+        "authority": {
+          "const": "advisory_only"
+        },
+        "rules_version": {
+          "type": "string"
+        },
+        "recommendations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/recommendation"
+          }
+        }
+      }
+    },
+    "agentEvidence": {
+      "type": "object",
+      "required": [
+        "schema_version",
+        "records",
+        "recommendations",
+        "truncated",
+        "authority"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "perfchecker-investigation-evidence/1"
+        },
+        "records": {
+          "type": "array"
+        },
+        "recommendations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/recommendation"
+          }
+        },
+        "truncated": {
+          "type": "boolean"
+        },
+        "authority": {
+          "const": "advisory_only"
+        }
+      }
+    },
+    "comparison": {
+      "type": "object",
+      "required": [
+        "schema_version",
+        "configurations"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "perfchecker-scenario-comparison/1"
+        },
+        "configurations": {
+          "type": "array"
+        }
+      }
+    },
+    "run": {
+      "type": "object",
+      "required": [
+        "schema_version",
+        "runs"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "perfchecker-scenario-run/1"
+        },
+        "runs": {
+          "type": "array"
+        }
+      }
+    },
+    "tools": {
+      "type": "object",
+      "required": [
+        "schema_version",
+        "tools"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "perfchecker-tool-catalog/1"
+        },
+        "tools": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "authority": {
+          "const": "inventory_not_qualification"
+        }
+      }
+    },
+    "narrative": {
+      "type": "object",
+      "required": [
+        "schema_version",
+        "cards",
+        "evidence_ids",
+        "authority",
+        "verdict_source",
+        "fallback",
+        "status"
+      ],
+      "properties": {
+        "external_review": {
+          "type": "string",
+          "maxLength": 16000
+        },
+        "reference_status": {
+          "enum": ["structured", "unstructured_not_verified"]
+        },
+        "schema_version": {
+          "const": "perfchecker-narrative/1"
+        },
+        "cards": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "evidence_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "authority": {
+          "const": "unverified_narrative"
+        },
+        "verdict_source": {
+          "const": "deterministic_evidence"
+        },
+        "fallback": {
+          "$ref": "#/$defs/advice"
+        },
+        "status": {
+          "type": "string"
+        }
+      }
+    },
+    "investigation": {
+      "type": "object",
+      "required": [
+        "schema_version",
+        "experiments",
+        "unexecuted",
+        "decisions",
+        "runs",
+        "records",
+        "advice",
+        "status",
+        "code_modified",
+        "limits"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "perfchecker-investigation/1"
+        },
+        "experiments": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "unexecuted": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "decisions": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "runs": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "records": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "advice": {
+          "$ref": "#/$defs/advice"
+        },
+        "code_modified": {
+          "const": false
+        },
+        "status": {
+          "enum": [
+            "complete",
+            "budget_exhausted",
+            "advisor_stopped",
+            "cancelled"
+          ]
+        },
+        "limits": {
+          "type": "object"
+        }
+      }
+    },
+    "evaluation": {
+      "type": "object",
+      "required": [
+        "schema_version",
+        "results"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "perfchecker-advisor-evaluation/1"
+        },
+        "results": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    "sync": {
+      "type": "object",
+      "required": [
+        "schema_version",
+        "coverage",
+        "declared",
+        "proposals",
+        "changes",
+        "warnings"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "perfchecker-scenario-sync/1"
+        },
+        "coverage": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "declared": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "proposals": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "changes": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "authority": {
+          "const": "proposal_only"
+        }
+      }
+    }
+  }
+}

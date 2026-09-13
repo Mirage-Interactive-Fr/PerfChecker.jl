@@ -1,0 +1,5 @@
+                      DataStructures · IntDisjointSet_connectivity_benchmark · julia.alloc.bytes
+                  ┌                                                                                ┐
+   [352.0, 353.0) ┤███████████████████████████████████████████████████████████████████████████  210
+                  └                                                                                ┘
+                                                       Frequency

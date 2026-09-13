@@ -1,0 +1,100 @@
+{
+  "correctness": "passed",
+  "date_kind": "GitHub release publication date",
+  "os": "NT",
+  "performance": "not_compared",
+  "plot": {
+    "data": [
+      {
+        "bytes": 493583.5418978267,
+        "file": "JSON/src/parse.jl",
+        "label": "JSON/src/parse.jl:355",
+        "line": 355,
+        "percentage": 30.89701622885001,
+        "version": "1.11.0"
+      },
+      {
+        "bytes": 435726.03764113074,
+        "file": "Oxygen/src/handlers.jl",
+        "label": "Oxygen/src/handlers.jl:75",
+        "line": 75,
+        "percentage": 27.27529042918804,
+        "version": "1.11.0"
+      },
+      {
+        "bytes": 355770.6428396404,
+        "file": "JSON/src/write.jl",
+        "label": "JSON/src/write.jl:350",
+        "line": 350,
+        "percentage": 22.27029548695973,
+        "version": "1.11.0"
+      },
+      {
+        "bytes": 123331.8990770352,
+        "file": "JSON/src/write.jl",
+        "label": "JSON/src/write.jl:617",
+        "line": 617,
+        "percentage": 7.720248679010555,
+        "version": "1.11.0"
+      },
+      {
+        "bytes": 89450.47432474035,
+        "file": "JSON/src/parse.jl",
+        "label": "JSON/src/parse.jl:358",
+        "line": 358,
+        "percentage": 5.599361652666164,
+        "version": "1.11.0"
+      },
+      {
+        "bytes": 99649.40421962661,
+        "file": "other",
+        "grouped_sites": 26,
+        "label": "Other allocation sites",
+        "line": 0,
+        "percentage": 6.23778752332543,
+        "version": "1.11.0"
+      }
+    ],
+    "description": "Allocation share by line (%)",
+    "encoding": {
+      "color": "label",
+      "label": "percentage",
+      "theta": "bytes"
+    },
+    "id": "allocation-pie-25c4965602ef4e58",
+    "kind": "allocation_pie",
+    "options": {
+      "feature": "heap_profile_alloc",
+      "min_percentage": 5.0,
+      "package": "Oxygen",
+      "selected_version": "1.11.0",
+      "top": 40,
+      "unit": "By",
+      "versions": [
+        "1.11.0"
+      ]
+    },
+    "schema_version": "perfchecker-plot/1",
+    "title": "Oxygen · heap_profile_alloc · allocations"
+  },
+  "release_date_kinds": {
+    "1.11.0": "GitHub release publication date"
+  },
+  "release_dates": {
+    "1.11.0": "2026-08-28"
+  },
+  "run_id": "c4a79ae5-6f29-43d0-8b0c-74c925ddce05",
+  "runtime": {
+    "language": "julia",
+    "threads": 1,
+    "version": "1.13.0"
+  },
+  "scope": "One local machine; illustrative history, not a package regression verdict",
+  "started_at": "2026-09-13T08:07:00.850",
+  "worker_environments": [
+    {
+      "manifest_sha256": "9d8c1eefca3cd583a3a37924386096ba4cac23c6659677661adf99b8daeafc29",
+      "project_sha256": "7ed3e2423069063c7a3926984952a50dda661a89ed4f3beb42623f9241bea020"
+    }
+  ]
+}

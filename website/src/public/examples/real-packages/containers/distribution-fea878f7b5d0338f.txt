@@ -1,0 +1,5 @@
+                              DataStructures · MultiDict_build_benchmark · julia.alloc.bytes
+                    ┌                                                                                ┐
+   [9328.0, 9329.0) ┤███████████████████████████████████████████████████████████████████████████  210
+                    └                                                                                ┘
+                                                         Frequency

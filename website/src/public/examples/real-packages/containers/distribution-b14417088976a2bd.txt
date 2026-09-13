@@ -1,0 +1,5 @@
+                                DataStructures · SplayTree_build_benchmark · julia.alloc.bytes
+                      ┌                                                                                ┐
+   [24624.0, 24625.0) ┤███████████████████████████████████████████████████████████████████████████  210
+                      └                                                                                ┘
+                                                           Frequency
