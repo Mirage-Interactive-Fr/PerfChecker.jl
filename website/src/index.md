@@ -7,7 +7,7 @@ hero:
   text: "Measure how Julia code changes"
   tagline: Compare time and allocations across versions, then profile what got slower.
   image:
-    src: /assets/perfchecker.svg
+    src: /assets/perfchecker-mark.png
     alt: PerfChecker
   actions:
     - theme: brand

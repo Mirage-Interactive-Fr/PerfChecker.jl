@@ -41,7 +41,7 @@ const config = defineConfig({
     theme: { light: 'github-light', dark: 'github-dark' },
   },
   themeConfig: {
-    logo: '/assets/perfchecker.svg',
+    logo: '/assets/perfchecker-mark.png',
     sidebarDrawer: 'REPLACE_ME_DOCUMENTER_VITEPRESS_SIDEBAR_DRAWER',
     outline: { level: [2, 3], label: 'On this page' },
     search: {
