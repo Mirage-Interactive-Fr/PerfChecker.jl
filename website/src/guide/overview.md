@@ -1,80 +1,54 @@
-# Overview
+# Introduction
 
-A test can pass while the code it checks becomes slower. The result is still
-correct, but a new temporary array, an extra parse or a different algorithm
-may have increased its cost. PerfChecker helps measure those changes and find
-where they come from.
+A test can pass while the code it checks becomes slower. PerfChecker measures that change and helps you find where it comes from.
 
-It runs existing Julia TestItems or operations defined in a performance suite.
-You can compare package releases, Git revisions and Julia runtimes, then open
-the saved timings and profiles in the terminal, VS Code, a browser or a notebook.
+## The problem
 
-## Start with one operation
+- Unit tests check correctness, not cost.
+- A new temporary array, an extra parse or a different algorithm can slow an operation without failing any test.
+- Two runs on the same machine differ anyway, so a single number proves nothing.
 
-The manual uses Bibliography, a package for importing and exporting
-bibliographic entries. We first measure a test that imports an article,
-exports it and checks that its title and citation key survive. That gives
-us the cost of the whole test.
+PerfChecker measures the same operation repeatedly, records the distribution, and keeps the conditions of the run with the numbers.
 
-Next, we measure export alone, with the input prepared before timing starts.
-This lets us compare the same operation across versions. We will read its
-timings and allocations, profile the calls inside it, and use the comparison
-in CI.
+## The workflow
 
-For code you can copy and run, start with the [quickstart](first-check.md).
-For other installation choices, see [installation](installation.md).
-The **Next page** links follow this sequence. If you already have a runnable
-benchmark, start at [understanding the result](understanding-measurements.md).
+```text
+choose a workload → measure it → save the result → compare or profile it
+```
 
-## Adapt the example
+- **Workload** — one operation and its inputs, or an existing test item.
+- **Collector** — what to record: time, allocations, a CPU profile, network counters.
+- **Run** — the saved result, with source revision, runtime and settings attached.
+- **Comparison** — the change from a reference, with optional pass/fail limits.
 
-Replace the Bibliography input and operation with code from your own package.
-Keep a check of the result: an optimization should still produce the expected
-answer. When you need several workloads or versions, put those choices in a
-[suite](../suites-and-comparisons.md).
-
-### Direct `@check`
-
-For an inline experiment, `@check` accepts a preparation block and an operation
-to measure. Its [API reference](../reference/api.md) describes the configuration.
-`PerfConfig` validates that configuration before execution; the older `Dict`
-form is also supported.
-The manual uses TestItems and suites because their definitions can also be
-selected from the graphical interfaces.
+Every interface reads the same saved run. Changing from the REPL to VS Code to the browser does not re-measure anything.
 
 ## What runs, and where
 
-The workload, collector and version are separate choices. For example,
-`export_bibtex` remains one operation when you switch from timing it to collecting
-allocation stacks. You do not need to copy its implementation for each tool.
+- The **controller** is your Julia process. It prepares versions, schedules work and writes reports.
+- A **worker** is a separate Julia process that loads and measures the target.
+- The collector decides the measurement boundary inside the worker.
+- Interface and plotting code never runs inside the worker.
 
-PerfChecker's **controller** prepares the selected versions, schedules work and
-writes reports. A **worker** is a separate Julia process that loads and measures
-the target. The interface and plotting code run outside that measurement.
-Within the worker, the collector determines the boundary: an operation benchmark
-can exclude input preparation, whereas a TestItem measurement includes its setup
-and assertions. Startup and compilation can also be measured explicitly.
-The [suite chapter](../software-suites.md#Why-the-worker-has-its-own-environment)
-explains which dependencies belong in each environment.
+A whole-test measurement includes setup and assertions. An operation benchmark can exclude input preparation. Both are useful; pick the boundary that matches your question.
 
-## Save a result and reopen it
+## Start
 
-A **plan** lists the checks you selected. Executing it creates a **run** whose
-saved result contains the measurements, source revision, Julia runtime and
-measurement settings. A plot reads those saved values. You can reopen the same
-run in another interface without executing the workload again.
+- [Installation](installation.md)
+- [Quickstart: measure a test](first-check.md)
+- [Measure an operation](../tutorials/quick-tour.md)
+- [Understand the result](understanding-measurements.md)
 
-The interfaces handle the report files for you. If you need to read their JSON
-directly, the [format reference](../reference/run-bundles.md) explains the fields
-and format-version identifiers such as `schema_version`.
+## Measure safely
 
-## Explore a larger example
+- Keep a correctness check. A faster wrong answer is not an improvement.
+- Save the run. Reports record the source, environment and settings needed to judge comparability.
+- Do not promote a planned feature or platform to a real one. If a tool is unavailable, the report says `unavailable` — not zero.
 
-[DataStructures](../real-packages/datastructures.md) compares construction and
-use of 35 containers. [Oxygen](../real-packages/oxygen.md) compares HTTP handlers
-and adds network measurements. Both include the scripts, saved results and
-Pluto notebooks, so you can inspect the figures or run the experiments yourself.
-
-Use the **Interfaces** section to choose where to work, and **Reference** to
-look up a function or option. **Further topics** covers native tools, remote
-workers and comparisons between machines.
+```@raw html
+<a id="Overview"></a>
+<a id="Start-with-one-operation"></a>
+<a id="Adapt-the-example"></a>
+<a id="Save-a-result-and-reopen-it"></a>
+<a id="Explore-a-larger-example"></a>
+```

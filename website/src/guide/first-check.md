@@ -1,25 +1,18 @@
 # Quickstart: measure a test
 
-This example measures a Bibliography import/export test. Copy the blocks into
-the same Julia session. No PerfChecker checkout or suite definition is needed.
+Measure one existing `@testitem`. No checkout or suite file is needed.
 
 ## Install
 
-In the Julia environment you want to use:
-
 ```julia
 import Pkg
-Pkg.add(Pkg.PackageSpec(name="PerfChecker", rev="release/v1.0.0-rc1"))
+Pkg.add(Pkg.PackageSpec(name = "PerfChecker", rev = "release/v1.0.0-rc1"))
 Pkg.add(["Bibliography", "TestItems", "TestItemRunner"])
 ```
 
-These pages use the V1 release candidate; see [installation](installation.md)
-for the stable release and optional interfaces.
-
 ## Create a test
 
-The block below writes one `@testitem` into a temporary directory. The test
-imports an article, exports it to BibTeX and checks that its title survives.
+This writes one item to a temporary directory.
 
 ```julia
 using PerfChecker, TestItemRunner
@@ -39,13 +32,14 @@ using TestItems
         @test occursin("A small example", exported)
     end
 end
-""");
+""")
 ```
 
-Keep this declaration in your package's `test/` directory when adapting it.
-For this trial, `root` is temporary and does not modify your package.
+In your own package, keep the declaration in `test/`.
 
 ## Find and run it
+
+Discovery reads declarations without running them.
 
 ```julia
 listing = discover_testitems(root)
@@ -57,81 +51,63 @@ item["name"]
 "Bibliography BibTeX round trip"
 ```
 
-Discovery reads the declaration without running the test. Now measure it:
+Measure it:
 
 ```julia
 reports = mktempdir()
-result = run_testitems(root; ids=[item["id"]], samples=1, threads=1, reports)
-(passed=result["passed"], performance=result["performance"])
+result = run_testitems(root; ids = [item["id"]], samples = 1, threads = 1, reports)
+(passed = result["passed"], performance = result["performance"])
 ```
 
 ```text
 (passed = true, performance = "not_compared")
 ```
 
-The assertions passed. `not_compared` means we have a measurement, but have not
-compared it with another version or a performance budget.
+`not_compared` means the item ran and was measured, but was not compared with a baseline or budget.
 
-## Read the measurements
+## Read the measurement
 
 ```julia
 sample = only(only(result["runs"])["samples"])
-(seconds=sample["seconds"], bytes=sample["bytes"])
+(seconds = sample["seconds"], bytes = sample["bytes"])
 ```
 
-One recorded run (Windows, Julia 1.13.0, Bibliography 0.4.0):
+Your numbers will differ. The measurement covers the **whole test** in a fresh worker: imports, compilation, setup, assertions and cleanup — not a warm BibTeX export.
 
-```text
-(seconds = 6.5892513, bytes = 249498047)
-```
-
-Your numbers will differ. This measures the **whole test**, including imports,
-compilation during the test, setup, assertions and module cleanup, in a fresh
-worker. It is not the cost of a warm BibTeX export. One sample is enough to try
-the API; use repeated measurements for a performance comparison.
-
-The run is already saved:
+The run is saved:
 
 ```julia
 isfile(joinpath(reports, "testitems.json"))
 ```
 
-```text
-true
-```
-
-`reports` is a temporary directory in this example. To keep future runs, pass
-a new directory of your choice to `reports`; existing reports are protected
-from replacement.
-
-## Use your existing tests
-
-Set `root` to your package directory and select one of its TestItems by name:
+## Select from your own package
 
 ```julia
-root = pwd()  # Start Julia at your package's root.
+root = pwd()
 listing = discover_testitems(root)
 [(item["name"], item["tags"]) for item in listing["items"]]
 ```
 
-Replace the name below with one from that listing:
-
 ```julia
-item = only(filter(item -> item["name"] == "Bibliography BibTeX round trip",
-    listing["items"]))
-result = run_testitems(root; ids=[item["id"]], samples=30, threads=1)
+item = only(filter(i -> i["name"] == "Bibliography BibTeX round trip", listing["items"]))
+result = run_testitems(root; ids = [item["id"]], samples = 30, threads = 1)
 ```
 
-This runs the selected test 30 times, each in a fresh process, sequentially.
-The active environment must contain its test dependencies. Discovery includes
-shared tests and `:perf_only` items, and excludes `:test_only`; see
-[TestItems and tags](../test-items.md). A package using only `@testset` needs
-TestItem declarations before this discovery can find its tests.
+The active environment must contain the package's test dependencies.
+
+
+## Recorded examples
 
 ```@raw html
 <p><a href="../examples/bibliography/bibliography-testitems.jl" download="bibliography-testitems.jl">Download a complete Bibliography test item to adapt</a></p>
 ```
 
-To measure export alone, with input preparation outside the timer, continue to
-[measure an operation](../tutorials/quick-tour.md). For the meaning of time,
-allocations and GC, read [understand the result](understanding-measurements.md).
+## Next
+
+- To time export alone, with input preparation outside the timer, read [Measure an operation](../tutorials/quick-tour.md).
+- To interpret time, allocations and GC, read [Understand the result](understanding-measurements.md).
+
+```@raw html
+<a id="Read-the-measurements"></a>
+<a id="Use-your-existing-tests"></a>
+```

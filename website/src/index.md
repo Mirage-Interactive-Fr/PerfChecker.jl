@@ -4,8 +4,8 @@ layout: home
 
 hero:
   name: "PerfChecker.jl"
-  text: "Measure how your Julia code changes"
-  tagline: Compare execution time and allocations across versions, then profile the operations that need attention.
+  text: "Measure how Julia code changes"
+  tagline: Compare time and allocations across versions, then profile what got slower.
   image:
     src: /assets/perfchecker.svg
     alt: PerfChecker
@@ -14,11 +14,28 @@ hero:
       text: Quickstart
       link: /guide/first-check
     - theme: alt
-      text: Explore examples
+      text: Examples
       link: /real-packages/
     - theme: alt
       text: Use VS Code
       link: /interfaces/vscode
+features:
+  - title: Measure a test
+    details: Run an existing TestItem and inspect its time and allocations.
+    link: /guide/first-check
+    linkText: Try the quickstart
+  - title: Compare versions
+    details: Measure the same operation across releases or Git revisions.
+    link: /tutorials/comparisons
+    linkText: Compare results
+  - title: Find expensive calls
+    details: Inspect CPU, wall-time and allocation profiles from saved runs.
+    link: /guide/investigate
+    linkText: Read a profile
+  - title: Choose an interface
+    details: Work in Julia, VS Code, Oxygen or Pluto with the same results.
+    link: /interfaces/packages
+    linkText: Explore interfaces
 ---
 ```
 
@@ -26,35 +43,45 @@ hero:
 <MaintainerLink />
 ```
 
-## From a passing test to a performance comparison
 
-Your tests check that a package produces the right answer. PerfChecker measures
-what that answer costs. Start with an existing TestItem, or define an operation
-such as importing a file or solving a model. Run it on selected versions and
-inspect the changes in time and allocations.
+## What it does
 
-The [manual](guide/overview.md) follows one Bibliography example through these
-steps. It starts with a test, separates the export operation from its setup,
-compares two revisions and uses a profile to locate expensive calls.
+- Runs existing Julia `@testitem`s, or operations you define.
+- Measures in a separate worker process, so the UI is not measured.
+- Saves results as portable run bundles. Every interface reads the same files.
+- Compares releases, Git revisions and Julia runtimes.
+- Profiles CPU, wall time and allocations when a timing changes.
 
 ```@raw html
 <HomeMeasurements />
 ```
 
-## Use the results in your own workflow
+## Where to start
 
-Run checks from Julia or [VS Code](interfaces/vscode.md), select workloads in
-[Web interface (Oxygen)](interfaces/web-studio.md), or explore a saved run in
-[Pluto](interfaces/repl-pluto.md). The reports retain the measurements and
-their settings, so changing interface does not require a new benchmark.
+- New here? Read [Introduction](guide/overview.md), then [Installation](guide/installation.md).
+- Have a test? [Quickstart: measure a test](guide/first-check.md).
+- Have an operation? [Measure an operation](tutorials/quick-tour.md).
+- Want to compare? [Suites and comparisons](suites-and-comparisons.md).
 
-For larger experiments, the [DataStructures example](real-packages/datastructures.md)
-compares 35 containers and the [Oxygen example](real-packages/oxygen.md)
-adds HTTP and network measurements. Both include scripts and notebooks to adapt.
+## Interfaces
+
+- [VS Code](interfaces/vscode.md) — run one item while editing.
+- [Web interface (Oxygen)](interfaces/web-studio.md) — select workloads in a browser.
+- [REPL and Pluto](interfaces/repl-pluto.md) — terminal, or an editable notebook.
+- [Plots](interfaces/visualization.md) — Makie figures from saved runs.
+
+## Examples
+
+- [Bibliography](tutorials/bibliography.md) — the manual's running example, extended.
+- [DataStructures](real-packages/datastructures.md) — 35 containers over eight years.
+- [Oxygen](real-packages/oxygen.md) — HTTP handlers and real network traffic.
 
 ## Contribute
 
-PerfChecker is open source. [Report a problem](https://github.com/Mirage-Interactive-Fr/PerfChecker.jl/issues),
-[contribute an example](real-packages/contributing.md), or
-[improve a page](contributing/documentation.md). The source is available
-[on GitHub](https://github.com/Mirage-Interactive-Fr/PerfChecker.jl).
+[Report a problem](https://github.com/Mirage-Interactive-Fr/PerfChecker.jl/issues),
+[improve a page](contributing/documentation.md), or open a pull request.
+
+```@raw html
+<a id="From-a-passing-test-to-a-performance-comparison"></a>
+<a id="Use-the-results-in-your-own-workflow"></a>
+```

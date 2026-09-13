@@ -1,46 +1,28 @@
 # Run checks in CI
 
-Start with the exact item or suite command that works locally. CI prepares its
-dependencies, executes it and retains its output. A functional failure and a
-performance regression need different acceptance rules.
+CI repeats an experiment you can already run locally. Decide which result should fail the job, and keep the reports.
 
-These examples use the V1 APIs. Check [release availability](../guide/installation.md)
-first: the currently registered older PerfChecker release does not supply this
-complete workflow. Use a published V1 version or your explicitly pinned preview.
+!!! warning "Release candidate"
+    Check [release availability](../guide/installation.md) first. The registered stable release does not supply this complete workflow.
 
-## Existing test items
-
-Use your package's prepared test environment containing PerfChecker,
-TestItemRunner, the target package and its test dependencies. In the following
-commands that environment is `test/`, and the current directory is the package
-root. Change the project path if you use another environment.
-
-List first, then measure only the `small` items:
+## Measure existing test items
 
 ```sh
 julia --startup-file=no --project=test -e 'using PerfChecker; exit(perfchecker_main(ARGS))' -- testitems --root=. --list
 julia --startup-file=no --project=test -e 'using PerfChecker; exit(perfchecker_main(ARGS))' -- testitems --root=. --tags=small --samples=1 --threads=1 --reports=results/items
 ```
 
-The [downloadable Bibliography item](../guide/first-check.md) has that tag.
-For your own package, select its tags or pass repeated `--item-id` arguments from
-the listing. Do not reuse an existing `testitems.json` destination.
+- The second command exits nonzero if an item does not validate.
+- `performance="not_compared"` means no regression budget was applied.
+- Do not gate on a single first-call item duration.
 
-The second command returns a nonzero exit if an item does not validate. Its
-`testitems.json` preserves the measurements, assertions and environment context.
-`performance="not_compared"` means it has **not** applied a regression budget.
-Do not gate latency on a single first-call item duration.
+For functional jobs that must exclude `:perf_only`, load PerfChecker and TestItemRunner, then:
 
-For ordinary functional TestItemRunner jobs that should exclude `:perf_only`,
-use `@run_package_tests filter=testitem_filter(:test)` after loading PerfChecker
-and TestItemRunner. Loading PerfChecker alone does not change the upstream runner.
+```julia
+@run_package_tests filter=testitem_filter(:test)
+```
 
-## GitHub Actions example
-
-This workflow assumes your maintained `test/Project.toml` already declares the
-example's test dependencies, PerfChecker and TestItemRunner. The preparation step
-connects the checked-out package to that environment and resolves it before the
-measurement. Save this as `.github/workflows/performance.yml` in your package:
+## GitHub Actions
 
 ```yaml
 name: Performance items
@@ -53,65 +35,46 @@ jobs:
     env:
       JULIA_NUM_THREADS: '1'
       JULIA_NUM_GC_THREADS: '1'
-      JULIA_NUM_PRECOMPILE_TASKS: '1'
       OPENBLAS_NUM_THREADS: '1'
-      OMP_NUM_THREADS: '1'
-      MKL_NUM_THREADS: '1'
     steps:
-      - uses: actions/checkout@v7
-      - uses: julia-actions/setup-julia@v3
+      - uses: actions/checkout@v4
+      - uses: julia-actions/setup-julia@v2
         with:
           version: '1'
       - name: Prepare test environment
         run: julia --startup-file=no --project=test -e 'using Pkg; Pkg.develop(path=pwd()); Pkg.instantiate()'
       - name: Measure selected items
         run: julia --startup-file=no --project=test -e 'using PerfChecker; exit(perfchecker_main(ARGS))' -- testitems --root=. --tags=small --samples=1 --threads=1 --reports=results/items
-      - uses: actions/upload-artifact@v7
+      - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: performance-items
           path: results/items
 ```
 
-The same two preparation/execution steps work in other CI systems; use their
-artifact mechanism to retain the report even when execution fails.
+## Regression gates
 
-## Software suites and regression gates
-
-For an existing `perf/suite.jl`, run it through the public command entry point
-from a controller environment containing its collectors. `--project=.` below
-means that environment is the current project; it is unrelated to the `--suite`
-path. The suite itself declares its isolated worker environment.
+Run a suite, then compare two saved bundles:
 
 ```sh
 julia --startup-file=no --project=. -e 'using PerfChecker; exit(perfchecker_main(ARGS))' -- run --suite=perf/suite.jl --profile=ci --reports=results/ci --progress=jsonl
-```
 
-For a performance gate, use two saved, comparable bundle directories and explicit
-limits. In this example `results/baseline` and `results/candidate` stand for those
-existing bundle directories, each containing `manifest.json`:
-
-```sh
 julia --startup-file=no --project=. -e 'using PerfChecker; exit(perfchecker_main(ARGS))' -- check --baseline=results/baseline --candidate=results/candidate --limit=julia.wall.time=0.05 --limit=julia.alloc.bytes=0.02 --min-samples=10 --reports=results/comparison
 ```
 
-Here 0.05 allows a five-percent timing increase, and 0.02 a two-percent allocation
-increase. They are illustrative acceptance limits, not recommended universal
-thresholds. `check` fails unless its comparison passes; `compare` writes diagnostic
-results without using a numeric regression as a failing exit status.
-See [comparisons](comparisons.md) for references, statistics and comparability.
+- Limits are relative fractions: `0.05` allows a 5% increase for a lower-is-better metric.
+- They are illustrative, not universal thresholds. Inspect distributions before choosing one.
+- `check` fails when a limit fails; `compare` does not.
 
-Keep runners, thread settings and fixtures comparable, and inspect distributions
-before choosing a timing threshold. The
-[fixed-dependency Bibliography experiment](bibliography.md#Extend-to-historical-comparisons)
-shows a reproducible pair; its diagnostic report does not configure an acceptance limit.
+## Keep the right artifacts
 
-## Retain the right artifacts
+- Native items: `testitems.json`.
+- Suite runs: the whole report directory, including `bundles/`.
+- Keep runners, thread settings and fixtures comparable between baseline and candidate.
 
-For native items, keep `testitems.json`. For suite runs, keep the report directory,
-including `suite-result.json`, JUnit output, version comparisons, compatibility
-evidence and `bundles/`. These are different report formats.
-
-For testing compatible releases of PerfChecker and its interfaces together,
-use [collection qualification](../reference/qualification.md). It tests integration
-compatibility; it is separate from your package's performance acceptance policy.
+```@raw html
+<a id="Existing-test-items"></a>
+<a id="GitHub-Actions-example"></a>
+<a id="Software-suites-and-regression-gates"></a>
+<a id="Retain-the-right-artifacts"></a>
+```

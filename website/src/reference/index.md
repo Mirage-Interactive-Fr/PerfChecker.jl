@@ -1,19 +1,16 @@
-# How to use this reference
+# Reference
 
-This section is for looking up a format, option or API after choosing a workflow.
-For a first executable example, start with [your first result](../guide/first-check.md).
+Look up a format, option or function after you have chosen a workflow. For a first runnable example, start with [Quickstart](../guide/first-check.md).
 
-| Look up | Page |
-| --- | --- |
-| What exactly a metric includes and which values are comparable | [Measurement model](../measurement-model.md) |
-| Saved files, schema versions and integrity | [Run bundles](run-bundles.md) |
-| Selecting data from a saved bundle | [Report queries](../report-queries.md) |
-| Script commands and exit behavior | [Command line](cli.md) |
-| Which optional package supplies a capability | [Extensions and providers](extensions.md) |
-| Function arguments and docstrings | [Julia API](api.md) |
+- [Measurement model](../measurement-model.md) — what a metric includes and what is comparable.
+- [Collectors](checks.md) — what each tool records.
+- [Run bundles](run-bundles.md) — saved files and integrity.
+- [Report queries](../report-queries.md) — selecting data from a saved run.
+- [Command line](cli.md) — script commands and exit codes.
+- [Julia API](api.md) — function arguments and docstrings.
 
-Configuration fragments on these pages describe an existing experiment. Paths
-such as `perf/suite.jl` or `before/bundles` refer to files you supply or reports
-you have already saved; they are not packages to install. The
-[Bibliography walkthrough](../tutorials/bibliography.md) supplies concrete files
-and commands when you want a complete example.
+Paths in these pages (`perf/suite.jl`, `results/...`) are files you supply or reports you already saved — not packages.
+
+```@raw html
+<a id="How-to-use-this-reference"></a>
+```

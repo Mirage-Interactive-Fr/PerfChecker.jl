@@ -1,30 +1,20 @@
 # Julia API
 
-This page indexes the documented public API exported by `PerfChecker`. Start
-with [your first result](../guide/first-check.md) for an executable introduction.
-Use `discover_testitems` and `run_testitems` for existing tests, `@check` for a
-direct experiment, or `SoftwareSuite`, `plan_suite` and `run_suite` for custom
-workloads and version matrices.
-Some functions require an extension or interface package to supply their
-methods. Their docstrings state which package to load.
+The public API exported by `PerfChecker`. For an executable introduction, start with [Quickstart](../guide/first-check.md).
 
-## Interface API ownership
+- Existing tests: `discover_testitems`, `run_testitems`.
+- Inline experiment: `@check`.
+- Custom workloads and version matrices: `SoftwareSuite`, `plan_suite`, `run_suite`.
+- Shared scenarios: `run_scenarios`, `diagnose`, `compare_scenarios`.
 
-The satellites export the same function bindings as the engine. Install and load
-the owner below to obtain its implementation; this is also how the same calls
-remain available during migration from the former extension layout.
+## Interface packages
 
-| Package | Public entry points |
-| --- | --- |
-| PerfCheckerWeb | [`serve_suite`](@ref), [`register_oxygen_routes!`](@ref), [`register_testitem_routes!`](@ref), [`studio_token_authenticator`](@ref), [`run_studio_agent`](@ref) |
-| PerfCheckerPluto | [`prepare_pluto_dashboard`](@ref), [`launch_pluto_dashboard`](@ref), [`write_suite_notebook`](@ref), [`write_investigation_notebook`](@ref) |
-| PerfCheckerMakie | [`performance_figure`](@ref), [`suite_dashboard`](@ref), [`checkres_to_boxplots`](@ref), [`checkres_to_scatterlines`](@ref), [`checkres_to_pie`](@ref), [`table_to_pie`](@ref) |
-| WGLMakie extension of PerfCheckerMakie | [`performance_plot_html`](@ref) |
+Some entry points are implemented by an interface package. Install and load the owner to get its method.
 
-See [interface installation](../interfaces/packages.md) for separate environment
-setup and [extensions and providers](extensions.md) for the remaining small
-interoperability extensions. Diagnostic adapters are internal worker entry points;
-their supported public API is [`diagnose`](@ref) and [`diagnostic_capabilities`](@ref).
+- **PerfCheckerWeb** — `serve_suite`, `register_oxygen_routes!`, `register_testitem_routes!`, `studio_token_authenticator`, `run_studio_agent`.
+- **PerfCheckerPluto** — `prepare_pluto_dashboard`, `launch_pluto_dashboard`, `write_suite_notebook`, `write_investigation_notebook`.
+- **PerfCheckerMakie** — `performance_figure`, `suite_dashboard`, `checkres_to_boxplots`, `checkres_to_scatterlines`, `checkres_to_pie`.
+- **PerfCheckerMakie + WGLMakie** — `performance_plot_html`.
 
 ## Index
 
@@ -32,10 +22,15 @@ their supported public API is [`diagnose`](@ref) and [`diagnostic_capabilities`]
 Modules = [PerfChecker]
 ```
 
-## Public docstrings
+## Docstrings
 
 ```@autodocs
 Modules = [PerfChecker]
 Public = true
 Order = [:module, :constant, :type, :macro, :function]
+```
+
+```@raw html
+<a id="Interface-API-ownership"></a>
+<a id="Public-docstrings"></a>
 ```

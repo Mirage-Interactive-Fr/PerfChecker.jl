@@ -1,50 +1,59 @@
 # Installation
 
-Install the V1 release candidate in your chosen Julia environment:
+## Core package
+
+The Julia API, command line and text REPL are in PerfChecker itself.
 
 ```julia
 import Pkg
-Pkg.add(Pkg.PackageSpec(name="PerfChecker", rev="release/v1.0.0-rc1"))
+Pkg.add("PerfChecker")   # stable, currently 0.2.4
+```
+
+The V1 release candidate has a different API. Install it in a separate environment:
+
+```julia
+Pkg.add(Pkg.PackageSpec(name = "PerfChecker", rev = "release/v1.0.0-rc1"))
 using PerfChecker
 ```
 
-The Julia API, command line and text REPL are included in PerfChecker.
-
 !!! warning "Release candidate"
-    PerfChecker is registered in General, currently through version **0.2.4**.
-    These pages describe **1.0.0-rc1**, available from the RC branch above.
-    Use `Pkg.add("PerfChecker")` for the registered stable release.
-    The new interface packages below also await their first General
-    registrations. Their installation by name will be available after registration.
-    [Check registered versions](https://github.com/JuliaRegistries/General/blob/master/P/PerfChecker/Versions.toml).
+    These pages describe **1.0.0-rc1**. General still serves **0.2.4**.
+    Keep the candidate in its own environment.
 
 ## Optional packages
 
-Install only the additions you want:
+Install only what you need.
 
-| For | Add to the Julia environment |
-| --- | --- |
-| Measuring existing TestItems | `Pkg.add("TestItemRunner")` |
-| BenchmarkTools measurements | `Pkg.add("BenchmarkTools")` |
-| Chairmarks measurements | `Pkg.add("Chairmarks")` |
-| Oxygen web interface | `Pkg.add("PerfCheckerWeb")` — registration pending |
-| Pluto notebooks | `Pkg.add("PerfCheckerPluto")` — registration pending |
-| Makie figures | `Pkg.add("PerfCheckerMakie")` — registration pending |
+- Existing TestItems — `Pkg.add("TestItemRunner")`
+- BenchmarkTools — `Pkg.add("BenchmarkTools")`
+- Chairmarks — `Pkg.add("Chairmarks")`
+- Oxygen web interface — `Pkg.add("PerfCheckerWeb")`
+- Pluto notebooks — `Pkg.add("PerfCheckerPluto")`
+- Makie figures — `Pkg.add("PerfCheckerMakie")`
 
-During the RC, install an interface directly from its repository subdirectory:
+The three interface packages await their first General registration. During the release candidate, install one from its repository subdirectory:
 
 ```julia
 Pkg.add(Pkg.PackageSpec(
-    url="https://github.com/Mirage-Interactive-Fr/PerfChecker.jl",
-    rev="release/v1.0.0-rc1",
-    subdir="packages/PerfCheckerWeb"))
+    url = "https://github.com/Mirage-Interactive-Fr/PerfChecker.jl",
+    rev = "release/v1.0.0-rc1",
+    subdir = "packages/PerfCheckerWeb"))
 ```
 
-Use `packages/PerfCheckerPluto` or `packages/PerfCheckerMakie` for those interfaces.
+Use `packages/PerfCheckerPluto` or `packages/PerfCheckerMakie` for the others.
 
-For interactive Makie plots, also add `WGLMakie` and `Bonito`.
-For the editor interface, install the [VS Code extension](../interfaces/vscode.md)
-and select the Julia environment containing PerfChecker.
+## Environments
 
-Next: [get a first result](first-check.md), or read
-[what a suite and a comparison mean](../suites-and-comparisons.md).
+- Put PerfChecker and its collectors in your **controller** environment.
+- The measured target and its dependencies go in the **worker** environment.
+- Interface packages never belong in a measurement environment.
+
+A suite declares its worker environment; PerfChecker prepares it before measuring.
+
+## Editor
+
+Install the [VS Code extension](../interfaces/vscode.md) and point it at a Julia environment containing PerfChecker.
+
+## Next
+
+[Get a first result](first-check.md), or read [Suites and comparisons](../suites-and-comparisons.md).

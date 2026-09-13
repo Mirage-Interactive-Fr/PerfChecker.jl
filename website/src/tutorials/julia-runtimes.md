@@ -1,19 +1,10 @@
-# Julia RC and nightly campaigns
+# Julia runtimes
 
-A package release comparison and a Julia runtime comparison answer different
-questions. Runtime campaigns keep the package source, workloads and measurement
-definitions fixed while changing Julia itself.
+A runtime campaign changes Julia while keeping the package source, workloads and measurement definitions fixed.
 
-Before starting, run your suite successfully on the baseline runtime. Supply
-its existing suite path and prepared controller environment to the commands
-below. For Bibliography, begin with the [single export benchmark](quick-tour.md),
-then use its `suite.jl`. More runtimes multiply the selected work; filter the
-suite before starting a large campaign.
+## Prepare channels
 
-## Prepare Julia channels
-
-PerfChecker does not install Julia versions implicitly. With juliaup, make the
-desired channels available first:
+PerfChecker does not install Julia versions. With juliaup:
 
 ```sh
 juliaup add release
@@ -21,29 +12,22 @@ juliaup add rc
 juliaup add nightly
 ```
 
-Then probe each runtime from a fresh process. The evidence records the resolved
-Julia version, Julia commit, binary directory and LLVM version.
+Each runtime is probed in a fresh process; the resolved version, commit, bindir and LLVM version are recorded.
 
-## Run from the CLI
+## Run a campaign
 
 ```sh
 julia --startup-file=no --project=. -e 'using PerfChecker; exit(perfchecker_main(ARGS))' -- julia-campaign \
-  --suite=perf/suite.jl \
-  --baseline=release \
-  --candidate=rc \
-  --candidate=nightly \
-  --profile=ci \
-  --reports=perf/julia-campaign \
-  --limit=julia.wall.time=0.05 \
-  --min-samples=10 \
-  --progress=jsonl
+  --suite=perf/suite.jl --baseline=release --candidate=rc --candidate=nightly \
+  --profile=ci --reports=perf/julia-campaign \
+  --limit=julia.wall.time=0.05 --min-samples=10 --progress=jsonl
 ```
 
-Each runtime gets a child controller and normal isolated feature workers. Startup
-files and history files are disabled. The campaign is resumable with
-`--resume=true` after an interrupted nightly or remote run.
+- Each runtime gets a child controller and normal isolated workers.
+- Startup and history files are disabled.
+- `--resume=true` continues an interrupted campaign.
 
-## Use explicit runtime specs
+## Explicit specs
 
 ```julia
 using PerfChecker
@@ -53,47 +37,40 @@ specs = [
     JuliaRuntimeSpec(:nightly, "nightly"; role = :candidate),
 ]
 
-campaign = run_julia_runtime_campaign(
-    specs;
-    suite = "perf/suite.jl",
-    reports = "perf/julia-campaign",
-    profile = :ci,
-    relative_limits = Dict("julia.wall.time" => 0.05),
-    min_samples = 10,
-)
+campaign = run_julia_runtime_campaign(specs;
+    suite = "perf/suite.jl", reports = "perf/julia-campaign", profile = :ci,
+    relative_limits = Dict("julia.wall.time" => 0.05), min_samples = 10)
 ```
 
-`source = :executable` can point at an explicit Julia binary when juliaup is not
-the deployment mechanism.
+`source = :executable` points at an explicit Julia binary when juliaup is not used.
 
 ## Attribute a regression
 
 ```julia
-investigation = investigate_julia_regressions(campaign;
-    max_frames = 50, obvious_share = 0.6)
+investigation = investigate_julia_regressions(campaign; max_frames = 50, obvious_share = 0.6)
 write_julia_investigation(investigation, "perf/julia-campaign/investigation")
 ```
 
-PerfChecker ranks source lines whose sampled CPU or allocation weight increased,
-and classifies them as Julia runtime code or package/dependency code. Failure
-reports retain the first useful stack frames and distinguish launch, resolver,
-test and timeout failures.
+PerfChecker ranks source lines whose sampled CPU or allocation weight increased, and labels each as Julia runtime or package/dependency code.
 
 !!! warning "Attribution is not causality"
-    A dominant Base, stdlib or compiler frame is a candidate for reduction. It is
-    not proof of a Julia bug. PerfChecker reports when evidence is only ranked
-    and insufficient for an automatic minimal working example.
+    A dominant Base, stdlib or compiler frame is a candidate for reduction, not proof of a Julia bug. PerfChecker reports when the evidence is only ranked and not enough for an automatic minimal working example.
 
-## Produce a useful Julia issue
+## File a useful issue
 
-Keep the campaign evidence and reduce in this order:
+Reduce in this order:
 
-1. one package feature and one check type;
-2. the smallest deterministic fixture that preserves the delta;
+1. one feature and one check type;
+2. the smallest deterministic fixture that still shows the delta;
 3. the stable and candidate runtime identities;
-4. the effective project/manifest and hardware context;
-5. a short command that reproduces the result;
-6. the ranked source/profile artifact as supporting evidence.
+4. the effective Project/Manifest and hardware context;
+5. a short reproduction command;
+6. the ranked profile artifact as supporting evidence.
 
-This distinguishes “the package is slower under the candidate runtime” from a
-maintainer-ready report about where the difference appears.
+```@raw html
+<a id="Julia-RC-and-nightly-campaigns"></a>
+<a id="Prepare-Julia-channels"></a>
+<a id="Run-from-the-CLI"></a>
+<a id="Use-explicit-runtime-specs"></a>
+<a id="Produce-a-useful-Julia-issue"></a>
+```
