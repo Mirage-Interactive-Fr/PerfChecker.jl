@@ -1,0 +1,5 @@
+include(joinpath(@__DIR__, "service.jl"))
+const request_lifecycle = EventService.request_case("heap")
+perf_setup() = request_lifecycle.prepare()
+perf_workload(state) = request_lifecycle.operation(state)
+perf_oracle(state, result) = request_lifecycle.verify(state, result)

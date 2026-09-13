@@ -1,0 +1,50 @@
+{
+  "correctness": "passed",
+  "os": "NT",
+  "performance": "not_compared",
+  "plot": {
+    "data": [
+      {
+        "bytes": 786551.0,
+        "file": "src/heaps/arrays_as_heaps.jl",
+        "label": "src/heaps/arrays_as_heaps.jl:115",
+        "line": 115,
+        "version": "0.19.6"
+      }
+    ],
+    "description": "Allocation hotspots by line",
+    "encoding": {
+      "color": "file",
+      "x": "label",
+      "y": "bytes"
+    },
+    "id": "allocation-lines-9e4fd4f7f3be40ea",
+    "kind": "allocation_lines",
+    "options": {
+      "feature": "heap_32768_alloc",
+      "package": "DataStructures",
+      "selected_version": "0.19.6",
+      "top": 40,
+      "unit": "By",
+      "versions": [
+        "0.19.6"
+      ]
+    },
+    "schema_version": "perfchecker-plot/1",
+    "title": "DataStructures · heap_32768_alloc · allocations"
+  },
+  "run_id": "11480c99-82a0-44bf-8432-f9b4e39702f5",
+  "runtime": {
+    "language": "julia",
+    "threads": 1,
+    "version": "1.13.0"
+  },
+  "scope": "One local machine; illustrative history, not a package regression verdict",
+  "started_at": "2026-09-13T08:06:15.124",
+  "worker_environments": [
+    {
+      "manifest_sha256": "e956f9d3af72872a9d43e6dc3fdac644b73223bd6b5e4ac250e7c0cc02eb97d5",
+      "project_sha256": "0cda28da6203fe2eda79d372cdabb8862f3e829e34e1eb1c78c61f64fe9878e2"
+    }
+  ]
+}

@@ -56,6 +56,9 @@ features:
 
 [Read the short Bibliography tutorial](tutorials/quick-tour.md) or [explore the interactive plots](interfaces/visualization.md).
 
+For a larger runnable example, [compare DataStructures and Oxygen across releases](real-packages/index.md),
+then reuse their measurements in the terminal, notebooks and graphical interfaces.
+
 ## Performance checks as software tests
 
 PerfChecker treats performance as a versioned contract attached to a **business

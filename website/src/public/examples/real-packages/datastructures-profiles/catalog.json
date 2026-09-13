@@ -1,0 +1,252 @@
+{
+  "correctness": "passed",
+  "performance": "not_compared",
+  "runs": [
+    {
+      "feature": "heap_32768_alloc",
+      "package": "DataStructures",
+      "status": "pass",
+      "version": "0.19.6"
+    },
+    {
+      "feature": "heap_32768_profile",
+      "package": "DataStructures",
+      "status": "pass",
+      "version": "0.19.6"
+    },
+    {
+      "feature": "heap_32768_profile_alloc",
+      "package": "DataStructures",
+      "status": "pass",
+      "version": "0.19.6"
+    },
+    {
+      "feature": "heap_32768_wall_profile",
+      "package": "DataStructures",
+      "status": "pass",
+      "version": "0.19.6"
+    }
+  ],
+  "runtime": {
+    "language": "julia",
+    "threads": 1,
+    "version": "1.13.0"
+  },
+  "skipped": [
+    {
+      "id": "version-delta-f03dd6a946fb3ea0",
+      "reason": "No observations for this view"
+    },
+    {
+      "id": "version-delta-528cbf470f75a759",
+      "reason": "No observations for this view"
+    },
+    {
+      "id": "version-delta-d9a59bd77b66d3b6",
+      "reason": "No observations for this view"
+    }
+  ],
+  "versions": [
+    "0.19.6"
+  ],
+  "views": [
+    {
+      "case_id": "event_lab/DataStructures/heap_32768_alloc",
+      "feature": "heap_32768_alloc",
+      "id": "allocation-files-36aa887d312fb2ab",
+      "json": "allocation-files-36aa887d312fb2ab.json",
+      "kind": "allocation_files",
+      "label": "Allocations by file",
+      "metric": "julia.alloc.bytes",
+      "package": "DataStructures",
+      "svg": "allocation-files-36aa887d312fb2ab.svg",
+      "terminal": "allocation-files-36aa887d312fb2ab.txt",
+      "title": "DataStructures · heap_32768_alloc · allocations",
+      "unit": "By"
+    },
+    {
+      "case_id": "event_lab/DataStructures/heap_32768_alloc",
+      "feature": "heap_32768_alloc",
+      "id": "allocation-heatmap-cb164d1392b342ff",
+      "json": "allocation-heatmap-cb164d1392b342ff.json",
+      "kind": "allocation_heatmap",
+      "label": "Allocation line heatmap",
+      "metric": "julia.alloc.bytes",
+      "package": "DataStructures",
+      "svg": "allocation-heatmap-cb164d1392b342ff.svg",
+      "terminal": "allocation-heatmap-cb164d1392b342ff.txt",
+      "title": "DataStructures · heap_32768_alloc · allocations",
+      "unit": "By"
+    },
+    {
+      "case_id": "event_lab/DataStructures/heap_32768_alloc",
+      "feature": "heap_32768_alloc",
+      "id": "allocation-lines-9e4fd4f7f3be40ea",
+      "json": "allocation-lines-9e4fd4f7f3be40ea.json",
+      "kind": "allocation_lines",
+      "label": "Allocation hotspots by line",
+      "metric": "julia.alloc.bytes",
+      "package": "DataStructures",
+      "svg": "allocation-lines-9e4fd4f7f3be40ea.svg",
+      "terminal": "allocation-lines-9e4fd4f7f3be40ea.txt",
+      "title": "DataStructures · heap_32768_alloc · allocations",
+      "unit": "By"
+    },
+    {
+      "case_id": "event_lab/DataStructures/heap_32768_alloc",
+      "feature": "heap_32768_alloc",
+      "id": "allocation-pie-a7f205960a815ab7",
+      "json": "allocation-pie-a7f205960a815ab7.json",
+      "kind": "allocation_pie",
+      "label": "Allocation share by line (%)",
+      "metric": "julia.alloc.bytes",
+      "package": "DataStructures",
+      "svg": "allocation-pie-a7f205960a815ab7.svg",
+      "terminal": "allocation-pie-a7f205960a815ab7.txt",
+      "title": "DataStructures · heap_32768_alloc · allocations",
+      "unit": "By"
+    },
+    {
+      "feature": "heap_32768_alloc",
+      "id": "version-series-7fabdc6fa9d4d0f3",
+      "json": "version-series-7fabdc6fa9d4d0f3.json",
+      "kind": "version_series",
+      "label": "Version trajectory",
+      "metric": "julia.alloc.bytes",
+      "package": "DataStructures",
+      "series_id": "f8c688fc1f65aa37",
+      "svg": "version-series-7fabdc6fa9d4d0f3.svg",
+      "terminal": "version-series-7fabdc6fa9d4d0f3.txt",
+      "title": "DataStructures · heap_32768_alloc · julia.alloc.bytes",
+      "unit": "By"
+    },
+    {
+      "case_id": "event_lab/DataStructures/heap_32768_profile",
+      "definition": "julia.cpu.samples/profile-v1",
+      "feature": "heap_32768_profile",
+      "id": "cpu-flamegraph-054b5e59c351c558",
+      "json": "cpu-flamegraph-054b5e59c351c558.json",
+      "kind": "cpu_flamegraph",
+      "label": "CPU flame graph",
+      "metric": "julia.cpu.samples",
+      "package": "DataStructures",
+      "svg": "cpu-flamegraph-054b5e59c351c558.svg",
+      "terminal": "cpu-flamegraph-054b5e59c351c558.txt",
+      "title": "DataStructures · heap_32768_profile · CPU flame graph",
+      "unit": "samples"
+    },
+    {
+      "case_id": "event_lab/DataStructures/heap_32768_profile_alloc",
+      "feature": "heap_32768_profile_alloc",
+      "id": "allocation-files-9fe5fe0534069cf7",
+      "json": "allocation-files-9fe5fe0534069cf7.json",
+      "kind": "allocation_files",
+      "label": "Allocations by file",
+      "metric": "julia.alloc.bytes",
+      "package": "DataStructures",
+      "svg": "allocation-files-9fe5fe0534069cf7.svg",
+      "terminal": "allocation-files-9fe5fe0534069cf7.txt",
+      "title": "DataStructures · heap_32768_profile_alloc · allocations",
+      "unit": "By"
+    },
+    {
+      "case_id": "event_lab/DataStructures/heap_32768_profile_alloc",
+      "feature": "heap_32768_profile_alloc",
+      "id": "allocation-flamegraph-6d6354c132248fdf",
+      "json": "allocation-flamegraph-6d6354c132248fdf.json",
+      "kind": "allocation_flamegraph",
+      "label": "Allocation flame graph",
+      "metric": "julia.alloc.bytes",
+      "package": "DataStructures",
+      "svg": "allocation-flamegraph-6d6354c132248fdf.svg",
+      "terminal": "allocation-flamegraph-6d6354c132248fdf.txt",
+      "title": "DataStructures · heap_32768_profile_alloc · allocation flame graph",
+      "unit": "By"
+    },
+    {
+      "case_id": "event_lab/DataStructures/heap_32768_profile_alloc",
+      "feature": "heap_32768_profile_alloc",
+      "id": "allocation-heatmap-bdf4e07782ac84ea",
+      "json": "allocation-heatmap-bdf4e07782ac84ea.json",
+      "kind": "allocation_heatmap",
+      "label": "Allocation line heatmap",
+      "metric": "julia.alloc.bytes",
+      "package": "DataStructures",
+      "svg": "allocation-heatmap-bdf4e07782ac84ea.svg",
+      "terminal": "allocation-heatmap-bdf4e07782ac84ea.txt",
+      "title": "DataStructures · heap_32768_profile_alloc · allocations",
+      "unit": "By"
+    },
+    {
+      "case_id": "event_lab/DataStructures/heap_32768_profile_alloc",
+      "feature": "heap_32768_profile_alloc",
+      "id": "allocation-lines-fea8acd7ab8697d0",
+      "json": "allocation-lines-fea8acd7ab8697d0.json",
+      "kind": "allocation_lines",
+      "label": "Allocation hotspots by line",
+      "metric": "julia.alloc.bytes",
+      "package": "DataStructures",
+      "svg": "allocation-lines-fea8acd7ab8697d0.svg",
+      "terminal": "allocation-lines-fea8acd7ab8697d0.txt",
+      "title": "DataStructures · heap_32768_profile_alloc · allocations",
+      "unit": "By"
+    },
+    {
+      "case_id": "event_lab/DataStructures/heap_32768_profile_alloc",
+      "feature": "heap_32768_profile_alloc",
+      "id": "allocation-pie-5fa622ca80b2df9b",
+      "json": "allocation-pie-5fa622ca80b2df9b.json",
+      "kind": "allocation_pie",
+      "label": "Allocation share by line (%)",
+      "metric": "julia.alloc.bytes",
+      "package": "DataStructures",
+      "svg": "allocation-pie-5fa622ca80b2df9b.svg",
+      "terminal": "allocation-pie-5fa622ca80b2df9b.txt",
+      "title": "DataStructures · heap_32768_profile_alloc · allocations",
+      "unit": "By"
+    },
+    {
+      "feature": "heap_32768_profile_alloc",
+      "id": "version-series-a6dc60f82624a0f2",
+      "json": "version-series-a6dc60f82624a0f2.json",
+      "kind": "version_series",
+      "label": "Version trajectory",
+      "metric": "julia.alloc.count",
+      "package": "DataStructures",
+      "series_id": "bd172137b2bf7332",
+      "svg": "version-series-a6dc60f82624a0f2.svg",
+      "terminal": "version-series-a6dc60f82624a0f2.txt",
+      "title": "DataStructures · heap_32768_profile_alloc · julia.alloc.count",
+      "unit": "1"
+    },
+    {
+      "feature": "heap_32768_profile_alloc",
+      "id": "version-series-b3bd3fce6a1b6673",
+      "json": "version-series-b3bd3fce6a1b6673.json",
+      "kind": "version_series",
+      "label": "Version trajectory",
+      "metric": "julia.alloc.bytes",
+      "package": "DataStructures",
+      "series_id": "ebb6fbdffcfc852f",
+      "svg": "version-series-b3bd3fce6a1b6673.svg",
+      "terminal": "version-series-b3bd3fce6a1b6673.txt",
+      "title": "DataStructures · heap_32768_profile_alloc · julia.alloc.bytes",
+      "unit": "By"
+    },
+    {
+      "case_id": "event_lab/DataStructures/heap_32768_wall_profile",
+      "definition": "julia.wall.samples/profile-walltime-v1",
+      "feature": "heap_32768_wall_profile",
+      "id": "wall-flamegraph-1a28318cdf1f7700",
+      "json": "wall-flamegraph-1a28318cdf1f7700.json",
+      "kind": "wall_flamegraph",
+      "label": "Wall-time flame graph",
+      "metric": "julia.wall.samples",
+      "package": "DataStructures",
+      "svg": "wall-flamegraph-1a28318cdf1f7700.svg",
+      "terminal": "wall-flamegraph-1a28318cdf1f7700.txt",
+      "title": "DataStructures · heap_32768_wall_profile · wall-time flame graph",
+      "unit": "samples"
+    }
+  ]
+}

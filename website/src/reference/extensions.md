@@ -65,8 +65,11 @@ Add DrWatson to that controller environment before loading the extension.
 using PerfChecker, DrWatson
 
 params = drwatson_parameters(plan)
-name = drwatson_savename(params)
-result = drwatson_produce_or_load(plan, "perf/results")
+name = drwatson_savename(first(plan.runs))
+result, filename = drwatson_produce_or_load(first(params);
+        directory = "perf/results", tag = false) do parameters
+    Dict("parameters" => parameters, "note" => "Saved experiment configuration")
+end
 ```
 
 `drwatson_run_suite` combines structured experiment parameters, resumable output,

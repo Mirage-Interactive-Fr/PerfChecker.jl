@@ -1,0 +1,47 @@
+{
+  "correctness": "passed",
+  "os": "NT",
+  "performance": "not_compared",
+  "plot": {
+    "data": [
+      {
+        "aggregation": "median",
+        "samples": 100,
+        "target_kind": "release",
+        "value": 1.0,
+        "version": "1.11.0"
+      }
+    ],
+    "description": "Version trajectory",
+    "encoding": {
+      "color": "target_kind",
+      "x": "version",
+      "y": "value"
+    },
+    "id": "version-series-d51e72e65f7c1a84",
+    "kind": "version_series",
+    "options": {
+      "feature": "heap_profile_alloc",
+      "metric": "julia.alloc.count",
+      "package": "Oxygen",
+      "series_id": "aa7dc6f804b55646",
+      "unit": "1"
+    },
+    "schema_version": "perfchecker-plot/1",
+    "title": "Oxygen · heap_profile_alloc · julia.alloc.count"
+  },
+  "run_id": "c4a79ae5-6f29-43d0-8b0c-74c925ddce05",
+  "runtime": {
+    "language": "julia",
+    "threads": 1,
+    "version": "1.13.0"
+  },
+  "scope": "One local machine; illustrative history, not a package regression verdict",
+  "started_at": "2026-09-13T08:07:00.850",
+  "worker_environments": [
+    {
+      "manifest_sha256": "9d8c1eefca3cd583a3a37924386096ba4cac23c6659677661adf99b8daeafc29",
+      "project_sha256": "7ed3e2423069063c7a3926984952a50dda661a89ed4f3beb42623f9241bea020"
+    }
+  ]
+}

@@ -56,6 +56,7 @@ const config = defineConfig({
         { text: 'Short Bibliography tutorial', link: '/tutorials/quick-tour' },
         { text: 'Understand the measurements', link: '/guide/understanding-measurements' },
         { text: 'Bibliography walkthrough', link: '/tutorials/bibliography' },
+        { text: 'Real package examples', link: '/real-packages/' },
       ] },
       { text: 'Use PerfChecker', items: [
         { text: 'Interfaces', items: [
@@ -70,6 +71,7 @@ const config = defineConfig({
         { text: 'Existing test items', link: '/test-items' },
         { text: 'Software suites', link: '/software-suites' },
         { text: 'Comparisons', link: '/tutorials/comparisons' },
+        { text: 'DataStructures and Oxygen experiments', link: '/real-packages/' },
         { text: 'Advanced experiments', link: '/experiments' },
         { text: 'Profiling Julia and native code', link: '/native-profiling' },
         { text: 'Automation and hosting', link: '/operations/overview' },

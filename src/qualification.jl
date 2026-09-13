@@ -170,10 +170,16 @@ function _environment_provenance(path::AbstractString)
         "preferences_sha256" => _sha256_file(joinpath(root, "LocalPreferences.toml")),
         "manifest_file" => basename(manifest), "manifest_sha256" => _sha256_file(manifest))
     sources = Dict{String, Any}[]
+    resolved_packages = Dict{String, Any}[]
     if isfile(manifest)
         try
             dependencies = get(TOML.parsefile(manifest), "deps", Dict())
             for name in sort!(collect(keys(dependencies))), entry in dependencies[name]
+                # Keep the resolved versions after temporary worker environments
+                # are removed. Hashes alone cannot explain dependency transitions.
+                push!(resolved_packages, merge(Dict{String, Any}("name" => name),
+                    Dict{String, Any}(key => entry[key] for key in
+                        ("uuid", "version", "git-tree-sha1") if haskey(entry, key))))
                 haskey(entry, "path") || continue
                 source = abspath(root, entry["path"])
                 push!(sources,
@@ -187,6 +193,7 @@ function _environment_provenance(path::AbstractString)
         end
     end
     evidence["development_sources"] = sources
+    evidence["resolved_packages"] = resolved_packages
     evidence
 end
 

@@ -58,14 +58,23 @@ function PerfChecker.terminal_plot(plot::PerfChecker.PerformancePlot;
     elseif plot.kind === :version_delta
         records = filter(item -> get(item, "relative_delta", nothing) isa Number,
             plot.data)
-        adapted = PerfChecker.PerformancePlot(plot.id, plot.kind, plot.title,
-            plot.description, plot.encoding,
-            [merge(copy(item),
-                 Dict("delta_percent" => 100 * Float64(item["relative_delta"])))
-             for item in records],
-            plot.options)
-        return _bar_plot(adapted, "candidate_version", "delta_percent";
-            width, height, suffix = "%")
+        if isempty(records)
+            return UnicodePlots.scatterplot(Float64[], Float64[];
+                title = "$(plot.title) — relative change unavailable",
+                xlabel = "Zero or missing baseline: inspect absolute values",
+                xlim = (0.0, 1.0), ylim = (0.0, 1.0), width, height)
+        end
+        # UnicodePlots.barplot only accepts nonnegative heights. Improvements
+        # are negative deltas and must retain their sign in the terminal too.
+        labels = String[item["candidate_version"] for item in records]
+        values = Float64[100 * item["relative_delta"] for item in records]
+        chart = UnicodePlots.lineplot([1, max(2, length(values))], [0.0, 0.0];
+            title = plot.title, xlabel = "versions: $(join(labels, ", "))",
+            ylabel = "change (%)", width, height,
+            ylim = (min(-1.0, minimum(values) * 1.1), max(1.0, maximum(values) * 1.1)),
+            name = "baseline = 0", color = :cyan)
+        return UnicodePlots.scatterplot!(chart, collect(eachindex(values)), values;
+            name = "signed change", color = :yellow)
     elseif plot.kind === :distribution
         values = Float64[Float64(item["value"]) for item in plot.data]
         return UnicodePlots.histogram(values; title = plot.title, width, height)

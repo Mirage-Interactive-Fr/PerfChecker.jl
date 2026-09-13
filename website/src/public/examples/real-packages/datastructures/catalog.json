@@ -1,0 +1,1565 @@
+{
+  "correctness": "passed",
+  "performance": "not_compared",
+  "release_dates": {
+    "0.11.0": "2018-08-07",
+    "0.12.0": "2018-09-11",
+    "0.13.0": "2018-09-21",
+    "0.14.0": "2018-09-24",
+    "0.15.0": "2019-01-08",
+    "0.16.1": "2019-07-05",
+    "0.17.0": "2019-07-05",
+    "0.17.20": "2020-08-04",
+    "0.18.0": "2020-08-17",
+    "0.18.10": "2021-08-09",
+    "0.18.13": "2022-05-24",
+    "0.18.15": "2023-08-03",
+    "0.18.22": "2025-03-18",
+    "0.19.0": "2025-08-01",
+    "0.19.6": "2026-07-17"
+  },
+  "resolved_environments": [
+    {
+      "manifest_sha256": "13cdc782f67a1b2368ed2bea6a7d20cecefb5bafb6f87abc06a644de341fcdb4",
+      "packages": [],
+      "version": "0.11.0"
+    },
+    {
+      "manifest_sha256": "792d5e80d1ee590c462e3782718ae9b0ebebc344c6d5419197830d079c26990a",
+      "packages": [],
+      "version": "0.12.0"
+    },
+    {
+      "manifest_sha256": "d2fedf1222a5c7e235849efe8677dc53447eca2a2fcac07e61522d7484496e73",
+      "packages": [],
+      "version": "0.13.0"
+    },
+    {
+      "manifest_sha256": "c5a3f591a23ee6b39a14be0d4668e2ca3f0e02f3d65d44e232813f10d8ff339c",
+      "packages": [],
+      "version": "0.14.0"
+    },
+    {
+      "manifest_sha256": "59537ca0cdfbfb4d8de3c23f37d80c3c898a78e2b4270b5dfe2f32bd3cbc99bc",
+      "packages": [],
+      "version": "0.15.0"
+    },
+    {
+      "manifest_sha256": "a0c81f49e3dc091ae73c39b50e6a55bc4d36ab591551acfb519d4441ec4a7061",
+      "packages": [],
+      "version": "0.16.1"
+    },
+    {
+      "manifest_sha256": "866366f7c3296fba8eb594f992509a0517dec58feebc6a723cd134e714fc6162",
+      "packages": [],
+      "version": "0.17.0"
+    },
+    {
+      "manifest_sha256": "f153c66330178f772fd6bda1922304e0902a25a0e803cf8e2ef08fd0ccbc72e1",
+      "packages": [],
+      "version": "0.17.20"
+    },
+    {
+      "manifest_sha256": "016a99f3a905204600a002928a10d45943d3f5d775cca4e5ade9b4238a14bcc2",
+      "packages": [],
+      "version": "0.18.0"
+    },
+    {
+      "manifest_sha256": "7cfe2da7218d75870420e052a4d375ea4ab2921b8d00b89dcb385fae22df491c",
+      "packages": [],
+      "version": "0.18.10"
+    },
+    {
+      "manifest_sha256": "b62bd347f59e90e675fe6dec9b69b4ae6f2c26000a6a468db5b8725bddfd9d6e",
+      "packages": [],
+      "version": "0.18.13"
+    },
+    {
+      "manifest_sha256": "992dbe29f3c11ada99981c4e86c4fc686e3774302bead844aa5c667d8c21c4c7",
+      "packages": [],
+      "version": "0.18.15"
+    },
+    {
+      "manifest_sha256": "a6361cd43f4e6489a8d38ce0f726eee18b597203020246f1f885b537de2c1eae",
+      "packages": [],
+      "version": "0.18.22"
+    },
+    {
+      "manifest_sha256": "3a6ff09abdd5fd4d092a100cf42e8f9e807975054baf8daaa0903d9387a46c6f",
+      "packages": [],
+      "version": "0.19.0"
+    },
+    {
+      "manifest_sha256": "e956f9d3af72872a9d43e6dc3fdac644b73223bd6b5e4ac250e7c0cc02eb97d5",
+      "packages": [],
+      "version": "0.19.6"
+    }
+  ],
+  "runs": [
+    {
+      "feature": "buffer_2048_benchmark",
+      "package": "DataStructures",
+      "status": "pass",
+      "version": "0.11.0"
+    },
+    {
+      "feature": "counter_2048_benchmark",
+      "package": "DataStructures",
+      "status": "pass",
+      "version": "0.11.0"
+    },
+    {
+      "feature": "heap_2048_benchmark",
+      "package": "DataStructures",
+      "status": "pass",
+      "version": "0.11.0"
+    },
+    {
+      "feature": "heap_2048_chairmark",
+      "package": "DataStructures",
+      "status": "pass",
+      "version": "0.11.0"
+    },
+    {
+      "feature": "vector_2048_benchmark",
+      "package": "DataStructures",
+      "status": "pass",
+      "version": "0.11.0"
+    },
+    {
+      "feature": "buffer_2048_benchmark",
+      "package": "DataStructures",
+      "status": "pass",
+      "version": "0.12.0"
+    },
+    {
+      "feature": "counter_2048_benchmark",
+      "package": "DataStructures",
+      "status": "pass",
+      "version": "0.12.0"
+    },
+    {
+      "feature": "heap_2048_benchmark",
+      "package": "DataStructures",
+      "status": "pass",
+      "version": "0.12.0"
+    },
+    {
+      "feature": "heap_2048_chairmark",
+      "package": "DataStructures",
+      "status": "pass",
+      "version": "0.12.0"
+    },
+    {
+      "feature": "vector_2048_benchmark",
+      "package": "DataStructures",
+      "status": "pass",
+      "version": "0.12.0"
+    },
+    {
+      "feature": "buffer_2048_benchmark",
+      "package": "DataStructures",
+      "status": "pass",
+      "version": "0.13.0"
+    },
+    {
+      "feature": "counter_2048_benchmark",
+      "package": "DataStructures",
+      "status": "pass",
+      "version": "0.13.0"
+    },
+    {
+      "feature": "heap_2048_benchmark",
+      "package": "DataStructures",
+      "status": "pass",
+      "version": "0.13.0"
+    },
+    {
+      "feature": "heap_2048_chairmark",
+      "package": "DataStructures",
+      "status": "pass",
+      "version": "0.13.0"
+    },
+    {
+      "feature": "vector_2048_benchmark",
+      "package": "DataStructures",
+      "status": "pass",
+      "version": "0.13.0"
+    },
+    {
+      "feature": "buffer_2048_benchmark",
+      "package": "DataStructures",
+      "status": "pass",
+      "version": "0.14.0"
+    },
+    {
+      "feature": "counter_2048_benchmark",
+      "package": "DataStructures",
+      "status": "pass",
+      "version": "0.14.0"
+    },
+    {
+      "feature": "heap_2048_benchmark",
+      "package": "DataStructures",
+      "status": "pass",
+      "version": "0.14.0"
+    },
+    {
+      "feature": "heap_2048_chairmark",
+      "package": "DataStructures",
+      "status": "pass",
+      "version": "0.14.0"
+    },
+    {
+      "feature": "vector_2048_benchmark",
+      "package": "DataStructures",
+      "status": "pass",
+      "version": "0.14.0"
+    },
+    {
+      "feature": "buffer_2048_benchmark",
+      "package": "DataStructures",
+      "status": "pass",
+      "version": "0.15.0"
+    },
+    {
+      "feature": "counter_2048_benchmark",
+      "package": "DataStructures",
+      "status": "pass",
+      "version": "0.15.0"
+    },
+    {
+      "feature": "heap_2048_benchmark",
+      "package": "DataStructures",
+      "status": "pass",
+      "version": "0.15.0"
+    },
+    {
+      "feature": "heap_2048_chairmark",
+      "package": "DataStructures",
+      "status": "pass",
+      "version": "0.15.0"
+    },
+    {
+      "feature": "vector_2048_benchmark",
+      "package": "DataStructures",
+      "status": "pass",
+      "version": "0.15.0"
+    },
+    {
+      "feature": "buffer_2048_benchmark",
+      "package": "DataStructures",
+      "status": "pass",
+      "version": "0.16.1"
+    },
+    {
+      "feature": "counter_2048_benchmark",
+      "package": "DataStructures",
+      "status": "pass",
+      "version": "0.16.1"
+    },
+    {
+      "feature": "heap_2048_benchmark",
+      "package": "DataStructures",
+      "status": "pass",
+      "version": "0.16.1"
+    },
+    {
+      "feature": "heap_2048_chairmark",
+      "package": "DataStructures",
+      "status": "pass",
+      "version": "0.16.1"
+    },
+    {
+      "feature": "vector_2048_benchmark",
+      "package": "DataStructures",
+      "status": "pass",
+      "version": "0.16.1"
+    },
+    {
+      "feature": "buffer_2048_benchmark",
+      "package": "DataStructures",
+      "status": "pass",
+      "version": "0.17.0"
+    },
+    {
+      "feature": "counter_2048_benchmark",
+      "package": "DataStructures",
+      "status": "pass",
+      "version": "0.17.0"
+    },
+    {
+      "feature": "heap_2048_benchmark",
+      "package": "DataStructures",
+      "status": "pass",
+      "version": "0.17.0"
+    },
+    {
+      "feature": "heap_2048_chairmark",
+      "package": "DataStructures",
+      "status": "pass",
+      "version": "0.17.0"
+    },
+    {
+      "feature": "vector_2048_benchmark",
+      "package": "DataStructures",
+      "status": "pass",
+      "version": "0.17.0"
+    },
+    {
+      "feature": "buffer_2048_benchmark",
+      "package": "DataStructures",
+      "status": "pass",
+      "version": "0.17.20"
+    },
+    {
+      "feature": "counter_2048_benchmark",
+      "package": "DataStructures",
+      "status": "pass",
+      "version": "0.17.20"
+    },
+    {
+      "feature": "heap_2048_benchmark",
+      "package": "DataStructures",
+      "status": "pass",
+      "version": "0.17.20"
+    },
+    {
+      "feature": "heap_2048_chairmark",
+      "package": "DataStructures",
+      "status": "pass",
+      "version": "0.17.20"
+    },
+    {
+      "feature": "vector_2048_benchmark",
+      "package": "DataStructures",
+      "status": "pass",
+      "version": "0.17.20"
+    },
+    {
+      "feature": "buffer_2048_benchmark",
+      "package": "DataStructures",
+      "status": "pass",
+      "version": "0.18.0"
+    },
+    {
+      "feature": "counter_2048_benchmark",
+      "package": "DataStructures",
+      "status": "pass",
+      "version": "0.18.0"
+    },
+    {
+      "feature": "heap_2048_benchmark",
+      "package": "DataStructures",
+      "status": "pass",
+      "version": "0.18.0"
+    },
+    {
+      "feature": "heap_2048_chairmark",
+      "package": "DataStructures",
+      "status": "pass",
+      "version": "0.18.0"
+    },
+    {
+      "feature": "vector_2048_benchmark",
+      "package": "DataStructures",
+      "status": "pass",
+      "version": "0.18.0"
+    },
+    {
+      "feature": "buffer_2048_benchmark",
+      "package": "DataStructures",
+      "status": "pass",
+      "version": "0.18.10"
+    },
+    {
+      "feature": "counter_2048_benchmark",
+      "package": "DataStructures",
+      "status": "pass",
+      "version": "0.18.10"
+    },
+    {
+      "feature": "heap_2048_benchmark",
+      "package": "DataStructures",
+      "status": "pass",
+      "version": "0.18.10"
+    },
+    {
+      "feature": "heap_2048_chairmark",
+      "package": "DataStructures",
+      "status": "pass",
+      "version": "0.18.10"
+    },
+    {
+      "feature": "vector_2048_benchmark",
+      "package": "DataStructures",
+      "status": "pass",
+      "version": "0.18.10"
+    },
+    {
+      "feature": "buffer_2048_benchmark",
+      "package": "DataStructures",
+      "status": "pass",
+      "version": "0.18.13"
+    },
+    {
+      "feature": "counter_2048_benchmark",
+      "package": "DataStructures",
+      "status": "pass",
+      "version": "0.18.13"
+    },
+    {
+      "feature": "heap_2048_benchmark",
+      "package": "DataStructures",
+      "status": "pass",
+      "version": "0.18.13"
+    },
+    {
+      "feature": "heap_2048_chairmark",
+      "package": "DataStructures",
+      "status": "pass",
+      "version": "0.18.13"
+    },
+    {
+      "feature": "vector_2048_benchmark",
+      "package": "DataStructures",
+      "status": "pass",
+      "version": "0.18.13"
+    },
+    {
+      "feature": "buffer_2048_benchmark",
+      "package": "DataStructures",
+      "status": "pass",
+      "version": "0.18.15"
+    },
+    {
+      "feature": "counter_2048_benchmark",
+      "package": "DataStructures",
+      "status": "pass",
+      "version": "0.18.15"
+    },
+    {
+      "feature": "heap_2048_benchmark",
+      "package": "DataStructures",
+      "status": "pass",
+      "version": "0.18.15"
+    },
+    {
+      "feature": "heap_2048_chairmark",
+      "package": "DataStructures",
+      "status": "pass",
+      "version": "0.18.15"
+    },
+    {
+      "feature": "vector_2048_benchmark",
+      "package": "DataStructures",
+      "status": "pass",
+      "version": "0.18.15"
+    },
+    {
+      "feature": "buffer_2048_benchmark",
+      "package": "DataStructures",
+      "status": "pass",
+      "version": "0.18.22"
+    },
+    {
+      "feature": "counter_2048_benchmark",
+      "package": "DataStructures",
+      "status": "pass",
+      "version": "0.18.22"
+    },
+    {
+      "feature": "heap_2048_benchmark",
+      "package": "DataStructures",
+      "status": "pass",
+      "version": "0.18.22"
+    },
+    {
+      "feature": "heap_2048_chairmark",
+      "package": "DataStructures",
+      "status": "pass",
+      "version": "0.18.22"
+    },
+    {
+      "feature": "vector_2048_benchmark",
+      "package": "DataStructures",
+      "status": "pass",
+      "version": "0.18.22"
+    },
+    {
+      "feature": "buffer_2048_benchmark",
+      "package": "DataStructures",
+      "status": "pass",
+      "version": "0.19.0"
+    },
+    {
+      "feature": "counter_2048_benchmark",
+      "package": "DataStructures",
+      "status": "pass",
+      "version": "0.19.0"
+    },
+    {
+      "feature": "heap_2048_benchmark",
+      "package": "DataStructures",
+      "status": "pass",
+      "version": "0.19.0"
+    },
+    {
+      "feature": "heap_2048_chairmark",
+      "package": "DataStructures",
+      "status": "pass",
+      "version": "0.19.0"
+    },
+    {
+      "feature": "vector_2048_benchmark",
+      "package": "DataStructures",
+      "status": "pass",
+      "version": "0.19.0"
+    },
+    {
+      "feature": "buffer_2048_benchmark",
+      "package": "DataStructures",
+      "status": "pass",
+      "version": "0.19.6"
+    },
+    {
+      "feature": "counter_2048_benchmark",
+      "package": "DataStructures",
+      "status": "pass",
+      "version": "0.19.6"
+    },
+    {
+      "feature": "heap_2048_benchmark",
+      "package": "DataStructures",
+      "status": "pass",
+      "version": "0.19.6"
+    },
+    {
+      "feature": "heap_2048_chairmark",
+      "package": "DataStructures",
+      "status": "pass",
+      "version": "0.19.6"
+    },
+    {
+      "feature": "vector_2048_benchmark",
+      "package": "DataStructures",
+      "status": "pass",
+      "version": "0.19.6"
+    }
+  ],
+  "runtime": {
+    "language": "julia",
+    "threads": 1,
+    "version": "1.13.0"
+  },
+  "skipped": [],
+  "versions": [
+    "0.11.0",
+    "0.12.0",
+    "0.13.0",
+    "0.14.0",
+    "0.15.0",
+    "0.16.1",
+    "0.17.0",
+    "0.17.20",
+    "0.18.0",
+    "0.18.10",
+    "0.18.13",
+    "0.18.15",
+    "0.18.22",
+    "0.19.0",
+    "0.19.6"
+  ],
+  "views": [
+    {
+      "collector": "benchmarktools-v1/fresh-state-evals1-v1",
+      "comparison_key": "events/buffer/2048/seed42/v1",
+      "feature": "buffer_2048_benchmark",
+      "id": "normalized-metrics-9f15dd9785af6bf9",
+      "json": "normalized-metrics-9f15dd9785af6bf9.json",
+      "kind": "normalized_metrics",
+      "label": "Overlaid measurements · minimum = 1",
+      "metric": "benchmark metrics",
+      "package": "DataStructures",
+      "svg": "normalized-metrics-9f15dd9785af6bf9.svg",
+      "terminal": "normalized-metrics-9f15dd9785af6bf9.txt",
+      "title": "DataStructures · buffer_2048_benchmark · relative to minimum",
+      "unit": "ratio",
+      "workload": "buffer_2048"
+    },
+    {
+      "feature": "buffer_2048_benchmark",
+      "id": "distribution-2e2da474286a8025",
+      "json": "distribution-2e2da474286a8025.json",
+      "kind": "distribution",
+      "label": "Sample distribution",
+      "metric": "julia.gc.time",
+      "package": "DataStructures",
+      "series_id": "84f2148691e9e2a0",
+      "svg": "distribution-2e2da474286a8025.svg",
+      "terminal": "distribution-2e2da474286a8025.txt",
+      "title": "DataStructures · buffer_2048_benchmark · julia.gc.time",
+      "unit": "ns"
+    },
+    {
+      "feature": "buffer_2048_benchmark",
+      "id": "distribution-a423fbe09a294322",
+      "json": "distribution-a423fbe09a294322.json",
+      "kind": "distribution",
+      "label": "Sample distribution",
+      "metric": "julia.alloc.count",
+      "package": "DataStructures",
+      "series_id": "559921bfb16fca62",
+      "svg": "distribution-a423fbe09a294322.svg",
+      "terminal": "distribution-a423fbe09a294322.txt",
+      "title": "DataStructures · buffer_2048_benchmark · julia.alloc.count",
+      "unit": "1"
+    },
+    {
+      "feature": "buffer_2048_benchmark",
+      "id": "distribution-d0784c04cb143b7d",
+      "json": "distribution-d0784c04cb143b7d.json",
+      "kind": "distribution",
+      "label": "Sample distribution",
+      "metric": "julia.wall.time",
+      "package": "DataStructures",
+      "series_id": "e83ba8b99ca2f535",
+      "svg": "distribution-d0784c04cb143b7d.svg",
+      "terminal": "distribution-d0784c04cb143b7d.txt",
+      "title": "DataStructures · buffer_2048_benchmark · julia.wall.time",
+      "unit": "ns"
+    },
+    {
+      "feature": "buffer_2048_benchmark",
+      "id": "distribution-d61d21d9fe711fb5",
+      "json": "distribution-d61d21d9fe711fb5.json",
+      "kind": "distribution",
+      "label": "Sample distribution",
+      "metric": "julia.alloc.bytes",
+      "package": "DataStructures",
+      "series_id": "1bc933d3da3df6ce",
+      "svg": "distribution-d61d21d9fe711fb5.svg",
+      "terminal": "distribution-d61d21d9fe711fb5.txt",
+      "title": "DataStructures · buffer_2048_benchmark · julia.alloc.bytes",
+      "unit": "By"
+    },
+    {
+      "comparison_key": "events/buffer/2048/seed42/v1",
+      "feature": "buffer_2048_benchmark",
+      "id": "time-allocation-tradeoff-0f659878d93e0277",
+      "json": "time-allocation-tradeoff-0f659878d93e0277.json",
+      "kind": "time_allocation_tradeoff",
+      "label": "Time vs allocations",
+      "metric": "julia.wall.time+julia.alloc.bytes",
+      "package": "DataStructures",
+      "svg": "time-allocation-tradeoff-0f659878d93e0277.svg",
+      "terminal": "time-allocation-tradeoff-0f659878d93e0277.txt",
+      "title": "DataStructures · buffer_2048_benchmark · time/allocation trade-off",
+      "unit": "s+By"
+    },
+    {
+      "feature": "buffer_2048_benchmark",
+      "id": "version-delta-2031c72203b9b3c2",
+      "json": "version-delta-2031c72203b9b3c2.json",
+      "kind": "version_delta",
+      "label": "Regression deltas",
+      "metric": "julia.wall.time",
+      "package": "DataStructures",
+      "series_id": "e83ba8b99ca2f535",
+      "svg": "version-delta-2031c72203b9b3c2.svg",
+      "terminal": "version-delta-2031c72203b9b3c2.txt",
+      "title": "DataStructures · buffer_2048_benchmark · julia.wall.time",
+      "unit": "ns"
+    },
+    {
+      "feature": "buffer_2048_benchmark",
+      "id": "version-delta-64d1aa70ca108567",
+      "json": "version-delta-64d1aa70ca108567.json",
+      "kind": "version_delta",
+      "label": "Regression deltas",
+      "metric": "julia.alloc.count",
+      "package": "DataStructures",
+      "series_id": "559921bfb16fca62",
+      "svg": "version-delta-64d1aa70ca108567.svg",
+      "terminal": "version-delta-64d1aa70ca108567.txt",
+      "title": "DataStructures · buffer_2048_benchmark · julia.alloc.count",
+      "unit": "1"
+    },
+    {
+      "feature": "buffer_2048_benchmark",
+      "id": "version-delta-fb794796534ca5ee",
+      "json": "version-delta-fb794796534ca5ee.json",
+      "kind": "version_delta",
+      "label": "Regression deltas",
+      "metric": "julia.alloc.bytes",
+      "package": "DataStructures",
+      "series_id": "1bc933d3da3df6ce",
+      "svg": "version-delta-fb794796534ca5ee.svg",
+      "terminal": "version-delta-fb794796534ca5ee.txt",
+      "title": "DataStructures · buffer_2048_benchmark · julia.alloc.bytes",
+      "unit": "By"
+    },
+    {
+      "feature": "buffer_2048_benchmark",
+      "id": "version-delta-fcb02c648e04aed7",
+      "json": "version-delta-fcb02c648e04aed7.json",
+      "kind": "version_delta",
+      "label": "Regression deltas",
+      "metric": "julia.gc.time",
+      "package": "DataStructures",
+      "series_id": "84f2148691e9e2a0",
+      "svg": "version-delta-fcb02c648e04aed7.svg",
+      "terminal": "version-delta-fcb02c648e04aed7.txt",
+      "title": "DataStructures · buffer_2048_benchmark · julia.gc.time",
+      "unit": "ns"
+    },
+    {
+      "feature": "buffer_2048_benchmark",
+      "id": "version-series-790bf56d4e3922b7",
+      "json": "version-series-790bf56d4e3922b7.json",
+      "kind": "version_series",
+      "label": "Version trajectory",
+      "metric": "julia.wall.time",
+      "package": "DataStructures",
+      "series_id": "e83ba8b99ca2f535",
+      "svg": "version-series-790bf56d4e3922b7.svg",
+      "terminal": "version-series-790bf56d4e3922b7.txt",
+      "title": "DataStructures · buffer_2048_benchmark · julia.wall.time",
+      "unit": "ns"
+    },
+    {
+      "feature": "buffer_2048_benchmark",
+      "id": "version-series-a8be6b0592c64223",
+      "json": "version-series-a8be6b0592c64223.json",
+      "kind": "version_series",
+      "label": "Version trajectory",
+      "metric": "julia.alloc.count",
+      "package": "DataStructures",
+      "series_id": "559921bfb16fca62",
+      "svg": "version-series-a8be6b0592c64223.svg",
+      "terminal": "version-series-a8be6b0592c64223.txt",
+      "title": "DataStructures · buffer_2048_benchmark · julia.alloc.count",
+      "unit": "1"
+    },
+    {
+      "feature": "buffer_2048_benchmark",
+      "id": "version-series-aaffbd8196f5fe65",
+      "json": "version-series-aaffbd8196f5fe65.json",
+      "kind": "version_series",
+      "label": "Version trajectory",
+      "metric": "julia.gc.time",
+      "package": "DataStructures",
+      "series_id": "84f2148691e9e2a0",
+      "svg": "version-series-aaffbd8196f5fe65.svg",
+      "terminal": "version-series-aaffbd8196f5fe65.txt",
+      "title": "DataStructures · buffer_2048_benchmark · julia.gc.time",
+      "unit": "ns"
+    },
+    {
+      "feature": "buffer_2048_benchmark",
+      "id": "version-series-d6e61225fb5f38ff",
+      "json": "version-series-d6e61225fb5f38ff.json",
+      "kind": "version_series",
+      "label": "Version trajectory",
+      "metric": "julia.alloc.bytes",
+      "package": "DataStructures",
+      "series_id": "1bc933d3da3df6ce",
+      "svg": "version-series-d6e61225fb5f38ff.svg",
+      "terminal": "version-series-d6e61225fb5f38ff.txt",
+      "title": "DataStructures · buffer_2048_benchmark · julia.alloc.bytes",
+      "unit": "By"
+    },
+    {
+      "collector": "benchmarktools-v1/fresh-state-evals1-v1",
+      "comparison_key": "events/counter/2048/seed42/v1",
+      "feature": "counter_2048_benchmark",
+      "id": "normalized-metrics-a1318a90e3e855b9",
+      "json": "normalized-metrics-a1318a90e3e855b9.json",
+      "kind": "normalized_metrics",
+      "label": "Overlaid measurements · minimum = 1",
+      "metric": "benchmark metrics",
+      "package": "DataStructures",
+      "svg": "normalized-metrics-a1318a90e3e855b9.svg",
+      "terminal": "normalized-metrics-a1318a90e3e855b9.txt",
+      "title": "DataStructures · counter_2048_benchmark · relative to minimum",
+      "unit": "ratio",
+      "workload": "counter_2048"
+    },
+    {
+      "feature": "counter_2048_benchmark",
+      "id": "distribution-3b7284245ddd3494",
+      "json": "distribution-3b7284245ddd3494.json",
+      "kind": "distribution",
+      "label": "Sample distribution",
+      "metric": "julia.wall.time",
+      "package": "DataStructures",
+      "series_id": "e4f5beca20584630",
+      "svg": "distribution-3b7284245ddd3494.svg",
+      "terminal": "distribution-3b7284245ddd3494.txt",
+      "title": "DataStructures · counter_2048_benchmark · julia.wall.time",
+      "unit": "ns"
+    },
+    {
+      "feature": "counter_2048_benchmark",
+      "id": "distribution-443dda1341362475",
+      "json": "distribution-443dda1341362475.json",
+      "kind": "distribution",
+      "label": "Sample distribution",
+      "metric": "julia.alloc.count",
+      "package": "DataStructures",
+      "series_id": "c5669bec3de16455",
+      "svg": "distribution-443dda1341362475.svg",
+      "terminal": "distribution-443dda1341362475.txt",
+      "title": "DataStructures · counter_2048_benchmark · julia.alloc.count",
+      "unit": "1"
+    },
+    {
+      "feature": "counter_2048_benchmark",
+      "id": "distribution-89e629fa4e15c648",
+      "json": "distribution-89e629fa4e15c648.json",
+      "kind": "distribution",
+      "label": "Sample distribution",
+      "metric": "julia.alloc.bytes",
+      "package": "DataStructures",
+      "series_id": "226854f8e4a42158",
+      "svg": "distribution-89e629fa4e15c648.svg",
+      "terminal": "distribution-89e629fa4e15c648.txt",
+      "title": "DataStructures · counter_2048_benchmark · julia.alloc.bytes",
+      "unit": "By"
+    },
+    {
+      "feature": "counter_2048_benchmark",
+      "id": "distribution-d6fb188f034f1cce",
+      "json": "distribution-d6fb188f034f1cce.json",
+      "kind": "distribution",
+      "label": "Sample distribution",
+      "metric": "julia.gc.time",
+      "package": "DataStructures",
+      "series_id": "dff90ed66797c4d4",
+      "svg": "distribution-d6fb188f034f1cce.svg",
+      "terminal": "distribution-d6fb188f034f1cce.txt",
+      "title": "DataStructures · counter_2048_benchmark · julia.gc.time",
+      "unit": "ns"
+    },
+    {
+      "comparison_key": "events/counter/2048/seed42/v1",
+      "feature": "counter_2048_benchmark",
+      "id": "time-allocation-tradeoff-cfc8b327db1a7aa8",
+      "json": "time-allocation-tradeoff-cfc8b327db1a7aa8.json",
+      "kind": "time_allocation_tradeoff",
+      "label": "Time vs allocations",
+      "metric": "julia.wall.time+julia.alloc.bytes",
+      "package": "DataStructures",
+      "svg": "time-allocation-tradeoff-cfc8b327db1a7aa8.svg",
+      "terminal": "time-allocation-tradeoff-cfc8b327db1a7aa8.txt",
+      "title": "DataStructures · counter_2048_benchmark · time/allocation trade-off",
+      "unit": "s+By"
+    },
+    {
+      "feature": "counter_2048_benchmark",
+      "id": "version-delta-4041e0ef7d8e8108",
+      "json": "version-delta-4041e0ef7d8e8108.json",
+      "kind": "version_delta",
+      "label": "Regression deltas",
+      "metric": "julia.gc.time",
+      "package": "DataStructures",
+      "series_id": "dff90ed66797c4d4",
+      "svg": "version-delta-4041e0ef7d8e8108.svg",
+      "terminal": "version-delta-4041e0ef7d8e8108.txt",
+      "title": "DataStructures · counter_2048_benchmark · julia.gc.time",
+      "unit": "ns"
+    },
+    {
+      "feature": "counter_2048_benchmark",
+      "id": "version-delta-418b53c87251c928",
+      "json": "version-delta-418b53c87251c928.json",
+      "kind": "version_delta",
+      "label": "Regression deltas",
+      "metric": "julia.alloc.count",
+      "package": "DataStructures",
+      "series_id": "c5669bec3de16455",
+      "svg": "version-delta-418b53c87251c928.svg",
+      "terminal": "version-delta-418b53c87251c928.txt",
+      "title": "DataStructures · counter_2048_benchmark · julia.alloc.count",
+      "unit": "1"
+    },
+    {
+      "feature": "counter_2048_benchmark",
+      "id": "version-delta-625dc622bf8930e6",
+      "json": "version-delta-625dc622bf8930e6.json",
+      "kind": "version_delta",
+      "label": "Regression deltas",
+      "metric": "julia.wall.time",
+      "package": "DataStructures",
+      "series_id": "e4f5beca20584630",
+      "svg": "version-delta-625dc622bf8930e6.svg",
+      "terminal": "version-delta-625dc622bf8930e6.txt",
+      "title": "DataStructures · counter_2048_benchmark · julia.wall.time",
+      "unit": "ns"
+    },
+    {
+      "feature": "counter_2048_benchmark",
+      "id": "version-delta-d9f8ac5c436c7978",
+      "json": "version-delta-d9f8ac5c436c7978.json",
+      "kind": "version_delta",
+      "label": "Regression deltas",
+      "metric": "julia.alloc.bytes",
+      "package": "DataStructures",
+      "series_id": "226854f8e4a42158",
+      "svg": "version-delta-d9f8ac5c436c7978.svg",
+      "terminal": "version-delta-d9f8ac5c436c7978.txt",
+      "title": "DataStructures · counter_2048_benchmark · julia.alloc.bytes",
+      "unit": "By"
+    },
+    {
+      "feature": "counter_2048_benchmark",
+      "id": "version-series-68c2aebe6a3cb873",
+      "json": "version-series-68c2aebe6a3cb873.json",
+      "kind": "version_series",
+      "label": "Version trajectory",
+      "metric": "julia.wall.time",
+      "package": "DataStructures",
+      "series_id": "e4f5beca20584630",
+      "svg": "version-series-68c2aebe6a3cb873.svg",
+      "terminal": "version-series-68c2aebe6a3cb873.txt",
+      "title": "DataStructures · counter_2048_benchmark · julia.wall.time",
+      "unit": "ns"
+    },
+    {
+      "feature": "counter_2048_benchmark",
+      "id": "version-series-7bd23bef0f43ddb7",
+      "json": "version-series-7bd23bef0f43ddb7.json",
+      "kind": "version_series",
+      "label": "Version trajectory",
+      "metric": "julia.alloc.bytes",
+      "package": "DataStructures",
+      "series_id": "226854f8e4a42158",
+      "svg": "version-series-7bd23bef0f43ddb7.svg",
+      "terminal": "version-series-7bd23bef0f43ddb7.txt",
+      "title": "DataStructures · counter_2048_benchmark · julia.alloc.bytes",
+      "unit": "By"
+    },
+    {
+      "feature": "counter_2048_benchmark",
+      "id": "version-series-dbd909f5bed9b4bb",
+      "json": "version-series-dbd909f5bed9b4bb.json",
+      "kind": "version_series",
+      "label": "Version trajectory",
+      "metric": "julia.gc.time",
+      "package": "DataStructures",
+      "series_id": "dff90ed66797c4d4",
+      "svg": "version-series-dbd909f5bed9b4bb.svg",
+      "terminal": "version-series-dbd909f5bed9b4bb.txt",
+      "title": "DataStructures · counter_2048_benchmark · julia.gc.time",
+      "unit": "ns"
+    },
+    {
+      "feature": "counter_2048_benchmark",
+      "id": "version-series-e02161f8249760c6",
+      "json": "version-series-e02161f8249760c6.json",
+      "kind": "version_series",
+      "label": "Version trajectory",
+      "metric": "julia.alloc.count",
+      "package": "DataStructures",
+      "series_id": "c5669bec3de16455",
+      "svg": "version-series-e02161f8249760c6.svg",
+      "terminal": "version-series-e02161f8249760c6.txt",
+      "title": "DataStructures · counter_2048_benchmark · julia.alloc.count",
+      "unit": "1"
+    },
+    {
+      "collector": "benchmarktools-v1/fresh-state-evals1-v1",
+      "comparison_key": "events/heap/2048/seed42/v1",
+      "feature": "heap_2048_benchmark",
+      "id": "normalized-metrics-5f65c40770d704a5",
+      "json": "normalized-metrics-5f65c40770d704a5.json",
+      "kind": "normalized_metrics",
+      "label": "Overlaid measurements · minimum = 1",
+      "metric": "benchmark metrics",
+      "package": "DataStructures",
+      "svg": "normalized-metrics-5f65c40770d704a5.svg",
+      "terminal": "normalized-metrics-5f65c40770d704a5.txt",
+      "title": "DataStructures · heap_2048_benchmark · relative to minimum",
+      "unit": "ratio",
+      "workload": "heap_2048"
+    },
+    {
+      "feature": "heap_2048_benchmark",
+      "id": "distribution-03e6ce80cee04076",
+      "json": "distribution-03e6ce80cee04076.json",
+      "kind": "distribution",
+      "label": "Sample distribution",
+      "metric": "julia.gc.time",
+      "package": "DataStructures",
+      "series_id": "5ba807013b3846ea",
+      "svg": "distribution-03e6ce80cee04076.svg",
+      "terminal": "distribution-03e6ce80cee04076.txt",
+      "title": "DataStructures · heap_2048_benchmark · julia.gc.time",
+      "unit": "ns"
+    },
+    {
+      "feature": "heap_2048_benchmark",
+      "id": "distribution-0a0f449abb7f0783",
+      "json": "distribution-0a0f449abb7f0783.json",
+      "kind": "distribution",
+      "label": "Sample distribution",
+      "metric": "julia.alloc.count",
+      "package": "DataStructures",
+      "series_id": "d724864661708807",
+      "svg": "distribution-0a0f449abb7f0783.svg",
+      "terminal": "distribution-0a0f449abb7f0783.txt",
+      "title": "DataStructures · heap_2048_benchmark · julia.alloc.count",
+      "unit": "1"
+    },
+    {
+      "feature": "heap_2048_benchmark",
+      "id": "distribution-17f47b3b53988c8f",
+      "json": "distribution-17f47b3b53988c8f.json",
+      "kind": "distribution",
+      "label": "Sample distribution",
+      "metric": "julia.wall.time",
+      "package": "DataStructures",
+      "series_id": "775bfa35f13af842",
+      "svg": "distribution-17f47b3b53988c8f.svg",
+      "terminal": "distribution-17f47b3b53988c8f.txt",
+      "title": "DataStructures · heap_2048_benchmark · julia.wall.time",
+      "unit": "ns"
+    },
+    {
+      "feature": "heap_2048_benchmark",
+      "id": "distribution-90c6a20e09170703",
+      "json": "distribution-90c6a20e09170703.json",
+      "kind": "distribution",
+      "label": "Sample distribution",
+      "metric": "julia.alloc.bytes",
+      "package": "DataStructures",
+      "series_id": "2a14e3d67b875528",
+      "svg": "distribution-90c6a20e09170703.svg",
+      "terminal": "distribution-90c6a20e09170703.txt",
+      "title": "DataStructures · heap_2048_benchmark · julia.alloc.bytes",
+      "unit": "By"
+    },
+    {
+      "comparison_key": "events/heap/2048/seed42/v1",
+      "feature": "heap_2048_benchmark",
+      "id": "time-allocation-tradeoff-41fc584b4e2a6d5e",
+      "json": "time-allocation-tradeoff-41fc584b4e2a6d5e.json",
+      "kind": "time_allocation_tradeoff",
+      "label": "Time vs allocations",
+      "metric": "julia.wall.time+julia.alloc.bytes",
+      "package": "DataStructures",
+      "svg": "time-allocation-tradeoff-41fc584b4e2a6d5e.svg",
+      "terminal": "time-allocation-tradeoff-41fc584b4e2a6d5e.txt",
+      "title": "DataStructures · heap_2048_benchmark · time/allocation trade-off",
+      "unit": "s+By"
+    },
+    {
+      "feature": "heap_2048_benchmark",
+      "id": "version-delta-73e61a95ef8b4686",
+      "json": "version-delta-73e61a95ef8b4686.json",
+      "kind": "version_delta",
+      "label": "Regression deltas",
+      "metric": "julia.alloc.count",
+      "package": "DataStructures",
+      "series_id": "d724864661708807",
+      "svg": "version-delta-73e61a95ef8b4686.svg",
+      "terminal": "version-delta-73e61a95ef8b4686.txt",
+      "title": "DataStructures · heap_2048_benchmark · julia.alloc.count",
+      "unit": "1"
+    },
+    {
+      "feature": "heap_2048_benchmark",
+      "id": "version-delta-a18253c9c84abcf3",
+      "json": "version-delta-a18253c9c84abcf3.json",
+      "kind": "version_delta",
+      "label": "Regression deltas",
+      "metric": "julia.gc.time",
+      "package": "DataStructures",
+      "series_id": "5ba807013b3846ea",
+      "svg": "version-delta-a18253c9c84abcf3.svg",
+      "terminal": "version-delta-a18253c9c84abcf3.txt",
+      "title": "DataStructures · heap_2048_benchmark · julia.gc.time",
+      "unit": "ns"
+    },
+    {
+      "feature": "heap_2048_benchmark",
+      "id": "version-delta-e4e64d3a18547307",
+      "json": "version-delta-e4e64d3a18547307.json",
+      "kind": "version_delta",
+      "label": "Regression deltas",
+      "metric": "julia.wall.time",
+      "package": "DataStructures",
+      "series_id": "775bfa35f13af842",
+      "svg": "version-delta-e4e64d3a18547307.svg",
+      "terminal": "version-delta-e4e64d3a18547307.txt",
+      "title": "DataStructures · heap_2048_benchmark · julia.wall.time",
+      "unit": "ns"
+    },
+    {
+      "feature": "heap_2048_benchmark",
+      "id": "version-delta-f8af95e26b649d42",
+      "json": "version-delta-f8af95e26b649d42.json",
+      "kind": "version_delta",
+      "label": "Regression deltas",
+      "metric": "julia.alloc.bytes",
+      "package": "DataStructures",
+      "series_id": "2a14e3d67b875528",
+      "svg": "version-delta-f8af95e26b649d42.svg",
+      "terminal": "version-delta-f8af95e26b649d42.txt",
+      "title": "DataStructures · heap_2048_benchmark · julia.alloc.bytes",
+      "unit": "By"
+    },
+    {
+      "feature": "heap_2048_benchmark",
+      "id": "version-series-7d74be945b6dbfed",
+      "json": "version-series-7d74be945b6dbfed.json",
+      "kind": "version_series",
+      "label": "Version trajectory",
+      "metric": "julia.alloc.bytes",
+      "package": "DataStructures",
+      "series_id": "2a14e3d67b875528",
+      "svg": "version-series-7d74be945b6dbfed.svg",
+      "terminal": "version-series-7d74be945b6dbfed.txt",
+      "title": "DataStructures · heap_2048_benchmark · julia.alloc.bytes",
+      "unit": "By"
+    },
+    {
+      "feature": "heap_2048_benchmark",
+      "id": "version-series-8502bc17c6d87c29",
+      "json": "version-series-8502bc17c6d87c29.json",
+      "kind": "version_series",
+      "label": "Version trajectory",
+      "metric": "julia.wall.time",
+      "package": "DataStructures",
+      "series_id": "775bfa35f13af842",
+      "svg": "version-series-8502bc17c6d87c29.svg",
+      "terminal": "version-series-8502bc17c6d87c29.txt",
+      "title": "DataStructures · heap_2048_benchmark · julia.wall.time",
+      "unit": "ns"
+    },
+    {
+      "feature": "heap_2048_benchmark",
+      "id": "version-series-bcd508d6cfc1fc9d",
+      "json": "version-series-bcd508d6cfc1fc9d.json",
+      "kind": "version_series",
+      "label": "Version trajectory",
+      "metric": "julia.alloc.count",
+      "package": "DataStructures",
+      "series_id": "d724864661708807",
+      "svg": "version-series-bcd508d6cfc1fc9d.svg",
+      "terminal": "version-series-bcd508d6cfc1fc9d.txt",
+      "title": "DataStructures · heap_2048_benchmark · julia.alloc.count",
+      "unit": "1"
+    },
+    {
+      "feature": "heap_2048_benchmark",
+      "id": "version-series-d34d0b2f18b6042b",
+      "json": "version-series-d34d0b2f18b6042b.json",
+      "kind": "version_series",
+      "label": "Version trajectory",
+      "metric": "julia.gc.time",
+      "package": "DataStructures",
+      "series_id": "5ba807013b3846ea",
+      "svg": "version-series-d34d0b2f18b6042b.svg",
+      "terminal": "version-series-d34d0b2f18b6042b.txt",
+      "title": "DataStructures · heap_2048_benchmark · julia.gc.time",
+      "unit": "ns"
+    },
+    {
+      "collector": "chairmarks-v1/fresh-state-evals1-v1",
+      "comparison_key": "events/heap/2048/seed42/v1",
+      "feature": "heap_2048_chairmark",
+      "id": "normalized-metrics-2733e6d4863b6def",
+      "json": "normalized-metrics-2733e6d4863b6def.json",
+      "kind": "normalized_metrics",
+      "label": "Overlaid measurements · minimum = 1",
+      "metric": "benchmark metrics",
+      "package": "DataStructures",
+      "svg": "normalized-metrics-2733e6d4863b6def.svg",
+      "terminal": "normalized-metrics-2733e6d4863b6def.txt",
+      "title": "DataStructures · heap_2048_chairmark · relative to minimum",
+      "unit": "ratio",
+      "workload": "heap_2048"
+    },
+    {
+      "feature": "heap_2048_chairmark",
+      "id": "distribution-0db9b153be9dab87",
+      "json": "distribution-0db9b153be9dab87.json",
+      "kind": "distribution",
+      "label": "Sample distribution",
+      "metric": "julia.alloc.bytes",
+      "package": "DataStructures",
+      "series_id": "2f4693865d02d533",
+      "svg": "distribution-0db9b153be9dab87.svg",
+      "terminal": "distribution-0db9b153be9dab87.txt",
+      "title": "DataStructures · heap_2048_chairmark · julia.alloc.bytes",
+      "unit": "By"
+    },
+    {
+      "feature": "heap_2048_chairmark",
+      "id": "distribution-7562524abea6426c",
+      "json": "distribution-7562524abea6426c.json",
+      "kind": "distribution",
+      "label": "Sample distribution",
+      "metric": "julia.alloc.count",
+      "package": "DataStructures",
+      "series_id": "0cb64520cb8a2930",
+      "svg": "distribution-7562524abea6426c.svg",
+      "terminal": "distribution-7562524abea6426c.txt",
+      "title": "DataStructures · heap_2048_chairmark · julia.alloc.count",
+      "unit": "1"
+    },
+    {
+      "feature": "heap_2048_chairmark",
+      "id": "distribution-adf3983fe332b375",
+      "json": "distribution-adf3983fe332b375.json",
+      "kind": "distribution",
+      "label": "Sample distribution",
+      "metric": "julia.wall.time",
+      "package": "DataStructures",
+      "series_id": "7c082b2ebbea7db9",
+      "svg": "distribution-adf3983fe332b375.svg",
+      "terminal": "distribution-adf3983fe332b375.txt",
+      "title": "DataStructures · heap_2048_chairmark · julia.wall.time",
+      "unit": "s"
+    },
+    {
+      "feature": "heap_2048_chairmark",
+      "id": "distribution-fc2eacd38a81e761",
+      "json": "distribution-fc2eacd38a81e761.json",
+      "kind": "distribution",
+      "label": "Sample distribution",
+      "metric": "julia.gc.fraction",
+      "package": "DataStructures",
+      "series_id": "e268323dc76ff04d",
+      "svg": "distribution-fc2eacd38a81e761.svg",
+      "terminal": "distribution-fc2eacd38a81e761.txt",
+      "title": "DataStructures · heap_2048_chairmark · julia.gc.fraction",
+      "unit": "1"
+    },
+    {
+      "comparison_key": "events/heap/2048/seed42/v1",
+      "feature": "heap_2048_chairmark",
+      "id": "time-allocation-tradeoff-de474bc187322378",
+      "json": "time-allocation-tradeoff-de474bc187322378.json",
+      "kind": "time_allocation_tradeoff",
+      "label": "Time vs allocations",
+      "metric": "julia.wall.time+julia.alloc.bytes",
+      "package": "DataStructures",
+      "svg": "time-allocation-tradeoff-de474bc187322378.svg",
+      "terminal": "time-allocation-tradeoff-de474bc187322378.txt",
+      "title": "DataStructures · heap_2048_chairmark · time/allocation trade-off",
+      "unit": "s+By"
+    },
+    {
+      "feature": "heap_2048_chairmark",
+      "id": "version-delta-0e046a3958c2831d",
+      "json": "version-delta-0e046a3958c2831d.json",
+      "kind": "version_delta",
+      "label": "Regression deltas",
+      "metric": "julia.gc.fraction",
+      "package": "DataStructures",
+      "series_id": "e268323dc76ff04d",
+      "svg": "version-delta-0e046a3958c2831d.svg",
+      "terminal": "version-delta-0e046a3958c2831d.txt",
+      "title": "DataStructures · heap_2048_chairmark · julia.gc.fraction",
+      "unit": "1"
+    },
+    {
+      "feature": "heap_2048_chairmark",
+      "id": "version-delta-13fd3db33e13941a",
+      "json": "version-delta-13fd3db33e13941a.json",
+      "kind": "version_delta",
+      "label": "Regression deltas",
+      "metric": "julia.wall.time",
+      "package": "DataStructures",
+      "series_id": "7c082b2ebbea7db9",
+      "svg": "version-delta-13fd3db33e13941a.svg",
+      "terminal": "version-delta-13fd3db33e13941a.txt",
+      "title": "DataStructures · heap_2048_chairmark · julia.wall.time",
+      "unit": "s"
+    },
+    {
+      "feature": "heap_2048_chairmark",
+      "id": "version-delta-40af049474c1fa9c",
+      "json": "version-delta-40af049474c1fa9c.json",
+      "kind": "version_delta",
+      "label": "Regression deltas",
+      "metric": "julia.alloc.count",
+      "package": "DataStructures",
+      "series_id": "0cb64520cb8a2930",
+      "svg": "version-delta-40af049474c1fa9c.svg",
+      "terminal": "version-delta-40af049474c1fa9c.txt",
+      "title": "DataStructures · heap_2048_chairmark · julia.alloc.count",
+      "unit": "1"
+    },
+    {
+      "feature": "heap_2048_chairmark",
+      "id": "version-delta-58d4cd6233024d5e",
+      "json": "version-delta-58d4cd6233024d5e.json",
+      "kind": "version_delta",
+      "label": "Regression deltas",
+      "metric": "julia.alloc.bytes",
+      "package": "DataStructures",
+      "series_id": "2f4693865d02d533",
+      "svg": "version-delta-58d4cd6233024d5e.svg",
+      "terminal": "version-delta-58d4cd6233024d5e.txt",
+      "title": "DataStructures · heap_2048_chairmark · julia.alloc.bytes",
+      "unit": "By"
+    },
+    {
+      "feature": "heap_2048_chairmark",
+      "id": "version-series-266af5853a97d433",
+      "json": "version-series-266af5853a97d433.json",
+      "kind": "version_series",
+      "label": "Version trajectory",
+      "metric": "julia.gc.fraction",
+      "package": "DataStructures",
+      "series_id": "e268323dc76ff04d",
+      "svg": "version-series-266af5853a97d433.svg",
+      "terminal": "version-series-266af5853a97d433.txt",
+      "title": "DataStructures · heap_2048_chairmark · julia.gc.fraction",
+      "unit": "1"
+    },
+    {
+      "feature": "heap_2048_chairmark",
+      "id": "version-series-6d640fa4e426080e",
+      "json": "version-series-6d640fa4e426080e.json",
+      "kind": "version_series",
+      "label": "Version trajectory",
+      "metric": "julia.alloc.count",
+      "package": "DataStructures",
+      "series_id": "0cb64520cb8a2930",
+      "svg": "version-series-6d640fa4e426080e.svg",
+      "terminal": "version-series-6d640fa4e426080e.txt",
+      "title": "DataStructures · heap_2048_chairmark · julia.alloc.count",
+      "unit": "1"
+    },
+    {
+      "feature": "heap_2048_chairmark",
+      "id": "version-series-dedeff146be90fe1",
+      "json": "version-series-dedeff146be90fe1.json",
+      "kind": "version_series",
+      "label": "Version trajectory",
+      "metric": "julia.wall.time",
+      "package": "DataStructures",
+      "series_id": "7c082b2ebbea7db9",
+      "svg": "version-series-dedeff146be90fe1.svg",
+      "terminal": "version-series-dedeff146be90fe1.txt",
+      "title": "DataStructures · heap_2048_chairmark · julia.wall.time",
+      "unit": "s"
+    },
+    {
+      "feature": "heap_2048_chairmark",
+      "id": "version-series-ecf3104d06a07a58",
+      "json": "version-series-ecf3104d06a07a58.json",
+      "kind": "version_series",
+      "label": "Version trajectory",
+      "metric": "julia.alloc.bytes",
+      "package": "DataStructures",
+      "series_id": "2f4693865d02d533",
+      "svg": "version-series-ecf3104d06a07a58.svg",
+      "terminal": "version-series-ecf3104d06a07a58.txt",
+      "title": "DataStructures · heap_2048_chairmark · julia.alloc.bytes",
+      "unit": "By"
+    },
+    {
+      "collector": "benchmarktools-v1/fresh-state-evals1-v1",
+      "comparison_key": "events/vector/2048/seed42/v1",
+      "feature": "vector_2048_benchmark",
+      "id": "normalized-metrics-2aa5516b1115a1c7",
+      "json": "normalized-metrics-2aa5516b1115a1c7.json",
+      "kind": "normalized_metrics",
+      "label": "Overlaid measurements · minimum = 1",
+      "metric": "benchmark metrics",
+      "package": "DataStructures",
+      "svg": "normalized-metrics-2aa5516b1115a1c7.svg",
+      "terminal": "normalized-metrics-2aa5516b1115a1c7.txt",
+      "title": "DataStructures · vector_2048_benchmark · relative to minimum",
+      "unit": "ratio",
+      "workload": "vector_2048"
+    },
+    {
+      "feature": "vector_2048_benchmark",
+      "id": "distribution-4838c31f871fc74e",
+      "json": "distribution-4838c31f871fc74e.json",
+      "kind": "distribution",
+      "label": "Sample distribution",
+      "metric": "julia.wall.time",
+      "package": "DataStructures",
+      "series_id": "8d04f849ee75fdca",
+      "svg": "distribution-4838c31f871fc74e.svg",
+      "terminal": "distribution-4838c31f871fc74e.txt",
+      "title": "DataStructures · vector_2048_benchmark · julia.wall.time",
+      "unit": "ns"
+    },
+    {
+      "feature": "vector_2048_benchmark",
+      "id": "distribution-86867f83a1e4dcfd",
+      "json": "distribution-86867f83a1e4dcfd.json",
+      "kind": "distribution",
+      "label": "Sample distribution",
+      "metric": "julia.alloc.count",
+      "package": "DataStructures",
+      "series_id": "7f81ac5906424727",
+      "svg": "distribution-86867f83a1e4dcfd.svg",
+      "terminal": "distribution-86867f83a1e4dcfd.txt",
+      "title": "DataStructures · vector_2048_benchmark · julia.alloc.count",
+      "unit": "1"
+    },
+    {
+      "feature": "vector_2048_benchmark",
+      "id": "distribution-d0606334d57e60d1",
+      "json": "distribution-d0606334d57e60d1.json",
+      "kind": "distribution",
+      "label": "Sample distribution",
+      "metric": "julia.alloc.bytes",
+      "package": "DataStructures",
+      "series_id": "1e80496167a0bb75",
+      "svg": "distribution-d0606334d57e60d1.svg",
+      "terminal": "distribution-d0606334d57e60d1.txt",
+      "title": "DataStructures · vector_2048_benchmark · julia.alloc.bytes",
+      "unit": "By"
+    },
+    {
+      "feature": "vector_2048_benchmark",
+      "id": "distribution-e9fa5bd7f2459e63",
+      "json": "distribution-e9fa5bd7f2459e63.json",
+      "kind": "distribution",
+      "label": "Sample distribution",
+      "metric": "julia.gc.time",
+      "package": "DataStructures",
+      "series_id": "4289bbbd55333f3a",
+      "svg": "distribution-e9fa5bd7f2459e63.svg",
+      "terminal": "distribution-e9fa5bd7f2459e63.txt",
+      "title": "DataStructures · vector_2048_benchmark · julia.gc.time",
+      "unit": "ns"
+    },
+    {
+      "comparison_key": "events/vector/2048/seed42/v1",
+      "feature": "vector_2048_benchmark",
+      "id": "time-allocation-tradeoff-b7da20f783d35b1a",
+      "json": "time-allocation-tradeoff-b7da20f783d35b1a.json",
+      "kind": "time_allocation_tradeoff",
+      "label": "Time vs allocations",
+      "metric": "julia.wall.time+julia.alloc.bytes",
+      "package": "DataStructures",
+      "svg": "time-allocation-tradeoff-b7da20f783d35b1a.svg",
+      "terminal": "time-allocation-tradeoff-b7da20f783d35b1a.txt",
+      "title": "DataStructures · vector_2048_benchmark · time/allocation trade-off",
+      "unit": "s+By"
+    },
+    {
+      "feature": "vector_2048_benchmark",
+      "id": "version-delta-345167a7b0a900fd",
+      "json": "version-delta-345167a7b0a900fd.json",
+      "kind": "version_delta",
+      "label": "Regression deltas",
+      "metric": "julia.alloc.count",
+      "package": "DataStructures",
+      "series_id": "7f81ac5906424727",
+      "svg": "version-delta-345167a7b0a900fd.svg",
+      "terminal": "version-delta-345167a7b0a900fd.txt",
+      "title": "DataStructures · vector_2048_benchmark · julia.alloc.count",
+      "unit": "1"
+    },
+    {
+      "feature": "vector_2048_benchmark",
+      "id": "version-delta-6e2c6586543160b8",
+      "json": "version-delta-6e2c6586543160b8.json",
+      "kind": "version_delta",
+      "label": "Regression deltas",
+      "metric": "julia.wall.time",
+      "package": "DataStructures",
+      "series_id": "8d04f849ee75fdca",
+      "svg": "version-delta-6e2c6586543160b8.svg",
+      "terminal": "version-delta-6e2c6586543160b8.txt",
+      "title": "DataStructures · vector_2048_benchmark · julia.wall.time",
+      "unit": "ns"
+    },
+    {
+      "feature": "vector_2048_benchmark",
+      "id": "version-delta-8f2cfd6d582ca311",
+      "json": "version-delta-8f2cfd6d582ca311.json",
+      "kind": "version_delta",
+      "label": "Regression deltas",
+      "metric": "julia.gc.time",
+      "package": "DataStructures",
+      "series_id": "4289bbbd55333f3a",
+      "svg": "version-delta-8f2cfd6d582ca311.svg",
+      "terminal": "version-delta-8f2cfd6d582ca311.txt",
+      "title": "DataStructures · vector_2048_benchmark · julia.gc.time",
+      "unit": "ns"
+    },
+    {
+      "feature": "vector_2048_benchmark",
+      "id": "version-delta-8fab80a7c88542cc",
+      "json": "version-delta-8fab80a7c88542cc.json",
+      "kind": "version_delta",
+      "label": "Regression deltas",
+      "metric": "julia.alloc.bytes",
+      "package": "DataStructures",
+      "series_id": "1e80496167a0bb75",
+      "svg": "version-delta-8fab80a7c88542cc.svg",
+      "terminal": "version-delta-8fab80a7c88542cc.txt",
+      "title": "DataStructures · vector_2048_benchmark · julia.alloc.bytes",
+      "unit": "By"
+    },
+    {
+      "feature": "vector_2048_benchmark",
+      "id": "version-series-17092217d6dcdf1b",
+      "json": "version-series-17092217d6dcdf1b.json",
+      "kind": "version_series",
+      "label": "Version trajectory",
+      "metric": "julia.alloc.count",
+      "package": "DataStructures",
+      "series_id": "7f81ac5906424727",
+      "svg": "version-series-17092217d6dcdf1b.svg",
+      "terminal": "version-series-17092217d6dcdf1b.txt",
+      "title": "DataStructures · vector_2048_benchmark · julia.alloc.count",
+      "unit": "1"
+    },
+    {
+      "feature": "vector_2048_benchmark",
+      "id": "version-series-5739bb942ba40b21",
+      "json": "version-series-5739bb942ba40b21.json",
+      "kind": "version_series",
+      "label": "Version trajectory",
+      "metric": "julia.wall.time",
+      "package": "DataStructures",
+      "series_id": "8d04f849ee75fdca",
+      "svg": "version-series-5739bb942ba40b21.svg",
+      "terminal": "version-series-5739bb942ba40b21.txt",
+      "title": "DataStructures · vector_2048_benchmark · julia.wall.time",
+      "unit": "ns"
+    },
+    {
+      "feature": "vector_2048_benchmark",
+      "id": "version-series-ce890f1c32528327",
+      "json": "version-series-ce890f1c32528327.json",
+      "kind": "version_series",
+      "label": "Version trajectory",
+      "metric": "julia.gc.time",
+      "package": "DataStructures",
+      "series_id": "4289bbbd55333f3a",
+      "svg": "version-series-ce890f1c32528327.svg",
+      "terminal": "version-series-ce890f1c32528327.txt",
+      "title": "DataStructures · vector_2048_benchmark · julia.gc.time",
+      "unit": "ns"
+    },
+    {
+      "feature": "vector_2048_benchmark",
+      "id": "version-series-d9e69e1c8a163542",
+      "json": "version-series-d9e69e1c8a163542.json",
+      "kind": "version_series",
+      "label": "Version trajectory",
+      "metric": "julia.alloc.bytes",
+      "package": "DataStructures",
+      "series_id": "1e80496167a0bb75",
+      "svg": "version-series-d9e69e1c8a163542.svg",
+      "terminal": "version-series-d9e69e1c8a163542.txt",
+      "title": "DataStructures · vector_2048_benchmark · julia.alloc.bytes",
+      "unit": "By"
+    }
+  ]
+}

@@ -12,6 +12,8 @@ import HistoricalPlots from './HistoricalPlots.vue'
 import MeasuredProfiles from './MeasuredProfiles.vue'
 import HomeMeasurements from './HomeMeasurements.vue'
 import MaintainerLink from './MaintainerLink.vue'
+import NormalizedMeasurements from './NormalizedMeasurements.vue'
+import PackageGallery from './PackageGallery.vue'
 
 export default {
   extends: DefaultTheme,
@@ -29,5 +31,7 @@ export default {
     app.component('MeasuredProfiles', MeasuredProfiles)
     app.component('HomeMeasurements', HomeMeasurements)
     app.component('MaintainerLink', MaintainerLink)
+    app.component('NormalizedMeasurements', NormalizedMeasurements)
+    app.component('PackageGallery', PackageGallery)
   },
 } satisfies Theme

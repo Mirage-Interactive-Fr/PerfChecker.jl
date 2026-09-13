@@ -1,0 +1,4 @@
+                                              DataStructures · heap_32768_alloc · allocations (bytes)
+                                ┌                                                                                ┐
+   src/heaps/arrays_as_heaps.jl ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 786 551
+                                └                                                                                ┘

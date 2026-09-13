@@ -1,0 +1,5 @@
+                                        DataStructures · heap_32768_wall_profile · wall-time flame graph (% inclusive)
+                                      ┌                                                                                ┐
+   pop! (src/heaps/binary_heap.jl:107 ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 72.1311
+   BinaryHeap (src/heaps/binary_heap. ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■ 27.8689
+                                      └                                                                                ┘

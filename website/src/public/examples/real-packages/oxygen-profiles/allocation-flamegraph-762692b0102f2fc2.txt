@@ -1,0 +1,4 @@
+                                              Oxygen · heap_profile_alloc · allocation flame graph (% inclusive)
+                                      ┌                                                                                ┐
+   internalrequest (Eglkz/src/methods ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 100
+                                      └                                                                                ┘

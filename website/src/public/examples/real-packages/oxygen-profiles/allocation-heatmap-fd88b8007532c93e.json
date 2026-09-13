@@ -1,0 +1,230 @@
+{
+  "correctness": "passed",
+  "os": "NT",
+  "performance": "not_compared",
+  "plot": {
+    "data": [
+      {
+        "bytes": 493583.5418978267,
+        "label": "tMaHX/src/parse.jl:355",
+        "version": "1.11.0"
+      },
+      {
+        "bytes": 435726.03764113074,
+        "label": "Eglkz/src/handlers.jl:75",
+        "version": "1.11.0"
+      },
+      {
+        "bytes": 355770.6428396404,
+        "label": "tMaHX/src/write.jl:350",
+        "version": "1.11.0"
+      },
+      {
+        "bytes": 123331.8990770352,
+        "label": "tMaHX/src/write.jl:617",
+        "version": "1.11.0"
+      },
+      {
+        "bytes": 89450.47432474035,
+        "label": "tMaHX/src/parse.jl:358",
+        "version": "1.11.0"
+      },
+      {
+        "bytes": 61738.09106502221,
+        "label": "src/heaps/arrays_as_heaps.jl:115",
+        "version": "1.11.0"
+      },
+      {
+        "bytes": 34382.02421447465,
+        "label": "VmtQB/src/http_core.jl:1467",
+        "version": "1.11.0"
+      },
+      {
+        "bytes": 863.1890475681857,
+        "label": "Eglkz/src/core.jl:430",
+        "version": "1.11.0"
+      },
+      {
+        "bytes": 723.9245355332022,
+        "label": "tMaHX/src/write.jl:572",
+        "version": "1.11.0"
+      },
+      {
+        "bytes": 557.0580481399339,
+        "label": "Eglkz/src/core.jl:362",
+        "version": "1.11.0"
+      },
+      {
+        "bytes": 150.5562292270091,
+        "label": "VmtQB/src/http_handlers.jl:304",
+        "version": "1.11.0"
+      },
+      {
+        "bytes": 120.4449833816073,
+        "label": "VmtQB/src/http_core.jl:674",
+        "version": "1.11.0"
+      },
+      {
+        "bytes": 120.4449833816073,
+        "label": "VmtQB/src/http_core.jl:1819",
+        "version": "1.11.0"
+      },
+      {
+        "bytes": 100.37081948467275,
+        "label": "VmtQB/src/http_core.jl:1328",
+        "version": "1.11.0"
+      },
+      {
+        "bytes": 100.37081948467275,
+        "label": "VmtQB/src/http_handlers.jl:306",
+        "version": "1.11.0"
+      },
+      {
+        "bytes": 80.2966555877382,
+        "label": "VmtQB/src/http_core.jl:653",
+        "version": "1.11.0"
+      },
+      {
+        "bytes": 80.2966555877382,
+        "label": "Eglkz/src/core.jl:348",
+        "version": "1.11.0"
+      },
+      {
+        "bytes": 80.2966555877382,
+        "label": "VmtQB/src/http_core.jl:962",
+        "version": "1.11.0"
+      },
+      {
+        "bytes": 80.2966555877382,
+        "label": "VmtQB/src/http_core.jl:649",
+        "version": "1.11.0"
+      },
+      {
+        "bytes": 80.2966555877382,
+        "label": "tMaHX/src/write.jl:584",
+        "version": "1.11.0"
+      },
+      {
+        "bytes": 40.1483277938691,
+        "label": "Eglkz/src/methods.jl:284",
+        "version": "1.11.0"
+      },
+      {
+        "bytes": 40.1483277938691,
+        "label": "Eglkz/src/routerhof.jl:24",
+        "version": "1.11.0"
+      },
+      {
+        "bytes": 40.1483277938691,
+        "label": "Eglkz/src/core.jl:358",
+        "version": "1.11.0"
+      },
+      {
+        "bytes": 40.1483277938691,
+        "label": "Eglkz/src/routerhof.jl:15",
+        "version": "1.11.0"
+      },
+      {
+        "bytes": 40.1483277938691,
+        "label": "Eglkz/src/core.jl:345",
+        "version": "1.11.0"
+      },
+      {
+        "bytes": 40.1483277938691,
+        "label": "VmtQB/src/http_core.jl:1424",
+        "version": "1.11.0"
+      },
+      {
+        "bytes": 40.1483277938691,
+        "label": "Eglkz/src/core.jl:331",
+        "version": "1.11.0"
+      },
+      {
+        "bytes": 40.1483277938691,
+        "label": "Eglkz/src/core.jl:351",
+        "version": "1.11.0"
+      },
+      {
+        "bytes": 40.1483277938691,
+        "label": "Eglkz/src/core.jl:342",
+        "version": "1.11.0"
+      },
+      {
+        "bytes": 20.07416389693455,
+        "label": "tMaHX/src/parse.jl:280",
+        "version": "1.11.0"
+      },
+      {
+        "bytes": 10.037081948467275,
+        "label": "VmtQB/src/http_handlers.jl:313",
+        "version": "1.11.0"
+      }
+    ],
+    "description": "Allocation line heatmap",
+    "encoding": {
+      "color": "bytes",
+      "x": "version",
+      "y": "label"
+    },
+    "id": "allocation-heatmap-fd88b8007532c93e",
+    "kind": "allocation_heatmap",
+    "options": {
+      "feature": "heap_profile_alloc",
+      "labels": [
+        "tMaHX/src/parse.jl:355",
+        "Eglkz/src/handlers.jl:75",
+        "tMaHX/src/write.jl:350",
+        "tMaHX/src/write.jl:617",
+        "tMaHX/src/parse.jl:358",
+        "src/heaps/arrays_as_heaps.jl:115",
+        "VmtQB/src/http_core.jl:1467",
+        "Eglkz/src/core.jl:430",
+        "tMaHX/src/write.jl:572",
+        "Eglkz/src/core.jl:362",
+        "VmtQB/src/http_handlers.jl:304",
+        "VmtQB/src/http_core.jl:674",
+        "VmtQB/src/http_core.jl:1819",
+        "VmtQB/src/http_core.jl:1328",
+        "VmtQB/src/http_handlers.jl:306",
+        "VmtQB/src/http_core.jl:653",
+        "Eglkz/src/core.jl:348",
+        "VmtQB/src/http_core.jl:962",
+        "VmtQB/src/http_core.jl:649",
+        "tMaHX/src/write.jl:584",
+        "Eglkz/src/methods.jl:284",
+        "Eglkz/src/routerhof.jl:24",
+        "Eglkz/src/core.jl:358",
+        "Eglkz/src/routerhof.jl:15",
+        "Eglkz/src/core.jl:345",
+        "VmtQB/src/http_core.jl:1424",
+        "Eglkz/src/core.jl:331",
+        "Eglkz/src/core.jl:351",
+        "Eglkz/src/core.jl:342",
+        "tMaHX/src/parse.jl:280",
+        "VmtQB/src/http_handlers.jl:313"
+      ],
+      "package": "Oxygen",
+      "top": 40,
+      "unit": "By",
+      "versions": [
+        "1.11.0"
+      ]
+    },
+    "schema_version": "perfchecker-plot/1",
+    "title": "Oxygen · heap_profile_alloc · allocations"
+  },
+  "run_id": "c4a79ae5-6f29-43d0-8b0c-74c925ddce05",
+  "runtime": {
+    "language": "julia",
+    "threads": 1,
+    "version": "1.13.0"
+  },
+  "scope": "One local machine; illustrative history, not a package regression verdict",
+  "started_at": "2026-09-13T08:07:00.850",
+  "worker_environments": [
+    {
+      "manifest_sha256": "9d8c1eefca3cd583a3a37924386096ba4cac23c6659677661adf99b8daeafc29",
+      "project_sha256": "7ed3e2423069063c7a3926984952a50dda661a89ed4f3beb42623f9241bea020"
+    }
+  ]
+}

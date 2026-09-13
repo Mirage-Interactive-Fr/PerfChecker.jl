@@ -34,6 +34,14 @@ makedocs(;
             "Compare versions and revisions" => "tutorials/comparisons.md",
             "Bibliography walkthrough" => "tutorials/bibliography.md"
         ],
+        "Real package examples" => [
+            "Start with a real package" => "real-packages/index.md",
+            "DataStructures: event processing" => "real-packages/datastructures.md",
+            "Oxygen: requests and a local server" => "real-packages/oxygen.md",
+            "Replay in every interface" => "real-packages/interfaces.md",
+            "Profiles, extensions and experiments" => "real-packages/extensions.md",
+            "Contribute an experiment" => "real-packages/contributing.md"
+        ],
         "Measurements" => [
             "Understand the measurements" => "guide/understanding-measurements.md",
             "Check catalog" => "reference/checks.md",

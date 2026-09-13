@@ -1,0 +1,291 @@
+{
+  "correctness": "passed",
+  "os": "NT",
+  "performance": "not_compared",
+  "plot": {
+    "data": [
+      {
+        "bytes": 493583.5418978267,
+        "file": "tMaHX/src/parse.jl",
+        "label": "tMaHX/src/parse.jl:355",
+        "line": 355,
+        "percentage": 30.89701622885001,
+        "version": "1.11.0"
+      },
+      {
+        "bytes": 435726.03764113074,
+        "file": "Eglkz/src/handlers.jl",
+        "label": "Eglkz/src/handlers.jl:75",
+        "line": 75,
+        "percentage": 27.27529042918804,
+        "version": "1.11.0"
+      },
+      {
+        "bytes": 355770.6428396404,
+        "file": "tMaHX/src/write.jl",
+        "label": "tMaHX/src/write.jl:350",
+        "line": 350,
+        "percentage": 22.27029548695973,
+        "version": "1.11.0"
+      },
+      {
+        "bytes": 123331.8990770352,
+        "file": "tMaHX/src/write.jl",
+        "label": "tMaHX/src/write.jl:617",
+        "line": 617,
+        "percentage": 7.720248679010555,
+        "version": "1.11.0"
+      },
+      {
+        "bytes": 89450.47432474035,
+        "file": "tMaHX/src/parse.jl",
+        "label": "tMaHX/src/parse.jl:358",
+        "line": 358,
+        "percentage": 5.599361652666164,
+        "version": "1.11.0"
+      },
+      {
+        "bytes": 61738.09106502221,
+        "file": "src/heaps/arrays_as_heaps.jl",
+        "label": "src/heaps/arrays_as_heaps.jl:115",
+        "line": 115,
+        "percentage": 3.864640207085904,
+        "version": "1.11.0"
+      },
+      {
+        "bytes": 34382.02421447465,
+        "file": "VmtQB/src/http_core.jl",
+        "label": "VmtQB/src/http_core.jl:1467",
+        "line": 1467,
+        "percentage": 2.1522232205125613,
+        "version": "1.11.0"
+      },
+      {
+        "bytes": 863.1890475681857,
+        "file": "Eglkz/src/core.jl",
+        "label": "Eglkz/src/core.jl:430",
+        "line": 430,
+        "percentage": 0.05403333731253256,
+        "version": "1.11.0"
+      },
+      {
+        "bytes": 723.9245355332022,
+        "file": "tMaHX/src/write.jl",
+        "label": "tMaHX/src/write.jl:572",
+        "line": 572,
+        "percentage": 0.04531574946123732,
+        "version": "1.11.0"
+      },
+      {
+        "bytes": 557.0580481399339,
+        "file": "Eglkz/src/core.jl",
+        "label": "Eglkz/src/core.jl:362",
+        "line": 362,
+        "percentage": 0.034870351405180904,
+        "version": "1.11.0"
+      },
+      {
+        "bytes": 150.5562292270091,
+        "file": "VmtQB/src/http_handlers.jl",
+        "label": "VmtQB/src/http_handlers.jl:304",
+        "line": 304,
+        "percentage": 0.009424419298697537,
+        "version": "1.11.0"
+      },
+      {
+        "bytes": 120.4449833816073,
+        "file": "VmtQB/src/http_core.jl",
+        "label": "VmtQB/src/http_core.jl:1819",
+        "line": 1819,
+        "percentage": 0.007539535438958031,
+        "version": "1.11.0"
+      },
+      {
+        "bytes": 120.4449833816073,
+        "file": "VmtQB/src/http_core.jl",
+        "label": "VmtQB/src/http_core.jl:674",
+        "line": 674,
+        "percentage": 0.007539535438958031,
+        "version": "1.11.0"
+      },
+      {
+        "bytes": 100.37081948467275,
+        "file": "VmtQB/src/http_core.jl",
+        "label": "VmtQB/src/http_core.jl:1328",
+        "line": 1328,
+        "percentage": 0.006282946199131692,
+        "version": "1.11.0"
+      },
+      {
+        "bytes": 100.37081948467275,
+        "file": "VmtQB/src/http_handlers.jl",
+        "label": "VmtQB/src/http_handlers.jl:306",
+        "line": 306,
+        "percentage": 0.006282946199131692,
+        "version": "1.11.0"
+      },
+      {
+        "bytes": 80.2966555877382,
+        "file": "Eglkz/src/core.jl",
+        "label": "Eglkz/src/core.jl:348",
+        "line": 348,
+        "percentage": 0.005026356959305354,
+        "version": "1.11.0"
+      },
+      {
+        "bytes": 80.2966555877382,
+        "file": "VmtQB/src/http_core.jl",
+        "label": "VmtQB/src/http_core.jl:649",
+        "line": 649,
+        "percentage": 0.005026356959305354,
+        "version": "1.11.0"
+      },
+      {
+        "bytes": 80.2966555877382,
+        "file": "VmtQB/src/http_core.jl",
+        "label": "VmtQB/src/http_core.jl:653",
+        "line": 653,
+        "percentage": 0.005026356959305354,
+        "version": "1.11.0"
+      },
+      {
+        "bytes": 80.2966555877382,
+        "file": "VmtQB/src/http_core.jl",
+        "label": "VmtQB/src/http_core.jl:962",
+        "line": 962,
+        "percentage": 0.005026356959305354,
+        "version": "1.11.0"
+      },
+      {
+        "bytes": 80.2966555877382,
+        "file": "tMaHX/src/write.jl",
+        "label": "tMaHX/src/write.jl:584",
+        "line": 584,
+        "percentage": 0.005026356959305354,
+        "version": "1.11.0"
+      },
+      {
+        "bytes": 40.1483277938691,
+        "file": "Eglkz/src/core.jl",
+        "label": "Eglkz/src/core.jl:331",
+        "line": 331,
+        "percentage": 0.002513178479652677,
+        "version": "1.11.0"
+      },
+      {
+        "bytes": 40.1483277938691,
+        "file": "Eglkz/src/core.jl",
+        "label": "Eglkz/src/core.jl:342",
+        "line": 342,
+        "percentage": 0.002513178479652677,
+        "version": "1.11.0"
+      },
+      {
+        "bytes": 40.1483277938691,
+        "file": "Eglkz/src/core.jl",
+        "label": "Eglkz/src/core.jl:345",
+        "line": 345,
+        "percentage": 0.002513178479652677,
+        "version": "1.11.0"
+      },
+      {
+        "bytes": 40.1483277938691,
+        "file": "Eglkz/src/core.jl",
+        "label": "Eglkz/src/core.jl:351",
+        "line": 351,
+        "percentage": 0.002513178479652677,
+        "version": "1.11.0"
+      },
+      {
+        "bytes": 40.1483277938691,
+        "file": "Eglkz/src/core.jl",
+        "label": "Eglkz/src/core.jl:358",
+        "line": 358,
+        "percentage": 0.002513178479652677,
+        "version": "1.11.0"
+      },
+      {
+        "bytes": 40.1483277938691,
+        "file": "Eglkz/src/methods.jl",
+        "label": "Eglkz/src/methods.jl:284",
+        "line": 284,
+        "percentage": 0.002513178479652677,
+        "version": "1.11.0"
+      },
+      {
+        "bytes": 40.1483277938691,
+        "file": "Eglkz/src/routerhof.jl",
+        "label": "Eglkz/src/routerhof.jl:15",
+        "line": 15,
+        "percentage": 0.002513178479652677,
+        "version": "1.11.0"
+      },
+      {
+        "bytes": 40.1483277938691,
+        "file": "Eglkz/src/routerhof.jl",
+        "label": "Eglkz/src/routerhof.jl:24",
+        "line": 24,
+        "percentage": 0.002513178479652677,
+        "version": "1.11.0"
+      },
+      {
+        "bytes": 40.1483277938691,
+        "file": "VmtQB/src/http_core.jl",
+        "label": "VmtQB/src/http_core.jl:1424",
+        "line": 1424,
+        "percentage": 0.002513178479652677,
+        "version": "1.11.0"
+      },
+      {
+        "bytes": 20.07416389693455,
+        "file": "tMaHX/src/parse.jl",
+        "label": "tMaHX/src/parse.jl:280",
+        "line": 280,
+        "percentage": 0.0012565892398263385,
+        "version": "1.11.0"
+      },
+      {
+        "bytes": 10.037081948467275,
+        "file": "VmtQB/src/http_handlers.jl",
+        "label": "VmtQB/src/http_handlers.jl:313",
+        "line": 313,
+        "percentage": 0.0006282946199131692,
+        "version": "1.11.0"
+      }
+    ],
+    "description": "Allocation share by line (%)",
+    "encoding": {
+      "color": "label",
+      "label": "percentage",
+      "theta": "bytes"
+    },
+    "id": "allocation-pie-25c4965602ef4e58",
+    "kind": "allocation_pie",
+    "options": {
+      "feature": "heap_profile_alloc",
+      "package": "Oxygen",
+      "selected_version": "1.11.0",
+      "top": 40,
+      "unit": "By",
+      "versions": [
+        "1.11.0"
+      ]
+    },
+    "schema_version": "perfchecker-plot/1",
+    "title": "Oxygen · heap_profile_alloc · allocations"
+  },
+  "run_id": "c4a79ae5-6f29-43d0-8b0c-74c925ddce05",
+  "runtime": {
+    "language": "julia",
+    "threads": 1,
+    "version": "1.13.0"
+  },
+  "scope": "One local machine; illustrative history, not a package regression verdict",
+  "started_at": "2026-09-13T08:07:00.850",
+  "worker_environments": [
+    {
+      "manifest_sha256": "9d8c1eefca3cd583a3a37924386096ba4cac23c6659677661adf99b8daeafc29",
+      "project_sha256": "7ed3e2423069063c7a3926984952a50dda661a89ed4f3beb42623f9241bea020"
+    }
+  ]
+}

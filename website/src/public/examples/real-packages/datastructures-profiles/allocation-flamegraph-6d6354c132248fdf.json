@@ -1,0 +1,452 @@
+{
+  "correctness": "passed",
+  "os": "NT",
+  "performance": "not_compared",
+  "plot": {
+    "data": [
+      {
+        "depth": 1,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "BinaryHeap (src/heaps/binary_heap.jl:61)",
+        "path": [
+          "BinaryHeap (src/heaps/binary_heap.jl:61)"
+        ],
+        "percentage": 100.0,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 1.5730220000000002e6,
+        "x0": 0.0,
+        "x1": 1.0
+      },
+      {
+        "depth": 2,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "BinaryHeap (src/heaps/binary_heap.jl:51)",
+        "path": [
+          "BinaryHeap (src/heaps/binary_heap.jl:61)",
+          "BinaryHeap (src/heaps/binary_heap.jl:51)"
+        ],
+        "percentage": 100.0,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 1.5730220000000002e6,
+        "x0": 0.0,
+        "x1": 1.0
+      },
+      {
+        "depth": 3,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "BinaryHeap (src/heaps/binary_heap.jl:42)",
+        "path": [
+          "BinaryHeap (src/heaps/binary_heap.jl:61)",
+          "BinaryHeap (src/heaps/binary_heap.jl:51)",
+          "BinaryHeap (src/heaps/binary_heap.jl:42)"
+        ],
+        "percentage": 100.0,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 1.5730220000000002e6,
+        "x0": 0.0,
+        "x1": 1.0
+      },
+      {
+        "depth": 4,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "heapify (src/heaps/arrays_as_heaps.jl:115)",
+        "path": [
+          "BinaryHeap (src/heaps/binary_heap.jl:61)",
+          "BinaryHeap (src/heaps/binary_heap.jl:51)",
+          "BinaryHeap (src/heaps/binary_heap.jl:42)",
+          "heapify (src/heaps/arrays_as_heaps.jl:115)"
+        ],
+        "percentage": 100.0,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 1.5730220000000002e6,
+        "x0": 0.0,
+        "x1": 1.0
+      },
+      {
+        "depth": 5,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "similar (array.jl:402)",
+        "path": [
+          "BinaryHeap (src/heaps/binary_heap.jl:61)",
+          "BinaryHeap (src/heaps/binary_heap.jl:51)",
+          "BinaryHeap (src/heaps/binary_heap.jl:42)",
+          "heapify (src/heaps/arrays_as_heaps.jl:115)",
+          "similar (array.jl:402)"
+        ],
+        "percentage": 100.0,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 1.5730220000000002e6,
+        "x0": 0.0,
+        "x1": 1.0
+      },
+      {
+        "depth": 6,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "Array (boot.jl:648)",
+        "path": [
+          "BinaryHeap (src/heaps/binary_heap.jl:61)",
+          "BinaryHeap (src/heaps/binary_heap.jl:51)",
+          "BinaryHeap (src/heaps/binary_heap.jl:42)",
+          "heapify (src/heaps/arrays_as_heaps.jl:115)",
+          "similar (array.jl:402)",
+          "Array (boot.jl:648)"
+        ],
+        "percentage": 99.99593127930751,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 1.5729579981283888e6,
+        "x0": 0.0,
+        "x1": 0.999959312793075
+      },
+      {
+        "depth": 7,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "GenericMemory (boot.jl:588)",
+        "path": [
+          "BinaryHeap (src/heaps/binary_heap.jl:61)",
+          "BinaryHeap (src/heaps/binary_heap.jl:51)",
+          "BinaryHeap (src/heaps/binary_heap.jl:42)",
+          "heapify (src/heaps/arrays_as_heaps.jl:115)",
+          "similar (array.jl:402)",
+          "Array (boot.jl:648)",
+          "GenericMemory (boot.jl:588)"
+        ],
+        "percentage": 99.99593127930751,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 1.5729579981283888e6,
+        "x0": 0.0,
+        "x1": 0.999959312793075
+      },
+      {
+        "depth": 8,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "jl_alloc_genericmemory_unchecked (workdir/src/genericmemory.c:38)",
+        "path": [
+          "BinaryHeap (src/heaps/binary_heap.jl:61)",
+          "BinaryHeap (src/heaps/binary_heap.jl:51)",
+          "BinaryHeap (src/heaps/binary_heap.jl:42)",
+          "heapify (src/heaps/arrays_as_heaps.jl:115)",
+          "similar (array.jl:402)",
+          "Array (boot.jl:648)",
+          "GenericMemory (boot.jl:588)",
+          "jl_alloc_genericmemory_unchecked (workdir/src/genericmemory.c:38)"
+        ],
+        "percentage": 99.99287973878813,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 1.57290999672468e6,
+        "x0": 0.0,
+        "x1": 0.9999287973878813
+      },
+      {
+        "depth": 9,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "ijl_gc_managed_malloc (workdir/src/gc-stock.c:3955)",
+        "path": [
+          "BinaryHeap (src/heaps/binary_heap.jl:61)",
+          "BinaryHeap (src/heaps/binary_heap.jl:51)",
+          "BinaryHeap (src/heaps/binary_heap.jl:42)",
+          "heapify (src/heaps/arrays_as_heaps.jl:115)",
+          "similar (array.jl:402)",
+          "Array (boot.jl:648)",
+          "GenericMemory (boot.jl:588)",
+          "jl_alloc_genericmemory_unchecked (workdir/src/genericmemory.c:38)",
+          "ijl_gc_managed_malloc (workdir/src/gc-stock.c:3955)"
+        ],
+        "percentage": 99.99287973878813,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 1.57290999672468e6,
+        "x0": 0.0,
+        "x1": 0.9999287973878813
+      },
+      {
+        "depth": 10,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "maybe_record_alloc_to_profile (workdir/src/gc-alloc-profiler.h:43)",
+        "path": [
+          "BinaryHeap (src/heaps/binary_heap.jl:61)",
+          "BinaryHeap (src/heaps/binary_heap.jl:51)",
+          "BinaryHeap (src/heaps/binary_heap.jl:42)",
+          "heapify (src/heaps/arrays_as_heaps.jl:115)",
+          "similar (array.jl:402)",
+          "Array (boot.jl:648)",
+          "GenericMemory (boot.jl:588)",
+          "jl_alloc_genericmemory_unchecked (workdir/src/genericmemory.c:38)",
+          "ijl_gc_managed_malloc (workdir/src/gc-stock.c:3955)",
+          "maybe_record_alloc_to_profile (workdir/src/gc-alloc-profiler.h:43)"
+        ],
+        "percentage": 99.99287973878813,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 1.57290999672468e6,
+        "x0": 0.0,
+        "x1": 0.9999287973878813
+      },
+      {
+        "depth": 8,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "jl_alloc_genericmemory_unchecked (workdir/src/genericmemory.c:41)",
+        "path": [
+          "BinaryHeap (src/heaps/binary_heap.jl:61)",
+          "BinaryHeap (src/heaps/binary_heap.jl:51)",
+          "BinaryHeap (src/heaps/binary_heap.jl:42)",
+          "heapify (src/heaps/arrays_as_heaps.jl:115)",
+          "similar (array.jl:402)",
+          "Array (boot.jl:648)",
+          "GenericMemory (boot.jl:588)",
+          "jl_alloc_genericmemory_unchecked (workdir/src/genericmemory.c:41)"
+        ],
+        "percentage": 0.0030515405193721964,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 48.00140370863892,
+        "x0": 0.9999287973878813,
+        "x1": 0.999959312793075
+      },
+      {
+        "depth": 9,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "jl_gc_alloc_ (workdir/src/gc-stock.c:811)",
+        "path": [
+          "BinaryHeap (src/heaps/binary_heap.jl:61)",
+          "BinaryHeap (src/heaps/binary_heap.jl:51)",
+          "BinaryHeap (src/heaps/binary_heap.jl:42)",
+          "heapify (src/heaps/arrays_as_heaps.jl:115)",
+          "similar (array.jl:402)",
+          "Array (boot.jl:648)",
+          "GenericMemory (boot.jl:588)",
+          "jl_alloc_genericmemory_unchecked (workdir/src/genericmemory.c:41)",
+          "jl_gc_alloc_ (workdir/src/gc-stock.c:811)"
+        ],
+        "percentage": 0.0030515405193721964,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 48.00140370863892,
+        "x0": 0.9999287973878813,
+        "x1": 0.999959312793075
+      },
+      {
+        "depth": 10,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "maybe_record_alloc_to_profile (workdir/src/gc-alloc-profiler.h:43)",
+        "path": [
+          "BinaryHeap (src/heaps/binary_heap.jl:61)",
+          "BinaryHeap (src/heaps/binary_heap.jl:51)",
+          "BinaryHeap (src/heaps/binary_heap.jl:42)",
+          "heapify (src/heaps/arrays_as_heaps.jl:115)",
+          "similar (array.jl:402)",
+          "Array (boot.jl:648)",
+          "GenericMemory (boot.jl:588)",
+          "jl_alloc_genericmemory_unchecked (workdir/src/genericmemory.c:41)",
+          "jl_gc_alloc_ (workdir/src/gc-stock.c:811)",
+          "maybe_record_alloc_to_profile (workdir/src/gc-alloc-profiler.h:43)"
+        ],
+        "percentage": 0.0030515405193721964,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 48.00140370863892,
+        "x0": 0.9999287973878813,
+        "x1": 0.999959312793075
+      },
+      {
+        "depth": 6,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "Array (boot.jl:649)",
+        "path": [
+          "BinaryHeap (src/heaps/binary_heap.jl:61)",
+          "BinaryHeap (src/heaps/binary_heap.jl:51)",
+          "BinaryHeap (src/heaps/binary_heap.jl:42)",
+          "heapify (src/heaps/arrays_as_heaps.jl:115)",
+          "similar (array.jl:402)",
+          "Array (boot.jl:649)"
+        ],
+        "percentage": 0.004068720692496261,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 64.00187161151855,
+        "x0": 0.999959312793075,
+        "x1": 1.0
+      },
+      {
+        "depth": 7,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "ijl_gc_small_alloc (workdir/src/gc-stock.c:781)",
+        "path": [
+          "BinaryHeap (src/heaps/binary_heap.jl:61)",
+          "BinaryHeap (src/heaps/binary_heap.jl:51)",
+          "BinaryHeap (src/heaps/binary_heap.jl:42)",
+          "heapify (src/heaps/arrays_as_heaps.jl:115)",
+          "similar (array.jl:402)",
+          "Array (boot.jl:649)",
+          "ijl_gc_small_alloc (workdir/src/gc-stock.c:781)"
+        ],
+        "percentage": 0.004068720692496261,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 64.00187161151855,
+        "x0": 0.999959312793075,
+        "x1": 1.0
+      },
+      {
+        "depth": 8,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "maybe_record_alloc_to_profile (workdir/src/gc-alloc-profiler.h:43)",
+        "path": [
+          "BinaryHeap (src/heaps/binary_heap.jl:61)",
+          "BinaryHeap (src/heaps/binary_heap.jl:51)",
+          "BinaryHeap (src/heaps/binary_heap.jl:42)",
+          "heapify (src/heaps/arrays_as_heaps.jl:115)",
+          "similar (array.jl:402)",
+          "Array (boot.jl:649)",
+          "ijl_gc_small_alloc (workdir/src/gc-stock.c:781)",
+          "maybe_record_alloc_to_profile (workdir/src/gc-alloc-profiler.h:43)"
+        ],
+        "percentage": 0.004068720692496261,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 64.00187161151855,
+        "x0": 0.999959312793075,
+        "x1": 1.0
+      }
+    ],
+    "description": "Allocation flame graph",
+    "encoding": {
+      "color": "status",
+      "x": "percentage",
+      "y": "depth"
+    },
+    "id": "allocation-flamegraph-6d6354c132248fdf",
+    "kind": "allocation_flamegraph",
+    "options": {
+      "feature": "heap_32768_profile_alloc",
+      "package": "DataStructures",
+      "selected_version": "0.19.6",
+      "top": 40,
+      "total": 1.5730220000000002e6,
+      "unit": "By",
+      "value_label": "allocated bytes",
+      "versions": [
+        "0.19.6"
+      ]
+    },
+    "schema_version": "perfchecker-plot/1",
+    "title": "DataStructures · heap_32768_profile_alloc · allocation flame graph"
+  },
+  "run_id": "11480c99-82a0-44bf-8432-f9b4e39702f5",
+  "runtime": {
+    "language": "julia",
+    "threads": 1,
+    "version": "1.13.0"
+  },
+  "scope": "One local machine; illustrative history, not a package regression verdict",
+  "started_at": "2026-09-13T08:06:15.124",
+  "worker_environments": [
+    {
+      "manifest_sha256": "e956f9d3af72872a9d43e6dc3fdac644b73223bd6b5e4ac250e7c0cc02eb97d5",
+      "project_sha256": "0cda28da6203fe2eda79d372cdabb8862f3e829e34e1eb1c78c61f64fe9878e2"
+    }
+  ]
+}
