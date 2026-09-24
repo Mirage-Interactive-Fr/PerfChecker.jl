@@ -65,6 +65,28 @@ Replace the subdirectory with `packages/PerfCheckerPluto` or
 The controller and interfaces stay outside measured workers. Reports retain
 workload, source, environment and collector provenance. No model is required.
 
+For test items, `:check_only` runs in PerfChecker measurements and is excluded by
+`testitem_filter(:test)`. The existing `:perf_only` spelling is equivalent, including
+tag selection. `:test_only` runs in functional tests and is excluded from PerfChecker
+measurements; untagged items are shared. Julia's VS Code Test Explorer owns its
+functional runs and does not apply PerfChecker's filter automatically. Use an
+explicit item selection there, or `testitem_filter(:test)` with TestItemRunner in
+functional CI.
+
+For a `:check_only` item that must also be safe under Julia VS Code's **Run All**,
+use TestItems' conditional skip option:
+
+```julia
+@testitem "Measured case" tags=[:check_only] skip=(get(ENV, "PERFCHECKER_TESTITEM_MODE", "") != "performance") begin
+    @test operation() == expected
+end
+```
+
+PerfChecker sets `PERFCHECKER_TESTITEM_MODE=performance` only in its measured test
+item workers. An ordinary TestItemRunner or Julia VS Code run skips this item.
+This is opt-in per declaration; the Julia extension does not exclude
+`:check_only` or `:perf_only` by tag on its own.
+
 ## Contribute and test
 
 See the [release notes](CHANGELOG.md), [qualification matrix](qualification/README.md)

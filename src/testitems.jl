@@ -2,8 +2,10 @@
     testitem_filter(mode=:performance; tags=[], exclude_tags=[])
 
 Build a TestItemRunner filter. Untagged items are shared. `:test_only` excludes
-performance execution; `:perf_only` excludes functional execution. Contradictory
-tags are rejected. A nonempty tag selection matches any requested tag.
+performance execution; `:check_only` excludes functional execution. The existing
+`:perf_only` tag is an alias of `:check_only`, including tag selections and exclusions.
+Combining either performance-only tag with `:test_only` is rejected. A nonempty tag
+selection matches any requested tag.
 Use `@run_package_tests filter=testitem_filter(:test)` in functional CI.
 Loading PerfChecker never changes TestItemRunner's default behavior.
 """
@@ -11,11 +13,12 @@ function testitem_filter(
         mode::Symbol = :performance; tags = Symbol[], exclude_tags = Symbol[])
     mode in (:test, :performance, :all) ||
         throw(ArgumentError("mode must be test, performance or all"))
-    wanted, excluded = Set(Symbol.(tags)), Set(Symbol.(exclude_tags))
+    canonical(tag) = Symbol(tag) === :check_only ? :perf_only : Symbol(tag)
+    wanted, excluded = Set(canonical.(tags)), Set(canonical.(exclude_tags))
     return function (item)
-        itemtags = Set(Symbol.(item.tags))
+        itemtags = Set(canonical.(item.tags))
         :perf_only in itemtags && :test_only in itemtags &&
-            throw(ArgumentError("$(item.name) has conflicting perf_only/test_only tags"))
+            throw(ArgumentError("$(item.name) has conflicting check_only/perf_only and test_only tags"))
         mode == :test && :perf_only in itemtags && return false
         mode == :performance && :test_only in itemtags && return false
         isempty(intersect(itemtags, excluded)) || return false
@@ -29,8 +32,8 @@ end
 List existing `@testitem` declarations without executing their bodies, setup
 modules, or surrounding source code. Load `TestItemRunner` to enable this method.
 
-`mode=:performance` includes ordinary items and `:perf_only`, but excludes
-`:test_only`. `mode=:test` does the converse; `:all` keeps both categories.
+`mode=:performance` includes ordinary items and `:check_only`/`:perf_only`, but
+excludes `:test_only`. `mode=:test` does the converse; `:all` keeps both categories.
 `tags` matches any requested tag; `exclude_tags` always removes matching items.
 An item carrying both reserved tags is rejected.
 
@@ -63,6 +66,9 @@ timeout. There is no implicit warmup or repetition.
 The measured scope includes item setup, imports, assertions and module cleanup.
 It is suitable for checking the cost of an existing test; it does not isolate an
 inner operation. Use a feature workload when that narrower scope is required.
+Measured item workers set `PERFCHECKER_TESTITEM_MODE=performance`. A declaration
+with `skip=(get(ENV, "PERFCHECKER_TESTITEM_MODE", "") != "performance")` therefore
+runs under PerfChecker and skips in ordinary TestItemRunner or Julia VS Code runs.
 
 Return a `perfchecker-testitem-run/1` dictionary with item/sample records and a
 functional `passed` flag. `performance=not_compared` means no regression budget

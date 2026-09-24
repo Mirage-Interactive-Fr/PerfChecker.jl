@@ -249,6 +249,9 @@ function _scenario_process(request::AbstractDict; project::AbstractString,
         # controller's global environment or a custom ambient load path.
         command = addenv(command,
             "JULIA_LOAD_PATH" => join(("@", "@stdlib"), Sys.iswindows() ? ';' : ':'))
+        if testitems
+            command = addenv(command, "PERFCHECKER_TESTITEM_MODE" => "performance")
+        end
         started = time()
         logpath = joinpath(directory, "worker.log")
         return open(logpath, "w") do log
