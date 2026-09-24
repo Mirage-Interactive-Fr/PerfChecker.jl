@@ -78,7 +78,7 @@ use TestItems' conditional skip option:
 
 ```julia
 @testitem "Measured case" tags=[:check_only] skip=(get(ENV, "PERFCHECKER_TESTITEM_MODE", "") != "performance") begin
-    @test operation() == expected
+    @test sum(1:1000) == 500500
 end
 ```
 
