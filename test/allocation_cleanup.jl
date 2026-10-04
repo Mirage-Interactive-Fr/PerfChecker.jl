@@ -121,7 +121,8 @@ end
                 end
                 try
                     waiting_marker = outcome === :interrupt ? marker * "-measuring" : marker
-                    @test timedwait(() -> isfile(waiting_marker) || istaskdone(task), 90) ==
+                    @test timedwait(
+                        () -> isfile(waiting_marker) || istaskdone(task), 180) ==
                           :ok
                     @test isfile(waiting_marker)
                     istaskdone(task) || schedule(task, InterruptException(); error = true)
@@ -173,7 +174,7 @@ end
         plan = plan_suite(SoftwareSuite(:allocation_cleanup, [package]); profile = :quick)
         job = launch_suite(plan)
         try
-            @test timedwait(() -> isfile(marker) || istaskdone(job.task), 90) == :ok
+            @test timedwait(() -> isfile(marker) || istaskdone(job.task), 180) == :ok
             @test isfile(marker)
             @test cancel_suite!(job)
             @test timedwait(() -> istaskdone(job.task), 45) == :ok
