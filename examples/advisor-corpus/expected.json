@@ -1,0 +1,10 @@
+{
+  "description": "Independent defect labels for the selected analyzer, not general optimality or prose truth.",
+  "cases": [
+    {"id":"dynamic","tool":"jet","expected_rules":["inference.runtime_dispatch"]},
+    {"id":"allocating","tool":"alloccheck","expected_rules":["allocation.potential"]},
+    {"id":"healthy","tool":"jet","expected_rules":[]},
+    {"id":"incorrect","tool":"jet","expected_rules":["evidence.correctness"]},
+    {"id":"unavailable","tool":"jet","expected_rules":["evidence.analyzer"]}
+  ]
+}

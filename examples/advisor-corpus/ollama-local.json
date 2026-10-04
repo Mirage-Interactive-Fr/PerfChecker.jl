@@ -1,0 +1,8 @@
+{
+  "endpoint": "http://127.0.0.1:11434/api/chat",
+  "protocol": "ollama",
+  "model": "qwen3:0.6b",
+  "timeout": 120,
+  "max_tokens": 512,
+  "allow_remote": false
+}

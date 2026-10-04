@@ -1,0 +1,72 @@
+{
+  "status": "passed",
+  "browser": "153.0.8010.12",
+  "job_id": "e73d2cd1-1895-43d7-ab6f-9ce540f37c48",
+  "job_status": "complete",
+  "actions": [
+    {
+      "seconds": 3.717,
+      "action": "#clear-selection"
+    },
+    {
+      "seconds": 4.981,
+      "action": "#package-filter: Bibliography"
+    },
+    {
+      "seconds": 6.246,
+      "action": "#feature-filter: export_bibtex"
+    },
+    {
+      "seconds": 7.611,
+      "action": "#backend-filter: benchmark"
+    },
+    {
+      "seconds": 8.91,
+      "action": "#add-visible"
+    },
+    {
+      "seconds": 10.293,
+      "action": "#launch-job"
+    },
+    {
+      "seconds": 32.786,
+      "action": "measurement complete"
+    },
+    {
+      "seconds": 34.129,
+      "action": "[data-view-target=\"results\"]"
+    },
+    {
+      "seconds": 35.425,
+      "action": "#results button:first-child"
+    },
+    {
+      "seconds": 36.795,
+      "action": "#plot-metric-filter: julia.wall.time"
+    },
+    {
+      "seconds": 38.06,
+      "action": "#plot-kind-filter: distribution"
+    },
+    {
+      "seconds": 66.426,
+      "action": "inspect last measured sample"
+    },
+    {
+      "seconds": 67.413,
+      "action": "saved result inspected"
+    }
+  ],
+  "errors": [],
+  "checks": [
+    "35 leaves",
+    "7 workload filters",
+    "5 collectors for export",
+    "one selected leaf",
+    "one worker thread",
+    "real job completed",
+    "saved distribution reopened",
+    "offline measured point selected"
+  ],
+  "recording": "Uncut browser recording with a pointer ring; no synthetic measurements"
+}

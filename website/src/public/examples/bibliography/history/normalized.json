@@ -1,0 +1,691 @@
+{
+  "correctness": "not_checked",
+  "input_manifest_sha256": "b701b9ac01ae5c1279a3f1a5213944025fef57b9176b97c7f186a4522430ca74",
+  "performance": "not_compared",
+  "plot": {
+    "data": [
+      {
+        "metric": "julia.wall.time",
+        "normalization_status": "ratio",
+        "ratio": 1.0,
+        "reference_value": 8400.0,
+        "reference_version": "minimum",
+        "samples": 100,
+        "statistic": "minimum",
+        "target_kind": "candidate",
+        "unit": "ns",
+        "value": 8400.0,
+        "version": "0.1.0"
+      },
+      {
+        "metric": "julia.wall.time",
+        "normalization_status": "ratio",
+        "ratio": 1.119047619047619,
+        "reference_value": 8400.0,
+        "reference_version": "minimum",
+        "samples": 100,
+        "statistic": "minimum",
+        "target_kind": "candidate",
+        "unit": "ns",
+        "value": 9400.0,
+        "version": "0.2.0"
+      },
+      {
+        "metric": "julia.wall.time",
+        "normalization_status": "ratio",
+        "ratio": 1.1785714285714286,
+        "reference_value": 8400.0,
+        "reference_version": "minimum",
+        "samples": 100,
+        "statistic": "minimum",
+        "target_kind": "candidate",
+        "unit": "ns",
+        "value": 9900.0,
+        "version": "0.2.5"
+      },
+      {
+        "metric": "julia.wall.time",
+        "normalization_status": "ratio",
+        "ratio": 1.3214285714285714,
+        "reference_value": 8400.0,
+        "reference_version": "minimum",
+        "samples": 100,
+        "statistic": "minimum",
+        "target_kind": "candidate",
+        "unit": "ns",
+        "value": 11100.0,
+        "version": "0.2.10"
+      },
+      {
+        "metric": "julia.wall.time",
+        "normalization_status": "ratio",
+        "ratio": 1.2857142857142858,
+        "reference_value": 8400.0,
+        "reference_version": "minimum",
+        "samples": 100,
+        "statistic": "minimum",
+        "target_kind": "candidate",
+        "unit": "ns",
+        "value": 10800.0,
+        "version": "0.2.15"
+      },
+      {
+        "metric": "julia.wall.time",
+        "normalization_status": "ratio",
+        "ratio": 1.3571428571428572,
+        "reference_value": 8400.0,
+        "reference_version": "minimum",
+        "samples": 100,
+        "statistic": "minimum",
+        "target_kind": "candidate",
+        "unit": "ns",
+        "value": 11400.0,
+        "version": "0.2.20"
+      },
+      {
+        "metric": "julia.wall.time",
+        "normalization_status": "ratio",
+        "ratio": 1.4642857142857142,
+        "reference_value": 8400.0,
+        "reference_version": "minimum",
+        "samples": 100,
+        "statistic": "minimum",
+        "target_kind": "candidate",
+        "unit": "ns",
+        "value": 12300.0,
+        "version": "0.3.0"
+      },
+      {
+        "metric": "julia.wall.time",
+        "normalization_status": "ratio",
+        "ratio": 1.4642857142857142,
+        "reference_value": 8400.0,
+        "reference_version": "minimum",
+        "samples": 100,
+        "statistic": "minimum",
+        "target_kind": "candidate",
+        "unit": "ns",
+        "value": 12300.0,
+        "version": "0.3.1"
+      },
+      {
+        "metric": "julia.wall.time",
+        "normalization_status": "ratio",
+        "ratio": 1.3095238095238095,
+        "reference_value": 8400.0,
+        "reference_version": "minimum",
+        "samples": 100,
+        "statistic": "minimum",
+        "target_kind": "candidate",
+        "unit": "ns",
+        "value": 11000.0,
+        "version": "0.4.0"
+      },
+      {
+        "metric": "julia.gc.time",
+        "normalization_status": "both_zero",
+        "ratio": 1.0,
+        "reference_value": 0.0,
+        "reference_version": "minimum",
+        "samples": 100,
+        "statistic": "minimum",
+        "target_kind": "candidate",
+        "unit": "ns",
+        "value": 0.0,
+        "version": "0.1.0"
+      },
+      {
+        "metric": "julia.gc.time",
+        "normalization_status": "both_zero",
+        "ratio": 1.0,
+        "reference_value": 0.0,
+        "reference_version": "minimum",
+        "samples": 100,
+        "statistic": "minimum",
+        "target_kind": "candidate",
+        "unit": "ns",
+        "value": 0.0,
+        "version": "0.2.0"
+      },
+      {
+        "metric": "julia.gc.time",
+        "normalization_status": "both_zero",
+        "ratio": 1.0,
+        "reference_value": 0.0,
+        "reference_version": "minimum",
+        "samples": 100,
+        "statistic": "minimum",
+        "target_kind": "candidate",
+        "unit": "ns",
+        "value": 0.0,
+        "version": "0.2.5"
+      },
+      {
+        "metric": "julia.gc.time",
+        "normalization_status": "both_zero",
+        "ratio": 1.0,
+        "reference_value": 0.0,
+        "reference_version": "minimum",
+        "samples": 100,
+        "statistic": "minimum",
+        "target_kind": "candidate",
+        "unit": "ns",
+        "value": 0.0,
+        "version": "0.2.10"
+      },
+      {
+        "metric": "julia.gc.time",
+        "normalization_status": "both_zero",
+        "ratio": 1.0,
+        "reference_value": 0.0,
+        "reference_version": "minimum",
+        "samples": 100,
+        "statistic": "minimum",
+        "target_kind": "candidate",
+        "unit": "ns",
+        "value": 0.0,
+        "version": "0.2.15"
+      },
+      {
+        "metric": "julia.gc.time",
+        "normalization_status": "both_zero",
+        "ratio": 1.0,
+        "reference_value": 0.0,
+        "reference_version": "minimum",
+        "samples": 100,
+        "statistic": "minimum",
+        "target_kind": "candidate",
+        "unit": "ns",
+        "value": 0.0,
+        "version": "0.2.20"
+      },
+      {
+        "metric": "julia.gc.time",
+        "normalization_status": "both_zero",
+        "ratio": 1.0,
+        "reference_value": 0.0,
+        "reference_version": "minimum",
+        "samples": 100,
+        "statistic": "minimum",
+        "target_kind": "candidate",
+        "unit": "ns",
+        "value": 0.0,
+        "version": "0.3.0"
+      },
+      {
+        "metric": "julia.gc.time",
+        "normalization_status": "both_zero",
+        "ratio": 1.0,
+        "reference_value": 0.0,
+        "reference_version": "minimum",
+        "samples": 100,
+        "statistic": "minimum",
+        "target_kind": "candidate",
+        "unit": "ns",
+        "value": 0.0,
+        "version": "0.3.1"
+      },
+      {
+        "metric": "julia.gc.time",
+        "normalization_status": "both_zero",
+        "ratio": 1.0,
+        "reference_value": 0.0,
+        "reference_version": "minimum",
+        "samples": 100,
+        "statistic": "minimum",
+        "target_kind": "candidate",
+        "unit": "ns",
+        "value": 0.0,
+        "version": "0.4.0"
+      },
+      {
+        "metric": "julia.alloc.bytes",
+        "normalization_status": "ratio",
+        "ratio": 1.0,
+        "reference_value": 4480.0,
+        "reference_version": "minimum",
+        "samples": 100,
+        "statistic": "minimum",
+        "target_kind": "candidate",
+        "unit": "By",
+        "value": 4480.0,
+        "version": "0.1.0"
+      },
+      {
+        "metric": "julia.alloc.bytes",
+        "normalization_status": "ratio",
+        "ratio": 1.0678571428571428,
+        "reference_value": 4480.0,
+        "reference_version": "minimum",
+        "samples": 100,
+        "statistic": "minimum",
+        "target_kind": "candidate",
+        "unit": "By",
+        "value": 4784.0,
+        "version": "0.2.0"
+      },
+      {
+        "metric": "julia.alloc.bytes",
+        "normalization_status": "ratio",
+        "ratio": 1.8142857142857143,
+        "reference_value": 4480.0,
+        "reference_version": "minimum",
+        "samples": 100,
+        "statistic": "minimum",
+        "target_kind": "candidate",
+        "unit": "By",
+        "value": 8128.0,
+        "version": "0.2.5"
+      },
+      {
+        "metric": "julia.alloc.bytes",
+        "normalization_status": "ratio",
+        "ratio": 1.6214285714285714,
+        "reference_value": 4480.0,
+        "reference_version": "minimum",
+        "samples": 100,
+        "statistic": "minimum",
+        "target_kind": "candidate",
+        "unit": "By",
+        "value": 7264.0,
+        "version": "0.2.10"
+      },
+      {
+        "metric": "julia.alloc.bytes",
+        "normalization_status": "ratio",
+        "ratio": 1.7214285714285715,
+        "reference_value": 4480.0,
+        "reference_version": "minimum",
+        "samples": 100,
+        "statistic": "minimum",
+        "target_kind": "candidate",
+        "unit": "By",
+        "value": 7712.0,
+        "version": "0.2.15"
+      },
+      {
+        "metric": "julia.alloc.bytes",
+        "normalization_status": "ratio",
+        "ratio": 1.7214285714285715,
+        "reference_value": 4480.0,
+        "reference_version": "minimum",
+        "samples": 100,
+        "statistic": "minimum",
+        "target_kind": "candidate",
+        "unit": "By",
+        "value": 7712.0,
+        "version": "0.2.20"
+      },
+      {
+        "metric": "julia.alloc.bytes",
+        "normalization_status": "ratio",
+        "ratio": 1.8,
+        "reference_value": 4480.0,
+        "reference_version": "minimum",
+        "samples": 100,
+        "statistic": "minimum",
+        "target_kind": "candidate",
+        "unit": "By",
+        "value": 8064.0,
+        "version": "0.3.0"
+      },
+      {
+        "metric": "julia.alloc.bytes",
+        "normalization_status": "ratio",
+        "ratio": 1.8,
+        "reference_value": 4480.0,
+        "reference_version": "minimum",
+        "samples": 100,
+        "statistic": "minimum",
+        "target_kind": "candidate",
+        "unit": "By",
+        "value": 8064.0,
+        "version": "0.3.1"
+      },
+      {
+        "metric": "julia.alloc.bytes",
+        "normalization_status": "ratio",
+        "ratio": 1.8642857142857143,
+        "reference_value": 4480.0,
+        "reference_version": "minimum",
+        "samples": 100,
+        "statistic": "minimum",
+        "target_kind": "candidate",
+        "unit": "By",
+        "value": 8352.0,
+        "version": "0.4.0"
+      },
+      {
+        "metric": "julia.alloc.count",
+        "normalization_status": "ratio",
+        "ratio": 1.5666666666666667,
+        "reference_value": 60.0,
+        "reference_version": "minimum",
+        "samples": 100,
+        "statistic": "minimum",
+        "target_kind": "candidate",
+        "unit": "1",
+        "value": 94.0,
+        "version": "0.1.0"
+      },
+      {
+        "metric": "julia.alloc.count",
+        "normalization_status": "ratio",
+        "ratio": 1.6833333333333333,
+        "reference_value": 60.0,
+        "reference_version": "minimum",
+        "samples": 100,
+        "statistic": "minimum",
+        "target_kind": "candidate",
+        "unit": "1",
+        "value": 101.0,
+        "version": "0.2.0"
+      },
+      {
+        "metric": "julia.alloc.count",
+        "normalization_status": "ratio",
+        "ratio": 1.5166666666666666,
+        "reference_value": 60.0,
+        "reference_version": "minimum",
+        "samples": 100,
+        "statistic": "minimum",
+        "target_kind": "candidate",
+        "unit": "1",
+        "value": 91.0,
+        "version": "0.2.5"
+      },
+      {
+        "metric": "julia.alloc.count",
+        "normalization_status": "ratio",
+        "ratio": 1.0,
+        "reference_value": 60.0,
+        "reference_version": "minimum",
+        "samples": 100,
+        "statistic": "minimum",
+        "target_kind": "candidate",
+        "unit": "1",
+        "value": 60.0,
+        "version": "0.2.10"
+      },
+      {
+        "metric": "julia.alloc.count",
+        "normalization_status": "ratio",
+        "ratio": 1.1833333333333333,
+        "reference_value": 60.0,
+        "reference_version": "minimum",
+        "samples": 100,
+        "statistic": "minimum",
+        "target_kind": "candidate",
+        "unit": "1",
+        "value": 71.0,
+        "version": "0.2.15"
+      },
+      {
+        "metric": "julia.alloc.count",
+        "normalization_status": "ratio",
+        "ratio": 1.1833333333333333,
+        "reference_value": 60.0,
+        "reference_version": "minimum",
+        "samples": 100,
+        "statistic": "minimum",
+        "target_kind": "candidate",
+        "unit": "1",
+        "value": 71.0,
+        "version": "0.2.20"
+      },
+      {
+        "metric": "julia.alloc.count",
+        "normalization_status": "ratio",
+        "ratio": 1.2333333333333334,
+        "reference_value": 60.0,
+        "reference_version": "minimum",
+        "samples": 100,
+        "statistic": "minimum",
+        "target_kind": "candidate",
+        "unit": "1",
+        "value": 74.0,
+        "version": "0.3.0"
+      },
+      {
+        "metric": "julia.alloc.count",
+        "normalization_status": "ratio",
+        "ratio": 1.2333333333333334,
+        "reference_value": 60.0,
+        "reference_version": "minimum",
+        "samples": 100,
+        "statistic": "minimum",
+        "target_kind": "candidate",
+        "unit": "1",
+        "value": 74.0,
+        "version": "0.3.1"
+      },
+      {
+        "metric": "julia.alloc.count",
+        "normalization_status": "ratio",
+        "ratio": 1.2166666666666666,
+        "reference_value": 60.0,
+        "reference_version": "minimum",
+        "samples": 100,
+        "statistic": "minimum",
+        "target_kind": "candidate",
+        "unit": "1",
+        "value": 73.0,
+        "version": "0.4.0"
+      }
+    ],
+    "description": "minimum per version / reference (minimum) for each metric; 1 = reference, above 1 = more, below 1 = less. equal zeros = 1 (unchanged); nonzero / zero = unavailable",
+    "encoding": {
+      "color": "metric",
+      "x": "version",
+      "y": "ratio"
+    },
+    "id": "normalized-metrics-c1077a13d1d54a20",
+    "kind": "normalized_metrics",
+    "options": {
+      "collector": "benchmarktools-v1/fresh-state-evals1-v1",
+      "feature": "export_bibtex",
+      "package": "Bibliography",
+      "reference_version": "minimum",
+      "statistic": "minimum",
+      "unit": "ratio",
+      "versions": [
+        "0.1.0",
+        "0.2.0",
+        "0.2.5",
+        "0.2.10",
+        "0.2.15",
+        "0.2.20",
+        "0.3.0",
+        "0.3.1",
+        "0.4.0"
+      ],
+      "workload": "export_bibtex",
+      "zero_reference_policy": "equal zeros = 1 (unchanged); nonzero / zero = unavailable"
+    },
+    "schema_version": "perfchecker-plot/1",
+    "title": "Bibliography · export_bibtex · relative to minimum"
+  },
+  "run_id": "a1d731d2-ad66-4a7a-b537-650e590b615b",
+  "sources": {
+    "targets": [
+      {
+        "dependencies": [
+          {
+            "name": "BibInternal",
+            "revision": "6262e9854bfe2708f6252e9ee90ddf9750a95221",
+            "url": "https://github.com/JuliaBibliographies/BibInternal.jl.git",
+            "version": "0.1.0"
+          },
+          {
+            "name": "BibParser",
+            "revision": "e2a00c531210d37250271b484381804c99fdb0ea",
+            "url": "https://github.com/JuliaBibliographies/BibParser.jl.git",
+            "version": "0.1.0"
+          }
+        ],
+        "revision": "0670e98e16fbe87aaf2e0b6b3930ae121397a2d8",
+        "url": "https://github.com/JuliaBibliographies/Bibliography.jl.git",
+        "version": "0.1.0"
+      },
+      {
+        "dependencies": [
+          {
+            "name": "BibInternal",
+            "revision": "b844848f5869b71f385da3100625484ddb8e07db",
+            "url": "https://github.com/JuliaBibliographies/BibInternal.jl.git",
+            "version": "0.2.0"
+          },
+          {
+            "name": "BibParser",
+            "revision": "5adfbef93a889d7d64a8f7944d115938ed56b550",
+            "url": "https://github.com/JuliaBibliographies/BibParser.jl.git",
+            "version": "0.1.3"
+          }
+        ],
+        "revision": "05fe8755df6d2bd39c4fd8547f31f488bc037b9b",
+        "url": "https://github.com/JuliaBibliographies/Bibliography.jl.git",
+        "version": "0.2.0"
+      },
+      {
+        "dependencies": [
+          {
+            "name": "BibInternal",
+            "revision": "c4c59e38b33c6ed4442953747b57211c9e72398d",
+            "url": "https://github.com/JuliaBibliographies/BibInternal.jl.git",
+            "version": "0.2.4"
+          },
+          {
+            "name": "BibParser",
+            "revision": "c5a2f550b6a49e582e51af8cd247504c239ba56c",
+            "url": "https://github.com/JuliaBibliographies/BibParser.jl.git",
+            "version": "0.1.9"
+          }
+        ],
+        "revision": "c3e7faea19a610a69dc9e92a81e75dc6e483dbe0",
+        "url": "https://github.com/JuliaBibliographies/Bibliography.jl.git",
+        "version": "0.2.5"
+      },
+      {
+        "dependencies": [
+          {
+            "name": "BibInternal",
+            "revision": "c4c59e38b33c6ed4442953747b57211c9e72398d",
+            "url": "https://github.com/JuliaBibliographies/BibInternal.jl.git",
+            "version": "0.2.4"
+          },
+          {
+            "name": "BibParser",
+            "revision": "b6129a226cb65ffce05dd850aae71d19e41c2dc6",
+            "url": "https://github.com/JuliaBibliographies/BibParser.jl.git",
+            "version": "0.1.10"
+          }
+        ],
+        "revision": "9913ef8382a9993ab1e80de6cf736181b7771f86",
+        "url": "https://github.com/JuliaBibliographies/Bibliography.jl.git",
+        "version": "0.2.10"
+      },
+      {
+        "dependencies": [
+          {
+            "name": "BibInternal",
+            "revision": "25a1943917d86107f5d3e60fa03e177e1631f6a6",
+            "url": "https://github.com/JuliaBibliographies/BibInternal.jl.git",
+            "version": "0.3.0"
+          },
+          {
+            "name": "BibParser",
+            "revision": "e1dbc66acf74c9ac3faa0739cf087119286246d2",
+            "url": "https://github.com/JuliaBibliographies/BibParser.jl.git",
+            "version": "0.1.16"
+          }
+        ],
+        "revision": "16fa64e5656135f577a2cd0c3a5c61a3a3ad77a7",
+        "url": "https://github.com/JuliaBibliographies/Bibliography.jl.git",
+        "version": "0.2.15"
+      },
+      {
+        "dependencies": [
+          {
+            "name": "BibInternal",
+            "revision": "fca73ef9667beccbe827d123c087c5be69fe7781",
+            "url": "https://github.com/JuliaBibliographies/BibInternal.jl.git",
+            "version": "0.3.3"
+          },
+          {
+            "name": "BibParser",
+            "revision": "f86de83796fca07c4f905a22a10dd00f10fd8c02",
+            "url": "https://github.com/JuliaBibliographies/BibParser.jl.git",
+            "version": "0.2.1"
+          }
+        ],
+        "revision": "87dca57a55ccb12b74b34e3b1a622f2518300769",
+        "url": "https://github.com/JuliaBibliographies/Bibliography.jl.git",
+        "version": "0.2.20"
+      },
+      {
+        "dependencies": [
+          {
+            "name": "BibInternal",
+            "revision": "cea8645da3be4b161404185119c67b3fea31db32",
+            "url": "https://github.com/JuliaBibliographies/BibInternal.jl.git",
+            "version": "0.3.7"
+          },
+          {
+            "name": "BibParser",
+            "revision": "1e57d0752ca5e54ef4711c24f9f1b9622aa1c359",
+            "url": "https://github.com/JuliaBibliographies/BibParser.jl.git",
+            "version": "0.2.2"
+          }
+        ],
+        "revision": "da5dbeaff616fe67fb3b3e953d819df53b1a7150",
+        "url": "https://github.com/JuliaBibliographies/Bibliography.jl.git",
+        "version": "0.3.0"
+      },
+      {
+        "dependencies": [
+          {
+            "name": "BibInternal",
+            "revision": "cea8645da3be4b161404185119c67b3fea31db32",
+            "url": "https://github.com/JuliaBibliographies/BibInternal.jl.git",
+            "version": "0.3.7"
+          },
+          {
+            "name": "BibParser",
+            "revision": "1e57d0752ca5e54ef4711c24f9f1b9622aa1c359",
+            "url": "https://github.com/JuliaBibliographies/BibParser.jl.git",
+            "version": "0.2.2"
+          }
+        ],
+        "revision": "a637522e925e3c0f1e3c7abe33ff12a529fbbfb3",
+        "url": "https://github.com/JuliaBibliographies/Bibliography.jl.git",
+        "version": "0.3.1"
+      },
+      {
+        "dependencies": [
+          {
+            "name": "BibInternal",
+            "revision": "430f726ebad73b790060bad22eb09afab5ea3cf1",
+            "url": "https://github.com/JuliaBibliographies/BibInternal.jl.git",
+            "version": "0.4.0"
+          },
+          {
+            "name": "BibParser",
+            "revision": "85a2545cbff8fae54fb3eceb1570d0ea9517b1a8",
+            "url": "https://github.com/JuliaBibliographies/BibParser.jl.git",
+            "version": "0.3.0"
+          }
+        ],
+        "revision": "73bae9d352d0326570d3ec3070ca2bb1c2996015",
+        "url": "https://github.com/JuliaBibliographies/Bibliography.jl.git",
+        "version": "0.4.0"
+      }
+    ]
+  },
+  "runtime": {
+    "language": "julia",
+    "version": "1.13.0",
+    "threads": 1
+  },
+  "os": "NT",
+  "input_observations_sha256": "4d5eed784766d3bd683800a19a2f90c495ea484db01f1556e78576dace0dbcb2"
+}

@@ -1,0 +1,5 @@
+                          DataStructures · Accumulator_traverse_benchmark · julia.alloc.bytes
+                  ┌                                                                                ┐
+   [736.0, 737.0) ┤███████████████████████████████████████████████████████████████████████████  210
+                  └                                                                                ┘
+                                                       Frequency

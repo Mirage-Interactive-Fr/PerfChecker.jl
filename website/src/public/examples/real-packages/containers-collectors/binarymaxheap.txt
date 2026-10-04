@@ -1,0 +1,32 @@
+Wall time (µs)
+                                                   BinaryMaxHeap
+                          ┌                                                            ┐
+   build · BenchmarkTools ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 8.4
+       build · Chairmarks ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 11.0
+   drain · BenchmarkTools ┤■■■■■■■■■■■■■■■■■■■■■■■■■ 5.1
+       drain · Chairmarks ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 6.6
+                          └                                                            ┘
+GC share (%)
+                                                   BinaryMaxHeap
+                          ┌                                                            ┐
+   build · BenchmarkTools ┤ 0
+       build · Chairmarks ┤ 0
+   drain · BenchmarkTools ┤ 0
+       drain · Chairmarks ┤ 0
+                          └                                                            ┘
+Allocated bytes
+                                                   BinaryMaxHeap
+                          ┌                                                            ┐
+   build · BenchmarkTools ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 6 007
+       build · Chairmarks ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 6 007
+   drain · BenchmarkTools ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 4 167
+       drain · Chairmarks ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 4 167
+                          └                                                            ┘
+Allocation count
+                                                   BinaryMaxHeap
+                          ┌                                                            ┐
+   build · BenchmarkTools ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 9
+       build · Chairmarks ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 9
+   drain · BenchmarkTools ┤■■■■■■■■■■■■■■■■■■■ 3
+       drain · Chairmarks ┤■■■■■■■■■■■■■■■■■■■ 3
+                          └                                                            ┘

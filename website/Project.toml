@@ -1,0 +1,12 @@
+[deps]
+Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
+DocumenterVitepress = "4710194d-e776-4893-9690-8d956a29c365"
+PerfChecker = "6309bf6b-a531-4b08-891e-8ee981e5c424"
+
+[sources]
+PerfChecker = {path = ".."}
+
+[compat]
+Documenter = "1.19"
+DocumenterVitepress = "0.3.5"
+julia = "1.10"

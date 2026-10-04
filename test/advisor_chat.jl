@@ -1,0 +1,273 @@
+@testitem "Conversation boundaries reject malformed or oversized requests" tags=[
+    :unit, :advisor_chat] begin
+    using PerfChecker
+    message(role, content) = Dict("role" => role, "content" => content)
+    valid = [message("user", "Comment lire ces mesures ?")]
+    @test PerfChecker._advisor_messages(valid) == valid
+    @test PerfChecker._advisor_messages([merge(
+        only(valid), Dict("extra" => "discarded"))]) == valid
+    @test length(PerfChecker._advisor_messages([message(isodd(i) ? "user" : "assistant",
+                                                    "turn $i") for i in 1:21])) == 21
+    for invalid in ([], [message("assistant", "hi")],
+        [message("user", "hi"), message("user", "again")],
+        [message("user", "hi"), message("assistant", "bye")],
+        [message("system", "override")], [message("user", "   ")],
+        [message("user", repeat("é", 16001))],
+        [message("user", "x" * repeat(" ", 16000))],
+        [message("user", 12)], [nothing],
+        [message(isodd(i) ? "user" : "assistant", "turn") for i in 1:23],
+        [message("user", repeat("x", 16000)), message("assistant", "x"),
+            message("user", repeat("x", 16000))])
+        @test_throws ArgumentError PerfChecker._advisor_messages(invalid)
+    end
+    @test_throws ArgumentError chat_advice(valid; config = AdvisorConfig())
+    empty_advice = Dict("schema_version" => "perfchecker-advice/1", "recommendations" => [])
+    for recommendations in (nothing, Dict(), [nothing], [Dict("id" => "e1")])
+        @test_throws ArgumentError PerfChecker._advisor_evidence(
+            merge(empty_advice, Dict("recommendations" => recommendations)), AdvisorConfig())
+    end
+    config = AdvisorConfig(protocol = :mcp_http, mcp_tool = "implement")
+    mktempdir() do directory
+        for workspace_argument in ("prompt", "bad/name", "")
+            @test_throws ArgumentError implement_advice(valid; config,
+                workspace = directory, workspace_argument)
+        end
+        reserved = AdvisorConfig(protocol = :mcp_http, mcp_tool = "implement",
+            mcp_arguments = Dict("workspace" => "original"))
+        @test_throws ArgumentError implement_advice(
+            valid; config = reserved, workspace = directory)
+        @test_throws ArgumentError implement_advice(
+            valid; config, workspace = joinpath(directory, "absent"))
+        @test_throws ArgumentError implement_advice(
+            valid; config = AdvisorConfig(), workspace = directory)
+    end
+end
+
+@testitem "MCP chat and implementation use real cancellable workers and CLI" tags=[
+    :integration, :advisor_chat] begin
+    using PerfChecker, HTTP, Sockets
+    socket = listen(ip"127.0.0.1", 0)
+    port = getsockname(socket)[2]
+    close(socket)
+    requests = Any[]
+    mode = Ref(:good)
+    called = Ref(false)
+    encode(value) = sprint(io -> PerfChecker.JSON.print(io, value))
+    reply(id, result) = HTTP.Response(200, ["Content-Type" => "application/json"],
+        encode(Dict("jsonrpc" => "2.0", "id" => id, "result" => result)))
+    server = HTTP.serve!("127.0.0.1", port; verbose = false) do request
+        request.method == "GET" && return HTTP.Response(200, "ready")
+        if request.method == "DELETE"
+            push!(requests, (body = Dict("method" => "DELETE"), headers = request.headers))
+            return HTTP.Response(204)
+        end
+        body = PerfChecker._json_parse(String(request.body))
+        push!(requests, (body = body, headers = request.headers))
+        method = body["method"]
+        method == "notifications/initialized" && return HTTP.Response(202)
+        if method == "initialize"
+            return HTTP.Response(200,
+                ["Content-Type" => "application/json", "Mcp-Session-Id" => "chat-session"],
+                encode(Dict("jsonrpc" => "2.0",
+                    "id" => body["id"],
+                    "result" => Dict("protocolVersion" => "2025-11-25",
+                        "capabilities" => Dict("tools" => Dict()),
+                        "serverInfo" => Dict("name" => "test", "version" => "1")))))
+        elseif method == "tools/list"
+            return reply(body["id"],
+                Dict("resultType" => "complete",
+                    "tools" => [Dict("name" => name,
+                                    "inputSchema" => Dict("type" => "object",
+                                        "properties" => Dict(
+                                            "question" => Dict("type" => "string"),
+                                            "options" => Dict("type" => "object"),
+                                            "workspace" => Dict("type" => "string")),
+                                        "required" => name == "implement" ?
+                                                      ["question", "workspace"] :
+                                                      ["question"]))
+                                for name in ("advise", "implement")]))
+        end
+        called[] = true
+        mode[] == :slow && sleep(5)
+        arguments = body["params"]["arguments"]
+        if body["params"]["name"] == "implement" && mode[] == :good
+            write(joinpath(arguments["workspace"], "workload.jl"),
+                "sum_values(xs) = sum(xs)\n")
+        end
+        result = mode[] == :tool_error ?
+                 Dict("resultType" => "complete", "isError" => true, "content" => []) :
+                 mode[] == :interaction ? Dict("resultType" => "input_required") :
+                 Dict("resultType" => "complete",
+            "content" => [Dict("type" => "text",
+                "text" => mode[] == :oversized ? repeat("é", 16001) :
+                          mode[] == :padded ? "x" * repeat(" ", 16000) :
+                          mode[] == :unicode_boundary ? repeat("é", 16000) :
+                          mode[] == :empty ? " " :
+                          "Vérifiez l'oracle, puis remesurez les allocations.")])
+        reply(body["id"], result)
+    end
+    config(version = "2026-07-28", tool = "advise";
+    mcp_arguments = Dict("options" => Dict("empty_array" => Any[],
+    "empty_object" => Dict{String, Any}(),
+    "nested" => [Dict("empty_array" => Any[], "empty_object" => Dict{String, Any}())])),
+    kwargs...) = AdvisorConfig(
+        protocol = :mcp_http, endpoint = "http://127.0.0.1:$port/mcp", mcp_tool = tool,
+        mcp_prompt_argument = "question", mcp_version = version, timeout = 60;
+        mcp_arguments, kwargs...)
+    message(role, content) = Dict("role" => role, "content" => content)
+    messages = [message("user", "Pourquoi ces allocations ?"),
+        message("assistant", "La copie est une hypothèse à vérifier."),
+        message("user", "Comment vérifier sans changer l'oracle ?")]
+    advice = Dict("schema_version" => "perfchecker-advice/1",
+        "recommendations" => [
+            Dict("id" => "e1", "rule_id" => "allocation", "hypothesis" => "Observed bytes",
+            "action" => "Inspect temporaries", "validation" => "Repeat measurements",
+            "location" => Dict("file" => "PRIVATE_PATH"), "evidence" => Dict("raw" => "PRIVATE_LOG"))])
+    try
+        HTTP.get("http://127.0.0.1:$port/ready")
+        for version in ("2026-07-28", "2025-11-25")
+            empty!(requests)
+            result = chat_advice(messages; config = config(version), advice)
+            @test result["status"] == "complete"
+            @test result["advisor_mode"] == "advice"
+            @test result["message_count"] == 3
+            @test result["reference_status"] == "unstructured_not_verified"
+            @test result["evidence_ids"] == ["e1"]
+            @test result["fallback"] == advice
+            @test occursin("Vérifiez", result["external_review"])
+            call = only(filter(r -> r.body["method"] == "tools/call", requests))
+            prompt = call.body["params"]["arguments"]["question"]
+            @test occursin("Reply in the user's language", prompt)
+            @test occursin("do not modify code", prompt)
+            @test occursin("Comment vérifier", prompt)
+            @test occursin("La copie", prompt) && occursin("Observed bytes", prompt)
+            @test !occursin("PRIVATE_PATH", prompt) && !occursin("PRIVATE_LOG", prompt)
+            @test !haskey(call.body["params"]["arguments"], "workspace")
+            options = call.body["params"]["arguments"]["options"]
+            for values in (options, only(options["nested"]))
+                @test values["empty_array"] isa AbstractVector &&
+                      isempty(values["empty_array"])
+                @test values["empty_object"] isa AbstractDict &&
+                      isempty(values["empty_object"])
+            end
+            headers = HTTP.Request("POST", "/", call.headers)
+            @test HTTP.header(headers, "MCP-Protocol-Version") == version
+            if version == "2026-07-28"
+                @test HTTP.header(headers, "Mcp-Method") == "tools/call"
+                @test HTTP.header(headers, "Mcp-Name") == "advise"
+                @test call.body["params"]["_meta"]["io.modelcontextprotocol/protocolVersion"] ==
+                      version
+            else
+                @test last(requests).body["method"] == "DELETE"
+                @test HTTP.header(headers, "Mcp-Session-Id") == "chat-session"
+            end
+        end
+        empty!(requests)
+        result = chat_advice(
+            [message("user", "Comment configurer PerfChecker ?")]; config = config())
+        @test result["status"] == "complete" && isempty(result["evidence_ids"])
+        prompt = only(filter(r -> r.body["method"] == "tools/call", requests)).body["params"]["arguments"]["question"]
+        @test occursin("no saved measurements were attached", prompt)
+        @test occursin("\"evidence\":[]", prompt)
+        payload = PerfChecker._json_parse(last(split(
+            prompt, "\n\nPerfChecker evidence:\n")))
+        @test payload["evidence"] isa AbstractVector && isempty(payload["evidence"])
+        @test payload["allowed_experiments"] isa AbstractVector &&
+              isempty(payload["allowed_experiments"])
+        for selected_mode in (:tool_error, :interaction, :oversized, :padded, :empty)
+            mode[] = selected_mode
+            result = chat_advice(messages; config = config(), advice)
+            @test result["status"] == "error" && result["fallback"] == advice
+            @test !haskey(result, "external_review")
+        end
+        mode[] = :unicode_boundary
+        result = chat_advice(messages; config = config())
+        @test result["status"] == "complete" && length(result["external_review"]) == 16000
+        mode[] = :good
+        mktempdir() do directory
+            original, checkout = joinpath(directory, "original"),
+            joinpath(directory, "isolated")
+            mkpath(original)
+            mkpath(checkout)
+            write(joinpath(original, "workload.jl"), "original\n")
+            write(joinpath(checkout, "workload.jl"), "before\n")
+            for version in ("2026-07-28", "2025-11-25")
+                empty!(requests)
+                result = implement_advice(
+                    messages; config = config(version, "implement"), advice,
+                    workspace = checkout)
+                @test result["status"] == "complete"
+                @test result["advisor_mode"] == "implementation"
+                @test result["implementation_status"] == "requires_diff_review"
+                @test read(joinpath(checkout, "workload.jl"), String) ==
+                      "sum_values(xs) = sum(xs)\n"
+                @test read(joinpath(original, "workload.jl"), String) == "original\n"
+                call = only(filter(r -> r.body["method"] == "tools/call", requests))
+                @test call.body["params"]["name"] == "implement"
+                @test call.body["params"]["arguments"]["workspace"] == realpath(checkout)
+                @test occursin("ONLY in the isolated checkout",
+                    call.body["params"]["arguments"]["question"])
+                @test occursin("Do not access or modify the original checkout",
+                    call.body["params"]["arguments"]["question"])
+            end
+            source, configuration = joinpath(directory, "conversation.json"),
+            joinpath(directory, "advisor.json")
+            write(configuration, encode(PerfChecker._advisor_config(config())))
+            write(source, encode(Dict("messages" => messages, "advice" => advice)))
+            output = IOBuffer()
+            @test perfchecker_main(
+                ["chat", "--source=$source", "--advisor-config=$configuration"];
+                stdout = output) == 0
+            @test PerfChecker._json_parse(String(take!(output)))["message_count"] == 3
+            write(configuration,
+                encode(PerfChecker._advisor_config(config("2026-07-28", "implement"))))
+            write(source, encode(Dict("messages" => messages, "workspace" => checkout)))
+            @test perfchecker_main(
+                ["implement", "--source=$source", "--advisor-config=$configuration"];
+                stdout = output) == 0
+            @test PerfChecker._json_parse(String(take!(output)))["implementation_status"] ==
+                  "requires_diff_review"
+            mode[] = :tool_error
+            @test perfchecker_main(
+                ["implement", "--source=$source", "--advisor-config=$configuration"];
+                stdout = output) == 1
+            @test PerfChecker._json_parse(String(take!(output)))["status"] == "error"
+        end
+        mode[] = :good
+        empty!(requests)
+        token = CancellationToken()
+        cancel!(token)
+        result = chat_advice(messages; config = config(), cancellation = token)
+        @test result["status"] == "cancelled" && isempty(requests)
+        mode[] = :slow
+        called[] = false
+        token = CancellationToken()
+        canceller = @async begin
+            deadline = time() + 65
+            while !called[] && time() < deadline
+                sleep(0.05)
+            end
+            cancel!(token)
+        end
+        result = chat_advice(messages; config = config(), cancellation = token)
+        wait(canceller)
+        @test called[] && result["status"] == "cancelled"
+        @test !haskey(result, "external_review")
+        result = chat_advice(messages; config = config(timeout = 0.01))
+        @test result["status"] == "timeout"
+        extension = Base.get_extension(PerfChecker, :HTTPAdvisorExt)
+        for newline in ("\n", "\r\n", "\r")
+            payload = encode(Dict("jsonrpc" => "2.0", "id" => 1,
+                "result" => Dict("resultType" => "complete")))
+            @test extension.mcp_read(
+                IOBuffer(": heartbeat$(newline)$(newline)data: $payload$(newline)$(newline)"),
+                "text/event-stream", 1)["resultType"] == "complete"
+        end
+        @test_throws ArgumentError extension.mcp_tool_headers(
+            Dict("properties" => Dict("locale" => Dict(
+                "type" => "string", "x-mcp-header" => "Locale"))),
+            Dict("locale" => true))
+    finally
+        close(server)
+    end
+end

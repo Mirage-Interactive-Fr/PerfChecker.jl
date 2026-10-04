@@ -1,0 +1,68 @@
+{
+  "records": [
+    {
+      "checks": {},
+      "controller_loaded": false,
+      "correctness": "not_checked",
+      "findings": [
+        {
+          "evidence": {},
+          "location": {
+            "file": "",
+            "line": 0
+          },
+          "message": "Some tests did not pass: 0 passed, 1 failed, 0 errored, 0 broken.",
+          "rule_id": "quality.aqua",
+          "severity": "warning"
+        }
+      ],
+      "implementation": "package",
+      "log_excerpt": "Unbound type parameters detected:\n[1] var\"#DefaultDictBase#22\"(kwargs::Base.Pairs{Symbol, V, Nothing, NT} where {V, NT<:NamedTuple}, ::Type{DataStructures.DefaultDictBase}, default::F, ps::Pair{K, V}...) where {K, V, F} @ DataStructures <local-source>\n[2] var\"#DefaultDict#37\"(kwargs::Base.Pairs{Symbol, V, Nothing, NT} where {V, NT<:NamedTuple}, ::Type{DataStructures.DefaultDict}, default::F, ps::Pair{K, V}...) where {K, V, F} @ DataStructures <local-source>\n[3] var\"#DefaultOrderedDict#52\"(kwargs::Base.Pairs{Symbol, V, Nothing, NT} where {V, NT<:NamedTuple}, ::Type{DataStructures.DefaultOrderedDict}, default::F, ps::Pair{K, V}...) where {K, V, F} @ DataStructures <local-source>\nTest Summary:    | Pass  Total  Time\nMethod ambiguity |    1      1  1.3s\n\nUnbound type parameters: Test Failed at <local-source>\n  Expression: isempty(unbounds)\n   Evaluated: isempty(Method[var\"#DefaultDictBase#22\"(kwargs::Base.Pairs{Symbol, V, Nothing, NT} where {V, NT<:NamedTuple}, ::Type{DataStructures.DefaultDictBase}, default::F, ps::Pair{K, V}...) where {K, V, F} @ DataStructures <local-source> var\"#DefaultDict#37\"(kwargs::Base.Pairs{Symbol, V, Nothing, NT} where {V, NT<:NamedTuple}, ::Type{DataStructures.DefaultDict}, default::F, ps::Pair{K, V}...) where {K, V, F} @ DataStructures <local-source> var\"#DefaultOrderedDict#52\"(kwargs::Base.Pairs{Symbol, V, Nothing, NT} where {V, NT<:NamedTuple}, ::Type{DataStructures.DefaultOrderedDict}, default::F, ps::Pair{K, V}...) where {K, V, F} @ DataStructures <local-source>\n  Stacktrace:\n   [1] macro expansion\n     @ <local-source> [inlined]\n   [2] test_unbound_args(m::Module; broken::Bool)\n     @ Aqua <local-source>\n   [3] test_unbound_args\n     @ <local-source> [inlined]\n   [4] macro expansion\n     @ <local-source> [inlined]\n   [5] macro expansion\n     @ <local-source> [inlined]\n   [6] test_all(testtarget::Module; ambiguities::Bool, unbound_args::Bool, undefined_exports::Bool, project_extras::Bool, stale_deps::Bool, deps_compat::Bool, piracies::Bool, persistent_tasks::Bool, undocumented_names::Bool)\n     @ Aqua <local-source>\nTest Summary:           | Fail  Total  Time\nUnbound type parameters |    1      1  1.4s\nRNG of the outermost testset: Random.Xoshiro(0x658c4da302c60038, 0xbb0496df57d7c204, 0x07931d4668f7c1b9, 0xc1b694c5fc7acc09, 0x0877b60afe7fa320)\n",
+      "performance": "not_compared",
+      "quality": "failed",
+      "runtime": {
+        "language": "julia",
+        "threads": 1,
+        "version": "1.13.0"
+      },
+      "scenario": "package",
+      "status": "complete",
+      "summary": "",
+      "tool": "aqua",
+      "tool_version": "0.8.16",
+      "worker_elapsed_seconds": 8.920000076293945
+    },
+    {
+      "artifacts": [
+        {
+          "bytes": 190003317,
+          "kind": "heap_snapshot",
+          "redacted": true,
+          "sha256": "0c2014ddc94ce22462a10667111da3edb6b7552c885d3806a09c5506cec359a9"
+        }
+      ],
+      "controller_loaded": false,
+      "correctness": "passed",
+      "findings": [],
+      "implementation": "datastructures",
+      "limitations": [
+        "Snapshot covers the entire diagnostic process, not just the scenario.",
+        "Only GC-managed memory is represented; native and device memory are excluded.",
+        "Snapshot capture is intrusive and its duration is not baseline performance evidence."
+      ],
+      "log_excerpt": "",
+      "performance": "not_compared",
+      "quality": "not_checked",
+      "runtime": {
+        "language": "julia",
+        "threads": 1,
+        "version": "1.13.0"
+      },
+      "scenario": "events-heap",
+      "status": "complete",
+      "summary": "Redacted heap snapshot captured after verification. Covers GC-managed objects in the whole worker; native and device memory are excluded.",
+      "tool": "heap",
+      "worker_elapsed_seconds": 9.578999996185303
+    }
+  ]
+}

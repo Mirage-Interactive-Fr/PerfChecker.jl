@@ -1,0 +1,32 @@
+Wall time (µs)
+                                                     OrderedSet
+                           ┌                                                            ┐
+    build · BenchmarkTools ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 11.7
+        build · Chairmarks ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 17.1
+   lookup · BenchmarkTools ┤■■■■■ 1.5
+       lookup · Chairmarks ┤■■■■■ 1.6
+                           └                                                            ┘
+GC share (%)
+                                                     OrderedSet
+                           ┌                                                            ┐
+    build · BenchmarkTools ┤ 0
+        build · Chairmarks ┤ 0
+   lookup · BenchmarkTools ┤ 0
+       lookup · Chairmarks ┤ 0
+                           └                                                            ┘
+Allocated bytes
+                                                     OrderedSet
+                           ┌                                                            ┐
+    build · BenchmarkTools ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 12 942
+        build · Chairmarks ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 12 942
+   lookup · BenchmarkTools ┤■■ 592
+       lookup · Chairmarks ┤■■ 592
+                           └                                                            ┘
+Allocation count
+                                                     OrderedSet
+                           ┌                                                            ┐
+    build · BenchmarkTools ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 31
+        build · Chairmarks ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 31
+   lookup · BenchmarkTools ┤■■■■■ 3
+       lookup · Chairmarks ┤■■■■■ 3
+                           └                                                            ┘

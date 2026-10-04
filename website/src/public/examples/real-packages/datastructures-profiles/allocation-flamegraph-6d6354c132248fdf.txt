@@ -1,0 +1,4 @@
+                                       DataStructures · heap_32768_profile_alloc · allocation flame graph (% inclusive)
+                                      ┌                                                                                ┐
+   BinaryHeap (src/heaps/binary_heap. ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 100
+                                      └                                                                                ┘

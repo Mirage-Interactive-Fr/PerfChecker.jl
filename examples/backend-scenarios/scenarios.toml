@@ -1,0 +1,61 @@
+schema_version = "perfchecker-scenario-catalog/1"
+
+[[scenarios]]
+id = "portable-affine"
+implementation = "kernelabstractions-cpu"
+source = "kernel_cases.jl"
+factory = "PortableKernelCases.affine"
+requirements = ["KernelAbstractions"]
+parameters = {backend = "cpu", n = 4096}
+collectors = ["benchmark"]
+
+[[scenarios]]
+id = "portable-affine"
+implementation = "kernelabstractions-cuda"
+source = "kernel_cases.jl"
+factory = "PortableKernelCases.affine"
+requirements = ["KernelAbstractions", "CUDA"]
+parameters = {backend = "cuda", n = 4096}
+collectors = ["benchmark"]
+
+[[scenarios]]
+id = "task-graph-sum"
+implementation = "dagger-local"
+source = "dagger_cases.jl"
+factory = "DaggerCases.reduction"
+requirements = ["Dagger"]
+parameters = {n = 4096}
+collectors = ["benchmark"]
+
+[[scenarios]]
+id = "affine"
+implementation = "cpu"
+source = "cases.jl"
+factory = "BackendCases.affine"
+parameters = {backend = "cpu", n = 4096}
+collectors = ["benchmark"]
+
+[[scenarios]]
+id = "affine"
+implementation = "threads"
+source = "cases.jl"
+factory = "BackendCases.affine"
+parameters = {backend = "threads", n = 4096}
+collectors = ["benchmark"]
+
+[[scenarios]]
+id = "affine"
+implementation = "cuda"
+source = "cases.jl"
+factory = "BackendCases.affine"
+requirements = ["CUDA"]
+parameters = {backend = "cuda", n = 4096}
+collectors = ["benchmark"]
+
+[[scenarios]]
+id = "distributed-sum"
+implementation = "two-processes"
+source = "cases.jl"
+factory = "BackendCases.distributed_sum"
+parameters = {n = 4096}
+collectors = ["benchmark"]

@@ -1,0 +1,6 @@
+                                              DataStructures · heap_32768_profile · CPU flame graph (% inclusive)
+                                      ┌                                                                                ┐
+   pop! (src/heaps/binary_heap.jl:107 ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 80
+   BinaryHeap (src/heaps/binary_heap. ┤■■■■■■■■■■■■■■■■■■ 19.1304
+   isempty (src/heaps/binary_heap.jl: ┤■ 0.869565
+                                      └                                                                                ┘

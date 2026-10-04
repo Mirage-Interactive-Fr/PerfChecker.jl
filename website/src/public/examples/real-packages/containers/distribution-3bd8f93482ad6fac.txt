@@ -1,0 +1,5 @@
+                                  DataStructures · RBTree_build_benchmark · julia.alloc.bytes
+                      ┌                                                                                ┐
+   [32880.0, 32881.0) ┤███████████████████████████████████████████████████████████████████████████  210
+                      └                                                                                ┘
+                                                           Frequency

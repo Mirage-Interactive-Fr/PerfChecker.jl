@@ -1,0 +1,281 @@
+name: Collection qualification
+
+on:
+  pull_request:
+  push:
+    branches: [main, "release/**"]
+  schedule:
+    - cron: '23 3 * * 1'
+  workflow_dispatch:
+    inputs:
+      full:
+        description: Run the extended release qualification
+        type: boolean
+        default: false
+      publish:
+        description: Publish the exact stable main revision after full qualification
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: qualification-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  PERFCHECKER_QUALIFICATION_PROFILE: ${{ (github.event_name == 'schedule' || inputs.full == true || inputs.publish == true) && 'extended' || 'routine' }}
+  PERFCHECKER_DOCS_BASE: '/PerfChecker/dev/'
+  JULIA_NUM_THREADS: '1'
+  JULIA_NUM_PRECOMPILE_TASKS: '1'
+  JULIA_NUM_GC_THREADS: '1'
+  UV_THREADPOOL_SIZE: '1'
+  OPENBLAS_NUM_THREADS: '1'
+  OMP_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.plan.outputs.matrix }}
+      full: ${{ steps.plan.outputs.full }}
+      vscode_repository: ${{ steps.plan.outputs.vscode_repository }}
+      vscode_revision: ${{ steps.plan.outputs.vscode_revision }}
+      docs_base: ${{ steps.plan.outputs.docs_base }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: julia-actions/setup-julia@v3
+        with:
+          version: '1'
+      - name: Test the qualification controller
+        run: julia --startup-file=no --project=qualification qualification/test/runtests.jl
+      - id: plan
+        run: julia --startup-file=no --project=qualification qualification/scripts/plan.jl
+        env:
+          PERFCHECKER_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+      - uses: actions/upload-artifact@v7
+        with:
+          name: qualification-plan
+          path: .qualification/plan.toml
+          include-hidden-files: true
+
+  qualify:
+    needs: plan
+    name: ${{ matrix.id }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 90
+    env:
+      PERFCHECKER_DOCS_BASE: ${{ needs.plan.outputs.docs_base }}
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix: ${{ fromJSON(needs.plan.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/checkout@v7
+        if: matrix.suite == 'vscode'
+        with:
+          repository: ${{ needs.plan.outputs.vscode_repository }}
+          ref: ${{ needs.plan.outputs.vscode_revision }}
+          path: .qualification/vscode
+          persist-credentials: false
+      - uses: julia-actions/setup-julia@v3
+        with:
+          version: ${{ matrix.julia }}
+      - uses: actions/setup-node@v7
+        if: matrix.suite == 'vscode' || matrix.suite == 'docs' || matrix.suite == 'web'
+        with:
+          node-version: '22'
+      - uses: julia-actions/cache@v3
+      - uses: actions/download-artifact@v8
+        with:
+          name: qualification-plan
+          path: .qualification
+      - name: Execute and capture exact resolved environments
+        run: julia --startup-file=no --project=qualification qualification/scripts/run.jl '${{ matrix.id }}'
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: qualification-${{ matrix.id }}
+          path: .qualification/results/${{ matrix.id }}
+          include-hidden-files: true
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v7
+        if: success() && matrix.suite == 'docs'
+        with:
+          name: qualified-documentation-site
+          path: website/build/site
+          include-hidden-files: true
+          if-no-files-found: error
+
+  stable-documentation:
+    needs: [plan, qualify, collection, release]
+    if: >-
+      needs.plan.outputs.full == 'true' &&
+      needs.release.result == 'success' &&
+      github.event_name == 'workflow_dispatch' &&
+      inputs.publish == true &&
+      github.ref == 'refs/heads/main' &&
+      vars.PERFCHECKER_DOCS_DEPLOY == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      PERFCHECKER_DOCS_BASE: ${{ needs.plan.outputs.docs_base }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: julia-actions/setup-julia@v3
+        with:
+          version: '1'
+      - uses: actions/download-artifact@v8
+        with:
+          name: qualification-plan
+          path: .qualification
+      - uses: actions/download-artifact@v8
+        with:
+          pattern: qualification-*
+          path: .qualification/downloads
+      - uses: actions/download-artifact@v8
+        with:
+          name: qualified-documentation-site
+          path: website/build/site
+      - name: Restore receipts from this complete campaign
+        shell: julia --startup-file=no --project=qualification {0}
+        run: |
+          using TOML
+          for lane in TOML.parsefile(".qualification/plan.toml")["lanes"]
+              source = joinpath(".qualification/downloads", "qualification-" * lane["id"])
+              isdir(source) || error("Missing lane artifact: " * lane["id"])
+              destination = joinpath(".qualification/results", lane["id"])
+              mkpath(dirname(destination))
+              cp(source, destination)
+          end
+      - name: Revalidate the complete collection and exact tested site
+        run: julia --startup-file=no --project=qualification qualification/scripts/collect.jl --publish
+      - name: Resolve and verify the published stable tag
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          tag="${{ needs.release.outputs.tag }}"
+          [[ "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "Invalid stable tag"; exit 1; }
+          actual="$(gh api "repos/$GH_REPO/commits/$tag" --jq .sha)"
+          [[ "$actual" == "$GITHUB_SHA" ]] || { echo "Stable tag differs from the qualified source"; exit 1; }
+          git fetch origin "refs/tags/$tag:refs/tags/$tag"
+          [[ "$(git rev-parse "$tag^{commit}")" == "$GITHUB_SHA" ]] || { echo "Fetched tag differs from the qualified source"; exit 1; }
+          echo "PERFCHECKER_DOCS_RELEASE_TAG=$tag" >> "$GITHUB_ENV"
+      - name: Install the documentation deployment environment
+        run: julia --startup-file=no --project=website -e 'using Pkg; Pkg.develop(path="."); Pkg.instantiate()'
+      - name: Publish the qualified stable documentation
+        run: julia --startup-file=no --project=website website/deploy.jl
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DOCUMENTER_KEY: ${{ secrets.DOCUMENTER_KEY }}
+
+  collection:
+    if: always()
+    needs: [plan, qualify]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: julia-actions/setup-julia@v3
+        with:
+          version: '1'
+      - uses: actions/download-artifact@v8
+        with:
+          name: qualification-plan
+          path: .qualification
+      - uses: actions/download-artifact@v8
+        with:
+          pattern: qualification-*
+          path: .qualification/downloads
+      - name: Arrange lane evidence
+        shell: julia --startup-file=no --project=qualification {0}
+        run: |
+          using TOML
+          for lane in TOML.parsefile(".qualification/plan.toml")["lanes"]
+              source = joinpath(".qualification/downloads", "qualification-" * lane["id"])
+              isdir(source) || error("Missing lane artifact: " * lane["id"])
+              destination = joinpath(".qualification/results", lane["id"])
+              mkpath(dirname(destination))
+              cp(source, destination)
+          end
+      - name: Reject incomplete or mismatched results
+        run: julia --startup-file=no --project=qualification qualification/scripts/collect.jl
+      - uses: actions/upload-artifact@v7
+        with:
+          name: qualified-collection
+          path: .qualification/collection.toml
+          include-hidden-files: true
+
+  release:
+    needs: [plan, qualify, collection]
+    if: >-
+      needs.plan.outputs.full == 'true' &&
+      github.event_name == 'workflow_dispatch' &&
+      inputs.publish == true &&
+      github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    outputs:
+      tag: ${{ steps.verify.outputs.tag }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: julia-actions/setup-julia@v3
+        with:
+          version: '1'
+      - uses: actions/download-artifact@v8
+        with:
+          name: qualified-collection
+          path: .qualification
+      - name: Verify the stable revision and qualified collection
+        id: verify
+        shell: julia --startup-file=no {0}
+        run: |
+          using TOML
+          version = VersionNumber(TOML.parsefile("Project.toml")["version"])
+          isempty(version.prerelease) && isempty(version.build) || error("Expected a stable package version")
+          collection = TOML.parsefile(".qualification/collection.toml")
+          collection["full"] && collection["publishable"] || error("Complete clean qualification is required")
+          collection["revision"] == ENV["GITHUB_SHA"] || error("Qualified revision differs from the release")
+          open(ENV["GITHUB_ENV"], "a") do io
+              println(io, "PERFCHECKER_RELEASE_TAG=v", version)
+          end
+          open(ENV["GITHUB_OUTPUT"], "a") do io
+              println(io, "tag=v", version)
+          end
+      - name: Publish the qualified stable release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_SHA: ${{ github.sha }}
+        run: |
+          tag="$PERFCHECKER_RELEASE_TAG"
+          existing="$(gh api "repos/$GH_REPO/commits/$tag" --jq .sha 2>/dev/null || true)"
+          [[ -z "$existing" || "$existing" == "$RELEASE_SHA" ]] || { echo "This release tag already identifies another commit"; exit 1; }
+          if gh release view "$tag" >/dev/null 2>&1; then
+            [[ "$(gh release view "$tag" --json isDraft,isPrerelease --jq '.isDraft or .isPrerelease')" == false ]] || { echo "Existing release is not stable"; exit 1; }
+          else
+            gh release create "$tag" .qualification/collection.toml --target "$RELEASE_SHA" --latest \
+              --title "PerfChecker $tag" --notes-file CHANGELOG.md
+          fi

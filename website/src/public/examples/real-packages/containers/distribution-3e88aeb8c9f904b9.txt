@@ -1,0 +1,5 @@
+                            DataStructures · LittleDict_build_benchmark · julia.alloc.count
+                  ┌                                                                                ┐
+   [391.0, 392.0) ┤███████████████████████████████████████████████████████████████████████████  210
+                  └                                                                                ┘
+                                                       Frequency

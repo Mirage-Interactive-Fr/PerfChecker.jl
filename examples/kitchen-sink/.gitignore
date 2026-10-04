@@ -1,0 +1,9 @@
+Manifest.toml
+.controller/
+results/
+exports/
+.vscode/
+workers/output/
+workers/metadata/
+oxygen/workers/output/
+oxygen/workers/metadata/

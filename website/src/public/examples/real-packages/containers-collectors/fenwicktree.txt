@@ -1,0 +1,32 @@
+Wall time (µs)
+                                                        FenwickTree
+                              ┌                                                            ┐
+       build · BenchmarkTools ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 1.4
+           build · Chairmarks ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 1.4
+   prefixsum · BenchmarkTools ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 1.3
+       prefixsum · Chairmarks ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 1.3
+                              └                                                            ┘
+GC share (%)
+                                                        FenwickTree
+                              ┌                                                            ┐
+       build · BenchmarkTools ┤ 0
+           build · Chairmarks ┤ 0
+   prefixsum · BenchmarkTools ┤ 0
+       prefixsum · Chairmarks ┤ 0
+                              └                                                            ┘
+Allocated bytes
+                                                        FenwickTree
+                              ┌                                                            ┐
+       build · BenchmarkTools ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 4 199
+           build · Chairmarks ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 4 199
+   prefixsum · BenchmarkTools ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 4 199
+       prefixsum · Chairmarks ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 4 199
+                              └                                                            ┘
+Allocation count
+                                                        FenwickTree
+                              ┌                                                            ┐
+       build · BenchmarkTools ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 4
+           build · Chairmarks ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 4
+   prefixsum · BenchmarkTools ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 4
+       prefixsum · Chairmarks ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 4
+                              └                                                            ┘

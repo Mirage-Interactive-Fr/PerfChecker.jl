@@ -1,0 +1,96 @@
+{
+  "status": "passed",
+  "run_id": "a1d731d2-ad66-4a7a-b537-650e590b615b",
+  "browser": "153.0.8010.12",
+  "actions": [
+    {
+      "seconds": 5.01,
+      "selector": "[data-view-target=\"results\"]"
+    },
+    {
+      "seconds": 6.106,
+      "selector": "#result-profile-filter",
+      "value": "historical"
+    },
+    {
+      "seconds": 7.253,
+      "selector": "#results button"
+    },
+    {
+      "seconds": 12.772,
+      "selector": "#plot-feature-filter",
+      "value": "export_bibtex"
+    },
+    {
+      "seconds": 13.855,
+      "selector": "#plot-metric-filter",
+      "value": "julia.wall.time"
+    },
+    {
+      "seconds": 14.955,
+      "selector": "#plot-kind-filter",
+      "value": "version_series"
+    },
+    {
+      "seconds": 16.037,
+      "selector": "#plot-metric-filter",
+      "value": "julia.wall.time"
+    },
+    {
+      "seconds": 51.558,
+      "view": "history-time"
+    },
+    {
+      "seconds": 53.424,
+      "selector": "#plot-kind-filter",
+      "value": "version_series"
+    },
+    {
+      "seconds": 54.919,
+      "selector": "#plot-metric-filter",
+      "value": "julia.alloc.bytes"
+    },
+    {
+      "seconds": 59.279,
+      "view": "history-memory"
+    },
+    {
+      "seconds": 61.122,
+      "selector": "#plot-kind-filter",
+      "value": "distribution"
+    },
+    {
+      "seconds": 62.203,
+      "selector": "#plot-metric-filter",
+      "value": "julia.wall.time"
+    },
+    {
+      "seconds": 65.559,
+      "view": "history-distribution"
+    },
+    {
+      "seconds": 67.439,
+      "selector": "#plot-kind-filter",
+      "value": "version_delta"
+    },
+    {
+      "seconds": 68.519,
+      "selector": "#plot-metric-filter",
+      "value": "julia.wall.time"
+    },
+    {
+      "seconds": 75.749,
+      "view": "history-delta"
+    }
+  ],
+  "errors": [],
+  "checks": [
+    "saved historical run selected",
+    "nine measured versions",
+    "elapsed-time trajectory",
+    "allocated-byte trajectory",
+    "900 timing samples",
+    "eight baseline comparisons"
+  ],
+  "recording": "Actual saved-run exploration with a pointer ring; no new benchmark or fabricated values"
+}

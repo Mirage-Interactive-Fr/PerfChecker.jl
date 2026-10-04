@@ -1,0 +1,15 @@
+[deps]
+HTTP = "cd3eb016-35fb-5094-929b-558a96fad6f3"
+Oxygen = "df9a0d86-3283-4920-82dc-4555fc0d1d8b"
+PerfChecker = "6309bf6b-a531-4b08-891e-8ee981e5c424"
+PlutoUI = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
+Sockets = "6462fe0b-24de-5631-8697-dd941f90decc"
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+TestItemRunner = "f8b46487-2199-4994-9208-9a1283c18c0a"
+
+[compat]
+HTTP = "1, 2"
+Oxygen = "1.10, 1.11"
+PlutoUI = "0.7"
+TestItemRunner = "1"
+julia = "1.10"

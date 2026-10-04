@@ -1,0 +1,5 @@
+                            DataStructures · LinkedList_build_benchmark · julia.alloc.count
+                  ┌                                                                                ┐
+   [516.0, 517.0) ┤███████████████████████████████████████████████████████████████████████████  210
+                  └                                                                                ┘
+                                                       Frequency

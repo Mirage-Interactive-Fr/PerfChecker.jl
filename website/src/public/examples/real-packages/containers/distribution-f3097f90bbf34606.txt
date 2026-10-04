@@ -1,0 +1,5 @@
+                                     DataStructures · Trie_build_benchmark · julia.alloc.bytes
+                        ┌                                                                                ┐
+   [106032.0, 106033.0) ┤███████████████████████████████████████████████████████████████████████████  210
+                        └                                                                                ┘
+                                                             Frequency

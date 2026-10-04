@@ -1,0 +1,25 @@
+WEBVTT
+
+00:00.000 --> 00:04.000
+The Bibliography suite contains 35 checks: 7 workloads and 5 collectors.
+
+00:04.000 --> 00:07.600
+Clear the selection. Filter Bibliography, then export_bibtex.
+
+00:07.600 --> 00:10.300
+Choose benchmark and add the one visible check. Keep one worker thread.
+
+00:10.300 --> 00:32.800
+Launch the check. The isolated Julia worker measures 50 samples.
+
+00:32.800 --> 00:36.800
+The job is complete. Open Results and the saved run.
+
+00:36.800 --> 00:39.000
+Choose elapsed time and the sample distribution.
+
+00:39.000 --> 00:65.500
+The first interactive plot is being compiled and rendered.
+
+00:65.500 --> 00:69.000
+Select sample 50 with the inspection slider. Its measured duration is 6,200 ns.

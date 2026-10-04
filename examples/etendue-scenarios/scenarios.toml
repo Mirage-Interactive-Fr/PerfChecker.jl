@@ -1,0 +1,46 @@
+schema_version = "perfchecker-scenario-catalog/1"
+
+[[scenarios]]
+id = "geometry-translation"
+implementation = "allocating"
+source = "cases.jl"
+factory = "EtendueCases.translation"
+requirements = ["EtendueGeometry", "EtendueGameIR", "EtendueContracts"]
+parameters = {implementation = "allocating", n = 65536}
+collectors = ["benchmark"]
+
+[[scenarios]]
+id = "geometry-translation"
+implementation = "inplace"
+source = "cases.jl"
+factory = "EtendueCases.translation"
+requirements = ["EtendueGeometry", "EtendueGameIR", "EtendueContracts"]
+parameters = {implementation = "inplace", n = 65536}
+collectors = ["benchmark"]
+
+[[scenarios]]
+id = "gameir-verification"
+implementation = "allocating"
+source = "cases.jl"
+factory = "EtendueCases.verification"
+requirements = ["EtendueGeometry", "EtendueGameIR", "EtendueContracts"]
+parameters = {implementation = "allocating", n = 10000}
+collectors = ["benchmark"]
+
+[[scenarios]]
+id = "gameir-verification"
+implementation = "workspace"
+source = "cases.jl"
+factory = "EtendueCases.verification"
+requirements = ["EtendueGeometry", "EtendueGameIR", "EtendueContracts"]
+parameters = {implementation = "workspace", n = 10000}
+collectors = ["benchmark"]
+
+[[scenarios]]
+id = "gameir-reject-unknown"
+implementation = "workspace"
+source = "cases.jl"
+factory = "EtendueCases.verification"
+requirements = ["EtendueGeometry", "EtendueGameIR", "EtendueContracts"]
+parameters = {implementation = "workspace", n = 100, valid = false}
+collectors = ["benchmark"]

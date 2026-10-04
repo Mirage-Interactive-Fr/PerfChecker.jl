@@ -1,0 +1,1932 @@
+{
+  "records": [
+    {
+      "analysis_scope": "operation specialized for prepared state type; synchronization excluded",
+      "correctness": "passed",
+      "findings": [
+        {
+          "evidence": {
+            "analysis": "JET.report_opt",
+            "report_type": "JET.RuntimeDispatchReport"
+          },
+          "location": {
+            "file": "essentials.jl",
+            "line": 11
+          },
+          "message": "RuntimeDispatchReport(runtime dispatch detected: prod(%1::NTuple{N, Int64} where N)::Int64)",
+          "rule_id": "inference.runtime_dispatch",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "JET.report_opt",
+            "report_type": "JET.RuntimeDispatchReport"
+          },
+          "location": {
+            "file": "abstractarray.jl",
+            "line": 396
+          },
+          "message": "RuntimeDispatchReport(runtime dispatch detected: Base.axes1(A::AbstractVector)::Any)",
+          "rule_id": "inference.runtime_dispatch",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "JET.report_opt",
+            "report_type": "JET.RuntimeDispatchReport"
+          },
+          "location": {
+            "file": "reduce.jl",
+            "line": 382
+          },
+          "message": "RuntimeDispatchReport(runtime dispatch detected: eltype(itr::AbstractArray)::Any)",
+          "rule_id": "inference.runtime_dispatch",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "JET.report_opt",
+            "report_type": "JET.RuntimeDispatchReport"
+          },
+          "location": {
+            "file": "reduce.jl",
+            "line": 382
+          },
+          "message": "RuntimeDispatchReport(runtime dispatch detected: Base.reduce_empty(op::Base.MappingRF{typeof(identity), typeof(|>)}, %1::Any))",
+          "rule_id": "inference.runtime_dispatch",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "JET.report_opt",
+            "report_type": "JET.RuntimeDispatchReport"
+          },
+          "location": {
+            "file": "reinterpretarray.jl",
+            "line": 785
+          },
+          "message": "RuntimeDispatchReport(runtime dispatch detected: sizeof(%105::Any)::Any)",
+          "rule_id": "inference.runtime_dispatch",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "JET.report_opt",
+            "report_type": "JET.RuntimeDispatchReport"
+          },
+          "location": {
+            "file": "reinterpretarray.jl",
+            "line": 785
+          },
+          "message": "RuntimeDispatchReport(runtime dispatch detected: (%104::Int64 + %142::Any)::Any)",
+          "rule_id": "inference.runtime_dispatch",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "JET.report_opt",
+            "report_type": "JET.RuntimeDispatchReport"
+          },
+          "location": {
+            "file": "reinterpretarray.jl",
+            "line": 785
+          },
+          "message": "RuntimeDispatchReport(runtime dispatch detected: convert(Int, %143::Any)::Any)",
+          "rule_id": "inference.runtime_dispatch",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "JET.report_opt",
+            "report_type": "JET.RuntimeDispatchReport"
+          },
+          "location": {
+            "file": "reinterpretarray.jl",
+            "line": 769
+          },
+          "message": "RuntimeDispatchReport(runtime dispatch detected: (%9::Any).offset::Any)",
+          "rule_id": "inference.runtime_dispatch",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "JET.report_opt",
+            "report_type": "JET.RuntimeDispatchReport"
+          },
+          "location": {
+            "file": "reinterpretarray.jl",
+            "line": 769
+          },
+          "message": "RuntimeDispatchReport(runtime dispatch detected: (%20::Any + %22::Int64)::Any)",
+          "rule_id": "inference.runtime_dispatch",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "JET.report_opt",
+            "report_type": "JET.RuntimeDispatchReport"
+          },
+          "location": {
+            "file": "reinterpretarray.jl",
+            "line": 769
+          },
+          "message": "RuntimeDispatchReport(runtime dispatch detected: (%10::Any).size::Any)",
+          "rule_id": "inference.runtime_dispatch",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "JET.report_opt",
+            "report_type": "JET.RuntimeDispatchReport"
+          },
+          "location": {
+            "file": "reinterpretarray.jl",
+            "line": 769
+          },
+          "message": "RuntimeDispatchReport(runtime dispatch detected: Base.Padding(%23::Any, %24::Any)::Base.Padding)",
+          "rule_id": "inference.runtime_dispatch",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "JET.report_opt",
+            "report_type": "JET.RuntimeDispatchReport"
+          },
+          "location": {
+            "file": "reinterpretarray.jl",
+            "line": 769
+          },
+          "message": "RuntimeDispatchReport(runtime dispatch detected: (%11::Any).offset::Any)",
+          "rule_id": "inference.runtime_dispatch",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "JET.report_opt",
+            "report_type": "JET.RuntimeDispatchReport"
+          },
+          "location": {
+            "file": "reinterpretarray.jl",
+            "line": 769
+          },
+          "message": "RuntimeDispatchReport(runtime dispatch detected: (%22::Any + %24::Int64)::Any)",
+          "rule_id": "inference.runtime_dispatch",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "JET.report_opt",
+            "report_type": "JET.RuntimeDispatchReport"
+          },
+          "location": {
+            "file": "reinterpretarray.jl",
+            "line": 769
+          },
+          "message": "RuntimeDispatchReport(runtime dispatch detected: (%12::Any).size::Any)",
+          "rule_id": "inference.runtime_dispatch",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "JET.report_opt",
+            "report_type": "JET.RuntimeDispatchReport"
+          },
+          "location": {
+            "file": "reinterpretarray.jl",
+            "line": 769
+          },
+          "message": "RuntimeDispatchReport(runtime dispatch detected: Base.Padding(%25::Any, %26::Any)::Base.Padding)",
+          "rule_id": "inference.runtime_dispatch",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "JET.report_opt",
+            "report_type": "JET.RuntimeDispatchReport"
+          },
+          "location": {
+            "file": "abstractarray.jl",
+            "line": 102
+          },
+          "message": "RuntimeDispatchReport(runtime dispatch detected: map(Base.unchecked_oneto, %1::NTuple{N, Int64} where N)::Any)",
+          "rule_id": "inference.runtime_dispatch",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "JET.report_opt",
+            "report_type": "JET.RuntimeDispatchReport"
+          },
+          "location": {
+            "file": "strings/io.jl",
+            "line": 140
+          },
+          "message": "RuntimeDispatchReport(runtime dispatch detected: Base._str_sizehint(%9::Any)::Int64)",
+          "rule_id": "inference.runtime_dispatch",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "JET.report_opt",
+            "report_type": "JET.RuntimeDispatchReport"
+          },
+          "location": {
+            "file": "strings/io.jl",
+            "line": 145
+          },
+          "message": "RuntimeDispatchReport(runtime dispatch detected: print(%38::IOBuffer, %46::Any)::Any)",
+          "rule_id": "inference.runtime_dispatch",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "JET.report_opt",
+            "report_type": "JET.RuntimeDispatchReport"
+          },
+          "location": {
+            "file": "essentials.jl",
+            "line": 389
+          },
+          "message": "RuntimeDispatchReport(runtime dispatch detected: Base.throw_boundserror(A::Array, %17::Tuple{Int64}))",
+          "rule_id": "inference.runtime_dispatch",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "JET.report_opt",
+            "report_type": "JET.RuntimeDispatchReport"
+          },
+          "location": {
+            "file": "promotion.jl",
+            "line": 342
+          },
+          "message": "RuntimeDispatchReport(runtime dispatch detected: promote_type(::Int64, %1::Type)::Any)",
+          "rule_id": "inference.runtime_dispatch",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "JET.report_opt",
+            "report_type": "JET.RuntimeDispatchReport"
+          },
+          "location": {
+            "file": "show.jl",
+            "line": 2716
+          },
+          "message": "RuntimeDispatchReport(runtime dispatch detected: show(io::IOContext{IOBuffer}, b::Any)::Any)",
+          "rule_id": "inference.runtime_dispatch",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "JET.report_opt",
+            "report_type": "JET.RuntimeDispatchReport"
+          },
+          "location": {
+            "file": "show.jl",
+            "line": 727
+          },
+          "message": "RuntimeDispatchReport(runtime dispatch detected: show(io::IOContext{IOBuffer}, %269::Any)::Any)",
+          "rule_id": "inference.runtime_dispatch",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "JET.report_opt",
+            "report_type": "JET.RuntimeDispatchReport"
+          },
+          "location": {
+            "file": "show.jl",
+            "line": 730
+          },
+          "message": "RuntimeDispatchReport(runtime dispatch detected: show(io::IOContext{IOBuffer}, %338::Any)::Any)",
+          "rule_id": "inference.runtime_dispatch",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "JET.report_opt",
+            "report_type": "JET.RuntimeDispatchReport"
+          },
+          "location": {
+            "file": "show.jl",
+            "line": 735
+          },
+          "message": "RuntimeDispatchReport(runtime dispatch detected: show(io::IOContext{IOBuffer}, %200::Any)::Any)",
+          "rule_id": "inference.runtime_dispatch",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "JET.report_opt",
+            "report_type": "JET.RuntimeDispatchReport"
+          },
+          "location": {
+            "file": "show.jl",
+            "line": 1130
+          },
+          "message": "RuntimeDispatchReport(runtime dispatch detected: eltype(%60::DataType)::Any)",
+          "rule_id": "inference.runtime_dispatch",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "JET.report_opt",
+            "report_type": "JET.RuntimeDispatchReport"
+          },
+          "location": {
+            "file": "show.jl",
+            "line": 2716
+          },
+          "message": "RuntimeDispatchReport(runtime dispatch detected: show(io::IOBuffer, b::Any)::Any)",
+          "rule_id": "inference.runtime_dispatch",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "JET.report_opt",
+            "report_type": "JET.RuntimeDispatchReport"
+          },
+          "location": {
+            "file": "show.jl",
+            "line": 727
+          },
+          "message": "RuntimeDispatchReport(runtime dispatch detected: show(io::IOBuffer, %245::Any)::Any)",
+          "rule_id": "inference.runtime_dispatch",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "JET.report_opt",
+            "report_type": "JET.RuntimeDispatchReport"
+          },
+          "location": {
+            "file": "show.jl",
+            "line": 730
+          },
+          "message": "RuntimeDispatchReport(runtime dispatch detected: show(io::IOBuffer, %302::Any)::Any)",
+          "rule_id": "inference.runtime_dispatch",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "JET.report_opt",
+            "report_type": "JET.RuntimeDispatchReport"
+          },
+          "location": {
+            "file": "show.jl",
+            "line": 735
+          },
+          "message": "RuntimeDispatchReport(runtime dispatch detected: show(io::IOBuffer, %188::Any)::Any)",
+          "rule_id": "inference.runtime_dispatch",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "JET.report_opt",
+            "report_type": "JET.RuntimeDispatchReport"
+          },
+          "location": {
+            "file": "show.jl",
+            "line": 1202
+          },
+          "message": "RuntimeDispatchReport(runtime dispatch detected: show(io::IOBuffer, %223::Any)::Any)",
+          "rule_id": "inference.runtime_dispatch",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "JET.report_opt",
+            "report_type": "JET.RuntimeDispatchReport"
+          },
+          "location": {
+            "file": "show.jl",
+            "line": 1207
+          },
+          "message": "RuntimeDispatchReport(runtime dispatch detected: show(io::IOBuffer, %50::Any)::Any)",
+          "rule_id": "inference.runtime_dispatch",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "JET.report_opt",
+            "report_type": "JET.RuntimeDispatchReport"
+          },
+          "location": {
+            "file": "show.jl",
+            "line": 1193
+          },
+          "message": "RuntimeDispatchReport(runtime dispatch detected: show(io::IOBuffer, %53::Any)::Any)",
+          "rule_id": "inference.runtime_dispatch",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "JET.report_opt",
+            "report_type": "JET.RuntimeDispatchReport"
+          },
+          "location": {
+            "file": "show.jl",
+            "line": 1195
+          },
+          "message": "RuntimeDispatchReport(runtime dispatch detected: show(io::IOBuffer, %50::Any)::Any)",
+          "rule_id": "inference.runtime_dispatch",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "JET.report_opt",
+            "report_type": "JET.RuntimeDispatchReport"
+          },
+          "location": {
+            "file": "show.jl",
+            "line": 1217
+          },
+          "message": "RuntimeDispatchReport(runtime dispatch detected: Base.show_at_namedtuple(io::IOBuffer, %320::Tuple, %319::DataType)::Any)",
+          "rule_id": "inference.runtime_dispatch",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "JET.report_opt",
+            "report_type": "JET.RuntimeDispatchReport"
+          },
+          "location": {
+            "file": "show.jl",
+            "line": 922
+          },
+          "message": "RuntimeDispatchReport(runtime dispatch detected: show(io::IOBuffer, %66::Any)::Any)",
+          "rule_id": "inference.runtime_dispatch",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "JET.report_opt",
+            "report_type": "JET.RuntimeDispatchReport"
+          },
+          "location": {
+            "file": "show.jl",
+            "line": 1434
+          },
+          "message": "RuntimeDispatchReport(runtime dispatch detected: show(%3::IOContext{IOBuffer}, %50::Any)::Any)",
+          "rule_id": "inference.runtime_dispatch",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "JET.report_opt",
+            "report_type": "JET.RuntimeDispatchReport"
+          },
+          "location": {
+            "file": "show.jl",
+            "line": 1202
+          },
+          "message": "RuntimeDispatchReport(runtime dispatch detected: show(io::IOContext{IOBuffer}, %260::Any)::Any)",
+          "rule_id": "inference.runtime_dispatch",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "JET.report_opt",
+            "report_type": "JET.RuntimeDispatchReport"
+          },
+          "location": {
+            "file": "show.jl",
+            "line": 1207
+          },
+          "message": "RuntimeDispatchReport(runtime dispatch detected: show(io::IOContext{IOBuffer}, %62::Any)::Any)",
+          "rule_id": "inference.runtime_dispatch",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "JET.report_opt",
+            "report_type": "JET.RuntimeDispatchReport"
+          },
+          "location": {
+            "file": "show.jl",
+            "line": 1193
+          },
+          "message": "RuntimeDispatchReport(runtime dispatch detected: show(io::IOContext{IOBuffer}, %65::Any)::Any)",
+          "rule_id": "inference.runtime_dispatch",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "JET.report_opt",
+            "report_type": "JET.RuntimeDispatchReport"
+          },
+          "location": {
+            "file": "show.jl",
+            "line": 1195
+          },
+          "message": "RuntimeDispatchReport(runtime dispatch detected: show(io::IOContext{IOBuffer}, %62::Any)::Any)",
+          "rule_id": "inference.runtime_dispatch",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "JET.report_opt",
+            "report_type": "JET.RuntimeDispatchReport"
+          },
+          "location": {
+            "file": "show.jl",
+            "line": 1217
+          },
+          "message": "RuntimeDispatchReport(runtime dispatch detected: Base.show_at_namedtuple(io::IOContext{IOBuffer}, %431::Tuple, %430::DataType)::Any)",
+          "rule_id": "inference.runtime_dispatch",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "JET.report_opt",
+            "report_type": "JET.RuntimeDispatchReport"
+          },
+          "location": {
+            "file": "show.jl",
+            "line": 1225
+          },
+          "message": "RuntimeDispatchReport(runtime dispatch detected: Base.show_at_namedtuple(io::IOContext{IOBuffer}, %516::Tuple, %520::DataType)::Any)",
+          "rule_id": "inference.runtime_dispatch",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "JET.report_opt",
+            "report_type": "JET.RuntimeDispatchReport"
+          },
+          "location": {
+            "file": "show.jl",
+            "line": 1022
+          },
+          "message": "RuntimeDispatchReport(runtime dispatch detected: show(%77::IOContext{IOBuffer}, %78::Any)::Any)",
+          "rule_id": "inference.runtime_dispatch",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "JET.report_opt",
+            "report_type": "JET.RuntimeDispatchReport"
+          },
+          "location": {
+            "file": "promotion.jl",
+            "line": 404
+          },
+          "message": "RuntimeDispatchReport(runtime dispatch detected: Base._promote(x::Int64, y::Real)::Tuple{Any, Any})",
+          "rule_id": "inference.runtime_dispatch",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "JET.report_opt",
+            "report_type": "JET.RuntimeDispatchReport"
+          },
+          "location": {
+            "file": "promotion.jl",
+            "line": 405
+          },
+          "message": "RuntimeDispatchReport(runtime dispatch detected: Base.not_sametype(%4::Tuple{Int64, Real}, %5::Tuple{Any, Any})::Any)",
+          "rule_id": "inference.runtime_dispatch",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "JET.report_opt",
+            "report_type": "JET.RuntimeDispatchReport"
+          },
+          "location": {
+            "file": "<local-source>",
+            "line": 336
+          },
+          "message": "RuntimeDispatchReport(runtime dispatch detected: Base.vect(%21::Oxygen.Core.RouterHOF.var\"#compose##0#compose##1\"{…} where {…})::Vector{…} where T<:(Oxygen.Core.RouterHOF.var\"#compose##0#compose##1\"{…} where {…}))",
+          "rule_id": "inference.runtime_dispatch",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "JET.report_opt",
+            "report_type": "JET.RuntimeDispatchReport"
+          },
+          "location": {
+            "file": "<local-source>",
+            "line": 342
+          },
+          "message": "RuntimeDispatchReport(runtime dispatch detected: (%27::Ref{Union{Nothing, String}})[]::Any)",
+          "rule_id": "inference.runtime_dispatch",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "JET.report_opt",
+            "report_type": "JET.RuntimeDispatchReport"
+          },
+          "location": {
+            "file": "<local-source>",
+            "line": 342
+          },
+          "message": "RuntimeDispatchReport(runtime dispatch detected: (%40::Ref{Union{Nothing, String}})[]::Any)",
+          "rule_id": "inference.runtime_dispatch",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "JET.report_opt",
+            "report_type": "JET.RuntimeDispatchReport"
+          },
+          "location": {
+            "file": "<local-source>",
+            "line": 345
+          },
+          "message": "RuntimeDispatchReport(runtime dispatch detected: (%92::Ref{Union{Nothing, HTTP.Handlers.Router}})[]::Any)",
+          "rule_id": "inference.runtime_dispatch",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "JET.report_opt",
+            "report_type": "JET.RuntimeDispatchReport"
+          },
+          "location": {
+            "file": "<local-source>",
+            "line": 345
+          },
+          "message": "RuntimeDispatchReport(runtime dispatch detected: (%105::Ref{Union{Nothing, HTTP.Handlers.Router}})[]::Any)",
+          "rule_id": "inference.runtime_dispatch",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "JET.report_opt",
+            "report_type": "JET.RuntimeDispatchReport"
+          },
+          "location": {
+            "file": "<local-source>",
+            "line": 345
+          },
+          "message": "RuntimeDispatchReport(runtime dispatch detected: (%115::Ref{String})[]::Any)",
+          "rule_id": "inference.runtime_dispatch",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "JET.report_opt",
+            "report_type": "JET.RuntimeDispatchReport"
+          },
+          "location": {
+            "file": "<local-source>",
+            "line": 345
+          },
+          "message": "RuntimeDispatchReport(runtime dispatch detected: Base.vect(%132::Oxygen.Core.var\"#DocsMiddleware##0#DocsMiddleware##1\"{HTTP.Handlers.Router{T, S, F}, String} where {T, S, F})::Vector{…} where T<:(Oxygen.Core.var\"#DocsMiddleware##0#DocsMiddleware##1\"{…} where {…}))",
+          "rule_id": "inference.runtime_dispatch",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "JET.report_opt",
+            "report_type": "JET.RuntimeDispatchReport"
+          },
+          "location": {
+            "file": "<local-source>",
+            "line": 362
+          },
+          "message": "RuntimeDispatchReport(runtime dispatch detected: Oxygen.Core.reduce(Oxygen.Core.:|>, %176::Any)::Any)",
+          "rule_id": "inference.runtime_dispatch",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "JET.report_opt",
+            "report_type": "JET.RuntimeDispatchReport"
+          },
+          "location": {
+            "file": "<local-source>",
+            "line": 431
+          },
+          "message": "RuntimeDispatchReport(runtime dispatch detected: (req::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}} Oxygen.Core.:|> %23::Function)::Any)",
+          "rule_id": "inference.runtime_dispatch",
+          "severity": "warning"
+        }
+      ],
+      "runtime": {
+        "language": "julia",
+        "threads": 1,
+        "version": "1.13.0"
+      },
+      "status": "complete",
+      "summary": "",
+      "tool": "jet",
+      "tool_version": "0.12.1"
+    },
+    {
+      "analysis_scope": "static operation specialization; tool exception-path defaults; not a universal allocation guarantee",
+      "correctness": "passed",
+      "findings": [
+        {
+          "evidence": {
+            "analysis": "AllocCheck.check_allocs",
+            "report_type": "AllocCheck.AllocationSite"
+          },
+          "location": {
+            "file": ".\\boot.jl",
+            "line": 649
+          },
+          "message": "Allocation of Vector{Any} in .\\boot.jl:649\n  | return $(Expr(:new, :self, :(memoryref(mem)), :((m,))))\n\nStacktrace:\n [1] Array\n   @ .\\boot.jl:649 [inlined]\n [2] Array\n   @ .\\boot.jl:673 [inlined]\n [3] vect\n   @ .\\array.jl:158 [inlined]\n [4] internalrequest\n   @ <local-source> [inlined]\n [5] (::Main.var\"##SharedCase#142\".EventService.var\"#request_case##8#request_case##9\")(request::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}})\n   @ Main.var\"##SharedCase#142\".EventService <local-source>\n",
+          "rule_id": "allocation.potential",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "AllocCheck.check_allocs",
+            "report_type": "AllocCheck.AllocationSite"
+          },
+          "location": {
+            "file": ".\\dict.jl",
+            "line": 80
+          },
+          "message": "Allocation of Dict{Symbol, Any} in .\\dict.jl:80\n  | new(slots, Memory{K}(undef, n), Memory{V}(undef, n), 0, 0, 0, max(1, n), 0)\n\nStacktrace:\n [1] Dict\n   @ .\\dict.jl:80 [inlined]\n [2] _request_context_metadata!\n   @ <local-source> [inlined]\n [3] getproperty\n   @ <local-source> [inlined]\n [4] internalrequest(ctx::Oxygen.Core.AppContext.ServerContext, req::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}}; middleware::Vector{Any}, metrics::Bool, serialize::Bool, catch_errors::Bool)\n   @ Oxygen.Core <local-source>\n [5] internalrequest\n   @ <local-source> [inlined]\n [6] internalrequest\n   @ <local-source> [inlined]\n [7] (::Main.var\"##SharedCase#142\".EventService.var\"#request_case##8#request_case##9\")(request::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}})\n   @ Main.var\"##SharedCase#142\".EventService <local-source>\n",
+          "rule_id": "allocation.potential",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "AllocCheck.check_allocs",
+            "report_type": "AllocCheck.AllocationSite"
+          },
+          "location": {
+            "file": "<local-source>",
+            "line": 430
+          },
+          "message": "Allocation of Sockets.IPv4 in <local-source>\n  | req.context[:ip] = IPv4(\"127.0.0.1\") # label internal requests\n\nStacktrace:\n [1] internalrequest(ctx::Oxygen.Core.AppContext.ServerContext, req::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}}; middleware::Vector{Any}, metrics::Bool, serialize::Bool, catch_errors::Bool)\n   @ Oxygen.Core <local-source>\n [2] internalrequest\n   @ <local-source> [inlined]\n [3] internalrequest\n   @ <local-source> [inlined]\n [4] (::Main.var\"##SharedCase#142\".EventService.var\"#request_case##8#request_case##9\")(request::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}})\n   @ Main.var\"##SharedCase#142\".EventService <local-source>\n",
+          "rule_id": "allocation.potential",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "AllocCheck.check_allocs",
+            "report_type": "AllocCheck.DynamicDispatch"
+          },
+          "location": {
+            "file": "<local-source>",
+            "line": 430
+          },
+          "message": "Dynamic dispatch to function setindex! in <local-source>\n  | req.context[:ip] = IPv4(\"127.0.0.1\") # label internal requests\n\nStacktrace:\n [1] internalrequest(ctx::Oxygen.Core.AppContext.ServerContext, req::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}}; middleware::Vector{Any}, metrics::Bool, serialize::Bool, catch_errors::Bool)\n   @ Oxygen.Core <local-source>\n [2] internalrequest\n   @ <local-source> [inlined]\n [3] internalrequest\n   @ <local-source> [inlined]\n [4] (::Main.var\"##SharedCase#142\".EventService.var\"#request_case##8#request_case##9\")(request::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}})\n   @ Main.var\"##SharedCase#142\".EventService <local-source>\n",
+          "rule_id": "allocation.potential",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "AllocCheck.check_allocs",
+            "report_type": "AllocCheck.DynamicDispatch"
+          },
+          "location": {
+            "file": "<local-source>",
+            "line": 431
+          },
+          "message": "Dynamic dispatch to function |> in <local-source>\n  | return req |> setupmiddleware(ctx; middleware, metrics, serialize, catch_errors)\n\nStacktrace:\n [1] internalrequest(ctx::Oxygen.Core.AppContext.ServerContext, req::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}}; middleware::Vector{Any}, metrics::Bool, serialize::Bool, catch_errors::Bool)\n   @ Oxygen.Core <local-source>\n [2] internalrequest\n   @ <local-source> [inlined]\n [3] internalrequest\n   @ <local-source> [inlined]\n [4] (::Main.var\"##SharedCase#142\".EventService.var\"#request_case##8#request_case##9\")(request::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}})\n   @ Main.var\"##SharedCase#142\".EventService <local-source>\n",
+          "rule_id": "allocation.potential",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "AllocCheck.check_allocs",
+            "report_type": "AllocCheck.AllocatingRuntimeCall"
+          },
+          "location": {
+            "file": "<local-source>",
+            "line": 68
+          },
+          "message": "Allocating runtime call to \"jl_f_apply_type\" in <local-source>\n  | return function (handler)\n\nStacktrace:\n [1] compose\n   @ <local-source> [inlined]\n [2] setupmiddleware(ctx::Oxygen.Core.AppContext.ServerContext; middleware::Vector{Any}, docs::Bool, metrics::Bool, serialize::Bool, catch_errors::Bool, show_errors::Bool, access_log::Nothing)\n   @ Oxygen.Core <local-source>\n [3] setupmiddleware\n   @ <local-source> [inlined]\n [4] internalrequest(ctx::Oxygen.Core.AppContext.ServerContext, req::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}}; middleware::Vector{Any}, metrics::Bool, serialize::Bool, catch_errors::Bool)\n   @ Oxygen.Core <local-source>\n [5] internalrequest\n   @ <local-source> [inlined]\n [6] internalrequest\n   @ <local-source> [inlined]\n [7] (::Main.var\"##SharedCase#142\".EventService.var\"#request_case##8#request_case##9\")(request::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}})\n   @ Main.var\"##SharedCase#142\".EventService <local-source>\n",
+          "rule_id": "allocation.potential",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "AllocCheck.check_allocs",
+            "report_type": "AllocCheck.AllocatingRuntimeCall"
+          },
+          "location": {
+            "file": "<local-source>",
+            "line": 68
+          },
+          "message": "Allocating runtime call to \"jl_new_structv\" in <local-source>\n  | return function (handler)\n\nStacktrace:\n [1] compose\n   @ <local-source> [inlined]\n [2] setupmiddleware(ctx::Oxygen.Core.AppContext.ServerContext; middleware::Vector{Any}, docs::Bool, metrics::Bool, serialize::Bool, catch_errors::Bool, show_errors::Bool, access_log::Nothing)\n   @ Oxygen.Core <local-source>\n [3] setupmiddleware\n   @ <local-source> [inlined]\n [4] internalrequest(ctx::Oxygen.Core.AppContext.ServerContext, req::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}}; middleware::Vector{Any}, metrics::Bool, serialize::Bool, catch_errors::Bool)\n   @ Oxygen.Core <local-source>\n [5] internalrequest\n   @ <local-source> [inlined]\n [6] internalrequest\n   @ <local-source> [inlined]\n [7] (::Main.var\"##SharedCase#142\".EventService.var\"#request_case##8#request_case##9\")(request::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}})\n   @ Main.var\"##SharedCase#142\".EventService <local-source>\n",
+          "rule_id": "allocation.potential",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "AllocCheck.check_allocs",
+            "report_type": "AllocCheck.DynamicDispatch"
+          },
+          "location": {
+            "file": "<local-source>",
+            "line": 336
+          },
+          "message": "Dynamic dispatch to function vect in <local-source>\n  | [compose(ctx.service.router, ctx.service.middleware_cache_lock, processed_middleware, ctx.service.custommiddleware, ctx.service.middleware_cache)]\n\nStacktrace:\n [1] setupmiddleware(ctx::Oxygen.Core.AppContext.ServerContext; middleware::Vector{Any}, docs::Bool, metrics::Bool, serialize::Bool, catch_errors::Bool, show_errors::Bool, access_log::Nothing)\n   @ Oxygen.Core <local-source>\n [2] setupmiddleware\n   @ <local-source> [inlined]\n [3] internalrequest(ctx::Oxygen.Core.AppContext.ServerContext, req::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}}; middleware::Vector{Any}, metrics::Bool, serialize::Bool, catch_errors::Bool)\n   @ Oxygen.Core <local-source>\n [4] internalrequest\n   @ <local-source> [inlined]\n [5] internalrequest\n   @ <local-source> [inlined]\n [6] (::Main.var\"##SharedCase#142\".EventService.var\"#request_case##8#request_case##9\")(request::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}})\n   @ Main.var\"##SharedCase#142\".EventService <local-source>\n",
+          "rule_id": "allocation.potential",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "AllocCheck.check_allocs",
+            "report_type": "AllocCheck.DynamicDispatch"
+          },
+          "location": {
+            "file": "<local-source>",
+            "line": 342
+          },
+          "message": "Dynamic dispatch to function getindex in <local-source>\n  | global_prefix_middleware = !isnothing(ctx.service.prefix[]) ? [PrefixStripMiddleware(ctx.service.prefix[])] : []\n\nStacktrace:\n [1] setupmiddleware(ctx::Oxygen.Core.AppContext.ServerContext; middleware::Vector{Any}, docs::Bool, metrics::Bool, serialize::Bool, catch_errors::Bool, show_errors::Bool, access_log::Nothing)\n   @ Oxygen.Core <local-source>\n [2] setupmiddleware\n   @ <local-source> [inlined]\n [3] internalrequest(ctx::Oxygen.Core.AppContext.ServerContext, req::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}}; middleware::Vector{Any}, metrics::Bool, serialize::Bool, catch_errors::Bool)\n   @ Oxygen.Core <local-source>\n [4] internalrequest\n   @ <local-source> [inlined]\n [5] internalrequest\n   @ <local-source> [inlined]\n [6] (::Main.var\"##SharedCase#142\".EventService.var\"#request_case##8#request_case##9\")(request::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}})\n   @ Main.var\"##SharedCase#142\".EventService <local-source>\n",
+          "rule_id": "allocation.potential",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "AllocCheck.check_allocs",
+            "report_type": "AllocCheck.AllocationSite"
+          },
+          "location": {
+            "file": ".\\boot.jl",
+            "line": 649
+          },
+          "message": "Allocation of Vector{Any} in .\\boot.jl:649\n  | return $(Expr(:new, :self, :(memoryref(mem)), :((m,))))\n\nStacktrace:\n [1] Array\n   @ .\\boot.jl:649 [inlined]\n [2] Array\n   @ .\\boot.jl:673 [inlined]\n [3] vect\n   @ .\\array.jl:158 [inlined]\n [4] setupmiddleware(ctx::Oxygen.Core.AppContext.ServerContext; middleware::Vector{Any}, docs::Bool, metrics::Bool, serialize::Bool, catch_errors::Bool, show_errors::Bool, access_log::Nothing)\n   @ Oxygen.Core <local-source>\n [5] setupmiddleware\n   @ <local-source> [inlined]\n [6] internalrequest(ctx::Oxygen.Core.AppContext.ServerContext, req::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}}; middleware::Vector{Any}, metrics::Bool, serialize::Bool, catch_errors::Bool)\n   @ Oxygen.Core <local-source>\n [7] internalrequest\n   @ <local-source> [inlined]\n [8] internalrequest\n   @ <local-source> [inlined]\n [9] (::Main.var\"##SharedCase#142\".EventService.var\"#request_case##8#request_case##9\")(request::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}})\n   @ Main.var\"##SharedCase#142\".EventService <local-source>\n",
+          "rule_id": "allocation.potential",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "AllocCheck.check_allocs",
+            "report_type": "AllocCheck.DynamicDispatch"
+          },
+          "location": {
+            "file": "<local-source>",
+            "line": 345
+          },
+          "message": "Dynamic dispatch to function getindex in <local-source>\n  | docs_middleware = docs && !isnothing(ctx.docs.router[]) ? [DocsMiddleware(ctx.docs.router[], ctx.docs.docspath[])] : []\n\nStacktrace:\n [1] setupmiddleware(ctx::Oxygen.Core.AppContext.ServerContext; middleware::Vector{Any}, docs::Bool, metrics::Bool, serialize::Bool, catch_errors::Bool, show_errors::Bool, access_log::Nothing)\n   @ Oxygen.Core <local-source>\n [2] setupmiddleware\n   @ <local-source> [inlined]\n [3] internalrequest(ctx::Oxygen.Core.AppContext.ServerContext, req::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}}; middleware::Vector{Any}, metrics::Bool, serialize::Bool, catch_errors::Bool)\n   @ Oxygen.Core <local-source>\n [4] internalrequest\n   @ <local-source> [inlined]\n [5] internalrequest\n   @ <local-source> [inlined]\n [6] (::Main.var\"##SharedCase#142\".EventService.var\"#request_case##8#request_case##9\")(request::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}})\n   @ Main.var\"##SharedCase#142\".EventService <local-source>\n",
+          "rule_id": "allocation.potential",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "AllocCheck.check_allocs",
+            "report_type": "AllocCheck.AllocationSite"
+          },
+          "location": {
+            "file": ".\\boot.jl",
+            "line": 649
+          },
+          "message": "Allocation of Vector{Any} in .\\boot.jl:649\n  | return $(Expr(:new, :self, :(memoryref(mem)), :((m,))))\n\nStacktrace:\n [1] Array\n   @ .\\boot.jl:649 [inlined]\n [2] Array\n   @ .\\boot.jl:673 [inlined]\n [3] vect\n   @ .\\array.jl:158 [inlined]\n [4] setupmiddleware(ctx::Oxygen.Core.AppContext.ServerContext; middleware::Vector{Any}, docs::Bool, metrics::Bool, serialize::Bool, catch_errors::Bool, show_errors::Bool, access_log::Nothing)\n   @ Oxygen.Core <local-source>\n [5] setupmiddleware\n   @ <local-source> [inlined]\n [6] internalrequest(ctx::Oxygen.Core.AppContext.ServerContext, req::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}}; middleware::Vector{Any}, metrics::Bool, serialize::Bool, catch_errors::Bool)\n   @ Oxygen.Core <local-source>\n [7] internalrequest\n   @ <local-source> [inlined]\n [8] internalrequest\n   @ <local-source> [inlined]\n [9] (::Main.var\"##SharedCase#142\".EventService.var\"#request_case##8#request_case##9\")(request::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}})\n   @ Main.var\"##SharedCase#142\".EventService <local-source>\n",
+          "rule_id": "allocation.potential",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "AllocCheck.check_allocs",
+            "report_type": "AllocCheck.AllocationSite"
+          },
+          "location": {
+            "file": ".\\boot.jl",
+            "line": 588
+          },
+          "message": "Allocation of Memory{Oxygen.Core.var\"#28#29\"{Bool, Bool}} in .\\boot.jl:588\n  | (self::Type{GenericMemory{kind,T,addrspace}})(::UndefInitializer, m::Int) where {T,addrspace,kind} = memorynew(self, m)\n\nStacktrace:\n [1] GenericMemory\n   @ .\\boot.jl:588 [inlined]\n [2] Array\n   @ .\\boot.jl:648 [inlined]\n [3] vect\n   @ .\\array.jl:161 [inlined]\n [4] setupmiddleware(ctx::Oxygen.Core.AppContext.ServerContext; middleware::Vector{Any}, docs::Bool, metrics::Bool, serialize::Bool, catch_errors::Bool, show_errors::Bool, access_log::Nothing)\n   @ Oxygen.Core <local-source>\n [5] setupmiddleware\n   @ <local-source> [inlined]\n [6] internalrequest(ctx::Oxygen.Core.AppContext.ServerContext, req::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}}; middleware::Vector{Any}, metrics::Bool, serialize::Bool, catch_errors::Bool)\n   @ Oxygen.Core <local-source>\n [7] internalrequest\n   @ <local-source> [inlined]\n [8] internalrequest\n   @ <local-source> [inlined]\n [9] (::Main.var\"##SharedCase#142\".EventService.var\"#request_case##8#request_case##9\")(request::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}})\n   @ Main.var\"##SharedCase#142\".EventService <local-source>\n",
+          "rule_id": "allocation.potential",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "AllocCheck.check_allocs",
+            "report_type": "AllocCheck.AllocationSite"
+          },
+          "location": {
+            "file": ".\\boot.jl",
+            "line": 649
+          },
+          "message": "Allocation of Vector{Oxygen.Core.var\"#28#29\"{Bool, Bool}} in .\\boot.jl:649\n  | return $(Expr(:new, :self, :(memoryref(mem)), :((m,))))\n\nStacktrace:\n [1] Array\n   @ .\\boot.jl:649 [inlined]\n [2] vect\n   @ .\\array.jl:161 [inlined]\n [3] setupmiddleware(ctx::Oxygen.Core.AppContext.ServerContext; middleware::Vector{Any}, docs::Bool, metrics::Bool, serialize::Bool, catch_errors::Bool, show_errors::Bool, access_log::Nothing)\n   @ Oxygen.Core <local-source>\n [4] setupmiddleware\n   @ <local-source> [inlined]\n [5] internalrequest(ctx::Oxygen.Core.AppContext.ServerContext, req::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}}; middleware::Vector{Any}, metrics::Bool, serialize::Bool, catch_errors::Bool)\n   @ Oxygen.Core <local-source>\n [6] internalrequest\n   @ <local-source> [inlined]\n [7] internalrequest\n   @ <local-source> [inlined]\n [8] (::Main.var\"##SharedCase#142\".EventService.var\"#request_case##8#request_case##9\")(request::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}})\n   @ Main.var\"##SharedCase#142\".EventService <local-source>\n",
+          "rule_id": "allocation.potential",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "AllocCheck.check_allocs",
+            "report_type": "AllocCheck.AllocationSite"
+          },
+          "location": {
+            "file": ".\\boot.jl",
+            "line": 649
+          },
+          "message": "Allocation of Vector{Any} in .\\boot.jl:649\n  | return $(Expr(:new, :self, :(memoryref(mem)), :((m,))))\n\nStacktrace:\n [1] Array\n   @ .\\boot.jl:649 [inlined]\n [2] Array\n   @ .\\boot.jl:673 [inlined]\n [3] vect\n   @ .\\array.jl:158 [inlined]\n [4] setupmiddleware(ctx::Oxygen.Core.AppContext.ServerContext; middleware::Vector{Any}, docs::Bool, metrics::Bool, serialize::Bool, catch_errors::Bool, show_errors::Bool, access_log::Nothing)\n   @ Oxygen.Core <local-source>\n [5] setupmiddleware\n   @ <local-source> [inlined]\n [6] internalrequest(ctx::Oxygen.Core.AppContext.ServerContext, req::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}}; middleware::Vector{Any}, metrics::Bool, serialize::Bool, catch_errors::Bool)\n   @ Oxygen.Core <local-source>\n [7] internalrequest\n   @ <local-source> [inlined]\n [8] internalrequest\n   @ <local-source> [inlined]\n [9] (::Main.var\"##SharedCase#142\".EventService.var\"#request_case##8#request_case##9\")(request::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}})\n   @ Main.var\"##SharedCase#142\".EventService <local-source>\n",
+          "rule_id": "allocation.potential",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "AllocCheck.check_allocs",
+            "report_type": "AllocCheck.AllocationSite"
+          },
+          "location": {
+            "file": ".\\boot.jl",
+            "line": 588
+          },
+          "message": "Allocation of Memory{Oxygen.Core.var\"#MetricsMiddleware##0#MetricsMiddleware##1\"{Oxygen.Core.AppContext.Service, Bool}} in .\\boot.jl:588\n  | (self::Type{GenericMemory{kind,T,addrspace}})(::UndefInitializer, m::Int) where {T,addrspace,kind} = memorynew(self, m)\n\nStacktrace:\n [1] GenericMemory\n   @ .\\boot.jl:588 [inlined]\n [2] Array\n   @ .\\boot.jl:648 [inlined]\n [3] vect\n   @ .\\array.jl:161 [inlined]\n [4] setupmiddleware(ctx::Oxygen.Core.AppContext.ServerContext; middleware::Vector{Any}, docs::Bool, metrics::Bool, serialize::Bool, catch_errors::Bool, show_errors::Bool, access_log::Nothing)\n   @ Oxygen.Core <local-source>\n [5] setupmiddleware\n   @ <local-source> [inlined]\n [6] internalrequest(ctx::Oxygen.Core.AppContext.ServerContext, req::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}}; middleware::Vector{Any}, metrics::Bool, serialize::Bool, catch_errors::Bool)\n   @ Oxygen.Core <local-source>\n [7] internalrequest\n   @ <local-source> [inlined]\n [8] internalrequest\n   @ <local-source> [inlined]\n [9] (::Main.var\"##SharedCase#142\".EventService.var\"#request_case##8#request_case##9\")(request::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}})\n   @ Main.var\"##SharedCase#142\".EventService <local-source>\n",
+          "rule_id": "allocation.potential",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "AllocCheck.check_allocs",
+            "report_type": "AllocCheck.AllocationSite"
+          },
+          "location": {
+            "file": ".\\boot.jl",
+            "line": 649
+          },
+          "message": "Allocation of Vector{Oxygen.Core.var\"#MetricsMiddleware##0#MetricsMiddleware##1\"{Oxygen.Core.AppContext.Service, Bool}} in .\\boot.jl:649\n  | return $(Expr(:new, :self, :(memoryref(mem)), :((m,))))\n\nStacktrace:\n [1] Array\n   @ .\\boot.jl:649 [inlined]\n [2] vect\n   @ .\\array.jl:161 [inlined]\n [3] setupmiddleware(ctx::Oxygen.Core.AppContext.ServerContext; middleware::Vector{Any}, docs::Bool, metrics::Bool, serialize::Bool, catch_errors::Bool, show_errors::Bool, access_log::Nothing)\n   @ Oxygen.Core <local-source>\n [4] setupmiddleware\n   @ <local-source> [inlined]\n [5] internalrequest(ctx::Oxygen.Core.AppContext.ServerContext, req::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}}; middleware::Vector{Any}, metrics::Bool, serialize::Bool, catch_errors::Bool)\n   @ Oxygen.Core <local-source>\n [6] internalrequest\n   @ <local-source> [inlined]\n [7] internalrequest\n   @ <local-source> [inlined]\n [8] (::Main.var\"##SharedCase#142\".EventService.var\"#request_case##8#request_case##9\")(request::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}})\n   @ Main.var\"##SharedCase#142\".EventService <local-source>\n",
+          "rule_id": "allocation.potential",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "AllocCheck.check_allocs",
+            "report_type": "AllocCheck.AllocationSite"
+          },
+          "location": {
+            "file": ".\\boot.jl",
+            "line": 649
+          },
+          "message": "Allocation of Vector{Any} in .\\boot.jl:649\n  | return $(Expr(:new, :self, :(memoryref(mem)), :((m,))))\n\nStacktrace:\n [1] Array\n   @ .\\boot.jl:649 [inlined]\n [2] Array\n   @ .\\boot.jl:673 [inlined]\n [3] vect\n   @ .\\array.jl:158 [inlined]\n [4] setupmiddleware(ctx::Oxygen.Core.AppContext.ServerContext; middleware::Vector{Any}, docs::Bool, metrics::Bool, serialize::Bool, catch_errors::Bool, show_errors::Bool, access_log::Nothing)\n   @ Oxygen.Core <local-source>\n [5] setupmiddleware\n   @ <local-source> [inlined]\n [6] internalrequest(ctx::Oxygen.Core.AppContext.ServerContext, req::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}}; middleware::Vector{Any}, metrics::Bool, serialize::Bool, catch_errors::Bool)\n   @ Oxygen.Core <local-source>\n [7] internalrequest\n   @ <local-source> [inlined]\n [8] internalrequest\n   @ <local-source> [inlined]\n [9] (::Main.var\"##SharedCase#142\".EventService.var\"#request_case##8#request_case##9\")(request::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}})\n   @ Main.var\"##SharedCase#142\".EventService <local-source>\n",
+          "rule_id": "allocation.potential",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "AllocCheck.check_allocs",
+            "report_type": "AllocCheck.AllocationSite"
+          },
+          "location": {
+            "file": ".\\boot.jl",
+            "line": 649
+          },
+          "message": "Allocation of Vector{Any} in .\\boot.jl:649\n  | return $(Expr(:new, :self, :(memoryref(mem)), :((m,))))\n\nStacktrace:\n [1] Array\n   @ .\\boot.jl:649 [inlined]\n [2] Array\n   @ .\\boot.jl:673 [inlined]\n [3] vect\n   @ .\\array.jl:158 [inlined]\n [4] setupmiddleware(ctx::Oxygen.Core.AppContext.ServerContext; middleware::Vector{Any}, docs::Bool, metrics::Bool, serialize::Bool, catch_errors::Bool, show_errors::Bool, access_log::Nothing)\n   @ Oxygen.Core <local-source>\n [5] setupmiddleware\n   @ <local-source> [inlined]\n [6] internalrequest(ctx::Oxygen.Core.AppContext.ServerContext, req::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}}; middleware::Vector{Any}, metrics::Bool, serialize::Bool, catch_errors::Bool)\n   @ Oxygen.Core <local-source>\n [7] internalrequest\n   @ <local-source> [inlined]\n [8] internalrequest\n   @ <local-source> [inlined]\n [9] (::Main.var\"##SharedCase#142\".EventService.var\"#request_case##8#request_case##9\")(request::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}})\n   @ Main.var\"##SharedCase#142\".EventService <local-source>\n",
+          "rule_id": "allocation.potential",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "AllocCheck.check_allocs",
+            "report_type": "AllocCheck.AllocationSite"
+          },
+          "location": {
+            "file": "<local-source>",
+            "line": 362
+          },
+          "message": "Allocation of Core.SimpleVector in <local-source>\n  | return reduce(|>, [\n\nStacktrace:\n [1] setupmiddleware(ctx::Oxygen.Core.AppContext.ServerContext; middleware::Vector{Any}, docs::Bool, metrics::Bool, serialize::Bool, catch_errors::Bool, show_errors::Bool, access_log::Nothing)\n   @ Oxygen.Core <local-source>\n [2] setupmiddleware\n   @ <local-source> [inlined]\n [3] internalrequest(ctx::Oxygen.Core.AppContext.ServerContext, req::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}}; middleware::Vector{Any}, metrics::Bool, serialize::Bool, catch_errors::Bool)\n   @ Oxygen.Core <local-source>\n [4] internalrequest\n   @ <local-source> [inlined]\n [5] internalrequest\n   @ <local-source> [inlined]\n [6] (::Main.var\"##SharedCase#142\".EventService.var\"#request_case##8#request_case##9\")(request::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}})\n   @ Main.var\"##SharedCase#142\".EventService <local-source>\n",
+          "rule_id": "allocation.potential",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "AllocCheck.check_allocs",
+            "report_type": "AllocCheck.DynamicDispatch"
+          },
+          "location": {
+            "file": "<local-source>",
+            "line": 362
+          },
+          "message": "Dynamic dispatch in <local-source>\n  | return reduce(|>, [\n\nStacktrace:\n [1] setupmiddleware(ctx::Oxygen.Core.AppContext.ServerContext; middleware::Vector{Any}, docs::Bool, metrics::Bool, serialize::Bool, catch_errors::Bool, show_errors::Bool, access_log::Nothing)\n   @ Oxygen.Core <local-source>\n [2] setupmiddleware\n   @ <local-source> [inlined]\n [3] internalrequest(ctx::Oxygen.Core.AppContext.ServerContext, req::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}}; middleware::Vector{Any}, metrics::Bool, serialize::Bool, catch_errors::Bool)\n   @ Oxygen.Core <local-source>\n [4] internalrequest\n   @ <local-source> [inlined]\n [5] internalrequest\n   @ <local-source> [inlined]\n [6] (::Main.var\"##SharedCase#142\".EventService.var\"#request_case##8#request_case##9\")(request::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}})\n   @ Main.var\"##SharedCase#142\".EventService <local-source>\n",
+          "rule_id": "allocation.potential",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "AllocCheck.check_allocs",
+            "report_type": "AllocCheck.DynamicDispatch"
+          },
+          "location": {
+            "file": "<local-source>",
+            "line": 362
+          },
+          "message": "Dynamic dispatch to function reduce in <local-source>\n  | return reduce(|>, [\n\nStacktrace:\n [1] setupmiddleware(ctx::Oxygen.Core.AppContext.ServerContext; middleware::Vector{Any}, docs::Bool, metrics::Bool, serialize::Bool, catch_errors::Bool, show_errors::Bool, access_log::Nothing)\n   @ Oxygen.Core <local-source>\n [2] setupmiddleware\n   @ <local-source> [inlined]\n [3] internalrequest(ctx::Oxygen.Core.AppContext.ServerContext, req::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}}; middleware::Vector{Any}, metrics::Bool, serialize::Bool, catch_errors::Bool)\n   @ Oxygen.Core <local-source>\n [4] internalrequest\n   @ <local-source> [inlined]\n [5] internalrequest\n   @ <local-source> [inlined]\n [6] (::Main.var\"##SharedCase#142\".EventService.var\"#request_case##8#request_case##9\")(request::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}})\n   @ Main.var\"##SharedCase#142\".EventService <local-source>\n",
+          "rule_id": "allocation.potential",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "AllocCheck.check_allocs",
+            "report_type": "AllocCheck.AllocatingRuntimeCall"
+          },
+          "location": {
+            "file": "<local-source>",
+            "line": 442
+          },
+          "message": "Allocating runtime call to \"jl_f_apply_type\" in <local-source>\n  | return function (handler)\n\nStacktrace:\n [1] PrefixStripMiddleware\n   @ <local-source> [inlined]\n [2] setupmiddleware(ctx::Oxygen.Core.AppContext.ServerContext; middleware::Vector{Any}, docs::Bool, metrics::Bool, serialize::Bool, catch_errors::Bool, show_errors::Bool, access_log::Nothing)\n   @ Oxygen.Core <local-source>\n [3] setupmiddleware\n   @ <local-source> [inlined]\n [4] internalrequest(ctx::Oxygen.Core.AppContext.ServerContext, req::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}}; middleware::Vector{Any}, metrics::Bool, serialize::Bool, catch_errors::Bool)\n   @ Oxygen.Core <local-source>\n [5] internalrequest\n   @ <local-source> [inlined]\n [6] internalrequest\n   @ <local-source> [inlined]\n [7] (::Main.var\"##SharedCase#142\".EventService.var\"#request_case##8#request_case##9\")(request::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}})\n   @ Main.var\"##SharedCase#142\".EventService <local-source>\n",
+          "rule_id": "allocation.potential",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "AllocCheck.check_allocs",
+            "report_type": "AllocCheck.AllocationSite"
+          },
+          "location": {
+            "file": "<local-source>",
+            "line": 442
+          },
+          "message": "Allocation of Int64 in <local-source>\n  | return function (handler)\n\nStacktrace:\n [1] PrefixStripMiddleware\n   @ <local-source> [inlined]\n [2] setupmiddleware(ctx::Oxygen.Core.AppContext.ServerContext; middleware::Vector{Any}, docs::Bool, metrics::Bool, serialize::Bool, catch_errors::Bool, show_errors::Bool, access_log::Nothing)\n   @ Oxygen.Core <local-source>\n [3] setupmiddleware\n   @ <local-source> [inlined]\n [4] internalrequest(ctx::Oxygen.Core.AppContext.ServerContext, req::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}}; middleware::Vector{Any}, metrics::Bool, serialize::Bool, catch_errors::Bool)\n   @ Oxygen.Core <local-source>\n [5] internalrequest\n   @ <local-source> [inlined]\n [6] internalrequest\n   @ <local-source> [inlined]\n [7] (::Main.var\"##SharedCase#142\".EventService.var\"#request_case##8#request_case##9\")(request::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}})\n   @ Main.var\"##SharedCase#142\".EventService <local-source>\n",
+          "rule_id": "allocation.potential",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "AllocCheck.check_allocs",
+            "report_type": "AllocCheck.AllocatingRuntimeCall"
+          },
+          "location": {
+            "file": "<local-source>",
+            "line": 442
+          },
+          "message": "Allocating runtime call to \"jl_new_structv\" in <local-source>\n  | return function (handler)\n\nStacktrace:\n [1] PrefixStripMiddleware\n   @ <local-source> [inlined]\n [2] setupmiddleware(ctx::Oxygen.Core.AppContext.ServerContext; middleware::Vector{Any}, docs::Bool, metrics::Bool, serialize::Bool, catch_errors::Bool, show_errors::Bool, access_log::Nothing)\n   @ Oxygen.Core <local-source>\n [3] setupmiddleware\n   @ <local-source> [inlined]\n [4] internalrequest(ctx::Oxygen.Core.AppContext.ServerContext, req::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}}; middleware::Vector{Any}, metrics::Bool, serialize::Bool, catch_errors::Bool)\n   @ Oxygen.Core <local-source>\n [5] internalrequest\n   @ <local-source> [inlined]\n [6] internalrequest\n   @ <local-source> [inlined]\n [7] (::Main.var\"##SharedCase#142\".EventService.var\"#request_case##8#request_case##9\")(request::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}})\n   @ Main.var\"##SharedCase#142\".EventService <local-source>\n",
+          "rule_id": "allocation.potential",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "AllocCheck.check_allocs",
+            "report_type": "AllocCheck.AllocationSite"
+          },
+          "location": {
+            "file": ".\\boot.jl",
+            "line": 588
+          },
+          "message": "Allocation of Memory{Oxygen.Core.var\"#PrefixStripMiddleware##0#PrefixStripMiddleware##1\"{String, HTTP.Response{Vector{UInt8}}, Int64}} in .\\boot.jl:588\n  | (self::Type{GenericMemory{kind,T,addrspace}})(::UndefInitializer, m::Int) where {T,addrspace,kind} = memorynew(self, m)\n\nStacktrace:\n [1] GenericMemory\n   @ .\\boot.jl:588 [inlined]\n [2] Array\n   @ .\\boot.jl:648 [inlined]\n [3] vect\n   @ .\\array.jl:161 [inlined]\n [4] setupmiddleware(ctx::Oxygen.Core.AppContext.ServerContext; middleware::Vector{Any}, docs::Bool, metrics::Bool, serialize::Bool, catch_errors::Bool, show_errors::Bool, access_log::Nothing)\n   @ Oxygen.Core <local-source>\n [5] setupmiddleware\n   @ <local-source> [inlined]\n [6] internalrequest(ctx::Oxygen.Core.AppContext.ServerContext, req::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}}; middleware::Vector{Any}, metrics::Bool, serialize::Bool, catch_errors::Bool)\n   @ Oxygen.Core <local-source>\n [7] internalrequest\n   @ <local-source> [inlined]\n [8] internalrequest\n   @ <local-source> [inlined]\n [9] (::Main.var\"##SharedCase#142\".EventService.var\"#request_case##8#request_case##9\")(request::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}})\n   @ Main.var\"##SharedCase#142\".EventService <local-source>\n",
+          "rule_id": "allocation.potential",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "AllocCheck.check_allocs",
+            "report_type": "AllocCheck.AllocationSite"
+          },
+          "location": {
+            "file": ".\\boot.jl",
+            "line": 649
+          },
+          "message": "Allocation of Vector{Oxygen.Core.var\"#PrefixStripMiddleware##0#PrefixStripMiddleware##1\"{String, HTTP.Response{Vector{UInt8}}, Int64}} in .\\boot.jl:649\n  | return $(Expr(:new, :self, :(memoryref(mem)), :((m,))))\n\nStacktrace:\n [1] Array\n   @ .\\boot.jl:649 [inlined]\n [2] vect\n   @ .\\array.jl:161 [inlined]\n [3] setupmiddleware(ctx::Oxygen.Core.AppContext.ServerContext; middleware::Vector{Any}, docs::Bool, metrics::Bool, serialize::Bool, catch_errors::Bool, show_errors::Bool, access_log::Nothing)\n   @ Oxygen.Core <local-source>\n [4] setupmiddleware\n   @ <local-source> [inlined]\n [5] internalrequest(ctx::Oxygen.Core.AppContext.ServerContext, req::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}}; middleware::Vector{Any}, metrics::Bool, serialize::Bool, catch_errors::Bool)\n   @ Oxygen.Core <local-source>\n [6] internalrequest\n   @ <local-source> [inlined]\n [7] internalrequest\n   @ <local-source> [inlined]\n [8] (::Main.var\"##SharedCase#142\".EventService.var\"#request_case##8#request_case##9\")(request::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}})\n   @ Main.var\"##SharedCase#142\".EventService <local-source>\n",
+          "rule_id": "allocation.potential",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "AllocCheck.check_allocs",
+            "report_type": "AllocCheck.AllocatingRuntimeCall"
+          },
+          "location": {
+            "file": "<local-source>",
+            "line": 456
+          },
+          "message": "Allocating runtime call to \"jl_f_apply_type\" in <local-source>\n  | return function (handle)\n\nStacktrace:\n [1] DocsMiddleware\n   @ <local-source> [inlined]\n [2] setupmiddleware(ctx::Oxygen.Core.AppContext.ServerContext; middleware::Vector{Any}, docs::Bool, metrics::Bool, serialize::Bool, catch_errors::Bool, show_errors::Bool, access_log::Nothing)\n   @ Oxygen.Core <local-source>\n [3] setupmiddleware\n   @ <local-source> [inlined]\n [4] internalrequest(ctx::Oxygen.Core.AppContext.ServerContext, req::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}}; middleware::Vector{Any}, metrics::Bool, serialize::Bool, catch_errors::Bool)\n   @ Oxygen.Core <local-source>\n [5] internalrequest\n   @ <local-source> [inlined]\n [6] internalrequest\n   @ <local-source> [inlined]\n [7] (::Main.var\"##SharedCase#142\".EventService.var\"#request_case##8#request_case##9\")(request::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}})\n   @ Main.var\"##SharedCase#142\".EventService <local-source>\n",
+          "rule_id": "allocation.potential",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "AllocCheck.check_allocs",
+            "report_type": "AllocCheck.AllocatingRuntimeCall"
+          },
+          "location": {
+            "file": "<local-source>",
+            "line": 456
+          },
+          "message": "Allocating runtime call to \"jl_new_structv\" in <local-source>\n  | return function (handle)\n\nStacktrace:\n [1] DocsMiddleware\n   @ <local-source> [inlined]\n [2] setupmiddleware(ctx::Oxygen.Core.AppContext.ServerContext; middleware::Vector{Any}, docs::Bool, metrics::Bool, serialize::Bool, catch_errors::Bool, show_errors::Bool, access_log::Nothing)\n   @ Oxygen.Core <local-source>\n [3] setupmiddleware\n   @ <local-source> [inlined]\n [4] internalrequest(ctx::Oxygen.Core.AppContext.ServerContext, req::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}}; middleware::Vector{Any}, metrics::Bool, serialize::Bool, catch_errors::Bool)\n   @ Oxygen.Core <local-source>\n [5] internalrequest\n   @ <local-source> [inlined]\n [6] internalrequest\n   @ <local-source> [inlined]\n [7] (::Main.var\"##SharedCase#142\".EventService.var\"#request_case##8#request_case##9\")(request::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}})\n   @ Main.var\"##SharedCase#142\".EventService <local-source>\n",
+          "rule_id": "allocation.potential",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "AllocCheck.check_allocs",
+            "report_type": "AllocCheck.DynamicDispatch"
+          },
+          "location": {
+            "file": "<local-source>",
+            "line": 345
+          },
+          "message": "Dynamic dispatch to function vect in <local-source>\n  | docs_middleware = docs && !isnothing(ctx.docs.router[]) ? [DocsMiddleware(ctx.docs.router[], ctx.docs.docspath[])] : []\n\nStacktrace:\n [1] setupmiddleware(ctx::Oxygen.Core.AppContext.ServerContext; middleware::Vector{Any}, docs::Bool, metrics::Bool, serialize::Bool, catch_errors::Bool, show_errors::Bool, access_log::Nothing)\n   @ Oxygen.Core <local-source>\n [2] setupmiddleware\n   @ <local-source> [inlined]\n [3] internalrequest(ctx::Oxygen.Core.AppContext.ServerContext, req::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}}; middleware::Vector{Any}, metrics::Bool, serialize::Bool, catch_errors::Bool)\n   @ Oxygen.Core <local-source>\n [4] internalrequest\n   @ <local-source> [inlined]\n [5] internalrequest\n   @ <local-source> [inlined]\n [6] (::Main.var\"##SharedCase#142\".EventService.var\"#request_case##8#request_case##9\")(request::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}})\n   @ Main.var\"##SharedCase#142\".EventService <local-source>\n",
+          "rule_id": "allocation.potential",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "AllocCheck.check_allocs",
+            "report_type": "AllocCheck.AllocatingRuntimeCall"
+          },
+          "location": {
+            "file": "<local-source>",
+            "line": 362
+          },
+          "message": "Allocating runtime call to \"jl_subtype\" in <local-source>\n  | return reduce(|>, [\n\nStacktrace:\n [1] setupmiddleware(ctx::Oxygen.Core.AppContext.ServerContext; middleware::Vector{Any}, docs::Bool, metrics::Bool, serialize::Bool, catch_errors::Bool, show_errors::Bool, access_log::Nothing)\n   @ Oxygen.Core <local-source>\n [2] setupmiddleware\n   @ <local-source> [inlined]\n [3] internalrequest(ctx::Oxygen.Core.AppContext.ServerContext, req::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}}; middleware::Vector{Any}, metrics::Bool, serialize::Bool, catch_errors::Bool)\n   @ Oxygen.Core <local-source>\n [4] internalrequest\n   @ <local-source> [inlined]\n [5] internalrequest\n   @ <local-source> [inlined]\n [6] (::Main.var\"##SharedCase#142\".EventService.var\"#request_case##8#request_case##9\")(request::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}})\n   @ Main.var\"##SharedCase#142\".EventService <local-source>\n",
+          "rule_id": "allocation.potential",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "AllocCheck.check_allocs",
+            "report_type": "AllocCheck.AllocationSite"
+          },
+          "location": {
+            "file": ".\\boot.jl",
+            "line": 588
+          },
+          "message": "Allocation of Memory{Oxygen.Core.var\"#PrefixStripMiddleware##0#PrefixStripMiddleware##1\"{String, HTTP.Response{HTTP.BytesBody{Vector{UInt8}}}, Int64}} in .\\boot.jl:588\n  | (self::Type{GenericMemory{kind,T,addrspace}})(::UndefInitializer, m::Int) where {T,addrspace,kind} = memorynew(self, m)\n\nStacktrace:\n [1] GenericMemory\n   @ .\\boot.jl:588 [inlined]\n [2] Array\n   @ .\\boot.jl:648 [inlined]\n [3] vect\n   @ .\\array.jl:161 [inlined]\n [4] setupmiddleware(ctx::Oxygen.Core.AppContext.ServerContext; middleware::Vector{Any}, docs::Bool, metrics::Bool, serialize::Bool, catch_errors::Bool, show_errors::Bool, access_log::Nothing)\n   @ Oxygen.Core <local-source>\n [5] setupmiddleware\n   @ <local-source> [inlined]\n [6] internalrequest(ctx::Oxygen.Core.AppContext.ServerContext, req::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}}; middleware::Vector{Any}, metrics::Bool, serialize::Bool, catch_errors::Bool)\n   @ Oxygen.Core <local-source>\n [7] internalrequest\n   @ <local-source> [inlined]\n [8] internalrequest\n   @ <local-source> [inlined]\n [9] (::Main.var\"##SharedCase#142\".EventService.var\"#request_case##8#request_case##9\")(request::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}})\n   @ Main.var\"##SharedCase#142\".EventService <local-source>\n",
+          "rule_id": "allocation.potential",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "AllocCheck.check_allocs",
+            "report_type": "AllocCheck.AllocationSite"
+          },
+          "location": {
+            "file": ".\\boot.jl",
+            "line": 649
+          },
+          "message": "Allocation of Vector{Oxygen.Core.var\"#PrefixStripMiddleware##0#PrefixStripMiddleware##1\"{String, HTTP.Response{HTTP.BytesBody{Vector{UInt8}}}, Int64}} in .\\boot.jl:649\n  | return $(Expr(:new, :self, :(memoryref(mem)), :((m,))))\n\nStacktrace:\n [1] Array\n   @ .\\boot.jl:649 [inlined]\n [2] vect\n   @ .\\array.jl:161 [inlined]\n [3] setupmiddleware(ctx::Oxygen.Core.AppContext.ServerContext; middleware::Vector{Any}, docs::Bool, metrics::Bool, serialize::Bool, catch_errors::Bool, show_errors::Bool, access_log::Nothing)\n   @ Oxygen.Core <local-source>\n [4] setupmiddleware\n   @ <local-source> [inlined]\n [5] internalrequest(ctx::Oxygen.Core.AppContext.ServerContext, req::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}}; middleware::Vector{Any}, metrics::Bool, serialize::Bool, catch_errors::Bool)\n   @ Oxygen.Core <local-source>\n [6] internalrequest\n   @ <local-source> [inlined]\n [7] internalrequest\n   @ <local-source> [inlined]\n [8] (::Main.var\"##SharedCase#142\".EventService.var\"#request_case##8#request_case##9\")(request::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}})\n   @ Main.var\"##SharedCase#142\".EventService <local-source>\n",
+          "rule_id": "allocation.potential",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "AllocCheck.check_allocs",
+            "report_type": "AllocCheck.AllocationSite"
+          },
+          "location": {
+            "file": "<local-source>",
+            "line": 1424
+          },
+          "message": "Allocation of HTTP.BytesBody{Vector{UInt8}} in <local-source>\n  | data::T\n\nStacktrace:\n  [1] BytesBody\n    @ <local-source> [inlined]\n  [2] BytesBody\n    @ <local-source> [inlined]\n  [3] HTTP.Response(status::Int64, body::String)\n    @ HTTP <local-source>\n  [4] PrefixStripMiddleware\n    @ <local-source> [inlined]\n  [5] setupmiddleware(ctx::Oxygen.Core.AppContext.ServerContext; middleware::Vector{Any}, docs::Bool, metrics::Bool, serialize::Bool, catch_errors::Bool, show_errors::Bool, access_log::Nothing)\n    @ Oxygen.Core <local-source>\n  [6] setupmiddleware\n    @ <local-source> [inlined]\n  [7] internalrequest(ctx::Oxygen.Core.AppContext.ServerContext, req::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}}; middleware::Vector{Any}, metrics::Bool, serialize::Bool, catch_errors::Bool)\n    @ Oxygen.Core <local-source>\n  [8] internalrequest\n    @ <local-source> [inlined]\n  [9] internalrequest\n    @ <local-source> [inlined]\n [10] (::Main.var\"##SharedCase#142\".EventService.var\"#request_case##8#request_case##9\")(request::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}})\n    @ Main.var\"##SharedCase#142\".EventService <local-source>\n",
+          "rule_id": "allocation.potential",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "AllocCheck.check_allocs",
+            "report_type": "AllocCheck.AllocationSite"
+          },
+          "location": {
+            "file": ".\\boot.jl",
+            "line": 649
+          },
+          "message": "Allocation of Vector{Pair{String, String}} in .\\boot.jl:649\n  | return $(Expr(:new, :self, :(memoryref(mem)), :((m,))))\n\nStacktrace:\n  [1] Array\n    @ .\\boot.jl:649 [inlined]\n  [2] getindex\n    @ .\\array.jl:436 [inlined]\n  [3] Headers\n    @ <local-source> [inlined]\n  [4] Response\n    @ <local-source> [inlined]\n  [5] HTTP.Response(status::Int64, body::String)\n    @ HTTP <local-source>\n  [6] PrefixStripMiddleware\n    @ <local-source> [inlined]\n  [7] setupmiddleware(ctx::Oxygen.Core.AppContext.ServerContext; middleware::Vector{Any}, docs::Bool, metrics::Bool, serialize::Bool, catch_errors::Bool, show_errors::Bool, access_log::Nothing)\n    @ Oxygen.Core <local-source>\n  [8] setupmiddleware\n    @ <local-source> [inlined]\n  [9] internalrequest(ctx::Oxygen.Core.AppContext.ServerContext, req::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}}; middleware::Vector{Any}, metrics::Bool, serialize::Bool, catch_errors::Bool)\n    @ Oxygen.Core <local-source>\n [10] internalrequest\n    @ <local-source> [inlined]\n [11] internalrequest\n    @ <local-source> [inlined]\n [12] (::Main.var\"##SharedCase#142\".EventService.var\"#request_case##8#request_case##9\")(request::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}})\n    @ Main.var\"##SharedCase#142\".EventService <local-source>\n",
+          "rule_id": "allocation.potential",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "AllocCheck.check_allocs",
+            "report_type": "AllocCheck.AllocationSite"
+          },
+          "location": {
+            "file": "<local-source>",
+            "line": 649
+          },
+          "message": "Allocation of HTTP.Headers in <local-source>\n  | entries::Vector{Pair{String,String}}\n\nStacktrace:\n  [1] Headers\n    @ <local-source> [inlined]\n  [2] Headers\n    @ <local-source> [inlined]\n  [3] Response\n    @ <local-source> [inlined]\n  [4] HTTP.Response(status::Int64, body::String)\n    @ HTTP <local-source>\n  [5] PrefixStripMiddleware\n    @ <local-source> [inlined]\n  [6] setupmiddleware(ctx::Oxygen.Core.AppContext.ServerContext; middleware::Vector{Any}, docs::Bool, metrics::Bool, serialize::Bool, catch_errors::Bool, show_errors::Bool, access_log::Nothing)\n    @ Oxygen.Core <local-source>\n  [7] setupmiddleware\n    @ <local-source> [inlined]\n  [8] internalrequest(ctx::Oxygen.Core.AppContext.ServerContext, req::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}}; middleware::Vector{Any}, metrics::Bool, serialize::Bool, catch_errors::Bool)\n    @ Oxygen.Core <local-source>\n  [9] internalrequest\n    @ <local-source> [inlined]\n [10] internalrequest\n    @ <local-source> [inlined]\n [11] (::Main.var\"##SharedCase#142\".EventService.var\"#request_case##8#request_case##9\")(request::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}})\n    @ Main.var\"##SharedCase#142\".EventService <local-source>\n",
+          "rule_id": "allocation.potential",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "AllocCheck.check_allocs",
+            "report_type": "AllocCheck.AllocationSite"
+          },
+          "location": {
+            "file": ".\\boot.jl",
+            "line": 588
+          },
+          "message": "Allocation of Memory{UInt8} in .\\boot.jl:588\n  | (self::Type{GenericMemory{kind,T,addrspace}})(::UndefInitializer, m::Int) where {T,addrspace,kind} = memorynew(self, m)\n\nStacktrace:\n  [1] GenericMemory\n    @ .\\boot.jl:588 [inlined]\n  [2] Array\n    @ .\\boot.jl:648 [inlined]\n  [3] Array\n    @ .\\strings\\string.jl:150 [inlined]\n  [4] HTTP.Response(status::Int64, body::String)\n    @ HTTP <local-source>\n  [5] PrefixStripMiddleware\n    @ <local-source> [inlined]\n  [6] setupmiddleware(ctx::Oxygen.Core.AppContext.ServerContext; middleware::Vector{Any}, docs::Bool, metrics::Bool, serialize::Bool, catch_errors::Bool, show_errors::Bool, access_log::Nothing)\n    @ Oxygen.Core <local-source>\n  [7] setupmiddleware\n    @ <local-source> [inlined]\n  [8] internalrequest(ctx::Oxygen.Core.AppContext.ServerContext, req::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}}; middleware::Vector{Any}, metrics::Bool, serialize::Bool, catch_errors::Bool)\n    @ Oxygen.Core <local-source>\n  [9] internalrequest\n    @ <local-source> [inlined]\n [10] internalrequest\n    @ <local-source> [inlined]\n [11] (::Main.var\"##SharedCase#142\".EventService.var\"#request_case##8#request_case##9\")(request::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}})\n    @ Main.var\"##SharedCase#142\".EventService <local-source>\n",
+          "rule_id": "allocation.potential",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "AllocCheck.check_allocs",
+            "report_type": "AllocCheck.AllocationSite"
+          },
+          "location": {
+            "file": ".\\boot.jl",
+            "line": 649
+          },
+          "message": "Allocation of Vector{UInt8} in .\\boot.jl:649\n  | return $(Expr(:new, :self, :(memoryref(mem)), :((m,))))\n\nStacktrace:\n  [1] Array\n    @ .\\boot.jl:649 [inlined]\n  [2] Array\n    @ .\\strings\\string.jl:150 [inlined]\n  [3] HTTP.Response(status::Int64, body::String)\n    @ HTTP <local-source>\n  [4] PrefixStripMiddleware\n    @ <local-source> [inlined]\n  [5] setupmiddleware(ctx::Oxygen.Core.AppContext.ServerContext; middleware::Vector{Any}, docs::Bool, metrics::Bool, serialize::Bool, catch_errors::Bool, show_errors::Bool, access_log::Nothing)\n    @ Oxygen.Core <local-source>\n  [6] setupmiddleware\n    @ <local-source> [inlined]\n  [7] internalrequest(ctx::Oxygen.Core.AppContext.ServerContext, req::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}}; middleware::Vector{Any}, metrics::Bool, serialize::Bool, catch_errors::Bool)\n    @ Oxygen.Core <local-source>\n  [8] internalrequest\n    @ <local-source> [inlined]\n  [9] internalrequest\n    @ <local-source> [inlined]\n [10] (::Main.var\"##SharedCase#142\".EventService.var\"#request_case##8#request_case##9\")(request::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}})\n    @ Main.var\"##SharedCase#142\".EventService <local-source>\n",
+          "rule_id": "allocation.potential",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "AllocCheck.check_allocs",
+            "report_type": "AllocCheck.AllocatingRuntimeCall"
+          },
+          "location": {
+            "file": "<local-source>",
+            "line": 1881
+          },
+          "message": "Allocating runtime call to \"jl_f_apply_type\" in <local-source>\n  | return Response{typeof(actual_body)}(\n\nStacktrace:\n  [1] HTTP.Response(status::Int64, response_body::HTTP.BytesBody{Vector{UInt8}}; body::Vector{UInt8}, reason::String, headers::HTTP.Headers, trailers::HTTP.Headers, content_length::Int64, proto_major::Int64, proto_minor::Int64, close::Bool, request::Nothing, request_url::Nothing, previous::Nothing, redirect_count::Int64)\n    @ HTTP <local-source>\n  [2] Response\n    @ <local-source> [inlined]\n  [3] HTTP.Response(status::Int64, body::String)\n    @ HTTP <local-source>\n  [4] PrefixStripMiddleware\n    @ <local-source> [inlined]\n  [5] setupmiddleware(ctx::Oxygen.Core.AppContext.ServerContext; middleware::Vector{Any}, docs::Bool, metrics::Bool, serialize::Bool, catch_errors::Bool, show_errors::Bool, access_log::Nothing)\n    @ Oxygen.Core <local-source>\n  [6] setupmiddleware\n    @ <local-source> [inlined]\n  [7] internalrequest(ctx::Oxygen.Core.AppContext.ServerContext, req::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}}; middleware::Vector{Any}, metrics::Bool, serialize::Bool, catch_errors::Bool)\n    @ Oxygen.Core <local-source>\n  [8] internalrequest\n    @ <local-source> [inlined]\n  [9] internalrequest\n    @ <local-source> [inlined]\n [10] (::Main.var\"##SharedCase#142\".EventService.var\"#request_case##8#request_case##9\")(request::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}})\n    @ Main.var\"##SharedCase#142\".EventService <local-source>\n",
+          "rule_id": "allocation.potential",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "AllocCheck.check_allocs",
+            "report_type": "AllocCheck.AllocationSite"
+          },
+          "location": {
+            "file": ".\\array.jl",
+            "line": 386
+          },
+          "message": "Allocation of Vector{Pair{String, String}} in .\\array.jl:386\n  | return $(Expr(:new, :(typeof(a)), :(memoryref(newmem)), :(a.size)))\n\nStacktrace:\n  [1] copy\n    @ .\\array.jl:386 [inlined]\n  [2] Headers\n    @ <local-source> [inlined]\n  [3] copy\n    @ <local-source> [inlined]\n  [4] HTTP.Response(status::Int64, response_body::HTTP.BytesBody{Vector{UInt8}}; body::Vector{UInt8}, reason::String, headers::HTTP.Headers, trailers::HTTP.Headers, content_length::Int64, proto_major::Int64, proto_minor::Int64, close::Bool, request::Nothing, request_url::Nothing, previous::Nothing, redirect_count::Int64)\n    @ HTTP <local-source>\n  [5] Response\n    @ <local-source> [inlined]\n  [6] HTTP.Response(status::Int64, body::String)\n    @ HTTP <local-source>\n  [7] PrefixStripMiddleware\n    @ <local-source> [inlined]\n  [8] setupmiddleware(ctx::Oxygen.Core.AppContext.ServerContext; middleware::Vector{Any}, docs::Bool, metrics::Bool, serialize::Bool, catch_errors::Bool, show_errors::Bool, access_log::Nothing)\n    @ Oxygen.Core <local-source>\n  [9] setupmiddleware\n    @ <local-source> [inlined]\n [10] internalrequest(ctx::Oxygen.Core.AppContext.ServerContext, req::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}}; middleware::Vector{Any}, metrics::Bool, serialize::Bool, catch_errors::Bool)\n    @ Oxygen.Core <local-source>\n [11] internalrequest\n    @ <local-source> [inlined]\n [12] internalrequest\n    @ <local-source> [inlined]\n [13] (::Main.var\"##SharedCase#142\".EventService.var\"#request_case##8#request_case##9\")(request::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}})\n    @ Main.var\"##SharedCase#142\".EventService <local-source>\n",
+          "rule_id": "allocation.potential",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "AllocCheck.check_allocs",
+            "report_type": "AllocCheck.AllocationSite"
+          },
+          "location": {
+            "file": "<local-source>",
+            "line": 649
+          },
+          "message": "Allocation of HTTP.Headers in <local-source>\n  | entries::Vector{Pair{String,String}}\n\nStacktrace:\n  [1] Headers\n    @ <local-source> [inlined]\n  [2] Headers\n    @ <local-source> [inlined]\n  [3] copy\n    @ <local-source> [inlined]\n  [4] HTTP.Response(status::Int64, response_body::HTTP.BytesBody{Vector{UInt8}}; body::Vector{UInt8}, reason::String, headers::HTTP.Headers, trailers::HTTP.Headers, content_length::Int64, proto_major::Int64, proto_minor::Int64, close::Bool, request::Nothing, request_url::Nothing, previous::Nothing, redirect_count::Int64)\n    @ HTTP <local-source>\n  [5] Response\n    @ <local-source> [inlined]\n  [6] HTTP.Response(status::Int64, body::String)\n    @ HTTP <local-source>\n  [7] PrefixStripMiddleware\n    @ <local-source> [inlined]\n  [8] setupmiddleware(ctx::Oxygen.Core.AppContext.ServerContext; middleware::Vector{Any}, docs::Bool, metrics::Bool, serialize::Bool, catch_errors::Bool, show_errors::Bool, access_log::Nothing)\n    @ Oxygen.Core <local-source>\n  [9] setupmiddleware\n    @ <local-source> [inlined]\n [10] internalrequest(ctx::Oxygen.Core.AppContext.ServerContext, req::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}}; middleware::Vector{Any}, metrics::Bool, serialize::Bool, catch_errors::Bool)\n    @ Oxygen.Core <local-source>\n [11] internalrequest\n    @ <local-source> [inlined]\n [12] internalrequest\n    @ <local-source> [inlined]\n [13] (::Main.var\"##SharedCase#142\".EventService.var\"#request_case##8#request_case##9\")(request::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}})\n    @ Main.var\"##SharedCase#142\".EventService <local-source>\n",
+          "rule_id": "allocation.potential",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "AllocCheck.check_allocs",
+            "report_type": "AllocCheck.AllocationSite"
+          },
+          "location": {
+            "file": ".\\boot.jl",
+            "line": 649
+          },
+          "message": "Allocation of Vector{UInt8} in .\\boot.jl:649\n  | return $(Expr(:new, :self, :(memoryref(mem)), :((m,))))\n\nStacktrace:\n  [1] Array\n    @ .\\boot.jl:649 [inlined]\n  [2] getindex\n    @ .\\array.jl:436 [inlined]\n  [3] copy\n    @ <local-source> [inlined]\n  [4] convert\n    @ <local-source> [inlined]\n  [5] Response\n    @ <local-source> [inlined]\n  [6] HTTP.Response(status::Int64, response_body::HTTP.BytesBody{Vector{UInt8}}; body::Vector{UInt8}, reason::String, headers::HTTP.Headers, trailers::HTTP.Headers, content_length::Int64, proto_major::Int64, proto_minor::Int64, close::Bool, request::Nothing, request_url::Nothing, previous::Nothing, redirect_count::Int64)\n    @ HTTP <local-source>\n  [7] Response\n    @ <local-source> [inlined]\n  [8] HTTP.Response(status::Int64, body::String)\n    @ HTTP <local-source>\n  [9] PrefixStripMiddleware\n    @ <local-source> [inlined]\n [10] setupmiddleware(ctx::Oxygen.Core.AppContext.ServerContext; middleware::Vector{Any}, docs::Bool, metrics::Bool, serialize::Bool, catch_errors::Bool, show_errors::Bool, access_log::Nothing)\n    @ Oxygen.Core <local-source>\n [11] setupmiddleware\n    @ <local-source> [inlined]\n [12] internalrequest(ctx::Oxygen.Core.AppContext.ServerContext, req::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}}; middleware::Vector{Any}, metrics::Bool, serialize::Bool, catch_errors::Bool)\n    @ Oxygen.Core <local-source>\n [13] internalrequest\n    @ <local-source> [inlined]\n [14] internalrequest\n    @ <local-source> [inlined]\n [15] (::Main.var\"##SharedCase#142\".EventService.var\"#request_case##8#request_case##9\")(request::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}})\n    @ Main.var\"##SharedCase#142\".EventService <local-source>\n",
+          "rule_id": "allocation.potential",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "AllocCheck.check_allocs",
+            "report_type": "AllocCheck.AllocationSite"
+          },
+          "location": {
+            "file": ".\\boot.jl",
+            "line": 588
+          },
+          "message": "Allocation of Memory{UInt8} in .\\boot.jl:588\n  | (self::Type{GenericMemory{kind,T,addrspace}})(::UndefInitializer, m::Int) where {T,addrspace,kind} = memorynew(self, m)\n\nStacktrace:\n  [1] GenericMemory\n    @ .\\boot.jl:588 [inlined]\n  [2] Array\n    @ .\\boot.jl:648 [inlined]\n  [3] copy\n    @ <local-source> [inlined]\n  [4] convert\n    @ <local-source> [inlined]\n  [5] Response\n    @ <local-source> [inlined]\n  [6] HTTP.Response(status::Int64, response_body::HTTP.BytesBody{Vector{UInt8}}; body::Vector{UInt8}, reason::String, headers::HTTP.Headers, trailers::HTTP.Headers, content_length::Int64, proto_major::Int64, proto_minor::Int64, close::Bool, request::Nothing, request_url::Nothing, previous::Nothing, redirect_count::Int64)\n    @ HTTP <local-source>\n  [7] Response\n    @ <local-source> [inlined]\n  [8] HTTP.Response(status::Int64, body::String)\n    @ HTTP <local-source>\n  [9] PrefixStripMiddleware\n    @ <local-source> [inlined]\n [10] setupmiddleware(ctx::Oxygen.Core.AppContext.ServerContext; middleware::Vector{Any}, docs::Bool, metrics::Bool, serialize::Bool, catch_errors::Bool, show_errors::Bool, access_log::Nothing)\n    @ Oxygen.Core <local-source>\n [11] setupmiddleware\n    @ <local-source> [inlined]\n [12] internalrequest(ctx::Oxygen.Core.AppContext.ServerContext, req::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}}; middleware::Vector{Any}, metrics::Bool, serialize::Bool, catch_errors::Bool)\n    @ Oxygen.Core <local-source>\n [13] internalrequest\n    @ <local-source> [inlined]\n [14] internalrequest\n    @ <local-source> [inlined]\n [15] (::Main.var\"##SharedCase#142\".EventService.var\"#request_case##8#request_case##9\")(request::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}})\n    @ Main.var\"##SharedCase#142\".EventService <local-source>\n",
+          "rule_id": "allocation.potential",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "AllocCheck.check_allocs",
+            "report_type": "AllocCheck.AllocationSite"
+          },
+          "location": {
+            "file": ".\\boot.jl",
+            "line": 649
+          },
+          "message": "Allocation of Vector{UInt8} in .\\boot.jl:649\n  | return $(Expr(:new, :self, :(memoryref(mem)), :((m,))))\n\nStacktrace:\n  [1] Array\n    @ .\\boot.jl:649 [inlined]\n  [2] copy\n    @ <local-source> [inlined]\n  [3] convert\n    @ <local-source> [inlined]\n  [4] Response\n    @ <local-source> [inlined]\n  [5] HTTP.Response(status::Int64, response_body::HTTP.BytesBody{Vector{UInt8}}; body::Vector{UInt8}, reason::String, headers::HTTP.Headers, trailers::HTTP.Headers, content_length::Int64, proto_major::Int64, proto_minor::Int64, close::Bool, request::Nothing, request_url::Nothing, previous::Nothing, redirect_count::Int64)\n    @ HTTP <local-source>\n  [6] Response\n    @ <local-source> [inlined]\n  [7] HTTP.Response(status::Int64, body::String)\n    @ HTTP <local-source>\n  [8] PrefixStripMiddleware\n    @ <local-source> [inlined]\n  [9] setupmiddleware(ctx::Oxygen.Core.AppContext.ServerContext; middleware::Vector{Any}, docs::Bool, metrics::Bool, serialize::Bool, catch_errors::Bool, show_errors::Bool, access_log::Nothing)\n    @ Oxygen.Core <local-source>\n [10] setupmiddleware\n    @ <local-source> [inlined]\n [11] internalrequest(ctx::Oxygen.Core.AppContext.ServerContext, req::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}}; middleware::Vector{Any}, metrics::Bool, serialize::Bool, catch_errors::Bool)\n    @ Oxygen.Core <local-source>\n [12] internalrequest\n    @ <local-source> [inlined]\n [13] internalrequest\n    @ <local-source> [inlined]\n [14] (::Main.var\"##SharedCase#142\".EventService.var\"#request_case##8#request_case##9\")(request::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}})\n    @ Main.var\"##SharedCase#142\".EventService <local-source>\n",
+          "rule_id": "allocation.potential",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "AllocCheck.check_allocs",
+            "report_type": "AllocCheck.AllocationSite"
+          },
+          "location": {
+            "file": "<local-source>",
+            "line": 1819
+          },
+          "message": "Allocation of Any in <local-source>\n  | status::Int\n\nStacktrace:\n  [1] Response\n    @ <local-source> [inlined]\n  [2] HTTP.Response(status::Int64, response_body::HTTP.BytesBody{Vector{UInt8}}; body::Vector{UInt8}, reason::String, headers::HTTP.Headers, trailers::HTTP.Headers, content_length::Int64, proto_major::Int64, proto_minor::Int64, close::Bool, request::Nothing, request_url::Nothing, previous::Nothing, redirect_count::Int64)\n    @ HTTP <local-source>\n  [3] Response\n    @ <local-source> [inlined]\n  [4] HTTP.Response(status::Int64, body::String)\n    @ HTTP <local-source>\n  [5] PrefixStripMiddleware\n    @ <local-source> [inlined]\n  [6] setupmiddleware(ctx::Oxygen.Core.AppContext.ServerContext; middleware::Vector{Any}, docs::Bool, metrics::Bool, serialize::Bool, catch_errors::Bool, show_errors::Bool, access_log::Nothing)\n    @ Oxygen.Core <local-source>\n  [7] setupmiddleware\n    @ <local-source> [inlined]\n  [8] internalrequest(ctx::Oxygen.Core.AppContext.ServerContext, req::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}}; middleware::Vector{Any}, metrics::Bool, serialize::Bool, catch_errors::Bool)\n    @ Oxygen.Core <local-source>\n  [9] internalrequest\n    @ <local-source> [inlined]\n [10] internalrequest\n    @ <local-source> [inlined]\n [11] (::Main.var\"##SharedCase#142\".EventService.var\"#request_case##8#request_case##9\")(request::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}})\n    @ Main.var\"##SharedCase#142\".EventService <local-source>\n",
+          "rule_id": "allocation.potential",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "AllocCheck.check_allocs",
+            "report_type": "AllocCheck.AllocationSite"
+          },
+          "location": {
+            "file": ".\\boot.jl",
+            "line": 588
+          },
+          "message": "Allocation of Memory{Pair{String, String}} in .\\boot.jl:588\n  | (self::Type{GenericMemory{kind,T,addrspace}})(::UndefInitializer, m::Int) where {T,addrspace,kind} = memorynew(self, m)\n\nStacktrace:\n  [1] GenericMemory\n    @ .\\boot.jl:588 [inlined]\n  [2] copy\n    @ .\\array.jl:384 [inlined]\n  [3] Headers\n    @ <local-source> [inlined]\n  [4] copy\n    @ <local-source> [inlined]\n  [5] HTTP.Response(status::Int64, response_body::HTTP.BytesBody{Vector{UInt8}}; body::Vector{UInt8}, reason::String, headers::HTTP.Headers, trailers::HTTP.Headers, content_length::Int64, proto_major::Int64, proto_minor::Int64, close::Bool, request::Nothing, request_url::Nothing, previous::Nothing, redirect_count::Int64)\n    @ HTTP <local-source>\n  [6] Response\n    @ <local-source> [inlined]\n  [7] HTTP.Response(status::Int64, body::String)\n    @ HTTP <local-source>\n  [8] PrefixStripMiddleware\n    @ <local-source> [inlined]\n  [9] setupmiddleware(ctx::Oxygen.Core.AppContext.ServerContext; middleware::Vector{Any}, docs::Bool, metrics::Bool, serialize::Bool, catch_errors::Bool, show_errors::Bool, access_log::Nothing)\n    @ Oxygen.Core <local-source>\n [10] setupmiddleware\n    @ <local-source> [inlined]\n [11] internalrequest(ctx::Oxygen.Core.AppContext.ServerContext, req::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}}; middleware::Vector{Any}, metrics::Bool, serialize::Bool, catch_errors::Bool)\n    @ Oxygen.Core <local-source>\n [12] internalrequest\n    @ <local-source> [inlined]\n [13] internalrequest\n    @ <local-source> [inlined]\n [14] (::Main.var\"##SharedCase#142\".EventService.var\"#request_case##8#request_case##9\")(request::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}})\n    @ Main.var\"##SharedCase#142\".EventService <local-source>\n",
+          "rule_id": "allocation.potential",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "AllocCheck.check_allocs",
+            "report_type": "AllocCheck.AllocationSite"
+          },
+          "location": {
+            "file": ".\\boot.jl",
+            "line": 649
+          },
+          "message": "Allocation of Vector{Any} in .\\boot.jl:649\n  | return $(Expr(:new, :self, :(memoryref(mem)), :((m,))))\n\nStacktrace:\n  [1] Array\n    @ .\\boot.jl:649 [inlined]\n  [2] Array\n    @ .\\boot.jl:673 [inlined]\n  [3] vect\n    @ .\\array.jl:158 [inlined]\n  [4] process_middleware(ctx::Oxygen.Core.AppContext.ServerContext, middleware::Vector{Any})\n    @ Oxygen.Core.RouterHOF <local-source>\n  [5] setupmiddleware(ctx::Oxygen.Core.AppContext.ServerContext; middleware::Vector{Any}, docs::Bool, metrics::Bool, serialize::Bool, catch_errors::Bool, show_errors::Bool, access_log::Nothing)\n    @ Oxygen.Core <local-source>\n  [6] setupmiddleware\n    @ <local-source> [inlined]\n  [7] internalrequest(ctx::Oxygen.Core.AppContext.ServerContext, req::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}}; middleware::Vector{Any}, metrics::Bool, serialize::Bool, catch_errors::Bool)\n    @ Oxygen.Core <local-source>\n  [8] internalrequest\n    @ <local-source> [inlined]\n  [9] internalrequest\n    @ <local-source> [inlined]\n [10] (::Main.var\"##SharedCase#142\".EventService.var\"#request_case##8#request_case##9\")(request::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}})\n    @ Main.var\"##SharedCase#142\".EventService <local-source>\n",
+          "rule_id": "allocation.potential",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "AllocCheck.check_allocs",
+            "report_type": "AllocCheck.AllocationSite"
+          },
+          "location": {
+            "file": ".\\boot.jl",
+            "line": 588
+          },
+          "message": "Allocation of Memory{Function} in .\\boot.jl:588\n  | (self::Type{GenericMemory{kind,T,addrspace}})(::UndefInitializer, m::Int) where {T,addrspace,kind} = memorynew(self, m)\n\nStacktrace:\n  [1] GenericMemory\n    @ .\\boot.jl:588 [inlined]\n  [2] Array\n    @ .\\boot.jl:648 [inlined]\n  [3] Array\n    @ .\\boot.jl:661 [inlined]\n  [4] Array\n    @ .\\array.jl:652 [inlined]\n  [5] convert\n    @ .\\array.jl:645 [inlined]\n  [6] process_middleware(ctx::Oxygen.Core.AppContext.ServerContext, middleware::Vector{Any})\n    @ Oxygen.Core.RouterHOF <local-source>\n  [7] setupmiddleware(ctx::Oxygen.Core.AppContext.ServerContext; middleware::Vector{Any}, docs::Bool, metrics::Bool, serialize::Bool, catch_errors::Bool, show_errors::Bool, access_log::Nothing)\n    @ Oxygen.Core <local-source>\n  [8] setupmiddleware\n    @ <local-source> [inlined]\n  [9] internalrequest(ctx::Oxygen.Core.AppContext.ServerContext, req::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}}; middleware::Vector{Any}, metrics::Bool, serialize::Bool, catch_errors::Bool)\n    @ Oxygen.Core <local-source>\n [10] internalrequest\n    @ <local-source> [inlined]\n [11] internalrequest\n    @ <local-source> [inlined]\n [12] (::Main.var\"##SharedCase#142\".EventService.var\"#request_case##8#request_case##9\")(request::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}})\n    @ Main.var\"##SharedCase#142\".EventService <local-source>\n",
+          "rule_id": "allocation.potential",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "AllocCheck.check_allocs",
+            "report_type": "AllocCheck.AllocationSite"
+          },
+          "location": {
+            "file": ".\\boot.jl",
+            "line": 649
+          },
+          "message": "Allocation of Vector{Function} in .\\boot.jl:649\n  | return $(Expr(:new, :self, :(memoryref(mem)), :((m,))))\n\nStacktrace:\n  [1] Array\n    @ .\\boot.jl:649 [inlined]\n  [2] Array\n    @ .\\boot.jl:661 [inlined]\n  [3] Array\n    @ .\\array.jl:652 [inlined]\n  [4] convert\n    @ .\\array.jl:645 [inlined]\n  [5] process_middleware(ctx::Oxygen.Core.AppContext.ServerContext, middleware::Vector{Any})\n    @ Oxygen.Core.RouterHOF <local-source>\n  [6] setupmiddleware(ctx::Oxygen.Core.AppContext.ServerContext; middleware::Vector{Any}, docs::Bool, metrics::Bool, serialize::Bool, catch_errors::Bool, show_errors::Bool, access_log::Nothing)\n    @ Oxygen.Core <local-source>\n  [7] setupmiddleware\n    @ <local-source> [inlined]\n  [8] internalrequest(ctx::Oxygen.Core.AppContext.ServerContext, req::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}}; middleware::Vector{Any}, metrics::Bool, serialize::Bool, catch_errors::Bool)\n    @ Oxygen.Core <local-source>\n  [9] internalrequest\n    @ <local-source> [inlined]\n [10] internalrequest\n    @ <local-source> [inlined]\n [11] (::Main.var\"##SharedCase#142\".EventService.var\"#request_case##8#request_case##9\")(request::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}})\n    @ Main.var\"##SharedCase#142\".EventService <local-source>\n",
+          "rule_id": "allocation.potential",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "AllocCheck.check_allocs",
+            "report_type": "AllocCheck.AllocatingRuntimeCall"
+          },
+          "location": {
+            "file": ".\\genericmemory.jl",
+            "line": 269
+          },
+          "message": "Allocating runtime call to \"jl_subtype\" in .\\genericmemory.jl:269\n  | val = x isa T ? x : convert(T,x)::T\n\nStacktrace:\n  [1] setindex!\n    @ .\\genericmemory.jl:269 [inlined]\n  [2] unsafe_copyto!(dest::Memory{Function}, doffs::Int64, src::Memory{Any}, soffs::Int64, n::Int64)\n    @ Base .\\genericmemory.jl:172\n  [3] unsafe_copyto!\n    @ .\\genericmemory.jl:151 [inlined]\n  [4] _copyto_impl!\n    @ .\\array.jl:300 [inlined]\n  [5] copyto!\n    @ .\\array.jl:286 [inlined]\n  [6] _copyto2arg!\n    @ .\\array.jl:311 [inlined]\n  [7] copyto!\n    @ .\\array.jl:313 [inlined]\n  [8] copyto_axcheck!\n    @ .\\abstractarray.jl:1186 [inlined]\n  [9] Array\n    @ .\\array.jl:652 [inlined]\n [10] convert\n    @ .\\array.jl:645 [inlined]\n [11] process_middleware(ctx::Oxygen.Core.AppContext.ServerContext, middleware::Vector{Any})\n    @ Oxygen.Core.RouterHOF <local-source>\n [12] setupmiddleware(ctx::Oxygen.Core.AppContext.ServerContext; middleware::Vector{Any}, docs::Bool, metrics::Bool, serialize::Bool, catch_errors::Bool, show_errors::Bool, access_log::Nothing)\n    @ Oxygen.Core <local-source>\n [13] setupmiddleware\n    @ <local-source> [inlined]\n [14] internalrequest(ctx::Oxygen.Core.AppContext.ServerContext, req::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}}; middleware::Vector{Any}, metrics::Bool, serialize::Bool, catch_errors::Bool)\n    @ Oxygen.Core <local-source>\n [15] internalrequest\n    @ <local-source> [inlined]\n [16] internalrequest\n    @ <local-source> [inlined]\n [17] (::Main.var\"##SharedCase#142\".EventService.var\"#request_case##8#request_case##9\")(request::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}})\n    @ Main.var\"##SharedCase#142\".EventService <local-source>\n",
+          "rule_id": "allocation.potential",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "AllocCheck.check_allocs",
+            "report_type": "AllocCheck.AllocatingRuntimeCall"
+          },
+          "location": {
+            "file": ".\\genericmemory.jl",
+            "line": 269
+          },
+          "message": "Allocating runtime call to \"jl_subtype\" in .\\genericmemory.jl:269\n  | val = x isa T ? x : convert(T,x)::T\n\nStacktrace:\n  [1] setindex!\n    @ .\\genericmemory.jl:269 [inlined]\n  [2] unsafe_copyto!(dest::Memory{Function}, doffs::Int64, src::Memory{Any}, soffs::Int64, n::Int64)\n    @ Base .\\genericmemory.jl:180\n  [3] unsafe_copyto!\n    @ .\\genericmemory.jl:151 [inlined]\n  [4] _copyto_impl!\n    @ .\\array.jl:300 [inlined]\n  [5] copyto!\n    @ .\\array.jl:286 [inlined]\n  [6] _copyto2arg!\n    @ .\\array.jl:311 [inlined]\n  [7] copyto!\n    @ .\\array.jl:313 [inlined]\n  [8] copyto_axcheck!\n    @ .\\abstractarray.jl:1186 [inlined]\n  [9] Array\n    @ .\\array.jl:652 [inlined]\n [10] convert\n    @ .\\array.jl:645 [inlined]\n [11] process_middleware(ctx::Oxygen.Core.AppContext.ServerContext, middleware::Vector{Any})\n    @ Oxygen.Core.RouterHOF <local-source>\n [12] setupmiddleware(ctx::Oxygen.Core.AppContext.ServerContext; middleware::Vector{Any}, docs::Bool, metrics::Bool, serialize::Bool, catch_errors::Bool, show_errors::Bool, access_log::Nothing)\n    @ Oxygen.Core <local-source>\n [13] setupmiddleware\n    @ <local-source> [inlined]\n [14] internalrequest(ctx::Oxygen.Core.AppContext.ServerContext, req::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}}; middleware::Vector{Any}, metrics::Bool, serialize::Bool, catch_errors::Bool)\n    @ Oxygen.Core <local-source>\n [15] internalrequest\n    @ <local-source> [inlined]\n [16] internalrequest\n    @ <local-source> [inlined]\n [17] (::Main.var\"##SharedCase#142\".EventService.var\"#request_case##8#request_case##9\")(request::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}})\n    @ Main.var\"##SharedCase#142\".EventService <local-source>\n",
+          "rule_id": "allocation.potential",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "AllocCheck.check_allocs",
+            "report_type": "AllocCheck.AllocationSite"
+          },
+          "location": {
+            "file": ".\\boot.jl",
+            "line": 588
+          },
+          "message": "Allocation of Memory{Any} in .\\boot.jl:588\n  | (self::Type{GenericMemory{kind,T,addrspace}})(::UndefInitializer, m::Int) where {T,addrspace,kind} = memorynew(self, m)\n\nStacktrace:\n [1] GenericMemory\n   @ .\\boot.jl:588 [inlined]\n [2] array_new_memory\n   @ .\\array.jl:1101 [inlined]\n [3] _growend_internal!(a::Vector{Any}, delta::Int64, len::Int64)\n   @ Base .\\array.jl:1181\n [4] multiple call sites\n   @ unknown:0\n",
+          "rule_id": "allocation.potential",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "AllocCheck.check_allocs",
+            "report_type": "AllocCheck.AllocationSite"
+          },
+          "location": {
+            "file": ".\\boot.jl",
+            "line": 588
+          },
+          "message": "Allocation of Memory{UInt8} in .\\boot.jl:588\n  | (self::Type{GenericMemory{kind,T,addrspace}})(::UndefInitializer, m::Int) where {T,addrspace,kind} = memorynew(self, m)\n\nStacktrace:\n [1] GenericMemory\n   @ .\\boot.jl:588 [inlined]\n [2] rehash!(h::Dict{Oxygen.Core.Types.LifecycleMiddleware, Nothing}, newsz::Int64)\n   @ Base .\\dict.jl:148\n [3] multiple call sites\n   @ unknown:0\n",
+          "rule_id": "allocation.potential",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "AllocCheck.check_allocs",
+            "report_type": "AllocCheck.AllocationSite"
+          },
+          "location": {
+            "file": ".\\boot.jl",
+            "line": 588
+          },
+          "message": "Allocation of Memory{Oxygen.Core.Types.LifecycleMiddleware} in .\\boot.jl:588\n  | (self::Type{GenericMemory{kind,T,addrspace}})(::UndefInitializer, m::Int) where {T,addrspace,kind} = memorynew(self, m)\n\nStacktrace:\n [1] GenericMemory\n   @ .\\boot.jl:588 [inlined]\n [2] rehash!(h::Dict{Oxygen.Core.Types.LifecycleMiddleware, Nothing}, newsz::Int64)\n   @ Base .\\dict.jl:150\n [3] multiple call sites\n   @ unknown:0\n",
+          "rule_id": "allocation.potential",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "AllocCheck.check_allocs",
+            "report_type": "AllocCheck.AllocationSite"
+          },
+          "location": {
+            "file": ".\\boot.jl",
+            "line": 588
+          },
+          "message": "Allocation of Memory{Nothing} in .\\boot.jl:588\n  | (self::Type{GenericMemory{kind,T,addrspace}})(::UndefInitializer, m::Int) where {T,addrspace,kind} = memorynew(self, m)\n\nStacktrace:\n [1] GenericMemory\n   @ .\\boot.jl:588 [inlined]\n [2] rehash!(h::Dict{Oxygen.Core.Types.LifecycleMiddleware, Nothing}, newsz::Int64)\n   @ Base .\\dict.jl:151\n [3] multiple call sites\n   @ unknown:0\n",
+          "rule_id": "allocation.potential",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "AllocCheck.check_allocs",
+            "report_type": "AllocCheck.AllocationSite"
+          },
+          "location": {
+            "file": ".\\boot.jl",
+            "line": 588
+          },
+          "message": "Allocation of Memory{UInt8} in .\\boot.jl:588\n  | (self::Type{GenericMemory{kind,T,addrspace}})(::UndefInitializer, m::Int) where {T,addrspace,kind} = memorynew(self, m)\n\nStacktrace:\n [1] GenericMemory\n   @ .\\boot.jl:588 [inlined]\n [2] rehash!(h::Dict{Oxygen.Core.Types.LifecycleMiddleware, Nothing}, newsz::Int64)\n   @ Base .\\dict.jl:157\n [3] multiple call sites\n   @ unknown:0\n",
+          "rule_id": "allocation.potential",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "AllocCheck.check_allocs",
+            "report_type": "AllocCheck.AllocationSite"
+          },
+          "location": {
+            "file": ".\\boot.jl",
+            "line": 588
+          },
+          "message": "Allocation of Memory{Oxygen.Core.Types.LifecycleMiddleware} in .\\boot.jl:588\n  | (self::Type{GenericMemory{kind,T,addrspace}})(::UndefInitializer, m::Int) where {T,addrspace,kind} = memorynew(self, m)\n\nStacktrace:\n [1] GenericMemory\n   @ .\\boot.jl:588 [inlined]\n [2] rehash!(h::Dict{Oxygen.Core.Types.LifecycleMiddleware, Nothing}, newsz::Int64)\n   @ Base .\\dict.jl:159\n [3] multiple call sites\n   @ unknown:0\n",
+          "rule_id": "allocation.potential",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "AllocCheck.check_allocs",
+            "report_type": "AllocCheck.AllocationSite"
+          },
+          "location": {
+            "file": ".\\boot.jl",
+            "line": 588
+          },
+          "message": "Allocation of Memory{Nothing} in .\\boot.jl:588\n  | (self::Type{GenericMemory{kind,T,addrspace}})(::UndefInitializer, m::Int) where {T,addrspace,kind} = memorynew(self, m)\n\nStacktrace:\n [1] GenericMemory\n   @ .\\boot.jl:588 [inlined]\n [2] rehash!(h::Dict{Oxygen.Core.Types.LifecycleMiddleware, Nothing}, newsz::Int64)\n   @ Base .\\dict.jl:160\n [3] multiple call sites\n   @ unknown:0\n",
+          "rule_id": "allocation.potential",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "AllocCheck.check_allocs",
+            "report_type": "AllocCheck.AllocatingRuntimeCall"
+          },
+          "location": {
+            "file": ".\\runtime_internals.jl",
+            "line": 901
+          },
+          "message": "Allocating runtime call to \"jl_object_id_\" in .\\runtime_internals.jl:901\n  | return ccall(:jl_object_id, UInt, (Any,), x)\n\nStacktrace:\n [1] objectid\n   @ .\\runtime_internals.jl:901 [inlined]\n [2] hash\n   @ .\\hashing.jl:46 [inlined]\n [3] hash\n   @ .\\hashing.jl:40 [inlined]\n [4] hashindex\n   @ .\\dict.jl:129 [inlined]\n [5] rehash!(h::Dict{Oxygen.Core.Types.LifecycleMiddleware, Nothing}, newsz::Int64)\n   @ Base .\\dict.jl:169\n [6] multiple call sites\n   @ unknown:0\n",
+          "rule_id": "allocation.potential",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "AllocCheck.check_allocs",
+            "report_type": "AllocCheck.AllocatingRuntimeCall"
+          },
+          "location": {
+            "file": ".\\runtime_internals.jl",
+            "line": 901
+          },
+          "message": "Allocating runtime call to \"jl_object_id_\" in .\\runtime_internals.jl:901\n  | return ccall(:jl_object_id, UInt, (Any,), x)\n\nStacktrace:\n [1] objectid\n   @ .\\runtime_internals.jl:901 [inlined]\n [2] hash\n   @ .\\hashing.jl:46 [inlined]\n [3] hash\n   @ .\\hashing.jl:40 [inlined]\n [4] hashindex\n   @ .\\dict.jl:129 [inlined]\n [5] ht_keyindex2_shorthash!(h::Dict{Oxygen.Core.Types.LifecycleMiddleware, Nothing}, key::Oxygen.Core.Types.LifecycleMiddleware)\n   @ Base .\\dict.jl:271\n [6] multiple call sites\n   @ unknown:0\n",
+          "rule_id": "allocation.potential",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "AllocCheck.check_allocs",
+            "report_type": "AllocCheck.AllocatingRuntimeCall"
+          },
+          "location": {
+            "file": ".\\runtime_internals.jl",
+            "line": 901
+          },
+          "message": "Allocating runtime call to \"jl_object_id_\" in .\\runtime_internals.jl:901\n  | return ccall(:jl_object_id, UInt, (Any,), x)\n\nStacktrace:\n [1] objectid\n   @ .\\runtime_internals.jl:901 [inlined]\n [2] hash\n   @ .\\hashing.jl:46 [inlined]\n [3] hash\n   @ .\\hashing.jl:40 [inlined]\n [4] hashindex\n   @ .\\dict.jl:129 [inlined]\n [5] ht_keyindex2_shorthash!(h::Dict{Oxygen.Core.Types.LifecycleMiddleware, Nothing}, key::Oxygen.Core.Types.LifecycleMiddleware)\n   @ Base .\\dict.jl:276\n [6] multiple call sites\n   @ unknown:0\n",
+          "rule_id": "allocation.potential",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "AllocCheck.check_allocs",
+            "report_type": "AllocCheck.AllocationSite"
+          },
+          "location": {
+            "file": ".\\boot.jl",
+            "line": 588
+          },
+          "message": "Allocation of Memory{Any} in .\\boot.jl:588\n  | (self::Type{GenericMemory{kind,T,addrspace}})(::UndefInitializer, m::Int) where {T,addrspace,kind} = memorynew(self, m)\n\nStacktrace:\n  [1] GenericMemory\n    @ .\\boot.jl:588 [inlined]\n  [2] Array\n    @ .\\boot.jl:648 [inlined]\n  [3] similar\n    @ .\\array.jl:402 [inlined]\n  [4] reverse(A::Vector{Any}, start::Int64, stop::Int64)\n    @ Base .\\array.jl:2224\n  [5] _reverse\n    @ .\\array.jl:2241 [inlined]\n  [6] reverse\n    @ .\\array.jl:2240 [inlined]\n  [7] setupmiddleware(ctx::Oxygen.Core.AppContext.ServerContext; middleware::Vector{Any}, docs::Bool, metrics::Bool, serialize::Bool, catch_errors::Bool, show_errors::Bool, access_log::Nothing)\n    @ Oxygen.Core <local-source>\n  [8] setupmiddleware\n    @ <local-source> [inlined]\n  [9] internalrequest(ctx::Oxygen.Core.AppContext.ServerContext, req::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}}; middleware::Vector{Any}, metrics::Bool, serialize::Bool, catch_errors::Bool)\n    @ Oxygen.Core <local-source>\n [10] internalrequest\n    @ <local-source> [inlined]\n [11] internalrequest\n    @ <local-source> [inlined]\n [12] (::Main.var\"##SharedCase#142\".EventService.var\"#request_case##8#request_case##9\")(request::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}})\n    @ Main.var\"##SharedCase#142\".EventService <local-source>\n",
+          "rule_id": "allocation.potential",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "AllocCheck.check_allocs",
+            "report_type": "AllocCheck.AllocationSite"
+          },
+          "location": {
+            "file": ".\\boot.jl",
+            "line": 649
+          },
+          "message": "Allocation of Vector{Any} in .\\boot.jl:649\n  | return $(Expr(:new, :self, :(memoryref(mem)), :((m,))))\n\nStacktrace:\n  [1] Array\n    @ .\\boot.jl:649 [inlined]\n  [2] similar\n    @ .\\array.jl:402 [inlined]\n  [3] reverse(A::Vector{Any}, start::Int64, stop::Int64)\n    @ Base .\\array.jl:2224\n  [4] _reverse\n    @ .\\array.jl:2241 [inlined]\n  [5] reverse\n    @ .\\array.jl:2240 [inlined]\n  [6] setupmiddleware(ctx::Oxygen.Core.AppContext.ServerContext; middleware::Vector{Any}, docs::Bool, metrics::Bool, serialize::Bool, catch_errors::Bool, show_errors::Bool, access_log::Nothing)\n    @ Oxygen.Core <local-source>\n  [7] setupmiddleware\n    @ <local-source> [inlined]\n  [8] internalrequest(ctx::Oxygen.Core.AppContext.ServerContext, req::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}}; middleware::Vector{Any}, metrics::Bool, serialize::Bool, catch_errors::Bool)\n    @ Oxygen.Core <local-source>\n  [9] internalrequest\n    @ <local-source> [inlined]\n [10] internalrequest\n    @ <local-source> [inlined]\n [11] (::Main.var\"##SharedCase#142\".EventService.var\"#request_case##8#request_case##9\")(request::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}})\n    @ Main.var\"##SharedCase#142\".EventService <local-source>\n",
+          "rule_id": "allocation.potential",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "AllocCheck.check_allocs",
+            "report_type": "AllocCheck.AllocationSite"
+          },
+          "location": {
+            "file": ".\\boot.jl",
+            "line": 649
+          },
+          "message": "Allocation of Vector{SubString{String}} in .\\boot.jl:649\n  | return $(Expr(:new, :self, :(memoryref(mem)), :((m,))))\n\nStacktrace:\n  [1] Array\n    @ .\\boot.jl:649 [inlined]\n  [2] Array\n    @ .\\boot.jl:661 [inlined]\n  [3] similar\n    @ .\\abstractarray.jl:838 [inlined]\n  [4] similar\n    @ .\\abstractarray.jl:827 [inlined]\n  [5] _similar_for\n    @ .\\array.jl:691 [inlined]\n  [6] _collect(cont::UnitRange{Int64}, itr::Base.SplitIterator{String, Base.Fix2{typeof(isequal), Char}}, ::Base.HasEltype, isz::Base.SizeUnknown)\n    @ Base .\\array.jl:769\n  [7] collect\n    @ .\\array.jl:759 [inlined]\n  [8] #split#420\n    @ .\\strings\\util.jl:944 [inlined]\n  [9] split\n    @ .\\strings\\util.jl:942 [inlined]\n [10] parse(::Type{Sockets.IPv4}, str::String)\n    @ Sockets <local-source>\n [11] IPv4\n    @ <local-source> [inlined]\n [12] internalrequest(ctx::Oxygen.Core.AppContext.ServerContext, req::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}}; middleware::Vector{Any}, metrics::Bool, serialize::Bool, catch_errors::Bool)\n    @ Oxygen.Core <local-source>\n [13] internalrequest\n    @ <local-source> [inlined]\n [14] internalrequest\n    @ <local-source> [inlined]\n [15] (::Main.var\"##SharedCase#142\".EventService.var\"#request_case##8#request_case##9\")(request::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}})\n    @ Main.var\"##SharedCase#142\".EventService <local-source>\n",
+          "rule_id": "allocation.potential",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "AllocCheck.check_allocs",
+            "report_type": "AllocCheck.AllocationSite"
+          },
+          "location": {
+            "file": ".\\boot.jl",
+            "line": 588
+          },
+          "message": "Allocation of Memory{SubString{String}} in .\\boot.jl:588\n  | (self::Type{GenericMemory{kind,T,addrspace}})(::UndefInitializer, m::Int) where {T,addrspace,kind} = memorynew(self, m)\n\nStacktrace:\n  [1] GenericMemory\n    @ .\\boot.jl:588 [inlined]\n  [2] array_new_memory\n    @ .\\array.jl:1101 [inlined]\n  [3] _growend_internal!(a::Vector{SubString{String}}, delta::Int64, len::Int64)\n    @ Base .\\array.jl:1181\n  [4] _growend!\n    @ .\\array.jl:1205 [inlined]\n  [5] _push!\n    @ .\\array.jl:1348 [inlined]\n  [6] push!\n    @ .\\array.jl:1345 [inlined]\n  [7] _collect(cont::UnitRange{Int64}, itr::Base.SplitIterator{String, Base.Fix2{typeof(isequal), Char}}, ::Base.HasEltype, isz::Base.SizeUnknown)\n    @ Base .\\array.jl:771\n  [8] collect\n    @ .\\array.jl:759 [inlined]\n  [9] #split#420\n    @ .\\strings\\util.jl:944 [inlined]\n [10] split\n    @ .\\strings\\util.jl:942 [inlined]\n [11] parse(::Type{Sockets.IPv4}, str::String)\n    @ Sockets <local-source>\n [12] IPv4\n    @ <local-source> [inlined]\n [13] internalrequest(ctx::Oxygen.Core.AppContext.ServerContext, req::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}}; middleware::Vector{Any}, metrics::Bool, serialize::Bool, catch_errors::Bool)\n    @ Oxygen.Core <local-source>\n [14] internalrequest\n    @ <local-source> [inlined]\n [15] internalrequest\n    @ <local-source> [inlined]\n [16] (::Main.var\"##SharedCase#142\".EventService.var\"#request_case##8#request_case##9\")(request::HTTP.Request{HTTP.BytesBody{Base.CodeUnits{UInt8, String}}})\n    @ Main.var\"##SharedCase#142\".EventService <local-source>\n",
+          "rule_id": "allocation.potential",
+          "severity": "warning"
+        }
+      ],
+      "runtime": {
+        "language": "julia",
+        "threads": 1,
+        "version": "1.13.0"
+      },
+      "status": "complete",
+      "summary": "",
+      "tool": "alloccheck",
+      "tool_version": "0.2.6"
+    },
+    {
+      "analysis_scope": "first complete scenario lifecycle in diagnostic process",
+      "correctness": "passed",
+      "findings": [
+        {
+          "evidence": {
+            "inference_seconds": 1.0553852915763855
+          },
+          "location": {
+            "file": "",
+            "line": 0
+          },
+          "message": "InferenceTimingNode: 0.000004/1.055385 on Base.Compiler.Timings.ROOT() with 17 direct children",
+          "rule_id": "compilation.inference",
+          "severity": "warning"
+        }
+      ],
+      "measurements": {
+        "inference_seconds": 1.0553852915763855
+      },
+      "runtime": {
+        "language": "julia",
+        "threads": 1,
+        "version": "1.13.0"
+      },
+      "status": "complete",
+      "summary": "",
+      "tool": "snoopcompile",
+      "tool_version": "3.2.9"
+    },
+    {
+      "correctness": "passed",
+      "findings": [],
+      "measurements": {
+        "first_case_seconds": 1.0387099,
+        "load_seconds": 7.3849228,
+        "warm_case_seconds": 0.0041275
+      },
+      "runtime": {
+        "language": "julia",
+        "threads": 1,
+        "version": "1.13.0"
+      },
+      "status": "complete",
+      "summary": "",
+      "tool": "latency"
+    },
+    {
+      "analysis_scope": "warmed operation and synchronization; fresh state; preparation, verification and cleanup excluded",
+      "correctness": "passed",
+      "findings": [],
+      "measurements": {
+        "samples": [
+          {
+            "allocated_bytes": 1597544,
+            "bigalloc": 5,
+            "compile_time": 0.0,
+            "full_sweep": 0,
+            "gc_seconds": 0.0,
+            "lock_conflicts": 0,
+            "malloc": 8,
+            "operation_seconds": 0.0035236,
+            "pause": 0,
+            "poolalloc": 32875,
+            "realloc": 0,
+            "recompile_time": 0.0
+          },
+          {
+            "allocated_bytes": 1597512,
+            "bigalloc": 5,
+            "compile_time": 0.0,
+            "full_sweep": 0,
+            "gc_seconds": 0.0,
+            "lock_conflicts": 0,
+            "malloc": 8,
+            "operation_seconds": 0.009369,
+            "pause": 0,
+            "poolalloc": 32875,
+            "realloc": 0,
+            "recompile_time": 0.0
+          },
+          {
+            "allocated_bytes": 1597512,
+            "bigalloc": 5,
+            "compile_time": 0.0,
+            "full_sweep": 0,
+            "gc_seconds": 0.0,
+            "lock_conflicts": 0,
+            "malloc": 8,
+            "operation_seconds": 0.0028225,
+            "pause": 0,
+            "poolalloc": 32875,
+            "realloc": 0,
+            "recompile_time": 0.0
+          },
+          {
+            "allocated_bytes": 1597496,
+            "bigalloc": 5,
+            "compile_time": 0.0,
+            "full_sweep": 0,
+            "gc_seconds": 0.0,
+            "lock_conflicts": 0,
+            "malloc": 8,
+            "operation_seconds": 0.0031624,
+            "pause": 0,
+            "poolalloc": 32875,
+            "realloc": 0,
+            "recompile_time": 0.0
+          },
+          {
+            "allocated_bytes": 1597432,
+            "bigalloc": 5,
+            "compile_time": 0.0,
+            "full_sweep": 0,
+            "gc_seconds": 0.0,
+            "lock_conflicts": 0,
+            "malloc": 8,
+            "operation_seconds": 0.0031843,
+            "pause": 0,
+            "poolalloc": 32875,
+            "realloc": 0,
+            "recompile_time": 0.0
+          }
+        ]
+      },
+      "runtime": {
+        "language": "julia",
+        "threads": 1,
+        "version": "1.13.0"
+      },
+      "status": "complete",
+      "summary": "5 operations: 0.0 ms in GC, 7987496 allocated bytes in total. Diagnostic counters are process-wide.",
+      "tool": "gc"
+    },
+    {
+      "correctness": "passed",
+      "findings": [],
+      "measurements": {
+        "samples": [
+          {
+            "process_after": {
+              "message": "",
+              "peak_rss_bytes": 550666240,
+              "private_bytes": 606199808,
+              "provider": "windows-psapi",
+              "rss_bytes": 532635648,
+              "schema_version": "perfchecker-process-memory/1",
+              "status": "observed"
+            },
+            "process_before": {
+              "message": "",
+              "peak_rss_bytes": 550666240,
+              "private_bytes": 612425728,
+              "provider": "windows-psapi",
+              "rss_bytes": 536616960,
+              "schema_version": "perfchecker-process-memory/1",
+              "status": "observed"
+            },
+            "state_after_bytes": 28264,
+            "state_and_result_bytes": 55852,
+            "state_before_bytes": 27856
+          },
+          {
+            "process_after": {
+              "message": "",
+              "peak_rss_bytes": 550666240,
+              "private_bytes": 607817728,
+              "provider": "windows-psapi",
+              "rss_bytes": 534007808,
+              "schema_version": "perfchecker-process-memory/1",
+              "status": "observed"
+            },
+            "process_before": {
+              "message": "",
+              "peak_rss_bytes": 550666240,
+              "private_bytes": 607723520,
+              "provider": "windows-psapi",
+              "rss_bytes": 533860352,
+              "schema_version": "perfchecker-process-memory/1",
+              "status": "observed"
+            },
+            "state_after_bytes": 28264,
+            "state_and_result_bytes": 55852,
+            "state_before_bytes": 27856
+          },
+          {
+            "process_after": {
+              "message": "",
+              "peak_rss_bytes": 550666240,
+              "private_bytes": 608022528,
+              "provider": "windows-psapi",
+              "rss_bytes": 534290432,
+              "schema_version": "perfchecker-process-memory/1",
+              "status": "observed"
+            },
+            "process_before": {
+              "message": "",
+              "peak_rss_bytes": 550666240,
+              "private_bytes": 607842304,
+              "provider": "windows-psapi",
+              "rss_bytes": 534073344,
+              "schema_version": "perfchecker-process-memory/1",
+              "status": "observed"
+            },
+            "state_after_bytes": 28264,
+            "state_and_result_bytes": 55852,
+            "state_before_bytes": 27856
+          },
+          {
+            "process_after": {
+              "message": "",
+              "peak_rss_bytes": 550666240,
+              "private_bytes": 608395264,
+              "provider": "windows-psapi",
+              "rss_bytes": 534614016,
+              "schema_version": "perfchecker-process-memory/1",
+              "status": "observed"
+            },
+            "process_before": {
+              "message": "",
+              "peak_rss_bytes": 550666240,
+              "private_bytes": 608116736,
+              "provider": "windows-psapi",
+              "rss_bytes": 534376448,
+              "schema_version": "perfchecker-process-memory/1",
+              "status": "observed"
+            },
+            "state_after_bytes": 28264,
+            "state_and_result_bytes": 55852,
+            "state_before_bytes": 27856
+          },
+          {
+            "process_after": {
+              "message": "",
+              "peak_rss_bytes": 550666240,
+              "private_bytes": 608673792,
+              "provider": "windows-psapi",
+              "rss_bytes": 534872064,
+              "schema_version": "perfchecker-process-memory/1",
+              "status": "observed"
+            },
+            "process_before": {
+              "message": "",
+              "peak_rss_bytes": 550666240,
+              "private_bytes": 608468992,
+              "provider": "windows-psapi",
+              "rss_bytes": 534675456,
+              "schema_version": "perfchecker-process-memory/1",
+              "status": "observed"
+            },
+            "state_after_bytes": 28264,
+            "state_and_result_bytes": 55852,
+            "state_before_bytes": 27856
+          }
+        ]
+      },
+      "runtime": {
+        "language": "julia",
+        "threads": 1,
+        "version": "1.13.0"
+      },
+      "status": "complete",
+      "summary": "5 operations: reachable state changed by 408 to 408 bytes. Growth may be intended output or a cache; it does not establish a leak.",
+      "tool": "memory"
+    },
+    {
+      "correctness": "passed",
+      "findings": [],
+      "measurements": {
+        "samples": [
+          {
+            "allocated_bytes": 1597464,
+            "bigalloc": 5,
+            "compile_time": 0.0,
+            "full_sweep": 0,
+            "gc_seconds": 0.0,
+            "lock_conflicts": 0,
+            "malloc": 8,
+            "operation_seconds": 0.0026714,
+            "pause": 0,
+            "poolalloc": 32875,
+            "realloc": 0,
+            "recompile_time": 0.0
+          },
+          {
+            "allocated_bytes": 1597448,
+            "bigalloc": 5,
+            "compile_time": 0.0,
+            "full_sweep": 0,
+            "gc_seconds": 0.0,
+            "lock_conflicts": 0,
+            "malloc": 8,
+            "operation_seconds": 0.0025041,
+            "pause": 0,
+            "poolalloc": 32875,
+            "realloc": 0,
+            "recompile_time": 0.0
+          },
+          {
+            "allocated_bytes": 1597496,
+            "bigalloc": 5,
+            "compile_time": 0.0,
+            "full_sweep": 0,
+            "gc_seconds": 0.0,
+            "lock_conflicts": 0,
+            "malloc": 8,
+            "operation_seconds": 0.0026631,
+            "pause": 0,
+            "poolalloc": 32875,
+            "realloc": 0,
+            "recompile_time": 0.0
+          },
+          {
+            "allocated_bytes": 1597496,
+            "bigalloc": 5,
+            "compile_time": 0.0,
+            "full_sweep": 0,
+            "gc_seconds": 0.0,
+            "lock_conflicts": 0,
+            "malloc": 8,
+            "operation_seconds": 0.0023987,
+            "pause": 0,
+            "poolalloc": 32875,
+            "realloc": 0,
+            "recompile_time": 0.0
+          },
+          {
+            "allocated_bytes": 1597464,
+            "bigalloc": 5,
+            "compile_time": 0.0,
+            "full_sweep": 0,
+            "gc_seconds": 0.0,
+            "lock_conflicts": 0,
+            "malloc": 8,
+            "operation_seconds": 0.0024901,
+            "pause": 0,
+            "poolalloc": 32875,
+            "realloc": 0,
+            "recompile_time": 0.0
+          }
+        ]
+      },
+      "runtime": {
+        "language": "julia",
+        "threads": 1,
+        "version": "1.13.0"
+      },
+      "status": "complete",
+      "summary": "5 operations: 0 observed lock conflicts. Counts do not measure waiting duration.",
+      "tool": "locks"
+    }
+  ]
+}

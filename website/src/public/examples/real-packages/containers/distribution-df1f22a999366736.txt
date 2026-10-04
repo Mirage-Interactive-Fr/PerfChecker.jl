@@ -1,0 +1,5 @@
+                            DataStructures · CircularBuffer_build_benchmark · julia.alloc.bytes
+                    ┌                                                                                ┐
+   [4247.0, 4248.0) ┤███████████████████████████████████████████████████████████████████████████  210
+                    └                                                                                ┘
+                                                         Frequency

@@ -1,0 +1,126 @@
+{
+  "date": "2026-09-13T09:55:14.845",
+  "julia_version": "1.13.0",
+  "os": "Linux",
+  "records": [
+    {
+      "artifacts": [
+        "memcheck.1640.xml",
+        "memcheck.log"
+      ],
+      "availability": "executable_found",
+      "correctness": "passed",
+      "cpu_target": "generic",
+      "elapsed_seconds": 44.182539604,
+      "executed": true,
+      "exit_code": 97,
+      "package": "datastructures",
+      "repetitions": 3,
+      "scope": "whole_process_including_startup",
+      "size": 512,
+      "status": "findings_reported",
+      "suppression_sha256": "26b9cd139938b7c99cfecbe9297e987c08461a9a3a53cee0a20493291c71508f",
+      "tool": "memcheck"
+    },
+    {
+      "artifacts": [
+        "callgrind.1663",
+        "callgrind.log"
+      ],
+      "availability": "executable_found",
+      "correctness": "passed",
+      "cpu_target": "generic",
+      "elapsed_seconds": 32.897389241,
+      "executed": true,
+      "exit_code": 0,
+      "package": "datastructures",
+      "repetitions": 3,
+      "scope": "whole_process_including_startup",
+      "size": 512,
+      "status": "completed",
+      "suppression_sha256": "26b9cd139938b7c99cfecbe9297e987c08461a9a3a53cee0a20493291c71508f",
+      "tool": "callgrind"
+    },
+    {
+      "artifacts": [
+        "massif.1685",
+        "massif.log"
+      ],
+      "availability": "executable_found",
+      "correctness": "passed",
+      "cpu_target": "generic",
+      "elapsed_seconds": 16.984692009,
+      "executed": true,
+      "exit_code": 0,
+      "package": "datastructures",
+      "repetitions": 3,
+      "scope": "whole_process_including_startup",
+      "size": 512,
+      "status": "completed",
+      "suppression_sha256": "26b9cd139938b7c99cfecbe9297e987c08461a9a3a53cee0a20493291c71508f",
+      "tool": "massif"
+    },
+    {
+      "artifacts": [
+        "cachegrind.1689",
+        "cachegrind.log"
+      ],
+      "availability": "executable_found",
+      "correctness": "passed",
+      "cpu_target": "generic",
+      "elapsed_seconds": 34.34676986,
+      "executed": true,
+      "exit_code": 0,
+      "package": "datastructures",
+      "repetitions": 3,
+      "scope": "whole_process_including_startup",
+      "size": 512,
+      "status": "completed",
+      "suppression_sha256": "26b9cd139938b7c99cfecbe9297e987c08461a9a3a53cee0a20493291c71508f",
+      "tool": "cachegrind"
+    },
+    {
+      "artifacts": [
+        "heaptrack.gz",
+        "heaptrack.log"
+      ],
+      "availability": "executable_found",
+      "correctness": "passed",
+      "cpu_target": "generic",
+      "elapsed_seconds": 16.814396422,
+      "executed": true,
+      "exit_code": 0,
+      "package": "datastructures",
+      "repetitions": 3,
+      "scope": "whole_process_including_startup",
+      "size": 512,
+      "status": "completed",
+      "suppression_sha256": "26b9cd139938b7c99cfecbe9297e987c08461a9a3a53cee0a20493291c71508f",
+      "tool": "heaptrack"
+    },
+    {
+      "availability": "not_installed",
+      "correctness": "not_checked",
+      "cpu_target": "generic",
+      "executed": false,
+      "package": "datastructures",
+      "repetitions": 3,
+      "scope": "whole_process_including_startup",
+      "size": 512,
+      "suppression_sha256": "26b9cd139938b7c99cfecbe9297e987c08461a9a3a53cee0a20493291c71508f",
+      "tool": "perf"
+    },
+    {
+      "availability": "not_installed",
+      "correctness": "not_checked",
+      "cpu_target": "generic",
+      "executed": false,
+      "package": "datastructures",
+      "repetitions": 3,
+      "scope": "whole_process_including_startup",
+      "size": 512,
+      "suppression_sha256": "26b9cd139938b7c99cfecbe9297e987c08461a9a3a53cee0a20493291c71508f",
+      "tool": "vtune"
+    }
+  ]
+}

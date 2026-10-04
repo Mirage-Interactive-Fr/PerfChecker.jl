@@ -1,0 +1,5 @@
+                                DataStructures · Deque_build_benchmark · julia.alloc.bytes
+                    ┌                                                                                ┐
+   [8391.0, 8392.0) ┤███████████████████████████████████████████████████████████████████████████  210
+                    └                                                                                ┘
+                                                         Frequency

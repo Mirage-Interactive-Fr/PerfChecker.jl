@@ -1,0 +1,5 @@
+                          DataStructures · SortedMultiDict_traverse_benchmark · julia.alloc.bytes
+                    ┌                                                                                ┐
+   [8263.0, 8264.0) ┤███████████████████████████████████████████████████████████████████████████  210
+                    └                                                                                ┘
+                                                         Frequency

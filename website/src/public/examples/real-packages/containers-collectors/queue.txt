@@ -1,0 +1,32 @@
+Wall time (µs)
+                                                       Queue
+                          ┌                                                            ┐
+   build · BenchmarkTools ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 8.6
+       build · Chairmarks ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 8.4
+   drain · BenchmarkTools ┤■■■■■■■■■■■■■■■■■ 2.6
+       drain · Chairmarks ┤■■■■■■■■■■■■ 1.8
+                          └                                                            ┘
+GC share (%)
+                                                       Queue
+                          ┌                                                            ┐
+   build · BenchmarkTools ┤ 0
+       build · Chairmarks ┤ 0
+   drain · BenchmarkTools ┤ 0
+       drain · Chairmarks ┤ 0
+                          └                                                            ┘
+Allocated bytes
+                                                       Queue
+                          ┌                                                            ┐
+   build · BenchmarkTools ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 8 407
+       build · Chairmarks ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 8 407
+   drain · BenchmarkTools ┤■■■■■■■■■■■■■■■■■■■■■■■■■■ 4 167
+       drain · Chairmarks ┤■■■■■■■■■■■■■■■■■■■■■■■■■■ 4 167
+                          └                                                            ┘
+Allocation count
+                                                       Queue
+                          ┌                                                            ┐
+   build · BenchmarkTools ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 7
+       build · Chairmarks ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 7
+   drain · BenchmarkTools ┤■■■■■■■■■■■■■■■■■■■■■■■■ 3
+       drain · Chairmarks ┤■■■■■■■■■■■■■■■■■■■■■■■■ 3
+                          └                                                            ┘

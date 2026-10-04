@@ -1,0 +1,4 @@
+                                                     Oxygen · heap_profile · CPU flame graph (% inclusive)
+                                      ┌                                                                                ┐
+   internalrequest (Eglkz/src/methods ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 100
+                                      └                                                                                ┘

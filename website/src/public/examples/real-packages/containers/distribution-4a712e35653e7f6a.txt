@@ -1,0 +1,5 @@
+                          DataStructures · SortedSet_lookup_benchmark · julia.gc.time
+              ┌                                                                                ┐
+   [0.0, 1.0) ┤███████████████████████████████████████████████████████████████████████████  210
+              └                                                                                ┘
+                                                   Frequency

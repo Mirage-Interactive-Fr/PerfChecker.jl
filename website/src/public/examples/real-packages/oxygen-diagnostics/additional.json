@@ -1,0 +1,68 @@
+{
+  "records": [
+    {
+      "checks": {},
+      "controller_loaded": false,
+      "correctness": "not_checked",
+      "findings": [
+        {
+          "evidence": {},
+          "location": {
+            "file": "",
+            "line": 0
+          },
+          "message": "Some tests did not pass: 0 passed, 1 failed, 0 errored, 0 broken.",
+          "rule_id": "quality.aqua",
+          "severity": "warning"
+        }
+      ],
+      "implementation": "package",
+      "log_excerpt": "1 ambiguities found. To get a list, set `broken = false`.\nAmbiguity #1\nrecursive_merge(x::AbstractDict...) @ Oxygen.Core.Util <local-source>\nrecursive_merge(x::AbstractVector...) @ Oxygen.Core.Util <local-source>\n\nPossible fix, define\n  recursive_merge()\n\n\nMethod ambiguity: Test Failed at <local-source>\n  Expression: iszero(num_ambiguities)\n   Evaluated: iszero(1)\n  Stacktrace:\n   [1] macro expansion\n     @ <local-source> [inlined]\n   [2] _test_ambiguities(packages::Vector{Base.PkgId}; broken::Bool, kwargs::@Kwargs{})\n     @ Aqua <local-source>\n   [3] _test_ambiguities\n     @ <local-source> [inlined]\n   [4] test_ambiguities\n     @ <local-source> [inlined]\n   [5] macro expansion\n     @ <local-source> [inlined]\n   [6] macro expansion\n     @ <local-source> [inlined]\n   [7] test_all(testtarget::Module; ambiguities::Bool, unbound_args::Bool, undefined_exports::Bool, project_extras::Bool, stale_deps::Bool, deps_compat::Bool, piracies::Bool, persistent_tasks::Bool, undocumented_names::Bool)\n     @ Aqua <local-source>\nTest Summary:    | Fail  Total  Time\nMethod ambiguity |    1      1  4.0s\nRNG of the outermost testset: Random.Xoshiro(0xa74908433907062b, 0x910c39461821174f, 0x71789679e6008a89, 0x881d09e571621621, 0x4a93e9bd191b9bac)\n",
+      "performance": "not_compared",
+      "quality": "failed",
+      "runtime": {
+        "language": "julia",
+        "threads": 1,
+        "version": "1.13.0"
+      },
+      "scenario": "package",
+      "status": "complete",
+      "summary": "",
+      "tool": "aqua",
+      "tool_version": "0.8.16",
+      "worker_elapsed_seconds": 11.971999883651733
+    },
+    {
+      "artifacts": [
+        {
+          "bytes": 255153202,
+          "kind": "heap_snapshot",
+          "redacted": true,
+          "sha256": "d610b8f57268671baf6b3dcfbc4a636b97be650df906b1d716c17a4036ebe625"
+        }
+      ],
+      "controller_loaded": false,
+      "correctness": "passed",
+      "findings": [],
+      "implementation": "oxygen",
+      "limitations": [
+        "Snapshot covers the entire diagnostic process, not just the scenario.",
+        "Only GC-managed memory is represented; native and device memory are excluded.",
+        "Snapshot capture is intrusive and its duration is not baseline performance evidence."
+      ],
+      "log_excerpt": "",
+      "performance": "not_compared",
+      "quality": "not_checked",
+      "runtime": {
+        "language": "julia",
+        "threads": 1,
+        "version": "1.13.0"
+      },
+      "scenario": "oxygen-heap",
+      "status": "complete",
+      "summary": "Redacted heap snapshot captured after verification. Covers GC-managed objects in the whole worker; native and device memory are excluded.",
+      "tool": "heap",
+      "worker_elapsed_seconds": 26.992000102996826
+    }
+  ]
+}

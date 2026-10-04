@@ -1,0 +1,32 @@
+Wall time (µs)
+                                                    SparseIntSet
+                           ┌                                                            ┐
+    build · BenchmarkTools ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 7.5
+        build · Chairmarks ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 8.7
+   lookup · BenchmarkTools ┤■■■■ 0.6
+       lookup · Chairmarks ┤■■■■ 0.6
+                           └                                                            ┘
+GC share (%)
+                                                    SparseIntSet
+                           ┌                                                            ┐
+    build · BenchmarkTools ┤ 0
+        build · Chairmarks ┤ 0
+   lookup · BenchmarkTools ┤ 0
+       lookup · Chairmarks ┤ 0
+                           └                                                            ┘
+Allocated bytes
+                                                    SparseIntSet
+                           ┌                                                            ┐
+    build · BenchmarkTools ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 10 366
+        build · Chairmarks ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 10 350
+   lookup · BenchmarkTools ┤■■■ 576
+       lookup · Chairmarks ┤■■■ 576
+                           └                                                            ┘
+Allocation count
+                                                    SparseIntSet
+                           ┌                                                            ┐
+    build · BenchmarkTools ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 16
+        build · Chairmarks ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 16
+   lookup · BenchmarkTools ┤■■■■■■■ 2
+       lookup · Chairmarks ┤■■■■■■■ 2
+                           └                                                            ┘

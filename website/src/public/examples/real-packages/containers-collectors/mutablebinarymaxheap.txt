@@ -1,0 +1,32 @@
+Wall time (µs)
+                                               MutableBinaryMaxHeap
+                          ┌                                                            ┐
+   build · BenchmarkTools ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 23.5
+       build · Chairmarks ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 12.4
+   drain · BenchmarkTools ┤■■■■■■■■■■■■■ 5.5
+       drain · Chairmarks ┤■■■■■■■■■■■■■ 5.8
+                          └                                                            ┘
+GC share (%)
+                                               MutableBinaryMaxHeap
+                          ┌                                                            ┐
+   build · BenchmarkTools ┤ 0
+       build · Chairmarks ┤ 0
+   drain · BenchmarkTools ┤ 0
+       drain · Chairmarks ┤ 0
+                          └                                                            ┘
+Allocated bytes
+                                               MutableBinaryMaxHeap
+                          ┌                                                            ┐
+   build · BenchmarkTools ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 17 733
+       build · Chairmarks ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 17 733
+   drain · BenchmarkTools ┤■■■■■■■■■■■■ 4 167
+       drain · Chairmarks ┤■■■■■■■■■■■■ 4 167
+                          └                                                            ┘
+Allocation count
+                                               MutableBinaryMaxHeap
+                          ┌                                                            ┐
+   build · BenchmarkTools ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 18
+       build · Chairmarks ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 18
+   drain · BenchmarkTools ┤■■■■■■■■■ 3
+       drain · Chairmarks ┤■■■■■■■■■ 3
+                          └                                                            ┘

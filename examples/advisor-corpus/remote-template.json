@@ -1,0 +1,9 @@
+{
+  "endpoint": "https://your-provider.example/v1/chat/completions",
+  "protocol": "chat_completions",
+  "model": "your-model-id",
+  "timeout": 120,
+  "max_tokens": 512,
+  "api_key_env": "PERFCHECKER_ADVISOR_KEY",
+  "allow_remote": true
+}

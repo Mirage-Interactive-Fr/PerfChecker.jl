@@ -1,0 +1,348 @@
+{
+  "observations": [
+    {
+      "allocator_overhead_bytes": 0,
+      "heap_bytes": 0,
+      "stack_bytes": 0,
+      "time": 0
+    },
+    {
+      "allocator_overhead_bytes": 142793,
+      "heap_bytes": 21728991,
+      "stack_bytes": 0,
+      "time": 773056914
+    },
+    {
+      "allocator_overhead_bytes": 199404,
+      "heap_bytes": 26537452,
+      "stack_bytes": 0,
+      "time": 1370862932
+    },
+    {
+      "allocator_overhead_bytes": 439802,
+      "heap_bytes": 29063134,
+      "stack_bytes": 0,
+      "time": 1885038305
+    },
+    {
+      "allocator_overhead_bytes": 441970,
+      "heap_bytes": 73823494,
+      "stack_bytes": 0,
+      "time": 2339276818
+    },
+    {
+      "allocator_overhead_bytes": 709738,
+      "heap_bytes": 76980662,
+      "stack_bytes": 0,
+      "time": 3164519117
+    },
+    {
+      "allocator_overhead_bytes": 591334,
+      "heap_bytes": 75852378,
+      "stack_bytes": 0,
+      "time": 3609142882
+    },
+    {
+      "allocator_overhead_bytes": 428868,
+      "heap_bytes": 73776724,
+      "stack_bytes": 0,
+      "time": 4250364202
+    },
+    {
+      "allocator_overhead_bytes": 513688,
+      "heap_bytes": 77321616,
+      "stack_bytes": 0,
+      "time": 4796504635
+    },
+    {
+      "allocator_overhead_bytes": 454753,
+      "heap_bytes": 76012143,
+      "stack_bytes": 0,
+      "time": 5500309027
+    },
+    {
+      "allocator_overhead_bytes": 470789,
+      "heap_bytes": 76511595,
+      "stack_bytes": 0,
+      "time": 6389234214
+    },
+    {
+      "allocator_overhead_bytes": 420586,
+      "heap_bytes": 72926422,
+      "stack_bytes": 0,
+      "time": 6996522917
+    },
+    {
+      "allocator_overhead_bytes": 490354,
+      "heap_bytes": 95011670,
+      "stack_bytes": 0,
+      "time": 7944904965
+    },
+    {
+      "allocator_overhead_bytes": 505794,
+      "heap_bytes": 99332630,
+      "stack_bytes": 0,
+      "time": 8372431150
+    },
+    {
+      "allocator_overhead_bytes": 449634,
+      "heap_bytes": 75753942,
+      "stack_bytes": 0,
+      "time": 8945555060
+    },
+    {
+      "allocator_overhead_bytes": 486995,
+      "heap_bytes": 78690277,
+      "stack_bytes": 0,
+      "time": 9747484752
+    },
+    {
+      "allocator_overhead_bytes": 441773,
+      "heap_bytes": 75400587,
+      "stack_bytes": 0,
+      "time": 10562499554
+    },
+    {
+      "allocator_overhead_bytes": 491273,
+      "heap_bytes": 79650535,
+      "stack_bytes": 0,
+      "time": 11358281754
+    },
+    {
+      "allocator_overhead_bytes": 2321663,
+      "heap_bytes": 103454537,
+      "stack_bytes": 0,
+      "time": 12140873601
+    },
+    {
+      "allocator_overhead_bytes": 2100748,
+      "heap_bytes": 100281588,
+      "stack_bytes": 0,
+      "time": 12886562395
+    },
+    {
+      "allocator_overhead_bytes": 1939859,
+      "heap_bytes": 98641757,
+      "stack_bytes": 0,
+      "time": 13482980638
+    },
+    {
+      "allocator_overhead_bytes": 1788822,
+      "heap_bytes": 97158434,
+      "stack_bytes": 0,
+      "time": 13930324421
+    },
+    {
+      "allocator_overhead_bytes": 1675338,
+      "heap_bytes": 95955478,
+      "stack_bytes": 0,
+      "time": 14526800729
+    },
+    {
+      "allocator_overhead_bytes": 1543814,
+      "heap_bytes": 94453706,
+      "stack_bytes": 0,
+      "time": 14974104759
+    },
+    {
+      "allocator_overhead_bytes": 1416449,
+      "heap_bytes": 93369199,
+      "stack_bytes": 0,
+      "time": 15570845315
+    },
+    {
+      "allocator_overhead_bytes": 1263101,
+      "heap_bytes": 92460155,
+      "stack_bytes": 0,
+      "time": 16466022352
+    },
+    {
+      "allocator_overhead_bytes": 1073152,
+      "heap_bytes": 89942968,
+      "stack_bytes": 0,
+      "time": 17212061104
+    },
+    {
+      "allocator_overhead_bytes": 903634,
+      "heap_bytes": 88517846,
+      "stack_bytes": 0,
+      "time": 17808504425
+    },
+    {
+      "allocator_overhead_bytes": 689008,
+      "heap_bytes": 86433536,
+      "stack_bytes": 0,
+      "time": 18703184004
+    },
+    {
+      "allocator_overhead_bytes": 559058,
+      "heap_bytes": 85022998,
+      "stack_bytes": 0,
+      "time": 19204199369
+    },
+    {
+      "allocator_overhead_bytes": 558790,
+      "heap_bytes": 84298762,
+      "stack_bytes": 0,
+      "time": 19705091278
+    },
+    {
+      "allocator_overhead_bytes": 656222,
+      "heap_bytes": 93712330,
+      "stack_bytes": 0,
+      "time": 20519255532
+    },
+    {
+      "allocator_overhead_bytes": 489067,
+      "heap_bytes": 77498805,
+      "stack_bytes": 0,
+      "time": 21021213277
+    },
+    {
+      "allocator_overhead_bytes": 509720,
+      "heap_bytes": 78354320,
+      "stack_bytes": 0,
+      "time": 21781631546
+    },
+    {
+      "allocator_overhead_bytes": 571994,
+      "heap_bytes": 80891854,
+      "stack_bytes": 0,
+      "time": 22282525853
+    },
+    {
+      "allocator_overhead_bytes": 524951,
+      "heap_bytes": 79887377,
+      "stack_bytes": 0,
+      "time": 23033850512
+    },
+    {
+      "allocator_overhead_bytes": 1064444,
+      "heap_bytes": 89051708,
+      "stack_bytes": 0,
+      "time": 23785705230
+    },
+    {
+      "allocator_overhead_bytes": 971089,
+      "heap_bytes": 88334519,
+      "stack_bytes": 0,
+      "time": 24286586002
+    },
+    {
+      "allocator_overhead_bytes": 833173,
+      "heap_bytes": 86566267,
+      "stack_bytes": 0,
+      "time": 25038059318
+    },
+    {
+      "allocator_overhead_bytes": 640174,
+      "heap_bytes": 84344338,
+      "stack_bytes": 0,
+      "time": 25789438666
+    },
+    {
+      "allocator_overhead_bytes": 564027,
+      "heap_bytes": 83136829,
+      "stack_bytes": 0,
+      "time": 26290342118
+    },
+    {
+      "allocator_overhead_bytes": 573190,
+      "heap_bytes": 83532826,
+      "stack_bytes": 0,
+      "time": 26791234798
+    },
+    {
+      "allocator_overhead_bytes": 593445,
+      "heap_bytes": 85257867,
+      "stack_bytes": 0,
+      "time": 27292137117
+    },
+    {
+      "allocator_overhead_bytes": 596915,
+      "heap_bytes": 85873141,
+      "stack_bytes": 0,
+      "time": 27795760061
+    },
+    {
+      "allocator_overhead_bytes": 858784,
+      "heap_bytes": 91819496,
+      "stack_bytes": 0,
+      "time": 28548323587
+    },
+    {
+      "allocator_overhead_bytes": 1147467,
+      "heap_bytes": 95799085,
+      "stack_bytes": 0,
+      "time": 29049205227
+    },
+    {
+      "allocator_overhead_bytes": 977613,
+      "heap_bytes": 93759267,
+      "stack_bytes": 0,
+      "time": 29550090805
+    },
+    {
+      "allocator_overhead_bytes": 847025,
+      "heap_bytes": 92179575,
+      "stack_bytes": 0,
+      "time": 30050984054
+    },
+    {
+      "allocator_overhead_bytes": 704846,
+      "heap_bytes": 90687946,
+      "stack_bytes": 0,
+      "time": 30551865619
+    },
+    {
+      "allocator_overhead_bytes": 482256,
+      "heap_bytes": 75092456,
+      "stack_bytes": 0,
+      "time": 31304804115
+    },
+    {
+      "allocator_overhead_bytes": 601582,
+      "heap_bytes": 77088746,
+      "stack_bytes": 0,
+      "time": 31732418393
+    },
+    {
+      "allocator_overhead_bytes": 488933,
+      "heap_bytes": 75555955,
+      "stack_bytes": 0,
+      "time": 32160311959
+    },
+    {
+      "allocator_overhead_bytes": 649569,
+      "heap_bytes": 78557151,
+      "stack_bytes": 0,
+      "time": 32587840175
+    },
+    {
+      "allocator_overhead_bytes": 540673,
+      "heap_bytes": 77443911,
+      "stack_bytes": 0,
+      "time": 33015366372
+    },
+    {
+      "allocator_overhead_bytes": 537988,
+      "heap_bytes": 77827748,
+      "stack_bytes": 0,
+      "time": 33442895954
+    },
+    {
+      "allocator_overhead_bytes": 546639,
+      "heap_bytes": 78652153,
+      "stack_bytes": 0,
+      "time": 33870538985
+    },
+    {
+      "allocator_overhead_bytes": 584526,
+      "heap_bytes": 80127306,
+      "stack_bytes": 0,
+      "time": 34298065270
+    }
+  ],
+  "scope": "whole_process_including_startup",
+  "time_unit": "instrumented instructions"
+}

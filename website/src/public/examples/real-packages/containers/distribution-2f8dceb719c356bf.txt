@@ -1,0 +1,5 @@
+                          DataStructures · Queue_drain_benchmark · julia.alloc.count
+              ┌                                                                                ┐
+   [3.0, 4.0) ┤███████████████████████████████████████████████████████████████████████████  210
+              └                                                                                ┘
+                                                   Frequency

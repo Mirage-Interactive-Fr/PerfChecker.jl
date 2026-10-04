@@ -1,0 +1,5 @@
+                             DataStructures · Accumulator_build_benchmark · julia.alloc.bytes
+                    ┌                                                                                ┐
+   [1648.0, 1649.0) ┤███████████████████████████████████████████████████████████████████████████  210
+                    └                                                                                ┘
+                                                         Frequency

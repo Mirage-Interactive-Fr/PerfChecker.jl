@@ -1,0 +1,5 @@
+                           DataStructures · DiBitVector_build_benchmark · julia.alloc.bytes
+                  ┌                                                                                ┐
+   [224.0, 225.0) ┤███████████████████████████████████████████████████████████████████████████  210
+                  └                                                                                ┘
+                                                       Frequency

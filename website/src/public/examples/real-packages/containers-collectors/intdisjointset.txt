@@ -1,0 +1,32 @@
+Wall time (µs)
+                                                         IntDisjointSet
+                                 ┌                                                            ┐
+          build · BenchmarkTools ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 1.4
+              build · Chairmarks ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 1.4
+   connectivity · BenchmarkTools ┤■■■■■■■■■■■■■■■■■■■■ 0.5
+       connectivity · Chairmarks ┤■■■■■■■■■■■■■■■■■■■■ 0.5
+                                 └                                                            ┘
+GC share (%)
+                                                         IntDisjointSet
+                                 ┌                                                            ┐
+          build · BenchmarkTools ┤ 0
+              build · Chairmarks ┤ 0
+   connectivity · BenchmarkTools ┤ 0
+       connectivity · Chairmarks ┤ 0
+                                 └                                                            ┘
+Allocated bytes
+                                                         IntDisjointSet
+                                 ┌                                                            ┐
+          build · BenchmarkTools ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 8 366
+              build · Chairmarks ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 8 366
+   connectivity · BenchmarkTools ┤■■ 352
+       connectivity · Chairmarks ┤■■ 352
+                                 └                                                            ┘
+Allocation count
+                                                         IntDisjointSet
+                                 ┌                                                            ┐
+          build · BenchmarkTools ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 7
+              build · Chairmarks ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 7
+   connectivity · BenchmarkTools ┤■■■■■■■■■■■■■■■■■■■■■■■■ 3
+       connectivity · Chairmarks ┤■■■■■■■■■■■■■■■■■■■■■■■■ 3
+                                 └                                                            ┘

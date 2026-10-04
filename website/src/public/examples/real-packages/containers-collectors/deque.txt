@@ -1,0 +1,32 @@
+Wall time (µs)
+                                                       Deque
+                          ┌                                                            ┐
+   build · BenchmarkTools ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 6.8
+       build · Chairmarks ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 8.4
+   drain · BenchmarkTools ┤■■■■■■■■■■■■ 1.8
+       drain · Chairmarks ┤■■■■■■■■■■■■ 1.8
+                          └                                                            ┘
+GC share (%)
+                                                       Deque
+                          ┌                                                            ┐
+   build · BenchmarkTools ┤ 0
+       build · Chairmarks ┤ 0
+   drain · BenchmarkTools ┤ 0
+       drain · Chairmarks ┤ 0
+                          └                                                            ┘
+Allocated bytes
+                                                       Deque
+                          ┌                                                            ┐
+   build · BenchmarkTools ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 8 391
+       build · Chairmarks ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 8 391
+   drain · BenchmarkTools ┤■■■■■■■■■■■■■■■■■■■■■■■■■■ 4 167
+       drain · Chairmarks ┤■■■■■■■■■■■■■■■■■■■■■■■■■■ 4 167
+                          └                                                            ┘
+Allocation count
+                                                       Deque
+                          ┌                                                            ┐
+   build · BenchmarkTools ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 6
+       build · Chairmarks ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 6
+   drain · BenchmarkTools ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 3
+       drain · Chairmarks ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 3
+                          └                                                            ┘

@@ -1,0 +1,32 @@
+Wall time (µs)
+                                                        MultiDict
+                             ┌                                                            ┐
+      build · BenchmarkTools ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 4.3
+          build · Chairmarks ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 8.0
+   traverse · BenchmarkTools ┤■■■■■■■■■■■■■■ 2.1
+       traverse · Chairmarks ┤■■■■■■■■■■■■■■ 2.1
+                             └                                                            ┘
+GC share (%)
+                                                        MultiDict
+                             ┌                                                            ┐
+      build · BenchmarkTools ┤ 0
+          build · Chairmarks ┤ 0
+   traverse · BenchmarkTools ┤ 0
+       traverse · Chairmarks ┤ 0
+                             └                                                            ┘
+Allocated bytes
+                                                        MultiDict
+                             ┌                                                            ┐
+      build · BenchmarkTools ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 9 328
+          build · Chairmarks ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 9 328
+   traverse · BenchmarkTools ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 5 856
+       traverse · Chairmarks ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 5 856
+                             └                                                            ┘
+Allocation count
+                                                        MultiDict
+                             ┌                                                            ┐
+      build · BenchmarkTools ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 72
+          build · Chairmarks ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 72
+   traverse · BenchmarkTools ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 37
+       traverse · Chairmarks ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 37
+                             └                                                            ┘

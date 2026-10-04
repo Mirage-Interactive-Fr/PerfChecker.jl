@@ -1,0 +1,28 @@
+{
+  "inputs_sha256": {
+    "history/export-time.json": "ca2ad1224ead6717b11c05b3dbaa02637592b6182df5913bff9d6d64787e078d",
+    "history/export-memory.json": "ab47f10e565be76f78255e98cd5bf96e596991060b2056ab51e90072500621a2",
+    "history/import-time.json": "11ffad2720cbf8ce481b3c52c7e7eaf27736ba8dadc32bbc5e9e357ce97159ae",
+    "history/export-samples.json": "633409f581708c97153f5701e0c087c29224eb47789a2debaaf654ef49f963d6",
+    "history/export-delta.json": "1b4294dfb403a09dd29f0376a038f1c74cd6716f0fdbcc5dab51968030d8e76a",
+    "streaming-comparison.json": "dd98ae7eb70a94ad6de827b318d8af56ec94c270266c4062aae769e325eae524",
+    "history/overview.json": "2f55f5ef68619a60fed8f593e0d1f87bc4d2391c3cc1f0809885a5f5a73619a2",
+    "history/normalized.json": "01a5787c3ef022b88203b8359b992923829d2bb2efc9508e989afac2d928f8e2"
+  },
+  "renderer": "matplotlib",
+  "renderer_version": "3.11.2",
+  "sample_positions": "deterministic horizontal displacement, not execution order",
+  "figures": [
+    "history-delta.svg",
+    "history-import-time.svg",
+    "history-memory.svg",
+    "history-samples.svg",
+    "history-time.svg",
+    "normalized.svg",
+    "overview-allocations.svg",
+    "overview-gc.svg",
+    "overview-memory.svg",
+    "overview-time.svg",
+    "streaming-comparison.svg"
+  ]
+}

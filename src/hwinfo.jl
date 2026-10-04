@@ -7,7 +7,7 @@ struct HwInfo
 end
 function HwInfo()
     cc = (cpucores(), cputhreads(), cputhreads_per_core())
-    new(cpu_info(), CPU_NAME, WORD_SIZE, simdbytes(), cc)
+    return HwInfo(cpu_info(), CPU_NAME, WORD_SIZE, simdbytes(), cc)
 end
 
 # Function to convert HwInfo to a dictionary for JSON serialization
@@ -34,7 +34,7 @@ function write_hwinfo_to_json(hwinfo::HwInfo, u::UUID; path::String = "")
 end
 
 # Helper function to convert a dictionary back to CPUinfo
-function dict_to_cpuinfo(dict::Dict)
+function dict_to_cpuinfo(dict::AbstractDict)
     return CPUinfo(
         dict["model"], dict["speed"], dict["cpu_times!user"], dict["cpu_times!nice"],
         dict["cpu_times!sys"], dict["cpu_times!idle"], dict["cpu_times!irq"])
@@ -46,7 +46,7 @@ function load_hwinfo_from_json(filepath::String)
         error("File $filepath does not exist.")
     end
 
-    data = JSON.parsefile(filepath)
+    data = _json_parsefile(filepath)
 
     cpus = [dict_to_cpuinfo(cpu) for cpu in data["cpus"]]
 
@@ -57,4 +57,23 @@ function load_hwinfo_from_json(filepath::String)
         data["simdbytes"],
         (data["corecount"][1], data["corecount"][2], data["corecount"][3])
     )
+end
+
+@testitem "Hardware identity" tags=[:unit, :hardware] begin
+    import PerfChecker
+
+    info = PerfChecker.HwInfo()
+    as_dict = PerfChecker.hwinfo_to_dict(info)
+    @test as_dict["machine"] == info.machine
+    @test as_dict["corecount"] == info.corecount
+    mktempdir() do dir
+        id = PerfChecker.uuid4()
+        path = joinpath(dir, "$(id).json")
+        PerfChecker.write_hwinfo_to_json(info, id; path = dir)
+        restored = PerfChecker.load_hwinfo_from_json(path)
+        @test restored.machine == info.machine
+        @test restored.word == info.word
+        @test restored.corecount == info.corecount
+        rm(path; force = true)
+    end
 end

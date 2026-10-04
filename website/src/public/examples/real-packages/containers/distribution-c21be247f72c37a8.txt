@@ -1,0 +1,5 @@
+                     DataStructures · MutableBinaryMinHeap_drain_benchmark · julia.gc.time
+              ┌                                                                                ┐
+   [0.0, 1.0) ┤███████████████████████████████████████████████████████████████████████████  210
+              └                                                                                ┘
+                                                   Frequency

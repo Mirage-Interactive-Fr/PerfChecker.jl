@@ -1,0 +1,33 @@
+schema_version = "perfchecker-scenario-catalog/1"
+
+[[scenarios]]
+id = "events-heap"
+implementation = "datastructures"
+source = "src/PerfCheckerKitchenSink.jl"
+factory = "PerfCheckerKitchenSink.event_case"
+parameters = {kind = "heap", n = 2048, seed = 42}
+collectors = ["benchmark", "chairmark", "profile_alloc"]
+
+[[scenarios]]
+id = "events-vector"
+implementation = "datastructures"
+source = "src/PerfCheckerKitchenSink.jl"
+factory = "PerfCheckerKitchenSink.event_case"
+parameters = {kind = "vector", n = 2048, seed = 42}
+collectors = ["benchmark", "chairmark", "profile_alloc"]
+
+[[scenarios]]
+id = "events-counter"
+implementation = "datastructures"
+source = "src/PerfCheckerKitchenSink.jl"
+factory = "PerfCheckerKitchenSink.event_case"
+parameters = {kind = "counter", n = 2048, seed = 42}
+collectors = ["benchmark", "chairmark", "profile_alloc"]
+
+[[scenarios]]
+id = "events-buffer"
+implementation = "datastructures"
+source = "src/PerfCheckerKitchenSink.jl"
+factory = "PerfCheckerKitchenSink.event_case"
+parameters = {kind = "buffer", n = 2048, seed = 42}
+collectors = ["benchmark", "chairmark", "profile_alloc"]

@@ -1,0 +1,195 @@
+{
+  "series": [
+    {
+      "comparison_key": "bibliography-export/v1::julia.alloc.bytes/benchmarktools-v1/fresh-state-evals1-v1",
+      "feature": "export_bibtex",
+      "measurement_definition": "julia.alloc.bytes/benchmarktools-v1/fresh-state-evals1-v1",
+      "metric": "julia.alloc.bytes",
+      "package": "Bibliography",
+      "points": [
+        {
+          "aggregation": "median",
+          "median": 2976.0,
+          "samples": 100,
+          "statistics": {
+            "maximum": 2976.0,
+            "mean": 2976.0,
+            "median": 2976.0,
+            "minimum": 2976.0,
+            "p95": 2976.0,
+            "p99": 2976.0
+          },
+          "target_kind": "candidate",
+          "version": "after-streaming"
+        },
+        {
+          "aggregation": "median",
+          "median": 3904.0,
+          "samples": 100,
+          "statistics": {
+            "maximum": 3904.0,
+            "mean": 3904.0,
+            "median": 3904.0,
+            "minimum": 3904.0,
+            "p95": 3904.0,
+            "p99": 3904.0
+          },
+          "target_kind": "candidate",
+          "version": "before-streaming"
+        }
+      ],
+      "series_id": "0556a281378d7cde",
+      "unit": "By",
+      "workload": "export_bibtex"
+    },
+    {
+      "comparison_key": "bibliography-export/v1::julia.alloc.count/benchmarktools-v1/fresh-state-evals1-v1",
+      "feature": "export_bibtex",
+      "measurement_definition": "julia.alloc.count/benchmarktools-v1/fresh-state-evals1-v1",
+      "metric": "julia.alloc.count",
+      "package": "Bibliography",
+      "points": [
+        {
+          "aggregation": "median",
+          "median": 23.0,
+          "samples": 100,
+          "statistics": {
+            "maximum": 23.0,
+            "mean": 23.0,
+            "median": 23.0,
+            "minimum": 23.0,
+            "p95": 23.0,
+            "p99": 23.0
+          },
+          "target_kind": "candidate",
+          "version": "after-streaming"
+        },
+        {
+          "aggregation": "median",
+          "median": 27.0,
+          "samples": 100,
+          "statistics": {
+            "maximum": 27.0,
+            "mean": 27.0,
+            "median": 27.0,
+            "minimum": 27.0,
+            "p95": 27.0,
+            "p99": 27.0
+          },
+          "target_kind": "candidate",
+          "version": "before-streaming"
+        }
+      ],
+      "series_id": "6b1f59deb17504a7",
+      "unit": "1",
+      "workload": "export_bibtex"
+    },
+    {
+      "comparison_key": "bibliography-export/v1::julia.gc.time/benchmarktools-v1/fresh-state-evals1-v1",
+      "feature": "export_bibtex",
+      "measurement_definition": "julia.gc.time/benchmarktools-v1/fresh-state-evals1-v1",
+      "metric": "julia.gc.time",
+      "package": "Bibliography",
+      "points": [
+        {
+          "aggregation": "median",
+          "median": 0.0,
+          "samples": 100,
+          "statistics": {
+            "maximum": 0.0,
+            "mean": 0.0,
+            "median": 0.0,
+            "minimum": 0.0,
+            "p95": 0.0,
+            "p99": 0.0
+          },
+          "target_kind": "candidate",
+          "version": "after-streaming"
+        },
+        {
+          "aggregation": "median",
+          "median": 0.0,
+          "samples": 100,
+          "statistics": {
+            "maximum": 0.0,
+            "mean": 0.0,
+            "median": 0.0,
+            "minimum": 0.0,
+            "p95": 0.0,
+            "p99": 0.0
+          },
+          "target_kind": "candidate",
+          "version": "before-streaming"
+        }
+      ],
+      "series_id": "0dd8a6fa4c2fac7f",
+      "unit": "ns",
+      "workload": "export_bibtex"
+    },
+    {
+      "comparison_key": "bibliography-export/v1::julia.wall.time/benchmarktools-v1/fresh-state-evals1-v1",
+      "feature": "export_bibtex",
+      "measurement_definition": "julia.wall.time/benchmarktools-v1/fresh-state-evals1-v1",
+      "metric": "julia.wall.time",
+      "package": "Bibliography",
+      "points": [
+        {
+          "aggregation": "median",
+          "median": 6800.0,
+          "samples": 100,
+          "statistics": {
+            "maximum": 12600.0,
+            "mean": 6924.0,
+            "median": 6800.0,
+            "minimum": 5300.0,
+            "p95": 9524.999999999998,
+            "p99": 11313.000000000007
+          },
+          "target_kind": "candidate",
+          "version": "after-streaming"
+        },
+        {
+          "aggregation": "median",
+          "median": 7600.0,
+          "samples": 100,
+          "statistics": {
+            "maximum": 12700.0,
+            "mean": 7657.0,
+            "median": 7600.0,
+            "minimum": 5900.0,
+            "p95": 9705.0,
+            "p99": 11215.000000000007
+          },
+          "target_kind": "candidate",
+          "version": "before-streaming"
+        }
+      ],
+      "series_id": "a3fb2e8530e01496",
+      "unit": "ns",
+      "workload": "export_bibtex"
+    }
+  ],
+  "run_id": "d5aa5de4-bde6-4d25-8b25-e512fcc44d23",
+  "input_sha256": "f38b12191e2f938fb3e9295fb6b85899be1f1d1c51a1c4dfa345689dab8797e5",
+  "sources": [
+    {
+      "label": "before-streaming",
+      "requested_target_revision": "6a4cc9027dcc094d21b3681ccff86ca4aec84a23",
+      "workload_checkout_revision": "575ec810042cc791fd47a2c025a80246ccf039b5",
+      "environment_manifest_sha256": "c7d1fd041a248a091cef9d3ef3d83f9321d0972d728b9640099f20c40868973e"
+    },
+    {
+      "label": "after-streaming",
+      "requested_target_revision": "575ec810042cc791fd47a2c025a80246ccf039b5",
+      "workload_checkout_revision": "575ec810042cc791fd47a2c025a80246ccf039b5",
+      "environment_manifest_sha256": "3b6cab70952b65532795b00c691e8a2379ca86eee5ec7baee9cefd52cb9de17c"
+    }
+  ],
+  "runtime": {
+    "version": "1.13.0",
+    "threads": 1,
+    "os": "Windows"
+  },
+  "correctness": "not_checked",
+  "performance": "inconclusive"
+}

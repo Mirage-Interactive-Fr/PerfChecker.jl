@@ -1,0 +1,223 @@
+{
+  "correctness": "passed",
+  "date_kind": "GitHub release publication date",
+  "os": "NT",
+  "performance": "not_compared",
+  "plot": {
+    "data": [
+      {
+        "aggregation": "median",
+        "samples": 30,
+        "target_kind": "release",
+        "value": 1000.0,
+        "version": "1.0.0"
+      },
+      {
+        "aggregation": "median",
+        "samples": 30,
+        "target_kind": "release",
+        "value": 2500.0,
+        "version": "1.1.0"
+      },
+      {
+        "aggregation": "median",
+        "samples": 30,
+        "target_kind": "release",
+        "value": 4300.0,
+        "version": "1.2.0"
+      },
+      {
+        "aggregation": "median",
+        "samples": 30,
+        "target_kind": "release",
+        "value": 2500.0,
+        "version": "1.3.0"
+      },
+      {
+        "aggregation": "median",
+        "samples": 30,
+        "target_kind": "release",
+        "value": 4350.0,
+        "version": "1.4.0"
+      },
+      {
+        "aggregation": "median",
+        "samples": 30,
+        "target_kind": "release",
+        "value": 4300.0,
+        "version": "1.5.0"
+      },
+      {
+        "aggregation": "median",
+        "samples": 30,
+        "target_kind": "release",
+        "value": 2500.0,
+        "version": "1.6.0"
+      },
+      {
+        "aggregation": "median",
+        "samples": 30,
+        "target_kind": "release",
+        "value": 2600.0,
+        "version": "1.7.0"
+      },
+      {
+        "aggregation": "median",
+        "samples": 30,
+        "target_kind": "release",
+        "value": 4400.0,
+        "version": "1.8.0"
+      },
+      {
+        "aggregation": "median",
+        "samples": 30,
+        "target_kind": "release",
+        "value": 5200.0,
+        "version": "1.9.0"
+      },
+      {
+        "aggregation": "median",
+        "samples": 30,
+        "target_kind": "release",
+        "value": 2750.0,
+        "version": "1.10.0"
+      },
+      {
+        "aggregation": "median",
+        "samples": 30,
+        "target_kind": "release",
+        "value": 2800.0,
+        "version": "1.10.1"
+      },
+      {
+        "aggregation": "median",
+        "samples": 30,
+        "target_kind": "release",
+        "value": 2700.0,
+        "version": "1.10.2"
+      },
+      {
+        "aggregation": "median",
+        "samples": 30,
+        "target_kind": "release",
+        "value": 2750.0,
+        "version": "1.11.0"
+      }
+    ],
+    "description": "Version trajectory",
+    "encoding": {
+      "color": "target_kind",
+      "x": "version",
+      "y": "value"
+    },
+    "id": "version-series-ac08e0fa340966a7",
+    "kind": "version_series",
+    "options": {
+      "feature": "html_benchmark",
+      "metric": "julia.wall.time",
+      "package": "Oxygen",
+      "series_id": "ed559fa53d5262cf",
+      "unit": "ns"
+    },
+    "schema_version": "perfchecker-plot/1",
+    "title": "Oxygen · html_benchmark · julia.wall.time"
+  },
+  "release_date_kinds": {
+    "1.0.0": "GitHub release publication date",
+    "1.1.0": "GitHub release publication date",
+    "1.10.0": "GitHub release publication date",
+    "1.10.1": "GitHub release publication date",
+    "1.10.2": "GitHub release publication date",
+    "1.11.0": "GitHub release publication date",
+    "1.2.0": "GitHub release publication date",
+    "1.3.0": "GitHub release publication date",
+    "1.4.0": "GitHub release publication date",
+    "1.5.0": "GitHub release publication date",
+    "1.6.0": "GitHub release publication date",
+    "1.7.0": "GitHub release publication date",
+    "1.8.0": "GitHub release publication date",
+    "1.9.0": "GitHub release publication date"
+  },
+  "release_dates": {
+    "1.0.0": "2022-05-28",
+    "1.1.0": "2022-08-19",
+    "1.10.0": "2026-01-01",
+    "1.10.1": "2026-02-25",
+    "1.10.2": "2026-04-18",
+    "1.11.0": "2026-08-28",
+    "1.2.0": "2023-09-28",
+    "1.3.0": "2023-12-14",
+    "1.4.0": "2024-01-13",
+    "1.5.0": "2024-02-27",
+    "1.6.0": "2025-01-11",
+    "1.7.0": "2025-02-05",
+    "1.8.0": "2025-11-19",
+    "1.9.0": "2025-12-14"
+  },
+  "run_id": "4f58f22e-2f75-44ee-b56a-ddf7f42d81e4",
+  "runtime": {
+    "language": "julia",
+    "threads": 1,
+    "version": "1.13.0"
+  },
+  "scope": "One local machine; illustrative history, not a package regression verdict",
+  "started_at": "2026-09-13T10:50:07.261",
+  "worker_environments": [
+    {
+      "manifest_sha256": "023efbb4d41bb5dbcd69f9c79edce94a507299d4d61300e231e8b86cbb627f6c",
+      "project_sha256": "f4297a96b2c6e940ea15876a6bba21ce6e6402f771854a5842963d3ee89e5d80"
+    },
+    {
+      "manifest_sha256": "23cb1787c756286bc0c388ae57a8341634d106bd7dde6bef8d343ec951dac15b",
+      "project_sha256": "f4297a96b2c6e940ea15876a6bba21ce6e6402f771854a5842963d3ee89e5d80"
+    },
+    {
+      "manifest_sha256": "15ffe3a00c7dcd508b849378295102c893c9eaf15e3aec3d9a46bb9a22da110f",
+      "project_sha256": "f4297a96b2c6e940ea15876a6bba21ce6e6402f771854a5842963d3ee89e5d80"
+    },
+    {
+      "manifest_sha256": "30b933a76fbf03f57dec28a5768f66ac557a48b9c0cd7deb4a135a07c8e75429",
+      "project_sha256": "f4297a96b2c6e940ea15876a6bba21ce6e6402f771854a5842963d3ee89e5d80"
+    },
+    {
+      "manifest_sha256": "87191dd4a9a52ce02ea4b7c4d0c0a79d2229f315fe9d0a535042431cc17e5825",
+      "project_sha256": "f4297a96b2c6e940ea15876a6bba21ce6e6402f771854a5842963d3ee89e5d80"
+    },
+    {
+      "manifest_sha256": "14422b29110b2903c31b17b69e6eea9260e84a238ba69f47caf363db655df329",
+      "project_sha256": "f4297a96b2c6e940ea15876a6bba21ce6e6402f771854a5842963d3ee89e5d80"
+    },
+    {
+      "manifest_sha256": "8ee5c71ef3ebf26c2ca85699bc636898aad411383e18d733aacd754ab5fd3017",
+      "project_sha256": "f4297a96b2c6e940ea15876a6bba21ce6e6402f771854a5842963d3ee89e5d80"
+    },
+    {
+      "manifest_sha256": "ef1f077c2860604c0dc04a7bfe670bd26d1456e556c00f96ef196e33b46e6f4a",
+      "project_sha256": "f4297a96b2c6e940ea15876a6bba21ce6e6402f771854a5842963d3ee89e5d80"
+    },
+    {
+      "manifest_sha256": "6a2cea7be47d3a347aa8d8d1bd2baa7513aa5c0f7fe1129e3cb20ceeead0eab6",
+      "project_sha256": "f4297a96b2c6e940ea15876a6bba21ce6e6402f771854a5842963d3ee89e5d80"
+    },
+    {
+      "manifest_sha256": "37610bd2419a75ccef7e88c7062050342954b9b6e3651b3125b8d4638e5054d4",
+      "project_sha256": "f4297a96b2c6e940ea15876a6bba21ce6e6402f771854a5842963d3ee89e5d80"
+    },
+    {
+      "manifest_sha256": "eb303be0ee4ad1d4136e3461f0cdbe176d64ecba106eb8981f68e70e84097daf",
+      "project_sha256": "f4297a96b2c6e940ea15876a6bba21ce6e6402f771854a5842963d3ee89e5d80"
+    },
+    {
+      "manifest_sha256": "07efe7b4d60d9ca8c7ff9b57f4e0c902067c5581184fac86f0db69596742717a",
+      "project_sha256": "f4297a96b2c6e940ea15876a6bba21ce6e6402f771854a5842963d3ee89e5d80"
+    },
+    {
+      "manifest_sha256": "a22211905892a558108923e4267c857acdd8452b9c1a29643e8b6432eca8469e",
+      "project_sha256": "f4297a96b2c6e940ea15876a6bba21ce6e6402f771854a5842963d3ee89e5d80"
+    },
+    {
+      "manifest_sha256": "9c89f70360da971e2112c94d9dcc637b04b1a421484c0b2eb744ba033e1be04b",
+      "project_sha256": "f4297a96b2c6e940ea15876a6bba21ce6e6402f771854a5842963d3ee89e5d80"
+    }
+  ]
+}

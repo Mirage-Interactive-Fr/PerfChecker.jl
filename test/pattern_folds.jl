@@ -1,6 +1,13 @@
-@testset "PatternFolds.jl" begin
+@testitem "PatternFolds.jl" tags=[:integration, :historical] begin
+    using BenchmarkTools
+    using Chairmarks
+    using Intervals
+    using PatternFolds
+    using PerfChecker
+
     d = Dict(
         :targets => ["PatternFolds"], :path => @__DIR__, :tags => [:patterns, :intervals],
+        :extra_pkgs => ["Intervals"],
         :pkgs => ("PatternFolds", :custom, [v"0.2.1", v"0.2.4"], true))
 
     x = @check :alloc d begin
@@ -28,12 +35,14 @@
     end
 
     @info x
+    @test length(x.tables) == 2
+    @test all(t -> length(t) > 0, x.tables)
 
-    d2 = Dict(:path => @__DIR__, :evals => 1, :samples => 100,
+    d2 = Dict(:path => @__DIR__, :extra_pkgs => ["Intervals", "BenchmarkTools"],
+        :evals => 1, :samples => 100,
         :seconds => 100, :tags => [:patterns, :intervals],
         :pkgs => (
-            "PatternFolds", :custom, [v"0.2.1", v"0.2.4"], true),
-        :devops => "PatternFolds")
+            "PatternFolds", :custom, [v"0.2.1", v"0.2.4"], true))
 
     x2 = @check :benchmark d2 begin
         using PatternFolds
@@ -63,12 +72,14 @@
     end
 
     @info x2
+    @test length(x2.tables) == 2
+    @test all(t -> length(t) > 0, x2.tables)
 
-    d3 = Dict(:path => @__DIR__, :evals => 1, :samples => 100,
+    d3 = Dict(:path => @__DIR__, :extra_pkgs => ["Intervals", "Chairmarks"],
+        :evals => 1, :samples => 100,
         :seconds => 100, :tags => [:patterns, :intervals],
         :pkgs => (
-            "PatternFolds", :custom, [v"0.2.1", v"0.2.4"], true),
-        :devops => "PatternFolds")
+            "PatternFolds", :custom, [v"0.2.1", v"0.2.4"], true))
 
     x3 = @check :chairmark d3 begin
         using PatternFolds
@@ -98,4 +109,6 @@
     end
 
     @info x3
+    @test length(x3.tables) == 2
+    @test all(t -> length(t) > 0, x3.tables)
 end

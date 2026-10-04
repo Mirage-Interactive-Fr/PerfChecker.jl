@@ -1,0 +1,5 @@
+                                DataStructures · Queue_build_benchmark · julia.alloc.bytes
+                    ┌                                                                                ┐
+   [8407.0, 8408.0) ┤███████████████████████████████████████████████████████████████████████████  210
+                    └                                                                                ┘
+                                                         Frequency

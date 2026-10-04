@@ -1,0 +1,18 @@
+{
+  "status": "passed",
+  "browser": "153.0.8010.12",
+  "saved_reports": "saved_reports\"Last saved reports: results\\\\pluto-n3ggah\"",
+  "saved_again": "saved_reports\"Last saved reports: results\\\\pluto-CqGRmM\"",
+  "errors": [],
+  "history_checked": true,
+  "checks": [
+    "real Pluto notebook loaded",
+    "one export benchmark selected",
+    "filters leave notebook idle",
+    "one worker thread",
+    "explicit launch completed",
+    "explicit report save",
+    "later selector changes do not relaunch or resave",
+    "reload does not launch; one click saves again"
+  ]
+}

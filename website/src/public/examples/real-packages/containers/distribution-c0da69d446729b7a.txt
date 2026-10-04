@@ -1,0 +1,5 @@
+                      DataStructures · CircularDeque_build_benchmark · julia.alloc.count
+              ┌                                                                                ┐
+   [6.0, 7.0) ┤███████████████████████████████████████████████████████████████████████████  210
+              └                                                                                ┘
+                                                   Frequency

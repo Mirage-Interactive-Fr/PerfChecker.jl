@@ -1,0 +1,54 @@
+{
+  "correctness": "passed",
+  "date_kind": "GitHub release publication date",
+  "os": "NT",
+  "performance": "not_compared",
+  "plot": {
+    "data": [
+      {
+        "aggregation": "sum",
+        "samples": 1,
+        "target_kind": "release",
+        "value": 786551.0,
+        "version": "0.19.6"
+      }
+    ],
+    "description": "Version trajectory",
+    "encoding": {
+      "color": "target_kind",
+      "x": "version",
+      "y": "value"
+    },
+    "id": "version-series-7fabdc6fa9d4d0f3",
+    "kind": "version_series",
+    "options": {
+      "feature": "heap_32768_alloc",
+      "metric": "julia.alloc.bytes",
+      "package": "DataStructures",
+      "series_id": "f8c688fc1f65aa37",
+      "unit": "By"
+    },
+    "schema_version": "perfchecker-plot/1",
+    "title": "DataStructures · heap_32768_alloc · julia.alloc.bytes"
+  },
+  "release_date_kinds": {
+    "0.19.6": "GitHub release publication date"
+  },
+  "release_dates": {
+    "0.19.6": "2026-07-17"
+  },
+  "run_id": "11480c99-82a0-44bf-8432-f9b4e39702f5",
+  "runtime": {
+    "language": "julia",
+    "threads": 1,
+    "version": "1.13.0"
+  },
+  "scope": "One local machine; illustrative history, not a package regression verdict",
+  "started_at": "2026-09-13T08:06:15.124",
+  "worker_environments": [
+    {
+      "manifest_sha256": "e956f9d3af72872a9d43e6dc3fdac644b73223bd6b5e4ac250e7c0cc02eb97d5",
+      "project_sha256": "0cda28da6203fe2eda79d372cdabb8862f3e829e34e1eb1c78c61f64fe9878e2"
+    }
+  ]
+}

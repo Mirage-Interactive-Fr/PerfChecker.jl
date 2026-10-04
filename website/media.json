@@ -1,0 +1,18 @@
+{
+  "bibliography-history": {
+    "file": "examples/bibliography/history-web/bibliography-history.webm",
+    "bytes": 8950790,
+    "sha256": "42a9532e40a3bb34a0b17f2ea65d1206b809293bd82293a6b1935efd456b75dd",
+    "youtube_id": "",
+    "download_url": "https://github.com/Mirage-Interactive-Fr/Mirage-Interactive-Fr.github.io/releases/download/documentation-media-v1/bibliography-history.webm",
+    "captions": "examples/bibliography/history-web/walkthrough.vtt"
+  },
+  "bibliography-web": {
+    "file": "examples/bibliography/web/bibliography-web.webm",
+    "bytes": 5819442,
+    "sha256": "18dd75a4b9877760785689749c91613f6fa47432c0491404e8b309b4fcea72ad",
+    "youtube_id": "",
+    "download_url": "https://github.com/Mirage-Interactive-Fr/Mirage-Interactive-Fr.github.io/releases/download/documentation-media-v1/bibliography-web.webm",
+    "captions": "examples/bibliography/web/walkthrough.vtt"
+  }
+}

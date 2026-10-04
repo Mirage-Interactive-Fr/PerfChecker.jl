@@ -1,0 +1,32 @@
+schema_version = "perfchecker-scenario-catalog/1"
+root = ".."
+
+[[scenarios]]
+id = "oxygen-heap"
+implementation = "oxygen"
+source = "service.jl"
+factory = "EventService.scenario"
+fixtures = ["../src/PerfCheckerKitchenSink.jl"]
+requirements = ["Oxygen", "HTTP", "JSON", "DataStructures"]
+parameters = {kind = "heap", n = 64}
+collectors = ["benchmark", "chairmark", "profile_alloc"]
+
+[[scenarios]]
+id = "oxygen-counter"
+implementation = "oxygen"
+source = "service.jl"
+factory = "EventService.scenario"
+fixtures = ["../src/PerfCheckerKitchenSink.jl"]
+requirements = ["Oxygen", "HTTP", "JSON", "DataStructures"]
+parameters = {kind = "counter", n = 64}
+collectors = ["benchmark", "chairmark", "profile_alloc"]
+
+[[scenarios]]
+id = "oxygen-buffer"
+implementation = "oxygen"
+source = "service.jl"
+factory = "EventService.scenario"
+fixtures = ["../src/PerfCheckerKitchenSink.jl"]
+requirements = ["Oxygen", "HTTP", "JSON", "DataStructures"]
+parameters = {kind = "buffer", n = 64}
+collectors = ["benchmark", "chairmark", "profile_alloc"]

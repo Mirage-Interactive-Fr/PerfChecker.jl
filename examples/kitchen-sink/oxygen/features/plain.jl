@@ -1,0 +1,5 @@
+include(joinpath(@__DIR__, "../service.jl"))
+const lifecycle = EventService.feature_case("plain")
+perf_setup() = lifecycle.prepare()
+perf_workload(state) = lifecycle.operation(state)
+perf_oracle(state, result) = lifecycle.verify(state, result)
