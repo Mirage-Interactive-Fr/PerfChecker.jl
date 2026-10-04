@@ -34,7 +34,7 @@ Publishing development documentation does not certify the packages it describes.
 ## Limits
 
 - The initial supported platforms are Windows and Linux.
-- The separate compatibility CI retains the protected branch's core checks on macOS, Linux and Windows, including Linux 32-bit and Julia LTS/pre-release runtimes. Those core tests do not establish qualification of every interface on macOS.
+- The separate compatibility CI tests the latest stable Julia on Linux 64-bit and 32-bit, macOS Intel 64-bit and Windows 64-bit. Julia LTS and pre-release runtimes are tested on Linux 64-bit. Those core tests do not establish qualification of every interface on macOS.
 - Jobs run sequentially: one Julia compute thread, single-thread BLAS, four-thread budget.
 - No measurement is validated merely because a tool executable was found.
 

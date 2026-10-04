@@ -90,6 +90,23 @@ end
     end
 end
 
+@testitem "Native workers isolate controller instrumentation" tags=[:integration, :v1] begin
+    using PerfChecker, TestItemRunner
+    mktempdir() do root
+        write(joinpath(root, "items.jl"), """
+using TestItems
+@testitem "isolated options" begin
+    @test Base.JLOptions().code_coverage == 0
+    @test Base.JLOptions().malloc_log == 0
+end
+""")
+        result = run_testitems(root; timeout = 90)
+        @test result["passed"]
+        sample = only(only(result["runs"])["samples"])
+        @test sample["passes"] == 2
+    end
+end
+
 @testitem "Native profiling plans preserve arguments and scope" tags=[:unit, :v1] begin
     using PerfChecker
     plan = native_tool_plan(:memcheck, "script with spaces.jl";

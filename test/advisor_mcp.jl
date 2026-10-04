@@ -1,3 +1,23 @@
+@testitem "MCP response identifiers preserve JSON categories across architectures" tags=[:advisor_mcp] begin
+    using PerfChecker, HTTP
+    extension = Base.get_extension(PerfChecker, :HTTPAdvisorExt)
+    response(id) = Dict("jsonrpc" => "2.0", "id" => id,
+        "result" => Dict("accepted" => true))
+    for request_id in (Int32(1), Int64(1)), response_id in (Int32(1), Int64(1))
+        @test extension.mcp_response(response(response_id), request_id)["accepted"]
+    end
+    parsed = PerfChecker._json_parse(
+        "{\"jsonrpc\":\"2.0\",\"id\":1,\"result\":{\"accepted\":true}}")
+    @test extension.mcp_response(parsed, Int32(1))["accepted"]
+    @test extension.mcp_response(response("request"), "request")["accepted"]
+    for wrong_id in (true, false, 1.0, "1", nothing, Int32(2), Int64(2))
+        @test_throws ArgumentError extension.mcp_response(response(wrong_id), Int32(1))
+    end
+    @test_throws ArgumentError extension.mcp_response(response(Int64(1)), true)
+    @test_throws ArgumentError extension.mcp_response(response(Int64(1)), 1.0)
+    @test_throws ArgumentError extension.mcp_response(response(Int64(1)), "1")
+end
+
 @testitem "MCP advice tools, custom prompts and qualification boundaries" tags=[
     :integration, :advisor_mcp] begin
     using PerfChecker, HTTP, Sockets, Base64

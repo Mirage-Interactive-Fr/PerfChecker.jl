@@ -11,6 +11,23 @@
         @test snapshot.peak_rss_bytes isa UInt64
         @test snapshot.peak_rss_bytes >= snapshot.rss_bytes
     end
+    if Sys.iswindows()
+        child = run(`$(Base.julia_cmd()) --startup-file=no -e "sleep(30)"`; wait = false)
+        try
+            for _ in 1:16
+                for pid in (getpid(), getpid(child))
+                    repeated = process_memory_snapshot(pid)
+                    @test repeated.status === :observed
+                    @test repeated.pid == pid
+                    @test repeated.rss_bytes isa UInt64
+                    @test repeated.private_bytes isa UInt64
+                end
+            end
+        finally
+            Base.process_running(child) && kill(child)
+            wait(child)
+        end
+    end
 
     before = PerfChecker.ProcessMemorySnapshot(7, 1; rss_bytes = 100,
         peak_rss_bytes = 120, private_bytes = 80)

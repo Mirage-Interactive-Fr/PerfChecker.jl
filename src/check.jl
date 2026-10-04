@@ -90,12 +90,65 @@ function run_targets(config::CheckConfig)
     return targets
 end
 
+struct CheckCleanupFailure <: Exception
+    errors::Vector{Any}
+    directories::Vector{String}
+end
+
+function Base.showerror(io::IO, error::CheckCleanupFailure)
+    print(io, "PerfChecker cleanup incomplete")
+    isempty(error.directories) || print(io, "; private inventories retained at ",
+        join(error.directories, ", "))
+    for cause in error.errors
+        print(io, "; ")
+        showerror(io, cause)
+    end
+end
+
+function _cleanup_check_directories!(
+        temp_roots, allocation_artifacts, retained_roots, failures)
+    for (i, root) in temp_roots
+        if !(i in retained_roots)
+            try
+                rm(root; recursive = true, force = true)
+            catch error
+                push!(retained_roots, i)
+                push!(failures, error)
+            end
+        end
+        if i in retained_roots
+            try
+                haskey(allocation_artifacts, i) &&
+                    _retain_allocation_inventory!(allocation_artifacts[i])
+            catch error
+                # The saved journal remains useful even if writing the inventory
+                # metadata also fails. Never hide this error as cancellation.
+                push!(failures, error)
+                @warn "Could not save allocation inventory metadata" directory=root exception=error
+            end
+            @warn "PerfChecker cleanup incomplete; private inventory retained" directory=root
+        end
+    end
+    isempty(failures) || throw(CheckCleanupFailure(failures,
+        [temp_roots[i] for i in retained_roots if ispath(temp_roots[i])]))
+    nothing
+end
+
 function safe_stop(worker)
     try
         stop(worker)
     catch err
         @debug "failed to stop PerfChecker worker" exception=(err, catch_backtrace())
     finally
+        if worker isa Worker && Base.process_running(worker.proc)
+            try
+                # Only this worker's process is signalled, never another check.
+                kill(worker.proc, Base.SIGKILL)
+                timedwait(() -> !Base.process_running(worker.proc), 5; pollint = 0.02)
+            catch error
+                @warn "Could not terminate PerfChecker worker" pid=getpid(worker.proc) exception=error
+            end
+        end
         # Malt 1.x stops the process but retains its parent-side pipe handles.
         # On Windows, a blocked reader can retain an OS thread for each pipe.
         # Repeated suite workers therefore need explicit connection cleanup.
@@ -110,6 +163,9 @@ function safe_stop(worker)
             end
         end
     end
+    worker isa Worker && Base.process_running(worker.proc) &&
+        error("PerfChecker worker $(getpid(worker.proc)) is still running; cleanup cannot complete")
+    nothing
 end
 
 function safe_cleanup(options, backend::Symbol)
@@ -343,33 +399,62 @@ function check_function(x::Symbol, d::Dict, block1, block2; qualification = noth
                         config, target.spec.name, target.spec.version, block1, block2, hwinfo) :
                     nothing for target in targets]
     worker_indices = findall(isnothing, cached_paths)
-    temp_roots = Dict(index => mktempdir() for index in worker_indices)
-    worker_envs = Dict(index => joinpath(temp_roots[index], "environment")
-    for index in worker_indices)
+    temp_roots = Dict{Int, String}()
+    worker_envs = Dict{Int, String}()
     prepared_environment = get(di, :prepared_environment, nothing)
     environment_source = prepared_environment === nothing ? config.path :
                          abspath(String(prepared_environment))
     isdir(environment_source) || throw(ArgumentError(
         "prepared environment does not exist: $environment_source"))
-    for index in worker_indices
-        _copy_check_environment(environment_source, worker_envs[index];
-            exclude = get(di, :environment_excludes, String[]))
-        _drop_incompatible_manifest!(worker_envs[index])
-    end
     procs = Any[nothing for _ in 1:len]
     cleanup_options = Dict{Symbol, Any}[]
+    allocation_artifacts = Dict{Int, AllocationArtifacts}()
+    creation_tasks = Task[]
     try
-        @sync for i in worker_indices
-            @async procs[i] = Worker(;
-                exeflags = ["--track-allocation=$(config.track)",
-                    "-t $(config.threads)", "--project=$(worker_envs[i])"])
+        for index in worker_indices
+            temp_roots[index] = mktempdir(; prefix = "perfchecker-check-", cleanup = false)
+            worker_envs[index] = joinpath(temp_roots[index], "environment")
+            _copy_check_environment(environment_source, worker_envs[index];
+                exclude = get(di, :environment_excludes, String[]))
+            _drop_incompatible_manifest!(worker_envs[index])
         end
+        initial_roots = config.track == "none" ? Dict{Int, Vector{String}}() :
+                        Dict(i => _allocation_roots(
+                                 di, [environment_source, worker_envs[i]])
+        for i in worker_indices)
+        for i in worker_indices
+            push!(creation_tasks,
+                @async begin
+                    procs[i] = Worker(;
+                        exeflags = ["--track-allocation=$(config.track)",
+                            "-t $(config.threads)", "--project=$(worker_envs[i])"])
+                    if config.track != "none"
+                        artifacts = _allocation_artifacts(procs[i],
+                            joinpath(temp_roots[i], "allocation-artifacts"))
+                        allocation_artifacts[i] = artifacts
+                        try
+                            _register_allocation_roots!(artifacts, initial_roots[i])
+                            _install_allocation_journal!(procs[i], artifacts)
+                        catch
+                            # User code has not started. Do not let graceful exit
+                            # overwrite a trace whose snapshot was interrupted.
+                            Base.process_running(procs[i].proc) &&
+                                kill(procs[i].proc, Base.SIGKILL)
+                            rethrow()
+                        end
+                    end
+                end)
+        end
+        foreach(wait, creation_tasks)
 
         for i in 1:len
             target = targets[i]
             run_options = copy(di)
             run_options[:current_spec] = target.spec
             run_options[:current_version] = target.spec.version
+            haskey(allocation_artifacts, i) &&
+                (run_options[:allocation_artifacts] = allocation_artifacts[i])
+            push!(cleanup_options, run_options)
 
             cached_path = cached_paths[i]
             qualification_evidence = _empty_qualification()
@@ -392,10 +477,16 @@ function check_function(x::Symbol, d::Dict, block1, block2; qualification = noth
                             Pkg.instantiate(; io = $quiet ? devnull : stderr)
                     end)
 
-                remote_eval_wait(Main, procs[i], :(global d = $run_options))
+                worker_options = copy(run_options)
+                delete!(worker_options, :allocation_artifacts)
+                remote_eval_wait(Main, procs[i], :(global d = $worker_options))
 
                 prepared_environment === nothing &&
-                    _install_target!(procs[i], target, run_options)
+                    _install_target!(procs[i], target, worker_options)
+
+                haskey(allocation_artifacts, i) &&
+                    _register_allocation_roots!(allocation_artifacts[i],
+                        _allocation_roots(run_options, [worker_envs[i]]))
 
                 # Resolve target and explicitly declared backends before importing
                 # them into the fresh worker; imports cannot see transitive deps.
@@ -430,7 +521,6 @@ function check_function(x::Symbol, d::Dict, block1, block2; qualification = noth
                 else
                     run_options[:check_result] = remote_eval_fetch(Main, procs[i], h)
                 end
-                push!(cleanup_options, run_options)
                 stop_before_post(x) && safe_stop(procs[i])
                 res = post(run_options, x) |> to_table
             else
@@ -461,10 +551,44 @@ function check_function(x::Symbol, d::Dict, block1, block2; qualification = noth
             write_run_metadata(metadata, run)
         end
     finally
-        foreach(safe_stop, filter(!isnothing, procs))
-        safe_cleanup(di, x)
-        foreach(options -> safe_cleanup(options, x), cleanup_options)
-        foreach(root -> rm(root; recursive = true, force = true), values(temp_roots))
+        # Cancellation of the controller's wait must not race a worker whose
+        # constructor is still running in another task.
+        for task in creation_tasks
+            try
+                wait(task)
+            catch error
+                @debug "worker creation did not finish successfully" exception=error
+            end
+        end
+        failures = Any[]
+        retained_roots = Set{Int}()
+        for i in worker_indices
+            procs[i] === nothing && continue
+            try
+                safe_stop(procs[i])
+            catch error
+                push!(retained_roots, i)
+                push!(failures, error)
+            end
+        end
+        try
+            if x !== :alloc
+                safe_cleanup(di, x)
+                foreach(options -> safe_cleanup(options, x), cleanup_options)
+            end
+            for (i, artifacts) in allocation_artifacts
+                i in retained_roots && continue
+                try
+                    _cleanup_allocation_artifacts!(artifacts)
+                catch error
+                    push!(retained_roots, i)
+                    push!(failures, error)
+                end
+            end
+        finally
+            _cleanup_check_directories!(
+                temp_roots, allocation_artifacts, retained_roots, failures)
+        end
     end
 
     return results
@@ -771,8 +895,18 @@ end
     @test length(result.resource_envelopes) == 1
     envelope = only(result.resource_envelopes)
     @test envelope isa ResourceEnvelope
-    @test envelope.process_before.status === :observed
-    @test envelope.process_after.status === :observed
+    if Sys.islinux() || Sys.iswindows()
+        @test envelope.process_before.status === :observed
+        @test envelope.process_after.status === :observed
+    else
+        for snapshot in (envelope.process_before, envelope.process_after)
+            @test snapshot.status === :unavailable
+            @test snapshot.provider == "unavailable"
+            @test !isempty(snapshot.message)
+            @test all(isnothing,
+                (snapshot.rss_bytes, snapshot.peak_rss_bytes, snapshot.private_bytes))
+        end
+    end
     @test envelope.external_before.live_bytes == 0
     @test envelope.external_after.live_bytes == 0
     metrics = resource_envelope_metrics(envelope)

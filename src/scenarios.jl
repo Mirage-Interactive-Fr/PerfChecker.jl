@@ -243,7 +243,9 @@ function _scenario_process(request::AbstractDict; project::AbstractString,
             @__DIR__, testitems ? "testitem_worker.jl" :
                       advisor ? "advisor_worker.jl" :
                       diagnostic ? "diagnostic_worker.jl" : "scenario_worker.jl")
-        command = `$(Base.julia_cmd()) --startup-file=no --history-file=no --threads=$threads --project=$(abspath(project)) $worker $input $output`
+        # Controller instrumentation must not alter worker measurements or create
+        # coverage/allocation files inside the fingerprinted development source.
+        command = `$(Base.julia_cmd()) --startup-file=no --history-file=no --code-coverage=none --track-allocation=none --threads=$threads --project=$(abspath(project)) $worker $input $output`
         Sys.iswindows() || (command = Cmd(command; detach = true))
         # A selected worker project must not silently borrow packages from the
         # controller's global environment or a custom ambient load path.

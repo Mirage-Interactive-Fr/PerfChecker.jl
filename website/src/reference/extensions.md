@@ -82,6 +82,11 @@ portable corpus. This makes a stochastic discovery reproducible before it
 becomes a performance fixture. Corpus generation is not mixed into benchmark
 sampling; measure the frozen examples in a separate deterministic run.
 
+Generate Supposition corpora on 64-bit Julia: Supposition 0.3.5 assumes a 64-bit
+architecture in its generators, and generation is not qualified on 32-bit Julia.
+On 32-bit Julia, replay previously frozen inputs whose values and workload support
+that architecture.
+
 ## Add a Julia backend
 
 A backend implements the hook surface for its `Val{:backend}`:

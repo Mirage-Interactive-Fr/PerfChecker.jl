@@ -63,28 +63,29 @@ function _windows_process_memory_snapshot(pid::Integer)
         requested_pid, "windows-psapi", "process id must be positive")
     current = requested_pid == getpid()
     handle = if current
-        ccall((:GetCurrentProcess, "kernel32"), Ptr{Cvoid}, ())
+        ccall((:GetCurrentProcess, "kernel32"), stdcall, Ptr{Cvoid}, ())
     else
         # PROCESS_QUERY_LIMITED_INFORMATION. GetProcessMemoryInfo documents this
         # access right on supported Windows versions.
-        ccall((:OpenProcess, "kernel32"), Ptr{Cvoid},
+        ccall((:OpenProcess, "kernel32"), stdcall, Ptr{Cvoid},
             (UInt32, Cint, UInt32), UInt32(0x1000), Cint(0), UInt32(requested_pid))
     end
     handle == C_NULL && return _unavailable_process_memory(requested_pid,
         "windows-psapi", "OpenProcess failed with Windows error " * string(
-            ccall((:GetLastError, "kernel32"), UInt32, ())))
+            ccall((:GetLastError, "kernel32"), stdcall, UInt32, ())))
 
     size_t_bytes = Sys.WORD_SIZE ÷ 8
     buffer_size = 8 + 9 * size_t_bytes
     buffer = zeros(UInt8, buffer_size)
     ok = GC.@preserve buffer begin
         unsafe_store!(Ptr{UInt32}(pointer(buffer)), UInt32(buffer_size))
-        ccall((:GetProcessMemoryInfo, "psapi"), Cint,
+        ccall((:GetProcessMemoryInfo, "psapi"), stdcall, Cint,
             (Ptr{Cvoid}, Ptr{Cvoid}, UInt32), handle, pointer(buffer),
             UInt32(buffer_size))
     end
-    error_code = ok == 0 ? ccall((:GetLastError, "kernel32"), UInt32, ()) : UInt32(0)
-    current || ccall((:CloseHandle, "kernel32"), Cint, (Ptr{Cvoid},), handle)
+    error_code = ok == 0 ? ccall((:GetLastError, "kernel32"), stdcall, UInt32, ()) :
+                 UInt32(0)
+    current || ccall((:CloseHandle, "kernel32"), stdcall, Cint, (Ptr{Cvoid},), handle)
     ok == 0 && return _unavailable_process_memory(requested_pid,
         "windows-psapi", "GetProcessMemoryInfo failed with Windows error $error_code")
 

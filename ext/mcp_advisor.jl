@@ -13,7 +13,10 @@ function mcp_response(value, id)
         return nothing
     end
     response_id = get(value, "id", nothing)
-    typeof(response_id) == typeof(id) && response_id == id ||
+    same_category = (response_id isa Integer && !(response_id isa Bool) &&
+                     id isa Integer && !(id isa Bool)) ||
+                    (response_id isa AbstractString && id isa AbstractString)
+    same_category && response_id == id ||
         throw(ArgumentError("MCP response ID mismatch"))
     haskey(value, "error") && throw(ArgumentError("MCP request failed: " *
                         string(get(value["error"], "code", "unknown"))))

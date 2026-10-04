@@ -51,6 +51,31 @@ Allocation bytes attributed to file and line.
 
 - Totals depend on collection scope and repetition; do not compare them with a per-call estimate.
 
+Julia's line-allocation tracker creates `source.jl.<worker-pid>.mem` beside the
+sources it executes. PerfChecker records each worker's ownership before your
+preparation and measured code run. After success, a preparation or measurement
+error, or cancellation, it waits for the worker to stop and removes that worker's
+new traces. Files from other processes and unrelated `.mem` files are preserved.
+If a reused worker PID overwrites an existing trace, PerfChecker reads the new
+measurement and restores the previous bytes and permissions afterwards.
+
+For asynchronous suites, call `cancel_suite!(job)` and then `wait_suite(job)`;
+the cancellation request alone does not mean cleanup has finished. A cleanup
+failure is reported as a failure, including the retained private inventory
+directory, even when cancellation was requested. That directory contains the
+worker PID, known source roots and a journal including saved original trace
+bytes. If writing the inventory metadata also fails, that error is included in
+the failure and the already saved journal is retained. PerfChecker does not
+automatically delete old traces from earlier runs:
+inspect the reported paths and resolve the filesystem or process error first.
+
+The inventory covers the worker environment, development dependencies, package
+depots, Julia standard libraries and files loaded through ordinary `include`.
+A direct `include_string` that invents a filename outside those roots is not
+covered by the include journal. A forcibly killed controller, power loss or
+repeated interruption that prevents its cleanup code from running can leave
+traces; no blanket deletion of a package's `.mem` files is performed on restart.
+
 ## Network
 
 - `:network` — counters the workload reports. Safe to gate CI on those counters.

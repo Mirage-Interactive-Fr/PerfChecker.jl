@@ -971,6 +971,7 @@ function _execute_suite_plan(plan::SuitePlan; executor = _default_suite_executor
                     throw(QualificationFailure(qualification_failure, qualification))
                 end
             catch error
+                (error isa InterruptException || error isa CheckCleanupFailure) && rethrow()
                 status = error isa QualificationFailure ?
                          (error.kind === :probe ? :blocked : :invalid) :
                          _unavailable_exception(error) ? :unavailable : :error
@@ -1035,7 +1036,8 @@ function launch_suite(plan::SuitePlan;
                 progress_callback = update_progress)
             status[] = :complete
         catch error
-            if cancelled[] || error isa InterruptException
+            if !(error isa CheckCleanupFailure) &&
+               (cancelled[] || error isa InterruptException)
                 status[] = :cancelled
                 progress[]["state"] = "cancelled"
             else
