@@ -616,7 +616,12 @@ token_sha256 = "$(bytes2hex(sha256(token)))"
             @test occursin("Open the interactive PerfChecker view", filtered_documenter)
             @test hasmethod(documenter_vitepress_makedocs, Tuple{RunBundle})
             terminal = terminal_plot(compare_suite_versions(bundle))
-            @test occursin("median", sprint(show, "text/plain", terminal))
+            terminal_text = sprint(show, "text/plain", terminal)
+            @test occursin("relative to minimum", terminal_text)
+            @test occursin("reference = 1", terminal_text)
+            @test occursin("ratio / minimum", terminal_text)
+            @test all(occursin(metric, terminal_text)
+            for metric in ("wall.time", "gc.time", "alloc.bytes", "alloc.count"))
             terminal_from_grammar = terminal_plot(bundle; kind = :version_series)
             @test occursin("median", sprint(show, "text/plain", terminal_from_grammar))
         end
