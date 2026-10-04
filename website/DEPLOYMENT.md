@@ -7,6 +7,17 @@ The organization root is a landing page for project documentation. Documenter
 manages its redirect and versions only inside `PerfChecker/`; other projects
 publish to their own sibling directories.
 
+The canonical Studio, configuration, Julia/notebook and MCP guides publish with
+the package documentation. Development documentation comes from `main`; stable
+documentation comes from the matching version tag. Official extension publication
+follows V1 availability in General.
+
+A later move to `perfchecker.mirageinteractive.fr` is planned separately. Do not
+change DNS, a CNAME or the current canonical links as part of guide
+updates. Rebuild and validate the complete site with the new base and deployment
+URL when that migration is authorized; `PERFCHECKER_DOCS_BASE` already permits
+testing a different URL path without changing the current host.
+
 ## One-time authorization
 
 Documenter's cross-repository deployment requires a dedicated SSH key pair:
@@ -27,7 +38,7 @@ to the site repository; no personal token is needed. See
 ## Development documentation and release qualification
 
 The independent `Documentation` workflow installs only the documentation
-dependencies, builds Documenter and VitePress, then publishes `/PerfChecker/dev/`. It does not
+dependencies, builds Documenter and VitePress, then publishes `/PerfChecker/dev/` from `main`. It does not
 run package tests, browser tests, benchmarks or qualification. Documenter's own
 reference and doctest checks remain part of the build. PRs build but never publish.
 
@@ -40,16 +51,20 @@ Do not combine receipts from different workflow runs.
 The workflows can be rerun from their Actions pages. Manual dispatch becomes
 available when their definitions are also present on the default branch.
 
-The RC branch supplies `dev/`. Prerelease tags do not define a stable
-documentation release. When V1 is accepted, set `devbranch` in
-`website/deploy.jl` to `main`, update edit links and extend the publishing
-branch filter. Build and test each stable version with its own
-`PERFCHECKER_DOCS_BASE` before enabling tag deployments; the RC workflow
-deliberately builds only `/PerfChecker/dev/`.
-Documenter maintains the redirect and version selector inside `PerfChecker/`.
+`main` supplies `dev/`. A qualified release publishes a version-specific site built with
+`PERFCHECKER_DOCS_BASE=/PerfChecker/v1.0.0/` for `v1.0.0`. Documenter maintains
+the redirect, `stable/` alias and version selector inside `PerfChecker/`.
+The full qualification's `stable-documentation` job retrieves all receipts and
+the tested site from its own campaign, rechecks the recorded site hash, then
+deploys that artifact. It verifies the real published tag against the qualified
+revision and supplies that tag through Documenter's `GitHubActions` deployment
+configuration. It never rebuilds the stable site during publication, and the tag
+does not launch a second collection campaign.
 
-The separate `release-candidate` job creates a GitHub prerelease only after the
-full collection passes. It never replaces a tag pointing to another revision.
+The `release` job requires a complete extended qualification from the same run,
+a clean collection at the exact release revision and an explicit `publish` input.
+It creates a stable GitHub release without replacing an existing tag. General
+registration and Marketplace publication are separately verified release steps.
 
 ## Local preview
 

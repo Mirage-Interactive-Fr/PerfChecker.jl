@@ -131,7 +131,8 @@ try
         project["compat"]["HTTP"] = suite == "advisor_http1" ? "1" : "2"
         write_toml(joinpath(environment, "Project.toml"), project)
         prepare(; satellites = ["PerfCheckerWeb"])
-        execute("test/runtests.jl"; tags = "advisor_setup,advisor_mcp,advisor_http,advisor")
+        execute("test/runtests.jl";
+            tags = "advisor_setup,advisor_mcp,advisor_http,advisor,advisor_chat")
         execute("test/advisor_setup_web.jl")
     elseif suite == "pluto"
         prepare(; packages = ["Pluto", "PlutoUI", "TestItemRunner", "JSON"],
@@ -210,8 +211,12 @@ try
                 "result" => Dict(
                     "file" => basename(host_result), "sha256" => file_digest(host_result))))
         run(Cmd(
-            `$npm run package:pre-release -- --out $(joinpath(output, "perfchecker-vscode.vsix"))`;
+            `$npm run package -- --out $(joinpath(output, "perfchecker-vscode.vsix"))`;
             dir = client))
+        push!(receipt["environments"],
+            Dict("label" => "vscode-package",
+                "VSIX" => Dict("file" => "perfchecker-vscode.vsix",
+                    "sha256" => file_digest(joinpath(output, "perfchecker-vscode.vsix")))))
         receipt["dirty"] |= !isempty(strip(read(
             `git -C $client status --porcelain`, String)))
     else

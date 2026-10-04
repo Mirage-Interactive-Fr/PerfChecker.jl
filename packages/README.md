@@ -15,10 +15,10 @@ During the RC, install the engine and selected interface from the candidate bran
 
 ```julia
 using Pkg
-Pkg.add(Pkg.PackageSpec(name="PerfChecker", rev="release/v1.0.0-rc1"))
+Pkg.add(Pkg.PackageSpec(name="PerfChecker", rev="v1.0.0"))
 Pkg.add(Pkg.PackageSpec(
     url="https://github.com/Mirage-Interactive-Fr/PerfChecker.jl",
-    rev="release/v1.0.0-rc1", subdir="packages/PerfCheckerWeb"))
+    rev="v1.0.0", subdir="packages/PerfCheckerWeb"))
 using PerfChecker, PerfCheckerWeb
 ```
 

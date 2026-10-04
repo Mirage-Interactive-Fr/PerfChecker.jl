@@ -28,5 +28,9 @@ if haskey(ENV, "GITHUB_OUTPUT")
         println(io, "full=", plan["full"])
         println(io, "vscode_repository=", collection["sources"]["vscode"]["repository"])
         println(io, "vscode_revision=", collection["sources"]["vscode"]["revision"])
+        version = VersionNumber(TOML.parsefile(joinpath(root, "Project.toml"))["version"])
+        stable = isempty(version.prerelease) && isempty(version.build)
+        docs_base = plan["full"] && stable ? "/PerfChecker/v$version/" : "/PerfChecker/dev/"
+        println(io, "docs_base=", docs_base)
     end
 end

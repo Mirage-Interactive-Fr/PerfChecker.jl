@@ -32,7 +32,8 @@ begin
     request = case.prepare()
     response = case.operation(request)
     @assert case.verify(request, response)
-    (feature = feature, status = response.status, response_bytes = length(response.body), oracle_passed = true)
+    (feature = feature, status = response.status,
+        response_bytes = length(response.body), oracle_passed = true)
 end
 
 # ╔═╡ b047a994-7174-4941-a972-cc1470020005
@@ -52,10 +53,14 @@ own dependency compatibility: DataStructures is not paired with selected Oxygen 
 
 # ╔═╡ b047a994-7174-4941-a972-cc1470020006
 begin
-    public_root = normpath(joinpath(example_root, "../../website/src/public/examples/real-packages"))
+    public_root = normpath(joinpath(
+        example_root, "../../website/src/public/examples/real-packages"))
     figure_root = joinpath(public_root, "oxygen-features")
     catalog = JSON.parsefile(joinpath(figure_root, "catalog.json"))
-    matching = filter(row -> get(row, "workload", "") == feature * "_http" && row["kind"] == "normalized_metrics", catalog["views"])
+    matching = filter(
+        row -> get(row, "workload", "") == feature * "_http" &&
+            row["kind"] == "normalized_metrics",
+        catalog["views"])
     overlay = saved_plot(joinpath(figure_root, only(matching)["json"]))
 end
 
@@ -90,8 +95,9 @@ PlutoUI.LocalResource(joinpath(public_root, "oxygen-network", "network.svg"))
 begin
     network = JSON.parsefile(joinpath(public_root, "oxygen-network", "latest.json"))
     [(payload_bytes = row["payload_bytes"], samples = length(row["samples"]),
-        minimum_seconds = minimum(s["workload_seconds"] for s in row["samples"]),
-        minimum_packets_sent = minimum(s["packets_sent"] for s in row["samples"])) for row in network["records"]]
+         minimum_seconds = minimum(s["workload_seconds"] for s in row["samples"]),
+         minimum_packets_sent = minimum(s["packets_sent"] for s in row["samples"]))
+     for row in network["records"]]
 end
 
 # ╔═╡ b047a994-7174-4941-a972-cc1470020012
@@ -125,13 +131,16 @@ Pies group allocations below 5%; the other profile views retain detailed sites.
 """
 
 # ╔═╡ b047a994-7174-4941-a972-cc1470020014
-@bind evidence_family Select(["oxygen-features" => "Seven HTTP features", "oxygen" => "Application routes", "oxygen-profiles" => "Application profiles"])
+@bind evidence_family Select([
+    "oxygen-features" => "Seven HTTP features", "oxygen" => "Application routes",
+    "oxygen-profiles" => "Application profiles"])
 
 # ╔═╡ b047a994-7174-4941-a972-cc1470020015
 evidence_catalog = JSON.parsefile(joinpath(public_root, evidence_family, "catalog.json"))
 
 # ╔═╡ b047a994-7174-4941-a972-cc1470020016
-@bind evidence_view Select([row["json"] => row["title"] * " · " * row["label"] for row in evidence_catalog["views"]])
+@bind evidence_view Select([row["json"] => row["title"] * " · " * row["label"]
+                            for row in evidence_catalog["views"]])
 
 # ╔═╡ b047a994-7174-4941-a972-cc1470020017
 performance_figure(saved_plot(joinpath(public_root, evidence_family, evidence_view)))
@@ -154,10 +163,13 @@ PlutoUI.LocalResource(joinpath(public_root, diagnostic_figure))
 
 # ╔═╡ b047a994-7174-4941-a972-cc1470020020
 (
-    diagnostics=JSON.parsefile(joinpath(public_root, "oxygen-diagnostics", "diagnosis.json")),
-    quality_and_heap=JSON.parsefile(joinpath(public_root, "oxygen-diagnostics", "additional.json")),
-    native=JSON.parsefile(joinpath(public_root, "oxygen-native", "summary.json")),
-    network_isolation=JSON.parsefile(joinpath(public_root, "oxygen-network", "isolation.json")),
+    diagnostics = JSON.parsefile(joinpath(
+        public_root, "oxygen-diagnostics", "diagnosis.json")),
+    quality_and_heap = JSON.parsefile(joinpath(
+        public_root, "oxygen-diagnostics", "additional.json")),
+    native = JSON.parsefile(joinpath(public_root, "oxygen-native", "summary.json")),
+    network_isolation = JSON.parsefile(joinpath(
+        public_root, "oxygen-network", "isolation.json"))
 )
 
 # ╔═╡ Cell order:

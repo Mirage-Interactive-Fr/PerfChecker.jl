@@ -1,8 +1,8 @@
 import type { Theme } from 'vitepress'
 import { h } from 'vue'
 import DefaultTheme from 'vitepress/theme'
-// DocumenterVitepress supplies these components in the generated source tree.
-import VersionPicker from '../../components/VersionPicker.vue'
+import VersionPicker from './VersionPicker.vue'
+// DocumenterVitepress supplies this component in the generated source tree.
 import SidebarDrawerToggle from '../../components/SidebarDrawerToggle.vue'
 import { enhanceAppWithTabs } from 'vitepress-plugin-tabs/client'
 import './style.css'

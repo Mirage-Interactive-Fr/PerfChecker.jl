@@ -7,13 +7,17 @@ const OXYGEN_VERSIONS = vcat([VersionNumber(1, minor, 0) for minor in 0:9],
 "Compare the same in-process HTTP requests from Oxygen's first release to HTTP.jl 2."
 function build_suite()
     features = FeatureSpec[]
-    for kind in ("heap", "counter", "buffer"), backend in (:benchmark, :chairmark, :profile, :wall_profile, :profile_alloc)
-        push!(features, FeatureSpec(Symbol(kind, "_", backend);
-            workload = Symbol(kind, "_request"), backend,
-            entrypoint = joinpath(@__DIR__, kind * ".jl"),
-            comparison_key = "oxygen/events/$(kind)/2048/seed42/v1",
-            oracle = OracleSpec(), state_policy = :fresh,
-            options = Dict(:threads => 1, :samples => 30, :evals => 1, :seconds => 0.25)))
+    for kind in ("heap", "counter", "buffer"),
+        backend in (:benchmark, :chairmark, :profile, :wall_profile, :profile_alloc)
+
+        push!(features,
+            FeatureSpec(Symbol(kind, "_", backend);
+                workload = Symbol(kind, "_request"), backend,
+                entrypoint = joinpath(@__DIR__, kind * ".jl"),
+                comparison_key = "oxygen/events/$(kind)/2048/seed42/v1",
+                oracle = OracleSpec(), state_policy = :fresh,
+                options = Dict(
+                    :threads => 1, :samples => 30, :evals => 1, :seconds => 0.25)))
     end
     package = PackageSuite("Oxygen"; worker_environment = joinpath(@__DIR__, "workers"),
         versions = OXYGEN_VERSIONS, include_dev = false, features)

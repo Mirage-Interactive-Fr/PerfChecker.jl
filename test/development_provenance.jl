@@ -38,10 +38,11 @@ end
 @testitem "Resolved dependency identities survive worker cleanup" tags=[:development_provenance] begin
     using PerfChecker, TOML
     evidence = mktempdir() do root
-        manifest = Dict("manifest_format" => "2.0", "deps" => Dict(
-            "HTTP" => [Dict("uuid" => "cd3eb016-35fb-5094-929b-558a96fad6f3",
-                "version" => "2.4.0", "git-tree-sha1" => repeat("a", 40))],
-            "Fixture" => [Dict("path" => "private/local/path", "version" => "0.1.0")]))
+        manifest = Dict("manifest_format" => "2.0",
+            "deps" => Dict(
+                "HTTP" => [Dict("uuid" => "cd3eb016-35fb-5094-929b-558a96fad6f3",
+                    "version" => "2.4.0", "git-tree-sha1" => repeat("a", 40))],
+                "Fixture" => [Dict("path" => "private/local/path", "version" => "0.1.0")]))
         open(io -> TOML.print(io, manifest), joinpath(root, "Manifest.toml"), "w")
         PerfChecker._environment_provenance(root)
     end

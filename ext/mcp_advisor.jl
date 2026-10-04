@@ -1,5 +1,6 @@
-# Optional advice-tool client. No roots, sampling, shell execution or autonomous
-# tool discovery/calling is granted to the server. The chosen tool is explicit.
+# Optional explicit advice/implementation-tool client. No roots, sampling or
+# autonomous tool discovery/calling is granted to the server. A trusted
+# implementation tool owns enforcement of the supplied workspace boundary.
 const MCP_MAX_BYTES = 1_000_000
 
 function mcp_response(value, id)
@@ -18,6 +19,8 @@ function mcp_response(value, id)
                         string(get(value["error"], "code", "unknown"))))
     result = get(value, "result", nothing)
     result isa AbstractDict || throw(ArgumentError("MCP response has no result object"))
+    get(result, "resultType", "complete") == "complete" ||
+        throw(ArgumentError("MCP result requires unsupported client interaction"))
     haskey(result, "inputRequests") &&
         throw(ArgumentError("MCP tool requires unsupported sampling, elicitation or roots"))
     result
@@ -36,16 +39,21 @@ function mcp_read(stream, content_type, id)
         throw(ArgumentError("unsupported MCP response content type"))
     # Read incrementally: a server need not close immediately after its result.
     line, data = UInt8[], String[]
-    count = 0
+    count, previous_cr = 0, false
     while !eof(stream)
         byte = read(stream, UInt8)
         count += 1
         count <= MCP_MAX_BYTES || throw(ArgumentError("MCP stream exceeds limit"))
-        if byte != 0x0a
+        # SSE accepts LF, CRLF and CR line endings. Count skipped LF bytes too.
+        if byte == 0x0a && previous_cr
+            previous_cr = false
+            continue
+        end
+        previous_cr = byte == 0x0d
+        if byte != 0x0a && byte != 0x0d
             push!(line, byte)
             continue
         end
-        !isempty(line) && last(line) == 0x0d && pop!(line)
         text = String(copy(line))
         empty!(line)
         if isempty(text) && !isempty(data)
@@ -129,8 +137,11 @@ function mcp_tool_headers(schema, arguments)
             get(node, "type", "") in ("string", "integer", "boolean") ||
                 throw(ArgumentError("invalid MCP header parameter type"))
             if values !== nothing
-                (values isa AbstractString || values isa Bool ||
-                 (values isa Integer && abs(big(values)) <= 9007199254740991)) ||
+                type = node["type"]
+                ((type == "string" && values isa AbstractString) ||
+                 (type == "boolean" && values isa Bool) ||
+                 (type == "integer" && values isa Integer && !(values isa Bool) &&
+                  abs(big(values)) <= 9007199254740991)) ||
                     throw(ArgumentError("invalid MCP header parameter value"))
                 text = string(values)
                 plain = strip(text) == text &&

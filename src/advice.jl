@@ -145,7 +145,8 @@ function advise(diagnosis::AbstractDict; bundles::AbstractVector{RunBundle} = Ru
             elseif rule in (
                 "memory.gc_pressure", "memory.state_growth", "concurrency.lock_contention")
                 hypothesis, action, verification = if rule == "memory.gc_pressure"
-                    ("Garbage collection takes a measurable share of the observed execution time.",
+                    (
+                        "Garbage collection takes a measurable share of the observed execution time.",
                         "Locate the largest allocation sources and try reusable workspace where the operation permits it.",
                         "Compare allocations, GC time and elapsed time across repeated runs, keeping correctness checks unchanged.")
                 elseif rule == "memory.state_growth"

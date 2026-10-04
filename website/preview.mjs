@@ -17,6 +17,8 @@ const port = Number(process.env.PORT ?? 8870);
 const mount = process.env.PERFCHECKER_DOCS_BASE ?? '/';
 if (!/^\/(?:[A-Za-z0-9._-]+\/)*$/.test(mount)) throw new Error('Invalid documentation base');
 if (!Number.isInteger(port) || port < 0 || port > 65535) throw new Error('Invalid PORT');
+const versionsPath = mount.replace(/\/[^/]+\/$/, '') + '/versions.js';
+const previewVersion = mount.split('/').filter(Boolean).at(-1) ?? 'dev';
 const types = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript',
   '.css': 'text/css', '.json': 'application/json', '.svg': 'image/svg+xml',
   '.png': 'image/png', '.jpg': 'image/jpeg', '.webp': 'image/webp',
@@ -31,10 +33,10 @@ const server = createServer(async (request, response) => {
   try {
     let pathname = decodeURIComponent(new URL(request.url, 'http://localhost').pathname);
     // Preview only: Documenter supplies these files at publication time.
-    if (mount !== '/' && (pathname === '/versions.js' || pathname === mount + 'siteinfo.js')) {
-      const script = pathname === '/versions.js'
-        ? 'window.DOC_VERSIONS ||= ["dev"];'
-        : 'window.DOCUMENTER_CURRENT_VERSION ||= "dev";';
+    if (mount !== '/' && (pathname === versionsPath || pathname === '/versions.js' || pathname === mount + 'siteinfo.js')) {
+      const script = pathname !== mount + 'siteinfo.js'
+        ? `window.DOC_VERSIONS ||= [${JSON.stringify(previewVersion)}];`
+        : `window.DOCUMENTER_CURRENT_VERSION ||= ${JSON.stringify(previewVersion)};`;
       response.writeHead(200, {'Content-Type':'text/javascript'}).end(request.method === 'HEAD' ? '' : script);
       return;
     }

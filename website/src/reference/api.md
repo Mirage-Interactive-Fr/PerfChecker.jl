@@ -6,6 +6,7 @@ The public API exported by `PerfChecker`. For an executable introduction, start 
 - Inline experiment: `@check`.
 - Custom workloads and version matrices: `SoftwareSuite`, `plan_suite`, `run_suite`.
 - Shared scenarios: `run_scenarios`, `diagnose`, `compare_scenarios`.
+- Optional MCP APIs: `chat_advice` for bounded conversation; `implement_advice` for an explicit tool on a caller-owned isolated checkout. The caller owns checkpointing and diff review outside the VS Code extension; see [the MCP guide](../mcp-advisor.md).
 
 ## Interface packages
 

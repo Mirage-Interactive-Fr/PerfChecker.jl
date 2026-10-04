@@ -104,7 +104,8 @@ function safe_stop(worker)
                 try
                     close(connection)
                 catch err
-                    @debug "failed to close terminated worker connection" exception=(err, catch_backtrace())
+                    @debug "failed to close terminated worker connection" exception=(
+                        err, catch_backtrace())
                 end
             end
         end

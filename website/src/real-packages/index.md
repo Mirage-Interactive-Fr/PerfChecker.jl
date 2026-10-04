@@ -9,7 +9,7 @@ Complete experiments with scripts, saved measurements and notebooks. Each page e
 ## Get the code
 
 ```sh
-git clone --branch release/v1.0.0-rc1 https://github.com/Mirage-Interactive-Fr/PerfChecker.jl.git
+git clone --branch v1.0.0 https://github.com/Mirage-Interactive-Fr/PerfChecker.jl.git
 cd PerfChecker.jl/examples/kitchen-sink
 julia setup.jl core
 ```

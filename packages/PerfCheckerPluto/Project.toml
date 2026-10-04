@@ -1,6 +1,6 @@
 name = "PerfCheckerPluto"
 uuid = "862b4710-55ee-4fb5-a69c-50e17f92c1f9"
-version = "1.0.0-rc1"
+version = "1.0.0"
 
 [compat]
 JuliaSyntax = "0.4, 1"

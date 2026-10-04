@@ -1,5 +1,6 @@
 include(joinpath(@__DIR__, "../src/PerfCheckerKitchenSink.jl"))
-const event_lifecycle = PerfCheckerKitchenSink.event_case(Dict("kind" => "buffer", "n" => 64))
+const event_lifecycle = PerfCheckerKitchenSink.event_case(Dict(
+    "kind" => "buffer", "n" => 64))
 perf_setup() = event_lifecycle.prepare()
 perf_workload(state) = event_lifecycle.operation(state)
 perf_oracle(state, result) = event_lifecycle.verify(state, result)

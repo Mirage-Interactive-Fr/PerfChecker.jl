@@ -7,7 +7,7 @@ function _scenario_cli(command, positional, options, stdout)
         scenario_sync(root; previous = _cli_value(options, "previous"))
     elseif command == "tools"
         tool_catalog(; category = _cli_value(options, "category"))
-    elseif command in ("narrate", "evaluate-advisors")
+    elseif command in ("narrate", "chat", "implement", "evaluate-advisors")
         source = _cli_value(options, "source")
         source === nothing && throw(ArgumentError("--source is required"))
         configuration = _cli_value(options, "advisor-config")
@@ -16,6 +16,16 @@ function _scenario_cli(command, positional, options, stdout)
             (Symbol(k) => v for (k, v) in _json_parsefile(configuration))...)
         project = abspath(_cli_value(options, "project", dirname(Base.active_project())))
         input = _json_parsefile(source)
+        command == "implement" ?
+        implement_advice(input["messages"]; config, project,
+            workspace = input["workspace"], workspace_argument = get(
+                input, "workspace_argument", "workspace"),
+            advice = get(input, "advice",
+                Dict("schema_version" => ADVICE_SCHEMA, "recommendations" => []))) :
+        command == "chat" ?
+        chat_advice(input["messages"]; config, project,
+            advice = get(input, "advice",
+                Dict("schema_version" => ADVICE_SCHEMA, "recommendations" => []))) :
         command == "narrate" ? narrate_advice(input; config, project) :
         evaluate_advisors(input["cases"]; config, project,
             include_investigator = _cli_bool(options, "investigator"),
@@ -97,6 +107,7 @@ function _scenario_cli(command, positional, options, stdout)
         records = payload["records"]
         return !isempty(records) && all(r -> r["status"] == "complete", records) ? 0 : 1
     end
-    command == "narrate" && return payload["status"] in ("complete", "not_needed") ? 0 : 1
+    command in ("narrate", "chat", "implement") &&
+        return payload["status"] in ("complete", "not_needed") ? 0 : 1
     return 0
 end

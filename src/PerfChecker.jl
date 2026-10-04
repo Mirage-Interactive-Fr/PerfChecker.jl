@@ -282,6 +282,7 @@ export discover, run_scenarios, diagnose, advise, write_investigation_report
 export diagnostic_capabilities
 export CancellationToken, cancel!, compare_scenarios
 export tool_catalog, AdvisorConfig, load_advisor_config, read_advice, narrate_advice,
+       chat_advice, implement_advice,
        investigate, evaluate_advisors
 export advisor_transport
 export advisor_setup, advisor_setup_transport, launch_advisor_setup

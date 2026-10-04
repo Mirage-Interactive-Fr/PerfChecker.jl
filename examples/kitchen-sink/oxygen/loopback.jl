@@ -13,7 +13,8 @@ try
     @assert case.verify(nothing, response)
     trial = @benchmark request() samples=30 evals=1 seconds=1
     @assert case.verify(nothing, request())
-    record = Dict("scope" => "loopback HTTP client and server in one Julia process; warm connection",
+    record = Dict(
+        "scope" => "loopback HTTP client and server in one Julia process; warm connection",
         "package" => "Oxygen", "version" => string(pkgversion(EventService.Oxygen)),
         "http_version" => string(pkgversion(HTTP)), "julia_version" => string(VERSION),
         "threads" => Threads.nthreads(), "correctness" => "passed",

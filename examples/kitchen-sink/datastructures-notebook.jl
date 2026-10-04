@@ -56,10 +56,14 @@ The seven-version matrix runs outside this notebook, so opening it does not star
 
 # ╔═╡ d94ace53-1a4d-4c46-91c7-444570010007
 begin
-    public_root = normpath(joinpath(example_root, "../../website/src/public/examples/real-packages"))
+    public_root = normpath(joinpath(
+        example_root, "../../website/src/public/examples/real-packages"))
     figure_root = joinpath(public_root, "containers")
     catalog = JSON.parsefile(joinpath(figure_root, "catalog.json"))
-    matching = filter(row -> get(row, "workload", "") == family * "_" * operation && row["kind"] == "normalized_metrics", catalog["views"])
+    matching = filter(
+        row -> get(row, "workload", "") == family * "_" * operation &&
+            row["kind"] == "normalized_metrics",
+        catalog["views"])
     overlay = saved_plot(joinpath(figure_root, only(matching)["json"]))
 end
 
@@ -82,7 +86,8 @@ overhead and must not replace ordinary timing measurements.
 """
 
 # ╔═╡ d94ace53-1a4d-4c46-91c7-444570010011
-@bind detailed_view Select([row["id"] => string(row["title"], " · ", row["label"]) for row in catalog["views"]])
+@bind detailed_view Select([row["id"] => string(row["title"], " · ", row["label"])
+                            for row in catalog["views"]])
 
 # ╔═╡ d94ace53-1a4d-4c46-91c7-444570010012
 performance_figure(saved_plot(joinpath(figure_root, detailed_view * ".json")))
@@ -123,13 +128,16 @@ The following selector opens the same saved plot model as the website and Studio
 """
 
 # ╔═╡ d94ace53-1a4d-4c46-91c7-444570010015
-profile_catalog = JSON.parsefile(joinpath(public_root, "datastructures-profiles", "catalog.json"))
+profile_catalog = JSON.parsefile(joinpath(
+    public_root, "datastructures-profiles", "catalog.json"))
 
 # ╔═╡ d94ace53-1a4d-4c46-91c7-444570010016
-@bind profile_view Select([row["json"] => row["title"] * " · " * row["label"] for row in profile_catalog["views"]])
+@bind profile_view Select([row["json"] => row["title"] * " · " * row["label"]
+                           for row in profile_catalog["views"]])
 
 # ╔═╡ d94ace53-1a4d-4c46-91c7-444570010017
-performance_figure(saved_plot(joinpath(public_root, "datastructures-profiles", profile_view)))
+performance_figure(saved_plot(joinpath(
+    public_root, "datastructures-profiles", profile_view)))
 
 # ╔═╡ d94ace53-1a4d-4c46-91c7-444570010018
 @bind diagnostic_figure Select([
@@ -145,9 +153,11 @@ PlutoUI.LocalResource(joinpath(public_root, diagnostic_figure))
 
 # ╔═╡ d94ace53-1a4d-4c46-91c7-444570010020
 (
-    diagnostics=JSON.parsefile(joinpath(public_root, "datastructures-diagnostics", "diagnosis.json")),
-    quality_and_heap=JSON.parsefile(joinpath(public_root, "datastructures-diagnostics", "additional.json")),
-    native=JSON.parsefile(joinpath(public_root, "datastructures-native", "summary.json")),
+    diagnostics = JSON.parsefile(joinpath(
+        public_root, "datastructures-diagnostics", "diagnosis.json")),
+    quality_and_heap = JSON.parsefile(joinpath(
+        public_root, "datastructures-diagnostics", "additional.json")),
+    native = JSON.parsefile(joinpath(public_root, "datastructures-native", "summary.json"))
 )
 
 # ╔═╡ Cell order:

@@ -8,13 +8,14 @@ makedocs(;
     modules = [PerfChecker],
     authors = "PerfChecker contributors",
     repo = "https://github.com/Mirage-Interactive-Fr/PerfChecker.jl",
+    remotes = Dict(),
     sitename = "PerfChecker.jl",
     format = DocumenterVitepress.MarkdownVitepress(
         build_vitepress = false,
         sidebar_drawer = true,
         repo = "https://github.com/Mirage-Interactive-Fr/PerfChecker.jl",
         devurl = "dev",
-        devbranch = "release/v1.0.0-rc1",
+        devbranch = "main",
         deploy_url = "https://mirage-interactive-fr.github.io/PerfChecker/",
         description = "Deep, reproducible performance testing for Julia packages and software suites"
     ),
@@ -31,7 +32,7 @@ makedocs(;
             "Define a suite" => "software-suites.md",
             "Compare two versions" => "tutorials/comparisons.md",
             "Investigate a change" => "guide/investigate.md",
-            "Run checks in CI" => "tutorials/ci.md",
+            "Run checks in CI" => "tutorials/ci.md"
         ],
         "Examples" => [
             "Choose an example" => "real-packages/index.md",
@@ -39,38 +40,40 @@ makedocs(;
             "DataStructures" => "real-packages/datastructures.md",
             "Oxygen" => "real-packages/oxygen.md",
             "Interface recipes" => "real-packages/interfaces.md",
-            "Tool recipes" => "real-packages/extensions.md",
+            "Tool recipes" => "real-packages/extensions.md"
         ],
         "Interfaces" => [
             "Choose an interface" => "interfaces/packages.md",
             "VS Code" => "interfaces/vscode.md",
+            "VS Code configuration" => "interfaces/vscode-configuration.md",
+            "Plots, notebooks and Julia tools" => "interfaces/vscode-workflows.md",
             "Web interface (Oxygen)" => "interfaces/web-studio.md",
             "REPL and Pluto" => "interfaces/repl-pluto.md",
             "Plots with Makie" => "interfaces/visualization.md",
-            "Documenter" => "interfaces/documentation.md",
+            "Documenter" => "interfaces/documentation.md"
         ],
         "Further topics" => [
             "Additional measurements" => [
                 "Julia and native profiling" => "native-profiling.md",
                 "Process memory" => "process-memory.md",
-                "Network traffic" => "network-measurement.md",
+                "Network traffic" => "network-measurement.md"
             ],
             "Larger experiments" => [
                 "Choose an experiment" => "experiments.md",
                 "Shared scenarios" => "shared-scenarios.md",
                 "Julia runtimes" => "tutorials/julia-runtimes.md",
-                "Machine calibration" => "machine-transfer.md",
+                "Machine calibration" => "machine-transfer.md"
             ],
             "Remote execution" => [
                 "Automation workflows" => "operations/overview.md",
-                "Controllers and workers" => "operations/hosted.md",
+                "Controllers and workers" => "operations/hosted.md"
             ],
             "Optional advisors" => [
                 "How advisors work" => "advisors.md",
                 "Provider setup" => "advisor-ui.md",
-                "MCP tools" => "mcp-advisor.md",
-                "Specialized models" => "model-specialization.md",
-            ],
+                "MCP advice and implementation" => "mcp-advisor.md",
+                "Specialized models" => "model-specialization.md"
+            ]
         ],
         "Reference" => [
             "Reference index" => "reference/index.md",
@@ -84,14 +87,14 @@ makedocs(;
             "Run bundles" => "reference/run-bundles.md",
             "Report queries" => "report-queries.md",
             "Command line" => "reference/cli.md",
-            "Extensions and providers" => "reference/extensions.md",
+            "Extensions and providers" => "reference/extensions.md"
         ],
         "Contributing" => [
             "Architecture" => "architecture-roadmap.md",
             "Collection qualification" => "reference/qualification.md",
             "Documentation" => "contributing/documentation.md",
-            "Contribute an example" => "real-packages/contributing.md",
-        ],
+            "Contribute an example" => "real-packages/contributing.md"
+        ]
     ],
     warnonly = false
 )
@@ -104,4 +107,4 @@ site = joinpath(@__DIR__, "build", "site")
 run(Cmd(`$npm exec -- vitepress build build/.documenter --outDir $site`; dir = @__DIR__))
 isfile(joinpath(site, "index.html")) || error("VitePress did not produce the site")
 
-# Publishing is separate from building and does not depend on package qualification.
+# Development publishing is separate; stable publishing requires the full collection.

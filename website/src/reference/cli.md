@@ -17,6 +17,8 @@ julia --startup-file=no --project=. -e 'using PerfChecker; exit(perfchecker_main
 - `verify` — verify bundle integrity.
 - `migrate` — rewrite a legacy bundle into a new destination.
 - `diagnose`, `advise` — collect analyzer evidence, or explain saved evidence.
+- `narrate`, `chat` — explain saved advice, or ask an MCP tool using bounded conversation.
+- `implement` — invoke an explicit MCP implementation tool on a caller-owned isolated checkout; caller owns checkpoint and diff review.
 - `discover`, `sync` — propose scenarios and CI selections without running target code.
 - `machine`, `estimate` — capture machine specs, or estimate from calibration records.
 - `julia-campaign` — compare one suite across Julia runtimes.

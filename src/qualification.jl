@@ -177,9 +177,11 @@ function _environment_provenance(path::AbstractString)
             for name in sort!(collect(keys(dependencies))), entry in dependencies[name]
                 # Keep the resolved versions after temporary worker environments
                 # are removed. Hashes alone cannot explain dependency transitions.
-                push!(resolved_packages, merge(Dict{String, Any}("name" => name),
-                    Dict{String, Any}(key => entry[key] for key in
-                        ("uuid", "version", "git-tree-sha1") if haskey(entry, key))))
+                push!(resolved_packages,
+                    merge(Dict{String, Any}("name" => name),
+                        Dict{String, Any}(key => entry[key]
+                        for key in ("uuid", "version", "git-tree-sha1")
+                        if haskey(entry, key))))
                 haskey(entry, "path") || continue
                 source = abspath(root, entry["path"])
                 push!(sources,

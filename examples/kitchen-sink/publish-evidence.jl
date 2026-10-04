@@ -9,7 +9,8 @@ for package in ("datastructures", "oxygen")
             startswith(get(row, "collector", ""), "benchmarktools-v1")
     end)
     for format in ("json", "svg")
-        cp(joinpath(directory, entry[format]), joinpath(directory, "normalized." * format); force = true)
+        cp(joinpath(directory, entry[format]),
+            joinpath(directory, "normalized." * format); force = true)
     end
 end
 cp(joinpath(@__DIR__, "notebook.jl"), joinpath(root, "notebook.jl"); force = true)

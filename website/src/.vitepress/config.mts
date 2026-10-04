@@ -59,6 +59,9 @@ const config = defineConfig({
       { text: 'Interfaces', items: [
         { text: 'Choose an interface', link: '/interfaces/packages' },
         { text: 'VS Code', link: '/interfaces/vscode' },
+        { text: 'VS Code configuration', link: '/interfaces/vscode-configuration' },
+        { text: 'Notebooks and Julia tools', link: '/interfaces/vscode-workflows' },
+        { text: 'MCP advice and implementation', link: '/mcp-advisor' },
         { text: 'Web interface (Oxygen)', link: '/interfaces/web-studio' },
         { text: 'REPL and Pluto', link: '/interfaces/repl-pluto' },
         { text: 'Plots', link: '/interfaces/visualization' },
@@ -91,7 +94,7 @@ const config = defineConfig({
     ],
     sidebar: 'REPLACE_ME_DOCUMENTER_VITEPRESS',
     editLink: {
-      pattern: 'https://github.com/Mirage-Interactive-Fr/PerfChecker.jl/edit/release/v1.0.0-rc1/website/src/:path',
+      pattern: 'https://github.com/Mirage-Interactive-Fr/PerfChecker.jl/edit/main/website/src/:path',
       text: 'Edit this page',
     },
     socialLinks: [
@@ -112,10 +115,14 @@ if (process.env.PERFCHECKER_DOCS_BASE) {
   config.base = base
 }
 
-// Documenter's deployment provides both files. Local previews have only this
-// development build, so do not request a nonexistent publication catalogue.
+// Documenter's deployment provides both files. Standalone builds at the root
+// have no publication catalogue.
 if (config.base !== '/') {
-  const deploymentRoot = 'REPLACE_ME_DOCUMENTER_VITEPRESS_DEPLOY_ABSPATH'.replace(/\/$/, '')
+  // A local build can override the version directory without CI's
+  // deployment metadata. Keep its version catalogue under the same project.
+  const deploymentRoot = process.env.PERFCHECKER_DOCS_BASE
+    ? config.base.replace(/\/[^/]+\/$/, '')
+    : 'REPLACE_ME_DOCUMENTER_VITEPRESS_DEPLOY_ABSPATH'.replace(/\/$/, '')
   config.head = [
     ['script', { src: `${deploymentRoot}/versions.js` }],
     ['script', { src: `${config.base}siteinfo.js` }],

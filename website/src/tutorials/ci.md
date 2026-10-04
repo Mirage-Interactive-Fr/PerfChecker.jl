@@ -2,9 +2,6 @@
 
 CI repeats an experiment you can already run locally. Decide which result should fail the job, and keep the reports.
 
-!!! warning "Release candidate"
-    Check [release availability](../guide/installation.md) first. The registered stable release does not supply this complete workflow.
-
 ## Measure existing test items
 
 ```sh

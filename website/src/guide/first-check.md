@@ -6,7 +6,7 @@ Measure one existing `@testitem`. No checkout or suite file is needed.
 
 ```julia
 import Pkg
-Pkg.add(Pkg.PackageSpec(name = "PerfChecker", rev = "release/v1.0.0-rc1"))
+Pkg.add(Pkg.PackageSpec(name = "PerfChecker", version = "1"))
 Pkg.add(["Bibliography", "TestItems", "TestItemRunner"])
 ```
 

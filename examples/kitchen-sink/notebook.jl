@@ -23,12 +23,15 @@ For a controller with launch buttons, use `controller-notebook.jl`.
 
 # ╔═╡ 79c7db1d-20e8-4607-9607-c32bb3bcab03
 report_paths = let
-    public_root = normpath(joinpath(example_root, "../../website/src/public/examples/real-packages"))
-    published = [joinpath(public_root, name) for name in
-        ("datastructures", "oxygen", "datastructures-profiles", "oxygen-profiles")
-        if isfile(joinpath(public_root, name, "catalog.json"))]
+    public_root = normpath(joinpath(
+        example_root, "../../website/src/public/examples/real-packages"))
+    published = [joinpath(public_root, name)
+                 for name in ("datastructures", "oxygen",
+                         "datastructures-profiles", "oxygen-profiles")
+                 if isfile(joinpath(public_root, name, "catalog.json"))]
     local_root = joinpath(example_root, "results")
-    local_reports = isdir(local_root) ? filter(path -> isfile(joinpath(path, "suite-result.json")),
+    local_reports = isdir(local_root) ?
+                    filter(path -> isfile(joinpath(path, "suite-result.json")),
         readdir(local_root; join = true)) : String[]
     vcat(published, local_reports)
 end
@@ -40,13 +43,16 @@ end
 bundle = isfile(joinpath(report, "catalog.json")) ? nothing : example_bundle(report)
 
 # ╔═╡ 79c7db1d-20e8-4607-9607-c32bb3bcab06
-catalog = bundle === nothing ? JSON.parsefile(joinpath(report, "catalog.json"))["views"] : plot_catalog(bundle)
+catalog = bundle === nothing ? JSON.parsefile(joinpath(report, "catalog.json"))["views"] :
+          plot_catalog(bundle)
 
 # ╔═╡ 79c7db1d-20e8-4607-9607-c32bb3bcab07
-@bind selected Select([row["id"] => string(row["title"], " · ", row["label"]) for row in catalog])
+@bind selected Select([row["id"] => string(row["title"], " · ", row["label"])
+                       for row in catalog])
 
 # ╔═╡ 79c7db1d-20e8-4607-9607-c32bb3bcab08
-model = bundle === nothing ? saved_plot(joinpath(report, selected * ".json")) : performance_plot(bundle, selected)
+model = bundle === nothing ? saved_plot(joinpath(report, selected * ".json")) :
+        performance_plot(bundle, selected)
 
 # ╔═╡ 79c7db1d-20e8-4607-9607-c32bb3bcab09
 performance_figure(model)

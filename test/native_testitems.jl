@@ -27,44 +27,46 @@ end
     mktempdir() do root
         marker = joinpath(root, "executed.txt")
         check_marker = joinpath(root, "check-executed.txt")
-        write(joinpath(root, "items.jl"), """
-        using TestItems
-        error("top level must never be included")
-        @testmodule Shared begin
-            const value = 42
-        end
-        @testitem "shared" setup=[Shared] begin
-            open($(repr(marker)), "a") do io
-                println(io, "once")
-            end
-            @testset "nested" begin
-                @test Shared.value == 42
-            end
-        end
-        @testitem "perf" tags=[:perf_only] begin
-            @test 1 == 1
-        end
-        @testitem "check" tags=[:check_only] skip=(get(ENV, "PERFCHECKER_TESTITEM_MODE", "") != "performance") begin
-            write($(repr(check_marker)), "ran")
-            @test 1 == 1
-        end
-        @testitem "functional" tags=[:test_only] begin
-            error("not selected for perf")
-        end
-        @testitem "invalid" tags=[:negative] begin
-            @test false
-        end
-        @testitem "skipped" tags=[:negative] skip=true begin
-            error("skipped")
-        end
-        """)
+        write(joinpath(root, "items.jl"),
+            """
+using TestItems
+error("top level must never be included")
+@testmodule Shared begin
+    const value = 42
+end
+@testitem "shared" setup=[Shared] begin
+    open($(repr(marker)), "a") do io
+        println(io, "once")
+    end
+    @testset "nested" begin
+        @test Shared.value == 42
+    end
+end
+@testitem "perf" tags=[:perf_only] begin
+    @test 1 == 1
+end
+@testitem "check" tags=[:check_only] skip=(get(ENV, "PERFCHECKER_TESTITEM_MODE", "") != "performance") begin
+    write($(repr(check_marker)), "ran")
+    @test 1 == 1
+end
+@testitem "functional" tags=[:test_only] begin
+    error("not selected for perf")
+end
+@testitem "invalid" tags=[:negative] begin
+    @test false
+end
+@testitem "skipped" tags=[:negative] skip=true begin
+    error("skipped")
+end
+""")
         found = discover_testitems(root; exclude_tags = [:negative])
         @test !isfile(marker)
         @test Set(i["name"] for i in found["items"]) == Set(["shared", "perf", "check"])
         @test Set(i["name"]
         for i in discover_testitems(root; mode = :test, exclude_tags = [:negative])["items"]) ==
               Set(["shared", "functional"])
-        @test Set(i["name"] for i in discover_testitems(root; tags = [:check_only])["items"]) ==
+        @test Set(i["name"]
+        for i in discover_testitems(root; tags = [:check_only])["items"]) ==
               Set(["perf", "check"])
         TestItemRunner.run_tests(root; filter = item -> item.name == "check")
         @test !isfile(check_marker)

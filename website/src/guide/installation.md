@@ -6,19 +6,12 @@ The Julia API, command line and text REPL are in PerfChecker itself.
 
 ```julia
 import Pkg
-Pkg.add("PerfChecker")   # stable, currently 0.2.4
-```
-
-The V1 release candidate has a different API. Install it in a separate environment:
-
-```julia
-Pkg.add(Pkg.PackageSpec(name = "PerfChecker", rev = "release/v1.0.0-rc1"))
+Pkg.add(Pkg.PackageSpec(name = "PerfChecker", version = "1"))
 using PerfChecker
 ```
 
-!!! warning "Release candidate"
-    These pages describe **1.0.0-rc1**. General still serves **0.2.4**.
-    Keep the candidate in its own environment.
+The V1 API differs from the 0.2 series. Use a separate environment when migrating
+an existing project, and select the V1 package explicitly.
 
 ## Optional packages
 
@@ -27,16 +20,17 @@ Install only what you need.
 - Existing TestItems — `Pkg.add("TestItemRunner")`
 - BenchmarkTools — `Pkg.add("BenchmarkTools")`
 - Chairmarks — `Pkg.add("Chairmarks")`
-- Oxygen web interface — `Pkg.add("PerfCheckerWeb")`
-- Pluto notebooks — `Pkg.add("PerfCheckerPluto")`
-- Makie figures — `Pkg.add("PerfCheckerMakie")`
+- Oxygen web interface — `PerfCheckerWeb`, installed from the subdirectory below
+- Pluto notebooks — `PerfCheckerPluto`, using `packages/PerfCheckerPluto`
+- Makie figures — `PerfCheckerMakie`, using `packages/PerfCheckerMakie`
 
-The three interface packages await their first General registration. During the release candidate, install one from its repository subdirectory:
+The three interface packages have separate identities. Until their first General
+registrations, install one from its repository subdirectory at the stable tag:
 
 ```julia
 Pkg.add(Pkg.PackageSpec(
     url = "https://github.com/Mirage-Interactive-Fr/PerfChecker.jl",
-    rev = "release/v1.0.0-rc1",
+    rev = "v1.0.0",
     subdir = "packages/PerfCheckerWeb"))
 ```
 

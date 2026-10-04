@@ -64,8 +64,8 @@ workflow replaces the earlier core and shared-scenario workflows. The separate
 VS Code repository retains its client CI.
 
 `scripts/collect.jl` rejects missing, failed, duplicate, stale and mismatched lanes
-and altered environment files. Partial success never authorizes documentation
-publication. Full qualification emits `.qualification/collection.toml`, including
+and altered environment files. Partial success never authorizes versioned stable
+documentation or a package release. Full qualification emits `.qualification/collection.toml`, including
 the exact environment inventory per lane. These are separate environments, not
 one universal Manifest: Oxygen/HTTP 2 and Pluto/HTTP 1 can coexist in the collection.
 Every new plan receives a unique campaign identifier, so receipts from earlier
@@ -73,7 +73,8 @@ attempts cannot fill missing jobs even when the source revision is unchanged.
 
 The documentation lane hashes the built site. Publication rechecks the complete
 collection and the exact site instead of rebuilding with newer dependencies.
-`collection.toml` is placed beside the published pages. PR jobs cannot publish.
+`collection.toml` is attached to the GitHub release and retained in the workflow
+artifacts. Development documentation has an independent build; PR jobs cannot publish.
 Receipts check consistency; trust comes from retrieving them from the same CI run,
 not from accepting arbitrary TOML supplied by a candidate.
 
@@ -84,8 +85,9 @@ destination and the cross-repository deploy-key setup.
 
 ## Explicit limits
 
-- The first complete remote matrix has not run; controller tests alone do not
-  qualify the collection or its externally pinned VS Code revision.
+- Controller tests alone do not qualify the collection or its externally pinned
+  VS Code revision. Verify the complete campaign and exact revision in the
+  [qualification workflow](https://github.com/Mirage-Interactive-Fr/PerfChecker.jl/actions/workflows/Qualification.yml).
 - VS Code runs native-controller tests, launches an isolated Extension Development
   Host and packages a VSIX. The host test reuses `shared/items.jl` to prove a single
   selected item ran exactly once; the receipt captures its real VS Code version.

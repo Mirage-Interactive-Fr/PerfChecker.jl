@@ -409,11 +409,14 @@ end
 function _group_allocation_pie(records; min_percentage::Real = 5, top::Integer = 40)
     isfinite(min_percentage) && 0 <= min_percentage <= 100 ||
         throw(ArgumentError("min_percentage must be between 0 and 100"))
-    records = sort(copy(records); by = item -> (-Float64(item["bytes"]), String(item["label"])))
+    records = sort(
+        copy(records); by = item -> (-Float64(item["bytes"]), String(item["label"])))
     total = sum(item -> Float64(item["bytes"]), records; init = 0.0)
     limit = max(Int(top), 2)
-    kept = filter(item -> total > 0 &&
-        100 * Float64(item["bytes"]) / total >= min_percentage, records)
+    kept = filter(
+        item -> total > 0 &&
+            100 * Float64(item["bytes"]) / total >= min_percentage,
+        records)
     # Reserve one legend entry for the combined remainder when necessary.
     count = length(kept)
     if count < length(records) || count > limit
@@ -422,11 +425,12 @@ function _group_allocation_pie(records; min_percentage::Real = 5, top::Integer =
     selected_records = [copy(item) for item in first(kept, count)]
     remainder = records[(count + 1):end]
     if !isempty(remainder)
-        push!(selected_records, Dict{String, Any}(
-            "version" => get(first(remainder), "version", ""),
-            "file" => "other", "line" => 0, "label" => "Other allocation sites",
-            "bytes" => sum(item -> Float64(item["bytes"]), remainder; init = 0.0),
-            "grouped_sites" => length(remainder)))
+        push!(selected_records,
+            Dict{String, Any}(
+                "version" => get(first(remainder), "version", ""),
+                "file" => "other", "line" => 0, "label" => "Other allocation sites",
+                "bytes" => sum(item -> Float64(item["bytes"]), remainder; init = 0.0),
+                "grouped_sites" => length(remainder)))
     end
     for item in selected_records
         item["percentage"] = total == 0 ? 0.0 : 100 * Float64(item["bytes"]) / total

@@ -7,7 +7,7 @@ export events, drain_heap, drain_vector, count_events, recent_events, event_case
 # Select the public constructor once, outside measurement. Older releases used
 # a lowercase function for the same min-heap operation.
 const make_minheap = isdefined(DataStructures, :BinaryMinHeap) ?
-    DataStructures.BinaryMinHeap : DataStructures.binary_minheap
+                     DataStructures.BinaryMinHeap : DataStructures.binary_minheap
 
 "Generate immutable (priority, unique id, category) events from a fixed seed."
 function events(n::Integer = 2048; seed::Integer = 42)
@@ -53,13 +53,16 @@ function event_case(parameters)
     n = Int(get(parameters, "n", 2048))
     input = events(n; seed = Int(get(parameters, "seed", 42)))
     kind = String(get(parameters, "kind", "heap"))
-    operation = kind == "heap" ? drain_heap : kind == "vector" ? drain_vector :
-                kind == "counter" ? count_events : kind == "buffer" ? recent_events :
+    operation = kind == "heap" ? drain_heap :
+                kind == "vector" ? drain_vector :
+                kind == "counter" ? count_events :
+                kind == "buffer" ? recent_events :
                 throw(ArgumentError("Choose heap, vector, counter or buffer"))
     expected = if kind in ("heap", "vector")
         sort(input)
     elseif kind == "counter"
-        Dict(category => count(e -> e[3] == category, input) for category in unique(e[3] for e in input))
+        Dict(category => count(e -> e[3] == category, input)
+        for category in unique(e[3] for e in input))
     else
         input[max(1, length(input) - 63):end]
     end

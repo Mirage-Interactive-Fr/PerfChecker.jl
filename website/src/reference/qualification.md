@@ -24,16 +24,17 @@ The resulting inventory identifies the exact package versions and environment fi
 
 ## Documentation publication
 
-- Documentation publication is independent of qualification.
-- The `Documentation` workflow installs documentation dependencies, builds Documenter and VitePress, and publishes `/PerfChecker/dev/`. No package matrix, browser tests or benchmarks.
+- Development documentation publication is independent of qualification.
+- The `Documentation` workflow installs documentation dependencies, builds Documenter and VitePress, and publishes `/PerfChecker/dev/` from `main`. No package matrix, browser tests or benchmarks.
 - The extended qualification produces a `qualified-collection` artifact with the exact tested revisions and environments.
-- Only a complete successful qualification authorizes a package release.
+- Only a complete successful qualification authorizes a package release and stable documentation. The stable publication revalidates all receipts and the site hash, then deploys the exact tested artifact from that campaign at its verified release tag.
 
 Publishing development documentation does not certify the packages it describes. Pull requests build but cannot publish.
 
 ## Limits
 
 - The initial supported platforms are Windows and Linux.
+- The separate compatibility CI retains the protected branch's core checks on macOS, Linux and Windows, including Linux 32-bit and Julia LTS/pre-release runtimes. Those core tests do not establish qualification of every interface on macOS.
 - Jobs run sequentially: one Julia compute thread, single-thread BLAS, four-thread budget.
 - No measurement is validated merely because a tool executable was found.
 

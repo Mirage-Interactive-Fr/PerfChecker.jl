@@ -1,6 +1,6 @@
 # Optional advisors
 
-PerfChecker's deterministic advice works with no model and no network. An optional model can explain saved evidence or pick the next experiment from an explicit catalogue. It cannot modify code or run generated commands.
+PerfChecker's deterministic advice works with no model and no network. An optional model can explain saved evidence or pick the next experiment from an explicit catalogue. Advice does not execute suggested commands. MCP implementation uses a separately configured tool and reviewed isolated checkout; see [MCP advice and implementation](mcp-advisor.md).
 
 - Generated prose is unverified. Correctness, quality, performance and availability keep independent verdicts.
 - The deterministic advisor remains the fallback for any provider failure.
@@ -40,11 +40,11 @@ end
 
 ## What leaves your machine
 
-Only a bounded projection is sent:
+Evidence narration sends a bounded projection:
 
 - recommendation IDs, rules, observations, proposed experiments, verifications and limits.
 
-Not sent: raw logs, source files, automatic source-location fields, credentials and workspace roots.
+The projection does not include raw logs, source files, automatic source-location fields or workspace roots. Chat additionally sends your typed messages and retained replies. Explicit implementation sends its isolated checkout path and permits the selected tool to inspect code there. Credentials are carried only in the configured authentication header. See the [complete transmission contract](mcp-advisor.md#What-is-transmitted).
 
 Validation checks references and allowed actions — not the truth of the prose. Evidence IDs must exist; duplicates and unknown experiment IDs are rejected; response size is bounded.
 
@@ -63,7 +63,7 @@ result = investigate(catalog; project = "perf", advisor = config,
 - An experiment marked complete means its execution completed — not that performance is acceptable.
 - No threshold or baseline is adopted automatically.
 
-`discover`, `sync`, `tools`, `diagnose`, `narrate`, `investigate` and `evaluate-advisors` have CLI counterparts.
+`discover`, `sync`, `tools`, `diagnose`, `narrate`, `chat`, `implement`, `investigate` and `evaluate-advisors` have CLI counterparts. Implementation callers outside VS Code own checkpointing and diff review.
 
 ## Evaluate usefulness before adding autonomy
 

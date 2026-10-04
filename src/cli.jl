@@ -146,6 +146,8 @@ Commands:
   estimate         Estimate held-out performance from a --source calibration JSON
   sync             Propose shared catalogue / CI configurations without execution
   narrate          Explain saved advice using an optional configured model
+  chat             Ask an MCP advice tool using bounded conversation and saved advice
+  implement        Invoke an MCP implementation tool on an explicit isolated checkout
   advisor-setup    Configure connections and explicitly manage optional local models
   investigate      Run a bounded selection of explicitly declared experiments
   evaluate-advisors Compare evidence selection against an explicit labelled corpus
@@ -274,7 +276,8 @@ function perfchecker_main(args = ARGS; stdout::IO = Base.stdout,
             println(stdout)
             return payload["status"] == "complete" ? 0 : 1
         end
-        if command in ("discover", "diagnose", "advise", "tools", "narrate",
+        if command in (
+               "discover", "diagnose", "advise", "tools", "narrate", "chat", "implement",
                "investigate", "evaluate-advisors", "sync") ||
            (command == "run" && haskey(options, "catalog")) ||
            (command == "compare" && _cli_bool(options, "scenarios"))
@@ -449,7 +452,8 @@ function perfchecker_main(args = ARGS; stdout::IO = Base.stdout,
                 "network_isolation" => network_isolation_capabilities(; probe = true),
                 "commands" => ["init", "plan", "run", "compare", "check", "report",
                     "preflight", "verify", "migrate", "julia-campaign", "network",
-                    "discover", "diagnose", "advise", "tools", "narrate", "advisor-setup",
+                    "discover", "diagnose", "advise", "tools", "narrate",
+                    "chat", "implement", "advisor-setup",
                     "investigate", "evaluate-advisors", "sync"])
             _canonical_json(stdout, payload)
             println(stdout)

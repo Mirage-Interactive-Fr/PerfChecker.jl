@@ -129,7 +129,7 @@ end
     @test length(report["recommendations"]) == 1
     item = only(report["recommendations"])
     @test item["predicted_gain"] == "not_measured"
-    @test occursin("Mesurer", item["action"])
+    @test occursin("Benchmark", item["action"])
     @test report == advise(diagnosis)
     record["findings"] = []
     @test isempty(advise(diagnosis)["recommendations"])

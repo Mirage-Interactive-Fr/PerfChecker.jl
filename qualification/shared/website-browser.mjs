@@ -42,14 +42,14 @@ try {
         assert.equal(await burger.getAttribute('aria-expanded'),'true');
         const screen=page.locator('.VPNavScreen');
         await screen.getByRole('button',{name:'Interfaces',exact:true}).click();
-        await screen.getByRole('link',{name:'Web Studio',exact:true}).click();
+        await screen.getByRole('link',{name:'Web interface (Oxygen)',exact:true}).click();
         await page.waitForURL('**/interfaces/web-studio');
         assert.equal(await burger.getAttribute('aria-expanded'),'false');
       }else{
         assert(!(await burger.isVisible()));
         assert.equal(await page.locator('.VPNavBarMenu > .VPNavBarMenuGroup:not(.VPVersionPicker)').count(),4);
         await page.locator('.VPNavBarMenu').getByRole('button',{name:'Interfaces',exact:true}).hover();
-        await page.locator('.VPNavBarMenu').getByRole('link',{name:'Web Studio',exact:true}).waitFor();
+        await page.locator('.VPNavBarMenu').getByRole('link',{name:'Web interface (Oxygen)',exact:true}).waitFor();
       }
       checks.push(`navigation:${width}:${route||'home'}`);
     }
@@ -104,21 +104,28 @@ try {
     await page.goto(base,{waitUntil:'networkidle'});
     if(width<1280) await page.getByRole('button',{name:'mobile navigation',exact:true}).click();
     const picker=page.locator(width<1280?'.VPNavScreen .VPVersionPicker':'.VPNavBar .VPVersionPicker');
-    const button=picker.getByRole('button',{name:'dev',exact:true});
+    const localVersion=new URL(base).pathname.split('/').filter(Boolean).at(-1) ?? 'dev';
+    const button=picker.getByRole('button',{name:localVersion,exact:true});
     await button.click();
-    const link=picker.getByRole('link',{name:'dev',exact:true});
+    const link=picker.getByRole('link',{name:localVersion,exact:true});
     await link.waitFor({state:'visible'});
     assert.equal(new URL(await link.getAttribute('href'),base).pathname,new URL(base).pathname);
     assert.equal(await picker.getByRole('link').count(),1);
   }
-  checks.push('version picker lists only the local development build on mobile and desktop');
+  checks.push('version picker identifies the local version path on mobile and desktop');
   // Exercise Documenter's publication metadata on a simulated host. These
   // versions are test fixtures only and never become part of the public site.
   const published=await browser.newContext({viewport:{width:1440,height:1080}});
+  const publishedBase=new URL(new URL(base).pathname,'http://docs.perfchecker.test');
+  const stableBase=new URL('../stable/',publishedBase);
   await published.route('**/*',async route=>{
     const url=new URL(route.request().url());
     if(url.origin!=='http://docs.perfchecker.test') return route.abort();
-    const response=await published.request.get(new URL(url.pathname+url.search,base).href);
+    // Documenter publishes stable as an alias of the immutable version folder.
+    const pathname=url.pathname.startsWith(stableBase.pathname)
+      ? publishedBase.pathname+url.pathname.slice(stableBase.pathname.length)
+      : url.pathname;
+    const response=await published.request.get(new URL(pathname+url.search,base).href);
     await route.fulfill({response});
   });
   await published.addInitScript(()=>{
@@ -126,13 +133,23 @@ try {
     window.DOCUMENTER_CURRENT_VERSION='v1.0';
   });
   const publishedPage=await published.newPage();
-  await publishedPage.goto('http://docs.perfchecker.test/',{waitUntil:'domcontentloaded'});
+  const publishedErrors=[];
+  publishedPage.on('pageerror',error=>publishedErrors.push(error.message));
+  await publishedPage.goto(publishedBase.href,{waitUntil:'domcontentloaded'});
   const publishedPicker=publishedPage.locator('.VPNavBar .VPVersionPicker');
   await publishedPicker.getByRole('button',{name:'v1.0',exact:true}).click();
   await publishedPicker.getByRole('link',{name:'stable',exact:true}).waitFor({state:'visible'});
   assert.deepEqual((await publishedPicker.getByRole('link').allTextContents()).map(s=>s.trim()),['stable','v1.0','dev']);
   assert.equal(await publishedPicker.getByRole('link',{name:'stable',exact:true}).getAttribute('href'),
-    'http://docs.perfchecker.test/stable/');
+    stableBase.href);
+  assert.equal(await publishedPicker.getByRole('link',{name:'dev',exact:true}).getAttribute('href'),
+    new URL('../dev/',publishedBase).href);
+  await publishedPage.goto(new URL('interfaces/vscode',stableBase).href,{waitUntil:'networkidle'});
+  assert(await publishedPage.getByRole('heading',{name:/^PerfChecker Studio in VS Code/}).isVisible());
+  await publishedPage.locator('.vp-doc').getByRole('link',{name:'VS Code configuration',exact:true}).click();
+  await publishedPage.waitForURL('**/interfaces/vscode-configuration');
+  await publishedPage.getByRole('heading',{name:/^VS Code configuration/}).waitFor({state:'visible'});
+  assert.deepEqual(publishedErrors,[]);
   await published.close();
   checks.push('published version picker reads Documenter metadata without a hard-coded release list');
   await page.setViewportSize({width:1440,height:1080});
@@ -148,10 +165,18 @@ try {
   await page.goto(base+'guide/overview',{waitUntil:'networkidle'});
   assert(!(await page.locator('.vp-doc').innerText()).includes('perfchecker-suite-plan/1'));
   await page.goto(base+'interfaces/vscode',{waitUntil:'networkidle'});
-  const firstList=page.locator('.vp-doc ol').first();
-  assert.equal(await firstList.locator(':scope > li').count(),4);
+  const installList=page.locator('.vp-doc h2').filter({hasText:'Install and prepare'})
+    .locator('xpath=following-sibling::ol[1]');
+  assert.equal(await installList.locator(':scope > li').count(),6);
+  assert.equal(await installList.evaluate(list=>list.start),1);
+  const firstList=page.locator('.vp-doc h2').filter({hasText:'Get a first result'})
+    .locator('xpath=following-sibling::ol[1]');
+  assert.equal(await firstList.locator(':scope > li').count(),5);
   assert.equal(await firstList.evaluate(list=>list.start),1);
-  assert((await firstList.locator('li').first().innerText()).includes('Discover existing test items'));
+  const firstSteps=await firstList.locator(':scope > li').allTextContents();
+  for(const [index,fragment] of ['Discover existing test items','Testing','Select one item',
+    'collector','saved visual output'].entries())
+    assert(firstSteps[index].includes(fragment),`Missing first-result step ${index+1}`);
   await page.goto(base+'contributing/documentation',{waitUntil:'networkidle'});
   const screenshotPolicy=page.locator('.vp-doc ol').first();
   assert.equal(await screenshotPolicy.locator(':scope > li').count(),7);
@@ -159,13 +184,15 @@ try {
   checks.push('ordered instructions retain every step and start at one');
   await page.goto(base+'reference/run-bundles',{waitUntil:'networkidle'});
   const formatGuide=await page.locator('.vp-doc').innerText();
-  assert(formatGuide.includes('test plan, file format version 1'));
-  assert(formatGuide.includes('/2')&&formatGuide.includes('/10'));
-  assert(formatGuide.includes('You do not choose this integer'));
+  assert(formatGuide.includes('data format')&&formatGuide.includes('schema version'));
+  for(const format of ['perfchecker-suite-plan/1','perfchecker-testitem-run/1',
+    'perfchecker-run-bundle/1','perfchecker-agent-evidence/1','perfchecker-query/1',
+    'perfchecker-query-result/1']) assert(formatGuide.includes(format));
+  assert(formatGuide.includes('unsupported version')&&formatGuide.includes('do not guess'));
   checks.push('format versions are explained in reference rather than listed in the overview');
   await page.goto(base+'guide/installation',{waitUntil:'networkidle'});
   const installation=await page.locator('.vp-doc').innerText();
-  assert(installation.includes('Pkg.add("PerfChecker")'));
+  assert(installation.includes('Pkg.add(Pkg.PackageSpec(name = "PerfChecker", version = "1"))'));
   assert(!/Pkg.activate|Pkg.develop|Generate the suite skeleton|Local PerfChecker development/.test(installation));
   checks.push('installation contains package choices without development or suite scaffolding');
   await page.goto(base+'suites-and-comparisons',{waitUntil:'networkidle'});
@@ -204,8 +231,15 @@ try {
   checks.push('first-result tutorial supplies the complete downloadable test item');
   for(const route of ['interfaces/packages','operations/overview','experiments','reference/index']){
     await page.goto(base+route,{waitUntil:'networkidle'});
-    assert(await page.locator('.vp-doc table').count()>=1);
     assert(await page.locator('.vp-doc a[href]').count()>=3);
+    const entryText=await page.locator('.vp-doc').innerText();
+    if(route==='interfaces/packages'){
+      for(const name of ['PerfCheckerWeb','PerfCheckerPluto','PerfCheckerMakie','VS Code'])
+        assert(entryText.includes(name));
+    }else if(route==='reference/index'){
+      for(const name of ['Measurement model','Collectors','Run bundles','Command line','Julia API'])
+        assert(entryText.includes(name));
+    }else assert(await page.locator('.vp-doc table').count()>=1);
   }
   checks.push('section entry pages connect questions, prerequisites and next steps');
   // Follow the documentation's links, including raw-HTML links that the Markdown
@@ -253,7 +287,9 @@ try {
   for(const width of [390,1440]){
     await page.setViewportSize({width,height:1080});
     await page.goto(base+'tutorials/quick-tour',{waitUntil:'networkidle'});
-    assert(await page.getByRole('heading',{name:/Bibliography in three small steps/}).isVisible());
+    assert(await page.getByRole('heading',{name:/^Measure an operation/}).isVisible());
+    for(const section of ['Swap the collector, keep the workload','Compare versions','Read a result'])
+      assert(await page.getByRole('heading',{name:new RegExp(`^${section}`)}).isVisible());
     assert.equal(await page.locator('.doc-screenshot img').count(),2);
     for(const img of await page.locator('.doc-screenshot img').all()){
       await img.scrollIntoViewIfNeeded();await img.evaluate(image=>image.decode());
@@ -276,8 +312,10 @@ try {
   for(const route of ['interfaces/repl-pluto','tutorials/bibliography']){
     await page.goto(base+route,{waitUntil:'networkidle'});
     const download=page.locator('a[download="notebook.jl"]');
-    assert.equal(await download.count(),1);
-    const response=await page.request.get(new URL(await download.getAttribute('href'),page.url()).href);
+    assert.equal(await download.count(),2);
+    const notebookLinks=await download.evaluateAll(links=>links.map(link=>link.href));
+    assert.equal(new Set(notebookLinks).size,1);
+    const response=await page.request.get(notebookLinks[0]);
     assert.equal(response.status(),200);
     const notebook=await response.text();
     assert.equal(notebook.replaceAll('\r\n','\n'),
@@ -356,7 +394,7 @@ try {
   assert.equal(await availability.locator('.history-error,.history-missing').count(),0);
   checks.push('history availability keeps undefined workloads distinct from measured values');
   await page.goto(base+'guide/understanding-measurements',{waitUntil:'networkidle'});
-  for(const heading of ['Wall time: how long the operation takes','Garbage collection: reclaiming unused objects','Flame graphs: where sampled work accumulates'])
+  for(const heading of ['Wall time','Garbage collection','Flame graphs'])
     await page.getByRole('heading',{name:new RegExp('^'+heading)}).waitFor();
   assert((await page.locator('.vp-doc').innerText()).includes('GC fraction'));
   checks.push('measurement tutorial is built and exposes timing, GC and flame-graph explanations');

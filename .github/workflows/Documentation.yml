@@ -2,7 +2,8 @@ name: Documentation
 
 on:
   push:
-    branches: [main, "release/**"]
+    branches: [main]
+    tags: ['v*']
   pull_request:
   workflow_dispatch:
 
@@ -33,6 +34,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
         with:
+          ref: ${{ github.sha }}
           persist-credentials: false
       - uses: julia-actions/setup-julia@v3
         with:
@@ -43,6 +45,13 @@ jobs:
           cache: npm
           cache-dependency-path: website/package-lock.json
       - uses: julia-actions/cache@v3
+      - name: Select the documented version path
+        shell: bash
+        run: |
+          if [[ "$GITHUB_REF_TYPE" == tag ]]; then
+            [[ "$GITHUB_REF_NAME" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "Only stable documentation tags are publishable"; exit 1; }
+            echo "PERFCHECKER_DOCS_BASE=/PerfChecker/$GITHUB_REF_NAME/" >> "$GITHUB_ENV"
+          fi
       - name: Install documentation dependencies
         run: julia --startup-file=no --project=website -e 'using Pkg; Pkg.develop(path="."); Pkg.instantiate()'
       - name: Build Documenter and VitePress
@@ -50,7 +59,7 @@ jobs:
       - name: Publish documentation
         if: >-
           github.event_name != 'pull_request' &&
-          github.ref == 'refs/heads/release/v1.0.0-rc1' &&
+          github.ref == 'refs/heads/main' &&
           vars.PERFCHECKER_DOCS_DEPLOY == 'true'
         run: julia --startup-file=no --project=website website/deploy.jl
         env:

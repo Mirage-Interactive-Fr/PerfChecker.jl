@@ -35,7 +35,10 @@ function _investigation_rows(payload)
                     text = c["explanation"], evidence = c) for c in payload["cards"]]
         if !isempty(get(payload, "external_review", ""))
             rows = vcat(rows,
-                [(title = "External MCP advice", status = "unverified_narrative",
+                [(
+                    title = get(payload, "advisor_mode", "advice") == "implementation" ?
+                            "External MCP implementation summary" : "External MCP advice",
+                    status = "unverified_narrative",
                     text = payload["external_review"], evidence = Dict("reference_status" => "unstructured_not_verified"))])
         end
         return vcat(rows, _investigation_rows(payload["fallback"]))

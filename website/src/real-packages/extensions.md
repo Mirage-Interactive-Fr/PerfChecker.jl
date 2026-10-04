@@ -156,7 +156,7 @@ the performance comparison repeatable after a stochastic search.
 
 The event workload already separates input generation from execution. A useful
 extension is to generate event counts and seeds, freeze them, and measure the
-same cases on every target version. See [the corpus example script](https://github.com/Mirage-Interactive-Fr/PerfChecker.jl/blob/release/v1.0.0-rc1/examples/kitchen-sink/corpus.jl).
+same cases on every target version. See [the corpus example script](https://github.com/Mirage-Interactive-Fr/PerfChecker.jl/blob/v1.0.0/examples/kitchen-sink/corpus.jl).
 
 ```sh
 julia --project=.controller/extras corpus.jl freeze

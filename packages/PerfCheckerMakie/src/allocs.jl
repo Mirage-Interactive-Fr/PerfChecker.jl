@@ -4,12 +4,15 @@ function PerfChecker.table_to_pie(x::Table, ::Val{:alloc}; pkg_name = "",
     lines = hasproperty(x, :line) ? x.line : x.linenumbers
     if !isempty(filenames)
         paths = smart_paths(filenames)[2] .* " — line " .* string.(lines)
-        records = PerfChecker._group_allocation_pie([
-            Dict{String, Any}("label" => paths[i], "bytes" => x.bytes[i])
-            for i in eachindex(paths)]; min_percentage, top)
+        records = PerfChecker._group_allocation_pie(
+            [Dict{String, Any}("label" => paths[i], "bytes" => x.bytes[i])
+             for i in eachindex(paths)];
+            min_percentage,
+            top)
         data = Float64[item["bytes"] for item in records]
         percentage = Float64[item["percentage"] for item in records]
-        paths = ["$(item["label"]) · $(round(item["percentage"]; digits = 1))%" for item in records]
+        paths = ["$(item["label"]) · $(round(item["percentage"]; digits = 1))%"
+                 for item in records]
         colors = make_colors(length(percentage))
         str = isempty(pkg_name) ? "" : " for $pkg_name"
         f, ax, _ = pie(
@@ -35,7 +38,8 @@ end
 function PerfChecker.checkres_to_pie(x::PerfChecker.CheckerResult, ::Val{:alloc}; kwargs...)
     name(i) = x.pkgs[i].name * "_v" * string(x.pkgs[i].version)
     return map(
-        i -> (name(i) => table_to_pie(x.tables[i], Val(:alloc); pkg_name = name(i), kwargs...)),
+        i -> (name(i) => table_to_pie(
+            x.tables[i], Val(:alloc); pkg_name = name(i), kwargs...)),
         eachindex(x.tables))
 end
 

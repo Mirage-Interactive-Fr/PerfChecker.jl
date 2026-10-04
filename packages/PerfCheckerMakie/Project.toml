@@ -1,6 +1,6 @@
 name = "PerfCheckerMakie"
 uuid = "1039c70d-de90-4811-a202-d36e08616791"
-version = "1.0.0-rc1"
+version = "1.0.0"
 
 [compat]
 Bonito = "4, 5"

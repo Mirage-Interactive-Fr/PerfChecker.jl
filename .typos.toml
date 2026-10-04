@@ -5,6 +5,15 @@ extend-exclude = [
     "src/advice.jl",
     "src/advisor.jl",
     "test/advisor_mcp.jl",
+    # French conversation fixtures are deliberately exercised by the MCP tests.
+    "test/advisor_chat.jl",
     "website/documentation-plan.md",
     "website/src/public/examples/bibliography/timing-evidence.json",
+    # Exact Julia runtime type names are evidence, not editable English prose.
+    "website/src/public/examples/real-packages/*-diagnostics/heap-types.json",
 ]
+
+[default]
+# Keep hashes and embedded recorded binary assets out of English spelling.
+extend-ignore-identifiers-re = ['^[0-9a-f]{8,}$']
+extend-ignore-re = ['[A-Za-z0-9+/]{100,}={0,2}']

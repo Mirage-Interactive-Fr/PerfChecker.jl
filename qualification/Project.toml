@@ -1,6 +1,6 @@
 name = "PerfCheckerQualification"
 uuid = "fc9b0329-a6b2-4777-9938-81642d9743b4"
-version = "1.0.0-rc1"
+version = "1.0.0"
 
 [deps]
 SHA = "ea8e919c-243c-51af-8825-aaa63cd721ce"

@@ -1,6 +1,7 @@
 using PerfChecker, DrWatson
 include(joinpath(@__DIR__, "suite.jl"))
-plan = plan_suite(build_suite(); profile = :historical, version_provider = _ -> KITCHEN_VERSIONS)
+plan = plan_suite(
+    build_suite(); profile = :historical, version_provider = _ -> KITCHEN_VERSIONS)
 parameters = first(drwatson_parameters(plan))
 println("Example run name: ", drwatson_savename(first(plan.runs)))
 directory = joinpath(@__DIR__, "results", "drwatson")
@@ -11,13 +12,16 @@ end
 @assert saved["measurement_executed"] == false
 println(file)
 if !isempty(ARGS)
-    ARGS[1] == "run" || error("Use run [datastructures|oxygen] for an actual cached measurement")
+    ARGS[1] == "run" ||
+        error("Use run [datastructures|oxygen] for an actual cached measurement")
     example = length(ARGS) == 1 ? "datastructures" : ARGS[2]
     example in ("datastructures", "oxygen") || error("Choose datastructures or oxygen")
     is_oxygen = example == "oxygen"
-    source = load_software_suite(joinpath(@__DIR__, is_oxygen ? "oxygen/suite.jl" : "suite.jl"))
+    source = load_software_suite(joinpath(
+        @__DIR__, is_oxygen ? "oxygen/suite.jl" : "suite.jl"))
     original = only(source.packages)
-    selected = filter(f -> f.id == (is_oxygen ? :heap_benchmark : :heap_2048_benchmark), original.features)
+    selected = filter(f -> f.id == (is_oxygen ? :heap_benchmark : :heap_2048_benchmark),
+        original.features)
     version = is_oxygen ? v"1.11.0" : last(KITCHEN_VERSIONS)
     package = PackageSuite(is_oxygen ? "Oxygen" : "DataStructures";
         worker_environment = joinpath(@__DIR__, is_oxygen ? "oxygen/workers" : "workers"),

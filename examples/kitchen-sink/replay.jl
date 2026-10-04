@@ -3,7 +3,7 @@ using PerfChecker, UnicodePlots, JSON
 "Load one saved bundle from a report directory, or a bundle directory itself."
 function example_bundle(path)
     directory = isfile(joinpath(path, "manifest.json")) ? path :
-        only(filter(isdir, readdir(joinpath(path, "bundles"); join = true)))
+                only(filter(isdir, readdir(joinpath(path, "bundles"); join = true)))
     verify_run_bundle(directory; require_integrity = true)
     read_run_bundle(directory)
 end
@@ -19,7 +19,8 @@ function saved_plot(path)
 end
 
 if abspath(PROGRAM_FILE) == @__FILE__
-    isempty(ARGS) && error("Pass a report directory or a published plot.json, optionally an output directory")
+    isempty(ARGS) &&
+        error("Pass a report directory or a published plot.json, optionally an output directory")
     output = length(ARGS) > 1 ? abspath(ARGS[2]) : joinpath(@__DIR__, "exports", "terminal")
     mkpath(output)
     plots = if endswith(ARGS[1], ".json")
@@ -29,7 +30,8 @@ if abspath(PROGRAM_FILE) == @__FILE__
         [performance_plot(bundle, entry["id"]) for entry in plot_catalog(bundle)]
     end
     for model in plots
-        text = sprint(show, MIME"text/plain"(), terminal_plot(model); context = :color => false)
+        text = sprint(
+            show, MIME"text/plain"(), terminal_plot(model); context = :color => false)
         write(joinpath(output, model.id * ".txt"), text)
         println(model.title, "\n", text)
     end

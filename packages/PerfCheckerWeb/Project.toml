@@ -1,6 +1,6 @@
 name = "PerfCheckerWeb"
 uuid = "6e33b44e-937a-4705-841e-8b92a61e3730"
-version = "1.0.0-rc1"
+version = "1.0.0"
 
 [compat]
 Dates = "1"
