@@ -23,7 +23,9 @@ module PerfCheckerAllocationFixture
 include("operation.jl")
 end
 """)
-        write(operation_file, "allocate() = copy(fill(1, 4096))\n")
+        # Pool size classes keep the real tracker dump deterministic across
+        # processes; large malloc buffers have variable alignment accounting.
+        write(operation_file, "allocate() = copy(fill(1, 32))\n")
         foreign = operation_file * ".987654321.mem"
         unrelated = joinpath(source, "src", "notes.mem")
         write(foreign, "999999999 allocate() = nothing\n")
