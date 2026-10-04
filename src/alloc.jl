@@ -27,6 +27,11 @@ mutable struct AllocationArtifacts
     journal::String
 end
 
+# Canonicalise the existing parent because the trace itself may not exist yet.
+# On Windows, short names and case aliases otherwise let cleanup restore one
+# spelling and subsequently remove the same file under another spelling.
+_allocation_path(file) = joinpath(realpath(dirname(file)), basename(file))
+
 function _allocation_files(roots, pid)
     files = String[]
     suffix = ".$pid.mem"
@@ -38,7 +43,7 @@ function _allocation_files(roots, pid)
             for name in names
                 endswith(name, suffix) || continue
                 file = joinpath(directory, name)
-                isfile(file) && !islink(file) && push!(files, file)
+                isfile(file) && !islink(file) && push!(files, _allocation_path(file))
             end
         end
     end
@@ -83,6 +88,7 @@ function _allocation_roots(options, environments)
 end
 
 function _register_allocation_roots!(artifacts, roots)
+    roots = unique(realpath(root) for root in roots if isdir(root))
     new_roots = filter(roots) do root
         !any(artifacts.roots) do previous
             relative = relpath(root, previous)
@@ -131,7 +137,7 @@ function _install_allocation_journal!(worker, artifacts)
 
                 push!(Base.include_callbacks,
                     function (_, source)
-                        file = abspath(source) * suffix
+                        file = joinpath(realpath(dirname(source)), basename(source)) * suffix
                         lock(gate) do
                             file in seen && return
                             push!(seen, file)
@@ -179,6 +185,7 @@ function _allocation_journal!(artifacts)
                 break
             end
             file, original, mode, modified, changed = record
+            file = _allocation_path(file)
             push!(paths, file)
             original === nothing || get!(artifacts.preserved, file,
                 AllocationSnapshot(original, mode, modified, changed))

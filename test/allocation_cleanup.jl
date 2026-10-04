@@ -210,6 +210,51 @@ end
     end
 end
 
+@testitem "Allocation cleanup preserves traces through path aliases" tags=[
+    :unit, :allocation_cleanup] begin
+    using PerfChecker
+    mktempdir() do directory
+        root = realpath(mkpath(joinpath(directory, "source")))
+        alias = if Sys.iswindows()
+            # Windows aliases are case insensitive, including realpath's
+            # expansion of short directory names used by the VS Code host.
+            uppercase(root)
+        else
+            link = joinpath(directory, "source-alias")
+            symlink(root, link; dir_target = true)
+            link
+        end
+        @test alias != root
+        @test realpath(alias) == root
+        original = joinpath(root, "operation.jl.123.mem")
+        aliased = joinpath(alias, basename(original))
+        bytes = Vector{UInt8}(codeunits("previous bytes\r\n"))
+        write(original, bytes)
+        info = stat(original)
+        journal = joinpath(directory, "journal")
+        # Reproduce an older worker journal spelling which differs from the
+        # parent inventory. Recovery must use one physical-file identity.
+        open(journal, "w") do io
+            write(io, Int64(ncodeunits(aliased)))
+            write(io, aliased)
+            write(io, Int64(length(bytes)))
+            write(io, bytes)
+            write(io, UInt64(info.mode & 0o777))
+            write(io, Float64(info.mtime))
+            write(io, Float64(info.ctime))
+        end
+        artifacts = PerfChecker.AllocationArtifacts(123, [root],
+            Dict{String, PerfChecker.AllocationSnapshot}(), journal)
+        write(original, "current measurement\n")
+        PerfChecker._cleanup_allocation_artifacts!(artifacts)
+        @test read(original) == bytes
+        @test collect(keys(artifacts.preserved)) == [original]
+        @test PerfChecker._allocation_files([alias, root], 123) == [original]
+        PerfChecker._cleanup_allocation_artifacts!(artifacts)
+        @test read(aliased) == bytes
+    end
+end
+
 @testitem "Allocation cleanup restores snapshots and is idempotent" tags=[
     :unit, :allocation_cleanup] begin
     using PerfChecker
