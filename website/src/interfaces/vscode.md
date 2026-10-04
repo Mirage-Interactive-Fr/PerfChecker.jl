@@ -70,6 +70,32 @@ Measure declared cases, diagnose with available analyzers, and choose **Advise f
 
 **Run bounded investigation** can select declared experiments within count and time budgets. Optional model selection requires structured MCP replies and `advisorInvestigates = true`; it remains separate from implementation chat.
 
+## Cancel a run and wait for cleanup
+
+Use **Cancel** in a suite execution notification, the suite Testing profile, an
+investigation or a native Testing run. PerfChecker asks the Julia controller to
+interrupt its current task and finish its cleanup. Accepting that request does
+not mean cleanup has finished: wait for the final run status. Closing a suite or
+investigation editor also requests cancellation. A new run stays blocked until
+the previous controller has closed.
+
+A clean interruption finishes as cancelled. If cleanup fails, the run finishes
+as failed; **PerfChecker: Show worker output** contains the cause and any retained
+private inventory directory. See [allocation cleanup](../reference/checks.md)
+before handling leftover traces or recovering an inventory.
+
+The extension allows **60 seconds** for the controller to finish. If that deadline
+expires, it forces the controller to stop and displays a warning that cleanup was
+not confirmed. Detached workers, allocation traces or inventories may remain.
+Closing VS Code forcibly, an operating-system shutdown or repeated interruption
+can also prevent cleanup; restarting the extension does not delete old `.mem`
+files indiscriminately.
+
+Cancelling advisor chat or an MCP request stops the local conversation. A remote
+server or agent may continue working after the local request closes. Review the
+isolated implementation checkout and checkpoint before applying changes; local
+cancellation does not prove the remote tool stopped.
+
 ## Advice and explicit implementation
 
 Studio → **Advisor chat** opens **PerfChecker: Chat with performance advisor**. Configure one MCP advice tool, choose saved evidence if useful, and ask a question. Chat also works without evidence for configuration and usage questions; the agent is told no measurements were attached.

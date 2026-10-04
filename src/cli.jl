@@ -462,7 +462,47 @@ function perfchecker_main(args = ARGS; stdout::IO = Base.stdout,
         throw(ArgumentError("unknown command: $command"))
     catch error
         println(stderr, "PerfChecker: ", sprint(showerror, error))
-        return 2
+        return error isa InterruptException ? 130 : 2
+    end
+end
+
+@testitem "CLI cancellation preserves cleanup failure status" tags=[:unit, :cli] begin
+    using PerfChecker
+    mktempdir() do root
+        marker = joinpath(root, "planning")
+        interrupted_suite = joinpath(root, "interrupted-suite.jl")
+        write(interrupted_suite, """
+using PerfChecker
+function build_suite()
+    write($(repr(marker)), "ready")
+    sleep(120)
+end
+""")
+        errors = IOBuffer()
+        task = @async perfchecker_main(["plan", "--suite=$interrupted_suite"];
+            stdout = IOBuffer(), stderr = errors)
+        try
+            @test timedwait(() -> isfile(marker) || istaskdone(task), 10) == :ok
+            @test isfile(marker)
+            istaskdone(task) || schedule(task, InterruptException(); error = true)
+            @test timedwait(() -> istaskdone(task), 10) == :ok
+            @test fetch(task) == 130
+            @test occursin("InterruptException", String(take!(errors)))
+        finally
+            istaskdone(task) || schedule(task, InterruptException(); error = true)
+            wait(task)
+        end
+        failed_suite = joinpath(root, "failed-suite.jl")
+        write(failed_suite, """
+using PerfChecker
+build_suite() = throw(PerfChecker.CheckCleanupFailure(
+    Any[ErrorException("trace restoration failed")], ["private inventory"]))
+""")
+        @test perfchecker_main(["plan", "--suite=$failed_suite"];
+            stdout = IOBuffer(), stderr = errors) == 2
+        message = String(take!(errors))
+        @test occursin("trace restoration failed", message)
+        @test occursin("private inventory", message)
     end
 end
 

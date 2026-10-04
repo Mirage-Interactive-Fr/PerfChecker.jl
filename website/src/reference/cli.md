@@ -26,6 +26,15 @@ julia --startup-file=no --project=. -e 'using PerfChecker; exit(perfchecker_main
 - `capabilities` — emit controller/network capabilities as JSON.
 - `version` — print PerfChecker's version.
 
+## Interruption and cleanup errors
+
+When the entry point handles an `InterruptException`, it returns **130** after
+the operation's cleanup has run. A cleanup failure remains an error: it returns
+**2** and prints the cause and retained inventory paths to standard error, even
+when cancellation was requested. Wait for the controller to exit before treating
+cancellation as complete. Forced process termination can have a different exit
+status and does not confirm cleanup.
+
 ## Plan and run
 
 ```sh
