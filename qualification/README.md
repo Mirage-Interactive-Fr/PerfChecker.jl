@@ -57,10 +57,11 @@ require a GitHub App or repository-scoped credentials; manual PRs work without i
 
 ## Qualification and publication
 
-PRs run impacted consumers plus shared contracts. Main, tags, manual runs and a
-weekly dependency refresh run the configured Windows/Linux collection. Jobs are
+PRs run impacted consumers plus shared contracts. Main and release branches run
+the routine collection; full manual runs and the weekly dependency refresh run
+the complete Windows/Linux collection. Jobs are
 bounded to one concurrent lane, one Julia thread and 90 minutes each. The collection
-workflow replaces the earlier core and shared-scenario workflows. The separate
+workflow supplements the protected core compatibility CI. The separate
 VS Code repository retains its client CI.
 
 `scripts/collect.jl` rejects missing, failed, duplicate, stale and mismatched lanes
