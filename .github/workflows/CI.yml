@@ -46,7 +46,7 @@ jobs:
 
   test:
     name: Julia ${{ matrix.version }} - ${{ matrix.os }} - ${{ matrix.arch }} - ${{ github.event_name }}
-    runs-on: ${{ matrix.os }}
+    runs-on: ${{ matrix.runner || matrix.os }}
     timeout-minutes: 90
     strategy:
       fail-fast: false
@@ -58,7 +58,8 @@ jobs:
           - {version: lts, os: ubuntu-latest, arch: x86}
           - {version: pre, os: ubuntu-latest, arch: x64}
           - {version: pre, os: ubuntu-latest, arch: x86}
-          - {version: '1', os: macOS-latest, arch: x64}
+          # The protected context keeps its name; macOS 26 runs natively on Intel.
+          - {version: '1', os: macOS-latest, arch: x64, runner: macos-26-intel}
           - {version: '1', os: windows-latest, arch: x64}
           - {version: '1', os: windows-latest, arch: x86}
     steps:
