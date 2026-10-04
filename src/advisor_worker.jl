@@ -1,5 +1,5 @@
 using TOML, PerfChecker
-request = TOML.parsefile(ARGS[1])
+request = PerfChecker._json_plain_value(TOML.parsefile(ARGS[1]))
 result = try
     PerfChecker._advisor_inprocess(request)
 catch error

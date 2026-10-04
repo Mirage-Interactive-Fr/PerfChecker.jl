@@ -59,6 +59,7 @@ struct AdvisorConfig
             throw(ArgumentError("MCP arguments must be an object with string keys"))
         haskey(mcp_arguments, mcp_prompt_argument) &&
             throw(ArgumentError("MCP prompt argument is reserved for the evidence request"))
+        mcp_arguments = _json_plain_value(mcp_arguments)
         ncodeunits(sprint(io -> JSON.print(io, mcp_arguments))) <= 12000 ||
             throw(ArgumentError("MCP arguments exceed the size limit"))
         new(String(endpoint), String(model), Float64(timeout), Int(max_tokens),

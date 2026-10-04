@@ -80,6 +80,7 @@ end
                                     "inputSchema" => Dict("type" => "object",
                                         "properties" => Dict(
                                             "question" => Dict("type" => "string"),
+                                            "options" => Dict("type" => "object"),
                                             "workspace" => Dict("type" => "string")),
                                         "required" => name == "implement" ?
                                                       ["question", "workspace"] :
@@ -105,9 +106,14 @@ end
                           "Vérifiez l'oracle, puis remesurez les allocations.")])
         reply(body["id"], result)
     end
-    config(version = "2026-07-28", tool = "advise"; kwargs...) = AdvisorConfig(
+    config(version = "2026-07-28", tool = "advise";
+    mcp_arguments = Dict("options" => Dict("empty_array" => Any[],
+    "empty_object" => Dict{String, Any}(),
+    "nested" => [Dict("empty_array" => Any[], "empty_object" => Dict{String, Any}())])),
+    kwargs...) = AdvisorConfig(
         protocol = :mcp_http, endpoint = "http://127.0.0.1:$port/mcp", mcp_tool = tool,
-        mcp_prompt_argument = "question", mcp_version = version, timeout = 60; kwargs...)
+        mcp_prompt_argument = "question", mcp_version = version, timeout = 60;
+        mcp_arguments, kwargs...)
     message(role, content) = Dict("role" => role, "content" => content)
     messages = [message("user", "Pourquoi ces allocations ?"),
         message("assistant", "La copie est une hypothèse à vérifier."),
@@ -137,6 +143,13 @@ end
             @test occursin("La copie", prompt) && occursin("Observed bytes", prompt)
             @test !occursin("PRIVATE_PATH", prompt) && !occursin("PRIVATE_LOG", prompt)
             @test !haskey(call.body["params"]["arguments"], "workspace")
+            options = call.body["params"]["arguments"]["options"]
+            for values in (options, only(options["nested"]))
+                @test values["empty_array"] isa AbstractVector &&
+                      isempty(values["empty_array"])
+                @test values["empty_object"] isa AbstractDict &&
+                      isempty(values["empty_object"])
+            end
             headers = HTTP.Request("POST", "/", call.headers)
             @test HTTP.header(headers, "MCP-Protocol-Version") == version
             if version == "2026-07-28"
@@ -156,6 +169,11 @@ end
         prompt = only(filter(r -> r.body["method"] == "tools/call", requests)).body["params"]["arguments"]["question"]
         @test occursin("no saved measurements were attached", prompt)
         @test occursin("\"evidence\":[]", prompt)
+        payload = PerfChecker._json_parse(last(split(
+            prompt, "\n\nPerfChecker evidence:\n")))
+        @test payload["evidence"] isa AbstractVector && isempty(payload["evidence"])
+        @test payload["allowed_experiments"] isa AbstractVector &&
+              isempty(payload["allowed_experiments"])
         for selected_mode in (:tool_error, :interaction, :oversized, :padded, :empty)
             mode[] = selected_mode
             result = chat_advice(messages; config = config(), advice)
