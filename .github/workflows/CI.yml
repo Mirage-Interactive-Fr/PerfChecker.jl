@@ -50,7 +50,6 @@ jobs:
     timeout-minutes: 90
     strategy:
       fail-fast: false
-      max-parallel: 1
       matrix:
         include:
           - {version: '1', os: ubuntu-latest, arch: x64}
