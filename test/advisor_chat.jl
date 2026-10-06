@@ -56,7 +56,6 @@ end
     reply(id, result) = HTTP.Response(200, ["Content-Type" => "application/json"],
         encode(Dict("jsonrpc" => "2.0", "id" => id, "result" => result)))
     server = HTTP.serve!("127.0.0.1", port; verbose = false) do request
-        request.method == "GET" && return HTTP.Response(200, "ready")
         if request.method == "DELETE"
             push!(requests, (body = Dict("method" => "DELETE"), headers = request.headers))
             return HTTP.Response(204)
@@ -123,19 +122,42 @@ end
             Dict("id" => "e1", "rule_id" => "allocation", "hypothesis" => "Observed bytes",
             "action" => "Inspect temporaries", "validation" => "Repeat measurements",
             "location" => Dict("file" => "PRIVATE_PATH"), "evidence" => Dict("raw" => "PRIVATE_LOG"))])
+    function completed(result)
+        status = get(result, "status", "missing")
+        status == "complete" || @error "Mock MCP worker failed" status worker_phase=get(
+            result, "worker_phase", "unknown") worker_log_excerpt=get(
+            result, "worker_log_excerpt", "") elapsed_seconds=get(
+            result, "elapsed_seconds", 0)
+        @test status == "complete"
+        status == "complete"
+    end
+    function tool_call()
+        calls = filter(r -> r.body["method"] == "tools/call", requests)
+        @test length(calls) == 1
+        length(calls) == 1 ? only(calls) : nothing
+    end
     try
-        HTTP.get("http://127.0.0.1:$port/ready")
+        # Compile JSON parsing and every MCP handler before an isolated worker's
+        # deadline starts. GET readiness does not exercise these POST branches.
+        # Keep worker startup, cancellation and the original 60-second budget real.
+        for version in ("2026-07-28", "2025-11-25")
+            warmup = Base.invokelatest(PerfChecker.advisor_transport, Val(:mcp_http),
+                config(version; timeout = 120),
+                Dict("messages" => [Dict("content" => "mock readiness")]))
+            @test occursin("Vérifiez", warmup["external_review"])
+        end
         for version in ("2026-07-28", "2025-11-25")
             empty!(requests)
             result = chat_advice(messages; config = config(version), advice)
-            @test result["status"] == "complete"
+            completed(result) || continue
             @test result["advisor_mode"] == "advice"
             @test result["message_count"] == 3
             @test result["reference_status"] == "unstructured_not_verified"
             @test result["evidence_ids"] == ["e1"]
             @test result["fallback"] == advice
             @test occursin("Vérifiez", result["external_review"])
-            call = only(filter(r -> r.body["method"] == "tools/call", requests))
+            call = tool_call()
+            call === nothing && continue
             prompt = call.body["params"]["arguments"]["question"]
             @test occursin("Reply in the user's language", prompt)
             @test occursin("do not modify code", prompt)
@@ -165,24 +187,30 @@ end
         empty!(requests)
         result = chat_advice(
             [message("user", "Comment configurer PerfChecker ?")]; config = config())
-        @test result["status"] == "complete" && isempty(result["evidence_ids"])
-        prompt = only(filter(r -> r.body["method"] == "tools/call", requests)).body["params"]["arguments"]["question"]
-        @test occursin("no saved measurements were attached", prompt)
-        @test occursin("\"evidence\":[]", prompt)
-        payload = PerfChecker._json_parse(last(split(
-            prompt, "\n\nPerfChecker evidence:\n")))
-        @test payload["evidence"] isa AbstractVector && isempty(payload["evidence"])
-        @test payload["allowed_experiments"] isa AbstractVector &&
-              isempty(payload["allowed_experiments"])
+        if completed(result)
+            @test isempty(result["evidence_ids"])
+            call = tool_call()
+            if call !== nothing
+                prompt = call.body["params"]["arguments"]["question"]
+                @test occursin("no saved measurements were attached", prompt)
+                @test occursin("\"evidence\":[]", prompt)
+                payload = PerfChecker._json_parse(last(split(
+                    prompt, "\n\nPerfChecker evidence:\n")))
+                @test payload["evidence"] isa AbstractVector && isempty(payload["evidence"])
+                @test payload["allowed_experiments"] isa AbstractVector &&
+                      isempty(payload["allowed_experiments"])
+            end
+        end
         for selected_mode in (:tool_error, :interaction, :oversized, :padded, :empty)
             mode[] = selected_mode
             result = chat_advice(messages; config = config(), advice)
             @test result["status"] == "error" && result["fallback"] == advice
             @test !haskey(result, "external_review")
+            @test result["worker_phase"] in ("mcp_tools_call", "response_validation")
         end
         mode[] = :unicode_boundary
         result = chat_advice(messages; config = config())
-        @test result["status"] == "complete" && length(result["external_review"]) == 16000
+        completed(result) && @test length(result["external_review"]) == 16000
         mode[] = :good
         mktempdir() do directory
             original, checkout = joinpath(directory, "original"),
@@ -196,13 +224,14 @@ end
                 result = implement_advice(
                     messages; config = config(version, "implement"), advice,
                     workspace = checkout)
-                @test result["status"] == "complete"
+                completed(result) || continue
                 @test result["advisor_mode"] == "implementation"
                 @test result["implementation_status"] == "requires_diff_review"
                 @test read(joinpath(checkout, "workload.jl"), String) ==
                       "sum_values(xs) = sum(xs)\n"
                 @test read(joinpath(original, "workload.jl"), String) == "original\n"
-                call = only(filter(r -> r.body["method"] == "tools/call", requests))
+                call = tool_call()
+                call === nothing && continue
                 @test call.body["params"]["name"] == "implement"
                 @test call.body["params"]["arguments"]["workspace"] == realpath(checkout)
                 @test occursin("ONLY in the isolated checkout",
@@ -255,6 +284,7 @@ end
         @test !haskey(result, "external_review")
         result = chat_advice(messages; config = config(timeout = 0.01))
         @test result["status"] == "timeout"
+        @test haskey(result, "worker_phase") && haskey(result, "worker_log_excerpt")
         extension = Base.get_extension(PerfChecker, :HTTPAdvisorExt)
         for newline in ("\n", "\r\n", "\r")
             payload = encode(Dict("jsonrpc" => "2.0", "id" => 1,
