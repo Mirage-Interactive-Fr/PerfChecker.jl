@@ -100,14 +100,16 @@ end
         for copied in (prepared, worker)
             metadata = TOML.parsefile(joinpath(copied, "Project.toml"))
             @test metadata["sources"]["ExternalFixture"]["path"] == sibling
-            @test metadata["sources"]["InternalFixture"]["path"] == "vendor/InternalFixture"
+            @test metadata["sources"]["InternalFixture"]["path"] ==
+                  joinpath("vendor", "InternalFixture")
             @test metadata["sources"]["LocalRepo"]["url"] == sibling
             @test metadata["sources"]["RemoteRepo"]["url"] == "host:repository"
             for name in (
                 "Manifest.toml", "JuliaManifest-v$(VERSION.major).$(VERSION.minor).toml")
                 entries = TOML.parsefile(joinpath(copied, name))["deps"]
                 @test only(entries["ExternalFixture"])["path"] == sibling
-                @test only(entries["InternalFixture"])["path"] == "vendor/InternalFixture"
+                @test only(entries["InternalFixture"])["path"] ==
+                      joinpath("vendor", "InternalFixture")
             end
         end
         process = PerfChecker.Worker(;
