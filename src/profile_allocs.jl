@@ -28,6 +28,7 @@ function check(d::Dict, block::Expr, ::Val{:profile_alloc})
     max_stacks = Int(get(d, :max_profile_stacks, 50_000))
     max_stacks > 1 || throw(ArgumentError(":max_profile_stacks must be greater than one"))
     target_names = String.(get(d, :targets, String[]))
+    runtime = joinpath(@__DIR__, "profile_runtime.jl")
     byte_count = fresh ?
                  :(total_bytes = $(_fresh_profile_evaluation(:(Base.@allocated SharedScenarioRuntime.operation!(_perfchecker_evaluation))))) :
                  :(total_bytes = Base.@allocated $block)
@@ -53,6 +54,7 @@ function check(d::Dict, block::Expr, ::Val{:profile_alloc})
         end
     end
     return quote
+        isdefined(Main, :PerfCheckerProfileRuntime) || include($runtime)
         $warmup
         target_names = Set(Symbol.($target_names))
         loaded = Base.loaded_modules_array()
@@ -65,26 +67,20 @@ function check(d::Dict, block::Expr, ::Val{:profile_alloc})
         end
         isempty(target_roots) &&
             error("No loaded allocation target found in $(collect(target_names))")
-        function normalize_source(path)
-            Sys.iswindows() ? lowercase(normpath(path)) :
-            normpath(path)
-        end
-        normalized_roots = normalize_source.(target_roots)
-
         $byte_count
         $alloc_count
         Profile.Allocs.clear()
         $collection
         allocation_results = Profile.Allocs.fetch()
-        grouped = Dict{Tuple{String, Int, Tuple{Vararg{String}}}, Tuple{Int, Int}}()
+        grouped = Dict{Tuple{String, Int, Tuple{Vararg{String}}}, Tuple{Int64, Int64}}()
+        source_allocs = Int64(0)
         for allocation in allocation_results.allocs
-            target_positions = findall(allocation.stacktrace) do candidate
-                candidate.line > 0 || return false
-                source = String(candidate.file)
-                isempty(source) && return false
-                normalized = normalize_source(abspath(source))
-                any(root -> startswith(normalized, root), normalized_roots)
-            end
+            any(
+                candidate -> !candidate.from_c && candidate.line > 0 &&
+                                 PerfCheckerProfileRuntime.usable_source(String(candidate.file)),
+                allocation.stacktrace) && (source_allocs += 1)
+            target_positions = PerfCheckerProfileRuntime.allocation_source_positions(
+                allocation.stacktrace, target_roots)
             isempty(target_positions) && continue
             site = allocation.stacktrace[first(target_positions)]
             root_position = last(target_positions)
@@ -100,37 +96,42 @@ function check(d::Dict, block::Expr, ::Val{:profile_alloc})
             end
             isempty(stack) && continue
             key = (abspath(String(site.file)), Int(site.line), Tuple(stack))
-            bytes, count = get(grouped, key, (0, 0))
-            grouped[key] = (bytes + Int(allocation.size), count + 1)
+            bytes, count = get(grouped, key, (Int64(0), Int64(0)))
+            grouped[key] = (bytes + Int64(allocation.size), count + 1)
         end
-        sampled_bytes = sum(first, values(grouped); init = 0)
-        sampled_allocs = sum(last, values(grouped); init = 0)
-        sampled_bytes > 0 || error("Allocation profiler found no target source sites")
-        byte_scale = Float64(total_bytes) / sampled_bytes
+        sampled_bytes, sampled_allocs = PerfCheckerProfileRuntime.allocation_sample_totals(grouped)
+        byte_scale = sampled_bytes == 0 ? 0.0 : Float64(total_bytes) / sampled_bytes
         alloc_scale = sampled_allocs == 0 ? 0.0 : Float64(total_allocs) / sampled_allocs
         ordered = sort!(
             collect(grouped); by = item -> (
                 -last(item)[1], first(item)[1], first(item)[2]))
         keep = length(ordered) > $max_stacks ? $max_stacks - 1 : length(ordered)
-        output = [(bytes = values[1] * byte_scale,
-                      allocs = values[2] * alloc_scale,
-                      filename = key[1], line = key[2], stack = collect(key[3]))
-                  for (key, values) in first(ordered, keep)]
+        output = $ProfileAllocSite[(bytes = values[1] * byte_scale,
+                                       allocs = values[2] * alloc_scale,
+                                       filename = key[1], line = key[2], stack = collect(key[3]))
+                                   for (key, values) in first(ordered, keep)]
         if length(ordered) > $max_stacks
             remainder_bytes = sum(item -> last(item)[1],
-                ordered[($max_stacks):end]; init = 0) * byte_scale
+                ordered[($max_stacks):end]; init = Int64(0)) * byte_scale
             remainder_allocs = sum(item -> last(item)[2],
-                ordered[($max_stacks):end]; init = 0) * alloc_scale
+                ordered[($max_stacks):end]; init = Int64(0)) * alloc_scale
             push!(output,
                 (bytes = remainder_bytes, allocs = remainder_allocs,
                     filename = "[other]", line = 0,
                     stack = ["Other sampled allocation stacks"]))
         end
-        output
+        summary = PerfCheckerProfileRuntime.allocation_summary(
+            total_bytes = total_bytes, total_allocations = total_allocs,
+            sampled_allocations = length(allocation_results.allocs),
+            source_allocations = source_allocs, retained_allocations = sampled_allocs,
+            retained_bytes = sampled_bytes, sample_rate = $sample_rate,
+            profile_evaluations = $repetitions,
+            weight_semantics = "independent whole-operation totals apportioned over retained stacks; estimates, not exact target totals")
+        (sites = output, summary = summary)
     end
 end
 
-post(d::Dict, ::Val{:profile_alloc}) = d[:check_result]
+post(d::Dict, ::Val{:profile_alloc}) = d[:check_result].sites
 
 const ProfileAllocSite = @NamedTuple{
     bytes::Float64, allocs::Float64, filename::String, line::Int,
@@ -143,6 +144,66 @@ function to_table(records::Vector{ProfileAllocSite})
         filename = [record.filename for record in records],
         line = [record.line for record in records],
         stack = [record.stack for record in records])
+end
+
+to_table(capture::NamedTuple{(:sites, :summary)}) = to_table(capture.sites)
+
+_allocation_cache_path(path) = path * ".allocation-profile.toml"
+
+function _write_allocation_cache(path, table, summary)
+    document = Dict(
+        "schema_version" => PerfCheckerProfileRuntime.ALLOCATION_PROFILE_SCHEMA,
+        "result_uuid" => splitext(basename(path))[1], "summary" => summary,
+        "sites" => [Dict(string(key) => value for (key, value) in pairs(row))
+                    for row in table])
+    mkpath(dirname(path))
+    temporary, io = mktemp(dirname(path))
+    try
+        TOML.print(io, document)
+        close(io)
+        mv(temporary, _allocation_cache_path(path); force = true)
+    finally
+        close(io)
+        rm(temporary; force = true)
+    end
+    nothing
+end
+
+function _read_allocation_cache(path)
+    sidecar = _allocation_cache_path(path)
+    isfile(sidecar) || return nothing
+    try
+        document = TOML.parsefile(sidecar)
+        document["schema_version"] == PerfCheckerProfileRuntime.ALLOCATION_PROFILE_SCHEMA ||
+            return nothing
+        document["result_uuid"] == splitext(basename(path))[1] || return nothing
+        summary = document["summary"]
+        expected = PerfCheckerProfileRuntime.allocation_summary(
+            total_bytes = summary["total_bytes"],
+            total_allocations = summary["total_allocations"],
+            sampled_allocations = summary["sampled_allocations"],
+            retained_allocations = summary["retained_allocations"],
+            source_allocations = summary["source_allocations"],
+            retained_bytes = summary["retained_sampled_bytes"],
+            sample_rate = summary["sample_rate"],
+            profile_evaluations = summary["profile_evaluations"],
+            weight_semantics = summary["weight_semantics"])
+        summary == expected || return nothing
+        sites = ProfileAllocSite[(bytes = Float64(row["bytes"]),
+                                     allocs = Float64(row["allocs"]), filename = String(row["filename"]),
+                                     line = Int(row["line"]), stack = String.(row["stack"]))
+                                 for row in document["sites"]]
+        all(
+            row -> isfinite(row.bytes) && row.bytes >= 0 &&
+                       isfinite(row.allocs) && row.allocs >= 0,
+            sites) || return nothing
+        isempty(sites) == (summary["retained_allocations"] == 0) || return nothing
+        (sites = sites, summary = summary)
+    catch error
+        error isa InterruptException && rethrow()
+        # A stale or partial cache is a miss, never evidence of zero allocations.
+        nothing
+    end
 end
 
 @testitem "Profile allocation records" tags=[:unit, :allocations, :profile_alloc] begin

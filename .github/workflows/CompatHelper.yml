@@ -1,3 +1,4 @@
+name: CompatHelper
 on:
   schedule:
     - cron: 0 0 * * *
@@ -36,6 +37,9 @@ jobs:
       - name: "Run CompatHelper"
         run: |
           import CompatHelper
+          # CompatHelper can propose adding "1", which would reopen the known
+          # BenchmarkTools 1.8.0 Int32 defect. The required CI exclusion check
+          # rejects that proposal; review it instead of auto-merging it.
           CompatHelper.main(; subdirs=["", "website", "qualification", "packages/PerfCheckerWeb", "packages/PerfCheckerPluto", "packages/PerfCheckerMakie", "providers/JET", "providers/AllocCheck", "providers/SnoopCompile", "providers/Aqua"])
         shell: julia --color=yes {0}
         env:

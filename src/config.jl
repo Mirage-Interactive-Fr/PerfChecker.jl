@@ -218,6 +218,10 @@ function normalize_config(backend::Symbol, config::Dict)
         by = p -> string(first(p)))
     option_fingerprint = join(
         map(p -> string(first(p), "=", repr(last(p))), option_pairs), "|")
+    # Profile caches from the earlier lexical source filter cannot certify the
+    # new exact containment or allocation-evidence contract.
+    backend in (:profile, :wall_profile, :profile_alloc) &&
+        (option_fingerprint *= "|profile-source-contract=exact-containment-v1")
     config_hash = stable_uuid_string(
         join(string.([backend, path, tags, threads, track, option_fingerprint]), "|"))
 

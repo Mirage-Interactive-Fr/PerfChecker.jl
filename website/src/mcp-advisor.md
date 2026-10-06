@@ -2,7 +2,33 @@
 
 Connect PerfChecker to a tool on an existing MCP server. Discuss performance evidence in advice mode, then explicitly request implementation after reviewing the answer. PerfChecker's deterministic findings remain available without an agent or network connection.
 
-MCP is a **tool protocol**, not a model endpoint. The chosen tool must accept a prompt and produce an answer, directly or through its own agent. A server exposing only unrelated data tools cannot generate performance advice. PerfChecker neither installs nor starts the MCP server.
+MCP is a **tool protocol**, not a model endpoint. The chosen tool must accept a prompt and produce an answer, directly or through its own agent. A server exposing only unrelated data tools cannot generate performance advice. For an external server, you manage its installation and startup. The VS Code extension also provides the explicit local Codex connector below.
+
+## Connect an authenticated Codex CLI
+
+PerfChecker can connect an installed, authenticated Codex CLI through a local MCP bridge with separate advice and implementation tools. The connector invokes `codex exec`; it does not require `codex mcp-server`.
+
+1. Use a native Codex CLI supporting the flags below and authenticate it yourself with `codex login` in a terminal. Prepare the Julia controller with PerfChecker and `HTTP`, as described in [VS Code configuration](interfaces/vscode-configuration.md).
+2. If the executable is outside VS Code's PATH, set **PerfChecker: Codex Executable** (`perfchecker.codexExecutable`) to its native binary path. On Windows, use the native `.exe`; npm `.cmd` and `.bat` launchers are unsupported.
+3. Open the trusted package workspace and **PerfChecker: Chat with performance advisor**. Choose **Connect Codex CLI**, or run **PerfChecker: Connect authenticated Codex CLI**. PerfChecker checks version, supported flags and existing login without starting a model turn.
+4. Ask for advice, optionally attaching saved evidence. Review the answer, then use the [explicit implementation workflow](#Switch-from-advice-to-implementation) if you want the agent to prepare a change.
+5. Choose **Disconnect Codex**, or run **PerfChecker: Disconnect local Codex**, to return to your saved advisor configuration. After an editor reload, connect again when needed.
+
+The qualified CLI is **Codex 0.159.2**. The connector requires `--no-daemon`, `--ignore-user-config` and `--ignore-rules`, plus the `exec` ephemeral, sandbox and output flags. Unsupported installations fail explicitly. Use your own external MCP agent if these flags are unavailable. See the official [Codex noninteractive workflow example](https://developers.openai.com/cookbook/examples/codex/build_iterative_repair_loops_with_codex) for the CLI execution model; PerfChecker's supported flags are checked against the executable actually selected.
+
+PerfChecker starts an authenticated HTTP endpoint on `127.0.0.1` with a random port. The endpoint and automatically generated Bearer token exist only in this editor session. They are not saved in settings or `perf/advisor.json`. The explicit connection authorizes chat for this session, including when your saved provider is disabled. It temporarily takes precedence over saved provider configuration; disconnecting or reloading restores that configuration and its enabled/disabled state. Never copy this temporary endpoint into a configuration file.
+
+The advice tool is `ask_perfchecker(prompt)` and uses the CLI's `read-only` sandbox. The implementation tool is `implement_perfchecker(prompt, workspace)` and uses `workspace-write` in the canonical temporary PerfChecker checkout. Both run without the shared Codex daemon so cancellation owns the launched process. The checkpoint, diff review and restore workflow remain the same as for an external agent.
+
+The connector uses your existing account and the CLI's default model. Custom user profiles, model/provider configuration, MCP servers, hooks and rules are not inherited. A project or implementation copy containing project `.codex` configuration is refused before invocation. Sandbox support depends on the CLI installation and platform. The agent can inspect files in its working directory; the configured model provider processes the requested context, and ordinary account usage or charges apply. Git proposals and checkpoints remain recoverable independently of the connection.
+
+The named-agent qualification used a real authenticated CLI through MCP initialization, tool discovery, advice and implementation. It checked unchanged source in advice mode, an actual isolated edit, Node semantics, diff review, apply, byte-identical restore and cancellation after a turn started. Maintainers can reproduce this opt-in test from the extension repository after `npm test`:
+
+```sh
+PERFCHECKER_TEST_CODEX=/path/to/codex node --test test/codex-real.test.mjs
+```
+
+This sends real model requests against your existing account and removes its disposable Node/Git fixture. It qualifies the connector lifecycle; it does not establish a performance improvement for your Julia package.
 
 ## Configure the advice tool
 
@@ -29,7 +55,7 @@ A complete local example for `perf/advisor.json` is:
 }
 ```
 
-Replace the address and `ask` with values from your server. `ask` is a placeholder, not a standard MCP tool. Set `perfchecker.advisorConfig` to this file, or leave it empty and use extension settings instead. A configuration file takes precedence over provider settings.
+Replace the address and `ask` with values from your server. `ask` is a placeholder, not a standard MCP tool. Set `perfchecker.advisorConfig` to this file, or leave it empty and use extension settings instead. A configuration file takes precedence over provider settings when the temporary Codex connection is disconnected.
 
 The equivalent essential folder settings are:
 
@@ -90,7 +116,7 @@ Messages alternate user/assistant and end with a user question: at most **21 mes
 
 ## Switch from advice to implementation
 
-Configure the extension's separate implementation fields:
+The explicit Codex connection supplies its two tool names automatically. For an external MCP server, configure the extension's separate implementation fields:
 
 ```json
 {
@@ -159,11 +185,11 @@ Evidence narration sends a bounded projection of recommendation IDs, rules, obse
 
 Chat additionally sends your typed messages and retained earlier replies. Anything you paste, including code or paths, therefore becomes part of the request. Implementation additionally sends the isolated checkout's absolute path, and the selected tool can inspect code accessible there. Authentication is sent only in the configured request header. Consider the endpoint's data/cost policy before opting into a remote connection.
 
-Text results carry `reference_status = "unstructured_not_verified"`; individual statements get no invented citations. No API here adopts a performance baseline automatically.
+The local Codex connector can additionally inspect files in the selected advice workspace or isolated implementation checkout; a bounded evidence projection does not prevent those reads. Text results carry `reference_status = "unstructured_not_verified"`; individual statements get no invented citations. No API here adopts a performance baseline automatically.
 
 ## Structured investigations
 
-Structured mode belongs to bounded investigation, rather than free-form implementation chat. To let an assistant select an experiment, use `mcp_response = "structured"` and enable `advisorInvestigates`. The tool returns:
+Structured mode belongs to bounded investigation, rather than free-form implementation chat. The local Codex connection supplies text chat tools. Disconnect it before configuring an external structured tool. To let that assistant select an experiment, use `mcp_response = "structured"` and enable `advisorInvestigates`. The tool returns:
 
 ```json
 {
@@ -210,6 +236,10 @@ See the official [2026-07-28 Streamable HTTP specification](https://modelcontext
 | Cancellation | Local worker stopped; server interruption depends on the server |
 | Apply/restore refused | Repository drifted; inspect before recovering content |
 | Git transformation unsupported | Check attributes for filters/LFS, working-tree encoding or ident expansion |
+| Codex executable unsupported | Native binary with the required flags; qualified version 0.159.2 |
+| Codex not authenticated | Run `codex login` yourself, then reconnect |
+| Project `.codex` configuration refused | Use a clean workspace or your explicitly configured external MCP agent |
+| Codex disconnected after reload | Connect again; saved provider settings and Git recovery are retained |
 
 Unsupported interactions, malformed responses and tool errors retain the deterministic fallback. A failed optional advisor does not change measured verdicts.
 

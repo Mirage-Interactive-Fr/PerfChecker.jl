@@ -71,11 +71,14 @@ Unavailable is separate from passing or failing. Remove a tool you do not need, 
 
 ## Advice and MCP settings
 
-Use **PerfChecker: Configure advisor and manage models** to check the connection, discover MCP tools and save configuration. For chat, select `mcp_http`, a tool that accepts an advice request, and `text` response mode. A tool named `ask` is only an example; MCP defines no standard chat-tool name.
+For an installed authenticated Codex CLI, use **PerfChecker: Connect authenticated Codex CLI** or **Connect Codex CLI** in Chat. The [named-agent recipe](../mcp-advisor.md#Connect-an-authenticated-Codex-CLI) documents supported executables, sandbox boundaries and existing-account usage. This session connection supplies the advice and implementation tools without overwriting your saved settings or JSON configuration.
+
+For another MCP agent, use **PerfChecker: Configure advisor and manage models** to check the connection, discover tools and save configuration. For chat, select `mcp_http`, a tool that accepts an advice request, and `text` response mode. A tool named `ask` is only an example; MCP defines no standard chat-tool name.
 
 | Setting | Default | Meaning |
 | --- | --- | --- |
 | `advisorEnabled` | `true` | Permits explicitly requested optional advice |
+| `codexExecutable` | `codex` | Authenticated native Codex executable for the explicit local connection; Windows requires `.exe` |
 | `advisorConfig` | empty | JSON config path; takes precedence over provider settings |
 | `advisorProtocol` | `chat_completions` | Provider protocol; chat requires `mcp_http` |
 | `advisorEndpoint` | local Chat Completions URL | Existing model or MCP endpoint |
@@ -91,7 +94,7 @@ Use **PerfChecker: Configure advisor and manage models** to check the connection
 | `advisorTimeout` | `90` | Total provider-worker deadline in seconds |
 | `advisorInvestigates` | `false` | Structured model selection of declared experiments |
 
-Disabling `advisorEnabled` keeps deterministic advice usable and retains already installed model files. [MCP configuration](../mcp-advisor.md#Configure-the-advice-tool) includes complete JSON and VS Code examples.
+Disabling `advisorEnabled` keeps deterministic advice usable and retains already installed model files. An explicitly connected Codex chat remains authorized for that session; choose **Disconnect Codex** to stop using it and resume the saved disabled provider state. [MCP configuration](../mcp-advisor.md#Configure-the-advice-tool) includes complete JSON and VS Code examples.
 
 ## Implementation settings
 
@@ -103,7 +106,7 @@ Disabling `advisorEnabled` keeps deterministic advice usable and retains already
 
 Implementation reuses the MCP endpoint, revision, authentication and extra arguments. Its tool and prompt/workspace names are explicit extension settings; an advice reply cannot select them automatically. Prompt and workspace names must differ. Extra arguments cannot override either reserved field.
 
-The server must access the isolated checkout. A remote HTTPS endpoint has no automatic access to your local filesystem. Use a trusted local tool, or a deliberately configured shared filesystem/bridge with its own confinement. MCP does not provide an operating-system sandbox.
+The explicit local Codex connection supplies these implementation tool names in memory. External servers must access the isolated checkout. A remote HTTPS endpoint has no automatic access to your local filesystem. Use a trusted local tool, or a deliberately configured shared filesystem/bridge with its own confinement. MCP does not provide an operating-system sandbox.
 
 ## Troubleshooting
 
@@ -116,6 +119,8 @@ The server must access the isolated checkout. A remote HTTPS endpoint has no aut
 | Credentials absent | Start VS Code with the named environment variable available to its extension host |
 | Probe passes, chat fails | Check required tool arguments and that the selected tool returns advice |
 | Agent cannot see the code | Check access to the supplied isolated checkout, not the original root |
+| Codex connection refused | Check native executable, required flags, existing login and absence of project `.codex` configuration |
+| Saved advisor config seems inactive | Disconnect the temporary Codex connection to resume your saved provider |
 | Notebook cannot execute | Select an installed Julia kernel; see [notebook prerequisites](vscode-workflows.md#Investigation-notebooks) |
 
 Worker logs are available through **PerfChecker: Show worker output**. Keep tokens out of configuration files and troubleshooting reports.

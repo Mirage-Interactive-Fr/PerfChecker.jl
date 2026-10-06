@@ -2,7 +2,6 @@ using Luxor
 
 const BRANDING_ROOT = @__DIR__
 const EXPORT_ROOT = joinpath(BRANDING_ROOT, "exports")
-const REPOSITORY_ROOT = dirname(BRANDING_ROOT)
 
 const INK = "#071014"
 const PAPER = "#F7FAFC"
@@ -61,7 +60,7 @@ function mark_series(points, color, label)
     text(label, endpoint + Point(30, 1); halign = :left, valign = :middle)
 end
 
-"Draw the canonical PerfChecker comparison-plot mark on a 1024-unit grid."
+"Draw the retained comparison-plot illustration on a 1024-unit grid."
 function draw_mark(; panel = true, monochrome = false, dark = false)
     paper = dark ? INK : "#FFFFFF"
     ink = dark ? PAPER : INK
@@ -152,7 +151,7 @@ function render_preview(path::AbstractString)
     sethue(INK)
     fontface("Arial Bold")
     fontsize(46)
-    text("PerfChecker.jl — canonical comparison mark", Point(-820, -485);
+    text("PerfChecker.jl — comparison illustration", Point(-820, -485);
         halign = :left, valign = :middle)
     sethue("#5D6870")
     fontface("Arial")
@@ -220,9 +219,7 @@ outputs = [
     render_mark(joinpath(EXPORT_ROOT, "perfchecker-mark.png")),
     render_lockup(joinpath(EXPORT_ROOT, "perfchecker-lockup-light.svg")),
     render_lockup(joinpath(EXPORT_ROOT, "perfchecker-lockup-dark.svg"); dark = true),
-    render_preview(joinpath(EXPORT_ROOT, "perfchecker-preview.png")),
-    render_mark(joinpath(REPOSITORY_ROOT, "docs", "src", "public", "assets",
-        "perfchecker.svg"))
+    render_preview(joinpath(EXPORT_ROOT, "perfchecker-preview.png"))
 ]
 
 foreach(println, outputs)

@@ -319,6 +319,27 @@ function _scenario_bundle(catalog, spec, collector, raw, fingerprints)
         end
     end
     diagnostics = Dict{String, Any}[]
+    if haskey(raw, "allocation_profile")
+        summary = raw["allocation_profile"]
+        diagnostic = _allocation_profile_diagnostic(summary)
+        diagnostic === nothing || push!(diagnostics, diagnostic)
+        for (field, metric, unit) in (("total_bytes", "julia.alloc.bytes", "By"),
+            ("total_allocations", "julia.alloc.count", "1"))
+            definition = "$metric/shared-profile-independent-totals/$fingerprint"
+            context = merge(copy(definition_context),
+                Dict("measurement" => summary["total_semantics"]))
+            push!(definitions,
+                Dict("id" => definition, "metric" => metric,
+                    "unit" => unit, "context" => context))
+            push!(observations,
+                Dict("metric" => metric, "unit" => unit,
+                    "value" => summary[field], "measurement_definition" => definition,
+                    "comparison_key" => definition, "sample_index" => 1,
+                    "aggregation" => "independent_operation_total", "scope" => "whole_operation",
+                    "attributes" => Dict("implementation" => spec.implementation,
+                        "collector" => string(collector), "profile_status" => summary["status"])))
+        end
+    end
     status == "complete" || push!(diagnostics,
         Dict("rule_id" => "scenario.$status",
             "severity" => "error", "message" => get(raw, "message", status)))
@@ -393,6 +414,7 @@ function _scenario_run_record(bundle::RunBundle)
         "text" => get(raw, "profile_text", ""), "samples" => get(raw, "profile_samples", 0),
         "stacks" => first(get(raw, "cpu_stacks", []), 2000),
         "allocation_sites" => first(get(raw, "allocation_sites", []), 2000),
+        "allocation_profile" => get(raw, "allocation_profile", Dict()),
         "truncated" => length(get(raw, "cpu_stacks", [])) > 2000 ||
                        length(get(raw, "allocation_sites", [])) > 2000)
     return Dict{String, Any}(

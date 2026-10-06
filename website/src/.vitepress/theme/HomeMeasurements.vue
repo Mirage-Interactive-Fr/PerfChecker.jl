@@ -1,6 +1,9 @@
 <script setup lang="ts">
-import { withBase } from 'vitepress'
+import { withBase, useData } from 'vitepress'
+import { computed } from 'vue'
 import NormalizedMeasurements from './NormalizedMeasurements.vue'
+const { site } = useData()
+const plotsPage = computed(() => withBase(`/interfaces/visualization${site.value.cleanUrls ? '' : '.html'}`))
 const figures = [
   { id: 'time', alt: 'Median export time across nine Bibliography tags, from 13.15 to 15.45 microseconds.' },
   { id: 'gc', alt: 'GC time is zero in every one of the 900 recorded export samples.' },
@@ -31,7 +34,7 @@ const figures = [
       The dependency versions follow each tag. None of these samples triggered GC.
       The run collected timings and allocations without a correctness check or CI regression limit.</p>
     <div class="measurement-links">
-      <a :href="withBase('/interfaces/visualization')">Explore the interactive plots →</a>
+      <a :href="plotsPage">Explore the interactive plots →</a>
       <a :href="withBase('/examples/bibliography/history/overview.json')" download>Download measurements and revisions</a>
     </div>
   </section>

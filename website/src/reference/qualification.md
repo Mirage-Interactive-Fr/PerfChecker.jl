@@ -28,6 +28,7 @@ The resulting inventory identifies the exact package versions and environment fi
 - The `Documentation` workflow installs documentation dependencies, builds Documenter and VitePress, and publishes `/PerfChecker/dev/` from `main`. No package matrix, browser tests or benchmarks.
 - The extended qualification produces a `qualified-collection` artifact with the exact tested revisions and environments.
 - Only a complete successful qualification authorizes a package release and stable documentation. The stable publication revalidates all receipts and the site hash, then deploys the exact tested artifact from that campaign at its verified release tag.
+- The documentation lane also builds the standalone SFTP site for `https://perfchecker.mirageinteractive.fr/`. Its root paths, `.html` links, version catalogue, search and assets are tested on a static server without rewrite rules. The collection validates its separate hash before publishing; it cannot substitute the GitHub mirror for this export.
 
 Publishing development documentation does not certify the packages it describes. Pull requests build but cannot publish.
 

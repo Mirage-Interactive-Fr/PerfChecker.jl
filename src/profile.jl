@@ -32,6 +32,7 @@ function check(d::Dict, block::Expr, ::Val{:profile})
     max_stacks = Int(get(d, :max_profile_stacks, 50_000))
     max_stacks > 1 || throw(ArgumentError(":max_profile_stacks must be greater than one"))
     target_names = String.(get(d, :targets, String[]))
+    runtime = joinpath(@__DIR__, "profile_runtime.jl")
     profiled = fresh ?
                _fresh_profile_evaluation(:(Profile.@profile SharedScenarioRuntime.operation!(_perfchecker_evaluation))) :
                nothing
@@ -53,6 +54,7 @@ function check(d::Dict, block::Expr, ::Val{:profile})
         end
     end
     return quote
+        isdefined(Main, :PerfCheckerProfileRuntime) || include($runtime)
         $warmup
         target_names = Set(Symbol.($target_names))
         loaded = Base.loaded_modules_array()
@@ -65,17 +67,11 @@ function check(d::Dict, block::Expr, ::Val{:profile})
         end
         isempty(target_roots) &&
             error("No loaded profiling target found in $(collect(target_names))")
-        function normalize_source(path)
-            Sys.iswindows() ? lowercase(normpath(path)) :
-            normpath(path)
-        end
-        normalized_roots = normalize_source.(target_roots)
         function in_target(candidate)
             candidate.line > 0 || return false
             source = String(candidate.file)
             isempty(source) && return false
-            normalized = normalize_source(abspath(source))
-            any(root -> startswith(normalized, root), normalized_roots)
+            PerfCheckerProfileRuntime.source_in_roots(source, target_roots)
         end
         function frame_label(candidate)
             source = String(candidate.file)

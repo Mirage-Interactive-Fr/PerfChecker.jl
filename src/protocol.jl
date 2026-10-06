@@ -402,6 +402,41 @@ function _append_resource_records!(definitions, observations, diagnostics,
     return nothing
 end
 
+function _allocation_profile_diagnostic(summary)
+    get(summary, "status", "complete") == "complete" && return nothing
+    Dict{String, Any}("rule_id" => "allocation.profile.$(summary["status"])",
+        "severity" => summary["status"] == "zero_allocations" ? "info" : "warning",
+        "message" => summary["message"], "evidence" => summary)
+end
+
+function _append_allocation_profile_records!(definitions, observations, diagnostics,
+        summary, policy, common, comparison_key)
+    diagnostic = _allocation_profile_diagnostic(summary)
+    diagnostic === nothing || push!(diagnostics,
+        merge(copy(common), diagnostic,
+            Dict("record_type" => "diagnostic",
+                "fingerprint" => _content_digest(diagnostic))))
+    for (field, metric, unit) in (("total_bytes", "julia.alloc.bytes", "By"),
+        ("total_allocations", "julia.alloc.count", "1"))
+        id = "$metric/profile-independent-totals-v1/$policy"
+        definition = _definition_dict(id, unit, :profile_alloc)
+        definition["sample_semantics"] = "one independent operation evaluation per metric; bytes and count measured separately"
+        definition["attribution_scope"] = "whole_operation"
+        definitions[id] = definition
+        push!(observations,
+            merge(copy(common),
+                Dict{String, Any}(
+                    "record_type" => "observation", "metric" => metric, "unit" => unit,
+                    "value" => summary[field], "aggregation" => "independent_operation_total",
+                    "sample_index" => 1, "scope" => "whole_operation",
+                    "measurement_definition" => id, "comparison_key" => "$comparison_key::$id",
+                    "attributes" => Dict("profile_status" => summary["status"],
+                        "measurement_state_policy" => policy,
+                        "total_semantics" => summary["total_semantics"]))))
+    end
+    nothing
+end
+
 function _result_protocol_records(result::SoftwareSuiteResult, run_id::String,
         attempt_id::String)
     definitions = Dict{String, Dict{String, Any}}()
@@ -435,13 +470,20 @@ function _result_protocol_records(result::SoftwareSuiteResult, run_id::String,
         run.result isa CheckerResult || continue
         backend = planned.feature.backend
         for (table_index, table) in enumerate(run.result.tables)
+            qualification = table_index <= length(run.result.qualifications) ?
+                            run.result.qualifications[table_index] : Dict()
+            actual_policy = get(qualification, "measurement_state_policy", "reuse")
+            if haskey(qualification, "allocation_profile")
+                _append_allocation_profile_records!(definitions, observations, diagnostics,
+                    qualification["allocation_profile"], actual_policy,
+                    Dict("run_id" => run_id, "attempt_id" => attempt_id,
+                        "case_id" => case_id, "target_id" => target_id),
+                    planned.comparison_key)
+            end
             names = propertynames(table)
             columns = _metric_columns(backend, names)
             for column in columns
                 definition_id, unit = _measurement_definition(backend, column)
-                actual_policy = table_index <= length(run.result.qualifications) ?
-                                get(run.result.qualifications[table_index],
-                    "measurement_state_policy", "reuse") : "reuse"
                 if backend in (
                     :benchmark, :chairmark, :profile, :wall_profile, :profile_alloc) &&
                    actual_policy == "fresh"

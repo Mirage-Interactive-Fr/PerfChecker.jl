@@ -1,8 +1,19 @@
-using Documenter, DocumenterVitepress
+using Documenter, DocumenterVitepress, TOML
 
 using PerfChecker
 
 include("compat.jl")
+
+docs_url = get(ENV, "PERFCHECKER_DOCS_URL", "https://perfchecker.mirageinteractive.fr/")
+occursin(r"^https://[A-Za-z0-9.-]+(?::[0-9]+)?/(?:[A-Za-z0-9._-]+/)*$", docs_url) ||
+    error("PERFCHECKER_DOCS_URL must be an HTTPS deployment URL ending in /")
+docs_base = get(ENV, "PERFCHECKER_DOCS_BASE", "/")
+occursin(r"^/(?:[A-Za-z0-9._-]+/)*$", docs_base) ||
+    error("Invalid PERFCHECKER_DOCS_BASE")
+docs_version = TOML.parsefile(joinpath(@__DIR__, "..", "Project.toml"))["version"]
+ENV["PERFCHECKER_DOCS_URL"] = docs_url
+ENV["PERFCHECKER_DOCS_BASE"] = docs_base
+ENV["PERFCHECKER_DOCS_VERSION"] = docs_version
 
 makedocs(;
     modules = [PerfChecker],
@@ -16,7 +27,7 @@ makedocs(;
         repo = "https://github.com/Mirage-Interactive-Fr/PerfChecker.jl",
         devurl = "dev",
         devbranch = "main",
-        deploy_url = "https://mirage-interactive-fr.github.io/PerfChecker/",
+        deploy_url = docs_url,
         description = "Deep, reproducible performance testing for Julia packages and software suites"
     ),
     checkdocs = :exports,
@@ -102,9 +113,22 @@ makedocs(;
 # Use the system Node runtime on both platforms. DocumenterVitepress's bundled
 # Node 20.12 skips the Windows build and is too old for the current Vite version.
 npm = Sys.iswindows() ? `cmd /d /c npm.cmd` : `npm`
-run(Cmd(`$npm install --no-audit --no-fund`; dir = @__DIR__))
+run(Cmd(`$npm ci --no-audit --no-fund`; dir = @__DIR__))
 site = joinpath(@__DIR__, "build", "site")
 run(Cmd(`$npm exec -- vitepress build build/.documenter --outDir $site`; dir = @__DIR__))
 isfile(joinpath(site, "index.html")) || error("VitePress did not produce the site")
+
+# A root export is complete without Documenter's GitHub deployment step. Only
+# advertise directories that exist: this version at the root and the live dev
+# documentation on the GitHub mirror.
+if docs_base == "/"
+    write(joinpath(site, "versions.js"),
+        "var DOC_VERSIONS = [$(repr("v" * docs_version)), \"dev\"];\n" *
+        "var DOC_VERSION_URLS = {$(repr("v" * docs_version)): \"/\", " *
+        "\"dev\": \"https://mirage-interactive-fr.github.io/PerfChecker/dev/\"};\n")
+    write(joinpath(site, "siteinfo.js"),
+        "var DOCUMENTER_CURRENT_VERSION = $(repr("v" * docs_version));\n" *
+        "var DOCUMENTER_IS_DEV_VERSION = false;\n")
+end
 
 # Development publishing is separate; stable publishing requires the full collection.

@@ -8,8 +8,11 @@ declare global {
   interface Window {
     DOC_VERSIONS?: string[]
     DOCUMENTER_CURRENT_VERSION?: string
+    DOC_VERSION_URLS?: Record<string, string>
   }
 }
+
+declare const __PERFCHECKER_DOCS_VERSION__: string
 
 defineProps<{ screenMenu?: boolean }>()
 const { site } = useData()
@@ -17,7 +20,7 @@ const base = site.value.base
 const directory = base.split('/').filter(Boolean).at(-1)
 const versionDirectory = directory && /^(dev|stable|v\d+(?:\.\d+)*(?:-[\w.-]+)?)$/.test(directory)
 const root = versionDirectory ? base.slice(0, -(directory.length + 1)) : base
-const currentVersion = ref(versionDirectory ? directory : 'dev')
+const currentVersion = ref(versionDirectory ? directory : __PERFCHECKER_DOCS_VERSION__)
 const versions = ref<Array<{ text: string, link: string }>>([])
 const ready = ref(false)
 let timer: ReturnType<typeof setInterval> | undefined
@@ -29,7 +32,7 @@ function readMetadata() {
   currentVersion.value = current
   versions.value = catalogue.map(version => ({
     text: version,
-    link: new URL(`${root}${encodeURIComponent(version)}/`, window.location.origin).href,
+    link: new URL(window.DOC_VERSION_URLS?.[version] ?? `${root}${encodeURIComponent(version)}/`, window.location.origin).href,
   }))
   return true
 }

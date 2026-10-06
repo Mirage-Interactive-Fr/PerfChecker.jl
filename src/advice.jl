@@ -58,6 +58,23 @@ function advise(bundle::RunBundle; min_samples::Integer = 10)
                     "Increase the profiling duration or operation count, using fresh state.",
                     "Check that stacks were collected before attributing a cost to a function."))
         end
+        allocation_profiles = haskey(raw, "allocation_profile") ?
+                              [raw["allocation_profile"]] :
+                              [check["evidence"]["allocation_profile"]
+                               for check in get(bundle.manifest, "run_qualifications", [])
+                               if haskey(
+            get(check, "evidence", Dict()), "allocation_profile")]
+        for summary in allocation_profiles
+            summary["status"] in ("complete", "zero_allocations") && continue
+            push!(recommendations,
+                _recommendation("evidence.allocation_profile", scenario, implementation,
+                    merge(reference, Dict("allocation_profile" => summary)),
+                    summary["message"],
+                    summary["status"] == "no_samples" ?
+                    "Increase sample_rate or profile_repetitions with fresh state." :
+                    "Check target selection and source locations before attributing allocations.",
+                    "Collect usable allocation stacks and compare the independent whole-operation totals."))
+        end
         sites = get(raw, "allocation_sites", Any[])
         if isempty(sites)
             sites = [Dict("bytes" => o["value"], "file" => o["attributes"]["source_file"],
