@@ -48,7 +48,7 @@ try{
     await current.waitFor({state:'visible'});
     assert.equal(new URL(await current.getAttribute('href'),base).href,base);
     assert.equal(await picker.getByRole('link',{name:'dev',exact:true}).getAttribute('href'),
-      'https://mirage-interactive-fr.github.io/PerfChecker/dev/');
+      new URL('dev/',base).href);
     assert.equal(await picker.getByRole('link').count(),2);
     if(width<1280){
       await page.getByRole('button',{name:'mobile navigation',exact:true}).click();
@@ -85,7 +85,7 @@ try{
         'Keyboard focus must reveal the final point inside the narrow chart');
     }
   }
-  checks.push('root version catalogue advertises this installed version and the real dev mirror');
+  checks.push('root version catalogue advertises this installed version and the canonical dev channel');
   await page.setViewportSize({width:1440,height:1000});
   await page.goto(base,{waitUntil:'networkidle'});
   await page.getByRole('link',{name:'Explore the interactive plots',exact:false}).click();
