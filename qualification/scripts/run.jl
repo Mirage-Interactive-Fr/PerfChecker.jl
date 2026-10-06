@@ -145,14 +145,19 @@ try
     elseif suite == "plots"
         prepare("test/environments/wgl"; satellites = ["PerfCheckerMakie"])
         execute("packages/PerfCheckerMakie/test/runtests.jl")
+    elseif suite == "supposition"
+        Sys.WORD_SIZE == 64 || error("Supposition qualification requires 64-bit Julia")
+        prepare("test/environments/supposition")
+        execute("qualification/shared/supposition.jl")
     elseif suite == "legacy_interfaces"
+        Sys.WORD_SIZE == 64 || error("Legacy interface qualification requires 64-bit Julia")
         project = TOML.parsefile(joinpath(root, "Project.toml"))
         deps = merge(project["deps"], project["extras"])
         compat = Dict(k => v
         for (k, v) in project["compat"] if k == "julia" || haskey(deps, k))
         write_toml(
             joinpath(environment, "Project.toml"), Dict("deps" => deps, "compat" => compat))
-        prepare(; packages = ["Makie", "Oxygen", "Pluto"],
+        prepare(; packages = ["Makie", "Oxygen", "Pluto", "Supposition"],
             satellites = ["PerfCheckerWeb", "PerfCheckerPluto", "PerfCheckerMakie"])
         execute("qualification/shared/legacy_runner.jl")
     elseif suite == "analyzers"

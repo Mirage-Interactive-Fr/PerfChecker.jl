@@ -49,7 +49,7 @@ end
                   expected
             @test only(TOML.parsefile(joinpath(copied, "Manifest.toml"))["deps"]["Dependency"])["path"] ==
                   expected
-            @test realpath(expected) == sibling
+            @test realpath(expected) == realpath(sibling)
             @test read(joinpath(source, "Project.toml"), String) == project
             @test read(joinpath(source, "Manifest.toml"), String) == manifest
         end

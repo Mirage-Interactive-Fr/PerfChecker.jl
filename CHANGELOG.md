@@ -22,6 +22,10 @@ when migrating an existing installation.
   source sites are empty. Measured totals remain available; no samples, source
   attribution failure and measured zero allocations are distinct outcomes.
   Legacy CSV profile caches without matching qualification metadata are refreshed.
+- The core retains Linux 32-bit support, with tested PropCheck corpus generation
+  and replay. Published Supposition releases fail to load on 32-bit Julia;
+  that optional corpus backend requires 64-bit Julia and has a separate
+  qualification environment.
 
 ### Features
 
