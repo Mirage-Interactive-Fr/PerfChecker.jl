@@ -88,7 +88,9 @@ only SFTP and requires no remote shell. Existing files require the server's
 adjacent temporary files, apply file mode `0644`, then rename them; created
 and used subdirectories have mode `0755`. Assets upload before pages, and
 `index.html` follows the other pages. Progress is logged every 500 files.
-The publication job allows 45 minutes for the approximately 204 MB export.
+The publication job allows 45 minutes for a development export and 90 minutes
+for stable tags, which transfer both the version export and the root export.
+Each export currently contains approximately 204 MB of files.
 
 No recursive deletion runs. Development, previous versions and unrelated user
 files remain present. Hashed assets from older builds remain usable during an
