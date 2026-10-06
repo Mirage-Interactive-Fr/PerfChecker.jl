@@ -31,23 +31,95 @@ The SFTP account, remote document-root path and upload remain separate deploymen
 inputs; a successful build does not establish that a remote host was updated.
 
 The export contains runtime assets, fonts, local search, logo/favicon,
-`sitemap.xml`, `versions.js` and `siteinfo.js`. Its version picker links the
-installed version to `/` and development documentation to the real GitHub
-mirror; it does not advertise absent `stable/` or `v1.0/` directories on the
-SFTP host. Replace the export as one site, including assets and metadata, instead
-of uploading HTML from one build with assets from another.
+`sitemap.xml`, `versions.js`, `siteinfo.js` and `build-info.json`. The latter
+records the source revision, version, channel and canonical base. Its version
+catalogue is preview metadata; the automated publisher generates the live
+catalogue from completed publications on the destination server.
 
-For other deployments, `PERFCHECKER_DOCS_URL` selects the HTTPS deployment URL
-ending in `/`, and `PERFCHECKER_DOCS_BASE` selects its URL path, with leading and
-trailing `/`. GitHub mirror workflows set both explicitly. A mirror build uses
-clean URLs and Documenter's version catalogue; its artifact must not be uploaded
-unchanged to the root SFTP host.
+For an isolated build, set `PERFCHECKER_DOCS_BUILD_DIR` to a directory relative
+to `website/`, for example `build/sftp/dev`. This preserves an existing
+`website/build/site` export. Set `PERFCHECKER_DOCS_CHANNEL` to `dev`,
+`version` or `stable`, and `PERFCHECKER_DOCS_HOSTING=sftp`. Every canonical
+base uses actual `.html` files, including `/dev/` and `/vX.Y.Z/`.
 
-The full qualification produces `qualified-documentation-static`, the tested
-root export, and `qualified-documentation-site`, the tested GitHub mirror. The
-documentation receipt records **separate hashes** for both. Downloading these
-Actions artifacts requires a GitHub login. The collection and stable deployment
-revalidate both artifacts from their original campaign.
+The GitHub mirror uses `PERFCHECKER_DOCS_HOSTING=github`, its own deployment
+URL and `/PerfChecker/dev/` or version base. Its clean URLs and Documenter
+catalogue are separate from the SFTP export. Do not upload a mirror artifact
+to the canonical host.
+
+The full qualification still produces `qualified-documentation-static` and
+`qualified-documentation-site`, with separate recorded hashes. Its existing
+collection and release guards are unchanged. The independent Documentation
+workflow's exports are documentation checks, not a complete package qualification.
+
+## Automatic canonical SFTP publication
+
+The `Documentation` workflow builds exports without server credentials and
+saves downloadable artifacts before publication. Pull requests build and test
+all three canonical bases but never receive SFTP secrets. Main pushes and a
+manual dispatch on main publish only `/dev/`. A stable tag matching
+`Project.toml` publishes `/vX.Y.Z/` and promotes that version to the domain
+root only if it is at least as recent as the previously selected stable version.
+Development builds also accept Julia versions such as `1.0.1-DEV`.
+
+Configure these repository Actions variables:
+
+| Variable | Meaning |
+| --- | --- |
+| `PERFCHECKER_DOCS_SFTP_HOST` | SFTP hostname, without a URL scheme |
+| `PERFCHECKER_DOCS_SFTP_PORT` | SSH port |
+| `PERFCHECKER_DOCS_SFTP_USER` | Account name |
+| `PERFCHECKER_DOCS_SFTP_ROOT` | Absolute document root as seen by the SFTP account, including any chroot |
+| `PERFCHECKER_DOCS_SFTP_DEPLOY` | Keep `false` until reviewed; set `true` to enable |
+
+Configure `PERFCHECKER_DOCS_SFTP_PASSWORD` and
+`PERFCHECKER_DOCS_SFTP_KNOWN_HOSTS` as Actions secrets. The latter is an
+OpenSSH known_hosts entry for the exact host and port, obtained through a trusted
+channel; a nonstandard port uses `[host]:port`. The publisher verifies the raw
+server public key against this entry and rejects a different key. An optional
+`PERFCHECKER_DOCS_SFTP_SSH_KEY` secret can supply an OpenSSH private key instead
+of a password. Do not put credentials in build variables, files, artifacts or logs.
+The publication job uses the `documentation-sftp` environment; configure any
+required environment protection before enabling it.
+
+The transport is `ssh2` **1.17.0**, locked with npm integrity metadata. It opens
+only SFTP and requires no remote shell. Existing files require the server's
+`posix-rename@openssh.com` extension for safe replacement. Uploads create
+adjacent temporary files, apply file mode `0644`, then rename them; created
+and used subdirectories have mode `0755`. Assets upload before pages, and
+`index.html` follows the other pages. Progress is logged every 500 files.
+The publication job allows 45 minutes for the approximately 204 MB export.
+
+No recursive deletion runs. Development, previous versions and unrelated user
+files remain present. Hashed assets from older builds remain usable during an
+update. Individual file replacements are atomic on a supporting server; an
+entire site update is not atomic. Readers may briefly observe pages from two
+builds if an update is interrupted. Download the saved artifacts and rerun the
+failed publication job to repair the transfer.
+
+All workflow refs share a publication mutex, with cancellation disabled. An
+atomic remote `.perfchecker-docs-lock` directory also excludes overlapping
+publishers. A cancelled runner can leave this lock behind: confirm there is no
+active publisher, then remove only that empty lock directory through SFTP and
+retry. Never remove a lock held by an active run.
+
+The publisher maintains `.perfchecker-releases.json`, immutable per-version
+`.perfchecker-docs.json` markers, a root `.perfchecker-promotion.json`
+watermark and a root `.perfchecker-stable.json` completion marker. It writes
+the watermark before changing root files, so a delayed old tag cannot roll back
+a partially updated root. It commits a completed root marker after transfer,
+then the publication state and live `versions.js` catalogue. A retry recovers
+a completed promotion if a metadata write failed. Never edit these records to
+force an older version into the root, and never retag a published version to
+replace its source or artifact bytes.
+
+For initial activation, merge this configuration, enable SFTP, and dispatch
+Documentation on main. Verify `/dev/`, a deep `.html` link, local search and
+the version picker. This first deployment preserves the existing manual root.
+After the final main commit is registered in General, TagBot creates the matching
+stable tag and triggers the version and root documentation builds. The dedicated
+`TAGBOT_SSH_KEY` grants TagBot access to the package repository;
+`DOCUMENTER_KEY` remains dedicated to the GitHub documentation mirror.
 
 ## GitHub mirror authorization
 
@@ -68,9 +140,11 @@ to the site repository; no personal token is needed. See
 
 ## Development documentation and release qualification
 
-The independent `Documentation` workflow installs only the documentation
-dependencies, builds Documenter and VitePress, then publishes `/PerfChecker/dev/` from `main`. It does not
-run package tests, browser tests, benchmarks or qualification. Documenter's own
+The independent `Documentation` workflow installs documentation dependencies,
+builds Documenter and VitePress, tests SFTP publication policy and authentication,
+and checks canonical routes and browser navigation. It publishes the canonical
+`/dev/` and the GitHub mirror from main when each deployment is enabled. It does
+not run package tests, benchmarks or a complete qualification. Documenter's own
 reference and doctest checks remain part of the build. PRs build but never publish.
 
 `Collection qualification` uses a reduced routine profile on pushes and pull
@@ -109,8 +183,12 @@ branch protection.
 
 ## Human registration and extension publication
 
-Check that `main`, the stable tag and the qualified collection identify the same
-commit before invoking Registrator. The package owner performs registration.
+Integrate the reviewed documentation configuration on main before selecting the
+registration commit. Confirm the canonical package URL in the General metadata,
+then have the package owner register that final main commit. TagBot creates the
+stable tag after General accepts it; do not create an earlier manual tag just to
+start documentation deployment. The collection qualification remains a separate
+validation with its existing exact-source and publication guards.
 For a breaking release, include migration notes in the registration comment;
 notes in a GitHub release alone do not satisfy this step. For example:
 

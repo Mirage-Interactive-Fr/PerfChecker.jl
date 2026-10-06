@@ -9,7 +9,9 @@ const docsVersion = process.env.PERFCHECKER_DOCS_VERSION ?? '1.0.0'
 const docsURL = new URL(process.env.PERFCHECKER_DOCS_URL ?? 'https://perfchecker.mirageinteractive.fr/')
 if (docsURL.protocol !== 'https:' || docsURL.username || docsURL.password || docsURL.search || docsURL.hash)
   throw new Error('Documentation deployment URL must be plain HTTPS')
-const standalone = (process.env.PERFCHECKER_DOCS_BASE ?? '/') === '/'
+const sftp = (process.env.PERFCHECKER_DOCS_HOSTING ??
+  (docsURL.origin === 'https://perfchecker.mirageinteractive.fr' ? 'sftp' : 'github')) === 'sftp'
+const docsChannel = process.env.PERFCHECKER_DOCS_CHANNEL ?? 'stable'
 
 // Both the generated VitePress config and the source config run from website/.
 const mediaRoot = resolve(process.cwd(), 'src/public')
@@ -34,11 +36,11 @@ const config = defineConfig({
   outDir: 'REPLACE_ME_DOCUMENTER_VITEPRESS',
   lastUpdated: true,
   // Plain static hosting through SFTP needs no rewrite rules for .html links.
-  cleanUrls: !standalone,
+  cleanUrls: !sftp,
   vite: { define: {
     __PERFCHECKER_MEDIA__: JSON.stringify(media),
     __DEPLOY_ABSPATH__: JSON.stringify('REPLACE_ME_DOCUMENTER_VITEPRESS_DEPLOY_ABSPATH'),
-    __PERFCHECKER_DOCS_VERSION__: JSON.stringify(`v${docsVersion}`),
+    __PERFCHECKER_DOCS_VERSION__: JSON.stringify(docsChannel === 'dev' ? 'dev' : `v${docsVersion}`),
   } },
   ignoreDeadLinks: false,
   markdown: {
@@ -124,10 +126,10 @@ if (process.env.PERFCHECKER_DOCS_BASE) {
 }
 
 // Root exports include their own metadata; Documenter supplies it for mirrors.
-if (standalone) {
+if (sftp) {
   config.head = [
     ['script', { src: '/versions.js' }],
-    ['script', { src: '/siteinfo.js' }],
+    ['script', { src: `${config.base}siteinfo.js` }],
   ]
 } else {
   // A local build can override the version directory without CI's
