@@ -14,6 +14,15 @@ julia --startup-file=no --project=.controller/core run.jl wall_profile  Bibliogr
 
 Keep the printed report directory. Each command collects a separate profile of the same operation.
 
+If the allocation site table is empty, read its allocation-profile status before
+changing code. `zero_allocations`, `no_samples`, `outside_target_scope` and
+`unattributed_samples` describe different evidence. The measured byte/count
+totals are retained even when a location could not be sampled or attributed.
+Repeat with a suitable sampling rate and inspect the selected source scope;
+do not interpret missing stacks as zero cost. The [collector reference](../reference/checks.md#Profiles)
+explains the fields and the difference between raw scenario weights and the
+legacy allocation-stack estimates.
+
 ## Read a flame graph
 
 - Width is the selected weight: CPU samples, task samples or allocation bytes.

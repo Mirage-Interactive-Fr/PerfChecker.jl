@@ -16,6 +16,7 @@ concurrency:
 
 env:
   PERFCHECKER_DOCS_BASE: '/PerfChecker/dev/'
+  PERFCHECKER_DOCS_URL: 'https://mirage-interactive-fr.github.io/PerfChecker/'
   JULIA_NUM_THREADS: '1'
   JULIA_NUM_GC_THREADS: '1'
   JULIA_NUM_PRECOMPILE_TASKS: '1'

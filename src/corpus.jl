@@ -52,5 +52,19 @@ Load `Supposition` to enable this extension. Sample the possibility, encode the
 cases as JSON-compatible values and persist them for later reproducible replay.
 Return the corpus path; a positive count is required and existing files need
 `force=true`. Replay uses saved inputs rather than resampling the generator.
+
+Generation with the published Supposition backend requires 64-bit Julia.
+On 32-bit Julia, use `freeze_propcheck_corpus` or replay a saved corpus with
+`read_property_corpus`. Loading Supposition itself on 32-bit Julia can fail
+before this API is reached because of an upstream dependency defect.
 """
-function freeze_supposition_corpus end
+function freeze_supposition_corpus(path::AbstractString, possibility; kwargs...)
+    _require_supposition_runtime()
+    throw(ArgumentError("Load Supposition on 64-bit Julia to enable this corpus backend"))
+end
+
+function _require_supposition_runtime()
+    Sys.WORD_SIZE == 64 || throw(ArgumentError(
+        "Supposition corpus generation requires 64-bit Julia; on 32-bit Julia use freeze_propcheck_corpus or read_property_corpus to replay saved inputs (upstream Supposition issue #76)"))
+    return nothing
+end

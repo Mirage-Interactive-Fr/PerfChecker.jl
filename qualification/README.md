@@ -88,6 +88,10 @@ destination and the cross-repository deploy-key setup.
 
 ## Explicit limits
 
+- The core compatibility matrix retains Linux 32-bit Julia and tests PropCheck
+  corpus generation and replay there. Published Supposition releases cannot
+  load on 32-bit Julia; the separate `supposition` suite executes the optional
+  backend on 64-bit Linux and Windows, including Linux in routine qualification.
 - Controller tests alone do not qualify the collection or its externally pinned
   VS Code revision. Verify the complete campaign and exact revision in the
   [qualification workflow](https://github.com/Mirage-Interactive-Fr/PerfChecker.jl/actions/workflows/Qualification.yml).

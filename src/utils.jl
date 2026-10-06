@@ -118,6 +118,7 @@ function cached_output_path(
     if metadata_has_result(metadata, u) && isfile(path)
         return path
     end
+    config.backend in (:profile, :wall_profile, :profile_alloc) && return nothing
 
     legacy_u = file_uuid(config.backend, pkg, version, config.tags)
     legacy_path = output_path(config.path, legacy_u)

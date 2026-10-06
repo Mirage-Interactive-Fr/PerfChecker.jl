@@ -303,8 +303,124 @@ function _install_target!(worker, target::RunTarget, options::Dict{Symbol, Any})
     return nothing
 end
 
-"Copy a worker environment, excluding only explicitly named top-level entries."
+function _relocated_dependency_path(
+        path, source_base, destination_base, source, destination)
+    path isa AbstractString || throw(ArgumentError("dependency paths must be strings"))
+    isabspath(path) && return String(path)
+    absolute = normpath(abspath(source_base, path))
+    resolved = ispath(absolute) ? realpath(absolute) : absolute
+    source_root = realpath(source)
+    if PerfCheckerProfileRuntime.within_root(absolute, source) &&
+       PerfCheckerProfileRuntime.within_root(resolved, source_root)
+        copied = joinpath(destination, relpath(absolute, source))
+        return relpath(copied, destination_base)
+    end
+    absolute
+end
+
+function _local_repository_path(path)
+    path isa AbstractString &&
+        (isabspath(path) || !occursin(r"^[^/\\]+:", path))
+end
+
+function _privatize_metadata!(path, original)
+    islink(path) || return
+    contents = read(original)
+    rm(path)
+    write(path, contents)
+    nothing
+end
+
+function _private_metadata_parent(path, destination)
+    parent = dirname(path)
+    while parent != destination
+        islink(parent) && return false
+        next = dirname(parent)
+        next == parent && return false
+        parent = next
+    end
+    true
+end
+
+function _relocate_check_metadata!(source, destination)
+    manifests = Dict{String, String}()
+    for name in readdir(source)
+        occursin(r"^(Julia)?Manifest(?:-v[0-9]+\.[0-9]+)?\.toml$", name) || continue
+        isfile(joinpath(source, name)) &&
+            (manifests[abspath(source, name)] = abspath(destination, name))
+    end
+    for name in ("Project.toml", "JuliaProject.toml")
+        original, copied = joinpath(source, name), joinpath(destination, name)
+        isfile(original) || continue
+        _privatize_metadata!(copied, original)
+        project = TOML.parsefile(original)
+        changed = false
+        for entry in values(get(project, "sources", Dict()))
+            entry isa AbstractDict || continue
+            for key in ("path", "url")
+                haskey(entry, key) || continue
+                key == "url" && !_local_repository_path(entry[key]) && continue
+                value = _relocated_dependency_path(
+                    entry[key], source, destination, source, destination)
+                changed |= value != entry[key]
+                entry[key] = value
+            end
+        end
+        if haskey(project, "manifest")
+            manifest = abspath(source, String(project["manifest"]))
+            isfile(manifest) ||
+                throw(ArgumentError("explicit manifest is missing: $manifest"))
+            internal = PerfCheckerProfileRuntime.within_root(manifest, source) ?
+                       abspath(destination, relpath(manifest, source)) : nothing
+            relocated = if haskey(manifests, manifest)
+                manifests[manifest]
+            elseif internal !== nothing &&
+                   _private_metadata_parent(internal, destination)
+                ispath(internal) || islink(internal) ||
+                    throw(ArgumentError(
+                        "explicit manifest was excluded from the worker environment: $manifest"))
+                internal
+            else
+                private = mktempdir(destination; prefix = ".perfchecker-manifest-")
+                target = joinpath(private, basename(manifest))
+                cp(manifest, target; follow_symlinks = true)
+                target
+            end
+            manifests[manifest] = relocated
+            reference = relpath(relocated, destination)
+            changed |= reference != project["manifest"]
+            project["manifest"] = reference
+        end
+        changed && open(io -> TOML.print(io, project), copied, "w")
+    end
+    for (original, copied) in manifests
+        _privatize_metadata!(copied, original)
+        document = TOML.parsefile(original)
+        dependencies = get(document, "deps", document)
+        dependencies isa AbstractDict || continue
+        changed = false
+        for entries in values(dependencies)
+            entries isa AbstractVector || continue
+            for entry in entries
+                entry isa AbstractDict || continue
+                for key in ("path", "repo-url")
+                    haskey(entry, key) || continue
+                    key == "repo-url" && !_local_repository_path(entry[key]) && continue
+                    value = _relocated_dependency_path(entry[key], dirname(original),
+                        dirname(copied), source, destination)
+                    changed |= value != entry[key]
+                    entry[key] = value
+                end
+            end
+        end
+        changed && open(io -> TOML.print(io, document), copied, "w")
+    end
+    nothing
+end
+
+"Copy a worker environment, preserving the meaning of local dependency paths."
 function _copy_check_environment(source, destination; exclude = String[])
+    source, destination = abspath(source), abspath(destination)
     exclude isa AbstractVector && all(x -> x isa AbstractString, exclude) ||
         throw(ArgumentError("environment_excludes must be a vector of top-level names"))
     excluded = Set(String.(exclude))
@@ -323,6 +439,7 @@ function _copy_check_environment(source, destination; exclude = String[])
             name in excluded && continue
             cp(joinpath(source, name), joinpath(destination, name))
         end
+        _relocate_check_metadata!(source, destination)
     catch
         # This directory was created exclusively by this call.
         rm(destination; recursive = true, force = true)
@@ -398,6 +515,18 @@ function check_function(x::Symbol, d::Dict, block1, block2; qualification = noth
                     cached_output_path(
                         config, target.spec.name, target.spec.version, block1, block2, hwinfo) :
                     nothing for target in targets]
+    allocation_caches = Dict{Int, Any}()
+    if x === :profile_alloc
+        for (i, path) in enumerate(cached_paths)
+            path === nothing && continue
+            capture = _read_allocation_cache(path)
+            if capture === nothing
+                cached_paths[i] = nothing
+            else
+                allocation_caches[i] = capture
+            end
+        end
+    end
     worker_indices = findall(isnothing, cached_paths)
     temp_roots = Dict{Int, String}()
     worker_envs = Dict{Int, String}()
@@ -523,8 +652,16 @@ function check_function(x::Symbol, d::Dict, block1, block2; qualification = noth
                 end
                 stop_before_post(x) && safe_stop(procs[i])
                 res = post(run_options, x) |> to_table
+                x === :profile_alloc &&
+                    (qualification_evidence["allocation_profile"] = run_options[:check_result].summary)
             else
-                res = csv_to_table(cached_path)
+                if x === :profile_alloc
+                    capture = allocation_caches[i]
+                    res = to_table(capture.sites)
+                    qualification_evidence["allocation_profile"] = capture.summary
+                else
+                    res = csv_to_table(cached_path)
+                end
             end
 
             qualification_evidence["measurement_state_policy"] = get(
@@ -544,11 +681,14 @@ function check_function(x::Symbol, d::Dict, block1, block2; qualification = noth
             run = run_metadata(config, pkg, v, block1, block2, hwinfo)
             out = output_path(config.path, run.result_uuid)
             metadata = metadata_path(config.path)
-            if metadata_has_result(metadata, run.result_uuid)
+            recorded = metadata_has_result(metadata, run.result_uuid)
+            if recorded && !(x === :profile_alloc && cached_paths[k] === nothing)
                 continue
             end
             table_to_csv(t, out)
-            write_run_metadata(metadata, run)
+            x === :profile_alloc && _write_allocation_cache(
+                out, t, results.qualifications[k]["allocation_profile"])
+            recorded || write_run_metadata(metadata, run)
         end
     finally
         # Cancellation of the controller's wait must not race a worker whose

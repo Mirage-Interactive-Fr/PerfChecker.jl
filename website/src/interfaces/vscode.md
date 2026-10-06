@@ -5,7 +5,7 @@ PerfChecker combines Julia performance tests, saved results, plots and optional 
 ## Install and prepare
 
 1. Install VS Code **1.96 or newer** and Julia **1.10 or newer**.
-2. Install **PerfChecker** from the [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=mirage-interactive-fr.perfchecker-vscode). For an offline installation, use **Extensions → … → Install from VSIX…** with the official stable `.vsix`. Reload VS Code if prompted.
+2. Install the supplied, qualified **PerfChecker 1.0.0 VSIX** with **Extensions → … → Install from VSIX…**. The matching completed [collection qualification](https://github.com/Mirage-Interactive-Fr/PerfChecker.jl/actions/workflows/Qualification.yml) provides it in `qualification-vscode-ubuntu-latest-1` as `perfchecker-vscode.vsix`; downloading an Actions artifact requires a GitHub login. Official [Marketplace installation](https://marketplace.visualstudio.com/items?itemName=mirage-interactive-fr.perfchecker-vscode) follows confirmation of PerfChecker 1.0.0 in Julia General. Reload VS Code if prompted.
 3. Open the package folder. Trust the workspace when you are prepared to execute its Julia code.
 4. Prepare a Julia controller environment containing the matching PerfChecker build and the collectors you intend to use. Existing TestItems also require TestItemRunner and the package's test dependencies.
 5. Set **PerfChecker: Runner Project** (`perfchecker.runnerProject`) to the controller environment. For shared scenarios, set **Scenario Project** (`perfchecker.scenarioProject`) to the environment containing the measured code and its dependencies.
@@ -98,9 +98,9 @@ cancellation does not prove the remote tool stopped.
 
 ## Advice and explicit implementation
 
-Studio → **Advisor chat** opens **PerfChecker: Chat with performance advisor**. Configure one MCP advice tool, choose saved evidence if useful, and ask a question. Chat also works without evidence for configuration and usage questions; the agent is told no measurements were attached.
+Studio → **Advisor chat** opens **PerfChecker: Chat with performance advisor**. For an authenticated native Codex CLI, choose **Connect Codex CLI**: the extension checks the installation and starts a temporary local MCP connector with separate advice and implementation tools. Follow the [qualified Codex recipe](../mcp-advisor.md#Connect-an-authenticated-Codex-CLI), or configure an external MCP advice tool. Choose saved evidence if useful, then ask a question. Chat also works without evidence for configuration and usage questions; the agent is told no measurements were attached.
 
-Review the answer. You can apply the advice yourself, or explicitly select **Prepare implementation from reviewed advice**. The latter requires a separately configured implementation tool and a Git repository with an existing commit.
+Review the answer. You can apply the advice yourself, or explicitly select **Prepare implementation from reviewed advice**. The latter requires the connected Codex implementation tool or a separately configured external tool, and a Git repository with an existing commit.
 
 Before sending implementation, the extension warns that generated changes may be incorrect. It saves a Git checkpoint of the current on-disk state and prepares an isolated temporary checkout. The agent works there; the original working tree receives no proposed changes until you inspect the diff and select **Apply reviewed implementation changes**. **Restore implementation checkpoint** reverses that applied patch when the repository has not drifted.
 

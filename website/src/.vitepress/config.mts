@@ -5,6 +5,12 @@ import { existsSync, readFileSync } from 'node:fs'
 import { resolve, sep } from 'node:path'
 import { createHash } from 'node:crypto'
 
+const docsVersion = process.env.PERFCHECKER_DOCS_VERSION ?? '1.0.0'
+const docsURL = new URL(process.env.PERFCHECKER_DOCS_URL ?? 'https://perfchecker.mirageinteractive.fr/')
+if (docsURL.protocol !== 'https:' || docsURL.username || docsURL.password || docsURL.search || docsURL.hash)
+  throw new Error('Documentation deployment URL must be plain HTTPS')
+const standalone = (process.env.PERFCHECKER_DOCS_BASE ?? '/') === '/'
+
 // Both the generated VitePress config and the source config run from website/.
 const mediaRoot = resolve(process.cwd(), 'src/public')
 const media = JSON.parse(readFileSync(resolve(process.cwd(), 'media.json'), 'utf8'))
@@ -27,10 +33,12 @@ const config = defineConfig({
   description: 'REPLACE_ME_DOCUMENTER_VITEPRESS',
   outDir: 'REPLACE_ME_DOCUMENTER_VITEPRESS',
   lastUpdated: true,
-  cleanUrls: true,
+  // Plain static hosting through SFTP needs no rewrite rules for .html links.
+  cleanUrls: !standalone,
   vite: { define: {
     __PERFCHECKER_MEDIA__: JSON.stringify(media),
     __DEPLOY_ABSPATH__: JSON.stringify('REPLACE_ME_DOCUMENTER_VITEPRESS_DEPLOY_ABSPATH'),
+    __PERFCHECKER_DOCS_VERSION__: JSON.stringify(`v${docsVersion}`),
   } },
   ignoreDeadLinks: false,
   markdown: {
@@ -115,9 +123,13 @@ if (process.env.PERFCHECKER_DOCS_BASE) {
   config.base = base
 }
 
-// Documenter's deployment provides both files. Standalone builds at the root
-// have no publication catalogue.
-if (config.base !== '/') {
+// Root exports include their own metadata; Documenter supplies it for mirrors.
+if (standalone) {
+  config.head = [
+    ['script', { src: '/versions.js' }],
+    ['script', { src: '/siteinfo.js' }],
+  ]
+} else {
   // A local build can override the version directory without CI's
   // deployment metadata. Keep its version catalogue under the same project.
   const deploymentRoot = process.env.PERFCHECKER_DOCS_BASE
@@ -128,6 +140,19 @@ if (config.base !== '/') {
     ['script', { src: `${config.base}siteinfo.js` }],
   ]
 }
+
+config.transformHead = ({ pageData }) => {
+  const page = pageData.relativePath.replace(/\.md$/, '.html').replace(/^index\.html$/, '')
+  const canonical = new URL(config.base + page, docsURL.origin).href
+  return [
+    ['link', { rel: 'canonical', href: canonical }],
+    ['meta', { property: 'og:url', content: canonical }],
+    ['meta', { property: 'og:title', content: pageData.title || 'PerfChecker.jl' }],
+    ['meta', { property: 'og:type', content: 'website' }],
+  ]
+}
+config.head!.push(['link', { rel: 'icon', href: `${config.base}assets/perfchecker-mark.png` }])
+config.sitemap = { hostname: new URL(config.base, docsURL.origin).href }
 
 // Keep the whole documentation visible from every page.
 const sidebar = config.themeConfig?.sidebar

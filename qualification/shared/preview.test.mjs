@@ -36,3 +36,33 @@ test('preview remains readable while its build source is replaced',async()=>{
     await rm(source,{recursive:true,force:true});
   }
 });
+
+test('static preview requires actual .html files without clean URL rewrites',async()=>{
+  const source=await mkdtemp(join(tmpdir(),'perfchecker-static-preview-fixture-'));
+  await writeFile(join(source,'index.html'),'<h1>Static documentation</h1>');
+  await writeFile(join(source,'guide.html'),'<h1>Portable deep link</h1>');
+  await writeFile(join(source,'404.html'),'<h1>Missing page</h1>');
+  const server=spawn(process.execPath,[fileURLToPath(new URL('../../website/preview.mjs',import.meta.url))],{
+    env:{...process.env,PORT:'0',PERFCHECKER_PREVIEW_SOURCE:source,
+      PERFCHECKER_DOCS_BASE:'/',PERFCHECKER_PREVIEW_CLEAN_URLS:'false'},
+    windowsHide:true,stdio:['ignore','pipe','pipe'],
+  });
+  try{
+    const base=await new Promise((resolve,reject)=>{
+      const timeout=setTimeout(()=>reject(new Error('Static preview startup timed out')),15000);
+      server.once('error',error=>{clearTimeout(timeout);reject(error)});
+      server.once('exit',code=>{clearTimeout(timeout);reject(new Error(`Static preview exited: ${code}`))});
+      server.stdout.on('data',data=>{
+        const url=data.toString().match(/http:\/\/127\.0\.0\.1:\d+\//)?.[0];
+        if(url){clearTimeout(timeout);resolve(url)}
+      });
+    });
+    assert.equal(await (await fetch(base+'guide.html')).text(),'<h1>Portable deep link</h1>');
+    assert.equal((await fetch(base+'guide')).status,404);
+    assert.equal((await fetch(base+'siteinfo.js')).status,404,
+      'Standalone version metadata must be a real exported file');
+  }finally{
+    const stopped=once(server,'exit');server.kill();await stopped;
+    await rm(source,{recursive:true,force:true});
+  }
+});

@@ -45,6 +45,34 @@ Sampled allocation events with types and call stacks.
 - Bytes weight the amount; event counts weight the frequency. They can rank hotspots differently.
 - Julia-managed sampling does not cover native allocations.
 
+Read `qualification["allocation_profile"]` together with the sites. An empty
+site table does not establish that the workload allocated nothing:
+
+| Status | Interpretation |
+| --- | --- |
+| `complete` | Target source sites were retained; inspect attribution counts and scope |
+| `zero_allocations` | The separate byte and allocation-count measurements were both zero |
+| `no_samples` | No allocation events were sampled; measured totals may still be positive |
+| `outside_target_scope` | Events were captured, but their source sites were outside the selected target |
+| `unattributed_samples` | Events were captured without a usable source site |
+
+The record preserves measured `total_bytes` and `total_allocations`, raw and
+attributed sample counts, sample rate, repetitions, a message and weight
+semantics. Bytes and allocation count come from **two independently prepared
+evaluations**, rather than one common observation. Legacy profile plots distribute
+these measured totals over retained stacks; scenario profiles retain raw sampled
+weights. Keep those definitions distinct. Empty profiles retain their status and
+totals and do not produce invented source sites or a zero-valued flame graph.
+Scenario results also expose the independent whole-operation totals as separate
+observations, with `independent_operation_total` weight semantics and
+`whole_operation` scope. A successfully collected empty profile can belong to a
+functionally complete bundle; its qualification and diagnostics still determine
+what the profile supports. It does not establish a performance improvement.
+
+CSV profile caches retain this qualification in a matching
+`.csv.allocation-profile.toml` sidecar. A legacy cache without it is recomputed
+instead of guessing what an empty table meant.
+
 ### `:alloc` — allocation by source line
 
 Allocation bytes attributed to file and line.

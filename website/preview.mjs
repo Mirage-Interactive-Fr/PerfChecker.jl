@@ -15,6 +15,7 @@ await cp(source, temporary, { recursive: true });
 const root = await realpath(temporary);
 const port = Number(process.env.PORT ?? 8870);
 const mount = process.env.PERFCHECKER_DOCS_BASE ?? '/';
+const cleanUrls = process.env.PERFCHECKER_PREVIEW_CLEAN_URLS !== 'false';
 if (!/^\/(?:[A-Za-z0-9._-]+\/)*$/.test(mount)) throw new Error('Invalid documentation base');
 if (!Number.isInteger(port) || port < 0 || port > 65535) throw new Error('Invalid PORT');
 const versionsPath = mount.replace(/\/[^/]+\/$/, '') + '/versions.js';
@@ -44,7 +45,9 @@ const server = createServer(async (request, response) => {
     const path = resolve(root, '.' + pathname);
     if (!inside(path)) { response.writeHead(403).end(); return; }
     let file;
-    for (const candidate of [path, path + '.html', resolve(path, 'index.html')]) {
+    const candidates = cleanUrls ? [path, path + '.html', resolve(path, 'index.html')]
+      : [path, resolve(path, 'index.html')];
+    for (const candidate of candidates) {
       try {
         const canonical = await realpath(candidate);
         if (inside(canonical) && (await stat(canonical)).isFile()) { file = canonical; break; }

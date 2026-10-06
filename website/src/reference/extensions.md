@@ -13,7 +13,7 @@ providers. See [interface packages](../interfaces/packages.md) for installation.
 | UnicodePlotsExt | UnicodePlots | terminal plots |
 | PProfExt | FlameGraphs + PProf | pprof/folded/speedscope profile artifacts |
 | PropCheckExt | PropCheck | reproducible property corpus freezing |
-| SuppositionExt | Supposition | reproducible property corpus freezing |
+| SuppositionExt | Supposition | property corpus freezing on 64-bit Julia |
 | TestItemRunnerExt | TestItemRunner >= 1.3.2 | native item discovery and whole-item measurement |
 | HTTPAdvisorExt | HTTP | optional advisor transport |
 
@@ -82,10 +82,27 @@ portable corpus. This makes a stochastic discovery reproducible before it
 becomes a performance fixture. Corpus generation is not mixed into benchmark
 sampling; measure the frozen examples in a separate deterministic run.
 
-Generate Supposition corpora on 64-bit Julia: Supposition 0.3.5 assumes a 64-bit
-architecture in its generators, and generation is not qualified on 32-bit Julia.
-On 32-bit Julia, replay previously frozen inputs whose values and workload support
-that architecture.
+PerfChecker's core supports 32-bit Julia. The optional Supposition backend
+requires 64-bit Julia: the published Supposition 0.3.5 fails to load on 32-bit
+Julia because its choice engine passes `UInt32` to a method requiring `UInt64`.
+The [upstream defect](https://github.com/Seelengrab/Supposition.jl/issues/76)
+has no published fix. Calling `freeze_supposition_corpus` without loading the
+dependency gives an actionable error on 32-bit Julia; it cannot intercept a
+failure inside `using Supposition` itself.
+
+On 32-bit Julia, generate a corpus with PropCheck, or replay previously frozen
+inputs whose values and workload support that architecture:
+
+```julia
+using PerfChecker, PropCheck
+
+freeze_propcheck_corpus("inputs.json", PropCheck.itype(Int8); count=40, seed=7)
+inputs = read_property_corpus("inputs.json")["cases"]
+```
+
+The core test suite exercises this seeded generation and replay on Linux 32-bit
+Julia. Supposition has its own 64-bit qualification environment, with actual
+generation, encoding, metadata and replay checks; it is not a core test dependency.
 
 ## Add a Julia backend
 
