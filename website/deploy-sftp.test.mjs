@@ -7,7 +7,7 @@ import { createHmac } from 'node:crypto';
 import ssh2 from 'ssh2';
 const { Server, utils } = ssh2;
 import { hostVerifier, validateRoot, readExport, publishDocumentation, connectSftp,
-  deploymentConfiguration } from './deploy-sftp.mjs';
+  deploymentConfiguration, validateDocumentationExports, failureClass } from './deploy-sftp.mjs';
 const revision = 'a'.repeat(40), nextRevision = 'b'.repeat(40);
 class MemorySftp {
   constructor() { this.files = new Map(); this.dirs = new Map([['/www', 0o755]]); this.operations = []; this.fail = null; }
@@ -36,6 +36,8 @@ async function exportsFor(t, version = '1.0.0', sha = revision) {
     await writeFile(join(dir, 'build-info.json'), JSON.stringify({ schema: 'perfchecker-doc-export/1',
       channel, base, version, revision: sha, url: 'https://perfchecker.mirageinteractive.fr' + base }));
     await writeFile(join(dir, 'assets/app.js'), `asset ${sha}`);
+    await mkdir(join(dir, 'assets/chunks'));
+    await writeFile(join(dir, 'assets/chunks/@localSearchIndexroot.fixture.js'), 'local search index');
     await writeFile(join(dir, 'guide.html'), `guide ${version} ${channel}`);
     await writeFile(join(dir, 'index.html'), `index ${version} ${channel}`);
     await writeFile(join(dir, 'siteinfo.js'), `var DOCUMENTER_CURRENT_VERSION = ${JSON.stringify(channel === 'dev' ? 'dev' : `v${version}`)};`);
@@ -171,7 +173,7 @@ test('real SSH password authentication opens only SFTP and rejects a wrong pinne
   });
   await new Promise(ok => server.listen(0, '127.0.0.1', ok)); t.after(() => new Promise(ok => server.close(ok)));
   const port = server.address().port;
-  const config = { host: '127.0.0.1', port, username: 'docs', password: 'test-only', readyTimeout: 1000,
+  const config = { host: '127.0.0.1', port, username: 'docs', password: 'test-only', privateKey: '', readyTimeout: 1000,
     hostVerifier: hostVerifier(`[127.0.0.1]:${port} ssh-ed25519 ${publicKey.toString('base64')}`, '127.0.0.1', port) };
   const transport = await connectSftp(config);
   assert.equal((await transport.stat('/www')).isDirectory(), true); assert.equal(await transport.stat('/absent'), null);
@@ -281,4 +283,30 @@ test('real SFTP uploads dev files with web modes and refuses unsafe replacement 
   await assert.rejects(publishDocumentation(transport, { ...options, sequence: 2 }), /needs posix-rename/);
   assert.match(await readFile(installed, 'utf8'), /index 1.0.0 dev/);
   transport.close();
+});
+
+test('SFTP preflight accepts actual search chunks while rejecting controls and separators', async t => {
+  const exports = await exportsFor(t);
+  const prepared = await validateDocumentationExports(release(exports));
+  assert.ok(prepared.primary.files.some(file => file.path === 'assets/chunks/@localSearchIndexroot.fixture.js'));
+  for (const name of ['bad name.js', 'bad\\name.js', 'bad\nname.js']) {
+    await writeFile(join(exports.site, 'assets', name), 'unsafe');
+    await assert.rejects(readExport(exports.site, 'version', revision, 'v1.0.0'), /Unsafe export filename/);
+    await rm(join(exports.site, 'assets', name));
+  }
+  await writeFile(join(exports.stableSite, 'build-info.json'), '{}');
+  await assert.rejects(validateDocumentationExports(release(exports)), /source or channel/);
+});
+test('PR prerelease previews validate paths while stable publication requires a matching stable tag', async t => {
+  const exports = await exportsFor(t, '1.0.1-DEV');
+  await readExport(exports.site, 'version', revision);
+  await readExport(exports.stableSite, 'stable', revision);
+  await assert.rejects(validateDocumentationExports(release(exports, 'v1.0.1')), /version differs/);
+  await assert.rejects(validateDocumentationExports(release(exports, 'v1.0.1-DEV')), /Invalid release tag/);
+});
+test('failure diagnostics never log arbitrary server error codes or names', () => {
+  assert.equal(failureClass({code:'secret-value',name:'secret-value',message:'secret-value'}), 'validation-or-transport');
+  assert.equal(failureClass({code:'__proto__'}), 'validation-or-transport');
+  assert.equal(failureClass({code:'ENOENT'}), 'missing-local-file');
+  assert.equal(failureClass({code:3}), 'remote-permission');
 });
