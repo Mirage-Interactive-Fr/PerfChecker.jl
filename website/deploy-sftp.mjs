@@ -58,6 +58,7 @@ export function hostVerifier(knownHosts, host, port) {
 }
 export function deploymentConfiguration(env) {
   assert(env.PERFCHECKER_DOCS_SFTP_DEPLOY === 'true', 'SFTP deployment is disabled');
+  assert(env.PERFCHECKER_DOCS_REF_DELETED !== 'true', 'Deleted refs cannot deploy documentation');
   assert(env.GITHUB_ACTIONS === 'true' && ['push', 'workflow_dispatch'].includes(env.GITHUB_EVENT_NAME),
     'SFTP deployment requires a trusted Actions event');
   const channel = env.GITHUB_REF === 'refs/heads/main' ? 'dev' : 'release';

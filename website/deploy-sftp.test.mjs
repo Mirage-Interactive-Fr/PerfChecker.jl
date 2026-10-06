@@ -139,8 +139,13 @@ test('CI credentials cannot be used by PRs, arbitrary refs or disabled deploymen
     PERFCHECKER_DOCS_SFTP_ROOT: '/www', PERFCHECKER_DOCS_SFTP_PASSWORD: 'test-only',
     PERFCHECKER_DOCS_SFTP_KNOWN_HOSTS: `[example.org]:2222 ssh-ed25519 ${key.toString('base64')}` };
   assert.equal(deploymentConfiguration(env).channel, 'dev');
+  assert.equal(deploymentConfiguration({ ...env, PERFCHECKER_DOCS_REF_DELETED: 'false' }).channel, 'dev');
+  const tagged = { ...env, GITHUB_REF: 'refs/tags/v1.0.0', GITHUB_REF_NAME: 'v1.0.0' };
+  assert.equal(deploymentConfiguration(tagged).channel, 'release');
+  assert.throws(() => deploymentConfiguration({ ...tagged, PERFCHECKER_DOCS_REF_DELETED: 'true' }), /Deleted refs/);
   for (const change of [{ GITHUB_EVENT_NAME: 'pull_request' }, { GITHUB_REF: 'refs/heads/other' },
-    { PERFCHECKER_DOCS_SFTP_DEPLOY: 'false' }, { PERFCHECKER_DOCS_SFTP_KNOWN_HOSTS: '' }])
+    { PERFCHECKER_DOCS_SFTP_DEPLOY: 'false' }, { PERFCHECKER_DOCS_SFTP_KNOWN_HOSTS: '' },
+    { PERFCHECKER_DOCS_REF_DELETED: 'true' }])
     assert.throws(() => deploymentConfiguration({ ...env, ...change }));
 });
 test('real SSH password authentication opens only SFTP and rejects a wrong pinned key', async t => {
