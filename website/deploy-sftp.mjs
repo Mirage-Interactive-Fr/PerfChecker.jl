@@ -126,16 +126,16 @@ export async function readExport(directory, channel, revision, version) {
   const info = JSON.parse(await readFile(join(root, 'build-info.json'), 'utf8'));
   assert(info.schema === 'perfchecker-doc-export/1' && info.channel === channel &&
     info.revision === revision && revisionPattern.test(revision), 'Documentation export source or channel differs');
-  const validVersion = channel === 'dev'
-    ? /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-[A-Za-z0-9.-]+)?(?:\+[A-Za-z0-9.-]+)?$/.test(info.version)
-    : versionPattern.test(`v${info.version}`);
+  // PR previews may document a Julia prerelease; publishing still requires an
+  // explicit stable tag which must match this version.
+  const validVersion = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-[A-Za-z0-9.-]+)?(?:\+[A-Za-z0-9.-]+)?$/.test(info.version);
   assert(validVersion && (!version || version === `v${info.version}`), 'Export version differs from tag');
   const base = channel === 'dev' ? '/dev/' : channel === 'version' ? `/v${info.version}/` : '/';
   assert(info.base === base && info.url === origin + base, 'Export has an incorrect canonical base');
   const files = [];
   async function visit(relative) {
     for (const entry of (await readdir(join(root, relative), { withFileTypes: true })).sort((a, b) => a.name.localeCompare(b.name))) {
-      assert(/^[A-Za-z0-9_.-]+$/.test(entry.name) && !['.', '..'].includes(entry.name), 'Unsafe export filename');
+      assert(/^[A-Za-z0-9_.@-]+$/.test(entry.name) && !['.', '..'].includes(entry.name), 'Unsafe export filename');
       const path = posix.join(relative, entry.name), absolute = join(root, path);
       const attrs = await lstat(absolute);
       assert(!attrs.isSymbolicLink(), 'Export must not contain symbolic links');
@@ -166,14 +166,21 @@ export function versionCatalogue(state) {
   const urls = Object.fromEntries(versions.map(v => [v, v === 'dev' ? '/dev/' : v === state.stable ? '/' : `/${v}/`]));
   return `var DOC_VERSIONS = ${JSON.stringify(versions)};\nvar DOC_VERSION_URLS = ${JSON.stringify(urls)};\n`;
 }
+export async function validateDocumentationExports(options) {
+  assert(revisionPattern.test(options.revision), 'Invalid publication revision');
+  assert(['dev', 'release'].includes(options.channel), 'Invalid publication channel');
+  if (options.channel === 'release') assert(versionPattern.test(options.version), 'Invalid release tag');
+  const primary = await readExport(options.site, options.channel === 'dev' ? 'dev' : 'version', options.revision, options.version);
+  const stable = options.channel === 'release' ? await readExport(options.stableSite, 'stable', options.revision, options.version) : null;
+  return { primary, stable };
+}
 export async function publishDocumentation(transport, options) {
   const root = validateRoot(options.root), remote = name => posix.join(root, name);
   assert(revisionPattern.test(options.revision), 'Invalid publication revision');
   assert(['dev', 'release'].includes(options.channel), 'Invalid publication channel');
   if (options.channel === 'release') assert(versionPattern.test(options.version), 'Invalid release tag');
   else assert(Number.isSafeInteger(options.sequence) && options.sequence > 0, 'Invalid dev run sequence');
-  const primary = await readExport(options.site, options.channel === 'dev' ? 'dev' : 'version', options.revision, options.version);
-  const stable = options.channel === 'release' ? await readExport(options.stableSite, 'stable', options.revision, options.version) : null;
+  const { primary, stable } = options.validatedExports ?? await validateDocumentationExports(options);
   const rootAttrs = await transport.stat(root);
   assert(rootAttrs?.isDirectory() && !rootAttrs.isSymbolicLink(), 'SFTP document root must be a real directory');
   try { await transport.mkdir(remote(lockName)); }
@@ -281,21 +288,35 @@ export async function publishDocumentation(transport, options) {
     return { skipped: false, stable: state.stable, digest: primary.digest };
   } finally { await transport.rmdir(remote(lockName)); }
 }
+export function failureClass(error) {
+  const codes = { ENOTFOUND: 'dns', ECONNREFUSED: 'connection-refused', ETIMEDOUT: 'timeout',
+    ECONNRESET: 'connection-reset', ENOENT: 'missing-local-file', 2: 'missing-remote-file',
+    3: 'remote-permission', 8: 'unsupported-sftp-operation' };
+  const code = typeof error?.code === 'string' || typeof error?.code === 'number' ? error.code : '';
+  if (Object.hasOwn(codes, code)) return codes[code];
+  if (error?.level === 'client-authentication') return 'authentication';
+  if (error?.level === 'handshake') return 'ssh-handshake';
+  return 'validation-or-transport';
+}
 async function main() {
-  const configuration = deploymentConfiguration(process.env);
-  console.log('Connecting to the pinned SFTP host');
-  const transport = await connectSftp(configuration.connection);
+  let phase = 'configuration', transport;
   try {
-    const result = await publishDocumentation(transport, { ...configuration,
-      site: process.env.PERFCHECKER_DOCS_SITE, stableSite: process.env.PERFCHECKER_DOCS_STABLE_SITE,
-      progress: message => console.log(message) });
+    const configuration = deploymentConfiguration(process.env);
+    const options = { ...configuration, site: process.env.PERFCHECKER_DOCS_SITE,
+      stableSite: process.env.PERFCHECKER_DOCS_STABLE_SITE, progress: message => console.log(message) };
+    phase = 'export-validation';
+    console.log('Validating completed documentation exports before connecting');
+    options.validatedExports = await validateDocumentationExports(options);
+    phase = 'connection';
+    console.log('Connecting to the pinned SFTP host');
+    transport = await connectSftp(configuration.connection);
+    phase = 'publication';
+    const result = await publishDocumentation(transport, options);
     console.log(`Documentation ${result.skipped ? 'already superseded' : 'published'}; stable=${result.stable ?? 'none'}`);
-  } finally { transport.close(); }
-}
-if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
-  main().catch(error => {
-    // Do not print credentials, server responses or arbitrary environment data.
-    console.error(`SFTP documentation publication failed (${error.code ?? error.name}); check configuration and the publication lock.`);
+  } catch (error) {
+    // Only locally selected phases/classes are logged, never raw server error data.
+    console.error(`SFTP documentation publication failed: phase=${phase}, class=${failureClass(error)}`);
     process.exitCode = 1;
-  });
+  } finally { transport?.close(); }
 }
+if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) await main();
