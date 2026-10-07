@@ -61,6 +61,9 @@ const mediaType = computed(() => props.src.endsWith('.mp4') ? 'video/mp4' : 'vid
 </template>
 
 <style scoped>
+.doc-screenshot {
+  container-type: inline-size;
+}
 .doc-short-video {
   width: auto;
   max-width: 100%;
@@ -68,6 +71,10 @@ const mediaType = computed(() => props.src.endsWith('.mp4') ? 'video/mp4' : 'vid
   margin-inline: auto;
   object-fit: contain;
   background: var(--vp-c-bg-alt);
+}
+.doc-short-video::cue {
+  font-size: clamp(10px, 3.5cqw, 13px);
+  line-height: 1.25;
 }
 @media (max-width: 767px) {
   .doc-short-video { max-height: 30rem; }

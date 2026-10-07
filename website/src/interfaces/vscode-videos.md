@@ -21,6 +21,7 @@ and exports have passed review.
 | [02 — native TestItem evidence](#Native-TestItem-evidence) | Item validation, measured units and the report boundary | [Get a first result](vscode.md#Get-a-first-result) |
 | [03 — visible suite selection](#Visible-suite-selection) | Search, selection scope and Preview before Run | [Select checks](vscode.md#Design-a-suite-and-compare-targets) |
 | [04 — normalized overlays](#Normalized-overlays) | Per-metric minimum, raw values and tooltip units | [Read normalized overlays](vscode-workflows.md#Read-normalized-overlays) |
+| [06 — measured conversation](#Measured-conversation) | Actual selected report, follow-up questions and validation before edits | [Talk to the advisor](../mcp-advisor.md#Talk-to-the-advisor) |
 | [07 — reviewed preparation](#Reviewed-preparation) | Actual warning, explicit Prepare action and recovery reference | [Prepare implementation](../mcp-advisor.md#Switch-from-advice-to-implementation) |
 | [08 — apply, verify and restore](#Apply,-verify-and-restore) | Independent oracle, recorded allocation and exact recovery | [Checkpoints and recovery](../mcp-advisor.md#Checkpoints-and-recovery) |
 | [09 — Julia runtimes and projects](#Julia-runtimes-and-projects) | Runtime version, active project and two folder-specific debug contexts | [Choose Julia environments](vscode-configuration.md#Choose-Julia-environments) |
@@ -51,6 +52,12 @@ and exports have passed review.
 
 ```@raw html
 <DocMedia video short recording="perfchecker-vscode-v101-short-04" src="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-04.mp4" poster="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-04-poster.jpg" subtitles="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-04-en.vtt" preload="metadata" alt="Actual native PerfChecker minimum-relative chart, raw units and recorded version tooltip" caption="Read each metric against its own minimum, then inspect its raw value. The recorded tooltip is 136 ns with ratio 1.0149; units remain separate. Recorded build: VSIX 75f84f, Core 975d, VS Code 1.141 on Linux." />
+```
+
+## Measured conversation
+
+```@raw html
+<DocMedia video short recording="perfchecker-vscode-v101-short-06" src="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-06.mp4" poster="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-06-poster.jpg" subtitles="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-06-en.vtt" preload="metadata" alt="Native PerfChecker conversation with a saved measured run, two contextual questions and controlled MCP replies" caption="Attach the actual measured run, ask a follow-up and agree on validation before requesting an edit. The recorded report shows 8072 B median over two samples with correctness passed; measured evidence IDs and bounded context were checked. The local MCP protocol fixture supplies controlled replies, with frames held for reading. Recorded build: VSIX 2e722, Core 4eec, VS Code 1.141 on Linux. Source is unchanged during advice; cancellation is outside this passage." />
 ```
 
 ## Reviewed preparation

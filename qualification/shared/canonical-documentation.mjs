@@ -69,7 +69,7 @@ for (const channel of await readdir(root)) {
       if (match[1].startsWith(origin) && target.pathname === '/' && info.base !== '/') continue; // Explicit link to the stable channel.
       // Explicit archived-version links intentionally leave the exported channel.
       if (match[1].startsWith(origin) && /^\/v\d+\.\d+\.\d+\//.test(target.pathname) &&
-          !target.pathname.startsWith(info.base)) continue;
+          (info.channel !== 'version' || !target.pathname.startsWith(info.base))) continue;
       assert.ok(target.pathname.startsWith(info.base), `Route escapes ${info.base}: ${target.pathname}`);
       const path = decodeURIComponent(target.pathname.slice(info.base.length));
       const extension = posix.extname(path);

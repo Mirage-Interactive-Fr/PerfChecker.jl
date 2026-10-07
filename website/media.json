@@ -430,5 +430,31 @@
     "youtube_id": "",
     "download_url": "https://github.com/Mirage-Interactive-Fr/Mirage-Interactive-Fr.github.io/releases/download/documentation-media-v1/perfchecker-vscode-1.0.1-short-09-en.vtt",
     "embed_local": true
+  },
+  "perfchecker-vscode-v101-short-06": {
+    "file": "assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-06.mp4",
+    "bytes": 1777189,
+    "sha256": "599dc1222cb33dc3dcad48fab318dd68b6a32cdd6ad3c19a1a9c45d1d2aed025",
+    "youtube_id": "",
+    "download_url": "https://github.com/Mirage-Interactive-Fr/Mirage-Interactive-Fr.github.io/releases/download/documentation-media-v1/perfchecker-vscode-1.0.1-short-06.mp4",
+    "embed_local": true,
+    "captions": "assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-06-en.vtt",
+    "poster": "assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-06-poster.jpg"
+  },
+  "perfchecker-vscode-v101-short-06-poster": {
+    "file": "assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-06-poster.jpg",
+    "bytes": 82597,
+    "sha256": "7158dc545fed83fbc73486b12129fc9470e3bc9a62957fb9fbfceedf6eacc3f8",
+    "youtube_id": "",
+    "download_url": "https://github.com/Mirage-Interactive-Fr/Mirage-Interactive-Fr.github.io/releases/download/documentation-media-v1/perfchecker-vscode-1.0.1-short-06-poster.jpg",
+    "embed_local": true
+  },
+  "perfchecker-vscode-v101-short-06-captions": {
+    "file": "assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-06-en.vtt",
+    "bytes": 1295,
+    "sha256": "b89ed5a40605cc6ee4e9ef394eb4f62a5bf29cf5cbb95eaf7f6559f027104abb",
+    "youtube_id": "",
+    "download_url": "https://github.com/Mirage-Interactive-Fr/Mirage-Interactive-Fr.github.io/releases/download/documentation-media-v1/perfchecker-vscode-1.0.1-short-06-en.vtt",
+    "embed_local": true
   }
 }
