@@ -1067,6 +1067,7 @@ function run_external_command(spec::ExternalCommandSpec; bundle_root = nothing,
             bundle = _failed_provider_bundle(spec,
                 "provider timed out after $(spec.timeout_seconds) seconds")
         else
+            _stop_owned_process(tree)
             wait(process)
             exit_code = process.exitcode
             process_succeeded = success(process)

@@ -12,6 +12,8 @@
   have source frames. Preserve allocation totals, stacks and lifecycle cleanup.
 - Stop owned external providers and runtime commands before cancellation returns,
   including descendants, network captures and temporary result-file cleanup.
+  Retire owned descendants before draining inherited output pipes, even after
+  the provider exits. Windows providers enter a private job before execution.
 
 ## 1.0.0
 

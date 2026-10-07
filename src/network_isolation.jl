@@ -296,6 +296,7 @@ function measure_isolated_network_command(command::AbstractVector{<:AbstractStri
             _stop_owned_process(tree)
             throw(ErrorException("isolated network command exceeded its shutdown grace period"))
         end
+        _stop_owned_process(tree)
         wait(launched)
         output = String(take!(stdout_buffer))
         error_output = String(take!(stderr_buffer))

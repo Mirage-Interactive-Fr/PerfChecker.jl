@@ -27,8 +27,8 @@ function _runtime_process(command::Vector{String}, timeout_seconds::Real)
             pollint = 0.1)
         if status === :timed_out
             timed_out = true
-            _stop_owned_process(tree)
         end
+        _stop_owned_process(tree)
         wait(process)
         return (exit_code = process.exitcode, timed_out,
             elapsed_seconds = time() - started,

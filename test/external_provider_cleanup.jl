@@ -32,11 +32,14 @@
         write(preserved_trace, "existing allocation trace\n")
         try
             modes = [:interrupt, :timeout, :runtime_interrupt, :invalid_result]
+            Sys.iswindows() || append!(modes,
+                [:invalid_inherited_output, :runtime_inherited_output])
             Sys.iswindows() && append!(modes,
                 [:native_owner_exit, :invalid_native_result, :invalid_native_intermediate])
             Sys.iswindows() || push!(modes, :forced_interrupt)
             if network_isolation_capabilities(; probe = true)["supported"]
                 push!(modes, :network_interrupt)
+                Sys.iswindows() || push!(modes, :network_inherited_output)
             end
             for mode in modes
                 directory = joinpath(root, string(mode))
@@ -54,6 +57,8 @@
                 resisting_command = ["sh",
                     "-c",
                     "trap '' TERM; printf ready >\"\$PERFCHECKER_FORCE_READY\"; exec sleep 120"]
+                inherited_output = mode in (:invalid_inherited_output,
+                    :runtime_inherited_output, :network_inherited_output)
                 grandchild_code = (mode === :forced_interrupt ?
                                    """
 resisting = run(pipeline(ignorestatus(addenv(Cmd($(repr(resisting_command))), "PERFCHECKER_FORCE_READY" => $(repr(resisting_ready))));
@@ -79,14 +84,14 @@ timedwait(() -> isfile($(repr(resisting_ready))), 60; pollint=0.01) == :ok || er
                 write(provider,
                     """
         child = run(pipeline(ignorestatus(Cmd($(repr([julia, "--startup-file=no", child_script]))));
-            stdin = devnull, stdout = devnull, stderr = devnull); wait = false)
+            stdin = devnull, stdout = $(inherited_output ? "stdout" : "devnull"), stderr = $(inherited_output ? "stderr" : "devnull")); wait = false)
         write($(repr(child_file)), string(getpid(child)))
         timedwait(() -> isfile($(repr(child_ready))), 60; pollint = 0.01) == :ok || error("child did not start")
         output = get(ENV, "PERFCHECKER_OUTPUT", $(repr(joinpath(directory, "runtime-output.json"))))
         write(output, $(repr("{\"incomplete\":true}")))
         write($(repr(output_file)), output)
         write($(repr(pid_file)), string(getpid()))
-        $(mode === :invalid_result ? "exit(0)" : "")
+        $(mode === :invalid_result || inherited_output ? "exit(0)" : "")
         sleep(120)
         write($(repr(late_file)), "must not execute")
         """)
@@ -142,7 +147,9 @@ timedwait(() -> isfile($(repr(resisting_ready))), 60; pollint=0.01) == :ok || er
                         "-NonInteractive", "-ExecutionPolicy", "Bypass", "-File", provider]
                 end
                 parent_exits = mode in (:invalid_result, :invalid_native_result,
-                    :invalid_native_intermediate, :native_owner_exit)
+                    :invalid_native_intermediate, :native_owner_exit,
+                    :invalid_inherited_output, :runtime_inherited_output,
+                    :network_inherited_output)
                 source = read(provider)
                 failure = Ref{Any}(nothing)
                 spec = ExternalCommandSpec(mode, "julia-provider",
@@ -177,9 +184,9 @@ timedwait(() -> isfile($(repr(resisting_ready))), 60; pollint=0.01) == :ok || er
                                     (() -> close(output), () -> close(errors)), nothing)
                             end
                             nothing
-                        elseif mode === :runtime_interrupt
+                        elseif mode in (:runtime_interrupt, :runtime_inherited_output)
                             PerfChecker._runtime_process(spec.command, 120)
-                        elseif mode === :network_interrupt
+                        elseif mode in (:network_interrupt, :network_inherited_output)
                             measure_isolated_network_command(spec.command;
                                 directory, timeout_seconds = 120)
                         else
@@ -229,6 +236,10 @@ timedwait(() -> isfile($(repr(resisting_ready))), 60; pollint=0.01) == :ok || er
                     @test timedwait(() -> istaskdone(task), 30; pollint = 0.02) == :ok
                     if mode === :native_owner_exit
                         @test failure[] === nothing
+                    elseif mode in (:runtime_inherited_output, :network_inherited_output)
+                        @test failure[] === nothing
+                        @test result[].exit_code == 0
+                        mode === :runtime_inherited_output && @test !result[].timed_out
                     elseif parent_exits
                         @test !alive(provider_pid) # Exit must precede the cleanup oracle.
                         mode === :invalid_native_intermediate && @test !alive(child_pid)
@@ -252,7 +263,8 @@ timedwait(() -> isfile($(repr(resisting_ready))), 60; pollint=0.01) == :ok || er
                     @test !alive(provider_pid)
                     @test !alive(child_pid)
                     @test !alive(grandchild_pid)
-                    mode in (:runtime_interrupt, :network_interrupt, :native_owner_exit) ||
+                    mode in (:runtime_interrupt, :network_interrupt, :native_owner_exit,
+                        :runtime_inherited_output, :network_inherited_output) ||
                         @test !ispath(temporary_output)
                     @test !isfile(late_file)
                     @test alive(unrelated_pid)
@@ -291,6 +303,79 @@ timedwait(() -> isfile($(repr(resisting_ready))), 60; pollint=0.01) == :ok || er
             process_running(unrelated) && kill(unrelated)
             wait(unrelated)
             close(unrelated)
+        end
+    end
+
+    if Sys.iswindows()
+        mktempdir() do root
+            directory = joinpath(root, "workspace 雪 with spaces")
+            mkpath(directory)
+            provider = joinpath(directory, "streams 雪.jl")
+            payload_size = 1024 * 1024
+            write(provider, """
+                for _ in 1:256
+                    write(stdout, repeat("x", 4096))
+                    write(stderr, repeat("y", 4096))
+                end
+                println(stdout, ENV["PERFCHECKER_FIXTURE_VALUE"])
+                println(stdout, pwd())
+                println(stderr, repr(ARGS))
+                exit(7)
+                """)
+            julia = joinpath(Sys.BINDIR, Base.julia_exename())
+            arguments = ["雪 space", "quote\" and slash\\", "\$literal"]
+            value = "fixture 雪 \"quoted\" \$literal"
+            command = Cmd([julia, "--startup-file=no", provider, arguments...];
+                dir = directory, env = Dict("PERFCHECKER_FIXTURE_VALUE" => value))
+            output, errors = IOBuffer(), IOBuffer()
+            tree = PerfChecker._spawn_owned_process(
+                command; stdout = output, stderr = errors)
+            try
+                @test timedwait(() -> process_exited(tree.process), 60; pollint = 0.02) ==
+                      :ok
+                PerfChecker._stop_owned_process(tree)
+                text = String(take!(output))
+                error_text = String(take!(errors))
+                @test startswith(text, repeat("x", payload_size))
+                @test occursin(value, text)
+                @test occursin(directory, text)
+                @test startswith(error_text, repeat("y", payload_size))
+                @test occursin(repr(arguments), error_text)
+                @test tree.process.exitcode == 7
+                @test !success(tree.process)
+                @test tree.stopped
+                @test tree.process.handle == C_NULL
+                @test tree.process.job == C_NULL
+                @test all(istaskdone, tree.process.pumps)
+            finally
+                PerfChecker._cleanup_owned_process(tree,
+                    (() -> close(output), () -> close(errors)), nothing)
+            end
+
+            missing = joinpath(root, "not-an-executable.exe")
+            @test_throws ErrorException PerfChecker._spawn_owned_process(Cmd([missing]);
+                stdout = devnull, stderr = devnull)
+            bad_directory = joinpath(root, "absent directory")
+            failed = Cmd([julia, "--startup-file=no", "-e", "exit(0)"];
+                dir = bad_directory)
+            function handle_count()
+                count = Ref{UInt32}(0)
+                current = ccall((:GetCurrentProcess, "kernel32"), stdcall, Ptr{Cvoid}, ())
+                @test ccall((:GetProcessHandleCount, "kernel32"), stdcall, Cint,
+                    (Ptr{Cvoid}, Ref{UInt32}), current, count) != 0
+                count[]
+            end
+            @test_throws ErrorException PerfChecker._spawn_owned_process(failed;
+                stdout = devnull, stderr = devnull)
+            sleep(0.1) # Retire libuv pipe close callbacks before comparing OS handles.
+            before = handle_count()
+            for _ in 1:10
+                @test_throws ErrorException PerfChecker._spawn_owned_process(failed;
+                    stdout = devnull, stderr = devnull)
+                sleep(0.02)
+            end
+            sleep(0.1)
+            @test handle_count() <= before + 2
         end
     end
 

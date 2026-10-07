@@ -4,6 +4,8 @@ uuid_seed(seed) = replace(String(seed), '\\' => '/')
 stable_uuid(seed) = uuid5(get_uuid() |> Base.UUID, uuid_seed(seed))
 stable_uuid_string(seed) = string(stable_uuid(seed))
 
+include("windows_process.jl")
+
 "Terminate a controller process and, where supported, its complete child tree."
 function _terminate_process_tree(process)
     process_running(process) || return nothing
@@ -17,13 +19,17 @@ function _terminate_process_tree(process)
 end
 
 mutable struct _OwnedProcessTree
-    process::Base.Process
+    process::Union{Base.Process, _WindowsOwnedProcess}
     pid::Int
     stopped::Bool
 end
 
 "Launch a command in a private POSIX process group, retaining ownership for cleanup."
 function _spawn_owned_process(command::Cmd; stdout, stderr)
+    if Sys.iswindows()
+        process = _spawn_windows_owned_process(command; stdout, stderr)
+        return _OwnedProcessTree(process, process.pid, false)
+    end
     owned_command = Cmd(command; detach = !Sys.iswindows())
     process = run(pipeline(ignorestatus(owned_command); stdout, stderr); wait = false)
     pid = Int(getpid(process))
@@ -68,7 +74,7 @@ function _stop_owned_process(tree::_OwnedProcessTree)
     tree.stopped && return nothing
     process = tree.process
     if Sys.iswindows()
-        process_running(process) && _terminate_process_tree(process)
+        _stop_windows_owned_process(process)
     elseif _owned_group_running(tree)
         _signal_owned_group(tree, Base.SIGTERM)
         if timedwait(() -> !_owned_group_running(tree), 2; pollint = 0.05) != :ok
