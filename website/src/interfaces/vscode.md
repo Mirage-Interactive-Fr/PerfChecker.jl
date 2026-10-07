@@ -13,6 +13,11 @@ same webviews open in editor tabs; the surrounding editor and theme may differ.
 Select any screenshot to open its full-resolution image, including the form
 fields and implementation diff.
 
+The **1.0.1 candidate** adds integrated Pluto notebooks and guided workspace
+setup. Their qualification and publication are still in progress. The six
+screenshots on these pages describe the public 1.0.0 webviews with demonstration data;
+new native screenshots will accompany the qualified Pluto release.
+
 ## Install and prepare
 
 1. Install VS Code **1.96 or newer** and Julia **1.10 or newer**.
@@ -35,9 +40,19 @@ Opening Studio reads configuration and presents actions. It does not install pac
 
 If this is your first setup, follow [Prepare a controller](vscode-configuration.md#Prepare-a-controller) before running an item. Use the dedicated controller so adding a profiler or MCP client does not change your package's normal dependency environment.
 
+The candidate's [guided setup](vscode-configuration.md#Guided-setup-from-Studio)
+offers an explicit controller installation or an existing project. It requires
+registered Core 1.0.1 before the new notebook/discovery workflow can run.
+
 See [Installation](../guide/installation.md) for the core and interface packages, and [VS Code configuration](vscode-configuration.md) for complete settings and environment examples.
 
 ## Get a first result
+
+```@raw html
+<DocMedia video short recording="perfchecker-vscode-v101-short-10" src="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-10.mp4" poster="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-10-poster.jpg" subtitles="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-10-en.vtt" preload="metadata" alt="Actual native VS Code first PerfChecker TestItem, source oracle and run controls" caption="Start with the Vector reduction TestItem and its explicit expected sum, then run its native measurement. Recorded build: VSIX 75f84f, Core 6f, VS Code 1.141 on Linux." />
+```
+
+
 
 For a project using `@testitem`:
 
@@ -71,6 +86,12 @@ Native TestItem JSON is a separate result from a suite report. The extension's
 **Open visual output** reads saved suite measurements; prepare and run a suite
 for the distribution, profile and version-series workflow below.
 
+```@raw html
+<DocMedia video short recording="perfchecker-vscode-v101-short-02" src="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-02.mp4" poster="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-02-poster.jpg" subtitles="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-02-en.vtt" preload="metadata" alt="Native VS Code TestItem evidence with measured seconds, bytes and item correctness" caption="Read the actual native item's JSON and its measurement boundary. This excerpt uses the same voice and passage as the full tutorial; its recorded build is VSIX 75f84f, Core 6f, VS Code 1.141 on Linux." />
+```
+
+Browse the [video walkthroughs](vscode-videos.md) for the related workflow.
+
 For a suite, use **PerfChecker: Create feature suite** if you need a starter, or configure your existing `perf/suite.jl`. Studio → **Feature suite** opens the full visual editor. Select a workload, checks and a target, run that selection, then open the resulting report.
 
 ## Work across the full editor
@@ -83,12 +104,30 @@ For a suite, use **PerfChecker: Create feature suite** if you need a starter, or
 | Visual output | Inspect saved distributions, allocations, flame graphs and version comparisons |
 | Investigations | Discover scenarios, measure, diagnose and read deterministic advice |
 | Advisor chat | Discuss saved evidence; explicitly request implementation and review its diff |
-| Julia notebook | Run an editable discovery → measurement → diagnosis workflow |
+| Pluto notebook (1.0.1 candidate) | Edit reactive Julia cells and explicitly launch suite checks or investigations |
 | PerfChecker terminal | Use a dedicated Julia session in the controller project |
 
 These are VS Code editor tabs and native surfaces. Arrange them with VS Code's editor groups; the activity bar is an entry point, not the available working area.
 
+### Choose an action and its prerequisites
+
+| Action | Prepare first | Guide |
+| --- | --- | --- |
+| Existing TestItems | Runner, TestItems/TestItemRunner 1.3.2 or newer, package test dependencies | [First result](#Get-a-first-result) |
+| Suite selection and comparison | Suite factory, collectors, declared target environments | [Design and compare](#Design-a-suite-and-compare-targets) |
+| Visual output | Completed suite reports containing the requested observations | [Saved plots](vscode-workflows.md#Plot-saved-results) |
+| Integrated Pluto candidate | Corrected extension/core 1.0.1 and a separate Pluto project | [Notebook workflow](vscode-workflows.md#Pluto-notebooks-in-VS-Code) |
+| Julia terminal or debugger | Julia/controller; Julia extension and saved source for debugging | [Julia tools](vscode-workflows.md#Dedicated-Julia-terminal) |
+| Advice conversation | Authenticated supported CLI or configured MCP advice tool | [MCP connection](../mcp-advisor.md#Choose-a-connection) |
+| Reviewed implementation | Saved files, Git HEAD and a separate implementation tool | [Review and apply](../mcp-advisor.md#Switch-from-advice-to-implementation) |
+| Cancel, stop or restore | Wait for cleanup and review repository drift | [Cancellation](#Cancel-a-run-and-wait-for-cleanup) |
+| Beautiful Landscape companion | Actual game assets, renderer environment, explicit quality profile and corrected Core 1.0.1 | [Live measurement](vscode-workflows.md#Measure-a-Beautiful-Landscape-scene) |
+
 ## Design a suite and compare targets
+
+```@raw html
+<DocMedia video short recording="perfchecker-vscode-v101-short-11" src="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-11.mp4" poster="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-11-poster.jpg" subtitles="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-11-en.vtt" preload="metadata" alt="Actual PerfChecker declared suite source and native workload selection in VS Code" caption="Keep the factory, measured operation and required correctness oracle together. Recorded builds: VSIX 75f84f, Core 6f and 975d, VS Code 1.141 on Linux." />
+```
 
 The suite editor supports global and per-feature check selection, version ranges, filtering, sorting and ordering. Name targets for a branch, tag, commit, working tree or release, then choose exact or grouped baselines. Grouped references can use median, mean, minimum or maximum aggregation.
 
@@ -107,7 +146,15 @@ Collector toggles select or deselect matching runs. Unavailable conditions show 
 <DocMedia src="/assets/screenshots/vscode-suite-designer.png" alt="Running PerfChecker V1 suite-designer webview with workload filters, selected check types, target controls and a run-selection summary" caption="Review the exact runs before executing: filtering controls visibility, while selection controls what will run. The screenshot uses demonstration workloads in the extension's real suite designer." />
 ```
 
-### Choose the evidence for your question
+```@raw html
+<DocMedia video short recording="perfchecker-vscode-v101-short-03" src="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-03.mp4" poster="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-03-poster.jpg" subtitles="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-03-en.vtt" preload="metadata" alt="Actual native PerfChecker suite filtering, visible selection and preview controls" caption="Search for the intended workload, select the visible checks and inspect Preview before running. The close views preserve the actual controls. Recorded build: VSIX 75f84f, Core 975d, VS Code 1.141 on Linux." />
+```
+
+## Choose the evidence for your question
+
+```@raw html
+<DocMedia video short recording="perfchecker-vscode-v101-short-12" src="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-12.mp4" poster="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-12-poster.jpg" subtitles="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-12-en.vtt" preload="metadata" alt="Actual native PerfChecker check controls for BenchmarkTools, Chairmarks, CPU, wall-time and allocation evidence" caption="Choose the check that answers the question and inspect its prerequisites. The footage shows the real native tutorial workload. Recorded build: VSIX 75f84f, Core 975d, VS Code 1.141 on Linux." />
+```
 
 | Question | Start with | Read before selecting |
 | --- | --- | --- |
@@ -122,6 +169,10 @@ it does not install a missing collector. See [Collectors](../reference/checks.md
 for every supported check and its interpretation.
 
 ### Compare a working change with a known revision
+
+```@raw html
+<DocMedia video short recording="perfchecker-vscode-v101-short-13" src="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-13.mp4" poster="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-13-poster.jpg" subtitles="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-13-en.vtt" preload="metadata" alt="Actual native PerfChecker comparison package, feature, reference aggregation and target controls" caption="Resolve the intended Git state and review the baseline, candidate and aggregation policy before a comparison. Recorded build: VSIX 75f84f, Core 975d, VS Code 1.141 on Linux." />
+```
 
 1. Prepare a suite containing the same workload for both targets.
 2. Add a named baseline from a branch, tag or recent commit. Prefer a full commit
@@ -149,6 +200,10 @@ Read [Suites and comparisons](../suites-and-comparisons.md) before interpreting 
 
 ## Investigate and verify
 
+```@raw html
+<DocMedia video short recording="perfchecker-vscode-v101-short-18" src="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-18.mp4" poster="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-18-poster.jpg" subtitles="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-18-en.vtt" preload="metadata" alt="Actual native PerfChecker investigation benchmark, analyzers and Aqua quality diagnostic" caption="Inspect the benchmark and analyzer outcomes individually. The Aqua diagnostic frame is held for reading: the analyzer completed with correctness not checked and quality failed; this passage does not imply a new execution. Recorded build: VSIX 75f84f, Core 975d, VS Code 1.141 on Linux." />
+```
+
 Use **PerfChecker: Open investigations** for shared scenarios. **Discover scenarios from tests** inspects declarations and proposes candidates without executing the target program. Proposed candidates need an explicit factory and correctness oracle before they become measurable cases.
 
 Measure declared cases, diagnose with available analyzers, and choose **Advise from saved evidence**. Missing analyzers appear as unavailable; they are not installed automatically. After a change, rerun the same correctness checks and compare compatible before/after measurements.
@@ -156,6 +211,10 @@ Measure declared cases, diagnose with available analyzers, and choose **Advise f
 **Run bounded investigation** can select declared experiments within count and time budgets. Optional model selection requires structured MCP replies and `advisorInvestigates = true`; it remains separate from implementation chat.
 
 ## Cancel a run and wait for cleanup
+
+```@raw html
+<DocMedia video short recording="perfchecker-vscode-v101-short-14" src="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-14.mp4" poster="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-14-poster.jpg" subtitles="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-14-en.vtt" preload="metadata" alt="Actual native PerfChecker investigation cancellation, controller cleanup and recovery checklist" caption="Cancel an active investigation and wait for the final controller-cleanup status. The recovery checklist explains subsequent checks; it does not show those checks executing. Recorded build: VSIX 75f84f, Core 975d, VS Code 1.141 on Linux." />
+```
 
 Use **Cancel** in a suite execution notification, the suite Testing profile, an
 investigation or a native Testing run. PerfChecker asks the Julia controller to
@@ -193,7 +252,16 @@ Read the [MCP guide](../mcp-advisor.md) for configuration, what is transmitted, 
 
 ## Julia, notebooks and terminals
 
-**PerfChecker: Open Julia terminal** creates a terminal named for the package and starts the selected Julia executable with the controller project. **New investigation notebook** opens an untitled Julia notebook containing explicit discovery, measurement and diagnosis cells. It is yours to edit and save; select an available Julia kernel.
+**PerfChecker: Open Julia terminal** creates a terminal named for the package and
+starts the selected Julia executable with the controller project.
+
+The **1.0.1 candidate** uses **New Pluto notebook** and **Open Pluto notebook**
+for editable `.jl` notebooks in an interactive editor tab. Follow the
+[Pluto workflow](vscode-workflows.md#Pluto-notebooks-in-VS-Code) for generation,
+Launch/Cancel, reactive edits, saved source/reports and Stop/Restart controls.
+Public extension **1.0.0** uses **New investigation notebook**, an untitled
+notebook with discovery, measurement and diagnosis cells; select an installed
+Julia kernel for that earlier workflow.
 
 **PerfChecker: Debug current Julia file** delegates a saved Julia source file to the installed Julia VS Code debugger. Debugging needs `julialang.language-julia`. The debugger and notebook kernel are separate from isolated measurement workers; stepping through a program is not a performance measurement.
 
@@ -218,6 +286,23 @@ This provides the workspace boundary used by the Etendu/Beautiful Landscape inte
 | Wrong folder in multi-root workspace | Reopen Studio and select the intended package |
 
 Use **PerfChecker: Show worker output** for execution diagnostics. See [configuration troubleshooting](vscode-configuration.md#Troubleshooting) and the [MCP failure table](../mcp-advisor.md#Troubleshooting) for the next checks.
+
+### Qualification and reporting a problem
+
+Core CI includes Linux 32-bit, Linux/Windows 64-bit, Julia LTS and macOS
+Intel x64 (`macos-26-intel`). That core matrix is separate from native extension
+qualification. The 1.0.1 native editor campaign is still running; physical Mac
+testing and Apple Silicon arm64 coverage have not been established here.
+The completed report will record editor, Julia/core versions and CPU architecture
+for each tested platform.
+
+Report editor/UI issues in
+[PerfCheckerVSCode](https://github.com/Mirage-Interactive-Fr/PerfCheckerVSCode/issues/new)
+and Julia execution issues in
+[PerfChecker.jl](https://github.com/Mirage-Interactive-Fr/PerfChecker.jl/issues/new).
+Include OS and CPU architecture, VS Code/extension/Julia/core versions, the
+chosen action, a minimal reproducible workload, selected project settings and
+redacted output. Keep credentials and Pluto session URLs out of the report.
 
 ## Recorded example
 

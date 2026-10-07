@@ -8,6 +8,33 @@ import { readExport } from '../../website/deploy-sftp.mjs';
 const root = resolve(process.argv[2] ?? 'website/build/sftp');
 const origin = 'https://perfchecker.mirageinteractive.fr';
 const browserChecks = process.argv.includes('--browser');
+const illustratedGuides = new Set(['interfaces/vscode.html', 'interfaces/vscode-configuration.html',
+  'interfaces/vscode-workflows.html', 'interfaces/vscode-videos.html', 'mcp-advisor.html']);
+function htmlIds(html) {
+  return new Set([...html.matchAll(/\bid="([^"]+)"/g)].map(match => match[1].replaceAll('&amp;', '&')));
+}
+async function checkGuideRendering(route, html) {
+  const source = await readFile(join('website/src', route.replace(/\.html$/, '.md')), 'utf8');
+  const ids = htmlIds(html);
+  let fence;
+  for (const line of source.split('\n')) {
+    const boundary = /^\s*(`{3,}|~{3,})/.exec(line);
+    if (boundary) { fence = fence ? undefined : boundary[1][0]; continue; }
+    if (fence) continue;
+    const heading = /^#{1,6}\s+(.+?)\s*$/.exec(line);
+    if (!heading) continue;
+    // These guides deliberately use plain headings; Documenter preserves their case.
+    const id = heading[1].replace(/\s+/g, '-');
+    assert.ok(ids.has(id), `Guide heading did not render in ${route}: ${id}`);
+  }
+  const recordings = [...source.matchAll(/<DocMedia\b[^>]*\bvideo\b[^>]*\/?>/g)];
+  assert.equal([...html.matchAll(/<video\b/g)].length, recordings.length,
+    `Guide recording did not render as a video in ${route}`);
+  for (const recording of recordings) {
+    const track = /\bsubtitles="([^"]+)"/.exec(recording[0]);
+    assert.ok(track && html.includes(track[1].slice(1)), `Missing caption track in ${route}`);
+  }
+}
 async function enumerate(directory) {
   const paths = [];
   for (const item of await readdir(directory, { withFileTypes: true })) {
@@ -23,6 +50,8 @@ for (const channel of await readdir(root)) {
   const exportArtifact = await readExport(site, info.channel, info.revision);
   console.log(`${channel}: SFTP export preflight passed (${exportArtifact.files.length} files)`);
   const pages = await enumerate(site);
+  const pageIds = new Map();
+  for (const file of pages) pageIds.set(file, htmlIds(await readFile(file, 'utf8')));
   for (const file of pages) {
     const route = relative(site, file).replaceAll('\\', '/');
     const url = new URL(route === 'index.html' ? '' : route, info.url);
@@ -32,24 +61,32 @@ for (const channel of await readdir(root)) {
       await access(join('website/src/public', route)); continue;
     }
     assert.ok(html.includes(`rel="canonical" href="${url.href}"`), `Incorrect canonical URL in ${route}`);
+    if (illustratedGuides.has(route)) await checkGuideRendering(route, html);
     for (const match of html.matchAll(/(?:href|src)="([^"]+)"/g)) {
       const target = new URL(match[1].replaceAll('&amp;', '&'), url);
       if (target.origin !== origin) continue;
       if (target.pathname === '/versions.js') continue; // Generated from remote inventory at publication.
       if (match[1].startsWith(origin) && target.pathname === '/' && info.base !== '/') continue; // Explicit link to the stable channel.
+      // Explicit archived-version links intentionally leave the exported channel.
+      if (match[1].startsWith(origin) && /^\/v\d+\.\d+\.\d+\//.test(target.pathname) &&
+          (info.channel !== 'version' || !target.pathname.startsWith(info.base))) continue;
       assert.ok(target.pathname.startsWith(info.base), `Route escapes ${info.base}: ${target.pathname}`);
       const path = decodeURIComponent(target.pathname.slice(info.base.length));
-      if (!path) continue;
       const extension = posix.extname(path);
-      assert.ok(path.endsWith('/') || extension, `Route requires rewrite rules: ${path}`);
+      assert.ok(!path || path.endsWith('/') || extension, `Route requires rewrite rules: ${path}`);
       if (path === 'siteinfo.js') continue;
-      await access(join(site, path.endsWith('/') ? path + 'index.html' : path));
+      const destination = join(site, !path || path.endsWith('/') ? path + 'index.html' : path);
+      await access(destination);
+      if (target.hash && pageIds.has(destination)) {
+        const fragment = decodeURIComponent(target.hash.slice(1));
+        assert.ok(pageIds.get(destination).has(fragment), `Missing fragment ${target.hash} from ${route} to ${target.pathname}`);
+      }
     }
   }
   const sitemap = await readFile(join(site, 'sitemap.xml'), 'utf8');
   for (const match of sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)) assert.ok(match[1].startsWith(info.url));
   assert.ok((await readdir(join(site, 'assets/chunks'))).some(name => /hashmap|search|localSearch/i.test(name)), 'Missing local search index');
-  console.log(`${channel}: ${pages.length} pages, canonical .html routes, assets and sitemap passed`);
+  console.log(`${channel}: ${pages.length} pages, canonical .html routes, internal fragments, guide headings, recordings, assets and sitemap passed`);
   if (!browserChecks) continue;
   const { chromium } = await import('playwright');
   const server = spawn(process.execPath, ['website/preview.mjs'], { env: { ...process.env, PORT: '0',

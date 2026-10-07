@@ -69,6 +69,7 @@ makedocs(;
             "VS Code" => "interfaces/vscode.md",
             "VS Code configuration" => "interfaces/vscode-configuration.md",
             "Plots, notebooks and Julia tools" => "interfaces/vscode-workflows.md",
+            "VS Code video walkthroughs" => "interfaces/vscode-videos.md",
             "Web interface (Oxygen)" => "interfaces/web-studio.md",
             "REPL and Pluto" => "interfaces/repl-pluto.md",
             "Plots with Makie" => "interfaces/visualization.md",

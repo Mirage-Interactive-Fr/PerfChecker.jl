@@ -28,6 +28,30 @@ This does not remove model files. Choosing experiments is separately enabled
 and bounded by count and duration. MCP requires structured responses for this
 mode; free text is displayed as unverified advice and never executed.
 
+## Explain and retain saved evidence
+
+1. In **Investigations**, open the measurement or diagnosis you want to discuss,
+   then select its deterministic advice. If another report is displayed, select
+   the intended entry from **Saved evidence** before asking for an explanation.
+2. Choose **Explain with configured model**. PerfChecker sends bounded saved
+   evidence and its identifiers to the selected provider. The target workload
+   is not rerun by this action.
+3. Read the returned explanation alongside its referenced evidence and the
+   deterministic fallback. References identify the supplied evidence; generated
+   prose remains unverified and does not establish a performance improvement.
+4. Under **Saved evidence**, use **JSON** or **Markdown** to retain the report.
+   Use **Cancel** during an active request to interrupt the local worker; inspect
+   the final status before starting another action.
+
+For a question and follow-up exchange, use [Advisor chat](mcp-advisor.md#Talk-to-the-advisor).
+An explanation of one saved report and a conversation are separate actions.
+
+The targeted native qualification exercised explanation, evidence identifiers,
+JSON/Markdown exports and active-request cancellation on Linux VS Code 1.141.0
+with Julia 1.13.1, VSIX candidate `75f84f631ba3` and Core candidate `975d9351250a`.
+It used a controlled HTTP provider, so it validates the interface and transport
+contract rather than the reasoning quality of an authenticated model.
+
 ## Optional local model files
 
 Install/start Ollama through its [official guide](https://docs.ollama.com/quickstart).

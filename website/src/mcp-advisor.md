@@ -18,6 +18,12 @@ In either MCP route, the controller must contain PerfChecker V1 and `HTTP`.
 first. Advice and implementation are separate actions: receiving an answer never
 approves a source edit.
 
+For interactive experiments, the [integrated Pluto candidate](interfaces/vscode-workflows.md#Pluto-notebooks-in-VS-Code)
+keeps notebook execution in its separate project. Launch the chosen checks,
+inspect their correctness and save completed reports before selecting that saved
+evidence in Advisor chat. Follow-up questions and implementation review remain
+explicit chat actions; reopening a notebook does not request an agent turn.
+
 ## Connect an authenticated Codex CLI
 
 PerfChecker can connect an installed, authenticated Codex CLI through a local MCP bridge with separate advice and implementation tools. The connector invokes `codex exec`; it does not require `codex mcp-server`.
@@ -28,7 +34,35 @@ PerfChecker can connect an installed, authenticated Codex CLI through a local MC
 4. Ask for advice, optionally attaching saved evidence. Review the answer, then use the [explicit implementation workflow](#Switch-from-advice-to-implementation) if you want the agent to prepare a change.
 5. Choose **Disconnect Codex**, or run **PerfChecker: Disconnect local Codex**, to return to your saved advisor configuration. After an editor reload, connect again when needed.
 
-The qualified CLI is **Codex 0.159.2**. The connector requires `--no-daemon`, `--ignore-user-config` and `--ignore-rules`, plus the `exec` ephemeral, sandbox and output flags. Unsupported installations fail explicitly. Use your own external MCP agent if these flags are unavailable. See the official [Codex noninteractive workflow example](https://developers.openai.com/cookbook/examples/codex/build_iterative_repair_loops_with_codex) for the CLI execution model; PerfChecker's supported flags are checked against the executable actually selected.
+Qualification used **Codex 0.159.2** for the executable contract and connector
+lifecycle, and **Codex 0.162.0-alpha.2** for authenticated multi-turn advice and
+reviewed source implementation. Two separate source fixtures were exercised:
+
+| Source and controller | What the authenticated test checked |
+| --- | --- |
+| JavaScript fixture, including requests through the registered PerfChecker 1.0.0 Julia CLI | Contextual advice, an isolated patch, Node correctness, diff review, apply, exact restore and cancellation |
+| Julia `sum_squares`, Julia 1.13.1 and Core 1.0.1 source tree `4fbc3c25543aa4f9b1154c227e5432f0cd62df91` | Two advice turns, an isolated source-only patch, real Julia correctness and allocation probes, apply, exact restore, cancellation of a started Codex turn and disconnect |
+
+The Julia proof used the 1.0.1 source checkout, before General registration. It
+checked empty Float64 input, signed values and a 1,000-element Float64 vector:
+the expected results were `0.0`, `14.0` and `333833500.0`. The warmed
+`@allocated` probe recorded **8072 B before and 0 B after** for that specific
+workload. It did not measure a timing improvement or establish equivalence for
+all Julia element types.
+
+These authenticated connector tests are separate from native VS Code footage
+using a controlled MCP response fixture. That footage exercises real editor
+controls and Julia workers; its scripted responses are identified in the
+captions. Consult the release qualification report for the final native
+platform matrix. These are the CLI versions actually exercised; intermediate
+releases have not been qualified by inference.
+
+The connector requires `--no-daemon`, `--ignore-user-config` and `--ignore-rules`,
+plus the `exec` ephemeral, sandbox and output flags. Its probe checks the selected
+executable. Unsupported installations fail explicitly. Use your own external
+MCP agent if these flags are unavailable. See the official
+[Codex noninteractive workflow example](https://developers.openai.com/cookbook/examples/codex/build_iterative_repair_loops_with_codex)
+for the CLI execution model.
 
 PerfChecker starts an authenticated HTTP endpoint on `127.0.0.1` with a random port. The endpoint and automatically generated Bearer token exist only in this editor session. They are not saved in settings or `perf/advisor.json`. The explicit connection authorizes chat for this session, including when your saved provider is disabled. It temporarily takes precedence over saved provider configuration; disconnecting or reloading restores that configuration and its enabled/disabled state. Never copy this temporary endpoint into a configuration file.
 
@@ -36,13 +70,29 @@ The advice tool is `ask_perfchecker(prompt)` and uses the CLI's `read-only` sand
 
 The connector uses your existing account and the CLI's default model. Custom user profiles, model/provider configuration, MCP servers, hooks and rules are not inherited. A project or implementation copy containing project `.codex` configuration is refused before invocation. Sandbox support depends on the CLI installation and platform. The agent can inspect files in its working directory; the configured model provider processes the requested context, and ordinary account usage or charges apply. Git proposals and checkpoints remain recoverable independently of the connection.
 
-The named-agent qualification used a real authenticated CLI through MCP initialization, tool discovery, advice and implementation. It checked unchanged source in advice mode, an actual isolated edit, Node semantics, diff review, apply, byte-identical restore and cancellation after a turn started. Maintainers can reproduce this opt-in test from the extension repository after `npm test`:
+Maintainers can reproduce the authenticated connector test from the extension
+repository after `npm test`:
 
 ```sh
 PERFCHECKER_TEST_CODEX=/path/to/codex node --test test/codex-real.test.mjs
 ```
 
-This sends real model requests against your existing account and removes its disposable Node/Git fixture. It qualifies the connector lifecycle; it does not establish a performance improvement for your Julia package.
+For the separate Julia-source proof, select the Julia executable, controller
+project and exact expected Core tree deliberately:
+
+```sh
+PERFCHECKER_TEST_CODEX=/path/to/codex \
+PERFCHECKER_TEST_CODEX_JULIA=1 \
+PERFCHECKER_TEST_JULIA=/path/to/julia \
+PERFCHECKER_TEST_JULIA_PROJECT=/path/to/controller \
+PERFCHECKER_TEST_CORE_TREE=4fbc3c25543aa4f9b1154c227e5432f0cd62df91 \
+node --test --test-name-pattern='real Codex Julia implementation' test/codex-real.test.mjs
+```
+
+The controller needs the stated PerfChecker source and `HTTP`. These opt-in
+tests send real model requests against your existing account and remove their
+disposable source, Git and implementation fixtures. Use their source and
+measurement boundaries when interpreting the result for your own package.
 
 ## Configure the advice tool
 
@@ -54,6 +104,15 @@ provide its other required arguments without secrets. Tool names and argument
 names are case-sensitive. The screenshot's `ask_perfchecker` is a demonstration
 inventory; the external-server example below uses the placeholder `ask`. Use
 your server's actual name and schema in both the file and extension settings.
+
+The native walkthrough below uses the local protocol fixture `ask_fixture`.
+Its prompt field is `question` and its other required argument is the `context`
+object. Select your own server's discovered names and required arguments;
+these fixture values are not universal MCP defaults.
+
+```@raw html
+<DocMedia video short recording="perfchecker-vscode-v101-short-19" src="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-19.mp4" poster="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-19-poster.jpg" subtitles="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-19-en.vtt" preload="metadata" alt="Actual native PerfChecker MCP tool inventory, input schema and Use selection confirmation" caption="Discover the server tool, inspect its real properties and required arguments, then select Use. The actual schema frames are held for reading; this local protocol fixture uses ask_fixture, question and context. Recorded build: VSIX 2e722, Core 4eec, VS Code 1.141 on Linux; connection discovery and selection are distinct from answer generation." />
+```
 
 ```@raw html
 <DocMedia src="/assets/screenshots/vscode-mcp-settings.png" alt="Actual PerfChecker V1 advisor setup webview in Chromium with a demonstration MCP HTTP endpoint, tool inventory and selected advice tool" caption="Use your server's endpoint and exact tool name, then probe and save the configuration. This running webview shows a local demonstration configuration and an example tool inventory; the address is not a service supplied to every user." />
@@ -127,6 +186,10 @@ The agent receives an instruction to answer in the user's language, distinguish 
 Replies are unverified text, separate from deterministic findings. Embedded HTML is displayed as text. Suggested commands are not executed by advice chat. You may implement the suggestions yourself.
 
 ```@raw html
+<DocMedia video short recording="perfchecker-vscode-v101-short-06" src="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-06.mp4" poster="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-06-poster.jpg" subtitles="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-06-en.vtt" preload="metadata" alt="Native PerfChecker conversation with a saved measured run, two contextual questions and controlled MCP replies" caption="Attach the actual measured run, ask a follow-up and agree on validation before requesting an edit. The recorded report shows 8072 B median over two samples with correctness passed; measured evidence IDs and bounded context were checked. The local MCP protocol fixture supplies controlled replies, with frames held for reading. Recorded build: VSIX 2e722, Core 4eec, VS Code 1.141 on Linux. Source is unchanged during advice; cancellation is outside this passage." />
+```
+
+```@raw html
 <DocMedia src="/assets/screenshots/vscode-advice-chat.png" alt="Actual PerfChecker V1 Advice webview rendered in Chromium with selected allocation evidence, two user questions, two replies and a follow-up prompt" caption="Use follow-up questions to separate observations from hypotheses and agree on validation before preparing an implementation. The actual V1 webview displays a demonstration conversation and evidence; select the image to read the full exchange." />
 ```
 
@@ -157,6 +220,10 @@ The explicit Codex connection supplies its two tool names automatically. For an 
 
 `implement` is also a placeholder. Select a trusted tool that can inspect/edit/test a supplied checkout. Implementation reuses the advice connection, revision, credentials and additional arguments, then substitutes the explicitly configured tool and prompt name. The prompt/workspace argument names must differ; extra arguments cannot override either.
 
+```@raw html
+<DocMedia video short recording="perfchecker-vscode-v101-short-07" src="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-07.mp4" poster="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-07-poster.jpg" subtitles="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-07-en.vtt" preload="metadata" alt="Actual native PerfChecker preparation action, warning and recovery checkpoint prefix" caption="Review the warning, save editor buffers and explicitly prepare an isolated proposal. The close view preserves the real Prepare implementation button and checkpoint prefix; the full reference continues outside the portrait frame and remains available in the editor. Recorded build: VSIX 75f84f, Core 975d, VS Code 1.141 on Linux, controlled MCP replies." />
+```
+
 The extension's workflow is:
 
 1. Get an advice reply and review the proposed change and validation.
@@ -166,6 +233,10 @@ The extension's workflow is:
 5. Read the implementation summary and open the proposed diff. The summary alone does not verify correctness or performance.
 6. Select **Apply reviewed implementation changes** only after checking the actual diff. Application updates working-tree files without changing HEAD or the real Git index.
 7. Rerun relevant correctness checks, including empty inputs, boundary values and the representative types your API accepts, then collect compatible before/after measurements. A shorter expression can change empty-input or numeric behavior. Use **Restore implementation checkpoint** if you need to reverse the applied patch and the repository has not drifted.
+
+```@raw html
+<DocMedia video short recording="perfchecker-vscode-v101-short-20" src="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-20.mp4" poster="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-20-poster.jpg" subtitles="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-20-en.vtt" preload="metadata" alt="Actual native PerfChecker source diff, initialized sum_squares reduction and explicit human review" caption="Read the actual isolated source diff and its explicit initializer, then validate representative inputs before applying. The recorded Float64 example covers empty, signed and 1,000-element inputs; other types need their own oracle. Recorded build: VSIX 75f84f, Core 975d, VS Code 1.141 on Linux, controlled MCP replies." />
+```
 
 ```@raw html
 <DocMedia src="/assets/screenshots/vscode-implementation.png" alt="Running PerfChecker V1 chat webview showing the implementation warning, checkpoint reference, isolated change summary, reviewed diff and explicit apply action" caption="Review the actual diff before applying. The original working tree is still unchanged at this stage; Restore becomes relevant after Apply. The UI is real, while the advice and edited fixture are demonstration data." />
@@ -189,6 +260,10 @@ Preparation requires Git and an existing HEAD commit. Unsupported repositories, 
 V1 also refuses clean/smudge filters (including Git LFS), `working-tree-encoding` and `ident` expansion so checkpoint operations cannot invoke transformation drivers. Ordinary CRLF conversion is supported. Use a repository without these attributes for implementation, or apply advice manually.
 
 ## Checkpoints and recovery
+
+```@raw html
+<DocMedia video short recording="perfchecker-vscode-v101-short-08" src="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-08.mp4" poster="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-08-poster.jpg" subtitles="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-08-en.vtt" preload="metadata" alt="Actual native PerfChecker Apply and Restore controls with independently checked Julia results and allocation" caption="Apply the reviewed source change, inspect the independent Julia oracle and restore the previous source exactly. The recorded workload's allocation probe is 8072 B before and 0 B after; compatible timing measurements remain a separate step. Recorded build: VSIX 75f84f, Core 975d, VS Code 1.141 on Linux, controlled MCP replies." />
+```
 
 The checkpoint uses a dedicated ref of the form `refs/perfchecker/checkpoints/<id>`. A reviewed proposal also has a retained Git ref. These preserve the proposal/recovery content independently from its temporary checkout. The original branch and staging are preserved.
 
@@ -279,7 +354,7 @@ See the official [2026-07-28 Streamable HTTP specification](https://modelcontext
 | Cancellation | Local worker stopped; server interruption depends on the server |
 | Apply/restore refused | Repository drifted; inspect before recovering content |
 | Git transformation unsupported | Check attributes for filters/LFS, working-tree encoding or ident expansion |
-| Codex executable unsupported | Native binary with the required flags; qualified version 0.159.2 |
+| Codex executable unsupported | Native binary with the required flags; versions exercised are 0.159.2 and 0.162.0-alpha.2 |
 | Codex not authenticated | Run `codex login` yourself, then reconnect |
 | Project `.codex` configuration refused | Use a clean workspace or your explicitly configured external MCP agent |
 | Codex disconnected after reload | Connect again; saved provider settings and Git recovery are retained |
