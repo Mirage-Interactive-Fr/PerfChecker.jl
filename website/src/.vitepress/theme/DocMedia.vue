@@ -59,7 +59,10 @@ const mediaType = computed(() => props.src.endsWith('.mp4') ? 'video/mp4' : 'vid
 
 <style scoped>
 .doc-short-video {
+  width: auto;
+  max-width: 100%;
   max-height: 36rem;
+  margin-inline: auto;
   object-fit: contain;
   background: var(--vp-c-bg-alt);
 }
