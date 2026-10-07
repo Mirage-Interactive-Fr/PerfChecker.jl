@@ -39,9 +39,12 @@ lifecycle, and **Codex 0.162.0-alpha.2** for authenticated multi-turn advice and
 reviewed source implementation. The latter test exercised contextual advice,
 an isolated JavaScript patch, a Node correctness oracle, diff review, apply,
 exact restore and cancellation. Consult the release qualification report for
-the separate native Julia workload and its correctness oracle. These are the CLI
-versions actually exercised; intermediate releases have not been qualified by
-inference.
+the separate native Julia workload and its correctness oracle. The local
+authenticated test also sent `chat` and `implement` requests through the
+registered **PerfChecker 1.0.0 Julia CLI**, acting as the MCP client around that
+JavaScript fixture. Qualification of the complete native VS Code workflow with
+a Julia workload remains in progress. These are the CLI versions actually
+exercised; intermediate releases have not been qualified by inference.
 
 The connector requires `--no-daemon`, `--ignore-user-config` and `--ignore-rules`,
 plus the `exec` ephemeral, sandbox and output flags. Its probe checks the selected
