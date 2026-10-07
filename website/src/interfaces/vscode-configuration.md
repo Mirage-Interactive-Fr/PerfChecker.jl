@@ -8,6 +8,32 @@ PerfChecker resolves `runnerProject` relative to the selected package folder. It
 
 The controller needs PerfChecker and the interface/provider packages used by the request. The target environment needs the measured package, its dependencies and any analyzer selected for target workers. Existing TestItems need TestItemRunner and their test dependencies in the selected runner environment.
 
+### Prepare a controller
+
+Run these Julia commands **from the measured package's root**, where its
+`Project.toml` is located:
+
+```julia
+import Pkg
+Pkg.activate("perf/controller")
+Pkg.add(Pkg.PackageSpec(name = "PerfChecker", version = "1"))
+Pkg.add(["BenchmarkTools", "TestItems", "TestItemRunner", "HTTP"])
+Pkg.develop(path = ".")
+Pkg.status()
+```
+
+This creates a separate controller environment, installs registered PerfChecker
+V1, a benchmark collector and TestItems support, and makes your local package importable there.
+`HTTP` is needed only for an MCP advisor; omit it if you do not use one. Add your
+package's other test dependencies deliberately if its items import them.
+`Pkg.develop` points at the package root rather than copying or publishing it.
+
+Open **Preferences: Open Workspace Settings (JSON)**, or the selected folder's
+settings in a multi-root workspace, and set the example below in
+`.vscode/settings.json`. Set **Runner Project** to `perf/controller` explicitly.
+Leave **Scenario Project** as `.` only if the package environment contains the
+dependencies and analyzers needed by those scenario workers.
+
 Example folder settings, with an existing controller and target project:
 
 ```json
@@ -24,6 +50,11 @@ Example folder settings, with an existing controller and target project:
 ```
 
 An absolute environment path is also accepted. `juliaExecutable` is an executable path or launcher, not a shell command with additional arguments. PerfChecker supplies startup, history, project and worker arguments itself. No environment is installed merely by opening Studio.
+
+Run **PerfChecker: Open Julia terminal** and inspect `Base.active_project()` and
+`Pkg.status("PerfChecker")` to check the controller selection. This terminal is
+an interactive inspection surface; successful imports there are a useful setup
+check, not a performance result.
 
 ## Core and suite settings
 

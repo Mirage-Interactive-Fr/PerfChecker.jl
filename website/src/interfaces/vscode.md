@@ -2,16 +2,38 @@
 
 PerfChecker combines Julia performance tests, saved results, plots and optional agent conversations inside VS Code. **Studio opens as a full editor tab**: keep it beside your source, move it into another editor group, or return to the compact PerfChecker views in the activity bar.
 
+Follow this page for a first measurement and a version comparison. Continue with
+[configuration](vscode-configuration.md), [plots and Julia tools](vscode-workflows.md)
+or [MCP advice and implementation](../mcp-advisor.md) when you reach those steps.
+
+The screenshots below show the **actual V1 extension webviews running in an
+isolated Chromium test harness**, with demonstration projects and results. They
+are not drawings or screenshots of a complete VS Code window. In VS Code, the
+same webviews open in editor tabs; the surrounding editor and theme may differ.
+Select any screenshot to open its full-resolution image, including the form
+fields and implementation diff.
+
 ## Install and prepare
 
 1. Install VS Code **1.96 or newer** and Julia **1.10 or newer**.
-2. Install the supplied, qualified **PerfChecker 1.0.0 VSIX** with **Extensions → … → Install from VSIX…**. The matching completed [collection qualification](https://github.com/Mirage-Interactive-Fr/PerfChecker.jl/actions/workflows/Qualification.yml) provides it in `qualification-vscode-ubuntu-latest-1` as `perfchecker-vscode.vsix`; downloading an Actions artifact requires a GitHub login. Official [Marketplace installation](https://marketplace.visualstudio.com/items?itemName=mirage-interactive-fr.perfchecker-vscode) follows confirmation of PerfChecker 1.0.0 in Julia General. Reload VS Code if prompted.
+2. Install the qualified V1 `.vsix` from the [extension's releases](https://github.com/Mirage-Interactive-Fr/PerfCheckerVSCode/releases) with **Extensions → … → Install from VSIX…**. Once the official listing is published, install [PerfChecker from the Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=mirage-interactive-fr.perfchecker-vscode), or search the Extensions view for `@id:mirage-interactive-fr.perfchecker-vscode`. Reload VS Code if prompted. See [VS Code's installation instructions](https://code.visualstudio.com/docs/configure/extensions/extension-marketplace) for either route.
 3. Open the package folder. Trust the workspace when you are prepared to execute its Julia code.
 4. Prepare a Julia controller environment containing the matching PerfChecker build and the collectors you intend to use. Existing TestItems also require TestItemRunner and the package's test dependencies.
 5. Set **PerfChecker: Runner Project** (`perfchecker.runnerProject`) to the controller environment. For shared scenarios, set **Scenario Project** (`perfchecker.scenarioProject`) to the environment containing the measured code and its dependencies.
 6. Run **PerfChecker: Open Studio** from the command palette. In a workspace with several folders, select the package to inspect.
 
+If the Marketplace listing is not yet available to your installation, use the
+supplied qualified V1 VSIX. PerfChecker's Julia registry release and its VS Code
+extension are distributed separately; installing the Julia package does not
+install the extension.
+
 Opening Studio reads configuration and presents actions. It does not install packages, start Julia, download a model or launch an agent. A controller should contain `HTTP` if you enable MCP. JET and other analyzers belong in the environment selected for their workers.
+
+```@raw html
+<DocMedia src="/assets/screenshots/vscode-studio.png" alt="PerfChecker V1 Studio webview rendered in Chromium, with the selected Example package and actions for suites, results, Julia tests and agent chat" caption="Start here: check the selected package and expand Workspace environment to inspect its controller, then choose an action. This is the running extension webview with a demonstration workspace." />
+```
+
+If this is your first setup, follow [Prepare a controller](vscode-configuration.md#Prepare-a-controller) before running an item. Use the dedicated controller so adding a profiler or MCP client does not change your package's normal dependency environment.
 
 See [Installation](../guide/installation.md) for the core and interface packages, and [VS Code configuration](vscode-configuration.md) for complete settings and environment examples.
 
@@ -19,15 +41,33 @@ See [Installation](../guide/installation.md) for the core and interface packages
 
 For a project using `@testitem`:
 
-1. Studio → **Test items**, or command palette → **PerfChecker: Discover existing test items**.
+1. Studio → **Existing Julia tests**, or command palette → **PerfChecker: Discover existing test items**.
 2. Open VS Code's **Testing** view and expand **PerfChecker items**.
 3. Select one item and run it. PerfChecker measures the selected item in a fresh worker.
 4. Read the collector, unit, sample count and scope beside the measurement.
 5. Open the saved visual output to inspect the available distributions and profiles.
 
+If your package has no test items yet, add a small correctness-checked example to
+`test/performance.jl`:
+
+```julia
+using TestItems
+
+@testitem "Vector reduction" tags = [:performance] begin
+    data = collect(1:10_000)
+    @test sum(data) == 50_005_000
+end
+```
+
+Save the file, discover again and select **Vector reduction**. The item measures
+its setup and assertion as well as the reduction; use a [shared scenario](../shared-scenarios.md)
+when you want prepared inputs outside the measurement. The ordinary `performance`
+tag is an example filter, not a required or special tag. The package must have
+`TestItems` available for its test declarations.
+
 The Testing summary duration can include worker startup. The item measurement has its own boundary. A green functional test does not establish a performance budget. Use [TestItems and tags](../test-items.md) to distinguish shared, functional-only and performance-only items.
 
-For a suite, use **PerfChecker: Create feature suite** if you need a starter, or configure your existing `perf/suite.jl`. Studio → **Suite designer** opens the full visual editor. Select a workload, checks and a target, run that selection, then open the resulting report.
+For a suite, use **PerfChecker: Create feature suite** if you need a starter, or configure your existing `perf/suite.jl`. Studio → **Feature suite** opens the full visual editor. Select a workload, checks and a target, run that selection, then open the resulting report.
 
 ## Work across the full editor
 
@@ -53,6 +93,42 @@ Save the selection with **PerfChecker: Save shared UI configuration**. The defau
 The editor separates filtering from selection. Search, package/target filters and release bounds change what is visible without deselecting hidden runs. **Select visible** and **Clear visible** act on the current filter; **Clear selection** affects the entire selection. The counter reports selected runs, visible runs and selected runs outside the filter. **Run N selected** includes those hidden selections, so review the exact identifier preview before execution. **Show more** pages workload groups without restricting bulk selection.
 
 Collector toggles select or deselect matching runs. Unavailable conditions show their reason. Add targets from discovered branches, tags and recent commits or enter a supported ref/URL, then inspect the comparison matrix. Missing or overlapping references are reported before a run; refreshing the plan preserves existing selections when their identifiers still exist.
+
+```@raw html
+<DocMedia src="/assets/screenshots/vscode-suite-designer.png" alt="Running PerfChecker V1 suite-designer webview with workload filters, selected check types, target controls and a run-selection summary" caption="Review the exact runs before executing: filtering controls visibility, while selection controls what will run. The screenshot uses demonstration workloads in the extension's real suite designer." />
+```
+
+### Choose the evidence for your question
+
+| Question | Start with | Read before selecting |
+| --- | --- | --- |
+| Did this operation become slower? | `benchmark` or `chairmark` | Samples, time units, prepared inputs and the same collector for both targets |
+| Which call path uses CPU time? | `profile` | Stack sample weights; an empty capture does not prove zero cost |
+| Where do allocations occur? | `profile_alloc` or `alloc` | Sampling/source-line scope and measured totals |
+| Why does waiting dominate? | `wall_profile` | Requires Julia 1.12 or newer; task stacks include waits |
+| How much traffic does the operation generate? | A network collector | Reported counters, shared interface or isolated namespace have different attribution |
+
+The designer shows combinations made available by your suite and environment;
+it does not install a missing collector. See [Collectors](../reference/checks.md)
+for every supported check and its interpretation.
+
+### Compare a working change with a known revision
+
+1. Prepare a suite containing the same workload for both targets.
+2. Add a named baseline from a branch, tag or recent commit. Prefer a full commit
+   identifier when you need an unambiguous recorded reference.
+3. Add the candidate working tree or another supported revision, and inspect the
+   plan's resolved target information. A Git target is a version of the measured
+   package; `juliaExecutable` separately chooses the Julia runtime.
+4. Choose an exact baseline for a simple before/after comparison. Use grouped
+   references only when their aggregation answers your question.
+5. Select the same checks and inputs for both targets. Inspect selected runs,
+   including any hidden by filters, then run the selection.
+6. Open both saved reports and inspect correctness, comparison compatibility and
+   the observations. Retain the baseline until the candidate is validated.
+
+Changing a branch name or editor selection does not manufacture a compatible
+baseline. The saved evidence records the actual measured configuration.
 
 The suite tree follows:
 
@@ -98,7 +174,7 @@ cancellation does not prove the remote tool stopped.
 
 ## Advice and explicit implementation
 
-Studio → **Advisor chat** opens **PerfChecker: Chat with performance advisor**. For an authenticated native Codex CLI, choose **Connect Codex CLI**: the extension checks the installation and starts a temporary local MCP connector with separate advice and implementation tools. Follow the [qualified Codex recipe](../mcp-advisor.md#Connect-an-authenticated-Codex-CLI), or configure an external MCP advice tool. Choose saved evidence if useful, then ask a question. Chat also works without evidence for configuration and usage questions; the agent is told no measurements were attached.
+Studio → **Talk to your agent** opens **PerfChecker: Chat with performance advisor**. For an authenticated native Codex CLI, choose **Connect Codex CLI**: the extension checks the installation and starts a temporary local MCP connector with separate advice and implementation tools. Follow the [qualified Codex recipe](../mcp-advisor.md#Connect-an-authenticated-Codex-CLI), or configure an external MCP advice tool. Choose saved evidence if useful, then ask a question. Chat also works without evidence for configuration and usage questions; the agent is told no measurements were attached.
 
 Review the answer. You can apply the advice yourself, or explicitly select **Prepare implementation from reviewed advice**. The latter requires the connected Codex implementation tool or a separately configured external tool, and a Git repository with an existing commit.
 

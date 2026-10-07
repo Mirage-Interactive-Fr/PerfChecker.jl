@@ -2,8 +2,8 @@
 
 ## Core package
 
-The Julia API, command line and text REPL are in PerfChecker itself. Once version
-1.0.0 is available in Julia General:
+The Julia API, command line and text REPL are in PerfChecker itself. **PerfChecker
+1.0.0 is registered in Julia General** and requires Julia 1.10 or newer:
 
 ```julia
 import Pkg
@@ -11,18 +11,15 @@ Pkg.add(Pkg.PackageSpec(name = "PerfChecker", version = "1"))
 using PerfChecker
 ```
 
-Before that registry entry is available, install the published stable source
-explicitly in your chosen environment:
+If an existing environment still resolves the 0.2 series, refresh its registries
+and request V1 explicitly. Dependency constraints can prevent an upgrade; keep
+your performance controller separate from the package being measured:
 
 ```julia
-import Pkg
-Pkg.add(Pkg.PackageSpec(
-    url = "https://github.com/Mirage-Interactive-Fr/PerfChecker.jl",
-    rev = "v1.0.0"))
-using PerfChecker
+Pkg.Registry.update()
+Pkg.add(Pkg.PackageSpec(name = "PerfChecker", version = "1"))
+Pkg.status("PerfChecker")
 ```
-
-This repository installation does not establish registry availability.
 
 The V1 API differs from the 0.2 series. Use a separate environment when migrating
 an existing project, and select the V1 package explicitly.
