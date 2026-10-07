@@ -247,8 +247,8 @@ Use it to inspect the public API or deliberately rerun a check. Interactive term
 
 Install the Julia VS Code extension (`julialang.language-julia`) and open a saved Julia source file belonging to the selected package. Choose **PerfChecker: Debug current Julia file**. PerfChecker delegates to the Julia debug adapter, requests the selected scenario project in its launch configuration and stops on entry. Inspect the actual runtime project before relying on that environment.
 
-!!! warning "Candidate debugger project qualification is incomplete"
-    The Julia 1.12.7 qualification reached the expected version and correctness result, but `Base.active_project()` resolved to the workspace project instead of the requested controller project. The project selection is being corrected and has not passed its oracle. Inspect `VERSION` and `Base.active_project()` in the stopped debug session; a successful launch alone does not validate the selected project.
+!!! note "Qualified Windows project selection"
+    Native VS Code **1.141.0** on Windows, the Julia extension **1.249.2** and Julia **1.12.7** passed the REPL and debugger checks with the 1.0.1 extension build. Both debug sessions executed the target source, checked `VERSION`, `Base.active_project()` and the correctness oracle, and used the intended controller in two distinct workspace folders. PerfChecker's measurement runner used Julia **1.13.1** separately. This proof covers the selected target source; full PerfChecker startup under the debugger's interpreter was not exercised. Check the same runtime and project fields in your stopped session.
 
 1. Use deterministic advice to identify a workload or correctness failure.
 2. Open its source and set a breakpoint.
@@ -266,9 +266,13 @@ official Julia extension **1.174.2** and Julia **1.13.1**: SymbolServer reports
 combination. PerfChecker's controller and measurement workers have separate
 executable and project checks.
 
-The candidate's Julia **1.12.7** REPL/debugger compatibility check is in progress.
-The release report will identify the exact editor, Julia extension, runtime and
-platform actually exercised. Configure `perfchecker.juliaExecutable` for the
+The native Windows checks passed with VS Code **1.141.0**, Julia extension
+**1.249.2** and Julia **1.12.7**, including controller selection in a second
+workspace folder. The recorded build was VSIX `2e722b2d575a`, using Core
+1.0.1 source tree `4fbc3c25543aa4f9b1154c227e5432f0cd62df91` before
+General registration. This result does not establish the same combination on
+other operating systems. The release report records each platform actually
+exercised. Configure `perfchecker.juliaExecutable` for the
 PerfChecker controller and `julia.executablePath` for the official Julia extension
 separately when those workflows need different runtimes. Select the real Julia
 binary in the corresponding folder settings, then inspect `VERSION` and
