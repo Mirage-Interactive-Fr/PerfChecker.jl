@@ -90,10 +90,33 @@ documentation commit while its package version stays the registered version.
 
 Only `.perfchecker-stable-refresh.json` records the refresh's documentation SHA,
 digest, workflow sequence and `pending`/`complete` status. Its watermark is written
-before root files, so a late rerun of the old tag cannot undo even an interrupted
-refresh. Rerun the failed publication job with its retained artifact to finish;
+before root files, so the current publisher refuses an old tag's root upload
+even after an interrupted refresh. Historical workflows containing an older
+publisher also need the variable guard described below. Rerun the failed
+publication job with its retained artifact to finish;
 older refresh sequences are skipped. A strictly newer release can still promote
 normally. No tag is moved and no package registration is performed by this action.
+
+### Keep historical tag workflows from overwriting refreshed documentation
+
+Current workflow source uses the repository variable
+`PERFCHECKER_DOCS_SFTP_DEPLOY_V2`. The immutable `v1.0.0` workflow uses the older
+`PERFCHECKER_DOCS_SFTP_DEPLOY` variable and a publisher that predates
+documentation-only refreshes. Its rerun must not upload an old root over newer
+documentation.
+
+After the V2 workflow is on `main`, keep V2 set to `true` and permanently set the
+old variable to `false`. This affects canonical SFTP uploads from old workflow
+source; it does not disable documentation builds, package CI, General registration,
+TagBot or the separately controlled GitHub mirror. Leave the existing SFTP secrets,
+known-host entry, destination path and publisher mutex unchanged.
+
+Verify that a rerun of the old tag's SFTP job is **Skipped** before refreshing the
+root. Check the old artifact's hashes against the still-original root and archive
+first; do this operational verification before publishing any newer root content.
+GitHub reruns preserve their original commit and ref, so the newer transport's
+watermarks alone cannot protect against an old transport. Do not re-enable the old
+flag to recover a failure; rerun the current V2 publisher with its validated export.
 
 Configure these repository Actions variables:
 
@@ -103,7 +126,8 @@ Configure these repository Actions variables:
 | `PERFCHECKER_DOCS_SFTP_PORT` | SSH port |
 | `PERFCHECKER_DOCS_SFTP_USER` | Account name |
 | `PERFCHECKER_DOCS_SFTP_ROOT` | Absolute document root as seen by the SFTP account, including any chroot |
-| `PERFCHECKER_DOCS_SFTP_DEPLOY` | Keep `false` until reviewed; set `true` to enable |
+| `PERFCHECKER_DOCS_SFTP_DEPLOY_V2` | Keep `false` until reviewed; set `true` to enable the current publisher |
+| `PERFCHECKER_DOCS_SFTP_DEPLOY` | Legacy workflow flag; keep permanently `false` after migration to V2 |
 
 Configure `PERFCHECKER_DOCS_SFTP_PASSWORD` and
 `PERFCHECKER_DOCS_SFTP_KNOWN_HOSTS` as Actions secrets. The latter is an
