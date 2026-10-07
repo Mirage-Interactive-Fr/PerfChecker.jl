@@ -48,6 +48,13 @@ This sends real model requests against your existing account and removes its dis
 
 Install `HTTP` deliberately in the controller environment. In VS Code, open **PerfChecker: Configure advisor and manage models**, select **MCP HTTP**, set the server endpoint and revision, discover its tools, and select an advice tool. The probe checks the connection/catalogue; it does not establish the quality of the tool's reasoning.
 
+In the discovered inventory, select **Use** beside your agent's advice tool.
+Inspect its input schema: replace the prompt argument if it is not `prompt`, and
+provide its other required arguments without secrets. Tool names and argument
+names are case-sensitive. The screenshot's `ask_perfchecker` is a demonstration
+inventory; the external-server example below uses the placeholder `ask`. Use
+your server's actual name and schema in both the file and extension settings.
+
 ```@raw html
 <DocMedia src="/assets/screenshots/vscode-mcp-settings.png" alt="Actual PerfChecker V1 advisor setup webview in Chromium with a demonstration MCP HTTP endpoint, tool inventory and selected advice tool" caption="Use your server's endpoint and exact tool name, then probe and save the configuration. This running webview shows a local demonstration configuration and an example tool inventory; the address is not a service supplied to every user." />
 ```
@@ -154,7 +161,7 @@ The extension's workflow is:
 4. The tool receives that checkout's canonical absolute path and an instruction to inspect, edit and test **only there**. It must leave changes for review and avoid publishing, pushing, deploying or modifying external services.
 5. Read the implementation summary and open the proposed diff. The summary alone does not verify correctness or performance.
 6. Select **Apply reviewed implementation changes** only after checking the actual diff. Application updates working-tree files without changing HEAD or the real Git index.
-7. Rerun relevant correctness checks and compatible before/after measurements. Use **Restore implementation checkpoint** if you need to reverse the applied patch and the repository has not drifted.
+7. Rerun relevant correctness checks, including empty inputs, boundary values and the representative types your API accepts, then collect compatible before/after measurements. A shorter expression can change empty-input or numeric behavior. Use **Restore implementation checkpoint** if you need to reverse the applied patch and the repository has not drifted.
 
 ```@raw html
 <DocMedia src="/assets/screenshots/vscode-implementation.png" alt="Running PerfChecker V1 chat webview showing the implementation warning, checkpoint reference, isolated change summary, reviewed diff and explicit apply action" caption="Review the actual diff before applying. The original working tree is still unchanged at this stage; Restore becomes relevant after Apply. The UI is real, while the advice and edited fixture are demonstration data." />
@@ -164,7 +171,9 @@ A useful first advice request is: “Explain the allocation observations in this
 report. Separate measured facts from possible causes and suggest one correctness
 check before proposing a change.” Before preparing implementation, name the
 reviewed change and validation you want, for example: “Prepare only the reviewed
-buffer-reuse change; preserve the public API and run its correctness tests.”
+buffer-reuse change; preserve the public API and validate empty inputs, boundary
+values and supported numeric types with its correctness tests. Do not claim a
+speedup without comparable measurements.”
 Check the diff and worker output yourself. The word `complete` in a tool reply
 does not establish that tests passed or that performance improved.
 

@@ -16,14 +16,15 @@ fields and implementation diff.
 ## Install and prepare
 
 1. Install VS Code **1.96 or newer** and Julia **1.10 or newer**.
-2. Install the qualified V1 `.vsix` from the [extension's releases](https://github.com/Mirage-Interactive-Fr/PerfCheckerVSCode/releases) with **Extensions → … → Install from VSIX…**. Once the official listing is published, install [PerfChecker from the Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=mirage-interactive-fr.perfchecker-vscode), or search the Extensions view for `@id:mirage-interactive-fr.perfchecker-vscode`. Reload VS Code if prompted. See [VS Code's installation instructions](https://code.visualstudio.com/docs/configure/extensions/extension-marketplace) for either route.
+2. Download the [qualified V1 VSIX](https://github.com/Mirage-Interactive-Fr/PerfCheckerVSCode/releases/download/v1.0.0/perfchecker-vscode-1.0.0.vsix) and use **Extensions → … → Install from VSIX…**. Once the official listing is published, install [PerfChecker from the Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=mirage-interactive-fr.perfchecker-vscode), or search the Extensions view for `@id:mirage-interactive-fr.perfchecker-vscode`. Reload VS Code if prompted. See [VS Code's installation instructions](https://code.visualstudio.com/docs/configure/extensions/extension-marketplace) for either route.
 3. Open the package folder. Trust the workspace when you are prepared to execute its Julia code.
 4. Prepare a Julia controller environment containing the matching PerfChecker build and the collectors you intend to use. Existing TestItems also require TestItemRunner and the package's test dependencies.
 5. Set **PerfChecker: Runner Project** (`perfchecker.runnerProject`) to the controller environment. For shared scenarios, set **Scenario Project** (`perfchecker.scenarioProject`) to the environment containing the measured code and its dependencies.
 6. Run **PerfChecker: Open Studio** from the command palette. In a workspace with several folders, select the package to inspect.
 
-If the Marketplace listing is not yet available to your installation, use the
-supplied qualified V1 VSIX. PerfChecker's Julia registry release and its VS Code
+The [extension release notes](https://github.com/Mirage-Interactive-Fr/PerfCheckerVSCode/releases/tag/v1.0.0)
+identify the qualified artifact. If the Marketplace listing is not yet available
+to your installation, use that V1 VSIX. PerfChecker's Julia registry release and its VS Code
 extension are distributed separately; installing the Julia package does not
 install the extension.
 
