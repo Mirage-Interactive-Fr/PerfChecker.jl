@@ -74,7 +74,42 @@ function _fresh_profile_evaluation(instrumented::Expr)
     end
 end
 
-"A shared, dependency-free Julia factory, identified independently of its measurement collector."
+"""
+    ScenarioSpec(id; source, factory="make_case", implementation="default",
+                 parameters=Dict(), fixtures=String[], collectors=[:benchmark],
+                 repeatable=false, requirements=String[])
+
+Declare a Julia workload and correctness protocol shared by measurement and
+diagnostic workers. `id` and `implementation` form the scenario identity;
+`factory` is a possibly dotted Julia function name in the existing `source` file.
+The constructor resolves source and fixture paths, checks their existence and
+validates TOML-compatible `parameters`. It does not include the source or invoke
+the factory. `requirements` lists packages that must already be available to the
+worker; packages are not installed implicitly.
+
+The factory receives the parameter dictionary and returns a named tuple with
+callbacks `prepare()`,
+`operation(state)` and `verify(state, result)`. Verification must return `true`.
+Optional `synchronize(state, result)` belongs to the operation boundary;
+`cleanup(state)` releases state when Julia unwinds normally, including operation
+or verification errors. Forced worker termination cannot guarantee an arbitrary
+user cleanup callback, so externally owned files must remain recoverable. An
+optional `availability()` callback returns `(available=Bool, reason=String)` and
+can mark the workload unavailable before measurement.
+
+`collectors` is a nonempty selection of `:benchmark`, `:chairmark`, `:profile`
+and `:profile_alloc`. Each run prepares a fresh worker and preserves its collector
+identity. `repeatable` records the workload's declared repeatability; it does not
+prove it or bypass the correctness oracle. Empty or unsupported collector
+selections are rejected; repeated collector values are normalized to one entry.
+
+```julia
+spec = ScenarioSpec("sum_squares"; source="perf/cases.jl",
+    factory="make_sum_case", collectors=[:benchmark, :profile_alloc],
+    parameters=Dict("length" => 1000), requirements=["Example"])
+# The source factory has not run; select a prepared worker project before execution.
+```
+"""
 struct ScenarioSpec
     id::String
     source::String
@@ -116,7 +151,22 @@ function ScenarioSpec(id::AbstractString; source::AbstractString,
         params, abspath.(String.(fixtures)), unique(selected), repeatable, String.(requirements))
 end
 
-"The explicit catalog used by both local execution and CI. Inferred candidates are never members."
+"""
+    ScenarioCatalog(root::AbstractString, scenarios::AbstractVector{ScenarioSpec})
+
+Store an absolute package root and a copied vector of explicitly declared
+scenarios. Reject duplicate `(id, implementation)` identities. Construction does
+not discover tests, evaluate source or prepare dependencies. Proposals returned
+by [`discover`](@ref) are not executable catalog members until the caller defines
+their factory and correctness protocol.
+
+```jldoctest
+julia> catalog = ScenarioCatalog(pwd(), ScenarioSpec[]);
+
+julia> isempty(catalog.scenarios)
+true
+```
+"""
 struct ScenarioCatalog
     root::String
     scenarios::Vector{ScenarioSpec}
@@ -140,12 +190,29 @@ function _scenario_dict(spec::ScenarioSpec)
         "collectors" => string.(spec.collectors), "repeatable" => spec.repeatable, "requirements" => spec.requirements)
 end
 
-"Return the portable representation of an explicit scenario catalog."
+"""
+    scenario_catalog_dict(catalog::ScenarioCatalog) -> Dict{String, Any}
+
+Return a `perfchecker-scenario-catalog/1` object containing the absolute `root` and each
+scenario's identity, factory, parameters, source, fixtures, collectors and
+requirements. This conversion neither writes TOML nor runs the factory. Absolute
+paths describe this local catalog; use relative paths deliberately when preparing
+a catalog file for another machine.
+"""
 scenario_catalog_dict(catalog::ScenarioCatalog) = Dict{String, Any}(
     "schema_version" => SCENARIO_CATALOG_SCHEMA, "root" => catalog.root,
     "scenarios" => _scenario_dict.(catalog.scenarios))
 
-"Read a TOML catalog without evaluating package or test code. Paths are relative to the catalog."
+"""
+    load_scenario_catalog(path::AbstractString) -> ScenarioCatalog
+
+Parse a TOML file with schema `perfchecker-scenario-catalog/1`. Resolve `root`, scenario
+`source` and fixture paths against the catalog file's directory, then validate
+each [`ScenarioSpec`](@ref). Missing files, unsupported collectors and duplicate
+identities are errors. Parsing does not include package or test source, run the
+factory, or install its dependencies. Prepare the selected worker `project`
+before calling [`run_scenarios`](@ref) or [`diagnose`](@ref).
+"""
 function load_scenario_catalog(path::AbstractString)
     payload = TOML.parsefile(path)
     get(payload, "schema_version", "") == SCENARIO_CATALOG_SCHEMA ||
@@ -169,12 +236,37 @@ function load_scenario_catalog(path::AbstractString)
     return ScenarioCatalog(root, cases)
 end
 
-"Thread-safe cancellation request, checked while an isolated child is running."
+"""
+    CancellationToken()
+
+Create a thread-safe, initially unrequested cancellation token for scenario,
+diagnostic or advisor operations. Pass the same token to the operation and call
+[`cancel!`](@ref) from another task to request interruption. A requested token is
+not reset automatically; use a new token for an independent operation.
+
+Requesting cancellation does not wait for worker termination. Wait for the
+operation's final status before accessing resources owned by its worker.
+
+```jldoctest
+julia> token = CancellationToken(); cancel!(token);
+
+julia> token.requested[]
+true
+```
+"""
 mutable struct CancellationToken
     requested::Threads.Atomic{Bool}
 end
 CancellationToken() = CancellationToken(Threads.Atomic{Bool}(false))
-"Request cancellation of scenario measurements or diagnostics."
+"""
+    cancel!(token::CancellationToken) -> nothing
+
+Atomically record a cancellation request. Repeated calls are harmless. Worker
+owners observe the request and perform their own shutdown and cleanup; this
+function does not itself kill a process or wait for cleanup. A remote advisor
+server may have its own interruption contract. Inspect the operation's returned
+status and diagnostics rather than treating this request as completed shutdown.
+"""
 cancel!(token::CancellationToken) = (token.requested[] = true; nothing)
 
 function _scenario_fingerprints(spec::ScenarioSpec)
@@ -182,7 +274,14 @@ function _scenario_fingerprints(spec::ScenarioSpec)
     for path in [spec.source; spec.fixtures])
 end
 
-"Select exact scenario/implementation pairs; inferred or unknown identities are rejected."
+"""
+    select_scenarios(catalog::ScenarioCatalog, selection::AbstractVector) -> ScenarioCatalog
+
+Return a catalog containing the exact `"id"`/`"implementation"` pairs named by
+the selection dictionaries, in selection order. Reject duplicate selections and
+unknown identities. An empty selection returns an empty catalog. Filtering does
+not execute factories or promote inferred candidates to declared scenarios.
+"""
 function select_scenarios(catalog::ScenarioCatalog, selection::AbstractVector)
     requested = [(String(item["id"]), String(item["implementation"])) for item in selection]
     allunique(requested) || throw(ArgumentError("duplicate scenario selection"))
@@ -192,7 +291,15 @@ function select_scenarios(catalog::ScenarioCatalog, selection::AbstractVector)
     return ScenarioCatalog(catalog.root, [available[key] for key in requested])
 end
 
-"Read shared-scenario bundles from one measurement directory without modifying them."
+"""
+    read_scenario_runs(directory::AbstractString) -> Vector{RunBundle}
+
+Read a scenario bundle directory, or its immediate child bundle directories,
+using [`read_run_bundle`](@ref)'s integrity checks. Keep bundles whose manifest
+contains scenario metadata. Reject a missing directory or a directory containing
+no such bundles. This is not a recursive search and does not modify evidence or
+rerun the workload; use [`list_run_bundles`](@ref) for broader discovery.
+"""
 function read_scenario_runs(directory::AbstractString)
     isdir(directory) || throw(ArgumentError("scenario report directory does not exist"))
     paths = isfile(joinpath(directory, "manifest.json")) ? [String(directory)] :
@@ -395,7 +502,39 @@ function _scenario_bundle(catalog, spec, collector, raw, fingerprints)
     return bundle
 end
 
-"Measure explicit shared scenarios in fresh Julia processes; no package installation is performed."
+"""
+    run_scenarios(catalog::ScenarioCatalog; project=catalog.root, samples=10,
+                  timeout=120, threads=1, cancellation=CancellationToken(),
+                  reports=nothing) -> Vector{RunBundle}
+
+Execute every declared scenario/collector pair in a separate Julia worker using
+the existing `project`. `samples` must be positive; `timeout` is a finite positive
+per-worker wall-time budget including startup, and `threads` selects the worker's
+Julia thread count. Required collector and workload packages must already be
+installed in that environment. Factories prepare state outside the measurement;
+the operation and optional synchronization are measured, and verification checks
+the result outside that boundary.
+
+Return one portable bundle per attempted pair, including explicit unavailable,
+invalid, error, timeout or cancelled outcomes. Source, fixtures and environment
+fingerprints are checked before and after a run; changed inputs invalidate its
+evidence. With `reports`, write each bundle under its run ID in that directory.
+Cancellation returns the attempted bundles and does not start remaining pairs.
+An empty catalog returns an empty vector without launching a worker.
+
+The worker owner stops its process and cleans its own temporary transport files.
+Ordinary Julia unwinding invokes the scenario's cleanup callback; forcibly
+terminating the worker cannot run arbitrary user callbacks. Keep externally owned
+temporary resources recoverable independently, and inspect recorded cleanup
+failures before considering cancellation complete.
+
+```julia
+catalog = load_scenario_catalog("perf/scenarios.toml")
+bundles = run_scenarios(catalog; project=".", samples=20,
+    timeout=120, reports="perf/results/scenarios")
+all(bundle_passed, bundles) # Inspect failed or unavailable bundles individually.
+```
+"""
 function run_scenarios(catalog::ScenarioCatalog; project::AbstractString = catalog.root,
         samples::Integer = 10, timeout::Real = 120, threads::Integer = 1,
         cancellation::CancellationToken = CancellationToken(), reports = nothing)
@@ -457,7 +596,21 @@ function _scenario_run_record(bundle::RunBundle)
         "qualification" => bundle.manifest["qualification"], "summaries" => summaries, "profile" => profile)
 end
 
-"Compare each scenario/implementation/collector separately, retaining configurations not tested."
+"""
+    compare_scenarios(baselines::AbstractVector{RunBundle},
+                      candidates::AbstractVector{RunBundle}; kwargs...) -> Dict
+
+Join saved bundles by `(scenario id, implementation, collector)` and compare each
+matched pair with [`compare_bundles`](@ref). Forward comparison keywords such as
+`relative_limits`, `min_samples` and sample statistics; units and measurement
+definitions must remain compatible. Duplicate identities on either side are
+errors. Unmatched configurations stay `"not_tested"`, rather than being counted
+as improvements or silently dropped.
+
+Return `perfchecker-scenario-comparison/1` with a `configurations` array containing
+each identity, status and matched comparison evidence. This only compares existing
+evidence; it does not run workloads, install versions or change source.
+"""
 function compare_scenarios(baselines::AbstractVector{RunBundle},
         candidates::AbstractVector{RunBundle}; kwargs...)
     function key(b)

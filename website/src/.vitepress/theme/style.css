@@ -41,6 +41,11 @@ code {
   font-feature-settings: "calt" off;
 }
 
+/* Long Julia binding names must remain readable on narrow API pages. */
+.jldocstring summary {
+  overflow-wrap: anywhere;
+}
+
 .VPHero .name,
 .VPHero .text {
   max-width: 760px;

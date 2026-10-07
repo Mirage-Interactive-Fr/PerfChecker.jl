@@ -1,6 +1,18 @@
 const JULIA_RUNTIME_CAMPAIGN_SCHEMA = "perfchecker-julia-runtime-campaign/1"
 
-"A completed suite campaign over an explicit Julia runtime axis."
+"""
+    JuliaRuntimeCampaign
+
+Result of [`run_julia_runtime_campaign`](@ref): a campaign ID, suite path,
+profile, baseline runtime ID, UTC start/finish times, per-runtime `runs`, and
+baseline-to-runtime `comparisons`. Each run retains the requested spec,
+observed runtime probe when available, execution/failure details and report
+or bundle paths.
+
+This object summarizes finished orchestration; some runs may have failed or
+timed out. Use [`runtime_campaign_passed`](@ref), rather than the presence of
+report files, to assess execution and comparison policy together.
+"""
 struct JuliaRuntimeCampaign
     id::String
     suite::String
@@ -116,7 +128,12 @@ function _runtime_failure_frames(execution; limit::Integer = 12)
 end
 
 """
-Return whether every runtime run has status `"passed"` and every recorded comparison passed. This predicate summarizes the supplied campaign; it does not schedule missing runtimes.
+    runtime_campaign_passed(campaign::JuliaRuntimeCampaign) -> Bool
+
+Return whether every run has status `"passed"` and every recorded comparison's
+`"passed"` flag is true. A diagnostic comparison without configured budgets
+does not pass. This only inspects the supplied object; it does not schedule
+missing runtimes or validate that a manually constructed campaign is complete.
 """
 function runtime_campaign_passed(campaign::JuliaRuntimeCampaign)
     all(run -> run["status"] == "passed", campaign.runs) &&
@@ -307,7 +324,46 @@ function _runtime_comparison(baseline::Dict{String, Any},
         "comparison" => comparison_dict(comparison))
 end
 
-"Run one package suite under baseline and candidate Julia runtimes."
+"""
+    run_julia_runtime_campaign(specs::AbstractVector{JuliaRuntimeSpec};
+        suite, reports, profile=:ci, factory=:build_suite,
+        perfchecker_project=dirname(@__DIR__), timeout_seconds=3600,
+        relative_limits=Dict{String,Float64}(), min_samples=1, strict=false,
+        sample_statistics=Dict{String,Symbol}(), default_sample_statistic=:median,
+        progress_callback=payload -> nothing, resume=false) -> JuliaRuntimeCampaign
+
+Run the same suite definition sequentially under an explicit Julia runtime axis.
+Supply at least two unique runtime IDs and exactly one `:baseline` role; control
+and candidate runtimes are both compared with that baseline. Runtime selectors
+must already resolve to available executables/channels.
+
+`suite` is loaded through [`load_software_suite`](@ref). `reports` receives a
+separate controller project and report directory per runtime, plus campaign
+and source-attribution JSON/Markdown reports. Child controllers prepare their
+dependencies and run measurement workers, so this operation starts processes,
+can use package registries/depot downloads and writes reports. `timeout_seconds`
+is a positive per-runtime execution budget. Progress callbacks receive completed
+counts and the active runtime; callback failures are logged without aborting work.
+
+Comparison budgets/statistics have the meanings documented by
+[`compare_bundles`](@ref). `strict=false` returns failure records;
+`strict=true` raises after writing reports if the campaign does not pass.
+Invalid declarations, suite loading and other orchestration failures can still
+throw in either mode.
+
+With `resume=true`, previously passed runs may be reused only when matching
+suite path, profile, runtime ID/role/selector, verified bundle integrity and
+the freshly probed runtime version/commit permit it. Reuse is recorded explicitly;
+it is not a new measurement and does not prove that an edited suite is unchanged.
+
+```julia
+specs = julia_runtime_matrix(baseline="1.10", candidates=["release"])
+campaign = run_julia_runtime_campaign(specs;
+    suite="perf/suite.jl", reports="perf/results/runtimes",
+    relative_limits=Dict("julia.wall.time" => 0.05), min_samples=3)
+runtime_campaign_passed(campaign)
+```
+"""
 function run_julia_runtime_campaign(specs::AbstractVector{JuliaRuntimeSpec};
         suite::AbstractString, reports::AbstractString, profile::Symbol = :ci,
         factory::Symbol = :build_suite,
@@ -406,8 +462,14 @@ function run_julia_runtime_campaign(specs::AbstractVector{JuliaRuntimeSpec};
 end
 
 """
-Return the dictionary representation of a JuliaRuntimeCampaign with runtime specifications, execution results and comparisons.
-This is an in-memory conversion; it does not write a report or run a workload.
+    julia_runtime_campaign_dict(campaign::JuliaRuntimeCampaign;
+                                include_output=false) -> Dict{String,Any}
+
+Return schema `perfchecker-julia-runtime-campaign/1`, campaign identity,
+timestamps, baseline ID, passing predicate, runs and comparisons. By default,
+captured `stdout` and `stderr` are replaced by empty strings in copied run
+records; set `include_output=true` to retain them. The campaign is not mutated
+or rerun and no report is written.
 """
 function julia_runtime_campaign_dict(campaign::JuliaRuntimeCampaign;
         include_output::Bool = false)

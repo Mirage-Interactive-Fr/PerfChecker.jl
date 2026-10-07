@@ -7,7 +7,8 @@ Look up a format, option or function after you have chosen a workflow. For a fir
 - [Run bundles](run-bundles.md) — saved files and integrity.
 - [Report queries](../report-queries.md) — selecting data from a saved run.
 - [Command line](cli.md) — script commands and exit codes.
-- [Julia API](api.md) — function arguments and docstrings.
+- [Public API](public-api.md) — exported types, functions, signatures and examples.
+- [Full API](api.md) — the canonical docstrings, including documented internal hooks.
 
 Paths in these pages (`perf/suite.jl`, `results/...`) are files you supply or reports you already saved — not packages.
 

@@ -197,7 +197,30 @@ function _write_bundle_reports(bundle::RunBundle, root::AbstractString)
     return [json_path, markdown_path]
 end
 
-"Implementation of the unified `perfchecker` CLI. Returns a process exit code."
+"""
+    perfchecker_main(args=ARGS; stdout=Base.stdout, stderr=Base.stderr)
+
+Dispatch the `perfchecker` command line and return an integer exit code.
+With no arguments or a help command, print usage. Commands cover suite planning,
+preflight/runs, saved-evidence export/comparison/integrity, test items, scenarios,
+diagnostics, advisor setup/conversation/implementation, Julia campaigns,
+network isolation, native plans and machine transfer. Options use the documented
+CLI grammar, and external command arguments follow `--`.
+
+Return 0 for successful commands, 1 for command-specific failed evidence/gates,
+2 for handled input/runtime errors, or 130 for `InterruptException`.
+Errors handled by the dispatcher are printed to `stderr`; option splitting
+before dispatch can still propagate errors. `stdout`/`stderr` accept redirected
+streams. File writes, worker execution, provider calls and explicit implementation
+operations occur only for their selected command; `version` and help are read-only.
+
+```jldoctest
+julia> output = IOBuffer();
+
+julia> perfchecker_main(["version"]; stdout=output)
+0
+```
+"""
 function perfchecker_main(args = ARGS; stdout::IO = Base.stdout,
         stderr::IO = Base.stderr)
     isempty(args) && (_cli_help(stdout); return 0)

@@ -1,4 +1,15 @@
-"Relate declared scenarios, test proposals and literal CI configurations without executing them."
+"""
+    scenario_sync(root=pwd(); previous=nothing)
+
+Call [`discover`](@ref) and relate declared scenario/collector pairs to literal
+CI candidate configurations. Return `perfchecker-scenario-sync/1` with coverage,
+declarations, proposals, changes, warnings, fingerprints and discovery payload.
+`previous` follows discovery's baseline dictionary/path contract.
+Coverage is a proposed cross-product labelled `qualification="not_tested"`,
+not proof that CI invokes every scenario; adoption remains explicit.
+More than 10,000 combinations raises `ArgumentError`. No target code, CI
+commands or workflows are executed or written.
+"""
 function scenario_sync(root::AbstractString = pwd(); previous = nothing)
     discovery = discover(root; previous)
     coverage = Dict{String, Any}[]
@@ -22,7 +33,22 @@ function scenario_sync(root::AbstractString = pwd(); previous = nothing)
         "authority" => "proposal_only", "discovery" => discovery)
 end
 
-"Write a new CI workflow consuming an explicitly selected catalog; never overwrite a workflow."
+"""
+    write_scenario_workflow(path; catalog="perf/scenarios.toml", project="perf",
+                            implementations=["cpu"], versions=["1"],
+                            platforms=["ubuntu-latest", "windows-latest", "macos-latest"])
+
+Create a GitHub Actions YAML workflow and return its absolute path. Any existing
+path raises `ArgumentError`; parent directories are created. Catalogue/project
+paths must be simple relative paths without `..`; implementation names must be
+nonempty strings without commas, and version/platform lists must be nonempty.
+Only the three named hosted runner platforms are supported.
+
+When later triggered, the workflow instantiates the declared environment,
+selects adopted implementations, runs scenario correctness/measurement and
+uploads reports. Writing it does not submit, execute or qualify CI.
+Serialization/filesystem errors propagate.
+"""
 function write_scenario_workflow(
         path::AbstractString; catalog = "perf/scenarios.toml", project = "perf",
         implementations = ["cpu"], versions = ["1"], platforms = [

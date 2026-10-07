@@ -33,6 +33,11 @@ Build a compact table for REPL display or Pluto notebooks.
 
 The summary uses a common schema across benchmark-like and allocation-like
 tables. Missing metrics are reported as `missing` rather than inferred.
+Return one row per result table with package/version, row count and min/max
+time, memory and allocation columns. Use numeric values only and retain the
+source table's units: benchmark times may be nanoseconds while Chairmarks times
+are seconds. This is a display summary without unit normalization, confidence
+intervals, performance-gate evaluation or worker execution.
 """
 function summary_table(result::CheckerResult)
     package = String[]

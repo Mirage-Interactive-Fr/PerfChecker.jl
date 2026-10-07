@@ -83,7 +83,18 @@ Other keywords, including `project`, `reports_root` and `force`, are forwarded t
 """
 function prepare_pluto_dashboard end
 """
-Load `UnicodePlots` to render a performance plot model or a selected bundle plot in the terminal. This consumes existing observations without rerunning their workload.
+    terminal_plot(plot::PerformancePlot; width=80, height=20)
+    terminal_plot(bundle::RunBundle; plot_id=nothing, kind=nothing,
+                  version=nothing, top=20, width=80, height=20)
+    terminal_plot(comparison::VersionComparison; series_id=nothing, width=80, height=20)
+
+Load `UnicodePlots` to render saved evidence as a text-terminal plot object.
+Bundle selectors choose from [`plot_catalog`](@ref); comparison selectors choose
+a version series, preferring normalized metrics when no series is specified.
+Width/height control terminal dimensions. Unsupported/empty plot data raises
+`ArgumentError`; invalid exact selectors can raise selection errors.
+No workload is rerun and no plot is saved. Without the optional extension's
+methods, this generic raises `MethodError`.
 """
 function terminal_plot end
 import SHA
@@ -340,7 +351,20 @@ include("advisor.jl")
 include("advisor_setup.jl")
 include("investigator.jl")
 include("investigation_views.jl")
-"Generate an investigation notebook. Load PerfCheckerPluto before calling."
+"""
+    write_investigation_notebook(path; root=pwd(),
+                                catalog=joinpath(root, "perf", "scenarios.toml"),
+                                project=root, force=false)
+
+Load `PerfCheckerPluto` to write an editable investigation notebook and return
+its absolute path. The notebook activates `project`, reads the declared
+catalogue if present, and exposes explicit launch/cancel/refresh controls for
+discovery, scenario runs, analyzers and optional advisors. The controller needs
+PerfCheckerPluto and PlutoUI plus any selected tools/providers.
+Existing files raise `ArgumentError` unless `force=true`; parents are created.
+Generation does not open Pluto, execute target code or contact an advisor.
+Relative paths are resolved from the caller's working directory.
+"""
 function write_investigation_notebook end
 include("scenario_cli.jl")
 include("cli.jl")

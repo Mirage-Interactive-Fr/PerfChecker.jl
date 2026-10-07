@@ -1,4 +1,56 @@
-"Optional evidence writer configuration. Local endpoints are the default; no model is bundled."
+"""
+    AdvisorConfig(; endpoint="http://127.0.0.1:8081/v1/chat/completions",
+                  model="local", timeout=90, max_tokens=512,
+                  max_evidence_chars=12000, api_key_env="", allow_remote=false,
+                  protocol=:chat_completions, provider_package="", instructions="",
+                  mcp_tool="", mcp_prompt_argument="prompt", mcp_arguments=Dict(),
+                  mcp_version="2026-07-28", mcp_response=:text)
+
+Validate and store an optional advisor connection. Construction does not start a
+server, install a provider package or send evidence. The worker loads
+`provider_package` when supplied, otherwise `HTTP`; that package must already be
+available in the advisor's `project` environment.
+
+# Connection and limits
+
+- `endpoint` is a plain HTTP(S) URL without credentials, a query or a fragment.
+  Loopback HTTP is accepted; any other host requires HTTPS and `allow_remote=true`.
+- `model` selects the model for Chat Completions and Ollama. PerfChecker does
+  not bundle a model; the MCP transport does not send this field.
+- `timeout` bounds the isolated request, including worker startup, in seconds
+  (`0 < timeout <= 3600`). `max_tokens` is in `1:4096` and is sent to Chat
+  Completions/Ollama, but not to MCP tools.
+- `max_evidence_chars` bounds the serialized recommendation projection
+  (`1000:100000`); it is separate from conversation limits.
+- `api_key_env` names a credential environment variable, not its secret value.
+  `instructions` adds up to 5000 characters before the fixed response contract.
+
+# MCP tool selection
+
+For `protocol=:mcp_http`, choose a real server tool explicitly with `mcp_tool`.
+`mcp_prompt_argument` is the tool argument receiving the bounded evidence request;
+`mcp_arguments` supplies its other JSON-compatible arguments with string keys.
+The prompt argument is reserved and cannot also appear in `mcp_arguments`.
+The serialized `mcp_arguments` object is limited to 12,000 UTF-8 bytes.
+MCP servers choose their own model and generation limits. To request those
+settings, provide only arguments admitted by the selected tool's input schema
+in `mcp_arguments`; `model` and `max_tokens` do not configure MCP generation.
+Supported `mcp_version` values are `"2025-11-25"` and `"2026-07-28"`.
+`mcp_response=:text` supports conversation; `:structured` validates narrative
+cards against supplied evidence IDs. Protocol shape validation does not prove
+that an agent's prose or proposed changes are correct.
+
+# Example
+
+This prepares a configuration without making a network request:
+
+```jldoctest
+julia> config = AdvisorConfig(protocol=:mcp_http, endpoint="http://127.0.0.1:8081/mcp", mcp_tool="ask");
+
+julia> (config.protocol, config.mcp_tool, config.mcp_response)
+(:mcp_http, "ask", :text)
+```
+"""
 struct AdvisorConfig
     endpoint::String
     model::String
@@ -69,11 +121,27 @@ struct AdvisorConfig
     end
 end
 
-"Load an explicit provider configuration. Secrets are referenced by environment variable name."
+"""
+    load_advisor_config(path::AbstractString) -> AdvisorConfig
+
+Read a JSON object whose keys are the keyword arguments of [`AdvisorConfig`](@ref)
+and validate it with that constructor. Unknown keywords or invalid connection and
+size limits are rejected. Reading the file does not contact the provider. Store
+only the name of a credential variable in `api_key_env`; the configuration must
+not contain the credential itself.
+"""
 load_advisor_config(path::AbstractString) = AdvisorConfig(;
     (Symbol(k) => v for (k, v) in _json_parsefile(path))...)
 
-"Read saved deterministic advice without executing the target."
+"""
+    read_advice(path::AbstractString) -> AbstractDict
+
+Read a JSON advice report with schema `perfchecker-advice/1` and a
+`recommendations` array. Reject an unsupported schema or malformed array.
+This reads recorded deterministic recommendations; it neither executes the
+target workload nor invokes a model. Use [`narrate_advice`](@ref) or
+[`chat_advice`](@ref) explicitly to request optional prose.
+"""
 function read_advice(path::AbstractString)
     advice = _json_parsefile(path)
     get(advice, "schema_version", "") == ADVICE_SCHEMA ||
@@ -141,7 +209,18 @@ function _validate_narrative(payload, known_ids; allowed_experiments = String[])
     Dict("cards" => cards, "experiment_id" => experiment)
 end
 
-"Provider extension point: return a Chat Completions-shaped response, preserving usage when known."
+"""
+    advisor_transport(::Val{protocol}, config::AdvisorConfig, body::AbstractDict)
+
+Provider hook called inside an isolated advisor worker. Implement a method for
+the selected protocol and return its Chat Completions-shaped response, preserving
+`usage` when available. The MCP text adapter instead supplies `external_review`.
+Transport methods own their network and response-shape handling; core validates
+the returned narrative references separately. The fallback throws
+`ArgumentError` when the protocol extension is unavailable. Call
+[`narrate_advice`](@ref) or [`chat_advice`](@ref) to get worker lifetime and
+cancellation handling rather than invoking this hook directly.
+"""
 advisor_transport(::Val, config::AdvisorConfig, body::AbstractDict) = throw(ArgumentError("advisor protocol extension is unavailable"))
 
 function _advisor_messages(messages)
@@ -230,7 +309,32 @@ function _advisor_inprocess(request)
             "usage" => get(response, "usage", Dict()), "response_sha256" => bytes2hex(SHA.sha256(raw))))
 end
 
-"Write optional prose from bounded evidence in a cancellable worker. Verdicts remain deterministic."
+"""
+    narrate_advice(advice::AbstractDict; config=AdvisorConfig(),
+                   project=dirname(Base.active_project()),
+                   cancellation=CancellationToken(), experiments=Dict[]) -> Dict
+
+Request optional prose about recorded deterministic advice in a separate Julia
+worker. `advice` must be a `perfchecker-advice/1` report. Project the unique
+recommendation IDs, observations, experiments and verification instructions up to
+`config.max_evidence_chars`. The projection does not automatically read project
+source, credentials or raw logs, but retains caller-supplied hypothesis, action
+and validation strings. Ensure those fields contain no secrets or raw source
+before sending them. `project` must already contain the chosen provider package.
+
+The returned `perfchecker-narrative/1` dictionary records `status`, `cards`,
+`evidence_ids`, `evidence_truncated`, timing and the deterministic `fallback`.
+It labels prose `authority="unverified_narrative"`: reference validation does
+not establish semantic truth. Empty evidence and no experiments produce
+`status="not_needed"` without launching a worker. Failed, unavailable, cancelled
+or timed-out requests remain explicit outcomes rather than successful advice.
+
+`experiments` is an allowlist of at most 128 unique `id`/`purpose` objects.
+Structured replies may select one of those IDs or `"stop"`; no experiment runs
+merely because it was selected. MCP text mode cannot select experiments.
+[`cancel!`](@ref) requests interruption through `cancellation`; inspect the final
+status and diagnostics before using any response.
+"""
 function narrate_advice(advice::AbstractDict; config = AdvisorConfig(),
         project = dirname(Base.active_project()), cancellation = CancellationToken(),
         experiments = Dict{String, Any}[])
@@ -275,13 +379,39 @@ function _advisor_narrative_result(result, rows, advice, config, started)
 end
 
 """
-    chat_advice(messages; config, advice, project, cancellation)
+    chat_advice(messages; config::AdvisorConfig, advice=empty_advice,
+                project=dirname(Base.active_project()),
+                cancellation=CancellationToken()) -> Dict
 
 Ask a configured MCP advice tool a follow-up question without executing target code.
 Messages alternate user/assistant and end with a user question (at most 21 messages,
 16000 characters each and 32000 total). Optional saved advice uses the same bounded
 evidence projection as `narrate_advice`. Replies remain unverified; no conversation
 is persisted by this API. MCP text mode is required.
+
+Each message is a dictionary with `"role"` and `"content"` strings. Supply the
+earlier assistant replies yourself for subsequent turns. `advice` defaults to an
+empty `perfchecker-advice/1` report, so configuration questions can be asked
+without attached measurements. `project` needs an existing provider installation.
+
+Return a `perfchecker-narrative/1` dictionary with `advisor_mode="advice"`,
+`message_count`, evidence IDs and the deterministic fallback. A complete MCP text
+reply appears in `external_review` with
+`reference_status="unstructured_not_verified"`. Check `status` for `complete`,
+`unavailable`, `error`, `timeout` or `cancelled`; an interrupted call is not a
+verified response. This client prompts the advice tool to avoid edits, but its
+server's permissions and behavior remain under the caller's control.
+
+Example request shape (requires your configured, running MCP server):
+
+```julia
+messages = [Dict("role" => "user", "content" => "How should I validate this change?")]
+reply = chat_advice(messages; config, project="perf/controller", advice=saved_advice)
+if get(reply, "status", "error") == "complete"
+    push!(messages, Dict("role" => "assistant", "content" => reply["external_review"]))
+    push!(messages, Dict("role" => "user", "content" => "Which empty-input case matters?"))
+end
+```
 """
 function chat_advice(messages; config::AdvisorConfig,
         advice = Dict("schema_version" => ADVICE_SCHEMA, "recommendations" => []),
@@ -300,7 +430,10 @@ function chat_advice(messages; config::AdvisorConfig,
 end
 
 """
-    implement_advice(messages; config, workspace, workspace_argument="workspace", advice, project, cancellation)
+    implement_advice(messages; config::AdvisorConfig, workspace::AbstractString,
+                     workspace_argument="workspace", advice=empty_advice,
+                     project=dirname(Base.active_project()),
+                     cancellation=CancellationToken()) -> Dict
 
 Invoke an explicitly selected MCP implementation tool on a caller-owned isolated
 checkout. The caller must checkpoint the original code and review/apply the resulting
@@ -309,6 +442,26 @@ the checkout. This function does not apply changes or create a backup. The tool
 receives an absolute workspace path in addition to bounded conversation and advice.
 MCP and the prompt do not enforce a filesystem sandbox; configure a trusted tool
 that confines its operations to this checkout and can access its filesystem.
+
+`messages` follows [`chat_advice`](@ref)'s alternating conversation contract.
+`workspace` must exist; its resolved absolute path is sent under
+`workspace_argument`. That argument must differ from the prompt argument and
+must not already be supplied in `config.mcp_arguments`. Configure a distinct
+implementation tool and explicitly authorize its access to the isolated copy.
+
+Return the same narrative/status fields as `chat_advice`, plus
+`advisor_mode="implementation"` and `implementation_status="requires_diff_review"`.
+The latter is a review obligation, not a success verdict: inspect `status`, the
+actual diff and correctness results even when the provider returned a complete
+reply. Cancellation stops the local worker; an external server may continue work.
+The caller owns cleanup and recovery of its isolated checkout and original code.
+
+```julia
+# isolated_checkout was prepared and checkpointed by the caller.
+proposal = implement_advice(messages; config=implementation_config,
+    workspace=isolated_checkout, project="perf/controller", advice=saved_advice)
+# Review the on-disk diff and run the agreed oracle before applying anything.
+```
 """
 function implement_advice(messages; config::AdvisorConfig, workspace::AbstractString,
         workspace_argument::AbstractString = "workspace",

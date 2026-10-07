@@ -1,6 +1,16 @@
 const JULIA_INVESTIGATION_SCHEMA = "perfchecker-julia-investigation/1"
 
-"Ranked source evidence for differences between two Julia runtime runs."
+"""
+    JuliaRegressionInvestigation
+
+Source-attribution evidence returned by [`investigate_julia_regressions`](@ref).
+`campaign_id` links it to its runtime campaign, `generated_at` is a UTC timestamp,
+and `comparisons` holds ranked source-line deltas or explicit missing-evidence
+records for each baseline/candidate pair.
+
+This is an attribution aid, not a causal diagnosis or a generated minimal
+reproduction. A dominant sampled source frame alone cannot establish a Julia bug.
+"""
 struct JuliaRegressionInvestigation
     campaign_id::String
     generated_at::String
@@ -93,7 +103,28 @@ function _runtime_investigation_comparison(campaign::JuliaRuntimeCampaign,
                     "source evidence is ranked but not sufficient for an automatic MWE")
 end
 
-"Rank source lines that gained sampled CPU/allocation weight across Julia runtimes."
+"""
+    investigate_julia_regressions(campaign::JuliaRuntimeCampaign;
+                                 max_frames=50, obvious_share=0.6)
+        -> JuliaRegressionInvestigation
+
+Read the campaign's referenced bundles and rank positive source-line deltas.
+Only numeric observations with `source_file` and `source_line` attributes
+contribute. Values are summed for matching comparison key, metric, source
+location and definition, then candidate-minus-baseline increases are ranked.
+`max_frames` must be positive and limits returned rows per comparison.
+
+`obvious_share` must lie in `(0, 1]`. `obvious_candidate=true` means the largest
+row belongs to a Julia Base/stdlib/compiler path and accounts for at least that
+fraction of all positive deltas. It is a heuristic, not proof of causation;
+ranked rows can contain different metrics and units, so their combined shares
+are not a unit-normalized performance budget.
+
+Missing bundles produce `"unavailable"` records with failure details; no source
+deltas produce `"no_source_evidence"`; other records are `"ranked"`. Existing
+bundle read/integrity errors propagate. No campaign is rerun, file modified,
+minimal reproduction generated or report written.
+"""
 function investigate_julia_regressions(campaign::JuliaRuntimeCampaign;
         max_frames::Integer = 50, obvious_share::Real = 0.6)
     max_frames > 0 || throw(ArgumentError("max_frames must be positive"))
@@ -105,8 +136,12 @@ function investigate_julia_regressions(campaign::JuliaRuntimeCampaign;
 end
 
 """
-Return the dictionary representation of a JuliaRegressionInvestigation with its classification, evidence and recommended follow-up.
-This is an in-memory conversion; it does not write a report or run a workload.
+    julia_investigation_dict(investigation::JuliaRegressionInvestigation)
+        -> Dict{String,Any}
+
+Return schema `perfchecker-julia-investigation/1`, campaign ID, generation
+timestamp and comparison attribution records. This preserves unavailable and
+no-source-evidence classifications and does not reread or execute a campaign.
 """
 function julia_investigation_dict(investigation::JuliaRegressionInvestigation)
     return Dict{String, Any}(

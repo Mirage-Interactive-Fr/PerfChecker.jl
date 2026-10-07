@@ -1,7 +1,26 @@
 const JULIA_RUNTIME_SPEC_SCHEMA = "perfchecker-julia-runtime-spec/1"
 const JULIA_RUNTIME_PROBE_SCHEMA = "perfchecker-julia-runtime-probe/1"
 
-"One explicit Julia runtime axis, independent from package-version targets."
+"""
+    JuliaRuntimeSpec(id::Symbol, selector::AbstractString;
+                     role=:candidate, source=:juliaup,
+                     executable="julia", arguments=String[])
+
+Describe one Julia executable in a runtime campaign, independently of the
+package versions selected by its suite. `role` is `:baseline`, `:candidate` or
+`:control`; a campaign requires exactly one baseline.
+
+With `source=:juliaup`, the command is `executable +selector` (for example,
+`julia +1.10`). With `source=:executable`, `executable` must name an existing
+file and the nonempty `selector` is its descriptive label. `arguments` are
+additional command-prefix arguments, copied as strings. Construction validates
+these fields but neither installs a Julia channel nor launches a process.
+
+```julia
+baseline = JuliaRuntimeSpec(:lts, "1.10"; role=:baseline)
+candidate = JuliaRuntimeSpec(:current, "release")
+```
+"""
 struct JuliaRuntimeSpec
     id::Symbol
     selector::String
@@ -28,8 +47,12 @@ function JuliaRuntimeSpec(id::Symbol, selector::AbstractString;
 end
 
 """
-Return the dictionary representation of a JuliaRuntimeSpec with its identifier, command and runtime role.
-This is an in-memory conversion; it does not write a report or run a workload.
+    julia_runtime_spec_dict(spec::JuliaRuntimeSpec) -> Dict{String,Any}
+
+Return a `perfchecker-julia-runtime-spec/1` declaration containing `id`,
+`selector`, `role`, `source`, `executable` and `arguments`. Symbols become
+strings. This does not resolve the selector to an installed runtime; use
+[`probe_julia_runtime`](@ref) for an observed version and commit.
 """
 function julia_runtime_spec_dict(spec::JuliaRuntimeSpec)
     return Dict{String, Any}(
@@ -39,7 +62,24 @@ function julia_runtime_spec_dict(spec::JuliaRuntimeSpec)
         "executable" => spec.executable, "arguments" => spec.arguments)
 end
 
-"Build a hermetic-by-default Julia command prefix for a runtime spec."
+"""
+    julia_runtime_command(spec::JuliaRuntimeSpec; project=nothing,
+                          startup_file=false, history_file=false,
+                          extra_arguments=String[]) -> Vector{String}
+
+Build command arguments without executing them. Append the Juliaup selector
+when required, `spec.arguments`, startup/history flags, an absolute
+`--project` path when supplied, then `extra_arguments`. Startup and REPL history
+files are disabled by default; the command still uses the caller's environment
+and Julia depot.
+
+```julia
+spec = JuliaRuntimeSpec(:lts, "1.10"; role=:baseline)
+command = julia_runtime_command(spec; project=pwd(),
+    extra_arguments=["-e", "println(VERSION)"])
+# Execute explicitly when desired: run(Cmd(command))
+```
+"""
 function julia_runtime_command(spec::JuliaRuntimeSpec; project = nothing,
         startup_file::Bool = false, history_file::Bool = false,
         extra_arguments = String[])
@@ -53,7 +93,20 @@ function julia_runtime_command(spec::JuliaRuntimeSpec; project = nothing,
     return command
 end
 
-"Create the usual stable/candidate/nightly runtime axis without installing channels."
+"""
+    julia_runtime_matrix(; baseline="release", candidates=["rc", "nightly"])
+        -> Vector{JuliaRuntimeSpec}
+
+Create a Juliaup runtime axis with baseline ID `:baseline` and candidate IDs
+`:candidate_1`, `:candidate_2`, and so on, preserving candidate order. The
+selectors must already be usable when the campaign executes; this function
+does not install or probe channels. Override `candidates` to use explicit
+installed versions instead of moving aliases.
+
+```julia
+julia_runtime_matrix(baseline="1.10", candidates=["1.12", "1.13"])
+```
+"""
 function julia_runtime_matrix(; baseline::AbstractString = "release",
         candidates = ["rc", "nightly"])
     specs = JuliaRuntimeSpec[JuliaRuntimeSpec(:baseline, baseline; role = :baseline)]
@@ -64,7 +117,23 @@ function julia_runtime_matrix(; baseline::AbstractString = "release",
     return specs
 end
 
-"Build a child-controller command that runs one suite under the selected Julia runtime."
+"""
+    julia_runtime_suite_command(spec::JuliaRuntimeSpec; suite, reports,
+        profile=:ci, factory=:build_suite,
+        perfchecker_project=dirname(@__DIR__),
+        controller_project=dirname(abspath(suite)), backend_packages=String[])
+        -> Vector{String}
+
+Build a child-controller invocation of `bin/perfchecker-runtime-suite.jl` for
+`spec`. `suite` is a Julia suite definition; `reports` is its output directory.
+`perfchecker_project` must contain that CLI, and `controller_project` must
+contain `Project.toml`. Paths become absolute. The factory/profile and each
+requested backend package are passed to the CLI.
+
+This validates local input files but does not start Julia, prepare dependencies
+or create reports. The runtime campaign constructs separate controller projects
+for its runtimes; callers using this lower-level function supply their own.
+"""
 function julia_runtime_suite_command(spec::JuliaRuntimeSpec;
         suite::AbstractString, reports::AbstractString,
         profile::Symbol = :ci, factory::Symbol = :build_suite,
@@ -89,7 +158,19 @@ function julia_runtime_suite_command(spec::JuliaRuntimeSpec;
         extra_arguments = arguments)
 end
 
-"Resolve a Julia selector to the exact runtime identity observed in a fresh process."
+"""
+    probe_julia_runtime(spec::JuliaRuntimeSpec; project=nothing)
+        -> Dict{String,Any}
+
+Launch a fresh Julia process with `--compile=min` and return its observed
+`version`, Git `commit`, `bindir`, `llvm_version`, command, UTC resolution time
+and declared spec under schema `perfchecker-julia-runtime-probe/1`. Startup and
+history files are disabled. `project`, when supplied, selects the child project.
+
+The executable/channel must be available. Process launch failures, nonzero
+exits and unexpected output are raised to the caller; no runtime is installed
+and no workload is measured.
+"""
 function probe_julia_runtime(spec::JuliaRuntimeSpec; project = nothing)
     script = "print(string(VERSION), '\\t', Base.GIT_VERSION_INFO.commit, '\\t', Sys.BINDIR, '\\t', Base.libllvm_version)"
     command = julia_runtime_command(spec; project,

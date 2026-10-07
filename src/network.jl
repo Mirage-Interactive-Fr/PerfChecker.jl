@@ -115,7 +115,15 @@ function to_table(records::Vector{NetworkSample})
         latency_context = [record.latency_context for record in records])
 end
 
-"Monotonic counters observed on one operating-system network interface."
+"""
+    NetworkInterfaceSnapshot
+
+Store interface identity, monotonic timestamp, unsigned byte/packet/discard
+counters in both directions, and provider. Obtain observations with
+[`network_interface_snapshot`](@ref) and differences with
+[`network_interface_delta`](@ref). Counters cover all traffic on that interface;
+they are not automatically attributable to one workload or process.
+"""
 struct NetworkInterfaceSnapshot
     interface::String
     timestamp_ns::UInt64
@@ -202,7 +210,17 @@ function _network_snapshots()
     throw(ArgumentError("network interface counters are unavailable on $(Sys.KERNEL)"))
 end
 
-"Take a network-interface snapshot. `auto` selects the busiest non-loopback interface."
+"""
+    network_interface_snapshot(interface="auto")
+
+Return a [`NetworkInterfaceSnapshot`](@ref) using the Linux or Windows provider.
+An explicit name is matched exactly; `auto` (case insensitive) selects the
+nonloopback interface with the largest cumulative sent-plus-received bytes,
+falling back to loopback when necessary. It does not infer the route used by a
+particular destination. Unknown names or unsupported platforms raise
+`ArgumentError`; no available counters raise `ErrorException`. Provider
+filesystem/process errors may propagate.
+"""
 function network_interface_snapshot(interface::AbstractString = "auto")
     snapshots = _network_snapshots()
     isempty(snapshots) && throw(ErrorException("no network interface counters found"))
@@ -224,7 +242,18 @@ function _counter_delta(after::UInt64, before::UInt64)
     return Float64(after - before)
 end
 
-"Compute counter deltas for two snapshots of the same interface."
+"""
+    network_interface_delta(before, after; workload_seconds=<timestamp interval>,
+                            capture_layer="interface", attribution_scope="host_interface",
+                            latency_context="end_to_end_informative")
+
+Return a named tuple of `Float64` byte/packet/discard deltas, counter interval
+`seconds`, separate `workload_seconds`, and capture/attribution metadata.
+Snapshots must represent the same interface in chronological order. Different
+interfaces, decreased counters or negative workload durations raise
+`ArgumentError`. Counter resets/wraps are not repaired. Metadata keywords label
+the observation; they do not establish isolation or measure network latency.
+"""
 function network_interface_delta(before::NetworkInterfaceSnapshot,
         after::NetworkInterfaceSnapshot; workload_seconds::Real =
         Float64(after.timestamp_ns - before.timestamp_ns) / 1.0e9,
@@ -248,7 +277,19 @@ function network_interface_delta(before::NetworkInterfaceSnapshot,
         interface = before.interface, latency_context = String(latency_context))
 end
 
-"Measure interface counters around a workload. Isolation is required for package attribution."
+"""
+    measure_network_interface(workload::Function; interface="auto", repetitions=1)
+
+Execute the zero-argument `workload` once per positive integer repetition and
+return a vector of network sample named tuples. Select the interface before
+the first call and reuse its explicit name for later samples. Each sample
+includes counter deltas and workload wall time; workload return values are
+discarded. State preparation, correctness and cleanup remain caller-owned.
+Workload and provider errors propagate, with no retry or rollback.
+
+All other traffic on the interface is included. Use an isolated network
+collector for process-tree attribution. This function writes no reports.
+"""
 function measure_network_interface(workload::Function; interface::AbstractString = "auto",
         repetitions::Integer = 1)
     repetitions > 0 || throw(ArgumentError("network repetitions must be positive"))

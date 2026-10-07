@@ -7,6 +7,10 @@ const MACHINE_ESTIMATE_SCHEMA = "perfchecker-machine-estimate/1"
 Capture a specification fingerprint, independent of host name and transient CPU load.
 This identifies a specification class, not a unique physical machine. Declare CI
 CPU quotas, affinity and memory limits in `limits`; unknown limits remain unknown.
+Return `perfchecker-machine-profile/1` with `specs`, SHA-256 `spec_id`, label,
+Julia version and `limits_verified=false`. Limits are caller declarations,
+not measured enforcement. This takes a local hardware snapshot without running
+a calibration workload or writing a file.
 """
 function machine_profile(; label::AbstractString = "", limits::AbstractDict = Dict())
     info = HwInfo()
@@ -33,7 +37,25 @@ function _machine_specs(profile)
     specs
 end
 
-"Rank specification neighbours; a small distance is not performance equivalence."
+"""
+    similar_machines(target, profiles; limit=5)
+
+Rank machine-profile dictionaries with matching architecture, OS and word size.
+Return up to positive `limit` rows containing `spec_id`, label, distance,
+missing features and `authority="specification_similarity_only"`.
+Distance averages absolute log ratios of positive available core/thread/SIMD/
+memory/thread-count features, with a penalty for a different CPU identity.
+Profiles without any comparable numeric features are omitted; ties use `spec_id`.
+Invalid schemas or missing machine identities raise `ArgumentError`.
+This compares declared specifications, without measuring performance.
+
+```jldoctest
+julia> profile = machine_profile(label="local");
+
+julia> only(similar_machines(profile, [profile]))["distance"]
+0.0
+```
+"""
 function similar_machines(
         target::AbstractDict, profiles::AbstractVector; limit::Integer = 5)
     limit > 0 || throw(ArgumentError("limit must be positive"))

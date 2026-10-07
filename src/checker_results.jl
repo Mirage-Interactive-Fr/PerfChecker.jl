@@ -77,7 +77,11 @@ end
 Find results whose tags match `tags`.
 
 With `exact_match=true`, tags must match exactly. With `exact_match=false`, any
-overlap is accepted.
+overlap is accepted. Exact matching compares vectors in order, including
+duplicates; it is not set equality. Missing result tags are treated as empty.
+Return matching integer indices; a single `CheckerResult` returns `[1]` or
+`Int[]`, while a result vector returns all matching positions. No result is
+modified and no saved cache is searched.
 """
 function find_by_tags(tags::Vector{Symbol}, results::CheckerResult; exact_match = true)
     result_tags = something(results.tags, Symbol[])

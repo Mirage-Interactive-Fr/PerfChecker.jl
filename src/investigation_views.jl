@@ -1,9 +1,26 @@
-"A presentation of saved investigation evidence for the REPL, Pluto and HTML reports."
+"""
+    InvestigationView(payload::Dict{String, Any})
+
+Display wrapper for recorded discovery, diagnosis, advice, narrative and bounded
+investigation evidence. Plain-text display summarizes the records; HTML display
+escapes their text for notebook and report presentation. Construct through
+[`investigation_view`](@ref) to validate the payload's supported schema.
+Displaying a view does not execute its target workload or verify model prose.
+"""
 struct InvestigationView
     payload::Dict{String, Any}
 end
 
-"Display an investigation without executing the target program."
+"""
+    investigation_view(payload::AbstractDict) -> InvestigationView
+
+Validate an investigation/report schema and wrap a string-keyed copy for REPL or
+HTML display. Supported inputs include discovery, scenario runs/comparisons,
+diagnosis, deterministic advice, tool catalogues, narratives, bounded
+investigations, advisor evaluations and scenario sync reports. An unsupported
+schema is an error. The wrapper renders saved data and retains unavailable,
+unverified and incomplete statuses; it does not start new work.
+"""
 function investigation_view(payload::AbstractDict)
     schema = get(payload, "schema_version", "")
     schema in (DISCOVERY_SCHEMA, DIAGNOSIS_SCHEMA, ADVICE_SCHEMA,
@@ -141,7 +158,15 @@ function Base.show(io::IO, ::MIME"text/html", view::InvestigationView)
     print(io, "</section>")
 end
 
-"An asynchronous investigation shared by the web interface and notebook interfaces."
+"""
+    InvestigationJob
+
+Handle returned by [`launch_investigation`](@ref). It owns an asynchronous task,
+its cancellation token and synchronized `status`, result/advice, error and timing
+fields. Use [`investigation_status`](@ref) instead of reading mutable fields while
+the task is active. [`cancel!`](@ref) requests interruption; only
+[`wait_investigation`](@ref) establishes that the task has finished.
+"""
 mutable struct InvestigationJob
     id::String
     action::Symbol
@@ -156,7 +181,31 @@ mutable struct InvestigationJob
     lock::ReentrantLock
 end
 
-"Launch one bounded investigation; callbacks execute only after this explicit call."
+"""
+    launch_investigation(action::Symbol; root=pwd(), catalog=nothing, project=root,
+        tools=[:jet, :aqua, :alloccheck, :snoopcompile, :latency], samples=10,
+        timeout=120, threads=1, reports=nothing, previous=nothing, advisor=nothing,
+        evidence=nothing, max_experiments=4, budget_seconds=300) -> InvestigationJob
+
+Explicitly start one asynchronous `:discover`, `:run`, `:diagnose`, `:sync`,
+`:tools`, `:narrate` or `:investigate` action. `:run`, `:diagnose` and `:investigate`
+require a nonempty declared `catalog`; `:narrate` requires saved deterministic
+`evidence`. Other actions inspect declarations or the tool catalogue without
+executing a workload. Forward the selected project, tools and limits to the
+underlying operation; construction of a view alone does not launch this job.
+
+Return immediately with a running handle. The task records `:complete`,
+`:cancelled` or `:error`, retains its result and advice when available, and captures
+exceptions in `error`. With `reports`, write JSON/Markdown investigation reports
+and the action's run artifacts. Use [`wait_investigation`](@ref) to inspect the
+final outcome; the asynchronous API does not rethrow a recorded workload error.
+
+```julia
+job = launch_investigation(:diagnose; catalog, project=".", tools=[:latency])
+snapshot = investigation_status(job; include_result=false)
+final = wait_investigation(job)
+```
+"""
 function launch_investigation(action::Symbol; root::AbstractString = pwd(),
         catalog::Union{Nothing, ScenarioCatalog} = nothing, project::AbstractString = root,
         tools = [:jet, :aqua, :alloccheck, :snoopcompile, :latency], samples::Integer = 10,
@@ -230,10 +279,25 @@ function launch_investigation(action::Symbol; root::AbstractString = pwd(),
     return job
 end
 
-"Request cancellation of a web or notebook investigation and its isolated worker."
+"""
+    cancel!(job::InvestigationJob) -> nothing
+
+Request interruption through this job's cancellation token. The call is
+idempotent and does not wait for its worker. Follow it with
+[`wait_investigation`](@ref), then inspect `status` and `error` before restarting
+or removing workload-owned resources. Force-stopping a worker cannot guarantee
+an arbitrary user cleanup callback.
+"""
 cancel!(job::InvestigationJob) = cancel!(job.cancellation)
 
-"Read a consistent job snapshot without waiting or rerunning code."
+"""
+    investigation_status(job::InvestigationJob; include_result=true) -> Dict
+
+Read a lock-protected `perfchecker-investigation-job/1` snapshot with the job ID,
+action, status, elapsed seconds and captured error. Include available `result`
+and `advice` unless `include_result=false`. This operation neither waits nor
+executes new work; `"running"` is not a final outcome.
+"""
 function investigation_status(job::InvestigationJob; include_result::Bool = true)
     lock(job.lock) do
         result = Dict{String, Any}("schema_version" => "perfchecker-investigation-job/1",
@@ -247,7 +311,14 @@ function investigation_status(job::InvestigationJob; include_result::Bool = true
     end
 end
 
-"Wait for a launched investigation and retain incomplete or cancelled outcomes."
+"""
+    wait_investigation(job::InvestigationJob) -> Dict
+
+Wait for this job's asynchronous task, then return its full
+[`investigation_status`](@ref) snapshot. Recorded errors, incomplete results and
+cancellation remain visible; a returned dictionary is not itself a correctness
+or performance pass. Waiting does not rerun any action.
+"""
 function wait_investigation(job::InvestigationJob)
     job.task === nothing || wait(job.task)
     return investigation_status(job)

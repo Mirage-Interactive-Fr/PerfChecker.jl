@@ -1,4 +1,15 @@
-"A definition-aware comparison between two portable run bundles."
+"""
+    BundleComparison
+
+Evidence returned by [`compare_bundles`](@ref). `baseline_run_id` and
+`candidate_run_id` identify the inputs; `inputs_passed` records their execution
+validity. `environment_status` is `:identical`, `:compatible` (with warnings), or
+`:incomparable`. `records` retain each matched metric's definitions, sample
+counts, selected statistic, deltas, policy and status.
+
+Use [`comparison_verdict`](@ref) for the overall decision: a successfully
+executed bundle or a small delta alone does not qualify the comparison.
+"""
 struct BundleComparison
     baseline_run_id::String
     candidate_run_id::String
@@ -143,7 +154,38 @@ function _limit_for(relative_limits::AbstractDict, metric::String)
     return Float64(value)
 end
 
-"Compare exact measurement definitions; no cross-unit conversion is implicit."
+"""
+    compare_bundles(baseline::RunBundle, candidate::RunBundle;
+        relative_limits=Dict{String,Float64}(), min_samples=1,
+        sample_statistics=Dict{String,Symbol}(), default_sample_statistic=:median)
+        -> BundleComparison
+
+Compare existing observations with matching case, target, comparison key,
+metric and measurement definition. Definitions and units must match exactly;
+no unit conversion or new measurement is performed. Missing observations,
+incompatible definitions and too few numeric samples remain explicit records.
+
+`sample_statistics` maps metric names (string or symbol keys) to `:median`,
+`:mean`, `:minimum`, `:maximum`, `:p95` or `:p99`; the default applies to other
+metrics. Percentiles use linear R7 interpolation. `min_samples` must be
+positive. `relative_limits` maps metric strings to nonnegative fractions: for
+example, `0.05` permits a 5% regression in the definition's preference direction.
+Metrics without a limit are `diagnostic`, not passing CI assertions. A zero
+baseline is checked by direction rather than by division.
+
+Different runtime languages, operating systems, architectures, thread counts
+or recorded hardware identities make environments incomparable. Runtime
+version and dependency fingerprints can differ with warnings. Input bundle
+failure still makes the overall verdict `:invalid_inputs`.
+
+```julia
+baseline = read_run_bundle("reports/baseline")
+candidate = read_run_bundle("reports/candidate")
+comparison = compare_bundles(baseline, candidate;
+    relative_limits=Dict("julia.wall.time" => 0.05), min_samples=3)
+comparison_verdict(comparison)
+```
+"""
 function compare_bundles(baseline::RunBundle, candidate::RunBundle;
         relative_limits::AbstractDict = Dict{String, Float64}(), min_samples::Integer = 1,
         sample_statistics::AbstractDict = Dict{String, Symbol}(),
@@ -252,7 +294,10 @@ function compare_bundles(baseline::RunBundle, candidate::RunBundle;
 end
 
 """
-Return `true` only when `comparison_verdict(comparison)` is `:qualified`.
+    comparison_passed(comparison::BundleComparison) -> Bool
+
+Return `true` only when [`comparison_verdict`](@ref) is `:qualified`. Diagnostic,
+missing, incomparable or insufficient-sample records cannot satisfy this predicate.
 """
 function comparison_passed(comparison::BundleComparison)
     comparison_verdict(comparison) === :qualified
@@ -264,6 +309,8 @@ end
 Return `:invalid_inputs`, `:incomparable`, `:regressed`, `:qualified` or
 `:inconclusive`. Qualification requires valid inputs, comparable environments,
 at least one comparison record and a passing status for every record.
+The checks follow that priority order; warnings alone do not fail an otherwise
+qualified comparison.
 """
 function comparison_verdict(comparison::BundleComparison)
     comparison.inputs_passed || return :invalid_inputs
@@ -276,8 +323,12 @@ function comparison_verdict(comparison::BundleComparison)
 end
 
 """
-Return the dictionary representation of a BundleComparison, including input validity, environment status, verdict and per-metric records.
-This is an in-memory conversion; it does not write a report or run a workload.
+    comparison_dict(comparison::BundleComparison) -> Dict{String,Any}
+
+Return schema `perfchecker-comparison/1`, input run IDs and validity,
+environment status, warnings, `passed`/`verdict`, and per-metric records.
+This serializes the decision already present in memory; it does not reread
+bundles, compare new observations or write a report.
 """
 function comparison_dict(comparison::BundleComparison)
     return Dict{String, Any}(

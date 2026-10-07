@@ -1,6 +1,26 @@
 const RUN_QUALIFICATION_SCHEMA = "perfchecker-run-qualification/1"
 
-"A functional capability probe executed inside the prepared target worker."
+"""
+    ProbeSpec(id::Symbol; function_name=Symbol("perf_probe_", id),
+              blocking=true, category=:native)
+
+Declare a capability check for a [`FeatureSpec`](@ref). The feature entrypoint
+must define `function_name`; qualification calls it with the prepared state when
+applicable, otherwise with no arguments, outside the measured region.
+
+`category` is one of `:native`, `:runtime`, `:service`, `:device` or `:custom`.
+A missing function is recorded as unavailable. `false`, an exception, or an
+explicit failed result records a failure. A blocking failed/unavailable probe
+prevents a valid measurement; `blocking=false` retains a warning instead.
+Results may be `Bool`, `nothing`, a message string, or a dictionary/named tuple
+with `status`, `message` and optional evidence. Constructing the specification
+does not execute the check.
+
+```julia
+ProbeSpec(:database; function_name=:check_database,
+          blocking=true, category=:service)
+```
+"""
 struct ProbeSpec
     id::Symbol
     function_name::Symbol
@@ -15,7 +35,23 @@ function ProbeSpec(id::Symbol; function_name::Symbol = Symbol("perf_probe_", id)
     return ProbeSpec(id, function_name, blocking, category)
 end
 
-"A deterministic correctness oracle executed outside the measured region."
+"""
+    OracleSpec(; function_name=:perf_oracle, required=true)
+
+Declare a correctness check for a [`FeatureSpec`](@ref), outside the measured
+region. Its entrypoint may define `function_name(state)`, `function_name()`, or
+`function_name(state, result)`. For the last form, qualification executes the
+workload and its optional synchronization hook before calling the oracle.
+
+The result uses the same status normalization as [`ProbeSpec`](@ref). A false
+result or exception invalidates correctness. `required=false` permits an absent
+oracle function, recorded as `not_checked`; it does not ignore an oracle that
+exists and fails. This declaration alone does not run the workload.
+
+```julia
+OracleSpec(function_name=:verify_result)
+```
+"""
 struct OracleSpec
     function_name::Symbol
     required::Bool
@@ -103,8 +139,11 @@ function _finalize_qualification!(evidence::Dict{String, Any})
 end
 
 """
-Return the dictionary representation of a ProbeSpec with its identifier, function name, blocking flag and category.
-This is an in-memory conversion; it does not write a report or run a workload.
+    probe_spec_dict(probe::ProbeSpec) -> Dict{String,Any}
+
+Return the JSON-compatible declaration with string fields `id`, `function` and
+`category`, and the Boolean `blocking` flag. This describes the check to execute;
+it contains no observed result and does not invoke the probe.
 """
 function probe_spec_dict(probe::ProbeSpec)
     return Dict{String, Any}("id" => string(probe.id),
@@ -113,8 +152,11 @@ function probe_spec_dict(probe::ProbeSpec)
 end
 
 """
-Return the dictionary representation of an OracleSpec with its function name and required flag.
-This is an in-memory conversion; it does not write a report or run a workload.
+    oracle_spec_dict(oracle::OracleSpec) -> Dict{String,Any}
+
+Return the declared function name as `"function"` and its Boolean `"required"`
+flag. This in-memory representation contains no correctness evidence and does
+not invoke the oracle.
 """
 function oracle_spec_dict(oracle::OracleSpec)
     return Dict{String, Any}("function" => string(oracle.function_name),

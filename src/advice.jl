@@ -11,7 +11,22 @@ function _recommendation(
         "limitations" => limitations, "predicted_gain" => "not_measured")
 end
 
-"Produce deterministic, evidence-linked advice. This function never executes target code."
+"""
+    advise(bundle::RunBundle; min_samples=10)
+    advise(diagnosis::AbstractDict; bundles=RunBundle[])
+
+Return `perfchecker-advice/1` with evidence-linked recommendations,
+`authority="advisory_only"` and rules version. The bundle form first checks
+execution/correctness evidence, then considers sample sufficiency, empty CPU or
+allocation profiles and dominant allocation sites. Positive `min_samples`
+controls a sample-count recommendation; it is not a guarantee of tail accuracy.
+
+The diagnosis form requires schema `perfchecker-diagnosis/1`, interprets analyzer
+records and optionally incorporates saved bundle advice. Unsupported schemas or
+nonpositive sample policies raise `ArgumentError`. Neither method executes
+target code, contacts a provider or mutates files. Recommendations carry an
+unmeasured predicted gain; an empty list does not establish qualification.
+"""
 function advise(bundle::RunBundle; min_samples::Integer = 10)
     min_samples > 0 || throw(ArgumentError("min_samples must be positive"))
     recommendations = Dict{String, Any}[]
@@ -224,7 +239,18 @@ function advise(diagnosis::AbstractDict; bundles::AbstractVector{RunBundle} = Ru
         "authority" => "advisory_only", "rules_version" => "1")
 end
 
-"Expose diagnostics and deterministic advice to agents without running or modifying target code."
+"""
+    agent_evidence(diagnosis::AbstractDict; max_records=100)
+
+Return a `perfchecker-investigation-evidence/1` dictionary containing bounded
+records and recommendations, with advisory authority and a `truncated` flag.
+Accept diagnosis, advice, narrative and investigation schemas. Narrative cards
+retain `unverified_narrative` authority and deterministic fallback advice;
+investigation results retain status, experiments and external-review metadata.
+Positive `max_records` caps each list independently, not the total payload size.
+Invalid input schemas propagate an advice validation error. No target code,
+provider call, report write or code modification is performed.
+"""
 function agent_evidence(diagnosis::AbstractDict; max_records::Integer = 100)
     max_records > 0 || throw(ArgumentError("max_records must be positive"))
     schema = get(diagnosis, "schema_version", "")
@@ -257,7 +283,19 @@ function agent_evidence(diagnosis::AbstractDict; max_records::Integer = 100)
         "authority" => "advisory_only")
 end
 
-"Write the same investigation as JSON and human-readable Markdown. Existing output requires force=true."
+"""
+    write_investigation_report(payload::AbstractDict, directory; force=false)
+
+Write canonical JSON and readable Markdown for a discovery, diagnosis, advice,
+scenario comparison/run, tool catalogue, narrative, investigation, advisor
+evaluation or scenario-sync payload. The schema determines the basename (for
+example `diagnosis.json` and `diagnosis.md`); return the two paths.
+Create `directory` as needed. If either destination is an existing file, throw
+`ArgumentError` unless `force=true`; force permits replacing both reports.
+Unsupported schemas raise an error, and serialization/filesystem failures
+propagate. Writes are sequential, so an interrupted export can leave one report.
+This renders supplied evidence without rerunning its workloads or advisors.
+"""
 function write_investigation_report(
         payload::AbstractDict, directory::AbstractString; force::Bool = false)
     schema = get(payload, "schema_version", "")

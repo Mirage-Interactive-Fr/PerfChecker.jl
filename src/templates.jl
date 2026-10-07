@@ -126,7 +126,11 @@ Write a Julia performance-checking template and return its path.
 
 Supported template kinds are `:benchmark`, `:chairmark`, `:alloc`, and
 `:pluto`. The generated files use `PerfConfig`; no external configuration file
-format is introduced.
+format is introduced. Missing `path` uses the kind's filename under `perf/`;
+the returned string preserves that supplied/default path rather than forcing
+an absolute path. Create parents, rejecting existing files unless `force=true`.
+Unknown kinds raise `ArgumentError`; filesystem errors propagate. Writing a
+starter does not execute it or install its collector dependencies.
 """
 function write_template(kind::Symbol; path = nothing, force::Bool = false)
     kind in TEMPLATE_KINDS ||
@@ -152,7 +156,10 @@ This writes benchmark, chairmark, allocation, and Pluto dashboard starter files
 by default. It intentionally does not create a `Perf.toml`; options stay in
 Julia code through `PerfConfig`. The Pluto dashboard activates the surrounding
 Julia project so it can be used as a controlled project-local view over stored
-or newly run checks.
+or newly run checks. Return a vector of generated paths in `kinds` order.
+Existing destination files require `force=true`; if a later kind fails,
+earlier files may already have been written. This creates source starters,
+not measurements or a prepared package environment.
 """
 function perf_setup(; dir = "perf", kinds = DEFAULT_TEMPLATE_KINDS, force::Bool = false)
     mkpath(dir)
@@ -160,7 +167,20 @@ function perf_setup(; dir = "perf", kinds = DEFAULT_TEMPLATE_KINDS, force::Bool 
             for kind in kinds]
 end
 
-"Create an immediately runnable feature-oriented suite for the current package."
+"""
+    write_software_suite_template(root=pwd(); force=false)
+
+Create `perf/suite.jl`, `perf/features/smoke.jl` and
+`perf/runner/Project.toml` for the package named in `root/Project.toml`.
+Return those three absolute paths. Require a package Project file with a name;
+missing metadata or an existing generated file raises `ArgumentError` unless
+`force=true` permits replacement. Create parents as needed.
+
+The smoke workload loads the package and verifies its module identity. The
+runner declares dependencies but is not instantiated by this writer; prepare
+it before executing the generated suite. This writes Julia source/configuration
+without measuring or qualifying the package's feature behavior.
+"""
 function write_software_suite_template(root::AbstractString = pwd();
         force::Bool = false)
     package_root = abspath(String(root))

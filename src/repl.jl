@@ -26,7 +26,24 @@ function _suite_run_sort_key(run::PlannedFeatureRun, mode::Symbol)
     throw(ArgumentError("unknown suite sort mode $mode"))
 end
 
-"Filter and deterministically order a suite plan without starting workers."
+"""
+    filter_suite_plan(plan; packages=nothing, features=nothing, backends=nothing,
+                      statuses=nothing, from_version=nothing, to_version=nothing,
+                      search="", sort=:package_version, include_unavailable=true)
+
+Return a new `SuitePlan` containing selected runs and the original suite,
+profile and comparison policies. Selectors accept one value or a collection;
+`nothing` leaves that dimension unrestricted. Package matching and free-text
+search ignore case; features match either feature ID or workload ID. Version
+bounds are inclusive compatibility versions, accepting `VersionNumber` or
+version strings (including a `dev@` prefix). `include_unavailable=false` keeps
+only `:ready` runs.
+
+Sort modes are `:package_version`, `:version_package`, `:feature_version`,
+`:version_desc` and `:plan` (retain plan order). Reversed bounds and unknown
+sort modes raise `ArgumentError` when evaluated. Filtering can return an empty
+plan and does not replan targets, start workers or write evidence.
+"""
 function filter_suite_plan(plan::SuitePlan; packages = nothing, features = nothing,
         backends = nothing, statuses = nothing, from_version = nothing,
         to_version = nothing, search::AbstractString = "",
@@ -186,7 +203,25 @@ function _terminal_progress(io::IO; width::Integer = 30,
     end
 end
 
-"Run a selected plan with a terminal progress bar and optional report output."
+"""
+    run_suite_repl(plan::SuitePlan; overrides=Dict{Symbol,Any}(), reports=nothing,
+                   output=stdout, interactive=isinteractive(), strict=true, kwargs...)
+    run_suite_repl(suite::SoftwareSuite; profile=:historical,
+                   version_provider=get_pkg_versions, input=stdin, output=stdout,
+                   reports=nothing, interactive=isinteractive(), strict=true, kwargs...)
+
+Run a plan through [`run_suite`](@ref) with terminal progress, returning its
+`SoftwareSuiteResult`. The suite form first prompts using
+[`configure_suite_repl`](@ref); the plan form uses supplied overrides directly.
+Additional keywords go to `run_suite`, including prepared environment and
+cancellation options. `interactive=true` updates one progress line; otherwise
+progress is printed as separate lines.
+
+When `reports` is a directory, write suite reports after execution. With
+`strict=true`, throw `SuiteRunError` for an unsuccessful result after report
+writing; with `false`, return the result for inspection. Errors preparing,
+executing or exporting a run propagate. This explicitly starts workloads.
+"""
 function run_suite_repl(plan::SuitePlan; overrides = Dict{Symbol, Any}(),
         reports = nothing, output::IO = stdout, interactive::Bool = isinteractive(),
         strict::Bool = true, kwargs...)

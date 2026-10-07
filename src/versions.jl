@@ -108,10 +108,17 @@ function arrange_custom(a::VersionNumber, v::Vector{VersionNumber}, ::Bool)
 end
 
 """
-Select registered versions using the legacy version-selection configuration.
-The configuration supplies package name, grouping mode, requested versions and
-whether to prefer the latest representative. Registry lookup reads installed
-registry metadata; it does not measure or install the selected versions.
+    get_versions((name, selector, versions, prefer_latest), regname=nothing)
+    get_versions(spec::PackageVersionSpec, regname=nothing)
+
+Return `(name, selected_versions)` using installed registry metadata and legacy
+selectors `:custom`, `:patches`, `:minor`, `:major` or `:breaking`. `regname` is
+an optional vector of registry names restricting lookup. Custom selection
+returns requested versions; grouped selection applies its grouping to each
+requested version, optionally choosing earliest/latest representatives.
+The flattened result can contain duplicates from overlapping requested groups.
+Unknown selectors raise an error. Registry lookup does not install or measure
+selected targets; prefer suite planning for explicit availability evidence.
 """
 function get_versions(pkgconf::VerConfig, regname::Union{Nothing, Vector{String}} = nothing)
     versions = get_pkg_versions(pkgconf[1], regname)

@@ -211,7 +211,22 @@ function _scan_ci(path, root, warnings)
     return configurations
 end
 
-"Discover test-derived proposals and explicit catalogs without executing target code or CI commands."
+"""
+    discover(root=pwd(); previous=nothing)
+
+Statically inspect a directory's supported test files, scenario catalogues,
+fixtures and literal CI configurations. Return `perfchecker-discovery/1` with
+test-derived candidates, declared scenarios, CI candidates, fixture/corpus
+metadata, fingerprints, warnings and file changes. Proposals require explicit
+adoption before execution; parsed CI environments are not qualification.
+
+`previous` may be a prior discovery dictionary or JSON path, used to report
+added/removed/changed fingerprints and affected scenarios. A missing root or
+invalid baseline schema raises `ArgumentError`; unsupported constructs and
+catalogue parsing problems are recorded as warnings where possible.
+Files are read and hashed, but target Julia code and CI commands are not run.
+No scenarios, workflows or reports are written by discovery.
+"""
 function discover(root::AbstractString = pwd(); previous = nothing)
     root = abspath(root)
     isdir(root) || throw(ArgumentError("discovery root does not exist"))
