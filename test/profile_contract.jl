@@ -110,6 +110,9 @@ end
             lifecycle = joinpath(directory, "lifecycle-$(fresh)")
             setup = quote
                 using PerfCheckerProfileFixture
+                # Julia 1.10 exports summary; import it explicitly so the same
+                # worker namespace collision is exercised on newer Julia too.
+                import Base: summary
                 write($worker_marker, string(getpid()))
                 function perf_setup()
                     open($lifecycle, "a") do io
