@@ -4,7 +4,7 @@ Use saved evidence in full VS Code tabs, and run exploratory Julia code in an ex
 
 ## Plot saved results
 
-Select a completed run in PerfChecker, then choose **PerfChecker: Open visual output**. The extension reads the saved report and opens available plots in an editor panel. Keep it beside the workload or use editor groups to compare reports.
+Select a completed suite run in PerfChecker, then choose **PerfChecker: Open visual output**. The extension reads the saved suite report and opens available plots in an editor panel. Keep it beside the workload or use editor groups to compare reports. Native TestItems retain their separate JSON evidence in the **PerfChecker test items** output channel.
 
 In the visual output, select **Version series** to compare recorded targets. Use
 the package, feature and check filters to narrow the evidence. Hover a point or

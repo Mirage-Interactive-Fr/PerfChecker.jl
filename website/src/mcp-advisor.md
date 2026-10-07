@@ -1,6 +1,6 @@
 # MCP advice and implementation
 
-Connect PerfChecker to a tool on an existing MCP server. Discuss performance evidence in advice mode, then explicitly request implementation after reviewing the answer. PerfChecker's deterministic findings remain available without an agent or network connection.
+Connect PerfChecker to a tool on an existing MCP server. PerfChecker acts as the **MCP client** calling your agent's tools. Discuss performance evidence in advice mode, then explicitly request implementation after reviewing the answer. PerfChecker's deterministic findings remain available without an agent or network connection.
 
 MCP is a **tool protocol**, not a model endpoint. The chosen tool must accept a prompt and produce an answer, directly or through its own agent. A server exposing only unrelated data tools cannot generate performance advice. For an external server, you manage its installation and startup. The VS Code extension also provides the explicit local Codex connector below.
 
@@ -125,6 +125,10 @@ Open **PerfChecker: Chat with performance advisor**. Select saved deterministic 
 The agent receives an instruction to answer in the user's language, distinguish measurements from hypotheses, and provide advice without modifying code or running experiments. When no evidence is selected, it is told no saved measurements were attached. You can still ask how to configure or use PerfChecker.
 
 Replies are unverified text, separate from deterministic findings. Embedded HTML is displayed as text. Suggested commands are not executed by advice chat. You may implement the suggestions yourself.
+
+```@raw html
+<DocMedia src="/assets/screenshots/vscode-advice-chat.png" alt="Actual PerfChecker V1 Advice webview rendered in Chromium with selected allocation evidence, two user questions, two replies and a follow-up prompt" caption="Use follow-up questions to separate observations from hypotheses and agree on validation before preparing an implementation. The actual V1 webview displays a demonstration conversation and evidence; select the image to read the full exchange." />
+```
 
 The public Julia API exposes the same bounded conversation:
 

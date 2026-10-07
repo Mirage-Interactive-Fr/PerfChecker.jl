@@ -89,7 +89,7 @@ for (const channel of await readdir(root)) {
     const illustrated = [
       ['interfaces/vscode.html', ['vscode-studio.png', 'vscode-suite-designer.png']],
       ['interfaces/vscode-workflows.html', ['vscode-results.png']],
-      ['mcp-advisor.html', ['vscode-mcp-settings.png', 'vscode-implementation.png']],
+      ['mcp-advisor.html', ['vscode-mcp-settings.png', 'vscode-advice-chat.png', 'vscode-implementation.png']],
     ];
     for (const [route, screenshots] of illustrated) {
       await page.goto(new URL(route, local).href, { waitUntil: 'networkidle' });
@@ -119,7 +119,7 @@ for (const channel of await readdir(root)) {
     await picker.getByRole('button', { name: label, exact: true }).click();
     await picker.getByRole('link', { name: label, exact: true }).waitFor({ state: 'visible' });
     assert.deepEqual(errors, []);
-    console.log(`${channel}: mobile navigation, search, version picker, five full-size VS Code screenshots and Supposition guide passed in Chromium`);
+    console.log(`${channel}: mobile navigation, search, version picker, six full-size VS Code screenshots and Supposition guide passed in Chromium`);
   } finally {
     await browser?.close(); const closed = once(server, 'exit'); server.kill('SIGTERM'); await closed;
   }

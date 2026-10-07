@@ -16,15 +16,14 @@ fields and implementation diff.
 ## Install and prepare
 
 1. Install VS Code **1.96 or newer** and Julia **1.10 or newer**.
-2. Download the [qualified V1 VSIX](https://github.com/Mirage-Interactive-Fr/PerfCheckerVSCode/releases/download/v1.0.0/perfchecker-vscode-1.0.0.vsix) and use **Extensions → … → Install from VSIX…**. Once the official listing is published, install [PerfChecker from the Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=mirage-interactive-fr.perfchecker-vscode), or search the Extensions view for `@id:mirage-interactive-fr.perfchecker-vscode`. Reload VS Code if prompted. See [VS Code's installation instructions](https://code.visualstudio.com/docs/configure/extensions/extension-marketplace) for either route.
+2. Install [PerfChecker from the Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=mirage-interactive-fr.perfchecker-vscode), or search the Extensions view for `@id:mirage-interactive-fr.perfchecker-vscode`. You can also download the [qualified V1 VSIX](https://github.com/Mirage-Interactive-Fr/PerfCheckerVSCode/releases/download/v1.0.0/perfchecker-vscode-1.0.0.vsix) and use **Extensions → … → Install from VSIX…**. Reload VS Code if prompted. See [VS Code's installation instructions](https://code.visualstudio.com/docs/configure/extensions/extension-marketplace) for either route.
 3. Open the package folder. Trust the workspace when you are prepared to execute its Julia code.
 4. Prepare a Julia controller environment containing the matching PerfChecker build and the collectors you intend to use. Existing TestItems also require TestItemRunner and the package's test dependencies.
 5. Set **PerfChecker: Runner Project** (`perfchecker.runnerProject`) to the controller environment. For shared scenarios, set **Scenario Project** (`perfchecker.scenarioProject`) to the environment containing the measured code and its dependencies.
 6. Run **PerfChecker: Open Studio** from the command palette. In a workspace with several folders, select the package to inspect.
 
 The [extension release notes](https://github.com/Mirage-Interactive-Fr/PerfCheckerVSCode/releases/tag/v1.0.0)
-identify the qualified artifact. If the Marketplace listing is not yet available
-to your installation, use that V1 VSIX. PerfChecker's Julia registry release and its VS Code
+identify the qualified artifact. PerfChecker's Julia registry release and its VS Code
 extension are distributed separately; installing the Julia package does not
 install the extension.
 
@@ -43,10 +42,10 @@ See [Installation](../guide/installation.md) for the core and interface packages
 For a project using `@testitem`:
 
 1. Studio → **Existing Julia tests**, or command palette → **PerfChecker: Discover existing test items**.
-2. Open VS Code's **Testing** view and expand **PerfChecker items**.
+2. Open VS Code's **Testing** view and expand the PerfChecker controller named for your selected folder (`PerfChecker — mesures · your-folder`).
 3. Select one item and run it. PerfChecker measures the selected item in a fresh worker.
-4. Read the collector, unit, sample count and scope beside the measurement.
-5. Open the saved visual output to inspect the available distributions and profiles.
+4. Inspect the item's Testing output for measured milliseconds, sample count and correctness. The summary includes setup and assertions; it does not compare a performance budget.
+5. Open **View → Output** and select **PerfChecker test items**. Follow the `Evidence:` file path to inspect the JSON report's item validation and each sample's `seconds`, `bytes` and `correctness`.
 
 If your package has no test items yet, add a small correctness-checked example to
 `test/performance.jl`:
@@ -66,7 +65,11 @@ when you want prepared inputs outside the measurement. The ordinary `performance
 tag is an example filter, not a required or special tag. The package must have
 `TestItems` available for its test declarations.
 
-The Testing summary duration can include worker startup. The item measurement has its own boundary. A green functional test does not establish a performance budget. Use [TestItems and tags](../test-items.md) to distinguish shared, functional-only and performance-only items.
+The Testing session's elapsed time can include worker startup. Each item's reported measured duration has its own boundary. A green functional test does not establish a performance budget. Use [TestItems and tags](../test-items.md) to distinguish shared, functional-only and performance-only items.
+
+Native TestItem JSON is a separate result from a suite report. The extension's
+**Open visual output** reads saved suite measurements; prepare and run a suite
+for the distribution, profile and version-series workflow below.
 
 For a suite, use **PerfChecker: Create feature suite** if you need a starter, or configure your existing `perf/suite.jl`. Studio → **Feature suite** opens the full visual editor. Select a workload, checks and a target, run that selection, then open the resulting report.
 

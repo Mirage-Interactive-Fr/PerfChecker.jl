@@ -6,7 +6,7 @@ Configure PerfChecker for the package folder you are measuring. In a multi-root 
 
 PerfChecker resolves `runnerProject` relative to the selected package folder. Its default is `perf`. If that default is unchanged and `perf/Project.toml` is absent, `perf/controller` is used when its project exists. An explicit setting always wins. `scenarioProject` follows the same default fallback for shared scenario workers.
 
-The controller needs PerfChecker and the interface/provider packages used by the request. The target environment needs the measured package, its dependencies and any analyzer selected for target workers. Existing TestItems need TestItemRunner and their test dependencies in the selected runner environment.
+The controller needs PerfChecker and the interface/provider packages used by the request. The target environment needs the measured package, its dependencies and any analyzer selected for target workers. Existing TestItems need TestItemRunner **1.3.2 or newer** and their test dependencies in the selected runner environment.
 
 ### Prepare a controller
 
