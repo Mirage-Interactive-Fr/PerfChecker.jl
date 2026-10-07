@@ -189,6 +189,12 @@ cancellation of owned PerfChecker jobs and wait for their cleanup before closing
 the notebook worker. Wait for the final status and inspect diagnostics when a
 shutdown reports an error.
 
+Core cleans its owned worker environments, allocation journals and `.mem`
+files separately. A workload's `cleanup(state)` callback runs during normal
+Julia unwinding; terminating its isolated process cannot guarantee that an
+arbitrary user callback runs. Keep files created by the workload recoverable,
+and inspect a forced-stop diagnostic before restarting.
+
 Use **View → Output → PerfChecker Pluto** for setup, startup and session errors.
 The notebook server binds to loopback and the extension handles its session URL;
 do not share that URL or include it in a bug report. Remote workspace forwarding

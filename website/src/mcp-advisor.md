@@ -105,6 +105,15 @@ names are case-sensitive. The screenshot's `ask_perfchecker` is a demonstration
 inventory; the external-server example below uses the placeholder `ask`. Use
 your server's actual name and schema in both the file and extension settings.
 
+The native walkthrough below uses the local protocol fixture `ask_fixture`.
+Its prompt field is `question` and its other required argument is the `context`
+object. Select your own server's discovered names and required arguments;
+these fixture values are not universal MCP defaults.
+
+```@raw html
+<DocMedia video short recording="perfchecker-vscode-v101-short-19" src="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-19.mp4" poster="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-19-poster.jpg" subtitles="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-19-en.vtt" preload="metadata" alt="Actual native PerfChecker MCP tool inventory, input schema and Use selection confirmation" caption="Discover the server tool, inspect its real properties and required arguments, then select Use. The actual schema frames are held for reading; this local protocol fixture uses ask_fixture, question and context. Recorded build: VSIX 2e722, Core 4eec, VS Code 1.141 on Linux; connection discovery and selection are distinct from answer generation." />
+```
+
 ```@raw html
 <DocMedia src="/assets/screenshots/vscode-mcp-settings.png" alt="Actual PerfChecker V1 advisor setup webview in Chromium with a demonstration MCP HTTP endpoint, tool inventory and selected advice tool" caption="Use your server's endpoint and exact tool name, then probe and save the configuration. This running webview shows a local demonstration configuration and an example tool inventory; the address is not a service supplied to every user." />
 ```

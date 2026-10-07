@@ -23,7 +23,7 @@ end
 
 - `prepare`, `operation`, `verify` are required.
 - `synchronize(state, result)` waits for async completion, **inside** the measurement.
-- `cleanup(state)` releases resources; it runs after success, oracle failure or an exception.
+- `cleanup(state)` releases resources when Julia unwinds the operation normally, including success, oracle failure or an exception. Cancelling an isolated scenario stops its worker process; forced termination cannot run arbitrary user cleanup callbacks. Keep externally owned temporary resources recoverable independently.
 - Each sample gets fresh state and exactly one evaluation.
 - The oracle sees the actual operation result. A missing or false oracle is not a qualified result.
 

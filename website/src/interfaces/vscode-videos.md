@@ -31,6 +31,7 @@ and exports have passed review.
 | [15 — saved distributions](#saved-distributions) | Real sample spread, allocation unit and raw data | [Read a distribution](vscode-workflows.md#read-a-distribution) |
 | [16 — recorded profile stacks](#recorded-profile-stacks) | Actual frame names and the collector's sampling scope | [Follow a recorded profile](vscode-workflows.md#follow-a-recorded-profile) |
 | [18 — investigations and analyzers](#investigations-and-analyzers) | Benchmark evidence, analyzer status and the real Aqua diagnostic | [Investigate and verify](vscode.md#Investigate-and-verify) |
+| [19 — tool discovery and schema](#tool-discovery-and-schema) | Actual tool name, argument types, required fields and Use | [Configure the advice tool](../mcp-advisor.md#Configure-the-advice-tool) |
 | [20 — isolated source review](#isolated-source-review) | Actual initializer, representative inputs and human decision | [Implementation review](../mcp-advisor.md#Switch-from-advice-to-implementation) |
 
 ## Native TestItem evidence
@@ -110,6 +111,12 @@ and exports have passed review.
 
 ```@raw html
 <DocMedia video short recording="perfchecker-vscode-v101-short-18" src="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-18.mp4" poster="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-18-poster.jpg" subtitles="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-18-en.vtt" preload="metadata" alt="Actual native PerfChecker investigation benchmark, analyzers and Aqua quality diagnostic" caption="Inspect the benchmark and analyzer outcomes individually. The Aqua diagnostic frame is held for reading: the analyzer completed with correctness not checked and quality failed; this passage does not imply a new execution. Recorded build: VSIX 75f84f, Core 975d, VS Code 1.141 on Linux." />
+```
+
+## Tool discovery and schema
+
+```@raw html
+<DocMedia video short recording="perfchecker-vscode-v101-short-19" src="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-19.mp4" poster="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-19-poster.jpg" subtitles="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-19-en.vtt" preload="metadata" alt="Actual native PerfChecker MCP tool inventory, input schema and Use selection confirmation" caption="Discover the server tool, inspect its real properties and required arguments, then select Use. The actual schema frames are held for reading; this local protocol fixture uses ask_fixture, question and context. Recorded build: VSIX 2e722, Core 4eec, VS Code 1.141 on Linux; connection discovery and selection are distinct from answer generation." />
 ```
 
 ## Isolated source review
