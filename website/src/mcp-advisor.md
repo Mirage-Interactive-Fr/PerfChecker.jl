@@ -36,15 +36,26 @@ PerfChecker can connect an installed, authenticated Codex CLI through a local MC
 
 Qualification used **Codex 0.159.2** for the executable contract and connector
 lifecycle, and **Codex 0.162.0-alpha.2** for authenticated multi-turn advice and
-reviewed source implementation. The latter test exercised contextual advice,
-an isolated JavaScript patch, a Node correctness oracle, diff review, apply,
-exact restore and cancellation. Consult the release qualification report for
-the separate native Julia workload and its correctness oracle. The local
-authenticated test also sent `chat` and `implement` requests through the
-registered **PerfChecker 1.0.0 Julia CLI**, acting as the MCP client around that
-JavaScript fixture. Qualification of the complete native VS Code workflow with
-a Julia workload remains in progress. These are the CLI versions actually
-exercised; intermediate releases have not been qualified by inference.
+reviewed source implementation. Two separate source fixtures were exercised:
+
+| Source and controller | What the authenticated test checked |
+| --- | --- |
+| JavaScript fixture, including requests through the registered PerfChecker 1.0.0 Julia CLI | Contextual advice, an isolated patch, Node correctness, diff review, apply, exact restore and cancellation |
+| Julia `sum_squares`, Julia 1.13.1 and Core 1.0.1 source tree `4fbc3c25543aa4f9b1154c227e5432f0cd62df91` | Two advice turns, an isolated source-only patch, real Julia correctness and allocation probes, apply, exact restore, cancellation of a started Codex turn and disconnect |
+
+The Julia proof used the 1.0.1 source checkout, before General registration. It
+checked empty Float64 input, signed values and a 1,000-element Float64 vector:
+the expected results were `0.0`, `14.0` and `333833500.0`. The warmed
+`@allocated` probe recorded **8072 B before and 0 B after** for that specific
+workload. It did not measure a timing improvement or establish equivalence for
+all Julia element types.
+
+These authenticated connector tests are separate from native VS Code footage
+using a controlled MCP response fixture. That footage exercises real editor
+controls and Julia workers; its scripted responses are identified in the
+captions. Consult the release qualification report for the final native
+platform matrix. These are the CLI versions actually exercised; intermediate
+releases have not been qualified by inference.
 
 The connector requires `--no-daemon`, `--ignore-user-config` and `--ignore-rules`,
 plus the `exec` ephemeral, sandbox and output flags. Its probe checks the selected
@@ -59,13 +70,29 @@ The advice tool is `ask_perfchecker(prompt)` and uses the CLI's `read-only` sand
 
 The connector uses your existing account and the CLI's default model. Custom user profiles, model/provider configuration, MCP servers, hooks and rules are not inherited. A project or implementation copy containing project `.codex` configuration is refused before invocation. Sandbox support depends on the CLI installation and platform. The agent can inspect files in its working directory; the configured model provider processes the requested context, and ordinary account usage or charges apply. Git proposals and checkpoints remain recoverable independently of the connection.
 
-The named-agent qualification used a real authenticated CLI through MCP initialization, tool discovery, advice and implementation. It checked unchanged source in advice mode, an actual isolated edit, Node semantics, diff review, apply, byte-identical restore and cancellation after a turn started. Maintainers can reproduce this opt-in test from the extension repository after `npm test`:
+Maintainers can reproduce the authenticated connector test from the extension
+repository after `npm test`:
 
 ```sh
 PERFCHECKER_TEST_CODEX=/path/to/codex node --test test/codex-real.test.mjs
 ```
 
-This sends real model requests against your existing account and removes its disposable Node/Git fixture. It qualifies the connector lifecycle; it does not establish a performance improvement for your Julia package.
+For the separate Julia-source proof, select the Julia executable, controller
+project and exact expected Core tree deliberately:
+
+```sh
+PERFCHECKER_TEST_CODEX=/path/to/codex \
+PERFCHECKER_TEST_CODEX_JULIA=1 \
+PERFCHECKER_TEST_JULIA=/path/to/julia \
+PERFCHECKER_TEST_JULIA_PROJECT=/path/to/controller \
+PERFCHECKER_TEST_CORE_TREE=4fbc3c25543aa4f9b1154c227e5432f0cd62df91 \
+node --test --test-name-pattern='real Codex Julia implementation' test/codex-real.test.mjs
+```
+
+The controller needs the stated PerfChecker source and `HTTP`. These opt-in
+tests send real model requests against your existing account and remove their
+disposable source, Git and implementation fixtures. Use their source and
+measurement boundaries when interpreting the result for your own package.
 
 ## Configure the advice tool
 

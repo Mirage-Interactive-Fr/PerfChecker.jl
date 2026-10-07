@@ -97,6 +97,7 @@ const config = defineConfig({
         { text: 'VS Code', link: '/interfaces/vscode' },
         { text: 'VS Code configuration', link: '/interfaces/vscode-configuration' },
         { text: 'Notebooks and Julia tools', link: '/interfaces/vscode-workflows' },
+        { text: 'VS Code video walkthroughs', link: '/interfaces/vscode-videos' },
         { text: 'MCP advice and implementation', link: '/mcp-advisor' },
         { text: 'Web interface (Oxygen)', link: '/interfaces/web-studio' },
         { text: 'REPL and Pluto', link: '/interfaces/repl-pluto' },

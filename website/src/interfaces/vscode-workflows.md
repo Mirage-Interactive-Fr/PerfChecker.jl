@@ -31,6 +31,32 @@ not to PerfChecker's release version.
 
 A report without profile stacks cannot produce a measured flame graph. A missing configuration remains unmeasured. Open worker output or source from the same run if a result is incomplete.
 
+### Read a distribution
+
+Open the **Distributions** view for a completed check. Keep its unit, sample
+count and collector beside the chart. A narrow distribution still describes
+only that recorded configuration; it does not establish a general property
+of the function.
+
+```@raw html
+<DocMedia video short recording="perfchecker-vscode-v101-short-15" src="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-15.mp4" poster="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-15-poster.jpg" subtitles="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-15-en.vtt" preload="metadata" alt="Actual PerfChecker saved distribution, allocation median of 48 bytes, raw series and source JSON in native VS Code" caption="Inspect actual worker measurements in their own units. The 48 B median is read from the recorded Example hello report. Recorded build: VSIX 75f84f, Core 975d, VS Code 1.141 on Linux." />
+```
+
+### Follow a recorded profile
+
+Select **Flame graphs** for a check containing real profile stacks. Follow the
+frame names and source locations, then inspect the collector's sampling
+boundary. Use a profile to choose a workload and a correctness protocol for
+the next experiment.
+
+```@raw html
+<DocMedia video short recording="perfchecker-vscode-v101-short-16" src="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-16.mp4" poster="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-16-poster.jpg" subtitles="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-16-en.vtt" preload="metadata" alt="Actual native PerfChecker CPU flame graph with a closer view of sum_squares, materialize and copy" caption="Follow real recorded profile stacks. The closer view preserves the original frame labels; profile weights describe the stated collector. Recorded build: VSIX 75f84f, Core 975d, VS Code 1.141 on Linux." />
+```
+
+These are passages from the full tutorial, with English captions and the
+original narration. The [video walkthrough index](vscode-videos.md) groups
+them by action.
+
 For custom Julia figures, load [PerfCheckerMakie](visualization.md) with your chosen Makie backend. The core notebook's `display(bundle)` presents a bundle; it does not automatically create every optional graphical backend. Save reports or create figures explicitly when you need reusable plots.
 
 ## Notebook versions
