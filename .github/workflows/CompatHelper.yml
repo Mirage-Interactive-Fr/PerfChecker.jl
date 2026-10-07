@@ -36,6 +36,7 @@ jobs:
         shell: julia --color=yes {0}
       - name: "Run CompatHelper"
         run: |
+          isempty(get(ENV, "COMPATHELPER_PRIV", "")) && error("Configure the writable TAGBOT_SSH_KEY repository secret before running CompatHelper")
           import CompatHelper
           # CompatHelper can propose adding "1", which would reopen the known
           # BenchmarkTools 1.8.0 Int32 defect. The required CI exclusion check
@@ -44,4 +45,5 @@ jobs:
         shell: julia --color=yes {0}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          COMPATHELPER_PRIV: ${{ secrets.DOCUMENTER_KEY }}
+          # Reuse the writable repository deploy key so proposed updates trigger CI.
+          COMPATHELPER_PRIV: ${{ secrets.TAGBOT_SSH_KEY }}
