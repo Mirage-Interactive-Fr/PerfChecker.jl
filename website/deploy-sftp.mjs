@@ -5,6 +5,8 @@ import { createHash, createHmac, randomUUID, timingSafeEqual } from 'node:crypto
 import { readFile, readdir, lstat, realpath } from 'node:fs/promises';
 import { posix, resolve, join } from 'node:path';
 import { pathToFileURL } from 'node:url';
+import { execFile } from 'node:child_process';
+import { promisify } from 'node:util';
 
 const origin = 'https://perfchecker.mirageinteractive.fr';
 const versionPattern = /^v(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/;
@@ -14,7 +16,24 @@ const markerName = '.perfchecker-docs.json';
 const lockName = '.perfchecker-docs-lock';
 const intentName = '.perfchecker-promotion.json';
 const stableName = '.perfchecker-stable.json';
+const refreshName = '.perfchecker-stable-refresh.json';
 const assert = (condition, message) => { if (!condition) throw new Error(message); };
+// Permit documentation changes while checking every other path against the
+// immutable release tree, including package metadata and optional providers.
+export async function validateStableDocumentationSource(repository, version, revision) {
+  assert(versionPattern.test(version) && revisionPattern.test(revision), 'Invalid stable documentation identity');
+  const git = async args => (await promisify(execFile)('git', ['-C', repository, ...args],
+    { encoding: 'utf8', maxBuffer: 4 * 1024 * 1024 })).stdout;
+  assert((await git(['rev-parse', 'HEAD'])).trim() === revision, 'Documentation checkout differs from the Actions source');
+  const releaseRevision = (await git(['rev-parse', '--verify', `${version}^{commit}`])).trim();
+  const changes = ((await git(['diff', '--name-only', '-z', releaseRevision, revision])) +
+    (await git(['diff', '--name-only', '-z', revision]))).split('\0').filter(Boolean);
+  const allowed = path => path.startsWith('website/') || path === 'README.md' ||
+    path === '.github/workflows/Documentation.yml' || path === 'qualification/shared/canonical-documentation.mjs' ||
+    path === 'qualification/shared/static-website-browser.mjs';
+  assert(changes.every(allowed), 'Stable documentation source changes files outside documentation and its checks');
+  return releaseRevision;
+}
 export function compareVersions(a, b) {
   assert(versionPattern.test(a) && versionPattern.test(b), 'Invalid stable version');
   const aa = a.slice(1).split('.').map(BigInt), bb = b.slice(1).split('.').map(BigInt);
@@ -61,10 +80,14 @@ export function deploymentConfiguration(env) {
   assert(env.PERFCHECKER_DOCS_REF_DELETED !== 'true', 'Deleted refs cannot deploy documentation');
   assert(env.GITHUB_ACTIONS === 'true' && ['push', 'workflow_dispatch'].includes(env.GITHUB_EVENT_NAME),
     'SFTP deployment requires a trusted Actions event');
-  const channel = env.GITHUB_REF === 'refs/heads/main' ? 'dev' : 'release';
-  assert(channel === 'dev' || (env.GITHUB_EVENT_NAME === 'push' &&
+  const refresh = env.PERFCHECKER_DOCS_STABLE_REFRESH === 'true';
+  assert(!refresh || (env.GITHUB_EVENT_NAME === 'workflow_dispatch' && env.GITHUB_REF === 'refs/heads/main'),
+    'Stable documentation refresh requires an explicit dispatch on main');
+  const channel = refresh ? 'stable-refresh' : env.GITHUB_REF === 'refs/heads/main' ? 'dev' : 'release';
+  assert(channel !== 'release' || (env.GITHUB_EVENT_NAME === 'push' &&
     versionPattern.test(env.GITHUB_REF_NAME ?? '') && env.GITHUB_REF === `refs/tags/${env.GITHUB_REF_NAME}`),
   'Only main and stable tag pushes can deploy');
+  if (refresh) assert(versionPattern.test(env.PERFCHECKER_DOCS_STABLE_VERSION ?? ''), 'Invalid stable refresh version');
   assert(revisionPattern.test(env.GITHUB_SHA ?? ''), 'Invalid source revision');
   const port = Number(env.PERFCHECKER_DOCS_SFTP_PORT ?? 22);
   const host = env.PERFCHECKER_DOCS_SFTP_HOST ?? '';
@@ -72,7 +95,7 @@ export function deploymentConfiguration(env) {
   const verify = hostVerifier(knownHosts, host, port);
   assert(/^[A-Za-z0-9_.-]+$/.test(env.PERFCHECKER_DOCS_SFTP_USER ?? ''), 'Invalid SFTP user');
   assert(env.PERFCHECKER_DOCS_SFTP_PASSWORD || env.PERFCHECKER_DOCS_SFTP_SSH_KEY, 'Missing SFTP authentication');
-  return { channel, version: channel === 'release' ? env.GITHUB_REF_NAME : undefined,
+  return { channel, version: refresh ? env.PERFCHECKER_DOCS_STABLE_VERSION : channel === 'release' ? env.GITHUB_REF_NAME : undefined,
     revision: env.GITHUB_SHA, root: validateRoot(env.PERFCHECKER_DOCS_SFTP_ROOT ?? ''),
     sequence: Number(env.GITHUB_RUN_NUMBER), connection: { host, port,
       username: env.PERFCHECKER_DOCS_SFTP_USER, hostVerifier: verify,
@@ -168,18 +191,19 @@ export function versionCatalogue(state) {
 }
 export async function validateDocumentationExports(options) {
   assert(revisionPattern.test(options.revision), 'Invalid publication revision');
-  assert(['dev', 'release'].includes(options.channel), 'Invalid publication channel');
-  if (options.channel === 'release') assert(versionPattern.test(options.version), 'Invalid release tag');
-  const primary = await readExport(options.site, options.channel === 'dev' ? 'dev' : 'version', options.revision, options.version);
+  assert(['dev', 'release', 'stable-refresh'].includes(options.channel), 'Invalid publication channel');
+  if (options.channel !== 'dev') assert(versionPattern.test(options.version), 'Invalid release tag');
+  const primary = await readExport(options.site, options.channel === 'dev' ? 'dev' : options.channel === 'stable-refresh' ? 'stable' : 'version', options.revision, options.version);
   const stable = options.channel === 'release' ? await readExport(options.stableSite, 'stable', options.revision, options.version) : null;
   return { primary, stable };
 }
 export async function publishDocumentation(transport, options) {
   const root = validateRoot(options.root), remote = name => posix.join(root, name);
   assert(revisionPattern.test(options.revision), 'Invalid publication revision');
-  assert(['dev', 'release'].includes(options.channel), 'Invalid publication channel');
-  if (options.channel === 'release') assert(versionPattern.test(options.version), 'Invalid release tag');
-  else assert(Number.isSafeInteger(options.sequence) && options.sequence > 0, 'Invalid dev run sequence');
+  assert(['dev', 'release', 'stable-refresh'].includes(options.channel), 'Invalid publication channel');
+  if (options.channel !== 'dev') assert(versionPattern.test(options.version), 'Invalid release tag');
+  if (options.channel !== 'release') assert(Number.isSafeInteger(options.sequence) && options.sequence > 0, 'Invalid documentation run sequence');
+  if (options.channel === 'stable-refresh') assert(revisionPattern.test(options.releaseRevision), 'Unverified stable release source');
   const { primary, stable } = options.validatedExports ?? await validateDocumentationExports(options);
   const rootAttrs = await transport.stat(root);
   assert(rootAttrs?.isDirectory() && !rootAttrs.isSymbolicLink(), 'SFTP document root must be a real directory');
@@ -248,6 +272,11 @@ export async function publishDocumentation(transport, options) {
     const intent = intentRaw ? JSON.parse(intentRaw.toString()) : null;
     const committedRaw = await read(remote(stableName));
     const committed = committedRaw ? JSON.parse(committedRaw.toString()) : null;
+    const refreshRaw = await read(remote(refreshName));
+    const refresh = refreshRaw ? JSON.parse(refreshRaw.toString()) : null;
+    if (refresh) assert(versionPattern.test(refresh.version) && recordValid(refresh) &&
+      Number.isSafeInteger(refresh.sequence) && refresh.sequence > 0 && ['pending', 'complete'].includes(refresh.status),
+    'Invalid stable documentation refresh metadata');
     for (const metadata of [intent, committed]) if (metadata)
       assert(versionPattern.test(metadata.version) && recordValid(metadata), 'Invalid remote promotion metadata');
     // A completed root marker recovers the authoritative state after a state-write failure.
@@ -256,6 +285,29 @@ export async function publishDocumentation(transport, options) {
       state.versions[committed.version] = { revision: committed.revision, digest: committed.digest };
     }
     const record = { revision: options.revision, digest: primary.digest };
+    if (options.channel === 'stable-refresh') {
+      const archive = state.versions[options.version];
+      assert(state.stable === options.version && recordValid(archive) && archive.revision === options.releaseRevision,
+        'Only the currently published stable release can have its documentation refreshed');
+      const archiveRaw = await read(remote(`${options.version}/${markerName}`));
+      const archiveMarker = archiveRaw ? JSON.parse(archiveRaw.toString()) : null;
+      const matches = metadata => metadata && metadata.revision === archive.revision && metadata.digest === archive.digest;
+      assert(matches(archiveMarker) && committed?.version === options.version && matches(committed) &&
+        intent?.version === options.version && matches(intent), 'Stable release publication is absent or incomplete');
+      if (refresh?.version === options.version) {
+        if (options.sequence < refresh.sequence) return { skipped: true, stable: state.stable };
+        if (options.sequence === refresh.sequence) assert(refresh.revision === record.revision && refresh.digest === record.digest,
+          'A stable refresh retry has different source or bytes');
+      }
+      const update = { version: options.version, ...record, sequence: options.sequence };
+      // This separate watermark prevents an old tag rerun from overwriting a
+      // refreshed root, including when an interrupted refresh needs retrying.
+      await json(remote(refreshName), { ...update, status: 'pending' });
+      await upload(primary, root);
+      await json(remote(refreshName), { ...update, status: 'complete' });
+      // Archive identities, release state and the live catalogue are untouched.
+      return { skipped: false, stable: state.stable, digest: primary.digest };
+    }
     if (options.channel === 'dev') {
       if (state.dev && options.sequence < state.dev.sequence) return { skipped: true, stable: state.stable };
       await upload(primary, remote('dev'));
@@ -270,7 +322,9 @@ export async function publishDocumentation(transport, options) {
       await json(posix.join(destination, markerName), record);
       const floor = intent && (!state.stable || compareVersions(intent.version, state.stable) > 0)
         ? intent.version : state.stable;
-      if (!floor || compareVersions(options.version, floor) >= 0) {
+      const newer = !floor || compareVersions(options.version, floor) > 0;
+      const unfinished = floor && compareVersions(options.version, floor) === 0 && committed?.version !== options.version;
+      if ((newer || unfinished) && refresh?.version !== options.version) {
         if (intent?.version === options.version)
           assert(intent.revision === record.revision && intent.digest === record.digest, 'A pending stable promotion has different source or bytes');
         // Persist a monotonic watermark before touching root files. It is not a catalogue entry.
@@ -307,6 +361,10 @@ async function main() {
     phase = 'export-validation';
     console.log('Validating completed documentation exports before connecting');
     options.validatedExports = await validateDocumentationExports(options);
+    if (options.channel === 'stable-refresh') {
+      phase = 'source-validation';
+      options.releaseRevision = await validateStableDocumentationSource(process.cwd(), options.version, options.revision);
+    }
     phase = 'connection';
     console.log('Connecting to the pinned SFTP host');
     transport = await connectSftp(configuration.connection);
