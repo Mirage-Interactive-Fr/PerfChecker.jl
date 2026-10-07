@@ -4,15 +4,12 @@ on:
     types:
       - created
   workflow_dispatch:
-    inputs:
-      lookback:
-        default: "3"
 permissions:
   actions: read
   checks: read
   contents: write
   deployments: read
-  issues: read
+  issues: write
   discussions: read
   packages: read
   pages: read
@@ -20,6 +17,9 @@ permissions:
   repository-projects: read
   security-events: read
   statuses: read
+concurrency:
+  group: tagbot-${{ github.repository }}
+  cancel-in-progress: false
 jobs:
   TagBot:
     if: github.event_name == 'workflow_dispatch' || github.actor == 'JuliaTagBot'
