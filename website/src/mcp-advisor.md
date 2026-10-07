@@ -111,7 +111,7 @@ object. Select your own server's discovered names and required arguments;
 these fixture values are not universal MCP defaults.
 
 ```@raw html
-<DocMedia video short recording="perfchecker-vscode-v101-short-19" src="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-19.mp4" poster="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-19-poster.jpg" subtitles="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-19-en.vtt" preload="metadata" alt="Actual native PerfChecker MCP tool inventory, input schema and Use selection confirmation" caption="Discover the server tool, inspect its real properties and required arguments, then select Use. The actual schema frames are held for reading; this local protocol fixture uses ask_fixture, question and context. Recorded build: VSIX 2e722, Core 4eec, VS Code 1.141 on Linux; connection discovery and selection are distinct from answer generation." />
+<DocMedia video short recording="perfchecker-vscode-v101-short-19" src="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-19.mp4" poster="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-19-poster.jpg" subtitles="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-19-en.vtt" walkthrough="/interfaces/vscode-videos.html#Full-tutorial" chapter="10 · MCP configuration and a follow-up conversation" preload="none" alt="Actual native PerfChecker MCP tool inventory, input schema and Use selection confirmation" caption="Discover the server tool, inspect its real properties and required arguments, then select Use. The actual schema frames are held for reading; this local protocol fixture uses ask_fixture, question and context. Recorded build: VSIX 2e722, Core 4eec, VS Code 1.141 on Linux; connection discovery and selection are distinct from answer generation." />
 ```
 
 ```@raw html
@@ -124,14 +124,12 @@ A complete local example for `perf/advisor.json` is:
 {
   "protocol": "mcp_http",
   "endpoint": "http://127.0.0.1:8765/mcp",
-  "model": "external-agent",
   "mcp_version": "2026-07-28",
   "mcp_tool": "ask",
   "mcp_prompt_argument": "prompt",
   "mcp_arguments": {},
   "mcp_response": "text",
   "timeout": 90,
-  "max_tokens": 512,
   "max_evidence_chars": 12000,
   "instructions": "Explain the evidence and propose checks before changes.",
   "allow_remote": false,
@@ -173,7 +171,7 @@ The equivalent essential folder settings are:
 | `api_key_env` | Environment-variable name for an optional Bearer token |
 | `allow_remote` | Explicitly permits transmission to a remote HTTPS endpoint |
 
-Tool names and prompt-argument names are checked before the request. Required extra arguments must be configured. `max_tokens` configures model-provider requests; a generic MCP tool controls its own model limits and cost policy.
+Tool names and prompt-argument names are checked before the request. Required extra arguments must be configured. `model` and `max_tokens` configure Chat Completions/Ollama requests and are not sent by the MCP transport. The MCP server selects its own model, limits and cost policy. Put any model or limit arguments accepted by the selected tool's schema in `mcp_arguments`.
 
 For remote servers, use HTTPS and set `allow_remote = true`. Put the Bearer token in the named environment variable available to VS Code's extension host, never in the JSON or `mcp_arguments`. OAuth login/refresh is not implemented.
 
@@ -186,7 +184,7 @@ The agent receives an instruction to answer in the user's language, distinguish 
 Replies are unverified text, separate from deterministic findings. Embedded HTML is displayed as text. Suggested commands are not executed by advice chat. You may implement the suggestions yourself.
 
 ```@raw html
-<DocMedia video short recording="perfchecker-vscode-v101-short-06" src="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-06.mp4" poster="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-06-poster.jpg" subtitles="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-06-en.vtt" preload="metadata" alt="Native PerfChecker conversation with a saved measured run, two contextual questions and controlled MCP replies" caption="Attach the actual measured run, ask a follow-up and agree on validation before requesting an edit. The recorded report shows 8072 B median over two samples with correctness passed; measured evidence IDs and bounded context were checked. The local MCP protocol fixture supplies controlled replies, with frames held for reading. Recorded build: VSIX 2e722, Core 4eec, VS Code 1.141 on Linux. Source is unchanged during advice; cancellation is outside this passage." />
+<DocMedia video short recording="perfchecker-vscode-v101-short-06" src="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-06.mp4" poster="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-06-poster.jpg" subtitles="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-06-en.vtt" walkthrough="/interfaces/vscode-videos.html#Full-tutorial" chapter="10 · MCP configuration and a follow-up conversation" preload="none" alt="Native PerfChecker conversation with a saved measured run, two contextual questions and controlled MCP replies" caption="Attach the actual measured run, ask a follow-up and agree on validation before requesting an edit. The recorded report shows 8072 B median over two samples with correctness passed; measured evidence IDs and bounded context were checked. The local MCP protocol fixture supplies controlled replies, with frames held for reading. Recorded build: VSIX 2e722, Core 4eec, VS Code 1.141 on Linux. Source is unchanged during advice; cancellation is outside this passage." />
 ```
 
 ```@raw html
@@ -221,7 +219,7 @@ The explicit Codex connection supplies its two tool names automatically. For an 
 `implement` is also a placeholder. Select a trusted tool that can inspect/edit/test a supplied checkout. Implementation reuses the advice connection, revision, credentials and additional arguments, then substitutes the explicitly configured tool and prompt name. The prompt/workspace argument names must differ; extra arguments cannot override either.
 
 ```@raw html
-<DocMedia video short recording="perfchecker-vscode-v101-short-07" src="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-07.mp4" poster="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-07-poster.jpg" subtitles="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-07-en.vtt" preload="metadata" alt="Actual native PerfChecker preparation action, warning and recovery checkpoint prefix" caption="Review the warning, save editor buffers and explicitly prepare an isolated proposal. The close view preserves the real Prepare implementation button and checkpoint prefix; the full reference continues outside the portrait frame and remains available in the editor. Recorded build: VSIX 75f84f, Core 975d, VS Code 1.141 on Linux, controlled MCP replies." />
+<DocMedia video short recording="perfchecker-vscode-v101-short-07" src="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-07.mp4" poster="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-07-poster.jpg" subtitles="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-07-en.vtt" walkthrough="/interfaces/vscode-videos.html#Full-tutorial" chapter="11 · A checkpoint and an isolated implementation" preload="none" alt="Actual native PerfChecker preparation action, warning and recovery checkpoint prefix" caption="Review the warning, save editor buffers and explicitly prepare an isolated proposal. The close view preserves the real Prepare implementation button and checkpoint prefix; the full reference continues outside the portrait frame and remains available in the editor. Recorded build: VSIX 75f84f, Core 975d, VS Code 1.141 on Linux, controlled MCP replies." />
 ```
 
 The extension's workflow is:
@@ -235,7 +233,7 @@ The extension's workflow is:
 7. Rerun relevant correctness checks, including empty inputs, boundary values and the representative types your API accepts, then collect compatible before/after measurements. A shorter expression can change empty-input or numeric behavior. Use **Restore implementation checkpoint** if you need to reverse the applied patch and the repository has not drifted.
 
 ```@raw html
-<DocMedia video short recording="perfchecker-vscode-v101-short-20" src="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-20.mp4" poster="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-20-poster.jpg" subtitles="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-20-en.vtt" preload="metadata" alt="Actual native PerfChecker source diff, initialized sum_squares reduction and explicit human review" caption="Read the actual isolated source diff and its explicit initializer, then validate representative inputs before applying. The recorded Float64 example covers empty, signed and 1,000-element inputs; other types need their own oracle. Recorded build: VSIX 75f84f, Core 975d, VS Code 1.141 on Linux, controlled MCP replies." />
+<DocMedia video short recording="perfchecker-vscode-v101-short-20" src="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-20.mp4" poster="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-20-poster.jpg" subtitles="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-20-en.vtt" walkthrough="/interfaces/vscode-videos.html#Full-tutorial" chapter="11 · A checkpoint and an isolated implementation" preload="none" alt="Actual native PerfChecker source diff, initialized sum_squares reduction and explicit human review" caption="Read the actual isolated source diff and its explicit initializer, then validate representative inputs before applying. The recorded Float64 example covers empty, signed and 1,000-element inputs; other types need their own oracle. Recorded build: VSIX 75f84f, Core 975d, VS Code 1.141 on Linux, controlled MCP replies." />
 ```
 
 ```@raw html
@@ -262,7 +260,7 @@ V1 also refuses clean/smudge filters (including Git LFS), `working-tree-encoding
 ## Checkpoints and recovery
 
 ```@raw html
-<DocMedia video short recording="perfchecker-vscode-v101-short-08" src="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-08.mp4" poster="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-08-poster.jpg" subtitles="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-08-en.vtt" preload="metadata" alt="Actual native PerfChecker Apply and Restore controls with independently checked Julia results and allocation" caption="Apply the reviewed source change, inspect the independent Julia oracle and restore the previous source exactly. The recorded workload's allocation probe is 8072 B before and 0 B after; compatible timing measurements remain a separate step. Recorded build: VSIX 75f84f, Core 975d, VS Code 1.141 on Linux, controlled MCP replies." />
+<DocMedia video short recording="perfchecker-vscode-v101-short-08" src="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-08.mp4" poster="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-08-poster.jpg" subtitles="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-08-en.vtt" walkthrough="/interfaces/vscode-videos.html#Full-tutorial" chapter="12 · Apply, validate, remeasure and restore" preload="none" alt="Actual native PerfChecker Apply and Restore controls with independently checked Julia results and allocation" caption="Apply the reviewed source change, inspect the independent Julia oracle and restore the previous source exactly. The recorded workload's allocation probe is 8072 B before and 0 B after; compatible timing measurements remain a separate step. Recorded build: VSIX 75f84f, Core 975d, VS Code 1.141 on Linux, controlled MCP replies." />
 ```
 
 The checkpoint uses a dedicated ref of the form `refs/perfchecker/checkpoints/<id>`. A reviewed proposal also has a retained Git ref. These preserve the proposal/recovery content independently from its temporary checkout. The original branch and staging are preserved.
@@ -299,7 +297,11 @@ result = implement_advice(messages; config = implementation_config,
 
 ## What is transmitted
 
-Evidence narration sends a bounded projection of recommendation IDs, rules, observations, experiments, verifications and limits. Automatic source-location fields, raw process logs and source files are not included in that projection.
+Evidence narration sends a bounded projection of recommendation IDs, rules,
+observations, experiments, verifications and limits. It does not automatically
+read project source, environment contents or raw logs, or add source-location
+fields. Supplied `hypothesis`, `action` and `validation` strings are retained
+without redaction; check them before transmitting evidence.
 
 Chat additionally sends your typed messages and retained earlier replies. Anything you paste, including code or paths, therefore becomes part of the request. Implementation additionally sends the isolated checkout's absolute path, and the selected tool can inspect code accessible there. Authentication is sent only in the configured request header. Consider the endpoint's data/cost policy before opting into a remote connection.
 
@@ -317,6 +319,12 @@ Structured mode belongs to bounded investigation, rather than free-form implemen
 ```
 
 Unknown/duplicate evidence IDs and unknown experiment IDs are rejected. Only declared experiments can run; count and duration budgets still apply. Text mode refuses experiment selection. Source edits use the separate explicit implementation workflow.
+
+Provider requests and worker startup consume the investigation's time budget.
+Each provider deadline is the smaller of its configured timeout and the
+remaining budget; experiment deadlines are bounded in the same way. The other
+provider fields remain intact, including custom instructions, MCP tool and
+argument settings, response mode, protocol revision and authentication.
 
 ## CLI and automation clients
 

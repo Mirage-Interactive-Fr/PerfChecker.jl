@@ -14,11 +14,16 @@ Enable a provider only after you have collected a measurement or diagnosis. Mode
 - **Chat Completions** — a local or explicitly allowed remote server.
 - **MCP HTTP** — one advice tool on an MCP server. See [MCP tools](mcp-advisor.md).
 
-The supplied configurations support llama.cpp and Ollama. The model name is independent of the protocol.
+The supplied configurations support llama.cpp and Ollama. `model` selects the
+model for Chat Completions and Ollama. An MCP server chooses its own model and
+limits; provide model or limit arguments only when its selected tool schema
+accepts them.
 
 - A remote endpoint requires `allow_remote = true` and HTTPS.
 - An optional credential is read from the environment variable named by `api_key_env`. Never put the secret in a config file.
-- PerfChecker never downloads a model, starts a server, or installs a provider.
+- PerfChecker does not install providers, start model servers or download weights
+  automatically. The [advisor panel](advisor-ui.md#Optional-local-model-files) can
+  request an Ollama model download after explicit confirmation.
 
 ```julia
 using PerfChecker
@@ -44,7 +49,14 @@ Evidence narration sends a bounded projection:
 
 - recommendation IDs, rules, observations, proposed experiments, verifications and limits.
 
-The projection does not include raw logs, source files, automatic source-location fields or workspace roots. Chat additionally sends your typed messages and retained replies. Explicit implementation sends its isolated checkout path and permits the selected tool to inspect code there. Credentials are carried only in the configured authentication header. See the [complete transmission contract](mcp-advisor.md#What-is-transmitted).
+The projection does not automatically read project source, environment contents
+or raw logs. It retains the supplied `hypothesis`, `action` and `validation`
+strings without redaction: inspect them before sending evidence. Automatic
+source-location fields and workspace roots are not added to the projection.
+Chat additionally sends your typed messages and retained replies. Explicit
+implementation sends its isolated checkout path and permits the selected tool
+to inspect code there. Configured authentication credentials are sent in the
+request header. See the [complete transmission contract](mcp-advisor.md#What-is-transmitted).
 
 Validation checks references and allowed actions — not the truth of the prose. Evidence IDs must exist; duplicates and unknown experiment IDs are rejected; response size is bounded.
 
@@ -60,6 +72,9 @@ result = investigate(catalog; project = "perf", advisor = config,
 - Omit `advisor` for deterministic ordering.
 - A failed model decision falls back to that ordering; a valid `stop` is respected.
 - Each attempt consumes the count and wall-time budgets, including model requests and worker startup.
+- Provider and experiment deadlines are capped at the remaining time budget.
+  Bounding a provider's timeout preserves its other configuration, including
+  instructions and MCP tool, argument, response and authentication settings.
 - An experiment marked complete means its execution completed — not that performance is acceptable.
 - No threshold or baseline is adopted automatically.
 

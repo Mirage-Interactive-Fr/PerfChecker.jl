@@ -175,7 +175,7 @@ function _advisor_evidence(advice, config)
             !isempty(strip(record["id"])) ||
             throw(ArgumentError("invalid advice recommendation fields"))
         any(row -> row["id"] == record["id"], rows) && continue
-        # No project source, environment variables, absolute paths, or raw process logs are sent.
+        # Project data is not read automatically; supplied evidence strings are retained without redaction.
         row = Dict("id" => record["id"], "rule" => record["rule_id"],
             "observation" => record["hypothesis"], "experiment" => record["action"],
             "verification" => record["validation"], "limits" => ["Evidence is limited to the recorded configuration; no unmeasured gain is established."])
