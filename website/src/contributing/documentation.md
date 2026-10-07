@@ -107,6 +107,11 @@ guide's `DocMedia` uses `video`, `recording`, `src`, `poster`, `subtitles`,
 `preload="metadata"` and `short` for an extract. Provide a useful caption and,
 once the master is accessible, `walkthrough` and `chapter` for the full tutorial.
 Playback uses native controls and `playsinline`, with no automatic playback.
+For the long master, verify the published asset's bytes/SHA first and add its
+HTTPS manifest entry without `embed_local`. Set `external` on its `DocMedia`
+player to stream that URL while keeping the poster and VTT in the documentation.
+The MP4 stays outside every SFTP export. Test the real hosted file, including
+range seeking and the local captions, before publishing its player or links.
 Retain full-size screenshot links and identify candidate, fixture or recorded
 measurement provenance. Verify loading, seeking, captions and fullscreen on
 desktop and mobile; metadata preloading should not fetch all twenty full clips.

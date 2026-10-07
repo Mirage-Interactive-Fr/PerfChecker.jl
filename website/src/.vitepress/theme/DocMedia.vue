@@ -16,22 +16,25 @@ const props = defineProps<{
   short?: boolean
   walkthrough?: string
   chapter?: string
+  external?: boolean
 }>()
 const entry = computed(() => props.recording ? __PERFCHECKER_MEDIA__[props.recording] : undefined)
-const mediaState = computed(() => entry.value?.youtube_id ? 'youtube' : entry.value?.local_available ? 'local' : 'pending')
+const mediaState = computed(() => props.external && entry.value?.download_url?.startsWith('https://') ? 'external' :
+  entry.value?.youtube_id ? 'youtube' : entry.value?.local_available ? 'local' : 'pending')
+const videoSource = computed(() => mediaState.value === 'external' ? entry.value!.download_url : withBase(props.src))
 const playYouTube = ref(false)
 const mediaType = computed(() => props.src.endsWith('.mp4') ? 'video/mp4' : 'video/webm')
 </script>
 
 <template>
   <figure class="doc-screenshot" :data-recording="recording" :data-media-state="video ? mediaState : undefined">
-    <video v-if="video && mediaState === 'local'" controls playsinline :preload="preload ?? 'none'"
+    <video v-if="video && (mediaState === 'local' || mediaState === 'external')" controls playsinline :preload="preload ?? 'none'"
       :class="{ 'doc-short-video': short }"
       :aria-label="alt" :poster="poster ? withBase(poster) : undefined">
-      <source :src="withBase(src)" :type="mediaType" />
+      <source :src="videoSource" :type="mediaType" />
       <track v-if="subtitles" kind="captions" :src="withBase(subtitles)"
         srclang="en" label="English walkthrough" default />
-      <a :href="withBase(src)">Download the recording</a>.
+      <a :href="videoSource">Download the recording</a>.
     </video>
     <template v-else-if="video && mediaState === 'youtube'">
       <iframe v-if="playYouTube" class="doc-video" :title="alt"
