@@ -45,8 +45,8 @@ const mediaType = computed(() => props.src.endsWith('.mp4') ? 'video/mp4' : 'vid
     </template>
     <div v-else-if="video" class="doc-video-pending">
       <img v-if="poster" :src="withBase(poster)" :alt="alt" loading="lazy" />
-      <p v-if="entry?.download_url">Download the recording below to watch it now. The YouTube player will be added when available. Follow the written walkthrough below.</p>
-      <p v-else>The recording will be added here after publication. Follow the written walkthrough below.</p>
+      <p v-if="entry?.download_url">Download the recording below to watch it now, or follow the written walkthrough below.</p>
+      <p v-else>This build has no embedded recording. Follow the written walkthrough below.</p>
     </div>
     <a v-else :href="withBase(src)" :aria-label="`Open full-size image: ${alt}`">
       <img :src="withBase(src)" :alt="alt" loading="lazy" />

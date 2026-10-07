@@ -92,7 +92,7 @@ For a suite, use **PerfChecker: Create feature suite** if you need a starter, or
 | Visual output | Inspect saved distributions, allocations, flame graphs and version comparisons |
 | Investigations | Discover scenarios, measure, diagnose and read deterministic advice |
 | Advisor chat | Discuss saved evidence; explicitly request implementation and review its diff |
-| Julia notebook | Run an editable discovery → measurement → diagnosis workflow |
+| Pluto notebook (1.0.1 candidate) | Edit reactive Julia cells and explicitly launch suite checks or investigations |
 | PerfChecker terminal | Use a dedicated Julia session in the controller project |
 
 These are VS Code editor tabs and native surfaces. Arrange them with VS Code's editor groups; the activity bar is an entry point, not the available working area.
@@ -109,6 +109,7 @@ These are VS Code editor tabs and native surfaces. Arrange them with VS Code's e
 | Advice conversation | Authenticated supported CLI or configured MCP advice tool | [MCP connection](../mcp-advisor.md#Choose-a-connection) |
 | Reviewed implementation | Saved files, Git HEAD and a separate implementation tool | [Review and apply](../mcp-advisor.md#Switch-from-advice-to-implementation) |
 | Cancel, stop or restore | Wait for cleanup and review repository drift | [Cancellation](#Cancel-a-run-and-wait-for-cleanup) |
+| Beautiful Landscape companion | Actual game assets, renderer environment, explicit quality profile and corrected Core 1.0.1 | [Live measurement](vscode-workflows.md#Measure-a-Beautiful-Landscape-scene) |
 
 ## Design a suite and compare targets
 

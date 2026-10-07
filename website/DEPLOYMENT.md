@@ -297,5 +297,12 @@ node website/preview.mjs
 
 Building locally never publishes. Keep recordings outside Git;
 `website/media.json` can reference external videos independently of site builds.
+For the twenty guide extracts, manifest entries with `embed_local: true` fetch
+their approved release asset into the generated public tree before rendering.
+The build verifies exact bytes and SHA256, bounds each download to 120 seconds,
+and refuses a changed local copy. These compressed extracts use the normal SFTP
+publication and archive rules. Keep the long tutorial master outside exports
+and link its separate deliverable. See the [recording authoring guide](src/contributing/documentation.md#recordings)
+for posters, captions and playback checks.
 For a check matching SFTP hosting, set `PERFCHECKER_PREVIEW_CLEAN_URLS=false` when
 starting the preview and follow the generated `.html` navigation links.

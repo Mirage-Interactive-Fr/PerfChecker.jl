@@ -96,7 +96,7 @@ Keep source recordings outside Git history. The local archive is `.lab/media/<re
 
 For a local tutorial extract, publish its qualified MP4 as an approved release
 asset and record its exact HTTPS `download_url`, `bytes` and `sha256` in
-`website/media.json`. Set `embed_local` to `true` for the eight guide extracts.
+`website/media.json`. Set `embed_local` to `true` for the twenty guide extracts.
 The build fetches a missing copy, checks its length and digest before writing it
 under the entry's public `file` path, and refuses an existing copy with different
 bytes. The normal documentation exports then include these compressed extracts.
@@ -109,7 +109,9 @@ once the master is accessible, `walkthrough` and `chapter` for the full tutorial
 Playback uses native controls and `playsinline`, with no automatic playback.
 Retain full-size screenshot links and identify candidate, fixture or recorded
 measurement provenance. Verify loading, seeking, captions and fullscreen on
-desktop and mobile; metadata preloading should not fetch all eight full clips.
+desktop and mobile; metadata preloading should not fetch all twenty full clips.
+Place each extract beside its relevant action; use a separate index to browse
+all twenty.
 
 An explicitly approved YouTube publication can instead set `youtube_id` in the
 manifest. The site loads the privacy-enhanced player only after a reader clicks

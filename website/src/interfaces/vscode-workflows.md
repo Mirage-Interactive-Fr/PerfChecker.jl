@@ -210,6 +210,26 @@ Install the Julia VS Code extension (`julialang.language-julia`) and open a save
 
 Debugger overhead and stepping change execution. Use debugging for correctness investigation, then collect performance evidence separately. Studio's **Julia extension REPL** action delegates to the Julia extension's own REPL, which keeps the environment selected in Julia's status bar; check it before running code. The dedicated PerfChecker terminal uses the selected controller project and remains a separate action.
 
+### Julia extension compatibility
+
+Native editor qualification found a language-server startup failure with the
+official Julia extension **1.174.2** and Julia **1.13.1**: SymbolServer reports
+`KeyError: _apply`. This is a concrete failure of that language-server
+combination. PerfChecker's controller and measurement workers have separate
+executable and project checks.
+
+The candidate's Julia **1.12.x** REPL/debugger compatibility check is in progress.
+The release report will identify the exact editor, Julia extension, runtime and
+platform actually exercised. Configure `perfchecker.juliaExecutable` for the
+PerfChecker controller and `julia.executablePath` for the official Julia extension
+separately when those workflows need different runtimes. Select the real Julia
+binary in the corresponding folder settings, then inspect `VERSION` and
+`Base.active_project()` in that surface's terminal before executing code.
+
+If you encounter the observed error, retain the
+version tuple and redacted Julia output, and consult the
+[Julia extension issue tracker](https://github.com/julia-vscode/julia-vscode/issues).
+
 ## Tasks and runners
 
 Studio's tasks action opens VS Code's existing task runner. Opening Studio does not create `tasks.json`. Use established package tasks or the [CLI](../reference/cli.md) for a repeatable invocation.
@@ -228,4 +248,46 @@ PerfChecker's public companion commands accept an explicit folder URI:
 
 These command IDs are available to Etendu/Beautiful Landscape and other extensions. The URI must identify the intended folder in VS Code. The companion owns rendering, scene lifetime and its quality setting; PerfChecker owns the configured measurement invocation and saved evidence.
 
-Before a live graphics comparison, keep the scene, quality, device and workload configuration comparable. A successful command or attractive scene does not establish a gain; retain the resulting evidence and its configuration.
+### Measure a Beautiful Landscape scene
+
+1. Open and trust the actual Beautiful Landscape game folder. Prepare its Julia
+   rendering environment and download its required scene assets according to the
+   companion's installation instructions. Its `EtenduGame.toml` must declare
+   `id = "etendu.beautifullandscape"` and `entrypoint = "scripts/play.jl"`.
+2. Check the folder's PerfChecker controller environment separately from the
+   renderer environment. The cancellation fix belongs to the **Core 1.0.1
+   candidate**; use its corrected registered release once available. The public
+   Core 1.0.0 provider can leave a rendering worker running after interruption.
+3. In the companion, select this folder and a quality profile declared in
+   `config/quality.toml`, such as `mobile-leger`. That file uses the
+   `beautiful-landscape-quality/1` schema. The game must supply its actual
+   `perf/live_provider.jl`; PerfChecker validates these files before execution.
+4. Start the companion's live measurement action. It passes the explicit folder
+   URI and quality slug to `perfchecker.runLandscapeLiveForWorkspace`. Both
+   arguments are required; the palette entry alone cannot select them.
+5. Read **View → Output → PerfChecker Live** while the progress notification is
+   active. Use its cancellation control to interrupt the run, then wait for
+   worker cleanup before starting another measurement or closing the scene.
+6. After a successful run, PerfChecker opens the saved `manifest.json` under
+   `perf/results/live/run-<run-id>/`. Retain the complete bundle, including its
+   integrity document, observations and recorded environment.
+
+The current provider records `landscape.cpu.{median,p95,p99}` and
+`landscape.submit_interval.{median,p95,p99}` in milliseconds. Its submission
+boundary is `SDL_SubmitGPUCommandBuffer`. Read the saved warmup, measured
+submission count, scene digest, quality profile, effective resolution and device
+identity before comparing runs. The manifest explicitly records GPU timing and
+physical presentation as `unavailable`; these observations do not measure
+displayed frame rate.
+
+Software qualification has exercised the real compiled provider bridge with
+the Landscape v0.1.0 scene, five SDK v0.1.1 modules, Mesa **llvmpipe** on a CPU,
+and six real observations after warmup. Active rendering was observed before
+cancellation, and the corrected candidate stopped its owned workers before the
+test display closed. The final release source is still awaiting qualification.
+The native VS Code companion button, hardware GPU timing and physical display
+presentation have not been qualified by this software test.
+
+Before a live graphics comparison, keep the scene, quality, device and workload
+configuration comparable. Retain the resulting evidence and its configuration;
+a changed scene or quality profile requires a new, explicitly selected run.
