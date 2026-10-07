@@ -82,6 +82,83 @@ end
     @test only(diagnostics)["severity"] == "warning"
 end
 
+@testitem "Allocation profiles complete in real top-level workers" tags=[
+    :integration, :profile_contract, :profile_worker] begin
+    using PerfChecker
+    import Pkg
+
+    mktempdir() do directory
+        environment = joinpath(directory, "environment")
+        source = joinpath(directory, "PerfCheckerProfileFixture")
+        mkpath(environment)
+        mkpath(joinpath(source, "src"))
+        write(joinpath(environment, "Project.toml"), "[deps]\n")
+        write(joinpath(source, "Project.toml"), """
+name = "PerfCheckerProfileFixture"
+uuid = "70b37676-3d7a-4fd4-b094-f9bfb6c5dcf3"
+version = "0.1.0"
+""")
+        operation = joinpath(source, "src", "PerfCheckerProfileFixture.jl")
+        write(operation, """
+__precompile__(false)
+module PerfCheckerProfileFixture
+allocate(values) = copy(values)
+end
+""")
+        @testset "fresh=$fresh" for fresh in (false, true)
+            worker_marker = joinpath(directory, "worker-$(fresh)")
+            lifecycle = joinpath(directory, "lifecycle-$(fresh)")
+            setup = quote
+                using PerfCheckerProfileFixture
+                write($worker_marker, string(getpid()))
+                function perf_setup()
+                    open($lifecycle, "a") do io
+                        println(io, "prepare")
+                    end
+                    fill(1, 32)
+                end
+                perf_workload(values) = PerfCheckerProfileFixture.allocate(values)
+                perf_oracle(values, result) = result == values && result !== values
+                function perf_cleanup(values)
+                    open($lifecycle, "a") do io
+                        println(io, "cleanup")
+                    end
+                end
+            end
+            config = PerfConfig(:profile_alloc; path = environment, quiet = true,
+                targets = ["PerfCheckerProfileFixture"],
+                extra_devops = [Pkg.PackageSpec(path = source)],
+                fresh_feature = fresh, feature_oracle = "perf_oracle",
+                profile_repetitions = 2, sample_rate = 1.0)
+            # Use the production Malt.eval route: an extra let/function around
+            # check() would conceal top-level loop scope failures.
+            result = PerfChecker.check_function(config, setup,
+                :(PerfCheckerProfileFixture.allocate(fill(1, 32))))
+            @test parse(Int, read(worker_marker, String)) != getpid()
+            table = only(result.tables)
+            summary = only(result.qualifications)["allocation_profile"]
+            @test summary["status"] == "complete"
+            @test summary["total_bytes"] > 0
+            @test summary["total_allocations"] > 0
+            @test summary["sampled_allocations"] > 0
+            @test summary["source_allocations"] > 0
+            @test summary["retained_allocations"] > 0
+            @test summary["profile_evaluations"] == 2
+            @test !isempty(table)
+            @test sum(table.bytes) > 0
+            @test sum(table.allocs) > 0
+            @test any(row -> row.filename == operation, table)
+            @test all(row -> !isempty(row.stack), table)
+            if fresh
+                entries = readlines(lifecycle)
+                @test count(==("prepare"), entries) == 5
+                @test count(==("cleanup"), entries) == 5
+            end
+        end
+        @test isempty(PerfChecker.find_malloc_files([source]))
+    end
+end
+
 @testitem "Zero-allocation operations succeed in both profile APIs" tags=[:profile_contract] begin
     using PerfChecker
     expression = PerfChecker.check(PerfChecker.default_options(Val(:profile_alloc)),

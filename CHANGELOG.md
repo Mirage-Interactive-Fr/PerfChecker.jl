@@ -8,6 +8,8 @@
 - Fix the Pluto suite Cancel button by supporting `cancel!(job::SuiteJob)`,
   including worker shutdown and preservation of existing allocation traces.
   Repeated cancellation requests let an ongoing cleanup finish.
+- Fix allocation-profile collection in fresh workers when sampled allocations
+  have source frames. Preserve allocation totals, stacks and lifecycle cleanup.
 
 ## 1.0.0
 
