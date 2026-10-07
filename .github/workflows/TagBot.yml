@@ -27,5 +27,6 @@ jobs:
     steps:
       - uses: JuliaRegistries/TagBot@v1
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          # Optional PAT needs Contents and Workflows write access for workflow-changing commits.
+          token: ${{ secrets.TAGBOT_TOKEN || secrets.GITHUB_TOKEN }}
           ssh: ${{ secrets.TAGBOT_SSH_KEY }}
