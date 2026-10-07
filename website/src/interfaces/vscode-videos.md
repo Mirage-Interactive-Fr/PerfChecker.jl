@@ -21,6 +21,8 @@ and exports have passed review.
 | [02 — native TestItem evidence](#native-testitem-evidence) | Item validation, measured units and the report boundary | [Get a first result](vscode.md#get-a-first-result) |
 | [03 — visible suite selection](#visible-suite-selection) | Search, selection scope and Preview before Run | [Select checks](vscode.md#design-a-suite-and-compare-targets) |
 | [04 — normalized overlays](#normalized-overlays) | Per-metric minimum, raw values and tooltip units | [Read normalized overlays](vscode-workflows.md#read-normalized-overlays) |
+| [07 — reviewed preparation](#reviewed-preparation) | Actual warning, explicit Prepare action and recovery reference | [Prepare implementation](../mcp-advisor.md#Switch-from-advice-to-implementation) |
+| [08 — apply, verify and restore](#apply-verify-and-restore) | Independent oracle, recorded allocation and exact recovery | [Checkpoints and recovery](../mcp-advisor.md#Checkpoints-and-recovery) |
 | [10 — first native check](#first-native-check) | The Vector reduction item, correctness oracle and Run | [Get a first result](vscode.md#get-a-first-result) |
 | [11 — declared suite source](#declared-suite-source) | Factory, measured operation and correctness oracle | [Design a suite](vscode.md#design-a-suite-and-compare-targets) |
 | [12 — check types](#check-types) | Collector scope and required dependencies | [Choose the evidence](vscode.md#choose-the-evidence-for-your-question) |
@@ -29,6 +31,7 @@ and exports have passed review.
 | [15 — saved distributions](#saved-distributions) | Real sample spread, allocation unit and raw data | [Read a distribution](vscode-workflows.md#read-a-distribution) |
 | [16 — recorded profile stacks](#recorded-profile-stacks) | Actual frame names and the collector's sampling scope | [Follow a recorded profile](vscode-workflows.md#follow-a-recorded-profile) |
 | [18 — investigations and analyzers](#investigations-and-analyzers) | Benchmark evidence, analyzer status and the real Aqua diagnostic | [Investigate and verify](vscode.md#Investigate-and-verify) |
+| [20 — isolated source review](#isolated-source-review) | Actual initializer, representative inputs and human decision | [Implementation review](../mcp-advisor.md#Switch-from-advice-to-implementation) |
 
 ## Native TestItem evidence
 
@@ -46,6 +49,18 @@ and exports have passed review.
 
 ```@raw html
 <DocMedia video short recording="perfchecker-vscode-v101-short-04" src="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-04.mp4" poster="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-04-poster.jpg" subtitles="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-04-en.vtt" preload="metadata" alt="Actual native PerfChecker minimum-relative chart, raw units and recorded version tooltip" caption="Read each metric against its own minimum, then inspect its raw value. The recorded tooltip is 136 ns with ratio 1.0149; units remain separate. Recorded build: VSIX 75f84f, Core 975d, VS Code 1.141 on Linux." />
+```
+
+## Reviewed preparation
+
+```@raw html
+<DocMedia video short recording="perfchecker-vscode-v101-short-07" src="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-07.mp4" poster="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-07-poster.jpg" subtitles="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-07-en.vtt" preload="metadata" alt="Actual native PerfChecker preparation action, warning and recovery checkpoint prefix" caption="Review the warning, save editor buffers and explicitly prepare an isolated proposal. The close view preserves the real Prepare implementation button and checkpoint prefix; the full reference continues outside the portrait frame and remains available in the editor. Recorded build: VSIX 75f84f, Core 975d, VS Code 1.141 on Linux, controlled MCP replies." />
+```
+
+## Apply, verify and restore
+
+```@raw html
+<DocMedia video short recording="perfchecker-vscode-v101-short-08" src="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-08.mp4" poster="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-08-poster.jpg" subtitles="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-08-en.vtt" preload="metadata" alt="Actual native PerfChecker Apply and Restore controls with independently checked Julia results and allocation" caption="Apply the reviewed source change, inspect the independent Julia oracle and restore the previous source exactly. The recorded workload's allocation probe is 8072 B before and 0 B after; compatible timing measurements remain a separate step. Recorded build: VSIX 75f84f, Core 975d, VS Code 1.141 on Linux, controlled MCP replies." />
 ```
 
 ## First native check
@@ -95,6 +110,12 @@ and exports have passed review.
 
 ```@raw html
 <DocMedia video short recording="perfchecker-vscode-v101-short-18" src="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-18.mp4" poster="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-18-poster.jpg" subtitles="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-18-en.vtt" preload="metadata" alt="Actual native PerfChecker investigation benchmark, analyzers and Aqua quality diagnostic" caption="Inspect the benchmark and analyzer outcomes individually. The Aqua diagnostic frame is held for reading: the analyzer completed with correctness not checked and quality failed; this passage does not imply a new execution. Recorded build: VSIX 75f84f, Core 975d, VS Code 1.141 on Linux." />
+```
+
+## Isolated source review
+
+```@raw html
+<DocMedia video short recording="perfchecker-vscode-v101-short-20" src="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-20.mp4" poster="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-20-poster.jpg" subtitles="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-20-en.vtt" preload="metadata" alt="Actual native PerfChecker source diff, initialized sum_squares reduction and explicit human review" caption="Read the actual isolated source diff and its explicit initializer, then validate representative inputs before applying. The recorded Float64 example covers empty, signed and 1,000-element inputs; other types need their own oracle. Recorded build: VSIX 75f84f, Core 975d, VS Code 1.141 on Linux, controlled MCP replies." />
 ```
 
 Keep the written configuration and saved evidence alongside the video. A

@@ -207,6 +207,10 @@ The explicit Codex connection supplies its two tool names automatically. For an 
 
 `implement` is also a placeholder. Select a trusted tool that can inspect/edit/test a supplied checkout. Implementation reuses the advice connection, revision, credentials and additional arguments, then substitutes the explicitly configured tool and prompt name. The prompt/workspace argument names must differ; extra arguments cannot override either.
 
+```@raw html
+<DocMedia video short recording="perfchecker-vscode-v101-short-07" src="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-07.mp4" poster="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-07-poster.jpg" subtitles="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-07-en.vtt" preload="metadata" alt="Actual native PerfChecker preparation action, warning and recovery checkpoint prefix" caption="Review the warning, save editor buffers and explicitly prepare an isolated proposal. The close view preserves the real Prepare implementation button and checkpoint prefix; the full reference continues outside the portrait frame and remains available in the editor. Recorded build: VSIX 75f84f, Core 975d, VS Code 1.141 on Linux, controlled MCP replies." />
+```
+
 The extension's workflow is:
 
 1. Get an advice reply and review the proposed change and validation.
@@ -216,6 +220,10 @@ The extension's workflow is:
 5. Read the implementation summary and open the proposed diff. The summary alone does not verify correctness or performance.
 6. Select **Apply reviewed implementation changes** only after checking the actual diff. Application updates working-tree files without changing HEAD or the real Git index.
 7. Rerun relevant correctness checks, including empty inputs, boundary values and the representative types your API accepts, then collect compatible before/after measurements. A shorter expression can change empty-input or numeric behavior. Use **Restore implementation checkpoint** if you need to reverse the applied patch and the repository has not drifted.
+
+```@raw html
+<DocMedia video short recording="perfchecker-vscode-v101-short-20" src="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-20.mp4" poster="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-20-poster.jpg" subtitles="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-20-en.vtt" preload="metadata" alt="Actual native PerfChecker source diff, initialized sum_squares reduction and explicit human review" caption="Read the actual isolated source diff and its explicit initializer, then validate representative inputs before applying. The recorded Float64 example covers empty, signed and 1,000-element inputs; other types need their own oracle. Recorded build: VSIX 75f84f, Core 975d, VS Code 1.141 on Linux, controlled MCP replies." />
+```
 
 ```@raw html
 <DocMedia src="/assets/screenshots/vscode-implementation.png" alt="Running PerfChecker V1 chat webview showing the implementation warning, checkpoint reference, isolated change summary, reviewed diff and explicit apply action" caption="Review the actual diff before applying. The original working tree is still unchanged at this stage; Restore becomes relevant after Apply. The UI is real, while the advice and edited fixture are demonstration data." />
@@ -239,6 +247,10 @@ Preparation requires Git and an existing HEAD commit. Unsupported repositories, 
 V1 also refuses clean/smudge filters (including Git LFS), `working-tree-encoding` and `ident` expansion so checkpoint operations cannot invoke transformation drivers. Ordinary CRLF conversion is supported. Use a repository without these attributes for implementation, or apply advice manually.
 
 ## Checkpoints and recovery
+
+```@raw html
+<DocMedia video short recording="perfchecker-vscode-v101-short-08" src="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-08.mp4" poster="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-08-poster.jpg" subtitles="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-08-en.vtt" preload="metadata" alt="Actual native PerfChecker Apply and Restore controls with independently checked Julia results and allocation" caption="Apply the reviewed source change, inspect the independent Julia oracle and restore the previous source exactly. The recorded workload's allocation probe is 8072 B before and 0 B after; compatible timing measurements remain a separate step. Recorded build: VSIX 75f84f, Core 975d, VS Code 1.141 on Linux, controlled MCP replies." />
+```
 
 The checkpoint uses a dedicated ref of the form `refs/perfchecker/checkpoints/<id>`. A reviewed proposal also has a retained Git ref. These preserve the proposal/recovery content independently from its temporary checkout. The original branch and staging are preserved.
 
