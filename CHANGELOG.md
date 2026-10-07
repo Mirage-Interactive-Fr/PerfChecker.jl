@@ -7,6 +7,7 @@
   notebooks. Real fixture files and the discovery root boundary remain enforced.
 - Fix the Pluto suite Cancel button by supporting `cancel!(job::SuiteJob)`,
   including worker shutdown and preservation of existing allocation traces.
+  Repeated cancellation requests let an ongoing cleanup finish.
 
 ## 1.0.0
 

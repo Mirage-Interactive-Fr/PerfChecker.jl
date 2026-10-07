@@ -1,3 +1,66 @@
+@testitem "Repeated suite cancellation lets cleanup finish" tags=[
+    :unit, :allocation_cleanup] begin
+    using PerfChecker
+
+    mktempdir() do directory
+        source = joinpath(directory, "CancellationFixture")
+        environment = joinpath(directory, "worker")
+        mkpath(source)
+        mkpath(environment)
+        write(joinpath(source, "Project.toml"), """
+name = "CancellationFixture"
+uuid = "116886be-5c1c-4f1c-b9c2-4059a4d75fc7"
+version = "0.1.0"
+""")
+        write(joinpath(environment, "Project.toml"), "[deps]\n")
+        entrypoint = joinpath(source, "feature.jl")
+        write(entrypoint, "perf_workload(_) = nothing\n")
+        package = PackageSuite("CancellationFixture"; source,
+            worker_environment = environment, versions = VersionNumber[],
+            features = [FeatureSpec(:one; backend = :alloc, entrypoint)])
+        plan = plan_suite(SoftwareSuite(:repeated_cancellation, [package]);
+            profile = :quick)
+        started = Ref(false)
+        cleaning = Ref(false)
+        release_cleanup = Channel{Nothing}(1)
+        owned = joinpath(directory, "owned-temporary-output")
+        write(owned, "pending cleanup\n")
+        # The public executor hook holds a real SuiteJob in its finally block.
+        # A second interrupt must not bypass that block's filesystem cleanup.
+        executor = function (_...)
+            started[] = true
+            try
+                sleep(120)
+            finally
+                cleaning[] = true
+                take!(release_cleanup)
+                rm(owned)
+            end
+        end
+        job = launch_suite(plan; executor)
+        try
+            @test timedwait(() -> started[] || istaskdone(job.task), 10) == :ok
+            @test started[]
+            @test cancel!(job)
+            @test timedwait(() -> cleaning[] || istaskdone(job.task), 10) == :ok
+            @test cleaning[]
+            @test suite_job_status(job) == :cancelling
+            @test !cancel!(job)
+            @test !cancel_suite!(job)
+            @test !istaskdone(job.task)
+            put!(release_cleanup, nothing)
+            @test timedwait(() -> istaskdone(job.task), 10) == :ok
+            @test_throws InterruptException wait_suite(job)
+            @test suite_job_status(job) == :cancelled
+            @test !isfile(owned)
+        finally
+            isready(release_cleanup) || put!(release_cleanup, nothing)
+            istaskdone(job.task) || cancel!(job)
+            wait(job.task)
+        end
+    end
+end
+
 @testitem "Allocation cleanup owns only its worker traces" tags=[
     :integration, :allocation_cleanup] begin
     using PerfChecker
