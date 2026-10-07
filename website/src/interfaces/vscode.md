@@ -48,6 +48,12 @@ See [Installation](../guide/installation.md) for the core and interface packages
 
 ## Get a first result
 
+```@raw html
+<DocMedia video short recording="perfchecker-vscode-v101-short-10" src="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-10.mp4" poster="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-10-poster.jpg" subtitles="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-10-en.vtt" preload="metadata" alt="Actual native VS Code first PerfChecker TestItem, source oracle and run controls" caption="Start with the Vector reduction TestItem and its explicit expected sum, then run its native measurement. Recorded build: VSIX 75f84f, Core 6f, VS Code 1.141 on Linux." />
+```
+
+
+
 For a project using `@testitem`:
 
 1. Studio → **Existing Julia tests**, or command palette → **PerfChecker: Discover existing test items**.

@@ -20,6 +20,8 @@ and exports have passed review.
 | --- | --- | --- |
 | [02 — native TestItem evidence](#native-testitem-evidence) | Item validation, measured units and the report boundary | [Get a first result](vscode.md#get-a-first-result) |
 | [03 — visible suite selection](#visible-suite-selection) | Search, selection scope and Preview before Run | [Select checks](vscode.md#design-a-suite-and-compare-targets) |
+| [04 — normalized overlays](#normalized-overlays) | Per-metric minimum, raw values and tooltip units | [Read normalized overlays](vscode-workflows.md#read-normalized-overlays) |
+| [10 — first native check](#first-native-check) | The Vector reduction item, correctness oracle and Run | [Get a first result](vscode.md#get-a-first-result) |
 | [11 — declared suite source](#declared-suite-source) | Factory, measured operation and correctness oracle | [Design a suite](vscode.md#design-a-suite-and-compare-targets) |
 | [12 — check types](#check-types) | Collector scope and required dependencies | [Choose the evidence](vscode.md#choose-the-evidence-for-your-question) |
 | [13 — comparison targets](#comparison-targets) | Git state, baseline and aggregation policy | [Compare a working change](vscode.md#compare-a-working-change-with-a-known-revision) |
@@ -36,6 +38,18 @@ and exports have passed review.
 
 ```@raw html
 <DocMedia video short recording="perfchecker-vscode-v101-short-03" src="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-03.mp4" poster="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-03-poster.jpg" subtitles="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-03-en.vtt" preload="metadata" alt="Actual native PerfChecker suite filtering, visible selection and preview controls" caption="Search for the intended workload, select the visible checks and inspect Preview before running. The close views preserve the actual controls. Recorded build: VSIX 75f84f, Core 975d, VS Code 1.141 on Linux." />
+```
+
+## Normalized overlays
+
+```@raw html
+<DocMedia video short recording="perfchecker-vscode-v101-short-04" src="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-04.mp4" poster="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-04-poster.jpg" subtitles="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-04-en.vtt" preload="metadata" alt="Actual native PerfChecker minimum-relative chart, raw units and recorded version tooltip" caption="Read each metric against its own minimum, then inspect its raw value. The recorded tooltip is 136 ns with ratio 1.0149; units remain separate. Recorded build: VSIX 75f84f, Core 975d, VS Code 1.141 on Linux." />
+```
+
+## First native check
+
+```@raw html
+<DocMedia video short recording="perfchecker-vscode-v101-short-10" src="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-10.mp4" poster="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-10-poster.jpg" subtitles="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-10-en.vtt" preload="metadata" alt="Actual native VS Code first PerfChecker TestItem, source oracle and run controls" caption="Start with the Vector reduction TestItem and its explicit expected sum, then run its native measurement. Recorded build: VSIX 75f84f, Core 6f, VS Code 1.141 on Linux." />
 ```
 
 ## Declared suite source
