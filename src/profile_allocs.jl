@@ -29,6 +29,7 @@ function check(d::Dict, block::Expr, ::Val{:profile_alloc})
     max_stacks > 1 || throw(ArgumentError(":max_profile_stacks must be greater than one"))
     target_names = String.(get(d, :targets, String[]))
     runtime = joinpath(@__DIR__, "profile_runtime.jl")
+    summary_value = gensym(:perfchecker_allocation_summary)
     byte_count = fresh ?
                  :(total_bytes = $(_fresh_profile_evaluation(:(Base.@allocated SharedScenarioRuntime.operation!(_perfchecker_evaluation))))) :
                  :(total_bytes = Base.@allocated $block)
@@ -73,12 +74,14 @@ function check(d::Dict, block::Expr, ::Val{:profile_alloc})
         $collection
         allocation_results = Profile.Allocs.fetch()
         grouped = Dict{Tuple{String, Int, Tuple{Vararg{String}}}, Tuple{Int64, Int64}}()
-        source_allocs = Int64(0)
+        # Malt evaluates this expression at Main's top level. Mutating a Ref
+        # keeps the loop counter valid without changing the workload's scope.
+        source_allocs = Ref(Int64(0))
         for allocation in allocation_results.allocs
             any(
                 candidate -> !candidate.from_c && candidate.line > 0 &&
                                  PerfCheckerProfileRuntime.usable_source(String(candidate.file)),
-                allocation.stacktrace) && (source_allocs += 1)
+                allocation.stacktrace) && (source_allocs[] += 1)
             target_positions = PerfCheckerProfileRuntime.allocation_source_positions(
                 allocation.stacktrace, target_roots)
             isempty(target_positions) && continue
@@ -120,14 +123,14 @@ function check(d::Dict, block::Expr, ::Val{:profile_alloc})
                     filename = "[other]", line = 0,
                     stack = ["Other sampled allocation stacks"]))
         end
-        summary = PerfCheckerProfileRuntime.allocation_summary(
+        $summary_value = PerfCheckerProfileRuntime.allocation_summary(
             total_bytes = total_bytes, total_allocations = total_allocs,
             sampled_allocations = length(allocation_results.allocs),
-            source_allocations = source_allocs, retained_allocations = sampled_allocs,
+            source_allocations = source_allocs[], retained_allocations = sampled_allocs,
             retained_bytes = sampled_bytes, sample_rate = $sample_rate,
             profile_evaluations = $repetitions,
             weight_semantics = "independent whole-operation totals apportioned over retained stacks; estimates, not exact target totals")
-        (sites = output, summary = summary)
+        (sites = output, summary = $summary_value)
     end
 end
 

@@ -1,7 +1,7 @@
 authors = ["Azzaare <jf@baffier.fr>"]
 name = "PerfChecker"
 uuid = "6309bf6b-a531-4b08-891e-8ee981e5c424"
-version = "1.0.0"
+version = "1.0.1"
 
 [compat]
 Aqua = "0.8"
@@ -25,6 +25,7 @@ Intervals = "1"
 JSON = "0.21, 1"
 JuliaSyntax = "0.4, 1"
 Libdl = "1"
+Logging = "1"
 Malt = "1"
 PProf = "3"
 PatternFolds = "0.2"
@@ -84,6 +85,7 @@ DrWatson = "634d3b9d-ee7a-5ddf-bec9-22491ea816e1"
 FlameGraphs = "08572546-2f56-4bcf-ba4e-bab62c3a3f89"
 HTTP = "cd3eb016-35fb-5094-929b-558a96fad6f3"
 Intervals = "d8418881-c3e1-53bb-8760-2df7ec849ed5"
+Logging = "56ddb016-857b-54e1-b83d-db4d58db5568"
 PProf = "e4faabce-9ead-11e9-39d9-4379958e3056"
 PatternFolds = "c18a7f1d-76ad-4ce4-950d-5419b888513b"
 PropCheck = "ca382230-33be-11e9-0059-d981d03070e4"
@@ -93,7 +95,7 @@ TestItemRunner = "f8b46487-2199-4994-9208-9a1283c18c0a"
 UnicodePlots = "b8865327-cd53-5732-bb35-84acbb429228"
 
 [targets]
-test = ["Aqua", "BenchmarkTools", "Chairmarks", "DrWatson", "Documenter", "DocumenterVitepress", "FlameGraphs", "HTTP", "Intervals", "PatternFolds", "PProf", "PropCheck", "Sockets", "Test", "TestItemRunner", "UnicodePlots"]
+test = ["Aqua", "BenchmarkTools", "Chairmarks", "DrWatson", "Documenter", "DocumenterVitepress", "FlameGraphs", "HTTP", "Intervals", "Logging", "PatternFolds", "PProf", "PropCheck", "Sockets", "Test", "TestItemRunner", "UnicodePlots"]
 
 [weakdeps]
 BenchmarkTools = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"

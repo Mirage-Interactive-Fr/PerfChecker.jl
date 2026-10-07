@@ -1,5 +1,20 @@
 # Release notes
 
+## 1.0.1
+
+- Keep test discovery and catalogue synchronization working when Julia source
+  contains long text or embedded NUL characters, including generated Pluto
+  notebooks. Real fixture files and the discovery root boundary remain enforced.
+- Fix the Pluto suite Cancel button by supporting `cancel!(job::SuiteJob)`,
+  including worker shutdown and preservation of existing allocation traces.
+  Repeated cancellation requests let an ongoing cleanup finish.
+- Fix allocation-profile collection in fresh workers when sampled allocations
+  have source frames. Preserve allocation totals, stacks and lifecycle cleanup.
+- Stop owned external providers and runtime commands before cancellation returns,
+  including descendants, network captures and temporary result-file cleanup.
+  Retire owned descendants before draining inherited output pipes, even after
+  the provider exits. Windows providers enter a private job before execution.
+
 ## 1.0.0
 
 The V1 API has changed substantially since 0.2.4. Use a separate Julia environment
