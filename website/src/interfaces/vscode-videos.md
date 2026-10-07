@@ -8,7 +8,7 @@ Use the player controls to seek, enable English captions or open full screen.
 The videos record real native VS Code interfaces and Julia workers in isolated
 qualification workspaces. Their recorded-build captions identify the exact
 VSIX and Core source used. These recordings illustrate individual exercised
-actions; consult the [qualification notes](vscode.md#qualification-and-reporting-a-problem)
+actions; consult the [qualification notes](vscode.md#Qualification-and-reporting-a-problem)
 for the release and platform scope.
 
 The 1.0.1 integration is being qualified. The public 1.0.0 extension and the
@@ -18,21 +18,22 @@ and exports have passed review.
 
 | Passage | What to inspect | Written steps |
 | --- | --- | --- |
-| [02 — native TestItem evidence](#native-testitem-evidence) | Item validation, measured units and the report boundary | [Get a first result](vscode.md#get-a-first-result) |
-| [03 — visible suite selection](#visible-suite-selection) | Search, selection scope and Preview before Run | [Select checks](vscode.md#design-a-suite-and-compare-targets) |
-| [04 — normalized overlays](#normalized-overlays) | Per-metric minimum, raw values and tooltip units | [Read normalized overlays](vscode-workflows.md#read-normalized-overlays) |
-| [07 — reviewed preparation](#reviewed-preparation) | Actual warning, explicit Prepare action and recovery reference | [Prepare implementation](../mcp-advisor.md#Switch-from-advice-to-implementation) |
-| [08 — apply, verify and restore](#apply-verify-and-restore) | Independent oracle, recorded allocation and exact recovery | [Checkpoints and recovery](../mcp-advisor.md#Checkpoints-and-recovery) |
-| [10 — first native check](#first-native-check) | The Vector reduction item, correctness oracle and Run | [Get a first result](vscode.md#get-a-first-result) |
-| [11 — declared suite source](#declared-suite-source) | Factory, measured operation and correctness oracle | [Design a suite](vscode.md#design-a-suite-and-compare-targets) |
-| [12 — check types](#check-types) | Collector scope and required dependencies | [Choose the evidence](vscode.md#choose-the-evidence-for-your-question) |
-| [13 — comparison targets](#comparison-targets) | Git state, baseline and aggregation policy | [Compare a working change](vscode.md#compare-a-working-change-with-a-known-revision) |
-| [14 — cancellation and cleanup](#cancellation-and-cleanup) | Final controller status and explicit recovery checks | [Cancel a run](vscode.md#Cancel-a-run-and-wait-for-cleanup) |
-| [15 — saved distributions](#saved-distributions) | Real sample spread, allocation unit and raw data | [Read a distribution](vscode-workflows.md#read-a-distribution) |
-| [16 — recorded profile stacks](#recorded-profile-stacks) | Actual frame names and the collector's sampling scope | [Follow a recorded profile](vscode-workflows.md#follow-a-recorded-profile) |
-| [18 — investigations and analyzers](#investigations-and-analyzers) | Benchmark evidence, analyzer status and the real Aqua diagnostic | [Investigate and verify](vscode.md#Investigate-and-verify) |
-| [19 — tool discovery and schema](#tool-discovery-and-schema) | Actual tool name, argument types, required fields and Use | [Configure the advice tool](../mcp-advisor.md#Configure-the-advice-tool) |
-| [20 — isolated source review](#isolated-source-review) | Actual initializer, representative inputs and human decision | [Implementation review](../mcp-advisor.md#Switch-from-advice-to-implementation) |
+| [02 — native TestItem evidence](#Native-TestItem-evidence) | Item validation, measured units and the report boundary | [Get a first result](vscode.md#Get-a-first-result) |
+| [03 — visible suite selection](#Visible-suite-selection) | Search, selection scope and Preview before Run | [Select checks](vscode.md#Design-a-suite-and-compare-targets) |
+| [04 — normalized overlays](#Normalized-overlays) | Per-metric minimum, raw values and tooltip units | [Read normalized overlays](vscode-workflows.md#Read-normalized-overlays) |
+| [07 — reviewed preparation](#Reviewed-preparation) | Actual warning, explicit Prepare action and recovery reference | [Prepare implementation](../mcp-advisor.md#Switch-from-advice-to-implementation) |
+| [08 — apply, verify and restore](#Apply,-verify-and-restore) | Independent oracle, recorded allocation and exact recovery | [Checkpoints and recovery](../mcp-advisor.md#Checkpoints-and-recovery) |
+| [09 — Julia runtimes and projects](#Julia-runtimes-and-projects) | Runtime version, active project and two folder-specific debug contexts | [Choose Julia environments](vscode-configuration.md#Choose-Julia-environments) |
+| [10 — first native check](#First-native-check) | The Vector reduction item, correctness oracle and Run | [Get a first result](vscode.md#Get-a-first-result) |
+| [11 — declared suite source](#Declared-suite-source) | Factory, measured operation and correctness oracle | [Design a suite](vscode.md#Design-a-suite-and-compare-targets) |
+| [12 — check types](#Check-types) | Collector scope and required dependencies | [Choose the evidence](vscode.md#Choose-the-evidence-for-your-question) |
+| [13 — comparison targets](#Comparison-targets) | Git state, baseline and aggregation policy | [Compare a working change](vscode.md#Compare-a-working-change-with-a-known-revision) |
+| [14 — cancellation and cleanup](#Cancellation-and-cleanup) | Final controller status and explicit recovery checks | [Cancel a run](vscode.md#Cancel-a-run-and-wait-for-cleanup) |
+| [15 — saved distributions](#Saved-distributions) | Real sample spread, allocation unit and raw data | [Read a distribution](vscode-workflows.md#Read-a-distribution) |
+| [16 — recorded profile stacks](#Recorded-profile-stacks) | Actual frame names and the collector's sampling scope | [Follow a recorded profile](vscode-workflows.md#Follow-a-recorded-profile) |
+| [18 — investigations and analyzers](#Investigations-and-analyzers) | Benchmark evidence, analyzer status and the real Aqua diagnostic | [Investigate and verify](vscode.md#Investigate-and-verify) |
+| [19 — tool discovery and schema](#Tool-discovery-and-schema) | Actual tool name, argument types, required fields and Use | [Configure the advice tool](../mcp-advisor.md#Configure-the-advice-tool) |
+| [20 — isolated source review](#Isolated-source-review) | Actual initializer, representative inputs and human decision | [Implementation review](../mcp-advisor.md#Switch-from-advice-to-implementation) |
 
 ## Native TestItem evidence
 
@@ -62,6 +63,12 @@ and exports have passed review.
 
 ```@raw html
 <DocMedia video short recording="perfchecker-vscode-v101-short-08" src="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-08.mp4" poster="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-08-poster.jpg" subtitles="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-08-en.vtt" preload="metadata" alt="Actual native PerfChecker Apply and Restore controls with independently checked Julia results and allocation" caption="Apply the reviewed source change, inspect the independent Julia oracle and restore the previous source exactly. The recorded workload's allocation probe is 8072 B before and 0 B after; compatible timing measurements remain a separate step. Recorded build: VSIX 75f84f, Core 975d, VS Code 1.141 on Linux, controlled MCP replies." />
+```
+
+## Julia runtimes and projects
+
+```@raw html
+<DocMedia video short recording="perfchecker-vscode-v101-short-09" src="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-09.mp4" poster="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-09-poster.jpg" subtitles="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-09-en.vtt" preload="metadata" alt="Actual native PerfChecker terminal, Julia REPL and debug sessions using two folder-specific controller projects" caption="Inspect VERSION and the actual active project in each surface. This recording uses Julia extension 1.249.2 with Julia 1.12.7 for REPL and debug, and Julia 1.13.1 for PerfChecker workers. Recorded build: VSIX 2e722, Core 4eec, VS Code 1.141 on Linux; the two source debug sessions have independent controller projects." />
 ```
 
 ## First native check

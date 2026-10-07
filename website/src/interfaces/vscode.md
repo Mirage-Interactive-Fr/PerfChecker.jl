@@ -146,7 +146,7 @@ Collector toggles select or deselect matching runs. Unavailable conditions show 
 <DocMedia src="/assets/screenshots/vscode-suite-designer.png" alt="Running PerfChecker V1 suite-designer webview with workload filters, selected check types, target controls and a run-selection summary" caption="Review the exact runs before executing: filtering controls visibility, while selection controls what will run. The screenshot uses demonstration workloads in the extension's real suite designer." />
 ```
 
-#```@raw html
+```@raw html
 <DocMedia video short recording="perfchecker-vscode-v101-short-03" src="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-03.mp4" poster="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-03-poster.jpg" subtitles="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-03-en.vtt" preload="metadata" alt="Actual native PerfChecker suite filtering, visible selection and preview controls" caption="Search for the intended workload, select the visible checks and inspect Preview before running. The close views preserve the actual controls. Recorded build: VSIX 75f84f, Core 975d, VS Code 1.141 on Linux." />
 ```
 

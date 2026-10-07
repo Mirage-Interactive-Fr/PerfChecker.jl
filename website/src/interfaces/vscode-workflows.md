@@ -208,34 +208,12 @@ session with the editor, extension and Julia versions and redacted diagnostics.
 
 ### Public extension 1.0.0 notebooks
 
-**PerfChecker: New investigation notebook** opens an untitled notebook through VS Code's built-in `jupyter-notebook` document type. Select an available **Julia kernel** before running cells. Notebook support and a Julia kernel provider, typically Jupyter with IJulia, must already be configured. PerfChecker does not install either.
-
-The generated notebook contains editable cells for activating the controller, discovering the workspace, loading the scenario catalogue and measuring in the target environment, then running JET diagnostics and displaying advice.
-
-The earlier generated notebook's main Julia calls are:
-
-```julia
-using Pkg
-Pkg.activate(controller_project)
-using PerfChecker
-
-discovery = discover(root)
-display(investigation_view(discovery))
-
-catalog = load_scenario_catalog(catalog_path)
-bundles = run_scenarios(catalog; project = target_project, samples = 10)
-foreach(display, bundles)
-
-diagnosis = diagnose(catalog; project = target_project, tools = [:jet])
-advice = advise(diagnosis)
-display(investigation_view(advice))
-```
-
-The generated cells fill in selected paths; the example uses explanatory variable names. Inspect the catalogue before executing measurement cells: they run all its declared cases. Proposed discovery candidates are not automatically adopted. Change the analyzer list or sample count to fit your experiment, and save the untitled notebook when you want to keep it.
-
-JET must be installed in `target_project`. An unavailable analyzer is an explicit result; it does not establish that the program is free of inference problems.
-
-**PerfChecker: Open Julia notebook** opens an existing `.ipynb` in the native notebook editor. A Pluto `.jl` notebook opens as Julia source; use [PerfCheckerPluto](repl-pluto.md) for Pluto's reactive execution. PerfChecker does not convert between notebook formats.
+The earlier **New investigation notebook** and **Open Julia notebook** actions
+use `.ipynb` and require a Julia kernel provider. Existing notebooks remain
+separate from Pluto's `.jl` format; PerfChecker does not convert them. Retain
+their saved source and consult the [archived 1.0.0 notebook instructions](https://perfchecker.mirageinteractive.fr/v1.0.0/interfaces/vscode-workflows.html#Investigation-notebooks)
+when maintaining that workflow. For a new investigation with the corrected
+1.0.1 releases, follow the Pluto steps above.
 
 ## Dedicated Julia terminal
 
@@ -253,8 +231,8 @@ Use it to inspect the public API or deliberately rerun a check. Interactive term
 
 Install the Julia VS Code extension (`julialang.language-julia`) and open a saved Julia source file belonging to the selected package. Choose **PerfChecker: Debug current Julia file**. PerfChecker delegates to the Julia debug adapter, requests the selected scenario project in its launch configuration and stops on entry. Inspect the actual runtime project before relying on that environment.
 
-!!! note "Qualified Windows project selection"
-    Native VS Code **1.141.0** on Windows, the Julia extension **1.249.2** and Julia **1.12.7** passed the REPL and debugger checks with the 1.0.1 extension build. Both debug sessions executed the target source, checked `VERSION`, `Base.active_project()` and the correctness oracle, and used the intended controller in two distinct workspace folders. PerfChecker's measurement runner used Julia **1.13.1** separately. This proof covers the selected target source; full PerfChecker startup under the debugger's interpreter was not exercised. Check the same runtime and project fields in your stopped session.
+!!! note "Qualified runtime and project selection"
+    Native VS Code **1.141.0** on Linux and Windows, the Julia extension **1.249.2** and Julia **1.12.7** passed the REPL and debugger checks with the 1.0.1 extension build. Both debug sessions executed the target source, checked `VERSION`, `Base.active_project()` and the correctness oracle, and used the intended controller in two distinct workspace folders. PerfChecker's measurement runner used Julia **1.13.1** separately. This proof covers the selected target source; full PerfChecker startup under the debugger's interpreter was not exercised. Check the same runtime and project fields in your stopped session.
 
 1. Use deterministic advice to identify a workload or correctness failure.
 2. Open its source and set a breakpoint.
@@ -272,7 +250,7 @@ official Julia extension **1.174.2** and Julia **1.13.1**: SymbolServer reports
 combination. PerfChecker's controller and measurement workers have separate
 executable and project checks.
 
-The native Windows checks passed with VS Code **1.141.0**, Julia extension
+The native Linux and Windows checks passed with VS Code **1.141.0**, Julia extension
 **1.249.2** and Julia **1.12.7**, including controller selection in a second
 workspace folder. The recorded build was VSIX `2e722b2d575a`, using Core
 1.0.1 source tree `4fbc3c25543aa4f9b1154c227e5432f0cd62df91` before
