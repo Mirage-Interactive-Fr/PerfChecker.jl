@@ -163,7 +163,7 @@ jobs:
     needs: documentation
     if: >-
       github.event.deleted != true &&
-      vars.PERFCHECKER_DOCS_SFTP_DEPLOY == 'true' &&
+      vars.PERFCHECKER_DOCS_SFTP_DEPLOY_V2 == 'true' &&
       github.event_name != 'pull_request' &&
       (github.ref == 'refs/heads/main' || github.ref_type == 'tag')
     runs-on: ubuntu-latest
@@ -198,7 +198,7 @@ jobs:
           PERFCHECKER_DOCS_STABLE_REFRESH: ${{ github.event_name == 'workflow_dispatch' && inputs.publication == 'stable' }}
           PERFCHECKER_DOCS_STABLE_VERSION: ${{ needs.documentation.outputs.stable-version }}
           PERFCHECKER_DOCS_REF_DELETED: ${{ github.event.deleted }}
-          PERFCHECKER_DOCS_SFTP_DEPLOY: ${{ vars.PERFCHECKER_DOCS_SFTP_DEPLOY }}
+          PERFCHECKER_DOCS_SFTP_DEPLOY: ${{ vars.PERFCHECKER_DOCS_SFTP_DEPLOY_V2 }}
           PERFCHECKER_DOCS_SFTP_HOST: ${{ vars.PERFCHECKER_DOCS_SFTP_HOST }}
           PERFCHECKER_DOCS_SFTP_PORT: ${{ vars.PERFCHECKER_DOCS_SFTP_PORT }}
           PERFCHECKER_DOCS_SFTP_USER: ${{ vars.PERFCHECKER_DOCS_SFTP_USER }}
