@@ -13,6 +13,11 @@ same webviews open in editor tabs; the surrounding editor and theme may differ.
 Select any screenshot to open its full-resolution image, including the form
 fields and implementation diff.
 
+The **1.0.1 candidate** adds integrated Pluto notebooks and guided workspace
+setup. Their qualification and publication are still in progress. The six
+screenshots on these pages describe the public 1.0.0 webviews with demonstration data;
+new native screenshots will accompany the qualified Pluto release.
+
 ## Install and prepare
 
 1. Install VS Code **1.96 or newer** and Julia **1.10 or newer**.
@@ -34,6 +39,10 @@ Opening Studio reads configuration and presents actions. It does not install pac
 ```
 
 If this is your first setup, follow [Prepare a controller](vscode-configuration.md#Prepare-a-controller) before running an item. Use the dedicated controller so adding a profiler or MCP client does not change your package's normal dependency environment.
+
+The candidate's [guided setup](vscode-configuration.md#Guided-setup-from-Studio)
+offers an explicit controller installation or an existing project. It requires
+registered Core 1.0.1 before the new notebook/discovery workflow can run.
 
 See [Installation](../guide/installation.md) for the core and interface packages, and [VS Code configuration](vscode-configuration.md) for complete settings and environment examples.
 
@@ -87,6 +96,19 @@ For a suite, use **PerfChecker: Create feature suite** if you need a starter, or
 | PerfChecker terminal | Use a dedicated Julia session in the controller project |
 
 These are VS Code editor tabs and native surfaces. Arrange them with VS Code's editor groups; the activity bar is an entry point, not the available working area.
+
+### Choose an action and its prerequisites
+
+| Action | Prepare first | Guide |
+| --- | --- | --- |
+| Existing TestItems | Runner, TestItems/TestItemRunner 1.3.2 or newer, package test dependencies | [First result](#Get-a-first-result) |
+| Suite selection and comparison | Suite factory, collectors, declared target environments | [Design and compare](#Design-a-suite-and-compare-targets) |
+| Visual output | Completed suite reports containing the requested observations | [Saved plots](vscode-workflows.md#Plot-saved-results) |
+| Integrated Pluto candidate | Corrected extension/core 1.0.1 and a separate Pluto project | [Notebook workflow](vscode-workflows.md#Pluto-notebooks-in-VS-Code) |
+| Julia terminal or debugger | Julia/controller; Julia extension and saved source for debugging | [Julia tools](vscode-workflows.md#Dedicated-Julia-terminal) |
+| Advice conversation | Authenticated supported CLI or configured MCP advice tool | [MCP connection](../mcp-advisor.md#Choose-a-connection) |
+| Reviewed implementation | Saved files, Git HEAD and a separate implementation tool | [Review and apply](../mcp-advisor.md#Switch-from-advice-to-implementation) |
+| Cancel, stop or restore | Wait for cleanup and review repository drift | [Cancellation](#Cancel-a-run-and-wait-for-cleanup) |
 
 ## Design a suite and compare targets
 
@@ -193,7 +215,16 @@ Read the [MCP guide](../mcp-advisor.md) for configuration, what is transmitted, 
 
 ## Julia, notebooks and terminals
 
-**PerfChecker: Open Julia terminal** creates a terminal named for the package and starts the selected Julia executable with the controller project. **New investigation notebook** opens an untitled Julia notebook containing explicit discovery, measurement and diagnosis cells. It is yours to edit and save; select an available Julia kernel.
+**PerfChecker: Open Julia terminal** creates a terminal named for the package and
+starts the selected Julia executable with the controller project.
+
+The **1.0.1 candidate** uses **New Pluto notebook** and **Open Pluto notebook**
+for editable `.jl` notebooks in an interactive editor tab. Follow the
+[Pluto workflow](vscode-workflows.md#Pluto-notebooks-in-VS-Code) for generation,
+Launch/Cancel, reactive edits, saved source/reports and Stop/Restart controls.
+Public extension **1.0.0** uses **New investigation notebook**, an untitled
+notebook with discovery, measurement and diagnosis cells; select an installed
+Julia kernel for that earlier workflow.
 
 **PerfChecker: Debug current Julia file** delegates a saved Julia source file to the installed Julia VS Code debugger. Debugging needs `julialang.language-julia`. The debugger and notebook kernel are separate from isolated measurement workers; stepping through a program is not a performance measurement.
 
@@ -218,6 +249,23 @@ This provides the workspace boundary used by the Etendu/Beautiful Landscape inte
 | Wrong folder in multi-root workspace | Reopen Studio and select the intended package |
 
 Use **PerfChecker: Show worker output** for execution diagnostics. See [configuration troubleshooting](vscode-configuration.md#Troubleshooting) and the [MCP failure table](../mcp-advisor.md#Troubleshooting) for the next checks.
+
+### Qualification and reporting a problem
+
+Core CI includes Linux 32-bit, Linux/Windows 64-bit, Julia LTS and macOS
+Intel x64 (`macos-26-intel`). That core matrix is separate from native extension
+qualification. The 1.0.1 native editor campaign is still running; physical Mac
+testing and Apple Silicon arm64 coverage have not been established here.
+The completed report will record editor, Julia/core versions and CPU architecture
+for each tested platform.
+
+Report editor/UI issues in
+[PerfCheckerVSCode](https://github.com/Mirage-Interactive-Fr/PerfCheckerVSCode/issues/new)
+and Julia execution issues in
+[PerfChecker.jl](https://github.com/Mirage-Interactive-Fr/PerfChecker.jl/issues/new).
+Include OS and CPU architecture, VS Code/extension/Julia/core versions, the
+chosen action, a minimal reproducible workload, selected project settings and
+redacted output. Keep credentials and Pluto session URLs out of the report.
 
 ## Recorded example
 

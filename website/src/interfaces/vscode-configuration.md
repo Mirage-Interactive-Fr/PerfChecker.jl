@@ -28,6 +28,40 @@ V1, a benchmark collector and TestItems support, and makes your local package im
 package's other test dependencies deliberately if its items import them.
 `Pkg.develop` points at the package root rather than copying or publishing it.
 
+### Guided setup from Studio
+
+This guided setup belongs to the **1.0.1 candidate** and is awaiting publication.
+For public extension 1.0.0, use the manual controller recipe above.
+
+With PerfChecker for VS Code 1.0.1 or newer, choose **Set up workspace and create
+suite** in an unconfigured Studio, or **PerfChecker: Create feature suite**.
+The extension first checks the selected controller and then offers:
+
+| Choice | Action |
+| --- | --- |
+| **Create controller environment** | After **Install controller** confirmation, install registered PerfChecker 1.0.1, BenchmarkTools, Chairmarks and TestItemRunner into `perf/controller` |
+| **Use an existing controller** | Choose a folder containing `Project.toml`; verify PerfChecker 1.0.1 or newer within the 1.x series without installing packages |
+| **Read the setup guide** | Open this documentation for manual preparation |
+
+Successful verification sets `runnerProject` for that workspace folder.
+`scenarioProject` follows it only when you have not configured that setting
+already. A cancelled or failed setup does not switch the controller setting.
+Inspect the selected target environment and add your measured package's test
+dependencies when required; preparing collectors alone does not make every
+package's tests importable.
+
+Opening Studio remains a configuration action. Downloads require the explicit
+installation confirmation. Setup uses `juliaExecutable`; cancellation requests
+worker cleanup, and **PerfChecker: Show worker output** records dependency
+errors.
+
+
+For an MCP or local Codex connection, add `HTTP` explicitly to this controller,
+then follow [MCP configuration](../mcp-advisor.md). The setup installs the listed
+measurement packages. The separate Pluto environment uses the qualified Pluto
+release's own HTTP dependency range.
+
+
 Open **Preferences: Open Workspace Settings (JSON)**, or the selected folder's
 settings in a multi-root workspace, and set the example below in
 `.vscode/settings.json`. Set **Runner Project** to `perf/controller` explicitly.
@@ -71,6 +105,7 @@ All setting names below have the prefix `perfchecker.`.
 | `uiConfiguration` | `perf/perfchecker-ui.json` | Shared visual suite selection |
 | `gitTargets` | `[]` | Named branches, tags or commits measured alongside other targets |
 | `comparisonPolicies` | `[]` | Exact or grouped baseline policies |
+| `plutoProject` | `perf/pluto` | Separate Pluto project for the 1.0.1 candidate notebook integration |
 
 The visual suite editor manages the richer selection. See [comparison configuration](../reference/comparisons.md) for policy fields and aggregation semantics.
 
@@ -152,6 +187,8 @@ The explicit local Codex connection supplies these implementation tool names in 
 | Agent cannot see the code | Check access to the supplied isolated checkout, not the original root |
 | Codex connection refused | Check native executable, required flags, existing login and absence of project `.codex` configuration |
 | Saved advisor config seems inactive | Disconnect the temporary Codex connection to resume your saved provider |
-| Notebook cannot execute | Select an installed Julia kernel; see [notebook prerequisites](vscode-workflows.md#Investigation-notebooks) |
+| Pluto setup cannot resolve HTTP | Use the separate `plutoProject`; qualified Pluto 1.0.4 uses HTTP 1.x, while the MCP controller uses HTTP 2.x |
+| Existing Pluto/controller project has Core 1.0.0 | The 1.0.1 candidate requires an explicit upgrade after Core 1.0.1 becomes available in General |
+| Notebook session unavailable | Inspect **PerfChecker Pluto** output and [session controls](vscode-workflows.md#Manage-the-session-and-saved-source); public 1.0.0 needs an installed Julia kernel |
 
 Worker logs are available through **PerfChecker: Show worker output**. Keep tokens out of configuration files and troubleshooting reports.

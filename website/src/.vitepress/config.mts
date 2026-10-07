@@ -1,9 +1,10 @@
 import { defineConfig } from 'vitepress'
 import { tabsMarkdownPlugin } from 'vitepress-plugin-tabs'
 import footnote from 'markdown-it-footnote'
-import { existsSync, readFileSync } from 'node:fs'
-import { resolve, sep } from 'node:path'
+import { existsSync, readFileSync, mkdirSync, writeFileSync } from 'node:fs'
+import { dirname, resolve, sep } from 'node:path'
 import { createHash } from 'node:crypto'
+import { fileURLToPath } from 'node:url'
 
 const docsVersion = process.env.PERFCHECKER_DOCS_VERSION ?? '1.0.0'
 const docsURL = new URL(process.env.PERFCHECKER_DOCS_URL ?? 'https://perfchecker.mirageinteractive.fr/')
@@ -13,14 +14,39 @@ const sftp = (process.env.PERFCHECKER_DOCS_HOSTING ??
   (docsURL.origin === 'https://perfchecker.mirageinteractive.fr' ? 'sftp' : 'github')) === 'sftp'
 const docsChannel = process.env.PERFCHECKER_DOCS_CHANNEL ?? 'stable'
 
-// Both the generated VitePress config and the source config run from website/.
-const mediaRoot = resolve(process.cwd(), 'src/public')
+// Use this config's public tree: Documenter has already copied the source tree
+// when VitePress loads its generated config. Fetched assets must enter that copy.
+const mediaRoot = resolve(fileURLToPath(new URL('../public/', import.meta.url)))
 const media = JSON.parse(readFileSync(resolve(process.cwd(), 'media.json'), 'utf8'))
 for (const item of Object.values(media) as any[]) {
   const file = resolve(mediaRoot, item.file)
   if (!file.startsWith(mediaRoot + sep)) throw new Error('Recording escapes the public directory')
   if (item.youtube_id && !/^[A-Za-z0-9_-]{11}$/.test(item.youtube_id)) throw new Error('Invalid YouTube video ID')
   if (item.download_url && !item.download_url.startsWith('https://')) throw new Error('Recording downloads require HTTPS')
+  if (item.embed_local) {
+    if (!Number.isSafeInteger(item.bytes) || item.bytes <= 0 || !/^[a-f0-9]{64}$/.test(item.sha256))
+      throw new Error(`Embedded recording requires exact bytes and SHA256: ${item.file}`)
+    const download = new URL(item.download_url)
+    if (download.protocol !== 'https:' || download.username || download.password || download.hash)
+      throw new Error('Embedded recording download must be plain HTTPS')
+    if (!existsSync(file)) {
+      const deadline = AbortSignal.timeout(120_000)
+      let bytes: Buffer
+      try {
+        const response = await fetch(download, { signal: deadline })
+        if (!response.ok) throw new Error(`HTTP ${response.status}`)
+        bytes = Buffer.from(await response.arrayBuffer())
+      } catch (error) {
+        const reason = deadline.aborted ? 'timed out after 120 seconds' :
+          error instanceof Error ? error.message : String(error)
+        throw new Error(`Recording download failed for ${item.file}: ${reason}`)
+      }
+      if (bytes.length !== item.bytes || createHash('sha256').update(bytes).digest('hex') !== item.sha256)
+        throw new Error(`Downloaded recording does not match media.json: ${item.file}`)
+      mkdirSync(dirname(file), { recursive: true })
+      writeFileSync(file, bytes, { flag: 'wx' })
+    }
+  }
   item.local_available = existsSync(file)
   if (item.local_available) {
     const bytes = readFileSync(file)

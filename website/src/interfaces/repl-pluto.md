@@ -35,6 +35,13 @@ Terminal plots are a compact fallback. They do not replace hover, linked selecti
 
 ## Pluto
 
+For the **1.0.1 candidate** integrated into VS Code, follow
+[Pluto notebooks in VS Code](vscode-workflows.md#Pluto-notebooks-in-VS-Code).
+It covers creating and reopening `.jl` notebooks, separate environments,
+Launch/Cancel, reactive cell edits, saved reports and session controls. Its
+release and native qualification are still in progress. The standalone Pluto
+workflow below remains available with the public core and companion.
+
 Download the runnable notebook:
 
 ```@raw html
@@ -48,7 +55,7 @@ julia --startup-file=no setup.jl pluto
 julia --startup-file=no --project=.controller/pluto pluto.jl
 ```
 
-The notebook has explicit **Launch**, **Cancel**, **Refresh** and **Save** controls. Opening it, changing a selector or reloading the page starts no measurement.
+The notebook has explicit **Launch**, **Cancel**, **Refresh** and **Save** controls. Opening it, changing a selector or reloading the page starts no measurement. Pluto still evaluates reactive Julia cells; inspect unfamiliar notebook source before opening it in a trusted environment.
 
 To generate a notebook for your own suite:
 

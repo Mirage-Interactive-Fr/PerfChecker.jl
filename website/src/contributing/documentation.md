@@ -94,7 +94,26 @@ Store images under `website/src/public/assets/screenshots/<interface>/`. Use act
 
 Keep source recordings outside Git history. The local archive is `.lab/media/<recording>/`; `website/.gitignore` also excludes WebM, MP4 and MOV copies.
 
-For publication, use an approved project recording on YouTube and set its `youtube_id` in `website/media.json`. The site loads the privacy-enhanced player only after a reader clicks the poster. This does not make YouTube tracker-free.
+For a local tutorial extract, publish its qualified MP4 as an approved release
+asset and record its exact HTTPS `download_url`, `bytes` and `sha256` in
+`website/media.json`. Set `embed_local` to `true` for the eight guide extracts.
+The build fetches a missing copy, checks its length and digest before writing it
+under the entry's public `file` path, and refuses an existing copy with different
+bytes. The normal documentation exports then include these compressed extracts.
+Keep the long master outside the public tree and link to its separate deliverable.
+
+Use AVC/AAC MP4 with faststart, a readable poster and English VTT captions. The
+guide's `DocMedia` uses `video`, `recording`, `src`, `poster`, `subtitles`,
+`preload="metadata"` and `short` for an extract. Provide a useful caption and,
+once the master is accessible, `walkthrough` and `chapter` for the full tutorial.
+Playback uses native controls and `playsinline`, with no automatic playback.
+Retain full-size screenshot links and identify candidate, fixture or recorded
+measurement provenance. Verify loading, seeking, captions and fullscreen on
+desktop and mobile; metadata preloading should not fetch all eight full clips.
+
+An explicitly approved YouTube publication can instead set `youtube_id` in the
+manifest. The site loads the privacy-enhanced player only after a reader clicks
+the poster. This does not make YouTube tracker-free.
 
 ## Pull-request checklist
 

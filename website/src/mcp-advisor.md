@@ -18,6 +18,12 @@ In either MCP route, the controller must contain PerfChecker V1 and `HTTP`.
 first. Advice and implementation are separate actions: receiving an answer never
 approves a source edit.
 
+For interactive experiments, the [integrated Pluto candidate](interfaces/vscode-workflows.md#Pluto-notebooks-in-VS-Code)
+keeps notebook execution in its separate project. Launch the chosen checks,
+inspect their correctness and save completed reports before selecting that saved
+evidence in Advisor chat. Follow-up questions and implementation review remain
+explicit chat actions; reopening a notebook does not request an agent turn.
+
 ## Connect an authenticated Codex CLI
 
 PerfChecker can connect an installed, authenticated Codex CLI through a local MCP bridge with separate advice and implementation tools. The connector invokes `codex exec`; it does not require `codex mcp-server`.
@@ -28,7 +34,21 @@ PerfChecker can connect an installed, authenticated Codex CLI through a local MC
 4. Ask for advice, optionally attaching saved evidence. Review the answer, then use the [explicit implementation workflow](#Switch-from-advice-to-implementation) if you want the agent to prepare a change.
 5. Choose **Disconnect Codex**, or run **PerfChecker: Disconnect local Codex**, to return to your saved advisor configuration. After an editor reload, connect again when needed.
 
-The qualified CLI is **Codex 0.159.2**. The connector requires `--no-daemon`, `--ignore-user-config` and `--ignore-rules`, plus the `exec` ephemeral, sandbox and output flags. Unsupported installations fail explicitly. Use your own external MCP agent if these flags are unavailable. See the official [Codex noninteractive workflow example](https://developers.openai.com/cookbook/examples/codex/build_iterative_repair_loops_with_codex) for the CLI execution model; PerfChecker's supported flags are checked against the executable actually selected.
+Qualification used **Codex 0.159.2** for the executable contract and connector
+lifecycle, and **Codex 0.162.0-alpha.2** for authenticated multi-turn advice and
+reviewed source implementation. The latter test exercised contextual advice,
+an isolated JavaScript patch, a Node correctness oracle, diff review, apply,
+exact restore and cancellation. Consult the release qualification report for
+the separate native Julia workload and its correctness oracle. These are the CLI
+versions actually exercised; intermediate releases have not been qualified by
+inference.
+
+The connector requires `--no-daemon`, `--ignore-user-config` and `--ignore-rules`,
+plus the `exec` ephemeral, sandbox and output flags. Its probe checks the selected
+executable. Unsupported installations fail explicitly. Use your own external
+MCP agent if these flags are unavailable. See the official
+[Codex noninteractive workflow example](https://developers.openai.com/cookbook/examples/codex/build_iterative_repair_loops_with_codex)
+for the CLI execution model.
 
 PerfChecker starts an authenticated HTTP endpoint on `127.0.0.1` with a random port. The endpoint and automatically generated Bearer token exist only in this editor session. They are not saved in settings or `perf/advisor.json`. The explicit connection authorizes chat for this session, including when your saved provider is disabled. It temporarily takes precedence over saved provider configuration; disconnecting or reloading restores that configuration and its enabled/disabled state. Never copy this temporary endpoint into a configuration file.
 
@@ -279,7 +299,7 @@ See the official [2026-07-28 Streamable HTTP specification](https://modelcontext
 | Cancellation | Local worker stopped; server interruption depends on the server |
 | Apply/restore refused | Repository drifted; inspect before recovering content |
 | Git transformation unsupported | Check attributes for filters/LFS, working-tree encoding or ident expansion |
-| Codex executable unsupported | Native binary with the required flags; qualified version 0.159.2 |
+| Codex executable unsupported | Native binary with the required flags; versions exercised are 0.159.2 and 0.162.0-alpha.2 |
 | Codex not authenticated | Run `codex login` yourself, then reconnect |
 | Project `.codex` configuration refused | Use a clean workspace or your explicitly configured external MCP agent |
 | Codex disconnected after reload | Connect again; saved provider settings and Git recovery are retained |

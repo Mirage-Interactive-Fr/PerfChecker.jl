@@ -33,13 +33,135 @@ A report without profile stacks cannot produce a measured flame graph. A missing
 
 For custom Julia figures, load [PerfCheckerMakie](visualization.md) with your chosen Makie backend. The core notebook's `display(bundle)` presents a bundle; it does not automatically create every optional graphical backend. Save reports or create figures explicitly when you need reusable plots.
 
-## Investigation notebooks
+## Notebook versions
+
+The integrated Pluto workflow below is a **1.0.1 candidate**. Its native editor
+qualification and General installation check are still in progress. Public
+extension **1.0.0** uses the earlier notebook workflow described at the end of
+this section. Install the corrected releases before using the candidate steps.
+
+## Pluto notebooks in VS Code
+
+The integrated Pluto workflow requires **PerfChecker for VS Code 1.0.1 or newer**
+and the corrected **PerfChecker core 1.0.1 or newer**. Both releases must be
+available before following this workflow.
+Use **PerfChecker: New Pluto notebook** to create a native `.jl` notebook, or
+**PerfChecker: Open Pluto notebook** to reopen one in an interactive editor tab.
+The extension starts a Julia-backed Pluto session and displays its actual
+notebook interface inside VS Code.
+
+### Create a dashboard
+
+1. Open the intended trusted package folder and check its suite or scenario
+   configuration in Studio.
+2. Choose **New Pluto notebook**, then save a new `.jl` file inside that folder.
+   The suggested location is `perf/notebooks/performance.jl`.
+3. Select **Feature suite** for suite checks and saved reports, or
+   **Investigation** for discovery, scenarios, diagnosis and advice.
+4. If the separate Pluto environment is missing or incompatible, review the
+   installation prompt. **Install Pluto environment** downloads the listed
+   packages into `perfchecker.plutoProject`, whose default is `perf/pluto`.
+   Cancelling leaves the installation unrequested; opening Studio never installs
+   those packages.
+5. Wait for the notebook tab to become ready. In **Feature suite**, select the
+   workload, collector and target, inspect the printed plan, then choose
+   **Launch selected checks**.
+6. Use **Refresh status** to inspect the job and **Cancel active job** to
+   interrupt active work. After completion, refresh and choose **Save completed
+   reports**, then open their visual output from PerfChecker.
+
+An **Investigation** notebook instead offers **Launch selected action**, **Cancel
+active investigation** and **Refresh status and evidence**. Review its chosen
+action and declared scenarios before launch. If no suite file exists, a feature
+notebook opens as a saved-report reader; create or configure the suite before
+expecting executable checks.
+
+The integration uses the official notebook generators supplied by PerfChecker
+and its PerfCheckerPluto companion. The generated notebook is editable Julia source. Opening it or changing a selector does not request
+a new measurement. Pluto still executes reactive Julia cells: inspect an
+unfamiliar notebook before trusting and opening it.
+
+For an investigation, `scenarioCatalog` selects the declared scenarios and
+`scenarioProject` selects their target environment. Prepare the measured
+package, scenario dependencies and requested analyzers there. The notebook's own
+environment contains the interface packages; it is separate from the target
+workers. A missing analyzer is unavailable rather than a passing diagnosis.
+
+### Keep the Pluto environment separate
+
+The candidate integration targets Pluto **1.0.4**, the corrected PerfChecker
+core, PlutoUI, BenchmarkTools, Chairmarks and its official PerfCheckerPluto companion.
+Use the companion tag recorded by the qualified extension release. Set the folder configuration explicitly
+when you use several environments:
+
+```json
+{
+  "perfchecker.runnerProject": "perf/controller",
+  "perfchecker.scenarioProject": ".",
+  "perfchecker.plutoProject": "perf/pluto"
+}
+```
+
+Pluto 1.0.4's published dependency range uses HTTP 1.x, while the qualified MCP
+controller uses HTTP 2.x. A separate Pluto environment keeps these resolved
+dependencies independent. This is a constraint of the qualified Pluto release:
+later Pluto releases may support both ranges. Do not install this stable Pluto
+setup into the measurement/MCP controller; the guided installer refuses that
+overlap. See [optional interface installation](../guide/installation.md) if you
+prefer to prepare the environment manually.
+
+### Edit, save and reopen
+
+1. Expand the source of a notebook cell and edit its Julia code. Submit the cell
+   with **Ctrl+Enter** (**Cmd+Enter** on macOS) to update its reactive output.
+2. Wait for Pluto to save the cell to the `.jl` file. These saved cell edits are
+   separate from **Save completed reports**, which writes completed suite
+   evidence.
+3. Reopen the file with **PerfChecker: Open Pluto notebook**. An active notebook
+   reuses its existing tab and server; a stopped session starts from the saved
+   source. Changing selectors or reopening retains saved evidence without
+   launching the checks again.
+
+### Manage the session and saved source
+
+| Control | Effect |
+| --- | --- |
+| **Open source** | Open the saved `.jl` notebook in the Julia source editor |
+| **Stop session** | Shut down this notebook's Julia/Pluto process; retain the saved notebook and reports |
+| **Restart session** | Stop the current process and start the saved notebook again |
+| **PerfChecker: Stop Pluto notebook sessions** | Stop the sessions belonging to the selected workspace folder |
+| Pluto homepage session button | Confirm shutdown of that notebook and its owned jobs; the Pluto server remains available |
+
+Pluto saves cell edits to the notebook file. Reopening the same active notebook
+reveals its existing tab; closing that tab stops its process. Removing its
+workspace folder also shuts down its session. Stop a session before editing its
+source externally, then restart to load the saved changes. Unsaved Julia editor
+buffers are separate from Pluto's own saved cells.
+
+After shutting down a notebook from Pluto's homepage, use **Restart session**
+in the PerfChecker header to reopen its saved source. Stop and restart request
+cancellation of owned PerfChecker jobs and wait for their cleanup before closing
+the notebook worker. Wait for the final status and inspect diagnostics when a
+shutdown reports an error.
+
+Use **View → Output → PerfChecker Pluto** for setup, startup and session errors.
+The notebook server binds to loopback and the extension handles its session URL;
+do not share that URL or include it in a bug report. Remote workspace forwarding
+depends on VS Code's extension-host port support. Report an unavailable forwarded
+session with the editor, extension and Julia versions and redacted diagnostics.
+
+```@raw html
+<a id="Investigation-notebooks"></a>
+```
+
+
+### Public extension 1.0.0 notebooks
 
 **PerfChecker: New investigation notebook** opens an untitled notebook through VS Code's built-in `jupyter-notebook` document type. Select an available **Julia kernel** before running cells. Notebook support and a Julia kernel provider, typically Jupyter with IJulia, must already be configured. PerfChecker does not install either.
 
 The generated notebook contains editable cells for activating the controller, discovering the workspace, loading the scenario catalogue and measuring in the target environment, then running JET diagnostics and displaying advice.
 
-The main Julia calls are:
+The earlier generated notebook's main Julia calls are:
 
 ```julia
 using Pkg
