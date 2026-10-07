@@ -2,6 +2,8 @@
 
 ## 1.0.1
 
+- Preserve configured MCP tools, arguments, response mode and instructions when
+  a bounded investigation caps the advisor timeout by its remaining budget.
 - Keep test discovery and catalogue synchronization working when Julia source
   contains long text or embedded NUL characters, including generated Pluto
   notebooks. Real fixture files and the discovery root boundary remain enforced.

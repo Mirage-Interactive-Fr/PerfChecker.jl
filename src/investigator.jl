@@ -17,7 +17,9 @@ Timeouts are capped by remaining budget; count/budget exhaustion can leave
 experiments unexecuted. Cancellation follows worker termination contracts.
 
 `advisor` optionally supplies an `AdvisorConfig` for bounded menu selection;
-provider output remains advisory. `reports` writes per-experiment evidence and
+its configured instructions and provider settings are preserved while its
+timeout is capped by the remaining budget. Provider output remains advisory.
+`reports` writes per-experiment evidence and
 a final report. The controller environment must already contain needed tools.
 This explicitly executes declared code but never modifies it, compares a
 performance baseline or certifies the advice as an improvement.
@@ -73,10 +75,9 @@ function investigate(catalog::ScenarioCatalog; project = catalog.root, samples =
         end
         index = 1
         if advisor !== nothing
-            bounded = AdvisorConfig(; endpoint = advisor.endpoint, model = advisor.model,
-                timeout = min(advisor.timeout, remaining), max_tokens = advisor.max_tokens,
-                max_evidence_chars = advisor.max_evidence_chars, api_key_env = advisor.api_key_env,
-                allow_remote = advisor.allow_remote, protocol = advisor.protocol, provider_package = advisor.provider_package)
+            values = _advisor_config(advisor)
+            values["timeout"] = min(advisor.timeout, remaining)
+            bounded = AdvisorConfig(; (Symbol(k) => v for (k, v) in values)...)
             decision = narrate_advice(advice; config = bounded, project, cancellation,
                 experiments = [Dict("id" => e["id"], "purpose" => e["purpose"])
                                for e in menu])
