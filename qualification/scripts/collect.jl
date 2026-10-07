@@ -17,11 +17,18 @@ for lane in plan["lanes"]
     push!(receipts, receipt)
 end
 result = validate_receipts(plan, receipts; require_full = "--publish" in ARGS)
-if "--publish" in ARGS
+documentation = filter(r -> haskey(r, "site_sha256"), receipts)
+if !isempty(documentation) || "--publish" in ARGS
     site = joinpath(root, "website/build/site")
-    docs = only(filter(r -> haskey(r, "site_sha256"), receipts))
+    docs = only(documentation)
     tree_digest(site) == docs["site_sha256"] ||
         error("Site differs from the tested artifact")
+    docs["static_site_base"] == "/" &&
+        docs["static_site_url"] == "https://perfchecker.mirageinteractive.fr/" ||
+        error("Unexpected standalone documentation deployment")
+    static_site = joinpath(root, "website/build/static-site")
+    tree_digest(static_site) == docs["static_site_sha256"] ||
+        error("Standalone site differs from the tested artifact")
 end
 write_toml(joinpath(root, ".qualification/collection.toml"), result)
 println(result["publishable"] ? "Full collection qualified" :

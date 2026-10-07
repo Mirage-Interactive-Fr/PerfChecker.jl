@@ -27,6 +27,7 @@ concurrency:
 env:
   PERFCHECKER_QUALIFICATION_PROFILE: ${{ (github.event_name == 'schedule' || inputs.full == true || inputs.publish == true) && 'extended' || 'routine' }}
   PERFCHECKER_DOCS_BASE: '/PerfChecker/dev/'
+  PERFCHECKER_DOCS_URL: 'https://mirage-interactive-fr.github.io/PerfChecker/'
   JULIA_NUM_THREADS: '1'
   JULIA_NUM_PRECOMPILE_TASKS: '1'
   JULIA_NUM_GC_THREADS: '1'
@@ -116,6 +117,13 @@ jobs:
           path: website/build/site
           include-hidden-files: true
           if-no-files-found: error
+      - uses: actions/upload-artifact@v7
+        if: success() && matrix.suite == 'docs'
+        with:
+          name: qualified-documentation-static
+          path: website/build/static-site
+          include-hidden-files: true
+          if-no-files-found: error
 
   stable-documentation:
     needs: [plan, qualify, collection, release]
@@ -151,6 +159,10 @@ jobs:
         with:
           name: qualified-documentation-site
           path: website/build/site
+      - uses: actions/download-artifact@v8
+        with:
+          name: qualified-documentation-static
+          path: website/build/static-site
       - name: Restore receipts from this complete campaign
         shell: julia --startup-file=no --project=qualification {0}
         run: |
@@ -205,6 +217,16 @@ jobs:
         with:
           pattern: qualification-*
           path: .qualification/downloads
+      - uses: actions/download-artifact@v8
+        if: contains(needs.plan.outputs.matrix, '"suite":"docs"')
+        with:
+          name: qualified-documentation-site
+          path: website/build/site
+      - uses: actions/download-artifact@v8
+        if: contains(needs.plan.outputs.matrix, '"suite":"docs"')
+        with:
+          name: qualified-documentation-static
+          path: website/build/static-site
       - name: Arrange lane evidence
         shell: julia --startup-file=no --project=qualification {0}
         run: |

@@ -18,6 +18,11 @@ Use Julia's tools first. Use a native profiler to inspect a C/C++/Fortran depend
 
 Native tools require separate installation. PerfChecker can **prepare commands** for some of them; listing a tool does not mean it can run it or import its output.
 
+Allocation profiles can complete without retained source sites. Check their
+explicit capture status, measured totals and attribution scope before selecting
+a hotspot; unsampled or unattributed allocations are not zero allocations.
+See the [allocation collector contract](reference/checks.md#Profiles).
+
 ## Static analysis and compilation
 
 These inspect code, not measured cost. Treat a diagnostic as a hypothesis and confirm practical cost with a benchmark.

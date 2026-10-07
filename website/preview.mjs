@@ -1,7 +1,7 @@
 // Serve only the completed HTML artifact, including VitePress clean URLs.
 import { createServer } from 'node:http';
 import { createReadStream } from 'node:fs';
-import { cp, mkdtemp, realpath, rm, stat } from 'node:fs/promises';
+import { cp, mkdtemp, readFile, realpath, rm, stat } from 'node:fs/promises';
 import { dirname, extname, resolve, sep, join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
@@ -15,6 +15,7 @@ await cp(source, temporary, { recursive: true });
 const root = await realpath(temporary);
 const port = Number(process.env.PORT ?? 8870);
 const mount = process.env.PERFCHECKER_DOCS_BASE ?? '/';
+const cleanUrls = process.env.PERFCHECKER_PREVIEW_CLEAN_URLS !== 'false';
 if (!/^\/(?:[A-Za-z0-9._-]+\/)*$/.test(mount)) throw new Error('Invalid documentation base');
 if (!Number.isInteger(port) || port < 0 || port > 65535) throw new Error('Invalid PORT');
 const versionsPath = mount.replace(/\/[^/]+\/$/, '') + '/versions.js';
@@ -34,9 +35,10 @@ const server = createServer(async (request, response) => {
     let pathname = decodeURIComponent(new URL(request.url, 'http://localhost').pathname);
     // Preview only: Documenter supplies these files at publication time.
     if (mount !== '/' && (pathname === versionsPath || pathname === '/versions.js' || pathname === mount + 'siteinfo.js')) {
-      const script = pathname !== mount + 'siteinfo.js'
+      const metadataFile = pathname !== mount + 'siteinfo.js' ? 'versions.js' : 'siteinfo.js';
+      const script = await readFile(join(root, metadataFile), 'utf8').catch(() => pathname !== mount + 'siteinfo.js'
         ? `window.DOC_VERSIONS ||= [${JSON.stringify(previewVersion)}];`
-        : `window.DOCUMENTER_CURRENT_VERSION ||= ${JSON.stringify(previewVersion)};`;
+        : `window.DOCUMENTER_CURRENT_VERSION ||= ${JSON.stringify(previewVersion)};`);
       response.writeHead(200, {'Content-Type':'text/javascript'}).end(request.method === 'HEAD' ? '' : script);
       return;
     }
@@ -44,7 +46,9 @@ const server = createServer(async (request, response) => {
     const path = resolve(root, '.' + pathname);
     if (!inside(path)) { response.writeHead(403).end(); return; }
     let file;
-    for (const candidate of [path, path + '.html', resolve(path, 'index.html')]) {
+    const candidates = cleanUrls ? [path, path + '.html', resolve(path, 'index.html')]
+      : [path, resolve(path, 'index.html')];
+    for (const candidate of candidates) {
       try {
         const canonical = await realpath(candidate);
         if (inside(canonical) && (await stat(canonical)).isFile()) { file = canonical; break; }

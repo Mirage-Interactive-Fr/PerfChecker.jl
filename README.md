@@ -2,7 +2,7 @@
   <img src="branding/exports/perfchecker-lockup-light.svg" width="620" alt="PerfChecker.jl">
 </p>
 
-[![Documentation](https://img.shields.io/badge/docs-stable-2dd4bf.svg)](https://mirage-interactive-fr.github.io/PerfChecker/stable/)
+[![Documentation](https://img.shields.io/badge/docs-stable-2dd4bf.svg)](https://perfchecker.mirageinteractive.fr/)
 [![Qualification](https://github.com/Mirage-Interactive-Fr/PerfChecker.jl/actions/workflows/Qualification.yml/badge.svg?branch=main)](https://github.com/Mirage-Interactive-Fr/PerfChecker.jl/actions/workflows/Qualification.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-8b5cf6.svg)](LICENSE)
 
@@ -16,7 +16,7 @@ interfaces. Please report reproducible problems through
 
 ## Install
 
-In your chosen Julia environment:
+Once V1 is available in General, install it in your chosen Julia environment:
 
 ```julia
 import Pkg
@@ -24,7 +24,15 @@ Pkg.add(Pkg.PackageSpec(name="PerfChecker", version="1"))
 using PerfChecker
 ```
 
-Start with [your first test item](https://mirage-interactive-fr.github.io/PerfChecker/stable/guide/first-check)
+Before registration, use the published source tag in a separate environment:
+
+```julia
+import Pkg
+Pkg.add(Pkg.PackageSpec(url="https://github.com/Mirage-Interactive-Fr/PerfChecker.jl", rev="v1.0.0"))
+using PerfChecker
+```
+
+Start with [your first test item](https://perfchecker.mirageinteractive.fr/guide/first-check.html)
 or the runnable [Bibliography example](examples/bibliography/README.md).
 Use a separate environment when migrating a project from the 0.2 API.
 
@@ -37,7 +45,7 @@ The Julia API, command line and text REPL are included in PerfChecker.
 | [PerfCheckerWeb](packages/PerfCheckerWeb) | Web interface (Oxygen) |
 | [PerfCheckerPluto](packages/PerfCheckerPluto) | Reactive notebooks |
 | [PerfCheckerMakie](packages/PerfCheckerMakie) | Individual and overlaid plots |
-| [PerfChecker for VS Code](https://marketplace.visualstudio.com/items?itemName=mirage-interactive-fr.perfchecker-vscode) | Studio, Test Explorer, plots, notebooks and MCP chat |
+| [PerfChecker for VS Code](https://perfchecker.mirageinteractive.fr/interfaces/vscode.html) | Studio, Test Explorer, plots, notebooks and MCP chat |
 
 The Julia interfaces have separate package identities and dependencies in this
 shared repository. Until their first General registrations, install interfaces
@@ -59,10 +67,13 @@ checkout. Review the proposed changes before applying them, and keep the recover
 checkpoint until you have validated the result. The canonical guides live with
 this package:
 
-- [VS Code Studio](https://mirage-interactive-fr.github.io/PerfChecker/stable/interfaces/vscode)
-- [Extension configuration](https://mirage-interactive-fr.github.io/PerfChecker/stable/interfaces/vscode-configuration)
-- [Plots, notebooks and Julia tools](https://mirage-interactive-fr.github.io/PerfChecker/stable/interfaces/vscode-workflows)
-- [MCP advice, implementation and recovery](https://mirage-interactive-fr.github.io/PerfChecker/stable/mcp-advisor)
+- [VS Code Studio](https://perfchecker.mirageinteractive.fr/interfaces/vscode.html)
+- [Extension configuration](https://perfchecker.mirageinteractive.fr/interfaces/vscode-configuration.html)
+- [Plots, notebooks and Julia tools](https://perfchecker.mirageinteractive.fr/interfaces/vscode-workflows.html)
+- [MCP advice, implementation and recovery](https://perfchecker.mirageinteractive.fr/mcp-advisor.html)
+
+Install the qualified VSIX for the current extension. Official Marketplace
+publication follows confirmation of PerfChecker 1.0.0 in Julia General.
 
 ## Measurements and comparisons
 

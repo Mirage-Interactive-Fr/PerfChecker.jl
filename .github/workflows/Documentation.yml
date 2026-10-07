@@ -10,12 +10,12 @@ on:
 permissions:
   contents: read
 
+# A new push must not interrupt an active publisher. PR builds can be replaced.
 concurrency:
   group: documentation-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 env:
-  PERFCHECKER_DOCS_BASE: '/PerfChecker/dev/'
   JULIA_NUM_THREADS: '1'
   JULIA_NUM_GC_THREADS: '1'
   JULIA_NUM_PRECOMPILE_TASKS: '1'
@@ -28,9 +28,10 @@ env:
 
 jobs:
   documentation:
-    name: Build and publish documentation
+    if: github.event.deleted != true
+    name: Build documentation exports and test SFTP publication
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v7
         with:
@@ -45,18 +46,84 @@ jobs:
           cache: npm
           cache-dependency-path: website/package-lock.json
       - uses: julia-actions/cache@v3
-      - name: Select the documented version path
+      - name: Select the documented version
         shell: bash
         run: |
+          version=$(julia --startup-file=no -e 'using TOML; print(TOML.parsefile("Project.toml")["version"])')
           if [[ "$GITHUB_REF_TYPE" == tag ]]; then
-            [[ "$GITHUB_REF_NAME" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "Only stable documentation tags are publishable"; exit 1; }
-            echo "PERFCHECKER_DOCS_BASE=/PerfChecker/$GITHUB_REF_NAME/" >> "$GITHUB_ENV"
+            [[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "Expected a stable tagged version"; exit 1; }
+            [[ "$GITHUB_REF_NAME" == "v$version" ]] || { echo "Documentation tag differs from the package version"; exit 1; }
           fi
+          echo "PERFCHECKER_DOCS_VERSION=$version" >> "$GITHUB_ENV"
       - name: Install documentation dependencies
         run: julia --startup-file=no --project=website -e 'using Pkg; Pkg.develop(path="."); Pkg.instantiate()'
-      - name: Build Documenter and VitePress
+      - name: Test publication policy and real SSH/SFTP authentication
+        working-directory: website
+        run: |
+          npm ci --ignore-scripts --no-audit --no-fund
+          npm run test:sftp
+      - name: Build the GitHub mirror
+        shell: bash
+        env:
+          PERFCHECKER_DOCS_HOSTING: github
+          PERFCHECKER_DOCS_URL: https://mirage-interactive-fr.github.io/PerfChecker/
+        run: |
+          if [[ "$GITHUB_REF_TYPE" == tag ]]; then
+            export PERFCHECKER_DOCS_BASE="/PerfChecker/$GITHUB_REF_NAME/"
+            export PERFCHECKER_DOCS_CHANNEL=version
+          else
+            export PERFCHECKER_DOCS_BASE=/PerfChecker/dev/
+            export PERFCHECKER_DOCS_CHANNEL=dev
+          fi
+          julia --startup-file=no --project=website website/make.jl
+      - name: Build canonical development documentation
+        env:
+          PERFCHECKER_DOCS_HOSTING: sftp
+          PERFCHECKER_DOCS_CHANNEL: dev
+          PERFCHECKER_DOCS_BASE: /dev/
+          PERFCHECKER_DOCS_URL: https://perfchecker.mirageinteractive.fr/dev/
+          PERFCHECKER_DOCS_BUILD_DIR: build/sftp/dev
         run: julia --startup-file=no --project=website website/make.jl
-      - name: Publish documentation
+      - name: Build canonical version and stable exports
+        if: github.ref_type == 'tag' || github.event_name == 'pull_request'
+        shell: bash
+        env:
+          PERFCHECKER_DOCS_HOSTING: sftp
+        run: |
+          PERFCHECKER_DOCS_CHANNEL=version \
+          PERFCHECKER_DOCS_BASE="/v$PERFCHECKER_DOCS_VERSION/" \
+          PERFCHECKER_DOCS_URL="https://perfchecker.mirageinteractive.fr/v$PERFCHECKER_DOCS_VERSION/" \
+          PERFCHECKER_DOCS_BUILD_DIR=build/sftp/version \
+          julia --startup-file=no --project=website website/make.jl
+          PERFCHECKER_DOCS_CHANNEL=stable \
+          PERFCHECKER_DOCS_BASE=/ \
+          PERFCHECKER_DOCS_URL=https://perfchecker.mirageinteractive.fr/ \
+          PERFCHECKER_DOCS_BUILD_DIR=build/sftp/stable \
+          julia --startup-file=no --project=website website/make.jl
+      - name: Install the browser checker
+        working-directory: qualification
+        run: |
+          npm ci --ignore-scripts --no-audit --no-fund
+          npx playwright install --with-deps chromium
+      - name: Check canonical HTML, search, assets and version metadata
+        run: node qualification/shared/canonical-documentation.mjs website/build/sftp --browser
+      - name: Save canonical exports before any transfer
+        uses: actions/upload-artifact@v7
+        with:
+          name: documentation-sftp-exports
+          path: |
+            website/build/sftp
+            !website/build/sftp/**/.documenter
+          if-no-files-found: error
+          retention-days: 14
+      - name: Save the GitHub mirror export
+        uses: actions/upload-artifact@v7
+        with:
+          name: documentation-github-export
+          path: website/build/site
+          if-no-files-found: error
+          retention-days: 14
+      - name: Publish the development GitHub mirror
         if: >-
           github.event_name != 'pull_request' &&
           github.ref == 'refs/heads/main' &&
@@ -65,3 +132,54 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DOCUMENTER_KEY: ${{ secrets.DOCUMENTER_KEY }}
+
+  sftp:
+    name: Publish canonical documentation through SFTP
+    needs: documentation
+    if: >-
+      github.event.deleted != true &&
+      vars.PERFCHECKER_DOCS_SFTP_DEPLOY == 'true' &&
+      github.event_name != 'pull_request' &&
+      (github.ref == 'refs/heads/main' || github.ref_type == 'tag')
+    runs-on: ubuntu-latest
+    timeout-minutes: ${{ github.ref_type == 'tag' && 90 || 45 }}
+    environment: documentation-sftp
+    # All refs share one publisher; the server-side lock also protects manual clients.
+    concurrency:
+      group: perfchecker-documentation-sftp
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+      - uses: actions/download-artifact@v8
+        with:
+          name: documentation-sftp-exports
+          path: website/build/sftp
+      - name: Install the pinned SFTP transport
+        working-directory: website
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Publish the completed exports
+        env:
+          PERFCHECKER_DOCS_REF_DELETED: ${{ github.event.deleted }}
+          PERFCHECKER_DOCS_SFTP_DEPLOY: ${{ vars.PERFCHECKER_DOCS_SFTP_DEPLOY }}
+          PERFCHECKER_DOCS_SFTP_HOST: ${{ vars.PERFCHECKER_DOCS_SFTP_HOST }}
+          PERFCHECKER_DOCS_SFTP_PORT: ${{ vars.PERFCHECKER_DOCS_SFTP_PORT }}
+          PERFCHECKER_DOCS_SFTP_USER: ${{ vars.PERFCHECKER_DOCS_SFTP_USER }}
+          PERFCHECKER_DOCS_SFTP_ROOT: ${{ vars.PERFCHECKER_DOCS_SFTP_ROOT }}
+          PERFCHECKER_DOCS_SFTP_PASSWORD: ${{ secrets.PERFCHECKER_DOCS_SFTP_PASSWORD }}
+          PERFCHECKER_DOCS_SFTP_KNOWN_HOSTS: ${{ secrets.PERFCHECKER_DOCS_SFTP_KNOWN_HOSTS }}
+          PERFCHECKER_DOCS_SFTP_SSH_KEY: ${{ secrets.PERFCHECKER_DOCS_SFTP_SSH_KEY }}
+        shell: bash
+        run: |
+          if [[ "$GITHUB_REF_TYPE" == tag ]]; then
+            export PERFCHECKER_DOCS_SITE=website/build/sftp/version/site
+            export PERFCHECKER_DOCS_STABLE_SITE=website/build/sftp/stable/site
+          else
+            export PERFCHECKER_DOCS_SITE=website/build/sftp/dev/site
+          fi
+          node website/deploy-sftp.mjs

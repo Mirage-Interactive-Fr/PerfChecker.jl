@@ -74,11 +74,11 @@ Limits are relative fractions; `check` fails when a limit fails. `compare` write
 
 ```@raw html
 <details class="reference-details"><summary>Configuration reference</summary>
-<p id="Define-candidates-in-Julia"><a href="../reference/comparisons#Define-candidates-in-Julia">Define candidates in Julia</a></p>
-<p id="Exact-and-grouped-references"><a href="../reference/comparisons#Exact-and-grouped-references">Exact and grouped references</a></p>
-<p id="Use-the-VS-Code-target-picker"><a href="../reference/comparisons#Use-the-VS-Code-target-picker">VS Code target picker</a></p>
-<p id="Use-repeated-CLI-targets"><a href="../reference/comparisons#Use-repeated-CLI-targets">Command-line targets</a></p>
-<p id="Comparability-rules"><a href="../reference/comparisons#Comparability-rules">Comparability rules</a></p>
+<p id="Define-candidates-in-Julia"><a href="../reference/comparisons.html#Define-candidates-in-Julia">Define candidates in Julia</a></p>
+<p id="Exact-and-grouped-references"><a href="../reference/comparisons.html#Exact-and-grouped-references">Exact and grouped references</a></p>
+<p id="Use-the-VS-Code-target-picker"><a href="../reference/comparisons.html#Use-the-VS-Code-target-picker">VS Code target picker</a></p>
+<p id="Use-repeated-CLI-targets"><a href="../reference/comparisons.html#Use-repeated-CLI-targets">Command-line targets</a></p>
+<p id="Comparability-rules"><a href="../reference/comparisons.html#Comparability-rules">Comparability rules</a></p>
 </details>
 ```
 

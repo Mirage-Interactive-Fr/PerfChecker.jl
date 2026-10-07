@@ -154,6 +154,9 @@ miss. Freeze those generated cases with `freeze_propcheck_corpus` or
 generation belongs outside the timed operation. A saved corpus is what makes
 the performance comparison repeatable after a stochastic search.
 
+Use 64-bit Julia for the Supposition backend. On 32-bit Julia, use PropCheck or
+replay a saved corpus; see the [backend compatibility details](../reference/extensions.md#Property-based-workloads).
+
 The event workload already separates input generation from execution. A useful
 extension is to generate event counts and seeds, freeze them, and measure the
 same cases on every target version. See [the corpus example script](https://github.com/Mirage-Interactive-Fr/PerfChecker.jl/blob/v1.0.0/examples/kitchen-sink/corpus.jl).

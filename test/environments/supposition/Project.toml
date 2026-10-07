@@ -1,0 +1,10 @@
+[deps]
+PerfChecker = "6309bf6b-a531-4b08-891e-8ee981e5c424"
+Supposition = "5a0628fe-1738-4658-9b6d-0b7605a9755b"
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[compat]
+PerfChecker = "1"
+Supposition = "0.3"
+Test = "1"
+julia = "1.10"

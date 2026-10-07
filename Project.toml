@@ -86,13 +86,12 @@ PProf = "e4faabce-9ead-11e9-39d9-4379958e3056"
 PatternFolds = "c18a7f1d-76ad-4ce4-950d-5419b888513b"
 PropCheck = "ca382230-33be-11e9-0059-d981d03070e4"
 Sockets = "6462fe0b-24de-5631-8697-dd941f90decc"
-Supposition = "5a0628fe-1738-4658-9b6d-0b7605a9755b"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 TestItemRunner = "f8b46487-2199-4994-9208-9a1283c18c0a"
 UnicodePlots = "b8865327-cd53-5732-bb35-84acbb429228"
 
 [targets]
-test = ["Aqua", "BenchmarkTools", "Chairmarks", "DrWatson", "Documenter", "DocumenterVitepress", "FlameGraphs", "HTTP", "Intervals", "PatternFolds", "PProf", "PropCheck", "Sockets", "Supposition", "Test", "TestItemRunner", "UnicodePlots"]
+test = ["Aqua", "BenchmarkTools", "Chairmarks", "DrWatson", "Documenter", "DocumenterVitepress", "FlameGraphs", "HTTP", "Intervals", "PatternFolds", "PProf", "PropCheck", "Sockets", "Test", "TestItemRunner", "UnicodePlots"]
 
 [weakdeps]
 BenchmarkTools = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"

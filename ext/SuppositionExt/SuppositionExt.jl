@@ -3,9 +3,11 @@ module SuppositionExt
 using PerfChecker
 using Supposition
 
-function PerfChecker.freeze_supposition_corpus(path::AbstractString, possibility;
+function PerfChecker.freeze_supposition_corpus(path::AbstractString,
+        possibility::Supposition.Data.Possibility;
         count::Integer = 100, tries::Integer = 100_000, encode::Function = identity,
         metadata::AbstractDict = Dict(), force::Bool = false)
+    PerfChecker._require_supposition_runtime()
     count > 0 || throw(ArgumentError("corpus count must be positive"))
     cases = Supposition.example(possibility, count; tries)
     encoded = map(encode, cases)

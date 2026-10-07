@@ -43,6 +43,9 @@ jobs:
         run: |
           julia --startup-file=no -e 'using Pkg; Pkg.add(Pkg.PackageSpec(name="JuliaFormatter", version="1.0.50"))'
           julia --startup-file=no qualification/scripts/style.jl
+      - name: Preserve the Linux 32-bit BenchmarkTools exclusion
+        run: |
+          julia --startup-file=no -e 'using Pkg, TOML; project = TOML.parsefile("Project.toml"); compatible = Pkg.Types.semver_spec(project["compat"]["BenchmarkTools"]); v"1.8.0" in compatible && error("BenchmarkTools 1.8.0 must remain excluded: its trial allocation estimate overflows Int32 before bounding. Review Linux 32-bit compatibility before widening this entry.")'
 
   test:
     name: Julia ${{ matrix.version }} - ${{ matrix.os }} - ${{ matrix.arch }} - ${{ github.event_name }}

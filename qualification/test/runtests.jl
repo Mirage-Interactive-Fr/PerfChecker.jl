@@ -25,6 +25,16 @@ end
         routine["lanes"])
     @test any(l -> l["suite"] == "core" && l["os"] == "windows-latest", routine["lanes"])
     @test any(l -> l["suite"] == "core" && l["julia"] == "1.10", routine["lanes"])
+    @test only(filter(l -> l["suite"] == "supposition", routine["lanes"]))["os"] ==
+          "ubuntu-latest"
+    @test Set(l["os"]
+    for l in plan([]; full = true)["lanes"]
+    if l["suite"] == "supposition") == Set(["ubuntu-latest", "windows-latest"])
+    core_project = TOML.parsefile(joinpath(@__DIR__, "../../Project.toml"))
+    @test !haskey(core_project["extras"], "Supposition")
+    @test "Supposition" ∉ core_project["targets"]["test"]
+    @test haskey(core_project["weakdeps"], "Supposition")
+    @test "PropCheck" ∈ core_project["targets"]["test"]
     @test_throws ErrorException validate_receipts(
         routine, [receipt(routine, l) for l in routine["lanes"]]; require_full = true)
     docs = plan([]; full = true, profile = "documentation")

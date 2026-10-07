@@ -2,13 +2,15 @@
   "scripts": {
     "docs:dev": "vitepress dev build/.documenter",
     "docs:build": "vitepress build build/.documenter",
-    "docs:preview": "node preview.mjs"
+    "docs:preview": "node preview.mjs",
+    "test:sftp": "node --test deploy-sftp.test.mjs"
   },
   "dependencies": {
     "@shikijs/transformers": "^1.1.7",
     "markdown-it": "^15.0.2",
     "markdown-it-footnote": "^4.0.0",
     "markdown-it-mathjax3": "^4.3.2",
+    "ssh2": "1.17.0",
     "vitepress": "^1.1.4",
     "vitepress-plugin-tabs": "^0.9.1"
   },

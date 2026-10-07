@@ -2,6 +2,7 @@
 module SharedScenarioRuntime
 using TOML
 using Profile
+include("profile_runtime.jl")
 
 struct ScenarioUnavailable <: Exception
     reason::String
@@ -143,6 +144,24 @@ end
 
 function profile_case(case, count, allocations)
     once(case)
+    total_bytes = 0
+    total_allocations = 0
+    if allocations
+        evaluation = prepare(case)
+        try
+            total_bytes = Base.@allocated operation!(evaluation)
+            verify!(evaluation)
+        finally
+            cleanup!(evaluation)
+        end
+        evaluation = prepare(case)
+        try
+            total_allocations = Base.@allocations operation!(evaluation)
+            verify!(evaluation)
+        finally
+            cleanup!(evaluation)
+        end
+    end
     Profile.clear()
     allocations && Profile.Allocs.clear()
     for _ in 1:count
@@ -160,15 +179,17 @@ function profile_case(case, count, allocations)
     end
     sites = Dict{String, Any}[]
     if allocations
-        grouped = Dict{Tuple{String, Int}, Int}()
-        for allocation in Profile.Allocs.fetch().allocs
-            frames = filter(f -> !f.from_c && f.line > 0 && !isempty(string(f.file)),
+        captured = Profile.Allocs.fetch().allocs
+        for allocation in captured
+            frames = filter(
+                f -> !f.from_c && f.line > 0 &&
+                         PerfCheckerProfileRuntime.usable_source(string(f.file)),
                 allocation.stacktrace)
             isempty(frames) && continue
             # Keep full stacks: allocation internals are not necessarily the user's source site.
             frame = first(frames)
             push!(sites,
-                Dict("bytes" => Int(allocation.size), "file" => string(frame.file),
+                Dict("bytes" => Int64(allocation.size), "file" => string(frame.file),
                     "line" => Int(frame.line), "stack" => [Dict("file" => string(f.file),
                                                                "line" => Int(f.line), "function" => string(f.func))
                                                            for f in frames]))
@@ -202,8 +223,16 @@ function profile_case(case, count, allocations)
                              for (stack, count) in grouped],
             "profile_samples" => sum(values(grouped); init = 0))
     end
+    summary = PerfCheckerProfileRuntime.allocation_summary(
+        total_bytes = total_bytes, total_allocations = total_allocations,
+        sampled_allocations = length(captured), source_allocations = length(sites),
+        retained_allocations = length(sites),
+        retained_bytes = sum(site["bytes"] for site in sites; init = Int64(0)),
+        sample_rate = 1.0, profile_evaluations = count,
+        weight_semantics = "raw sampled bytes and events across all profile evaluations")
     return Dict{String, Any}("allocation_sites" => sites,
-        "profile_samples" => length(sites), "sampling_rate" => 1.0)
+        "profile_samples" => length(sites), "sampling_rate" => 1.0,
+        "allocation_profile" => summary)
 end
 
 function execute(spec, collector, count)

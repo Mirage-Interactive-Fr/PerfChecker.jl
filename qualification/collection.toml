@@ -13,7 +13,7 @@ suites = ["contracts"]
 [components.core]
 depends = []
 paths = ["src/", "bin/", "Project.toml", "Manifest.toml", "test/", "ext/", "examples/", "data/", "perf/"]
-suites = ["core", "native", "shared", "legacy_interfaces", "legacy_protocol"]
+suites = ["core", "native", "shared", "supposition", "legacy_interfaces", "legacy_protocol"]
 
 [components.docs]
 depends = ["core", "contracts", "web", "pluto", "plots", "analyzers", "vscode"]
@@ -42,7 +42,7 @@ suites = ["web", "advisor_http1", "advisor_http2"]
 
 [sources.vscode]
 repository = "Mirage-Interactive-Fr/PerfCheckerVSCode"
-revision = "57750683955291e1921601e897164e285dc96b27"
+revision = "992af2a449cf2c5586555339e5fbba08c0dd79df"
 
 [suites.analyzers]
 julias = ["1.12", "1"]
@@ -95,6 +95,10 @@ oses = ["ubuntu-latest", "windows-latest"]
 [suites.style]
 julias = ["1"]
 oses = ["ubuntu-latest"]
+
+[suites.supposition]
+julias = ["1"]
+oses = ["ubuntu-latest", "windows-latest"]
 
 [suites.vscode]
 julias = ["1"]

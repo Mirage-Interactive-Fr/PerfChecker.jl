@@ -145,14 +145,19 @@ try
     elseif suite == "plots"
         prepare("test/environments/wgl"; satellites = ["PerfCheckerMakie"])
         execute("packages/PerfCheckerMakie/test/runtests.jl")
+    elseif suite == "supposition"
+        Sys.WORD_SIZE == 64 || error("Supposition qualification requires 64-bit Julia")
+        prepare("test/environments/supposition")
+        execute("qualification/shared/supposition.jl")
     elseif suite == "legacy_interfaces"
+        Sys.WORD_SIZE == 64 || error("Legacy interface qualification requires 64-bit Julia")
         project = TOML.parsefile(joinpath(root, "Project.toml"))
         deps = merge(project["deps"], project["extras"])
         compat = Dict(k => v
         for (k, v) in project["compat"] if k == "julia" || haskey(deps, k))
         write_toml(
             joinpath(environment, "Project.toml"), Dict("deps" => deps, "compat" => compat))
-        prepare(; packages = ["Makie", "Oxygen", "Pluto"],
+        prepare(; packages = ["Makie", "Oxygen", "Pluto", "Supposition"],
             satellites = ["PerfCheckerWeb", "PerfCheckerPluto", "PerfCheckerMakie"])
         execute("qualification/shared/legacy_runner.jl")
     elseif suite == "analyzers"
@@ -181,6 +186,37 @@ try
         capture_environment(tooling, "browser-tooling")
         run(`node $(joinpath(root, "qualification/shared/website-browser.mjs")) $output`)
         receipt["site_sha256"] = tree_digest(site)
+        mirror = joinpath(root, ".qualification/documentation-github-site")
+        ispath(mirror) && rm(mirror; recursive = true)
+        cp(site, mirror)
+
+        # Qualify the SFTP export independently. A root build has portable .html
+        # links and its own version metadata, unlike the GitHub mirror.
+        static_environment = ("PERFCHECKER_DOCS_BASE" => "/",
+            "PERFCHECKER_DOCS_URL" => "https://perfchecker.mirageinteractive.fr/")
+        run(addenv(
+            `$julia --startup-file=no --project=$(joinpath(root, "website")) $(joinpath(root, "website/make.jl"))`,
+            static_environment...))
+        capture_environment(joinpath(root, "website"), "documentation-static-built")
+        run(addenv(
+            `node $(joinpath(root, "qualification/shared/static-website-browser.mjs")) $output`,
+            static_environment...))
+        receipt["static_site_sha256"] = tree_digest(site)
+        receipt["static_site_url"] = "https://perfchecker.mirageinteractive.fr/"
+        receipt["static_site_base"] = "/"
+        static_result = joinpath(output, "static-website-browser-result.json")
+        push!(receipt["environments"],
+            Dict("label" => "static-browser",
+                "result" => Dict("file" => basename(static_result),
+                    "sha256" => file_digest(static_result))))
+
+        # Local run -> collect uses the same layout as downloaded CI artifacts.
+        # make.jl clears build/, so retain the first site outside it until both
+        # exports have passed, then normalize their collection paths.
+        cp(site, joinpath(root, "website/build/static-site"))
+        rm(site; recursive = true)
+        cp(mirror, site)
+        rm(mirror; recursive = true)
     elseif suite == "vscode"
         client = get(
             ENV, "PERFCHECKER_VSCODE_ROOT", joinpath(root, ".qualification/vscode"))
