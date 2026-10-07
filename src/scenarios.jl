@@ -226,6 +226,33 @@ function _stop_scenario_worker(process)
     end
 end
 
+function _advisor_worker_diagnostics(logpath::AbstractString)
+    # Read only a bounded tail, and expose only fixed phase markers. Provider
+    # output can contain credentials, prompts, local paths or transport headers.
+    excerpt = open(logpath, "r") do io
+        seekend(io)
+        seek(io, max(0, position(io) - 8192))
+        String(read(io))
+    end
+    phases = ("dependencies_loading", "request_loading", "provider_loading",
+        "provider_loaded", "transport", "mcp_initialize", "mcp_initialized_notification",
+        "mcp_tools_list", "mcp_tools_call", "mcp_session_release", "response_validation",
+        "response_write", "failed", "complete")
+    markers = String[]
+    phase = "process_start"
+    for line in split(excerpt, '\n')
+        isascii(line) || continue
+        matched = match(
+            r"^PERFCHECKER_ADVISOR_PHASE ([a-z_]+) ([0-9]+\.[0-9]+(?:e[+-]?[0-9]+)?)$",
+            line)
+        matched === nothing && continue
+        matched[1] in phases || continue
+        matched[1] in ("failed", "response_write", "complete") || (phase = matched[1])
+        push!(markers, line)
+    end
+    Dict{String, Any}("worker_phase" => phase, "worker_log_excerpt" => join(markers, '\n'))
+end
+
 function _scenario_process(request::AbstractDict; project::AbstractString,
         timeout::Real, cancellation::CancellationToken, diagnostic::Bool = false,
         threads::Integer = 1, advisor::Bool = false, testitems::Bool = false)
@@ -271,15 +298,22 @@ function _scenario_process(request::AbstractDict; project::AbstractString,
                 wait(process)
                 flush(log)
                 if status != "complete"
-                    return Dict{String, Any}("status" => status,
+                    result = Dict{String, Any}("status" => status,
                         "message" => "isolated worker stopped", "elapsed_seconds" => time() -
                                                                                      started)
+                    advisor && merge!(result, _advisor_worker_diagnostics(logpath))
+                    return result
                 elseif !success(process) || !isfile(output)
-                    message = first(read(logpath, String), 8192)
-                    return Dict{String, Any}("status" => "error", "message" => message)
+                    message = advisor ? "isolated advisor worker failed" :
+                              first(read(logpath, String), 8192)
+                    result = Dict{String, Any}("status" => "error", "message" => message)
+                    advisor && merge!(result, _advisor_worker_diagnostics(logpath))
+                    return result
                 end
                 result = TOML.parsefile(output)
                 advisor && (result = _json_parse(result["payload_json"]))
+                advisor && get(result, "status", "error") != "complete" &&
+                    merge!(result, _advisor_worker_diagnostics(logpath))
                 result["worker_elapsed_seconds"] = time() - started
                 diagnostic && (result["log_excerpt"] = last(read(logpath, String), 16384))
                 return result
