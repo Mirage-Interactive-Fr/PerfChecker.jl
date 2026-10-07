@@ -32,6 +32,8 @@
         write(preserved_trace, "existing allocation trace\n")
         try
             modes = [:interrupt, :timeout, :runtime_interrupt, :invalid_result]
+            Sys.iswindows() && append!(modes,
+                [:native_owner_exit, :invalid_native_result, :invalid_native_intermediate])
             Sys.iswindows() || push!(modes, :forced_interrupt)
             if network_isolation_capabilities(; probe = true)["supported"]
                 push!(modes, :network_interrupt)
@@ -45,6 +47,7 @@
                 grandchild_file = joinpath(directory, "grandchild.pid")
                 grandchild_ready = joinpath(directory, "grandchild.ready")
                 output_file = joinpath(directory, "output.path")
+                identity_file = joinpath(directory, "provider.identity.json")
                 late_file = joinpath(directory, "late")
                 resisting_file = joinpath(directory, "resisting.pid")
                 resisting_ready = joinpath(directory, "resisting.ready")
@@ -87,19 +90,94 @@ timedwait(() -> isfile($(repr(resisting_ready))), 60; pollint=0.01) == :ok || er
         sleep(120)
         write($(repr(late_file)), "must not execute")
         """)
+                provider_command = [julia, "--startup-file=no", provider]
+                if mode in (:native_owner_exit, :invalid_native_result,
+                    :invalid_native_intermediate)
+                    # Julia/libuv itself owns a Windows Job Object. A native
+                    # provider must also be cleaned up when that protection is absent.
+                    powershell_quote(value) = "'" * replace(value, "'" => "''") * "'"
+                    if mode === :invalid_native_intermediate
+                        child_script = joinpath(directory, "child.ps1")
+                        arguments = Base.escape_microsoft_c_args(
+                            "--startup-file=no", grandchild_script)
+                        write(child_script,
+                            """
+            \$ErrorActionPreference = 'Stop'
+            \$grandchild = Start-Process -FilePath $(powershell_quote(julia)) -ArgumentList $(powershell_quote(arguments)) -NoNewWindow -PassThru -RedirectStandardOutput $(powershell_quote(joinpath(directory, "grandchild.stdout"))) -RedirectStandardError $(powershell_quote(joinpath(directory, "grandchild.stderr")))
+            [IO.File]::WriteAllText($(powershell_quote(grandchild_file)), \$grandchild.Id.ToString())
+            \$deadline = [DateTime]::UtcNow.AddSeconds(60)
+            while (-not (Test-Path -LiteralPath $(powershell_quote(grandchild_ready)))) {
+                if ([DateTime]::UtcNow -gt \$deadline) { throw 'grandchild did not start' }
+                Start-Sleep -Milliseconds 10
+            }
+            [IO.File]::WriteAllText($(powershell_quote(child_ready)), 'ready')
+            exit 0
+            """)
+                    end
+                    child_arguments = mode === :invalid_native_intermediate ?
+                                      ["-NoLogo", "-NoProfile", "-NonInteractive",
+                        "-ExecutionPolicy", "Bypass", "-File", child_script] :
+                                      ["--startup-file=no", child_script]
+                    child_executable = mode === :invalid_native_intermediate ?
+                                       "powershell.exe" : julia
+                    arguments = Base.escape_microsoft_c_args(child_arguments...)
+                    provider = joinpath(directory, "provider.ps1")
+                    write(provider,
+                        """
+            \$ErrorActionPreference = 'Stop'
+            \$child = Start-Process -FilePath $(powershell_quote(child_executable)) -ArgumentList $(powershell_quote(arguments)) -NoNewWindow -PassThru -RedirectStandardOutput $(powershell_quote(joinpath(directory, "child.stdout"))) -RedirectStandardError $(powershell_quote(joinpath(directory, "child.stderr")))
+            [IO.File]::WriteAllText($(powershell_quote(child_file)), \$child.Id.ToString())
+            \$deadline = [DateTime]::UtcNow.AddSeconds(60)
+            while (-not (Test-Path -LiteralPath $(powershell_quote(child_ready)))) {
+                if ([DateTime]::UtcNow -gt \$deadline) { throw 'child did not start' }
+                Start-Sleep -Milliseconds 10
+            }
+            [IO.File]::WriteAllText(\$env:PERFCHECKER_OUTPUT, '{"incomplete":true}')
+            [IO.File]::WriteAllText($(powershell_quote(output_file)), \$env:PERFCHECKER_OUTPUT)
+            [IO.File]::WriteAllText($(powershell_quote(identity_file)), ('{"pid":' + \$PID.ToString() + ',"creation_ticks":' + [Diagnostics.Process]::GetCurrentProcess().StartTime.ToUniversalTime().Ticks.ToString() + '}'))
+            [IO.File]::WriteAllText($(powershell_quote(pid_file)), \$PID.ToString())
+            exit 0
+            """)
+                    provider_command = ["powershell.exe", "-NoLogo", "-NoProfile",
+                        "-NonInteractive", "-ExecutionPolicy", "Bypass", "-File", provider]
+                end
+                parent_exits = mode in (:invalid_result, :invalid_native_result,
+                    :invalid_native_intermediate, :native_owner_exit)
                 source = read(provider)
                 failure = Ref{Any}(nothing)
                 spec = ExternalCommandSpec(mode, "julia-provider",
-                    [joinpath(Sys.BINDIR, Base.julia_exename()),
-                        "--startup-file=no", provider];
+                    provider_command;
                     directory, timeout_seconds = mode === :timeout ?
                                                  max(8, 2 * ready_seconds + 2) : 120)
                 result = Ref{Any}(nothing)
+                owner_tree = Ref{Any}(nothing)
+                cleanup_gate = Channel{Nothing}(1)
+                owner_ready = Ref(false)
                 started = time()
                 log_buffer = IOBuffer()
                 task = with_logger(SimpleLogger(log_buffer, Logging.Warn)) do
                     @async try
-                        result[] = if mode === :runtime_interrupt
+                        result[] = if mode === :native_owner_exit
+                            output = IOBuffer()
+                            errors = IOBuffer()
+                            owner_tree[] = PerfChecker._spawn_owned_process(
+                                addenv(Cmd(spec.command),
+                                    "PERFCHECKER_OUTPUT" => joinpath(
+                                        directory, "native-output.json"));
+                                stdout = output, stderr = errors)
+                            try
+                                timedwait(() -> process_exited(owner_tree[].process),
+                                    60; pollint = 0.02) == :ok ||
+                                    error("native provider did not exit")
+                                owner_ready[] = true
+                                take!(cleanup_gate) # The test observes the exited root and live descendants first.
+                                PerfChecker._stop_owned_process(owner_tree[])
+                            finally
+                                PerfChecker._cleanup_owned_process(owner_tree[],
+                                    (() -> close(output), () -> close(errors)), nothing)
+                            end
+                            nothing
+                        elseif mode === :runtime_interrupt
                             PerfChecker._runtime_process(spec.command, 120)
                         elseif mode === :network_interrupt
                             measure_isolated_network_command(spec.command;
@@ -123,19 +201,37 @@ timedwait(() -> isfile($(repr(resisting_ready))), 60; pollint=0.01) == :ok || er
                     child_pid = parse(Int, read(child_file, String))
                     grandchild_pid = parse(Int, read(grandchild_file, String))
                     append!(owned, [provider_pid, child_pid, grandchild_pid])
-                    if mode !== :invalid_result
+                    if !parent_exits
                         @test alive(provider_pid)
                         @test alive(child_pid)
                         @test alive(grandchild_pid)
                     end
                     @test alive(unrelated_pid)
+                    @info "Owned command fixture ready" mode provider_pid child_pid grandchild_pid
+                    if mode === :native_owner_exit
+                        @test timedwait(() -> owner_ready[] || istaskdone(task), 60;
+                            pollint = 0.02) == :ok
+                        @test owner_ready[]
+                        @test !alive(provider_pid)
+                        @test alive(child_pid)
+                        @test alive(grandchild_pid)
+                        identity = PerfChecker._json_parsefile(identity_file)
+                        @test identity["pid"] == provider_pid
+                        @test identity["creation_ticks"] > 0
+                        @info "Native provider exited before owned cleanup" identity
+                        put!(cleanup_gate, nothing)
+                    end
                     temporary_output = read(output_file, String)
-                    mode === :invalid_result || @test isfile(temporary_output)
-                    if mode ∉ (:timeout, :invalid_result)
+                    parent_exits || @test isfile(temporary_output)
+                    if mode !== :timeout && !parent_exits
                         schedule(task, InterruptException(); error = true)
                     end
                     @test timedwait(() -> istaskdone(task), 30; pollint = 0.02) == :ok
-                    if mode === :invalid_result
+                    if mode === :native_owner_exit
+                        @test failure[] === nothing
+                    elseif parent_exits
+                        @test !alive(provider_pid) # Exit must precede the cleanup oracle.
+                        mode === :invalid_native_intermediate && @test !alive(child_pid)
                         @test failure[] isa ArgumentError
                         @test occursin("unsupported provider result schema",
                             sprint(showerror, failure[]))
@@ -156,7 +252,7 @@ timedwait(() -> isfile($(repr(resisting_ready))), 60; pollint=0.01) == :ok || er
                     @test !alive(provider_pid)
                     @test !alive(child_pid)
                     @test !alive(grandchild_pid)
-                    mode in (:runtime_interrupt, :network_interrupt) ||
+                    mode in (:runtime_interrupt, :network_interrupt, :native_owner_exit) ||
                         @test !ispath(temporary_output)
                     @test !isfile(late_file)
                     @test alive(unrelated_pid)
