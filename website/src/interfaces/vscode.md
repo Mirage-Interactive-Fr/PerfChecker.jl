@@ -42,7 +42,7 @@ See [Installation](../guide/installation.md) for the core and interface packages
 For a project using `@testitem`:
 
 1. Studio → **Existing Julia tests**, or command palette → **PerfChecker: Discover existing test items**.
-2. Open VS Code's **Testing** view and expand the PerfChecker controller named for your selected folder (`PerfChecker — mesures · your-folder`).
+2. Open VS Code's **Testing** view and expand the PerfChecker controller named for your selected folder.
 3. Select one item and run it. PerfChecker measures the selected item in a fresh worker.
 4. Inspect the item's Testing output for measured milliseconds, sample count and correctness. The summary includes setup and assertions; it does not compare a performance budget.
 5. Open **View → Output** and select **PerfChecker test items**. Follow the `Evidence:` file path to inspect the JSON report's item validation and each sample's `seconds`, `bytes` and `correctness`.
