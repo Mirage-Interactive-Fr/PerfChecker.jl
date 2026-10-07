@@ -325,7 +325,7 @@ timedwait(() -> isfile($(repr(resisting_ready))), 60; pollint=0.01) == :ok || er
             julia = joinpath(Sys.BINDIR, Base.julia_exename())
             arguments = ["雪 space", "quote\" and slash\\", "\$literal"]
             value = "fixture 雪 \"quoted\" \$literal"
-            command = Cmd([julia, "--startup-file=no", provider, arguments...];
+            command = Cmd(Cmd([julia, "--startup-file=no", provider, arguments...]);
                 dir = directory, env = Dict("PERFCHECKER_FIXTURE_VALUE" => value))
             output, errors = IOBuffer(), IOBuffer()
             tree = PerfChecker._spawn_owned_process(
@@ -356,7 +356,7 @@ timedwait(() -> isfile($(repr(resisting_ready))), 60; pollint=0.01) == :ok || er
             @test_throws ErrorException PerfChecker._spawn_owned_process(Cmd([missing]);
                 stdout = devnull, stderr = devnull)
             bad_directory = joinpath(root, "absent directory")
-            failed = Cmd([julia, "--startup-file=no", "-e", "exit(0)"];
+            failed = Cmd(Cmd([julia, "--startup-file=no", "-e", "exit(0)"]);
                 dir = bad_directory)
             function handle_count()
                 count = Ref{UInt32}(0)
