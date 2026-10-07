@@ -1,0 +1,267 @@
+@testitem "External providers stop their owned process tree before returning" tags=[
+    :unit, :protocol] begin
+    using PerfChecker
+    using Logging
+
+    function alive(pid)
+        if Sys.iswindows()
+            output = read(ignorestatus(`tasklist /FI $("PID eq $pid") /FO CSV /NH`), String)
+            return occursin(",\"$pid\",", output)
+        end
+        state = strip(read(ignorestatus(`ps -p $pid -o stat=`), String))
+        return !isempty(state) && !startswith(state, "Z")
+    end
+
+    function stop_fixture(pid)
+        if Sys.iswindows()
+            run(ignorestatus(`taskkill /PID $pid /T /F`))
+        else
+            ccall(:kill, Cint, (Cint, Cint), pid, 9)
+        end
+    end
+
+    mktempdir() do root
+        unrelated = run(
+            pipeline(ignorestatus(`$(Base.julia_cmd()) --startup-file=no -e 'sleep(120)'`);
+                stdout = devnull, stderr = devnull);
+            wait = false)
+        unrelated_pid = getpid(unrelated)
+        owned = Int[]
+        ready_seconds = 3.0
+        preserved_trace = joinpath(root, "unrelated.mem")
+        write(preserved_trace, "existing allocation trace\n")
+        try
+            modes = [:interrupt, :timeout, :runtime_interrupt, :invalid_result]
+            Sys.iswindows() || push!(modes, :forced_interrupt)
+            if network_isolation_capabilities(; probe = true)["supported"]
+                push!(modes, :network_interrupt)
+            end
+            for mode in modes
+                directory = joinpath(root, string(mode))
+                mkpath(directory)
+                pid_file = joinpath(directory, "provider.pid")
+                child_file = joinpath(directory, "child.pid")
+                child_ready = joinpath(directory, "child.ready")
+                grandchild_file = joinpath(directory, "grandchild.pid")
+                grandchild_ready = joinpath(directory, "grandchild.ready")
+                output_file = joinpath(directory, "output.path")
+                late_file = joinpath(directory, "late")
+                resisting_file = joinpath(directory, "resisting.pid")
+                resisting_ready = joinpath(directory, "resisting.ready")
+                resisting_command = ["sh",
+                    "-c",
+                    "trap '' TERM; printf ready >\"\$PERFCHECKER_FORCE_READY\"; exec sleep 120"]
+                grandchild_code = (mode === :forced_interrupt ?
+                                   """
+resisting = run(pipeline(ignorestatus(addenv(Cmd($(repr(resisting_command))), "PERFCHECKER_FORCE_READY" => $(repr(resisting_ready))));
+    stdin=devnull, stdout=devnull, stderr=devnull); wait=false)
+write($(repr(resisting_file)), string(getpid(resisting)))
+timedwait(() -> isfile($(repr(resisting_ready))), 60; pollint=0.01) == :ok || error("resisting child did not start")
+""" : "") *
+                                  "write($(repr(grandchild_ready)), \"ready\"); sleep(120)"
+                grandchild_script = joinpath(directory, "grandchild.jl")
+                child_script = joinpath(directory, "child.jl")
+                julia = joinpath(Sys.BINDIR, Base.julia_exename())
+                write(grandchild_script, grandchild_code)
+                child_code = """
+                    grandchild = run(pipeline(ignorestatus(Cmd($(repr([julia, "--startup-file=no", grandchild_script]))));
+                        stdin = devnull, stdout = devnull, stderr = devnull); wait = false)
+                    write($(repr(grandchild_file)), string(getpid(grandchild)))
+                    timedwait(() -> isfile($(repr(grandchild_ready))), 60; pollint = 0.01) == :ok || error("grandchild did not start")
+                    write($(repr(child_ready)), "ready")
+                    sleep(120)
+                    """
+                write(child_script, child_code)
+                provider = joinpath(directory, "provider.jl")
+                write(provider,
+                    """
+        child = run(pipeline(ignorestatus(Cmd($(repr([julia, "--startup-file=no", child_script]))));
+            stdin = devnull, stdout = devnull, stderr = devnull); wait = false)
+        write($(repr(child_file)), string(getpid(child)))
+        timedwait(() -> isfile($(repr(child_ready))), 60; pollint = 0.01) == :ok || error("child did not start")
+        output = get(ENV, "PERFCHECKER_OUTPUT", $(repr(joinpath(directory, "runtime-output.json"))))
+        write(output, $(repr("{\"incomplete\":true}")))
+        write($(repr(output_file)), output)
+        write($(repr(pid_file)), string(getpid()))
+        $(mode === :invalid_result ? "exit(0)" : "")
+        sleep(120)
+        write($(repr(late_file)), "must not execute")
+        """)
+                source = read(provider)
+                failure = Ref{Any}(nothing)
+                spec = ExternalCommandSpec(mode, "julia-provider",
+                    [joinpath(Sys.BINDIR, Base.julia_exename()),
+                        "--startup-file=no", provider];
+                    directory, timeout_seconds = mode === :timeout ?
+                                                 max(8, 2 * ready_seconds + 2) : 120)
+                result = Ref{Any}(nothing)
+                started = time()
+                log_buffer = IOBuffer()
+                task = with_logger(SimpleLogger(log_buffer, Logging.Warn)) do
+                    @async try
+                        result[] = if mode === :runtime_interrupt
+                            PerfChecker._runtime_process(spec.command, 120)
+                        elseif mode === :network_interrupt
+                            measure_isolated_network_command(spec.command;
+                                directory, timeout_seconds = 120)
+                        else
+                            run_external_command(spec)
+                        end
+                    catch error
+                        failure[] = error
+                    end
+                end
+                try
+                    @test timedwait(() -> isfile(pid_file) || istaskdone(task), 60;
+                        pollint = 0.02) == :ok
+                    @test isfile(pid_file)
+                    isfile(pid_file) || error("provider fixture stopped before ready: " *
+                          (failure[] === nothing ? string(result[].diagnostics) :
+                           sprint(showerror, failure[])))
+                    mode === :interrupt && (ready_seconds = time() - started)
+                    provider_pid = parse(Int, read(pid_file, String))
+                    child_pid = parse(Int, read(child_file, String))
+                    grandchild_pid = parse(Int, read(grandchild_file, String))
+                    append!(owned, [provider_pid, child_pid, grandchild_pid])
+                    if mode !== :invalid_result
+                        @test alive(provider_pid)
+                        @test alive(child_pid)
+                        @test alive(grandchild_pid)
+                    end
+                    @test alive(unrelated_pid)
+                    temporary_output = read(output_file, String)
+                    mode === :invalid_result || @test isfile(temporary_output)
+                    if mode ∉ (:timeout, :invalid_result)
+                        schedule(task, InterruptException(); error = true)
+                    end
+                    @test timedwait(() -> istaskdone(task), 30; pollint = 0.02) == :ok
+                    if mode === :invalid_result
+                        @test failure[] isa ArgumentError
+                        @test occursin("unsupported provider result schema",
+                            sprint(showerror, failure[]))
+                    elseif mode !== :timeout
+                        @test failure[] isa InterruptException
+                        @test result[] === nothing
+                    else
+                        @test failure[] === nothing
+                        @test !bundle_passed(result[])
+                        @test occursin("timed out", result[].diagnostics[1]["message"])
+                    end
+                    # These assertions precede harness teardown, which cannot turn a leaked provider into a pass.
+                    @test timedwait(
+                        () -> !alive(provider_pid) && !alive(child_pid) &&
+                                  !alive(grandchild_pid),
+                        2;
+                        pollint = 0.02) == :ok
+                    @test !alive(provider_pid)
+                    @test !alive(child_pid)
+                    @test !alive(grandchild_pid)
+                    mode in (:runtime_interrupt, :network_interrupt) ||
+                        @test !ispath(temporary_output)
+                    @test !isfile(late_file)
+                    @test alive(unrelated_pid)
+                    @test read(provider) == source
+                    @test read(preserved_trace, String) == "existing allocation trace\n"
+                    if mode === :forced_interrupt
+                        @test !alive(parse(Int, read(resisting_file, String)))
+                        @test occursin(
+                            "required forced termination", String(take!(log_buffer)))
+                    end
+                finally
+                    # Only recorded PIDs belonging to this fixture may be stopped after a failing regression.
+                    for file in (pid_file, child_file, grandchild_file, resisting_file)
+                        if isfile(file)
+                            pid = parse(Int, read(file, String))
+                            alive(pid) && stop_fixture(pid)
+                        end
+                    end
+                    if !istaskdone(task)
+                        schedule(task, InterruptException(); error = true)
+                        timedwait(() -> istaskdone(task), 5; pollint = 0.02)
+                    end
+                end
+            end
+            if !Sys.iswindows()
+                foreign = PerfChecker._OwnedProcessTree(
+                    unrelated, Int(unrelated_pid), false)
+                @test_throws ErrorException PerfChecker._signal_owned_group(
+                    foreign, Base.SIGTERM)
+                @test alive(unrelated_pid)
+            end
+        finally
+            for pid in owned
+                alive(pid) && stop_fixture(pid)
+            end
+            process_running(unrelated) && kill(unrelated)
+            wait(unrelated)
+            close(unrelated)
+        end
+    end
+
+    primary = InterruptException()
+    caught = @test_logs (:error, "Owned command cleanup failed") begin
+        try
+            PerfChecker._cleanup_owned_process(nothing,
+                (() -> error("controlled cleanup failure"),), primary)
+            nothing
+        catch error
+            error
+        end
+    end
+    @test caught isa CompositeException
+    @test caught.exceptions[1] === primary
+    @test occursin("controlled cleanup failure", sprint(showerror, caught.exceptions[2]))
+end
+
+@testitem "External provider cleanup failures prevent complete bundle publication" tags=[
+    :unit, :protocol] begin
+    using PerfChecker
+
+    if Sys.iswindows() || ccall(:geteuid, Cuint, ()) == 0
+        @test_skip false # Directory unlink permissions need a non-root POSIX host.
+    else
+        mktempdir() do root
+            temporary = joinpath(root, "readonly-results")
+            mkpath(temporary)
+            bundles = joinpath(root, "bundles")
+            provider = joinpath(root, "provider.jl")
+            payload = PerfChecker.JSON.json(Dict(
+                "schema_version" => "perfchecker-provider-result/1",
+                "suite" => "cleanup", "case_id" => "readonly",
+                "runtime" => Dict("language" => "fixture"),
+                "measurement_definitions" => [Dict("id" => "custom.work/v1",
+                    "metric" => "custom.work", "unit" => "1")],
+                "observations" => [Dict("metric" => "custom.work", "value" => 42,
+                    "unit" => "1", "measurement_definition" => "custom.work/v1")]))
+            write(provider, """
+                write(ENV["PERFCHECKER_OUTPUT"], $(repr(payload)))
+                chmod(dirname(ENV["PERFCHECKER_OUTPUT"]), 0o555)
+                """)
+            julia = joinpath(Sys.BINDIR, Base.julia_exename())
+            code = "using PerfChecker; spec = ExternalCommandSpec(:readonly, \"fixture\", " *
+                   repr([julia, "--startup-file=no", provider]) * "); " *
+                   "run_external_command(spec; bundle_root=" * repr(bundles) *
+                   ", strict=true)"
+            command = addenv(
+                Cmd([julia, "--startup-file=no",
+                    "--project=$(Base.active_project())", "-e", code]),
+                "TMPDIR" => temporary)
+            log = IOBuffer()
+            try
+                process = run(pipeline(ignorestatus(command); stdout = log, stderr = log))
+                @test !success(process)
+                message = String(take!(log))
+                @test occursin("Owned command cleanup failed", message)
+                @test occursin("provider result file remained after cleanup", message)
+                files = readdir(temporary; join = true)
+                @test length(files) == 1
+                @test PerfChecker._json_parsefile(only(files))["schema_version"] ==
+                      "perfchecker-provider-result/1"
+                @test !isdir(bundles) || isempty(readdir(bundles))
+            finally
+                chmod(temporary, 0o700)
+                close(log)
+            end
+        end
+    end
+end

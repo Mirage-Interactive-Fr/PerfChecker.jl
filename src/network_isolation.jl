@@ -271,7 +271,8 @@ function measure_isolated_network_command(command::AbstractVector{<:AbstractStri
     rm(result_path; force = true)
     stdout_buffer = IOBuffer()
     stderr_buffer = IOBuffer()
-    launched = nothing
+    tree = nothing
+    primary_error = nothing
     try
         isolated = _isolated_network_command(spec, command, result_path;
             directory, timeout_seconds)
@@ -286,15 +287,13 @@ function measure_isolated_network_command(command::AbstractVector{<:AbstractStri
             end
             isolated = addenv(isolated, variables...)
         end
-        launched = run(
-            pipeline(ignorestatus(isolated), stdout = stdout_buffer,
-                stderr = stderr_buffer);
-            wait = false)
+        tree = _spawn_owned_process(
+            isolated; stdout = stdout_buffer, stderr = stderr_buffer)
+        launched = tree.process
         outer_timeout = timedwait(() -> !process_running(launched),
             Float64(timeout_seconds) + 5; pollint = 0.05)
         if outer_timeout === :timed_out
-            _terminate_process_tree(launched)
-            wait(launched)
+            _stop_owned_process(tree)
             throw(ErrorException("isolated network command exceeded its shutdown grace period"))
         end
         wait(launched)
@@ -313,11 +312,16 @@ function measure_isolated_network_command(command::AbstractVector{<:AbstractStri
                 first(error_output * "\n" * output, 8192)))
         return IsolatedNetworkCommandResult(sample, captured_status, output,
             error_output, string(spec.provider), counter_provider, String.(command))
+    catch error
+        primary_error = error
+        rethrow()
     finally
-        close(stdout_buffer)
-        close(stderr_buffer)
-        isfile(result_path) && rm(result_path; force = true)
-        isfile(result_path * ".nft") && rm(result_path * ".nft"; force = true)
+        _cleanup_owned_process(tree,
+            (() -> close(stdout_buffer), () -> close(stderr_buffer),
+                () -> (isfile(result_path) && rm(result_path; force = true)),
+                () -> (isfile(result_path * ".nft") &&
+                       rm(result_path * ".nft"; force = true))),
+            primary_error)
     end
 end
 

@@ -10,6 +10,8 @@
   Repeated cancellation requests let an ongoing cleanup finish.
 - Fix allocation-profile collection in fresh workers when sampled allocations
   have source frames. Preserve allocation totals, stacks and lifecycle cleanup.
+- Stop owned external providers and runtime commands before cancellation returns,
+  including descendants, network captures and temporary result-file cleanup.
 
 ## 1.0.0
 

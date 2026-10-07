@@ -37,7 +37,7 @@ before_tx_dropped=$(read_counter tx_dropped)
 before_rx_dropped=$(read_counter rx_dropped)
 
 PERFCHECKER_NETWORK_ISOLATION=linux-netns-v1 \
-    timeout --signal=TERM --kill-after=2s "${limit}s" "$@"
+    timeout --foreground --signal=TERM --kill-after=2s "${limit}s" "$@"
 status=$?
 
 after_ns=$(date +%s%N)

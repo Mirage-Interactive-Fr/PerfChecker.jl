@@ -16,6 +16,100 @@ function _terminate_process_tree(process)
     return nothing
 end
 
+mutable struct _OwnedProcessTree
+    process::Base.Process
+    pid::Int
+    stopped::Bool
+end
+
+"Launch a command in a private POSIX process group, retaining ownership for cleanup."
+function _spawn_owned_process(command::Cmd; stdout, stderr)
+    owned_command = Cmd(command; detach = !Sys.iswindows())
+    process = run(pipeline(ignorestatus(owned_command); stdout, stderr); wait = false)
+    pid = Int(getpid(process))
+    if !Sys.iswindows()
+        group = ccall(:getpgid, Cint, (Cint,), pid)
+        if group != pid && !(group == -1 && Base.Libc.errno() == Base.Libc.ESRCH)
+            kill(process)
+            wait(process)
+            error("provider did not acquire its private process group")
+        end
+        # Cmd(detach=true) establishes PGID=PID before exec. ESRCH only means a
+        # short-lived leader has already exited; its owned descendants may remain.
+    end
+    return _OwnedProcessTree(process, pid, false)
+end
+
+function _owned_group_running(tree::_OwnedProcessTree)
+    records = read(`ps -e -o pid= -o pgid= -o stat=`, String)
+    for line in eachline(IOBuffer(records))
+        fields = split(strip(line))
+        length(fields) >= 3 || continue
+        group = tryparse(Int, fields[2])
+        group == tree.pid && !startswith(fields[3], "Z") && return true
+    end
+    return false
+end
+
+function _signal_owned_group(tree::_OwnedProcessTree, signal)
+    tree.pid > 0 || error("invalid owned process group")
+    group = ccall(:getpgid, Cint, (Cint,), tree.pid)
+    if group != tree.pid && !(group == -1 && Base.Libc.errno() == Base.Libc.ESRCH)
+        error("refusing to signal a process that left its owned group")
+    end
+    result = ccall(:kill, Cint, (Cint, Cint), -tree.pid, signal)
+    result == 0 || Base.Libc.errno() == Base.Libc.ESRCH ||
+        error("could not signal owned provider group: errno $(Base.Libc.errno())")
+    return nothing
+end
+
+"Stop and wait for the owned command and its group before closing its output resources."
+function _stop_owned_process(tree::_OwnedProcessTree)
+    tree.stopped && return nothing
+    process = tree.process
+    if Sys.iswindows()
+        process_running(process) && _terminate_process_tree(process)
+    elseif _owned_group_running(tree)
+        _signal_owned_group(tree, Base.SIGTERM)
+        if timedwait(() -> !_owned_group_running(tree), 2; pollint = 0.05) != :ok
+            @warn "Owned provider required forced termination; waiting for process-tree cleanup"
+            _signal_owned_group(tree, Base.SIGKILL)
+        end
+        timedwait(() -> !_owned_group_running(tree), 5; pollint = 0.05) == :ok ||
+            error("owned provider process tree did not finish cleanup")
+    end
+    timedwait(() -> process_exited(process), 5; pollint = 0.01) == :ok ||
+        error("owned provider controller did not exit after shutdown")
+    wait(process)
+    close(process)
+    finalize(process)
+    tree.stopped = true
+    return nothing
+end
+
+function _cleanup_owned_process(tree, cleanups::Tuple, primary_error)
+    errors = Any[]
+    if tree !== nothing
+        try
+            _stop_owned_process(tree)
+        catch error
+            push!(errors, error)
+        end
+    end
+    for cleanup in cleanups
+        try
+            cleanup()
+        catch error
+            push!(errors, error)
+        end
+    end
+    isempty(errors) && return nothing
+    @error "Owned command cleanup failed" failures=[sprint(showerror, error)
+                                                    for error in errors]
+    primary_error === nothing || pushfirst!(errors, primary_error)
+    throw(CompositeException(errors))
+end
+
 function flatten_parameters(
         x::Symbol, pkg::AbstractString, version, tags::Vector{Symbol})
     return join(vcat([x, pkg, string("v", version)], tags), "_")

@@ -15,28 +15,31 @@ end
 function _runtime_process(command::Vector{String}, timeout_seconds::Real)
     stdout_buffer = IOBuffer()
     stderr_buffer = IOBuffer()
-    process = nothing
+    tree = nothing
+    primary_error = nothing
     started = time()
     timed_out = false
     try
-        process = run(
-            pipeline(ignorestatus(Cmd(command)), stdout = stdout_buffer,
-                stderr = stderr_buffer);
-            wait = false)
+        tree = _spawn_owned_process(
+            Cmd(command); stdout = stdout_buffer, stderr = stderr_buffer)
+        process = tree.process
         status = timedwait(() -> !process_running(process), timeout_seconds;
             pollint = 0.1)
         if status === :timed_out
             timed_out = true
-            _terminate_process_tree(process)
+            _stop_owned_process(tree)
         end
         wait(process)
         return (exit_code = process.exitcode, timed_out,
             elapsed_seconds = time() - started,
             stdout = String(take!(stdout_buffer)),
             stderr = String(take!(stderr_buffer)))
+    catch error
+        primary_error = error
+        rethrow()
     finally
-        close(stdout_buffer)
-        close(stderr_buffer)
+        _cleanup_owned_process(tree,
+            (() -> close(stdout_buffer), () -> close(stderr_buffer)), primary_error)
     end
 end
 

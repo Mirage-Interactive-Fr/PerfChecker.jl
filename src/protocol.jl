@@ -1051,30 +1051,25 @@ function run_external_command(spec::ExternalCommandSpec; bundle_root = nothing,
     stdout_buffer = IOBuffer()
     stderr_buffer = IOBuffer()
     bundle = nothing
+    tree = nothing
+    primary_error = nothing
     try
         command = Cmd(Cmd(spec.command); dir = spec.directory)
         command = addenv(command, spec.environment...,
             "PERFCHECKER_OUTPUT" => output_path,
             "PERFCHECKER_CASE_ID" => string(spec.id))
-        process = run(
-            pipeline(ignorestatus(command), stdout = stdout_buffer,
-                stderr = stderr_buffer);
-            wait = false)
+        tree = _spawn_owned_process(command; stdout = stdout_buffer, stderr = stderr_buffer)
+        process = tree.process
         wait_status = timedwait(() -> !process_running(process), spec.timeout_seconds;
             pollint = 0.05)
         if wait_status === :timed_out
-            _terminate_process_tree(process)
-            wait(process)
-            close(process)
-            finalize(process)
+            _stop_owned_process(tree)
             bundle = _failed_provider_bundle(spec,
                 "provider timed out after $(spec.timeout_seconds) seconds")
         else
             wait(process)
             exit_code = process.exitcode
             process_succeeded = success(process)
-            close(process)
-            finalize(process)
             stderr_text = String(take!(stderr_buffer))
             if !process_succeeded
                 detail = isempty(strip(stderr_text)) ? "no stderr" :
@@ -1102,18 +1097,25 @@ function run_external_command(spec::ExternalCommandSpec; bundle_root = nothing,
                 end
             end
         end
-        if bundle_root !== nothing
-            destination = joinpath(abspath(String(bundle_root)),
-                "run-$(bundle.manifest["run_id"])")
-            write_run_bundle(bundle, destination)
-        end
-        strict && !bundle_passed(bundle) && error("external provider $(spec.id) failed")
-        return bundle
+    catch error
+        primary_error = error
+        rethrow()
     finally
-        close(stdout_buffer)
-        close(stderr_buffer)
-        _remove_temporary_file(output_path)
+        _cleanup_owned_process(tree,
+            (() -> close(stdout_buffer), () -> close(stderr_buffer),
+                () -> begin
+                    _remove_temporary_file(output_path)
+                    ispath(output_path) &&
+                        error("provider result file remained after cleanup")
+                end), primary_error)
     end
+    if bundle_root !== nothing
+        destination = joinpath(abspath(String(bundle_root)),
+            "run-$(bundle.manifest["run_id"])")
+        write_run_bundle(bundle, destination)
+    end
+    strict && !bundle_passed(bundle) && error("external provider $(spec.id) failed")
+    return bundle
 end
 
 @testitem "Portable run bundle protocol" tags=[:unit, :protocol] begin
