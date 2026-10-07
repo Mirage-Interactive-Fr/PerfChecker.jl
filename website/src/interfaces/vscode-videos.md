@@ -25,8 +25,10 @@ and exports have passed review.
 | [11 — declared suite source](#declared-suite-source) | Factory, measured operation and correctness oracle | [Design a suite](vscode.md#design-a-suite-and-compare-targets) |
 | [12 — check types](#check-types) | Collector scope and required dependencies | [Choose the evidence](vscode.md#choose-the-evidence-for-your-question) |
 | [13 — comparison targets](#comparison-targets) | Git state, baseline and aggregation policy | [Compare a working change](vscode.md#compare-a-working-change-with-a-known-revision) |
+| [14 — cancellation and cleanup](#cancellation-and-cleanup) | Final controller status and explicit recovery checks | [Cancel a run](vscode.md#Cancel-a-run-and-wait-for-cleanup) |
 | [15 — saved distributions](#saved-distributions) | Real sample spread, allocation unit and raw data | [Read a distribution](vscode-workflows.md#read-a-distribution) |
 | [16 — recorded profile stacks](#recorded-profile-stacks) | Actual frame names and the collector's sampling scope | [Follow a recorded profile](vscode-workflows.md#follow-a-recorded-profile) |
+| [18 — investigations and analyzers](#investigations-and-analyzers) | Benchmark evidence, analyzer status and the real Aqua diagnostic | [Investigate and verify](vscode.md#Investigate-and-verify) |
 
 ## Native TestItem evidence
 
@@ -70,6 +72,12 @@ and exports have passed review.
 <DocMedia video short recording="perfchecker-vscode-v101-short-13" src="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-13.mp4" poster="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-13-poster.jpg" subtitles="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-13-en.vtt" preload="metadata" alt="Actual native PerfChecker comparison package, feature, reference aggregation and target controls" caption="Resolve the intended Git state and review the baseline, candidate and aggregation policy before a comparison. Recorded build: VSIX 75f84f, Core 975d, VS Code 1.141 on Linux." />
 ```
 
+## Cancellation and cleanup
+
+```@raw html
+<DocMedia video short recording="perfchecker-vscode-v101-short-14" src="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-14.mp4" poster="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-14-poster.jpg" subtitles="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-14-en.vtt" preload="metadata" alt="Actual native PerfChecker investigation cancellation, controller cleanup and recovery checklist" caption="Cancel an active investigation and wait for the final controller-cleanup status. The recovery checklist explains subsequent checks; it does not show those checks executing. Recorded build: VSIX 75f84f, Core 975d, VS Code 1.141 on Linux." />
+```
+
 ## Saved distributions
 
 
@@ -81,6 +89,12 @@ and exports have passed review.
 
 ```@raw html
 <DocMedia video short recording="perfchecker-vscode-v101-short-16" src="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-16.mp4" poster="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-16-poster.jpg" subtitles="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-16-en.vtt" preload="metadata" alt="Actual native PerfChecker CPU flame graph with a closer view of sum_squares, materialize and copy" caption="Follow real recorded profile stacks. The closer view preserves the original frame labels; profile weights describe the stated collector. Recorded build: VSIX 75f84f, Core 975d, VS Code 1.141 on Linux." />
+```
+
+## Investigations and analyzers
+
+```@raw html
+<DocMedia video short recording="perfchecker-vscode-v101-short-18" src="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-18.mp4" poster="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-18-poster.jpg" subtitles="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-18-en.vtt" preload="metadata" alt="Actual native PerfChecker investigation benchmark, analyzers and Aqua quality diagnostic" caption="Inspect the benchmark and analyzer outcomes individually. The Aqua diagnostic frame is held for reading: the analyzer completed with correctness not checked and quality failed; this passage does not imply a new execution. Recorded build: VSIX 75f84f, Core 975d, VS Code 1.141 on Linux." />
 ```
 
 Keep the written configuration and saved evidence alongside the video. A

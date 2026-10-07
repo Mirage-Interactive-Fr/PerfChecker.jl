@@ -200,6 +200,10 @@ Read [Suites and comparisons](../suites-and-comparisons.md) before interpreting 
 
 ## Investigate and verify
 
+```@raw html
+<DocMedia video short recording="perfchecker-vscode-v101-short-18" src="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-18.mp4" poster="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-18-poster.jpg" subtitles="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-18-en.vtt" preload="metadata" alt="Actual native PerfChecker investigation benchmark, analyzers and Aqua quality diagnostic" caption="Inspect the benchmark and analyzer outcomes individually. The Aqua diagnostic frame is held for reading: the analyzer completed with correctness not checked and quality failed; this passage does not imply a new execution. Recorded build: VSIX 75f84f, Core 975d, VS Code 1.141 on Linux." />
+```
+
 Use **PerfChecker: Open investigations** for shared scenarios. **Discover scenarios from tests** inspects declarations and proposes candidates without executing the target program. Proposed candidates need an explicit factory and correctness oracle before they become measurable cases.
 
 Measure declared cases, diagnose with available analyzers, and choose **Advise from saved evidence**. Missing analyzers appear as unavailable; they are not installed automatically. After a change, rerun the same correctness checks and compare compatible before/after measurements.
@@ -207,6 +211,10 @@ Measure declared cases, diagnose with available analyzers, and choose **Advise f
 **Run bounded investigation** can select declared experiments within count and time budgets. Optional model selection requires structured MCP replies and `advisorInvestigates = true`; it remains separate from implementation chat.
 
 ## Cancel a run and wait for cleanup
+
+```@raw html
+<DocMedia video short recording="perfchecker-vscode-v101-short-14" src="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-14.mp4" poster="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-14-poster.jpg" subtitles="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-14-en.vtt" preload="metadata" alt="Actual native PerfChecker investigation cancellation, controller cleanup and recovery checklist" caption="Cancel an active investigation and wait for the final controller-cleanup status. The recovery checklist explains subsequent checks; it does not show those checks executing. Recorded build: VSIX 75f84f, Core 975d, VS Code 1.141 on Linux." />
+```
 
 Use **Cancel** in a suite execution notification, the suite Testing profile, an
 investigation or a native Testing run. PerfChecker asks the Julia controller to
