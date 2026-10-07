@@ -27,6 +27,19 @@ function _discovery_warning(file, message; line = 0)
         "file" => file, "line" => line, "message" => message)
 end
 
+function _discovery_isfile(path::AbstractString)
+    # A Julia string is only a possible file reference. Ordinary text can be
+    # longer than a filesystem name or contain NUL, which no filename permits.
+    occursin('\0', path) && return false
+    try
+        return isfile(path)
+    catch error
+        error isa Base.IOError &&
+            error.code in (Base.UV_ENAMETOOLONG, Base.UV_EINVAL) || rethrow()
+        return false
+    end
+end
+
 function _scan_test_file!(candidates, fixtures, warnings, path, root)
     text = read(path, String)
     tree = try
@@ -110,7 +123,8 @@ function _scan_test_file!(candidates, fixtures, warnings, path, root)
             if value isa String
                 candidate = normpath(joinpath(dirname(path), value))
                 relative = relpath(candidate, root)
-                if !startswith(relative, "..") && isfile(candidate) && !islink(candidate) &&
+                if !startswith(relative, "..") && _discovery_isfile(candidate) &&
+                   !islink(candidate) &&
                    !startswith(relpath(realpath(candidate), realpath(root)), "..")
                     fixtures[replace(relative, '\\' => '/')] = _sha256_file(candidate)
                     push!(file_fixtures, replace(relative, '\\' => '/'))

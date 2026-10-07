@@ -1,5 +1,11 @@
 # Release notes
 
+## 1.0.1
+
+- Keep test discovery and catalogue synchronization working when Julia source
+  contains long text or embedded NUL characters, including generated Pluto
+  notebooks. Real fixture files and the discovery root boundary remain enforced.
+
 ## 1.0.0
 
 The V1 API has changed substantially since 0.2.4. Use a separate Julia environment
