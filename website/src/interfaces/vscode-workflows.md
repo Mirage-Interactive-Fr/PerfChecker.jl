@@ -76,6 +76,15 @@ action and declared scenarios before launch. If no suite file exists, a feature
 notebook opens as a saved-report reader; create or configure the suite before
 expecting executable checks.
 
+```@raw html
+<DocMedia src="/assets/screenshots/vscode/v101/pluto-macos-intel.png" alt="Native VS Code 1.141.0 on a macOS Intel CI host displaying the generated PerfChecker Pluto suite notebook, its package, workload, collector and target selectors, and Open source, Stop session and Restart session controls" caption="Review the package, workload, collector and target selectors inside the VS Code editor tab. This capture records only an idle notebook opening in the 1.0.1 candidate, with a demonstration package." />
+```
+
+This native capture uses VSIX candidate `75f84f631ba3`, Core candidate
+`6f6155510aa2` and Julia **1.13.1**. Its configured opening phase passed;
+the complete notebook lifecycle and final release qualification remain in
+progress. The image opens at full resolution when selected.
+
 The integration uses the official notebook generators supplied by PerfChecker
 and its PerfCheckerPluto companion. The generated notebook is editable Julia source. Opening it or changing a selector does not request
 a new measurement. Pluto still executes reactive Julia cells: inspect an
@@ -218,7 +227,7 @@ official Julia extension **1.174.2** and Julia **1.13.1**: SymbolServer reports
 combination. PerfChecker's controller and measurement workers have separate
 executable and project checks.
 
-The candidate's Julia **1.12.x** REPL/debugger compatibility check is in progress.
+The candidate's Julia **1.12.7** REPL/debugger compatibility check is in progress.
 The release report will identify the exact editor, Julia extension, runtime and
 platform actually exercised. Configure `perfchecker.juliaExecutable` for the
 PerfChecker controller and `julia.executablePath` for the official Julia extension
@@ -282,9 +291,17 @@ displayed frame rate.
 
 Software qualification has exercised the real compiled provider bridge with
 the Landscape v0.1.0 scene, five SDK v0.1.1 modules, Mesa **llvmpipe** on a CPU,
-and six real observations after warmup. Active rendering was observed before
-cancellation, and the corrected candidate stopped its owned workers before the
-test display closed. The final release source is still awaiting qualification.
+40 submitted frames after warmup and six real observations in milliseconds.
+Two changing rendered scene buffers were observed before cancellation. The
+corrected candidate stopped all tracked owned processes before the test display
+closed, preserved an unrelated `.mem` file and published no completed evidence
+for the cancelled run.
+
+This opt-in test passed against Core candidate `11011e1f8999`. The package source
+and tests are byte-identical in candidate `975d9351250a` (tree
+`7efea7f007cbdd78141fbebef63eeefcebc0f54e`); only the spelling configuration
+changed. Registration and the extension's final release qualification remain
+separate prerequisites for the public 1.0.1 workflow.
 The native VS Code companion button, hardware GPU timing and physical display
 presentation have not been qualified by this software test.
 
