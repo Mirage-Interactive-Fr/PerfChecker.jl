@@ -4,10 +4,11 @@ import { mkdtemp, mkdir, writeFile, readFile, rm, symlink } from 'node:fs/promis
 import { tmpdir } from 'node:os';
 import { join, posix } from 'node:path';
 import { createHmac } from 'node:crypto';
+import { execFileSync } from 'node:child_process';
 import ssh2 from 'ssh2';
 const { Server, utils } = ssh2;
 import { hostVerifier, validateRoot, readExport, publishDocumentation, connectSftp,
-  deploymentConfiguration, validateDocumentationExports, failureClass } from './deploy-sftp.mjs';
+  deploymentConfiguration, validateDocumentationExports, validateStableDocumentationSource, failureClass } from './deploy-sftp.mjs';
 const revision = 'a'.repeat(40), nextRevision = 'b'.repeat(40);
 class MemorySftp {
   constructor() { this.files = new Map(); this.dirs = new Map([['/www', 0o755]]); this.operations = []; this.fail = null; }
@@ -47,6 +48,113 @@ async function exportsFor(t, version = '1.0.0', sha = revision) {
   return { dev: await make('dev'), site: await make('version'), stableSite: await make('stable') };
 }
 const release = (exports, version = 'v1.0.0', sha = revision) => ({ ...exports, root: '/www', channel: 'release', version, revision: sha });
+const refresh = (exports, sequence = 20) => ({ root: '/www', channel: 'stable-refresh', version: 'v1.0.0',
+  revision: nextRevision, releaseRevision: revision, sequence, site: exports.stableSite });
+const protectedFiles = sftp => new Map([...sftp.files].filter(([path]) => path.startsWith('/www/v1.0.0/') ||
+  path.startsWith('/www/dev/') || ['/www/.perfchecker-releases.json', '/www/.perfchecker-promotion.json',
+    '/www/.perfchecker-stable.json', '/www/versions.js'].includes(path))
+  .map(([path, file]) => [path, Buffer.from(file.bytes)]));
+test('stable source validation accepts only documentation differences from an existing tag', async t => {
+  const root = await mkdtemp(join(tmpdir(), 'perfchecker-doc-source-'));
+  t.after(() => rm(root, { recursive: true, force: true }));
+  const git = (...args) => execFileSync('git', ['-C', root, '-c', 'user.name=Documentation test',
+    '-c', 'user.email=docs@example.invalid', '-c', 'commit.gpgsign=false', '-c', 'core.hooksPath=/dev/null', ...args],
+  { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }).trim();
+  git('init'); await mkdir(join(root, 'website'));
+  await writeFile(join(root, 'Project.toml'), 'version = "1.0.0"\n');
+  await writeFile(join(root, 'website/guide.md'), 'first guide');
+  git('add', '.'); git('commit', '-m', 'release'); const tagRevision = git('rev-parse', 'HEAD'); git('tag', 'v1.0.0');
+  await writeFile(join(root, 'website/guide.md'), 'illustrated guide'); git('add', '.'); git('commit', '-m', 'docs');
+  const docsRevision = git('rev-parse', 'HEAD');
+  assert.equal(await validateStableDocumentationSource(root, 'v1.0.0', docsRevision), tagRevision);
+  await writeFile(join(root, 'Project.toml'), 'uncommitted package change');
+  await assert.rejects(validateStableDocumentationSource(root, 'v1.0.0', docsRevision), /outside documentation/);
+  await writeFile(join(root, 'Project.toml'), 'version = "1.0.0"\n');
+  await assert.rejects(validateStableDocumentationSource(root, 'v1.0.0', revision), /checkout differs/);
+  await assert.rejects(validateStableDocumentationSource(root, 'v9.9.9', docsRevision));
+  for (const path of ['Project.toml', 'src/new.jl', 'ext/NewExt.jl', 'bin/perfchecker.jl',
+    'packages/Provider/Project.toml', 'schemas/result.json', '.github/workflows/CI.yml']) {
+    await mkdir(join(root, posix.dirname(path)), { recursive: true }); await writeFile(join(root, path), 'changed');
+    git('add', '.'); git('commit', '-m', 'non-documentation change');
+    await assert.rejects(validateStableDocumentationSource(root, 'v1.0.0', git('rev-parse', 'HEAD')), /outside documentation/);
+    git('revert', '--no-edit', 'HEAD');
+    assert.equal(await validateStableDocumentationSource(root, 'v1.0.0', git('rev-parse', 'HEAD')), tagRevision);
+  }
+});
+test('an explicit stable refresh updates only root files and its own provenance marker', async t => {
+  const old = await exportsFor(t), updated = await exportsFor(t, '1.0.0', nextRevision), sftp = new MemorySftp();
+  await publishDocumentation(sftp, release(old));
+  await publishDocumentation(sftp, { root: '/www', channel: 'dev', revision, sequence: 1, site: old.dev });
+  const protectedBefore = protectedFiles(sftp), operationsBefore = sftp.operations.length;
+  await publishDocumentation(sftp, refresh(updated));
+  assert.deepEqual(protectedFiles(sftp), protectedBefore);
+  const writes = sftp.operations.slice(operationsBefore);
+  assert.ok(writes.includes('/www/index.html'));
+  assert.equal(writes.some(path => protectedBefore.has(path)), false);
+  assert.equal(JSON.parse(await sftp.read('/www/build-info.json')).revision, nextRevision);
+  const marker = JSON.parse(await sftp.read('/www/.perfchecker-stable-refresh.json'));
+  assert.equal(marker.status, 'complete'); assert.equal(marker.revision, nextRevision);
+  assert.equal(marker.version, 'v1.0.0'); assert.equal(marker.sequence, 20);
+  assert.equal(sftp.dirs.has('/www/.perfchecker-docs-lock'), false);
+  const snapshot = Buffer.from(await sftp.read('/www/build-info.json'));
+  await publishDocumentation(sftp, release(old));
+  assert.deepEqual(await sftp.read('/www/build-info.json'), snapshot, 'same-tag rerun preserves refreshed root');
+  assert.equal((await publishDocumentation(sftp, refresh(updated, 19))).skipped, true);
+  const newer = await exportsFor(t, '1.0.1', 'c'.repeat(40));
+  await publishDocumentation(sftp, release(newer, 'v1.0.1', 'c'.repeat(40)));
+  assert.equal(JSON.parse(await sftp.read('/www/build-info.json')).version, '1.0.1');
+});
+test('a completed tag rerun does not upload root files and an unfinished first promotion can resume', async t => {
+  const exports = await exportsFor(t), sftp = new MemorySftp();
+  await publishDocumentation(sftp, release(exports)); const before = sftp.operations.length;
+  await publishDocumentation(sftp, release(exports));
+  assert.equal(sftp.operations.slice(before).some(path => path === '/www/index.html' || path === '/www/guide.html' ||
+    path.startsWith('/www/assets/')), false);
+  const manual = new MemorySftp(); await manual.write('/www/siteinfo.js', 'var DOCUMENTER_CURRENT_VERSION = "v1.0.0";');
+  await manual.write('/www/index.html', 'manual documentation');
+  manual.fail = destination => destination === '/www/guide.html';
+  await assert.rejects(publishDocumentation(manual, release(exports)), /injected/);
+  manual.fail = null; await publishDocumentation(manual, release(exports));
+  assert.equal((await manual.read('/www/index.html')).toString(), 'index 1.0.0 stable');
+});
+test('stable refresh refuses unknown releases, wrong tag source and incomplete or newer promotion metadata', async t => {
+  const old = await exportsFor(t), updated = await exportsFor(t, '1.0.0', nextRevision);
+  for (const problem of ['unknown', 'wrong-source', 'missing-archive', 'missing-completion', 'newer-intent']) {
+    const sftp = new MemorySftp(); if (problem !== 'unknown') await publishDocumentation(sftp, release(old));
+    const options = refresh(updated);
+    if (problem === 'wrong-source') options.releaseRevision = 'c'.repeat(40);
+    if (problem === 'missing-archive') sftp.files.delete('/www/v1.0.0/.perfchecker-docs.json');
+    if (problem === 'missing-completion') sftp.files.delete('/www/.perfchecker-stable.json');
+    if (problem === 'newer-intent') await sftp.write('/www/.perfchecker-promotion.json', JSON.stringify({
+      version: 'v1.0.1', revision: 'c'.repeat(40), digest: 'd'.repeat(64) }));
+    const snapshot = new Map([...sftp.files].map(([path, file]) => [path, Buffer.from(file.bytes)]));
+    const writes = sftp.operations.length;
+    await assert.rejects(publishDocumentation(sftp, options), /published stable|absent or incomplete/);
+    assert.deepEqual(new Map([...sftp.files].map(([path, file]) => [path, file.bytes])), snapshot, problem);
+    assert.equal(sftp.operations.length, writes, problem);
+    assert.equal(sftp.dirs.has('/www/.perfchecker-docs-lock'), false);
+  }
+});
+test('interrupted stable refresh preserves archive identities, blocks old tag rollback and can resume', async t => {
+  for (const boundary of ['watermark', 'page', 'completion']) {
+    const old = await exportsFor(t), updated = await exportsFor(t, '1.0.0', nextRevision), sftp = new MemorySftp();
+    await publishDocumentation(sftp, release(old)); const archive = protectedFiles(sftp); let markers = 0;
+    sftp.fail = destination => boundary === 'page' ? destination === '/www/guide.html' :
+      destination === '/www/.perfchecker-stable-refresh.json' && ++markers === (boundary === 'watermark' ? 1 : 2);
+    await assert.rejects(publishDocumentation(sftp, refresh(updated)), /injected/);
+    assert.deepEqual(protectedFiles(sftp), archive, boundary);
+    assert.equal(sftp.dirs.has('/www/.perfchecker-docs-lock'), false);
+    assert.equal([...sftp.files.keys()].some(path => path.includes('.perfchecker-upload-')), false);
+    sftp.fail = null;
+    if (boundary !== 'watermark') {
+      const root = Buffer.from(await sftp.read('/www/build-info.json'));
+      await publishDocumentation(sftp, release(old)); assert.deepEqual(await sftp.read('/www/build-info.json'), root);
+    }
+    await publishDocumentation(sftp, refresh(updated));
+    assert.equal(JSON.parse(await sftp.read('/www/.perfchecker-stable-refresh.json')).status, 'complete');
+    assert.deepEqual(protectedFiles(sftp), archive);
+  }
+});
 test('first dev deployment preserves the manual root and advertises only available channels', async t => {
   const exports = await exportsFor(t), sftp = new MemorySftp();
   await sftp.write('/www/index.html', 'manual root'); await sftp.write('/www/notes.txt', 'user file');
@@ -144,6 +252,12 @@ test('CI credentials cannot be used by PRs, arbitrary refs or disabled deploymen
   assert.equal(deploymentConfiguration({ ...env, PERFCHECKER_DOCS_REF_DELETED: 'false' }).channel, 'dev');
   const tagged = { ...env, GITHUB_REF: 'refs/tags/v1.0.0', GITHUB_REF_NAME: 'v1.0.0' };
   assert.equal(deploymentConfiguration(tagged).channel, 'release');
+  const manual = { ...env, GITHUB_EVENT_NAME: 'workflow_dispatch', PERFCHECKER_DOCS_STABLE_REFRESH: 'true',
+    PERFCHECKER_DOCS_STABLE_VERSION: 'v1.0.0' };
+  assert.equal(deploymentConfiguration(manual).channel, 'stable-refresh');
+  for (const change of [{ GITHUB_REF: 'refs/heads/dev' }, { GITHUB_EVENT_NAME: 'push' },
+    { GITHUB_EVENT_NAME: 'pull_request' }, { PERFCHECKER_DOCS_STABLE_VERSION: '1.0.0' }])
+    assert.throws(() => deploymentConfiguration({ ...manual, ...change }));
   assert.throws(() => deploymentConfiguration({ ...tagged, PERFCHECKER_DOCS_REF_DELETED: 'true' }), /Deleted refs/);
   for (const change of [{ GITHUB_EVENT_NAME: 'pull_request' }, { GITHUB_REF: 'refs/heads/other' },
     { PERFCHECKER_DOCS_SFTP_DEPLOY: 'false' }, { PERFCHECKER_DOCS_SFTP_KNOWN_HOSTS: '' },

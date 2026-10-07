@@ -86,6 +86,31 @@ for (const channel of await readdir(root)) {
     const href = await result.getAttribute('href');
     assert.ok(new URL(href, local).pathname.startsWith(info.base) && new URL(href, local).pathname.endsWith('.html'));
     await result.click(); await page.waitForLoadState('networkidle');
+    const illustrated = [
+      ['interfaces/vscode.html', ['vscode-studio.png', 'vscode-suite-designer.png']],
+      ['interfaces/vscode-workflows.html', ['vscode-results.png']],
+      ['mcp-advisor.html', ['vscode-mcp-settings.png', 'vscode-advice-chat.png', 'vscode-implementation.png']],
+    ];
+    for (const [route, screenshots] of illustrated) {
+      await page.goto(new URL(route, local).href, { waitUntil: 'networkidle' });
+      for (const screenshot of screenshots) {
+        const image = page.locator(`.vp-doc img[src$="/${screenshot}"]`);
+        await image.scrollIntoViewIfNeeded();
+        await image.evaluate(image => image.decode());
+        assert.ok(await image.evaluate(image => image.naturalWidth >= 1200 && image.naturalHeight > 500));
+        assert.ok((await image.getAttribute('alt'))?.length > 40);
+        const imageUrl = new URL(await image.getAttribute('src'), local);
+        assert.ok(imageUrl.pathname.startsWith(info.base));
+        const fullSize = await image.locator('..').getAttribute('href');
+        assert.equal(new URL(fullSize, local).href, imageUrl.href, 'Screenshots must open their full-size source');
+        assert.equal((await page.request.get(imageUrl.href)).status(), 200);
+      }
+      await page.setViewportSize({ width: 390, height: 900 });
+      assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), route);
+      await page.reload({ waitUntil: 'networkidle' });
+      assert.ok(await page.locator('h1').isVisible());
+      await page.setViewportSize({ width: 1440, height: 900 });
+    }
     await page.goto(new URL('reference/extensions.html', local).href, { waitUntil: 'networkidle' });
     const text = await page.locator('.vp-doc').innerText();
     assert.match(text, /64-bit/); assert.match(text, /PropCheck/); assert.match(text, /corpus/);
@@ -94,7 +119,7 @@ for (const channel of await readdir(root)) {
     await picker.getByRole('button', { name: label, exact: true }).click();
     await picker.getByRole('link', { name: label, exact: true }).waitFor({ state: 'visible' });
     assert.deepEqual(errors, []);
-    console.log(`${channel}: mobile logo, navigation, search, version picker and Supposition guide passed in Chromium`);
+    console.log(`${channel}: mobile navigation, search, version picker, six full-size VS Code screenshots and Supposition guide passed in Chromium`);
   } finally {
     await browser?.close(); const closed = once(server, 'exit'); server.kill('SIGTERM'); await closed;
   }

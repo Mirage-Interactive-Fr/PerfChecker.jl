@@ -4,7 +4,22 @@ Use saved evidence in full VS Code tabs, and run exploratory Julia code in an ex
 
 ## Plot saved results
 
-Select a completed run in PerfChecker, then choose **PerfChecker: Open visual output**. The extension reads the saved report and opens available plots in an editor panel. Keep it beside the workload or use editor groups to compare reports.
+Select a completed suite run in PerfChecker, then choose **PerfChecker: Open visual output**. The extension reads the saved suite report and opens available plots in an editor panel. Keep it beside the workload or use editor groups to compare reports. Native TestItems retain their separate JSON evidence in the **PerfChecker test items** output channel.
+
+In the visual output, select **Version series** to compare recorded targets. Use
+the package, feature and check filters to narrow the evidence. Hover a point or
+focus its accessible button to inspect the value and unit. **JSON** and
+**Series JSON** open the underlying saved data when you need its provenance.
+
+```@raw html
+<DocMedia src="/assets/screenshots/vscode-results.png" alt="PerfChecker V1 output webview rendered in Chromium, displaying version filters, a normalized overlay and timing points with nanosecond units" caption="Read units and raw values before comparing: the overlay sets each metric's minimum to 1, while the version series retains the recorded unit. These are demonstration results in the real extension UI, not measurements of a published package." />
+```
+
+The normalized overlay makes different metrics readable together; a ratio of
+two for bytes and a ratio of two for time do not describe the same quantity.
+Select the corresponding raw series and compatible collector before drawing a
+conclusion. The screenshot's version labels belong to the demonstration package,
+not to PerfChecker's release version.
 
 | Visual | Evidence needed | Interpretation |
 | --- | --- | --- |

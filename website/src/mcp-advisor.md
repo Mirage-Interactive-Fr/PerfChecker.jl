@@ -1,8 +1,22 @@
 # MCP advice and implementation
 
-Connect PerfChecker to a tool on an existing MCP server. Discuss performance evidence in advice mode, then explicitly request implementation after reviewing the answer. PerfChecker's deterministic findings remain available without an agent or network connection.
+Connect PerfChecker to a tool on an existing MCP server. PerfChecker acts as the **MCP client** calling your agent's tools. Discuss performance evidence in advice mode, then explicitly request implementation after reviewing the answer. PerfChecker's deterministic findings remain available without an agent or network connection.
 
 MCP is a **tool protocol**, not a model endpoint. The chosen tool must accept a prompt and produce an answer, directly or through its own agent. A server exposing only unrelated data tools cannot generate performance advice. For an external server, you manage its installation and startup. The VS Code extension also provides the explicit local Codex connector below.
+
+## Choose a connection
+
+| What you already have | Use | First action |
+| --- | --- | --- |
+| An authenticated native Codex CLI | The extension's temporary local connector | Open Advisor chat and choose **Connect Codex CLI** |
+| An HTTP MCP agent that can answer a prompt | Explicit external MCP configuration | Start your server, then discover and select its advice tool |
+| Only a model's Chat Completions URL | The provider interface for evidence narration | Use [Provider setup](advisor-ui.md); this URL is not an MCP server |
+| No agent account or server | Deterministic findings and manual changes | Measure and diagnose, then inspect the saved advice |
+
+In either MCP route, the controller must contain PerfChecker V1 and `HTTP`.
+[Prepare the controller](interfaces/vscode-configuration.md#Prepare-a-controller)
+first. Advice and implementation are separate actions: receiving an answer never
+approves a source edit.
 
 ## Connect an authenticated Codex CLI
 
@@ -33,6 +47,17 @@ This sends real model requests against your existing account and removes its dis
 ## Configure the advice tool
 
 Install `HTTP` deliberately in the controller environment. In VS Code, open **PerfChecker: Configure advisor and manage models**, select **MCP HTTP**, set the server endpoint and revision, discover its tools, and select an advice tool. The probe checks the connection/catalogue; it does not establish the quality of the tool's reasoning.
+
+In the discovered inventory, select **Use** beside your agent's advice tool.
+Inspect its input schema: replace the prompt argument if it is not `prompt`, and
+provide its other required arguments without secrets. Tool names and argument
+names are case-sensitive. The screenshot's `ask_perfchecker` is a demonstration
+inventory; the external-server example below uses the placeholder `ask`. Use
+your server's actual name and schema in both the file and extension settings.
+
+```@raw html
+<DocMedia src="/assets/screenshots/vscode-mcp-settings.png" alt="Actual PerfChecker V1 advisor setup webview in Chromium with a demonstration MCP HTTP endpoint, tool inventory and selected advice tool" caption="Use your server's endpoint and exact tool name, then probe and save the configuration. This running webview shows a local demonstration configuration and an example tool inventory; the address is not a service supplied to every user." />
+```
 
 A complete local example for `perf/advisor.json` is:
 
@@ -101,6 +126,10 @@ The agent receives an instruction to answer in the user's language, distinguish 
 
 Replies are unverified text, separate from deterministic findings. Embedded HTML is displayed as text. Suggested commands are not executed by advice chat. You may implement the suggestions yourself.
 
+```@raw html
+<DocMedia src="/assets/screenshots/vscode-advice-chat.png" alt="Actual PerfChecker V1 Advice webview rendered in Chromium with selected allocation evidence, two user questions, two replies and a follow-up prompt" caption="Use follow-up questions to separate observations from hypotheses and agree on validation before preparing an implementation. The actual V1 webview displays a demonstration conversation and evidence; select the image to read the full exchange." />
+```
+
 The public Julia API exposes the same bounded conversation:
 
 ```julia
@@ -136,7 +165,21 @@ The extension's workflow is:
 4. The tool receives that checkout's canonical absolute path and an instruction to inspect, edit and test **only there**. It must leave changes for review and avoid publishing, pushing, deploying or modifying external services.
 5. Read the implementation summary and open the proposed diff. The summary alone does not verify correctness or performance.
 6. Select **Apply reviewed implementation changes** only after checking the actual diff. Application updates working-tree files without changing HEAD or the real Git index.
-7. Rerun relevant correctness checks and compatible before/after measurements. Use **Restore implementation checkpoint** if you need to reverse the applied patch and the repository has not drifted.
+7. Rerun relevant correctness checks, including empty inputs, boundary values and the representative types your API accepts, then collect compatible before/after measurements. A shorter expression can change empty-input or numeric behavior. Use **Restore implementation checkpoint** if you need to reverse the applied patch and the repository has not drifted.
+
+```@raw html
+<DocMedia src="/assets/screenshots/vscode-implementation.png" alt="Running PerfChecker V1 chat webview showing the implementation warning, checkpoint reference, isolated change summary, reviewed diff and explicit apply action" caption="Review the actual diff before applying. The original working tree is still unchanged at this stage; Restore becomes relevant after Apply. The UI is real, while the advice and edited fixture are demonstration data." />
+```
+
+A useful first advice request is: “Explain the allocation observations in this
+report. Separate measured facts from possible causes and suggest one correctness
+check before proposing a change.” Before preparing implementation, name the
+reviewed change and validation you want, for example: “Prepare only the reviewed
+buffer-reuse change; preserve the public API and validate empty inputs, boundary
+values and supported numeric types with its correctness tests. Do not claim a
+speedup without comparable measurements.”
+Check the diff and worker output yourself. The word `complete` in a tool reply
+does not establish that tests passed or that performance improved.
 
 !!! warning "The tool must enforce workspace access"
     MCP and the prompt do not provide an operating-system sandbox. The selected server/agent must honor the supplied workspace and preferably confine itself independently. A remote HTTPS server does not automatically see local files; it needs a deliberately configured shared filesystem or bridge. Advice mode likewise depends on the chosen tool respecting its advice-only contract.

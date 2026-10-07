@@ -9,9 +9,10 @@ Its development documentation is served at
 the mirror's redirect and versions only inside `PerfChecker/`.
 
 The canonical Studio, configuration, Julia/notebook and MCP guides publish with
-the package documentation. Development documentation comes from `main`; stable
-documentation comes from the matching version tag. Official extension publication
-follows V1 availability in General.
+the package documentation. Development documentation comes from `main`; version
+archives come from the matching immutable tag. The stable root can receive an
+explicit documentation-only refresh from equivalent package source on `main`.
+PerfChecker V1 is available in General; the extension is published separately.
 
 ## Static export and SFTP
 
@@ -57,10 +58,42 @@ workflow's exports are documentation checks, not a complete package qualificatio
 The `Documentation` workflow builds exports without server credentials and
 saves downloadable artifacts before publication. Pull requests build and test
 all three canonical bases but never receive SFTP secrets. Main pushes and a
-manual dispatch on main publish only `/dev/`. A stable tag matching
+manual dispatch with `publication=dev` on main publish only `/dev/`. A stable tag matching
 `Project.toml` publishes `/vX.Y.Z/` and promotes that version to the domain
-root only if it is at least as recent as the previously selected stable version.
+root when it is newer than the previously selected stable version, or when that
+version's first root publication is still incomplete. A completed same-tag rerun
+can repair its immutable archive and catalogue without uploading the root again.
 Development builds also accept Julia versions such as `1.0.1-DEV`.
+
+### Refresh the current stable documentation without retagging
+
+After the tag's **Documentation** run finishes successfully, open the repository's
+**Actions → Documentation → Run workflow**. Select branch **main** and publication
+**stable**. The workflow builds and validates the complete exports before using
+the existing SFTP publisher and lock. It publishes the stable export to the
+domain root only; `/dev/` is updated by the normal main-push workflow.
+
+This action requires `main` to retain the registered version and the same package
+source as its existing stable tag. Every differing path must be documentation,
+the Documentation workflow or one of its explicitly allowed documentation
+checkers. Package metadata, source, extensions, CLI files, optional packages,
+providers and schemas are checked rather than guessed from a partial source list.
+The publisher verifies the checkout SHA and tag again before connecting. Missing
+tags or changed package source refuse the refresh.
+
+Under the remote lock, the selected version must already be the current stable
+release with matching archive, completed stable and promotion records. An
+incomplete first tag publication or a newer pending promotion refuses the action.
+The archive `/vX.Y.Z/`, release-state records, original tag/release source and live
+version catalogue remain unchanged. Root `build-info.json` identifies the new
+documentation commit while its package version stays the registered version.
+
+Only `.perfchecker-stable-refresh.json` records the refresh's documentation SHA,
+digest, workflow sequence and `pending`/`complete` status. Its watermark is written
+before root files, so a late rerun of the old tag cannot undo even an interrupted
+refresh. Rerun the failed publication job with its retained artifact to finish;
+older refresh sequences are skipped. A strictly newer release can still promote
+normally. No tag is moved and no package registration is performed by this action.
 
 Configure these repository Actions variables:
 

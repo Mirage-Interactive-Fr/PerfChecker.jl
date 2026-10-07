@@ -6,6 +6,13 @@ on:
     tags: ['v*']
   pull_request:
   workflow_dispatch:
+    inputs:
+      publication:
+        description: Documentation to publish (stable refresh keeps the release archive unchanged)
+        type: choice
+        options: [dev, stable]
+        default: dev
+        required: true
 
 permissions:
   contents: read
@@ -32,6 +39,8 @@ jobs:
     name: Build documentation exports and test SFTP publication
     runs-on: ubuntu-latest
     timeout-minutes: 60
+    outputs:
+      stable-version: ${{ steps.version.outputs.stable-version }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -47,14 +56,24 @@ jobs:
           cache-dependency-path: website/package-lock.json
       - uses: julia-actions/cache@v3
       - name: Select the documented version
+        id: version
         shell: bash
+        env:
+          REFRESH_STABLE: ${{ github.event_name == 'workflow_dispatch' && inputs.publication == 'stable' }}
         run: |
           version=$(julia --startup-file=no -e 'using TOML; print(TOML.parsefile("Project.toml")["version"])')
-          if [[ "$GITHUB_REF_TYPE" == tag ]]; then
+          if [[ "$GITHUB_REF_TYPE" == tag || "$REFRESH_STABLE" == true ]]; then
             [[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "Expected a stable tagged version"; exit 1; }
+          fi
+          if [[ "$GITHUB_REF_TYPE" == tag ]]; then
             [[ "$GITHUB_REF_NAME" == "v$version" ]] || { echo "Documentation tag differs from the package version"; exit 1; }
           fi
+          if [[ "$REFRESH_STABLE" == true ]]; then
+            [[ "$GITHUB_REF" == refs/heads/main ]] || { echo "Stable documentation refresh requires main"; exit 1; }
+            git fetch --no-tags --depth=1 origin "refs/tags/v$version:refs/tags/v$version"
+          fi
           echo "PERFCHECKER_DOCS_VERSION=$version" >> "$GITHUB_ENV"
+          echo "stable-version=v$version" >> "$GITHUB_OUTPUT"
       - name: Install documentation dependencies
         run: julia --startup-file=no --project=website -e 'using Pkg; Pkg.develop(path="."); Pkg.instantiate()'
       - name: Test publication policy and real SSH/SFTP authentication
@@ -62,6 +81,12 @@ jobs:
         run: |
           npm ci --ignore-scripts --no-audit --no-fund
           npm run test:sftp
+      - name: Verify stable documentation has the released package source
+        if: github.event_name == 'workflow_dispatch' && inputs.publication == 'stable'
+        run: >-
+          node --input-type=module -e
+          'import {validateStableDocumentationSource} from "./website/deploy-sftp.mjs";
+          await validateStableDocumentationSource(process.cwd(), "v" + process.env.PERFCHECKER_DOCS_VERSION, process.env.GITHUB_SHA);'
       - name: Build the GitHub mirror
         shell: bash
         env:
@@ -85,7 +110,7 @@ jobs:
           PERFCHECKER_DOCS_BUILD_DIR: build/sftp/dev
         run: julia --startup-file=no --project=website website/make.jl
       - name: Build canonical version and stable exports
-        if: github.ref_type == 'tag' || github.event_name == 'pull_request'
+        if: github.ref_type == 'tag' || github.event_name == 'pull_request' || inputs.publication == 'stable'
         shell: bash
         env:
           PERFCHECKER_DOCS_HOSTING: sftp
@@ -156,6 +181,11 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: '22'
+      - name: Read the immutable stable tag for an explicit documentation refresh
+        if: github.event_name == 'workflow_dispatch' && inputs.publication == 'stable'
+        env:
+          STABLE_VERSION: ${{ needs.documentation.outputs.stable-version }}
+        run: git fetch --no-tags --depth=1 origin "refs/tags/$STABLE_VERSION:refs/tags/$STABLE_VERSION"
       - uses: actions/download-artifact@v8
         with:
           name: documentation-sftp-exports
@@ -165,6 +195,8 @@ jobs:
         run: npm ci --ignore-scripts --no-audit --no-fund
       - name: Publish the completed exports
         env:
+          PERFCHECKER_DOCS_STABLE_REFRESH: ${{ github.event_name == 'workflow_dispatch' && inputs.publication == 'stable' }}
+          PERFCHECKER_DOCS_STABLE_VERSION: ${{ needs.documentation.outputs.stable-version }}
           PERFCHECKER_DOCS_REF_DELETED: ${{ github.event.deleted }}
           PERFCHECKER_DOCS_SFTP_DEPLOY: ${{ vars.PERFCHECKER_DOCS_SFTP_DEPLOY }}
           PERFCHECKER_DOCS_SFTP_HOST: ${{ vars.PERFCHECKER_DOCS_SFTP_HOST }}
@@ -179,6 +211,8 @@ jobs:
           if [[ "$GITHUB_REF_TYPE" == tag ]]; then
             export PERFCHECKER_DOCS_SITE=website/build/sftp/version/site
             export PERFCHECKER_DOCS_STABLE_SITE=website/build/sftp/stable/site
+          elif [[ "$PERFCHECKER_DOCS_STABLE_REFRESH" == true ]]; then
+            export PERFCHECKER_DOCS_SITE=website/build/sftp/stable/site
           else
             export PERFCHECKER_DOCS_SITE=website/build/sftp/dev/site
           fi
