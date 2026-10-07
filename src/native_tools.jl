@@ -8,6 +8,14 @@ and no software is installed. Linux tools can be planned on Windows for executio
 inside Linux/WSL with Linux paths. The plan reports local availability separately
 from qualification. Capture the workload's oracle and dependency inventory alongside
 the resulting artifact; a profiler exit code does not prove workload correctness.
+
+Supported tools are `:memcheck`, `:callgrind`, `:massif`, `:cachegrind`,
+`:heaptrack`, `:perf` and `:vtune`; unknown tools or empty script/output strings
+raise `ArgumentError`. Return `perfchecker-native-tool-plan/1` with executable,
+argument vector, intended platform/artifact paths, availability and limitations.
+`suppressions` adds a Valgrind suppressions-file argument only. Paths are passed
+as supplied, so callers planning a WSL/Linux run must supply paths valid there.
+No output directories, suppression files or profiler artifacts are created.
 """
 function native_tool_plan(tool::Symbol, script::AbstractString;
         project = dirname(Base.active_project()), output::AbstractString = "native-profile",

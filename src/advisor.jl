@@ -15,9 +15,11 @@ available in the advisor's `project` environment.
 
 - `endpoint` is a plain HTTP(S) URL without credentials, a query or a fragment.
   Loopback HTTP is accepted; any other host requires HTTPS and `allow_remote=true`.
-- `model` identifies the provider's model. PerfChecker does not bundle one.
+- `model` selects the model for Chat Completions and Ollama. PerfChecker does
+  not bundle a model; the MCP transport does not send this field.
 - `timeout` bounds the isolated request, including worker startup, in seconds
-  (`0 < timeout <= 3600`). `max_tokens` is in `1:4096` and is passed to the provider.
+  (`0 < timeout <= 3600`). `max_tokens` is in `1:4096` and is sent to Chat
+  Completions/Ollama, but not to MCP tools.
 - `max_evidence_chars` bounds the serialized recommendation projection
   (`1000:100000`); it is separate from conversation limits.
 - `api_key_env` names a credential environment variable, not its secret value.
@@ -30,6 +32,9 @@ For `protocol=:mcp_http`, choose a real server tool explicitly with `mcp_tool`.
 `mcp_arguments` supplies its other JSON-compatible arguments with string keys.
 The prompt argument is reserved and cannot also appear in `mcp_arguments`.
 The serialized `mcp_arguments` object is limited to 12,000 UTF-8 bytes.
+MCP servers choose their own model and generation limits. To request those
+settings, provide only arguments admitted by the selected tool's input schema
+in `mcp_arguments`; `model` and `max_tokens` do not configure MCP generation.
 Supported `mcp_version` values are `"2025-11-25"` and `"2026-07-28"`.
 `mcp_response=:text` supports conversation; `:structured` validates narrative
 cards against supplied evidence IDs. Protocol shape validation does not prove
