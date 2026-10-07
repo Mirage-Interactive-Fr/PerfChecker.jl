@@ -16,4 +16,5 @@ extend-exclude = [
 [default]
 # Keep hashes and embedded recorded binary assets out of English spelling.
 extend-ignore-identifiers-re = ['^[0-9a-f]{8,}$']
-extend-ignore-re = ['[A-Za-z0-9+/]{100,}={0,2}']
+# tasklist's output-format switch is an exact Windows CLI option.
+extend-ignore-re = ['[A-Za-z0-9+/]{100,}={0,2}', '/FO CSV /NH']
