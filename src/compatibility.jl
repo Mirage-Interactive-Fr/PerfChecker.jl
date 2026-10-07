@@ -1,6 +1,14 @@
 const COMPATIBILITY_REPORT_SCHEMA = "perfchecker-compatibility-report/1"
 
-"Structured dependency-resolution evidence produced before measurement."
+"""
+    CompatibilityReport(suite, profile, checked_at, diagnostics)
+
+Store suite/profile identity, UTC check time and per-run preparation diagnostics.
+Produced by [`preflight_suite`](@ref), with dependency-resolution and optional
+functional-probe outcomes. This does not contain measured workload performance.
+Use [`preflight_passed`](@ref) for blocking status and
+[`compatibility_report_dict`](@ref) for portable transport.
+"""
 struct CompatibilityReport
     suite::Symbol
     profile::Symbol
@@ -55,7 +63,28 @@ function _default_preflight_probe_runner(planned::PlannedFeatureRun,
     end
 end
 
-"Resolve every ready feature/version environment without running a workload."
+"""
+    preflight_suite(plan::SuitePlan; overrides=Dict{Symbol,Any}(),
+                    resolver=_default_preflight_resolver,
+                    probe_runner=_default_preflight_probe_runner,
+                    progress_callback=_->nothing)
+    preflight_suite(suite::SoftwareSuite; profile=:quick,
+                    version_provider=get_pkg_versions, kwargs...)
+
+Return a [`CompatibilityReport`](@ref) for planned target environments. Resolve
+ready environments inside declared constraints; reuse identical environment
+resolution evidence within the call. Run declared functional probes through
+`probe_runner` after successful resolution, but not the measured workload or
+its correctness oracle. Preparation can install/resolve dependencies and
+execute probe code in isolated workers with the default providers.
+
+Diagnostics distinguish supported, unavailable feature, unsatisfiable/unknown
+resolution, capability-blocked, degraded nonblocking probes and probe errors.
+Resolver/probe exceptions become bounded blocking diagnostics where handled.
+`overrides` are passed to providers and `progress_callback` receives preflight
+progress dictionaries. Injected callbacks/providers must honor their respective
+contracts. The suite overload first plans targets and forwards keywords.
+"""
 function preflight_suite(plan::SuitePlan;
         overrides::AbstractDict = Dict{Symbol, Any}(),
         resolver = _default_preflight_resolver,
@@ -188,15 +217,22 @@ function preflight_suite(suite::SoftwareSuite; profile::Symbol = :quick,
 end
 
 """
-Return whether a `CompatibilityReport` contains no blocking diagnostic. This checks preparation evidence and does not execute or qualify a workload.
+    preflight_passed(report::CompatibilityReport)
+
+Return whether every diagnostic's `blocking` value is false. Missing values
+default to blocking; an empty report passes this predicate. It checks saved
+preparation evidence without executing or qualifying a workload.
 """
 function preflight_passed(report::CompatibilityReport)
     !any(Bool(get(item, "blocking", true)) for item in report.diagnostics)
 end
 
 """
-Return the dictionary representation of a CompatibilityReport, including diagnostic counts and the preflight pass predicate.
-This is an in-memory conversion; it does not write a report or run a workload.
+    compatibility_report_dict(report::CompatibilityReport)
+
+Return `perfchecker-compatibility-report/1` with suite/profile, check time,
+preflight pass flag, counts for known/present statuses and diagnostic records.
+The records are retained in memory; no resolution, probe or file write is repeated.
 """
 function compatibility_report_dict(report::CompatibilityReport)
     statuses = sort!(unique!(vcat(

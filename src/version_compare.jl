@@ -1,4 +1,16 @@
-"A release-by-release comparison and its plottable version series."
+"""
+    VersionComparison
+
+Within-bundle version evidence returned by [`compare_suite_versions`](@ref).
+`run_id` identifies the bundle and `input_passed` records its execution validity.
+`availability` preserves observed, failed and unavailable targets; `series`
+contains plottable metric points, and `records` contains baseline/candidate
+decisions. `warnings` explain missing version metadata or definitions.
+
+Use [`version_comparison_verdict`](@ref) to distinguish qualified, regressed,
+invalid and inconclusive evidence. An available plot is not itself a passing
+performance policy.
+"""
 struct VersionComparison
     run_id::String
     input_passed::Bool
@@ -25,7 +37,23 @@ function _series_identifier(parts)
     return _content_digest(parts)[1:16]
 end
 
-"Aggregate raw observations into plottable statistics for every package feature/version."
+"""
+    suite_version_series(bundle::RunBundle) -> Vector{Dict{String,Any}}
+
+Group finite numeric observations carrying package, feature, version and
+target-kind attributes into metric series. Each series preserves its workload,
+comparison key, measurement definition and unit, with ordered version points.
+Release versions sort before development/Git targets.
+
+Ordinary points retain sample count, median and available mean/minimum/maximum/
+percentile statistics. Allocation-site bytes and counts are summed per target;
+their point's `median` field holds that total and `aggregation` is `"sum"`.
+Line-tracking allocation fractions and CPU/wall sampled-profile observations
+are excluded from this scalar version-series view; their source profiles use
+other plot types. Observations without the required attributes are ignored.
+
+This reduces saved evidence in memory and does not execute a suite or write files.
+"""
 function suite_version_series(bundle::RunBundle)
     groups = Dict{NTuple{9, String}, Vector{Float64}}()
     for observation in bundle.observations
@@ -385,7 +413,36 @@ function _missing_version_record(series, baseline, candidate, relation,
         "reason" => "missing observations for $(join(missing, ", ")): $(join(reasons, "; "))")
 end
 
-"Compare adjacent releases, then compare a development checkout to the latest release."
+"""
+    compare_suite_versions(bundle::RunBundle;
+        relative_limits=Dict{String,Float64}(), min_samples=1,
+        sample_statistics=Dict{String,Symbol}(), default_sample_statistic=:median)
+        -> VersionComparison
+
+Reduce a saved suite bundle into version series and performance comparisons.
+By default, compare adjacent releases and compare development/Git targets to
+the latest release. Explicit [`ComparisonPolicy`](@ref) declarations carried
+by the bundle instead select named or grouped reference targets. Intentionally
+unavailable targets remain in availability evidence but are excluded from the
+comparison domain; failed or missing measurements remain visible.
+
+`relative_limits` uses metric-string keys and nonnegative fractional budgets.
+`min_samples` must be positive. `sample_statistics` chooses a statistic per
+metric (string or symbol key), with `:median`, `:mean`, `:minimum`, `:maximum`,
+`:p95` and `:p99` supported. Reference aggregation combines the chosen statistic
+across baseline targets; it is distinct from reducing samples within one target.
+Without a budget, records are diagnostic and the verdict is inconclusive.
+
+The returned object retains availability, warnings, plot series and all
+comparison records. This performs no measurements and does not write reports.
+
+```julia
+bundle = read_run_bundle("reports/bundles/run-example")
+comparison = compare_suite_versions(bundle;
+    relative_limits=Dict("julia.wall.time" => 0.05), min_samples=3)
+write_version_comparison_json(comparison, "reports/version-comparison.json")
+```
+"""
 function compare_suite_versions(bundle::RunBundle;
         relative_limits::AbstractDict = Dict{String, Float64}(),
         min_samples::Integer = 1,
@@ -425,13 +482,18 @@ function compare_suite_versions(bundle::RunBundle;
 end
 
 """
-Return `true` only when the within-bundle version comparison is `:qualified`.
+    version_comparison_passed(comparison::VersionComparison) -> Bool
+
+Return `true` only when [`version_comparison_verdict`](@ref) is `:qualified`.
+Successful execution without a complete, passing comparison policy returns false.
 """
 function version_comparison_passed(comparison::VersionComparison)
     version_comparison_verdict(comparison) === :qualified
 end
 
 """
+    version_comparison_verdict(comparison::VersionComparison) -> Symbol
+
 Return `:invalid_input`, `:regressed`, `:qualified` or `:inconclusive` for a
 `VersionComparison`. Empty records and incomplete evidence are inconclusive;
 a successful input bundle alone does not qualify a version comparison.
@@ -446,8 +508,11 @@ function version_comparison_verdict(comparison::VersionComparison)
 end
 
 """
-Return the dictionary representation of a VersionComparison with availability, series, comparisons and verdict.
-This is an in-memory conversion; it does not write a report or run a workload.
+    version_comparison_dict(comparison::VersionComparison) -> Dict{String,Any}
+
+Return schema `perfchecker-version-comparison/1`, the source run ID and validity,
+`passed`/`verdict`, warnings, target availability, metric series and comparison
+records. No bundle is reread and no workload or writer is invoked.
 """
 function version_comparison_dict(comparison::VersionComparison)
     return Dict{String, Any}(
@@ -466,7 +531,8 @@ end
 """
     write_version_series_json(result::VersionComparison, path)
 
-Write canonical JSON series and target availability. Create parent directories,
+Write canonical JSON series, target availability and normalized plot descriptions
+under schema `perfchecker-version-series/1`. Create parent directories,
 replace the destination file and return its path. The input is saved evidence;
 this writer does not execute measurements.
 """

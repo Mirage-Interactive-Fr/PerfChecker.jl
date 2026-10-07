@@ -4,7 +4,18 @@ const RESOURCE_ENVELOPE_SCHEMA = "perfchecker-resource-envelope/1"
 
 const OptionalByteCount = Union{Nothing, UInt64}
 
-"A point-in-time operating-system view of one process' memory usage."
+"""
+    ProcessMemorySnapshot(pid, timestamp_ns; rss_bytes=nothing,
+                          peak_rss_bytes=nothing, private_bytes=nothing,
+                          provider="fixture", status=:observed, message="")
+
+Store byte counters for one process at a monotonic timestamp. Counters are
+nonnegative integers or `nothing`, normalized to `UInt64`. `status` is
+`:observed` or `:unavailable`; observed snapshots need at least one counter.
+Invalid status or counters raise `ArgumentError`. Construction does not inspect
+the operating system; use [`process_memory_snapshot`](@ref) for observations.
+Peak RSS is a process-lifetime high-water mark, and missing counters are unknown.
+"""
 struct ProcessMemorySnapshot
     schema_version::String
     pid::Int
@@ -146,7 +157,14 @@ function _linux_process_memory_snapshot(pid::Integer)
         peak_rss_bytes = peak, private_bytes = private, provider)
 end
 
-"Report which process-memory counters PerfChecker can observe on this platform."
+"""
+    process_memory_capabilities()
+
+Return `supported`, provider, counter names, peak semantics and attribution.
+Linux uses `/proc` and optionally `smaps_rollup`; Windows uses PSAPI. Other
+platforms report unsupported counters. This describes platform capability;
+a protected or exited process can still be unavailable.
+"""
 function process_memory_capabilities()
     if Sys.iswindows()
         counters = ["rss_bytes", "peak_rss_bytes", "private_bytes"]
@@ -167,7 +185,23 @@ function process_memory_capabilities()
         "attribution" => "one isolated worker process")
 end
 
-"Take a non-throwing memory snapshot for `pid`; unsupported counters remain `nothing`."
+"""
+    process_memory_snapshot(pid=getpid(); strict=false)
+
+Return a [`ProcessMemorySnapshot`](@ref) of operating-system counters.
+Unsupported platforms and inaccessible processes normally produce
+`status=:unavailable` with a message; individual missing counters remain
+`nothing`. With `strict=true`, unavailability raises `ErrorException`.
+RSS includes Julia and native resident pages; it is not Julia allocation
+volume or a workload-specific peak.
+
+```jldoctest
+julia> snapshot = process_memory_snapshot();
+
+julia> snapshot.pid == getpid()
+true
+```
+"""
 function process_memory_snapshot(pid::Integer = getpid(); strict::Bool = false)
     snapshot = if Sys.iswindows()
         _windows_process_memory_snapshot(pid)
@@ -181,7 +215,13 @@ function process_memory_snapshot(pid::Integer = getpid(); strict::Bool = false)
     return snapshot
 end
 
-"Return the portable `perfchecker-process-memory/1` representation of a snapshot."
+"""
+    process_memory_snapshot_dict(snapshot::ProcessMemorySnapshot)
+
+Return a `perfchecker-process-memory/1` dictionary retaining PID, monotonic
+timestamp, byte counters, provider, string status and message. Unknown counters
+stay `nothing` (JSON `null`); no new observation is taken.
+"""
 function process_memory_snapshot_dict(snapshot::ProcessMemorySnapshot)
     return Dict{String, Any}(
         "schema_version" => snapshot.schema_version, "pid" => snapshot.pid,
@@ -191,7 +231,15 @@ function process_memory_snapshot_dict(snapshot::ProcessMemorySnapshot)
         "status" => string(snapshot.status), "message" => snapshot.message)
 end
 
-"A versioned workload-owned view of native or otherwise external memory."
+"""
+    ExternalMemorySnapshot
+
+Normalized workload-owned external-memory result with schema, timestamp,
+optional live/reserved byte gauges, cumulative allocation/free totals, provider,
+status and message. Use [`external_memory_snapshot`](@ref) to validate a
+dictionary or named tuple. Workload allocator counters are separate from
+Julia allocation counters and process RSS.
+"""
 struct ExternalMemorySnapshot
     schema_version::String
     timestamp_ns::UInt64
@@ -228,7 +276,29 @@ function _external_byte_count(raw, name::String)
     return UInt64(value)
 end
 
-"Normalize a dictionary or named tuple implementing `perfchecker-external-memory/1`."
+"""
+    external_memory_snapshot(raw; provider="workload")
+
+Validate a dictionary or named tuple declaring
+`schema_version="perfchecker-external-memory/1"`. Return an
+[`ExternalMemorySnapshot`](@ref); existing snapshots are returned unchanged,
+and `nothing` means unavailable. Observed results need one nonnegative integer
+counter among `live_bytes`, `reserved_bytes`, `allocated_bytes_total` and
+`freed_bytes_total`. Missing counters remain unknown.
+
+Statuses `observed`, `available`, `pass`, `passed`, `ok` normalize to `:observed`;
+`unavailable`, `unsupported`, `missing` normalize to `:unavailable`.
+`timestamp_ns` defaults to `time_ns()`; an explicit provider overrides the
+keyword. Invalid schema, status, counters or timestamp raise `ArgumentError`.
+This does not invoke the probe or free memory.
+
+```jldoctest
+julia> external = external_memory_snapshot((schema_version="perfchecker-external-memory/1", live_bytes=128));
+
+julia> external.live_bytes == 128
+true
+```
+"""
 function external_memory_snapshot(raw; provider::AbstractString = "workload")
     raw === nothing && return _unavailable_external_memory()
     raw isa ExternalMemorySnapshot && return raw
@@ -261,7 +331,13 @@ function external_memory_snapshot(raw; provider::AbstractString = "workload")
         reserved, allocated, freed, actual_provider, :observed, message)
 end
 
-"Return the portable `perfchecker-external-memory/1` representation of a snapshot."
+"""
+    external_memory_snapshot_dict(snapshot::ExternalMemorySnapshot)
+
+Return the schema, timestamp, optional byte gauges/cumulative totals, provider,
+string status and message as a dictionary. Unknown counters remain `nothing`;
+the workload's probe is not invoked again.
+"""
 function external_memory_snapshot_dict(snapshot::ExternalMemorySnapshot)
     return Dict{String, Any}(
         "schema_version" => snapshot.schema_version,
@@ -273,7 +349,16 @@ function external_memory_snapshot_dict(snapshot::ExternalMemorySnapshot)
         "message" => snapshot.message)
 end
 
-"One resource envelope around a backend collection in an isolated worker."
+"""
+    ResourceEnvelope(elapsed_seconds, process_before, process_after,
+                     external_before, external_after; external_requested=false)
+
+Combine before/after snapshots and collector wall time. Process snapshots
+must have the same PID and elapsed time must be nonnegative, otherwise throw
+`ArgumentError`. `external_requested` records intent, not availability.
+Construction stores evidence without sampling or evaluating limits. Collector
+time includes collection overhead and differs from benchmark sample durations.
+"""
 struct ResourceEnvelope
     schema_version::String
     elapsed_seconds::Float64
@@ -296,7 +381,13 @@ function ResourceEnvelope(elapsed_seconds::Real, process_before::ProcessMemorySn
         external_requested)
 end
 
-"Return the portable `perfchecker-resource-envelope/1` representation."
+"""
+    resource_envelope_dict(envelope::ResourceEnvelope)
+
+Return `perfchecker-resource-envelope/1` with elapsed seconds, serialized
+before/after snapshots and external-requested metadata. Preserve unknown
+counters and provider messages; no new sample is taken or file written.
+"""
 function resource_envelope_dict(envelope::ResourceEnvelope)
     return Dict{String, Any}(
         "schema_version" => envelope.schema_version,
@@ -328,7 +419,16 @@ function _optional_monotonic_difference(after::OptionalByteCount,
     return Float64(after - before)
 end
 
-"Flatten an envelope into explicitly named, non-conflated resource metrics."
+"""
+    resource_envelope_metrics(envelope::ResourceEnvelope)
+
+Return symbol-keyed metrics as `Float64` or `nothing`: collector seconds,
+before/after memory gauges, signed gauge deltas, nonnegative new peak RSS, and
+external allocation/free deltas. Missing input counters yield missing derived
+metrics. Decreasing cumulative allocation/free totals raise `ArgumentError`.
+RSS/private/live/reserved deltas may be negative; new peak RSS is clipped at
+zero and measures growth of the process-lifetime high-water mark.
+"""
 function resource_envelope_metrics(envelope::ResourceEnvelope)
     before = envelope.process_before
     after = envelope.process_after
@@ -374,7 +474,22 @@ end
 
 const RESOURCE_POLICY_SCHEMA = "perfchecker-resource-policy-evaluation/1"
 
-"Evaluate absolute memory bounds and ownership balance for one resource envelope."
+"""
+    evaluate_resource_envelope(envelope; upper_limits=Dict{Symbol,Float64}(),
+                              require_process=false, require_external=false,
+                              require_external_balance=false)
+
+Evaluate saved metrics. `upper_limits` maps metric symbols/strings to finite
+nonnegative limits; equality passes. Unknown metrics or invalid limits raise
+`ArgumentError`. Required missing process/external snapshots are unavailable.
+Balance requires known allocation/free deltas to be equal and live bytes not
+to grow; reserved pools need not shrink.
+
+Return `perfchecker-resource-policy-evaluation/1` with metrics, normalized
+policy, violations, unavailable reasons and status. `failed` takes precedence
+over `unavailable`, otherwise the status is `passed`. Missing required metrics
+cannot pass. Use [`resource_policy_passed`](@ref) to decide a gate.
+"""
 function evaluate_resource_envelope(envelope::ResourceEnvelope;
         upper_limits::AbstractDict = Dict{Symbol, Float64}(),
         require_process::Bool = false, require_external::Bool = false,
@@ -446,7 +561,11 @@ function evaluate_resource_envelope(envelope::ResourceEnvelope;
 end
 
 """
-Return whether an `evaluate_resource_envelope` result has `status="passed"`. Missing status is treated as failure.
+    resource_policy_passed(evaluation::AbstractDict)
+
+Return `true` exactly when the string-keyed `status` is `"passed"`.
+Failed, unavailable and missing statuses return `false`; metrics are not
+reevaluated and empty violation lists do not independently establish success.
 """
 function resource_policy_passed(evaluation::AbstractDict)
     get(evaluation, "status", "failed") == "passed"

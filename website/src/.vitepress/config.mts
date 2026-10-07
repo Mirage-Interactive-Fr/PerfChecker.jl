@@ -106,7 +106,8 @@ const config = defineConfig({
       ] },
       { text: 'API & reference', items: [
         { text: 'Reference index', link: '/reference/' },
-        { text: 'Julia API', link: '/reference/api' },
+        { text: 'Public API', link: '/reference/public-api' },
+        { text: 'Full API', link: '/reference/api' },
         { text: 'Command line', link: '/reference/cli' },
         { text: 'Checks and tools', link: '/reference/checks' },
         { text: 'Run bundles', link: '/reference/run-bundles' },

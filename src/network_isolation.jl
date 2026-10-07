@@ -2,7 +2,22 @@ const NETWORK_ISOLATION_SPEC_SCHEMA = "perfchecker-network-isolation-spec/1"
 const ISOLATED_NETWORK_RESULT_SCHEMA = "perfchecker-isolated-network-result/1"
 const NETWORK_ISOLATION_ENV = "PERFCHECKER_NETWORK_ISOLATION"
 
-"A process-tree network-isolation request for native Linux or Linux through WSL2."
+"""
+    NetworkIsolationSpec(; provider=:auto, distribution=nothing, interface=nothing,
+                         external_connectivity=false, dns_servers=nothing)
+
+Describe a Linux user/network namespace or WSL2 namespace request. `:auto`
+selects `:wsl2_netns` on Windows and `:linux_netns` elsewhere; construction
+does not establish that this host can run it. `distribution` optionally selects
+a WSL distribution. The interface defaults to `lo`, or `tap0` for external
+connectivity. External mode uses a dedicated TAP interface and requires
+slirp4netns; DNS defaults to `["1.1.1.1"]` only in that mode.
+
+Unsupported providers, empty interfaces, external mode with `lo`, non-IPv4 DNS
+addresses or DNS without external connectivity raise `ArgumentError`.
+This stores a request without installing tools or starting a namespace.
+Use [`network_isolation_capabilities`](@ref) to inspect the prepared host.
+"""
 struct NetworkIsolationSpec
     provider::Symbol
     distribution::Union{Nothing, String}
@@ -51,8 +66,11 @@ function NetworkIsolationSpec(; provider::Symbol = :auto, distribution = nothing
 end
 
 """
-Return the dictionary representation of a NetworkIsolationSpec with provider, distribution, interface and connectivity requirements.
-This is an in-memory conversion; it does not write a report or run a workload.
+    network_isolation_spec_dict(spec::NetworkIsolationSpec)
+
+Return `perfchecker-network-isolation-spec/1` with string provider, optional
+distribution, interface, external-connectivity flag and DNS addresses.
+This is configuration transport; it neither probes the host nor starts isolation.
 """
 function network_isolation_spec_dict(spec::NetworkIsolationSpec)
     return Dict{String, Any}(
@@ -71,7 +89,18 @@ function _network_executable(name::AbstractString)
     return path === nothing ? nothing : String(path)
 end
 
-"Describe whether a process-tree network namespace can be launched on this host."
+"""
+    network_isolation_capabilities(spec=NetworkIsolationSpec(); probe=false)
+
+Return provider support/reason, attribution, interface, connectivity, counters
+and prepared-environment requirements. By default inspect platform and required
+executables only. `probe=true` starts a short namespace command to test user/
+network namespace and required-tool access; it does not run a workload.
+Linux requires unshare, ip, timeout and nft, plus slirp4netns in external mode;
+WSL2 must be prepared inside the selected distribution. Unsupported capability
+is reported as `supported=false`; process-launch failures can propagate.
+The result describes availability, not benchmark qualification.
+"""
 function network_isolation_capabilities(
         spec::NetworkIsolationSpec =
         NetworkIsolationSpec(); probe::Bool = false)
@@ -261,7 +290,24 @@ function _parse_isolated_network_capture(path::AbstractString)
     return sample, Base.parse(Int, second_fields[5]), after.provider
 end
 
-"Run one command tree in an isolated network namespace and capture its counters."
+"""
+    measure_isolated_network_command(command; spec=NetworkIsolationSpec(),
+                                    directory=pwd(), environment=Dict(),
+                                    timeout_seconds=300, strict=false)
+
+Execute an argument vector through PerfChecker's Linux/WSL2 namespace wrapper
+and return an `IsolatedNetworkCommandResult` with sample, exit code, stdout,
+stderr and counter provider. The selected environment must already supply the
+namespace tools. Supplied environment names must be portable identifiers;
+WSL2 names are added to `WSLENV`. Capture covers command process lifecycle and
+its owned descendants, including startup/shutdown overhead.
+
+Provider launch/capture/exit-mismatch errors and excessive shutdown grace raise
+errors. With `strict=true`, a nonzero captured exit also raises; otherwise
+return it for inspection. Owned processes and temporary captures are cleaned
+on exit, while command-created project files remain caller-owned.
+No report is written and command success alone does not prove correctness.
+"""
 function measure_isolated_network_command(command::AbstractVector{<:AbstractString};
         spec::NetworkIsolationSpec = NetworkIsolationSpec(),
         directory::AbstractString = pwd(), environment::AbstractDict = Dict(),
@@ -327,8 +373,13 @@ function measure_isolated_network_command(command::AbstractVector{<:AbstractStri
 end
 
 """
-Return the dictionary representation of an IsolatedNetworkCommandResult with command, output, status and network attribution evidence.
-This is an in-memory conversion; it does not write a report or run a workload.
+    isolated_network_result_dict(result; include_output=false, max_output_chars=16_384)
+
+Return `perfchecker-isolated-network-result/1` with provider, command, exit code,
+lifecycle phase and sample. Stdout/stderr default to empty strings; opt in with
+`include_output=true` to retain at most `max_output_chars` characters per stream.
+A negative bound raises `ArgumentError`. Output can contain workload-sensitive
+text; this conversion does not redact it or write a file.
 """
 function isolated_network_result_dict(result::IsolatedNetworkCommandResult;
         include_output::Bool = false, max_output_chars::Integer = 16_384)
@@ -346,7 +397,17 @@ function isolated_network_result_dict(result::IsolatedNetworkCommandResult;
         for name in propertynames(result.sample)))
 end
 
-"Measure an in-process workload only when launched by PerfChecker's netns wrapper."
+"""
+    measure_network_isolated(workload::Function; interface="lo", repetitions=1)
+
+Run the zero-argument workload inside an already launched PerfChecker Linux
+namespace and return sample named tuples. Require its isolation marker, Linux,
+and positive repetitions, otherwise throw `ArgumentError`. Capture namespace
+counters around each call with workload wall time and isolated-worker-group
+attribution. Return values are discarded, and workload/provider errors propagate.
+This function does not itself create a namespace, prepare fresh state, check
+correctness or write reports; the launcher and workload own those steps.
+"""
 function measure_network_isolated(workload::Function; interface::AbstractString = "lo",
         repetitions::Integer = 1)
     get(ENV, NETWORK_ISOLATION_ENV, "") == "linux-netns-v1" ||

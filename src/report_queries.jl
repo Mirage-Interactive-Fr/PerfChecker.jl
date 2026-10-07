@@ -9,7 +9,27 @@ const _QUERY_RESOURCE_ORDER = (:observations, :diagnostics, :artifacts, :plots,
     :comparison)
 const _QUERY_RESOURCES = Set(_QUERY_RESOURCE_ORDER)
 
-"A portable predicate over a result field, an attribute, or a manifest field."
+"""
+    QueryPredicate(field, operator, value=nothing)
+
+Select records by a dotted `field` path. Fields resolve in the record first,
+then its `attributes`; `manifest.` explicitly selects bundle metadata.
+Supported operators are `:equals`, `:not_equals`, `:one_of`, `:contains`,
+`:prefix`, `:greater_or_equal`, `:less_or_equal` and `:exists`.
+Equality also accepts equal string representations; text matching ignores case.
+Numeric comparisons require numeric operands. Missing fields match only
+`:exists` with `value=false`. With `:exists`, `nothing` means require presence.
+
+Throw `ArgumentError` for an empty field, unsupported operator, noncollection
+`:one_of` value, or an `:exists` value other than `nothing` or `Bool`.
+
+```jldoctest
+julia> predicate = QueryPredicate("metric", :equals, "julia.wall.time");
+
+julia> performance_query_dict(predicate)["operator"]
+"equals"
+```
+"""
 struct QueryPredicate
     field::String
     operator::Symbol
@@ -30,7 +50,28 @@ function QueryPredicate(field::AbstractString, operator::Symbol, value = nothing
     return QueryPredicate(path, operator, value)
 end
 
-"A presentation-neutral selection over a PerfChecker run bundle."
+"""
+    PerformanceQuery(; id="query", resources=[:observations, :diagnostics,
+                     :artifacts, :plots, :comparison], predicates=QueryPredicate[],
+                     order_by=Pair{String,Symbol}[], limit=0)
+
+Describe a selection of saved evidence for [`query_bundle`](@ref). All predicates
+must match. `order_by` contains dotted-field pairs with `:asc` or `:desc`;
+earlier pairs take precedence. `limit=0` leaves each resource unbounded; a
+positive limit caps each resource independently. Duplicate resources are removed.
+Construction does not inspect a bundle or run measurements.
+
+Throw `ArgumentError` for unsupported resources, empty sort fields, unsupported
+directions or a negative limit.
+
+```jldoctest
+julia> query = PerformanceQuery(resources=[:observations], limit=5);
+
+julia> performance_query_dict(query)["resources"]
+1-element Vector{String}:
+ "observations"
+```
+"""
 struct PerformanceQuery
     id::String
     resources::Vector{Symbol}
@@ -61,7 +102,18 @@ function PerformanceQuery(; id::AbstractString = "query",
         QueryPredicate[predicates...], normalized_order, Int(limit))
 end
 
-"A documentation-system-neutral block backed by one bundle query."
+"""
+    PerformanceDocumentBlock(id, title, query; views=[:summary, :comparison, :plots],
+                             interactive_url=nothing)
+
+Describe a report section backed by a [`PerformanceQuery`](@ref). Supported
+views are `:summary`, `:comparison`, `:observations`, `:diagnostics`, `:plots`
+and `:artifacts`; duplicate views are removed and unsupported views raise
+`ArgumentError`. `interactive_url` is optional presentation metadata, converted
+to `String` without fetching or validating the destination.
+Use `performance_document_block(bundle, block)` to attach saved evidence and
+provenance. This constructor writes no report.
+"""
 struct PerformanceDocumentBlock
     id::String
     title::String
@@ -84,7 +136,21 @@ function PerformanceDocumentBlock(id::AbstractString, title::AbstractString,
         normalized_views, url)
 end
 
-"Parse one documentation block from the shared JSON-compatible grammar."
+"""
+    performance_document_block(payload::AbstractDict)
+    performance_document_block(bundle::RunBundle, block::PerformanceDocumentBlock)
+
+Parse a block dictionary with string or symbol keys, or materialize a block
+against a saved bundle. Parsing accepts the `perfchecker-document-block/1`
+schema (also the default when omitted), requires a `query` dictionary and
+validates its views and query. Missing `id` and `title` default to empty strings;
+missing `views` in this dictionary form defaults to an empty list.
+
+The bundle form returns a dictionary containing the block's presentation fields,
+run/attempt/environment provenance, and [`query_bundle`](@ref) result.
+Neither form runs workloads or writes files. Malformed schemas or fields raise
+`ArgumentError` or conversion errors.
+"""
 function performance_document_block(payload::AbstractDict)
     value(key, default) = get(payload, key, get(payload, Symbol(key), default))
     schema = value("schema_version", PERFORMANCE_DOCUMENT_BLOCK_SCHEMA)
@@ -99,7 +165,15 @@ function performance_document_block(payload::AbstractDict)
         interactive_url = value("interactive_url", nothing))
 end
 
-"Read and minimally validate a shared interface configuration."
+"""
+    read_ui_configuration(path)
+
+Read JSON from `abspath(path)` and return a dictionary with string keys.
+Require schema `perfchecker-ui-config/1` and a `selection` object containing
+unique string `run_ids`. Other fields are retained for the consuming interface;
+this is structural validation, not a check that selected runs exist.
+Invalid structure raises `ArgumentError`; file and JSON errors propagate.
+"""
 function read_ui_configuration(path::AbstractString)
     payload = _json_parsefile(abspath(String(path)))
     payload isa AbstractDict || throw(ArgumentError(
@@ -117,7 +191,15 @@ function read_ui_configuration(path::AbstractString)
     return Dict{String, Any}(string(key) => value for (key, value) in pairs(payload))
 end
 
-"Read a shared UI/documentation configuration and return its document blocks."
+"""
+    read_document_blocks(path)
+
+Validate a shared configuration with [`read_ui_configuration`](@ref), then
+parse `documentation.blocks` using [`performance_document_block`](@ref).
+Return a vector of `PerformanceDocumentBlock`s, empty when documentation or
+blocks are absent. A nonobject `documentation` raises `ArgumentError`;
+malformed blocks and file errors propagate. No bundle is loaded or modified.
+"""
 function read_document_blocks(path::AbstractString)
     payload = read_ui_configuration(path)
     documentation = get(payload, "documentation", Dict{String, Any}())
@@ -128,8 +210,15 @@ function read_document_blocks(path::AbstractString)
 end
 
 """
-Return the dictionary representation of a PerformanceQuery with its filters and requested evidence selections.
-This is an in-memory conversion; it does not write a report or run a workload.
+    performance_query_dict(predicate::QueryPredicate)
+    performance_query_dict(query::PerformanceQuery)
+
+Return a dictionary suitable for JSON transport. A predicate contains `field`,
+string `operator` and `value`; a query additionally includes its schema, `id`,
+resources, `where`, ordered sort specifications and limit. The result preserves
+the query's selection semantics and is accepted by [`performance_query`](@ref).
+Predicate values are retained as supplied; callers must supply JSON-compatible
+values when serializing. No file is written.
 """
 function performance_query_dict(predicate::QueryPredicate)
     return Dict{String, Any}("field" => predicate.field,
@@ -147,7 +236,24 @@ function performance_query_dict(query::PerformanceQuery)
         "limit" => query.limit)
 end
 
-"Parse and validate the language-neutral dictionary form of a report query."
+"""
+    performance_query(payload::AbstractDict)
+
+Construct a [`PerformanceQuery`](@ref) from string or symbol keys. Accept
+`perfchecker-query/1` or an omitted schema. `where` contains predicate objects
+(`field`, `operator`, `value`); `order_by` contains objects with `field` and
+`direction`. Omitted fields use the constructor defaults, and omitted predicate
+operators and sort directions use `equals` and `asc` respectively.
+Unsupported schemas, nonobject predicates/order entries and invalid selections
+raise `ArgumentError`; incompatible field types can raise conversion errors.
+
+```jldoctest
+julia> query = performance_query(Dict("resources" => ["observations"], "limit" => 2));
+
+julia> query.limit
+2
+```
+"""
 function performance_query(payload::AbstractDict)
     schema = get(
         payload, "schema_version", get(payload, :schema_version,
@@ -254,7 +360,21 @@ function _query_comparison_records(bundle::RunBundle, query::PerformanceQuery)
     return _query_records(records, bundle.manifest, query)
 end
 
-"Execute a report query without invoking a measurement worker or mutating the bundle."
+"""
+    query_bundle(bundle::RunBundle, query::PerformanceQuery)
+
+Return a `perfchecker-query-result/1` dictionary containing run identity,
+serialized query, resource counts, and selected observations, diagnostics,
+artifacts, plot catalogue entries and version comparisons. Unrequested resources
+are present as empty vectors. Apply predicates, stable multi-field sorting and
+the per-resource limit independently to each requested collection.
+
+Comparison records are derived from the saved bundle by
+[`compare_suite_versions`](@ref); plot records come from [`plot_catalog`](@ref).
+This reads existing evidence without launching a worker, opening artifact files,
+writing a report or mutating the bundle. Errors in malformed saved evidence
+propagate to the caller.
+"""
 function query_bundle(bundle::RunBundle, query::PerformanceQuery)
     observations = :observations in query.resources ?
                    _query_records(bundle.observations, bundle.manifest, query) :
@@ -286,8 +406,11 @@ function query_bundle(bundle::RunBundle, query::PerformanceQuery)
 end
 
 """
-Return the dictionary representation of a query result for transport to a report, UI or agent.
-This is an in-memory conversion; it does not write a report or run a workload.
+    query_result_dict(bundle::RunBundle, query::PerformanceQuery)
+
+Return [`query_bundle`](@ref)'s result dictionary. This convenience entry point
+has the same filtering, per-resource bounds and error behavior; it does not
+serialize to a file or make a deep copy of nested evidence values.
 """
 query_result_dict(bundle::RunBundle, query::PerformanceQuery) = query_bundle(bundle, query)
 
@@ -309,7 +432,19 @@ function performance_document_block(bundle::RunBundle,
         "result" => query_bundle(bundle, block.query))
 end
 
-"Create a bounded machine-readable evidence envelope for CI and AI workflows."
+"""
+    agent_evidence(bundle::RunBundle, query=PerformanceQuery(); max_records=100)
+
+Return a `perfchecker-agent-evidence/1` dictionary with run identity, bundle
+pass status, selected diagnostic severity counts, deterministic advice and a
+query result. Require positive `max_records`; cap each query resource and the
+recommendation list at that value (or the query's smaller positive limit).
+The cap is per collection, not a total-record or byte budget.
+
+Advice is derived from the complete saved bundle. No provider is contacted and
+no code is changed, workload rerun, report published or issue created. The
+envelope records this mutation policy for downstream consumers.
+"""
 function agent_evidence(bundle::RunBundle, query::PerformanceQuery = PerformanceQuery();
         max_records::Integer = 100)
     max_records > 0 || throw(ArgumentError("max_records must be positive"))

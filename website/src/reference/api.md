@@ -1,6 +1,18 @@
-# Julia API
+# Full API
 
-The public API exported by `PerfChecker`. For an executable introduction, start with [Quickstart](../guide/first-check.md).
+```@raw html
+<a id="Julia-API"></a>
+```
+
+This is the complete reference generated from PerfChecker's Julia docstrings,
+including documented implementation hooks. Start with the [Public API](public-api.md)
+for supported package entry points or [Quickstart](../guide/first-check.md) for an
+executable introduction. Internal bindings support extensions and maintenance;
+their behavior can change independently of the exported interface.
+
+Each entry retains its Julia signature, argument and result documentation, and a
+source link pinned to the revision used to build this site. This page keeps the
+historical `reference/api` route and function anchors.
 
 - Existing tests: `discover_testitems`, `run_testitems`.
 - Inline experiment: `@check`.
@@ -28,6 +40,7 @@ Modules = [PerfChecker]
 ```@autodocs
 Modules = [PerfChecker]
 Public = true
+Private = true
 Order = [:module, :constant, :type, :macro, :function]
 ```
 

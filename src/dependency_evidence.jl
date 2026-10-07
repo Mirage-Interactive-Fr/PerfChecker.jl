@@ -1,6 +1,15 @@
 const DEPENDENCY_EVIDENCE_SCHEMA = "perfchecker-dependency-evidence/1"
 
-"Declared, resolved, and observed dependency evidence captured at one phase."
+"""
+    NativeDependencyEvidence(phase, packages, artifact_files, loaded_libraries, warnings)
+
+Group a named capture phase with resolved package records, declared artifact
+binding files, observed current-process libraries and warnings. Use
+[`dependency_evidence`](@ref) to collect it and
+[`dependency_evidence_dict`](@ref) for transport. Declared artifacts and loaded
+libraries are distinct evidence; this type does not assert that every declared
+artifact was installed or loaded, nor cover child processes or services.
+"""
 struct NativeDependencyEvidence
     phase::String
     packages::Vector{Dict{String, Any}}
@@ -33,7 +42,16 @@ function _dependency_package_record(uuid, info)
                             artifact_path : nothing)
 end
 
-"Inventory the active Pkg dependency graph without loading dependency modules."
+"""
+    package_dependency_inventory()
+
+Return `(records, warnings)` from the active environment's `Pkg.dependencies()`.
+Records are sorted by package name and UUID and retain version/tree identity,
+tracking origin, source path, direct-dependency status and an existing
+`Artifacts.toml` path. JLL wrappers are labelled separately from Julia packages.
+If Pkg inventory fails, return an empty collection and a bounded error warning.
+No package is loaded, installed or resolved by this function.
+"""
 function package_dependency_inventory()
     records = Dict{String, Any}[]
     warnings = String[]
@@ -95,7 +113,16 @@ function _library_record(path::AbstractString; digest::Bool)
         "symbolization" => "not_inspected")
 end
 
-"List shared libraries loaded in the current process. File hashing is opt-in."
+"""
+    loaded_library_inventory(; digest=false)
+
+Return `(libraries, warnings)` for unique `Libdl.dllist()` entries, sorted by
+path. Each record includes absolute path, filename, existence, optional size,
+architecture and optional SHA-256. With `digest=true`, read existing library
+files to hash them; failed hashes remain `nothing`. Inspection failures become
+bounded warnings. Paths may reveal local installation information.
+This does not load libraries or inspect symbols, child processes or native heaps.
+"""
 function loaded_library_inventory(; digest::Bool = false)
     libraries = Dict{String, Any}[]
     warnings = String[]
@@ -113,7 +140,17 @@ function loaded_library_inventory(; digest::Bool = false)
     return libraries, warnings
 end
 
-"Capture the dependency closure visible from the current Julia process."
+"""
+    dependency_evidence(; phase="snapshot", hash_libraries=false)
+
+Return [`NativeDependencyEvidence`](@ref) combining active Pkg inventory,
+declared artifact bindings and currently loaded libraries. `phase` is an
+arbitrary caller label; `hash_libraries=true` opts into reading library bytes.
+Artifact binding files are always read and hashed when present; platform
+selection and runtime overrides prevent interpreting declarations as loads.
+Warnings explicitly record that child processes and services are outside scope.
+No dependency is installed and no report is written.
+"""
 function dependency_evidence(; phase::AbstractString = "snapshot",
         hash_libraries::Bool = false)
     packages, package_warnings = package_dependency_inventory()
@@ -125,8 +162,12 @@ function dependency_evidence(; phase::AbstractString = "snapshot",
 end
 
 """
-Return the dictionary representation of NativeDependencyEvidence with dependency identity, origin and availability details.
-This is an in-memory conversion; it does not write a report or run a workload.
+    dependency_evidence_dict(evidence::NativeDependencyEvidence)
+
+Return `perfchecker-dependency-evidence/1` with the capture phase, package,
+artifact/library records, warnings and explicit coverage flags. `captured_at`
+is the UTC conversion time; it is not a retained timestamp of every observation.
+Nested records are retained and no new inventory or file export is performed.
 """
 function dependency_evidence_dict(evidence::NativeDependencyEvidence)
     return Dict{String, Any}(

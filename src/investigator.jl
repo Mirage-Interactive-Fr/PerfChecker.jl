@@ -1,4 +1,27 @@
-"Run only declared scenario/collector/analyzer experiments within explicit count and wall-time limits."
+"""
+    investigate(catalog; project=catalog.root, samples=10,
+                tools=[:jet, :alloccheck, :latency], max_experiments=4,
+                budget_seconds=300, timeout=120, threads=1, advisor=nothing,
+                cancellation=CancellationToken(), reports=nothing)
+
+Run a bounded menu of declared scenario collectors and known analyzers.
+Prefer timing collectors, then JET, before secondary experiments. Require a
+nonempty catalogue, 1–100 experiments, finite positive budget up to 86,400
+seconds, known tools and at most 128 proposed experiments. Invalid selections
+raise `ArgumentError`; runner errors can propagate.
+
+Return `perfchecker-investigation/1` with attempted/unexecuted experiments,
+runs, diagnosis records, deterministic advice, decisions and elapsed time.
+Status may be `complete`, `cancelled`, `budget_exhausted` or `advisor_stopped`.
+Timeouts are capped by remaining budget; count/budget exhaustion can leave
+experiments unexecuted. Cancellation follows worker termination contracts.
+
+`advisor` optionally supplies an `AdvisorConfig` for bounded menu selection;
+provider output remains advisory. `reports` writes per-experiment evidence and
+a final report. The controller environment must already contain needed tools.
+This explicitly executes declared code but never modifies it, compares a
+performance baseline or certifies the advice as an improvement.
+"""
 function investigate(catalog::ScenarioCatalog; project = catalog.root, samples = 10,
         tools = [:jet, :alloccheck, :latency], max_experiments = 4, budget_seconds = 300,
         timeout = 120, threads = 1, advisor = nothing,
@@ -114,7 +137,25 @@ function investigate(catalog::ScenarioCatalog; project = catalog.root, samples =
     payload
 end
 
-"Evaluate evidence selection separately from prose truth; supplied expected rule IDs are the oracle."
+"""
+    evaluate_advisors(cases; config=nothing, project=dirname(Base.active_project()),
+                      cancellation=CancellationToken(), include_investigator=false,
+                      max_experiments=4, budget_seconds=300, samples=10,
+                      tools=[:jet, :alloccheck, :latency])
+
+Evaluate each case's supplied `id`, `advice` and `expected_rules`.
+Always score deterministic evidence selection. With `config`, also ask the
+model writer to select narrative evidence; `include_investigator=true` runs
+declared experiments from each case's required `catalog` path, forwarding the
+count, time, sample and analyzer limits to [`investigate`](@ref).
+
+Return `perfchecker-advisor-evaluation/1` with per-case/mode selected rules,
+true/false positives, false negatives, elapsed time and optional narrative/
+investigation payloads. Cancellation stops later cases/modes. Malformed cases
+and execution errors propagate. Prose truth still requires human review and
+monetary cost is not measured; this is rule selection evaluation, not automatic
+qualification of recommendations. Reports are not written by this function.
+"""
 function evaluate_advisors(
         cases::AbstractVector; config = nothing, project = dirname(Base.active_project()),
         cancellation = CancellationToken(), include_investigator = false,

@@ -1,6 +1,26 @@
 const SuiteVersion = Union{VersionNumber, Symbol, String}
 
-"A named Git branch, tag, or commit evaluated beside releases and the working tree."
+"""
+    SuiteCandidate(label, revision; source=nothing,
+                   compatibility_version=nothing, dependencies=Any[])
+
+Declare a named Git branch, tag or commit to measure alongside registry releases
+and the development source. `label` identifies the target in plans and reports;
+`revision` is the Git ref to resolve. Both must be nonempty.
+
+`source` supplies a repository URL or path; otherwise planning uses the package
+suite's source. `compatibility_version` selects the [`FeatureVariant`](@ref)
+window; when omitted, planning uses the current project version. `dependencies`
+contains additional package specifications for this candidate's worker.
+Construction neither checks out Git nor installs dependencies. Candidate labels
+must be unique within a package and across all of its selected target labels.
+
+```julia
+SuiteCandidate("proposed", "feature/faster-sum";
+    source="https://github.com/example/Example.jl.git",
+    compatibility_version=v"0.5.5")
+```
+"""
 struct SuiteCandidate
     label::String
     revision::String
@@ -22,7 +42,28 @@ function SuiteCandidate(label::AbstractString, revision::AbstractString;
         compatibility, Any[item for item in dependencies])
 end
 
-"An exact or grouped reference used to compare several candidate targets."
+"""
+    ComparisonPolicy(id; package="", feature="", comparison_key="",
+                     baselines, candidates, aggregation=:median)
+
+Select named targets for within-suite version comparison. `baselines` and
+`candidates` are nonempty string-label vectors; duplicates within each are
+removed. With several baselines, aggregate their per-target statistic using
+`:median`, `:mean`, `:minimum` or `:maximum` before comparing each candidate.
+This reference aggregation is separate from the sample statistic within a target.
+
+At least `feature` or `comparison_key` is required. A nonempty comparison key
+takes precedence over the feature selector; empty `package` matches any package.
+IDs must be nonempty and unique in a suite. This declares selections only;
+metric budgets are supplied to [`compare_suite_versions`](@ref) or
+[`write_suite_reports`](@ref), not stored in the policy.
+
+```julia
+ComparisonPolicy("recent-reference"; feature="sum_squares",
+    baselines=["0.5.4", "0.5.5"], candidates=["dev@0.5.6"],
+    aggregation=:median)
+```
+"""
 struct ComparisonPolicy
     id::String
     package::String
@@ -52,8 +93,11 @@ function ComparisonPolicy(id::AbstractString; package::AbstractString = "",
 end
 
 """
-Return the dictionary representation of a ComparisonPolicy, including its baseline/candidate selection and metric limits.
-This is an in-memory conversion; it does not write a report or run a workload.
+    comparison_policy_dict(policy::ComparisonPolicy) -> Dict{String,Any}
+
+Return the policy ID, package/feature/comparison-key selectors, baseline and
+candidate labels, and string aggregation. It declares a reference selection,
+not metric limits or a measured verdict, and performs no comparison or I/O.
 """
 function comparison_policy_dict(policy::ComparisonPolicy)
     return Dict{String, Any}("id" => policy.id, "package" => policy.package,
@@ -62,7 +106,21 @@ function comparison_policy_dict(policy::ComparisonPolicy)
         "aggregation" => string(policy.aggregation))
 end
 
-"A closed package-version interval with explicit exclusions."
+"""
+    VersionWindow(; since=nothing, until=nothing, excluded=VersionNumber[])
+
+Declare an inclusive version interval with explicit excluded versions.
+`nothing` leaves the corresponding end unbounded; `since` and `until` are
+converted to `VersionNumber`. A reversed interval raises `ArgumentError`.
+`excluded` must be a vector of `VersionNumber` values and is stored as a set.
+
+Used for both package-version variants and a feature's Julia compatibility.
+Constructing the window does not query registries or install versions.
+
+```julia
+VersionWindow(since=v"1.0", until=v"2.0", excluded=[v"1.4.0"])
+```
+"""
 struct VersionWindow
     since::Union{Nothing, VersionNumber}
     until::Union{Nothing, VersionNumber}
@@ -84,7 +142,23 @@ function supports(window::VersionWindow, version::VersionNumber)
     return version ∉ window.excluded
 end
 
-"One workload implementation over a package-version interval."
+"""
+    FeatureVariant(entrypoint; since=nothing, until=nothing,
+                   excluded=VersionNumber[], comparison_key="",
+                   options=Dict{Symbol,Any}())
+
+Declare an existing Julia workload file for an inclusive package-version window.
+`entrypoint` becomes an absolute path relative to the current working directory;
+it must already be a file. The worker includes this file, which defines
+`perf_workload(state)` and may define setup, cleanup, synchronization and
+qualification hooks.
+
+`comparison_key` groups compatible implementations for comparison; an empty
+key falls back to the feature ID during planning. `options` has symbol keys and
+overrides the parent feature's options at execution. This constructor checks
+the path and declarations without including or measuring the workload. Planning
+rejects overlapping variants that both match a selected package version.
+"""
 struct FeatureVariant
     window::VersionWindow
     entrypoint::String
@@ -106,7 +180,33 @@ function FeatureVariant(entrypoint::AbstractString; since = nothing, until = not
         String(comparison_key), normalized)
 end
 
-"A feature-level performance contract."
+"""
+    FeatureSpec(id::Symbol; description="", backend=:benchmark,
+        variants=nothing, entrypoint=nothing, workload=nothing,
+        since=nothing, until=nothing, excluded=VersionNumber[],
+        julia_since=nothing, julia_until=nothing, julia_excluded=VersionNumber[],
+        comparison_key=string(id), options=Dict{Symbol,Any}(),
+        probes=ProbeSpec[], oracle=nothing, state_policy=:fresh)
+
+Declare one collector-specific feature contract. Supply either an existing
+`entrypoint` (creating one [`FeatureVariant`](@ref) with the package window) or
+a nonempty `variants` collection. The `julia_*` bounds restrict the controller
+runtime separately from package versions. `workload` defaults to `id`; sharing
+it across collectors lets reports and interfaces identify one business workload.
+
+`backend` selects the checker, for example `:benchmark`, `:chairmark`, `:profile`,
+`:wall_profile`, `:profile_alloc` or `:alloc`. Availability and required backend
+packages are checked when planning/executing, not installed by this constructor.
+`options` has symbol keys. Execution merges feature options, variant options,
+then call-site overrides in that order.
+
+`state_policy=:fresh` prepares separate state for measured invocations on the
+fresh-capable backends and requires `evals=1`; `:reuse` intentionally reuses
+state. An explicit `options[:state_policy]` takes precedence over this keyword.
+`probes` declare capability checks and `oracle` is an [`OracleSpec`](@ref) or
+`nothing`; without an oracle, successful execution is not correctness validation.
+No workload is run or environment prepared during construction.
+"""
 struct FeatureSpec
     id::Symbol
     workload::Symbol
@@ -156,10 +256,41 @@ function FeatureSpec(id::Symbol; description::AbstractString = "",
             excluded = julia_excluded), normalized, collect(probes), correctness)
 end
 
-"Stable business-feature identifier shared by plans, reports, and user interfaces."
+"""
+    workload_id(feature::FeatureSpec) -> Symbol
+    workload_id(run::PlannedFeatureRun) -> Symbol
+
+Return the business-workload identifier, which defaults to the feature ID but
+can be shared by multiple collector-specific features. This reads the declared
+identity; it does not infer workload equivalence from source or measured results.
+"""
 workload_id(feature::FeatureSpec) = feature.workload
 
-"All feature measurements owned by one package."
+"""
+    PackageSuite(package; id=Symbol(package), environment=nothing,
+        worker_environment=nothing, source=nothing, versions=:all,
+        dev_sources=String[], release_pins=Dict{VersionNumber,Vector{Any}}(),
+        features, include_dev=true, candidates=SuiteCandidate[])
+
+Declare package targets and their [`FeatureSpec`](@ref) contracts. `versions`
+is `:all`, `:latest` or a vector of `VersionNumber`; explicit versions are
+deduplicated and sorted. Registry lookup occurs during planning when needed.
+`include_dev` adds the development target outside the `:release` profile;
+`candidates` adds named Git targets outside that profile.
+
+`worker_environment` is an existing seed directory copied for isolated workers,
+not the controller project. `environment` is a compatibility alias; differing
+paths supplied to both keywords are rejected. The default is `pwd()`.
+Keep PerfChecker in the controller, and measurement backends/workload dependencies
+in the worker seed: normal execution rejects a seed that directly depends on
+PerfChecker unless PerfChecker itself is the measured package.
+
+`source` is an existing development-source directory; `dev_sources` lists
+existing local dependency directories. `release_pins` maps versions to extra
+package specifications. Construction validates declarations but performs no
+package resolution, checkout or measurement. A development target requires a
+source path at execution and a readable project version at planning.
+"""
 struct PackageSuite
     id::Symbol
     package::String
@@ -214,7 +345,13 @@ function PackageSuite(package::AbstractString; id::Symbol = Symbol(package),
         selection, collect(features), include_dev, collect(candidates))
 end
 
-"Seed environment copied into every isolated measurement worker."
+"""
+    worker_environment(package::PackageSuite) -> String
+
+Return the absolute seed-directory path declared for isolated measurements.
+This accessor does not copy or activate the project. It is distinct from the
+controller environment in which PerfChecker orchestrates the suite.
+"""
 worker_environment(package::PackageSuite) = getfield(package, :worker_environment)
 
 # Preserve source compatibility for callers that inspected the pre-1.0 field.
@@ -257,7 +394,16 @@ function _validate_worker_environments(packages; strict::Bool)
     return nothing
 end
 
-"The measurable surface of one software, composed from package suites."
+"""
+    SoftwareSuite(id::Symbol, packages::AbstractVector{PackageSuite};
+                  description="", comparisons=ComparisonPolicy[])
+
+Combine a nonempty collection of package suites into one named performance
+suite. Package-suite IDs and comparison-policy IDs must each be unique.
+`description` is report/UI text; `comparisons` declares within-suite references.
+The constructor collects declarations but does not resolve targets or measure
+them. Use [`plan_suite`](@ref), then [`run_suite`](@ref) or [`launch_suite`](@ref).
+"""
 struct SoftwareSuite
     id::Symbol
     description::String
@@ -287,9 +433,17 @@ struct SuiteTarget
 end
 
 """
-One resolved package, feature variant and target in a suite plan. Created by
-`plan_suite`; inspect `planned_status` and `reason` before execution. Planning
-an unavailable target preserves it for reports rather than executing it.
+    PlannedFeatureRun
+
+One resolved package, feature and target produced by [`plan_suite`](@ref).
+`suite`, `package_suite`, `feature` and `target` retain their declarations;
+`variant` is the matching implementation or `nothing`, and `comparison_key`
+identifies comparable measurements. `planned_status` is `:ready` or `:unavailable`;
+`reason` explains unavailable package/Julia compatibility. Unavailable rows are
+preserved for reports and are not executed.
+
+Use [`planned_run_id`](@ref) for UI selection and [`workload_id`](@ref) for the
+business workload. A planned row contains no completed measurement evidence.
 """
 struct PlannedFeatureRun
     suite::Symbol
@@ -305,9 +459,13 @@ end
 workload_id(run::PlannedFeatureRun) = workload_id(run.feature)
 
 """
-Resolved suite, profile, feature runs and comparison policies. Obtain a plan
-with `plan_suite`, inspect or filter it, then pass it to `run_suite` or
-`launch_suite`. Holding a plan does not start workers.
+    SuitePlan
+
+Resolved `suite`, execution `profile`, ordered `runs` and comparison policies.
+Obtain it with [`plan_suite`](@ref), inspect [`suite_plan_dict`](@ref) or select
+rows with [`select_suite_plan`](@ref), then execute it. The struct retains
+vectors and their declarations; it is not a frozen snapshot of source files or
+registry state. Creating or holding a plan does not start measurement workers.
 """
 struct SuitePlan
     suite::SoftwareSuite
@@ -317,7 +475,12 @@ struct SuitePlan
 end
 
 """
-Return the deterministic identifier of a planned feature/target selection used by plan filters, progress events and interfaces. This identifies the selection, not a completed measurement.
+    planned_run_id(run::PlannedFeatureRun) -> String
+
+Return a deterministic 20-character content-digest prefix from suite ID,
+package-suite ID, feature ID, target label and comparison key. Plan filters,
+progress events and interfaces use this selection identity. It is not a hash
+of the workload source, dependency resolution or completed measurement.
 """
 function planned_run_id(run::PlannedFeatureRun)
     identity = (run.suite, run.package_suite.id, run.feature.id,
@@ -428,10 +591,26 @@ function _feature_unavailable_reason(feature::FeatureSpec, target::SuiteTarget)
 end
 
 """
-    plan_suite(suite; profile=:quick, candidates=Dict(), comparisons=[])
+    plan_suite(suite::SoftwareSuite; profile=:quick,
+               version_provider=get_pkg_versions, candidates=Dict(), comparisons=[])
+        -> SuitePlan
 
 Resolve package releases, development sources, Git candidates, feature variants,
-and comparison policies into an immutable `SuitePlan` without running workloads.
+and comparison policies without running workloads. Registry version lookup,
+project-version inspection and worker-seed warnings can occur during planning.
+
+Profiles choose the target scope: `:quick` selects development when enabled,
+otherwise the latest declared release; `:ci` selects representative endpoints
+within release groups plus development; `:historical` selects all declared
+releases plus development; `:release` selects releases only. Named Git candidates
+are added outside `:release`. `version_provider(package_name)` supplies releases
+for symbolic version selections and can be overridden for offline planning.
+
+`candidates` maps package names or package-suite IDs as strings to extra
+[`SuiteCandidate`](@ref) vectors. `comparisons` appends policies to those in the
+suite and duplicate IDs are rejected. Rows with no matching package/Julia
+variant are retained as unavailable; multiple matching variants raise an error.
+This does not prepare environments, check out Git refs or call a workload.
 """
 function plan_suite(suite::SoftwareSuite; profile::Symbol = :quick,
         version_provider = get_pkg_versions,
@@ -469,8 +648,13 @@ function plan_suite(suite::SoftwareSuite; profile::Symbol = :quick,
 end
 
 """
-Return the dictionary representation of a SuitePlan with its revision and resolved selections for UI and execution contracts.
-This is an in-memory conversion; it does not write a report or run a workload.
+    suite_plan_dict(plan::SuitePlan) -> Dict{String,Any}
+
+Return schema `perfchecker-suite-plan/1`, suite/profile metadata, comparison
+policies, and ordered rows with IDs, target provenance, entrypoints, collector,
+qualification declarations, compatibility, status and reason. `plan_revision`
+is a content digest of this payload, not a source/dependency fingerprint.
+This exposes declarations for interfaces without starting execution or writing files.
 """
 function suite_plan_dict(plan::SuitePlan)
     payload = Dict{String, Any}(
@@ -511,7 +695,21 @@ function suite_plan_dict(plan::SuitePlan)
     return payload
 end
 
-"Return a validated, explicitly ordered subset of a server-produced plan."
+"""
+    select_suite_plan(plan::SuitePlan, run_ids::AbstractVector{<:AbstractString})
+        -> SuitePlan
+    select_suite_plan(plan::SuitePlan, configuration::AbstractDict) -> SuitePlan
+
+Return a plan containing only the requested rows, in the supplied order,
+preserving the original suite, profile and comparison policies. An empty
+selection is permitted. Duplicate or unknown IDs raise `ArgumentError`;
+unavailable rows remain unavailable if selected.
+
+The dictionary overload requires schema `perfchecker-ui-config/1` and a
+`selection` object with string-vector `run_ids`. It validates that selection
+against this plan; it does not reload files, compare a revision or execute work.
+Use IDs from [`suite_plan_dict`](@ref), including rows hidden by current UI filters.
+"""
 function select_suite_plan(plan::SuitePlan, run_ids::AbstractVector{<:AbstractString})
     requested = String.(run_ids)
     length(unique(requested)) == length(requested) ||
@@ -524,7 +722,6 @@ function select_suite_plan(plan::SuitePlan, run_ids::AbstractVector{<:AbstractSt
     return SuitePlan(plan.suite, plan.profile, selected, plan.comparisons)
 end
 
-"Apply the ordered selection from a shared UI configuration."
 function select_suite_plan(plan::SuitePlan, configuration::AbstractDict)
     get(configuration, "schema_version", nothing) == "perfchecker-ui-config/1" ||
         throw(ArgumentError("unsupported UI configuration schema"))
@@ -538,11 +735,17 @@ function select_suite_plan(plan::SuitePlan, configuration::AbstractDict)
 end
 
 """
+    FeatureRun
+    FeatureRun(planned, status, elapsed_seconds::Float64, result, message::String)
+
 Result of one planned feature execution. `planned` identifies the target;
 `status` distinguishes `:pass`, `:unavailable`, `:blocked`, `:invalid` and `:error`.
 `elapsed_seconds` is orchestration time, not a replacement for measured samples.
 `result` holds backend data when available; `qualification` retains probe,
 correctness and provenance evidence even when execution fails.
+The five-argument convenience constructor initializes unqualified evidence;
+it does not infer correctness from a `:pass` status. Normal suite execution
+produces these records automatically.
 """
 struct FeatureRun
     planned::PlannedFeatureRun
@@ -560,9 +763,13 @@ function FeatureRun(planned::PlannedFeatureRun, status::Symbol, elapsed_seconds:
 end
 
 """
+    SoftwareSuiteResult
+
 Completed suite evidence: the original `plan`, UTC start/finish timestamps
 and a vector of `FeatureRun` records. Use `suite_verdict` for qualification and
 `write_suite_reports` to export it without repeating measurements.
+Individual records may be unavailable, blocked, invalid or erroneous. This
+object is not proof that every selected row ran or that a baseline policy passed.
 """
 struct SoftwareSuiteResult
     plan::SuitePlan
@@ -581,9 +788,14 @@ function Base.showerror(io::IO, error::SuiteRunError)
 end
 
 """
-Handle returned by `launch_suite` for asynchronous controller execution.
+    SuiteJob
+
+Handle returned by [`launch_suite`](@ref) for asynchronous controller execution.
 Use `suite_job_status`, `suite_job_progress`, `cancel_suite!` and `wait_suite`
 instead of mutating its task and reference fields.
+The handle belongs to its controller process; callers must request cancellation
+and await its cleanup before shutting that process down. A `:complete` job means
+orchestration finished and may still contain failing feature records.
 """
 mutable struct SuiteJob
     id::UUID
@@ -1008,14 +1220,26 @@ function _execute_suite_plan(plan::SuitePlan; executor = _default_suite_executor
 end
 
 """
-    launch_suite(plan::SuitePlan; executor, overrides=Dict()) -> SuiteJob
+    launch_suite(plan::SuitePlan; overrides=Dict{Symbol,Any}(),
+                 executor=_default_suite_executor,
+                 progress_callback=payload -> nothing) -> SuiteJob
     launch_suite(suite::SoftwareSuite; profile=:quick, kwargs...) -> SuiteJob
 
 Start an asynchronous controller task which executes the selected plan. The
 normal executor prepares isolated environments and starts measurement workers.
 Return immediately with a job handle. Poll `suite_job_progress` for progress,
 use `cancel_suite!` to request interruption and `wait_suite` to obtain the result
-or surface a failure. Supplying an executor changes how measurements are run.
+or surface a failure. `overrides` has symbol keys and takes precedence over
+feature and variant options. Progress callbacks receive counts and active-run
+identity; exceptions in those callbacks are logged.
+
+The normal executor requires the relevant backend packages in the controller,
+copies/prepares worker environments, can resolve/download target dependencies,
+and includes the workload only in measurement workers. A custom
+`executor(planned, config, setup, workload)` replaces that measurement path and
+is responsible for its own behavior. The suite overload first calls
+[`plan_suite`](@ref) with `profile` and `version_provider`; additional keywords
+go to the plan executor.
 """
 function launch_suite(plan::SuitePlan;
         overrides::AbstractDict = Dict{Symbol, Any}(), executor = _default_suite_executor,
@@ -1057,11 +1281,22 @@ function launch_suite(suite::SoftwareSuite; profile::Symbol = :quick,
 end
 
 """
-Return the current job state, such as `:running`, `:cancelling`, `:complete`, `:cancelled` or `:failed`, without waiting.
+    suite_job_status(job::SuiteJob) -> Symbol
+
+Read `:queued`, `:running`, `:cancelling`, `:complete`, `:cancelled` or `:failed`
+without waiting. `:complete` means execution returned a result, not that its
+feature records passed. `:cancelled` is reported after interruption handling;
+cleanup failures remain `:failed` and are surfaced by [`wait_suite`](@ref).
 """
 suite_job_status(job::SuiteJob) = job.status[]
 """
-Return a shallow copy of the current progress dictionary without waiting. It includes completed/total counts, per-status counts and the current run when available.
+    suite_job_progress(job::SuiteJob) -> Dict{String,Any}
+
+Return a shallow snapshot under schema `perfchecker-progress/1`, with state,
+total/completed/remaining counts, fraction/percent, per-status counts and the
+active row's identity when available. Counts describe orchestration progress,
+not statistical confidence or correctness validation. This does not wait;
+nested values are not deep-copied.
 """
 suite_job_progress(job::SuiteJob) = copy(job.progress[])
 
@@ -1093,8 +1328,12 @@ Request suite cancellation through the shared job API. Equivalent to
 cancel!(job::SuiteJob) = cancel_suite!(job)
 
 """
-Return the dictionary representation of a SuiteJob snapshot, including a completed result or failure message when available.
-This is an in-memory conversion; it does not write a report or run a workload.
+    suite_job_dict(job::SuiteJob) -> Dict{String,Any}
+
+Return a `perfchecker-suite-job/1` snapshot with job/suite/profile identity,
+status and progress. Include `result` through [`suite_dict`](@ref) when complete,
+or a captured failure `message` when failed. This is a nonblocking poll and
+does not await cancellation, write reports or execute further measurements.
 """
 function suite_job_dict(job::SuiteJob)
     payload = Dict{String, Any}(
@@ -1134,12 +1373,23 @@ function wait_suite(job::SuiteJob; strict::Bool = true)
 end
 
 """
-    run_suite(plan; executor=_default_suite_executor, strict=true,
-              progress_callback=identity)
+    run_suite(plan::SuitePlan; executor=_default_suite_executor,
+              overrides=Dict{Symbol,Any}(), strict=true,
+              progress_callback=payload -> nothing) -> SoftwareSuiteResult
+    run_suite(suite::SoftwareSuite; profile=:quick,
+              version_provider=get_pkg_versions, kwargs...) -> SoftwareSuiteResult
 
 Execute the runnable leaves of a resolved suite plan and return their isolated
-worker results. When `strict` is false, individual failures are retained in the
-result instead of aborting the complete suite.
+worker results synchronously. Unavailable rows are retained without execution;
+ordinary individual failures are recorded while subsequent rows continue.
+`strict=true` raises an error carrying the completed result when
+[`suite_passed`](@ref) is false; `strict=false` returns that result for inspection.
+Neither mode suppresses interruption or cleanup/orchestration exceptions.
+
+Execution has the environment, dependency, workload and callback effects
+documented by [`launch_suite`](@ref). Overrides take precedence over variant and
+feature options. The suite overload plans first; the plan overload executes
+exactly its current ordered selection. No report files are exported automatically.
 """
 function run_suite(plan::SuitePlan; executor = _default_suite_executor,
         overrides::AbstractDict = Dict{Symbol, Any}(), strict::Bool = true,
@@ -1162,6 +1412,9 @@ file must define the selected zero-argument factory or bind `suite` to a
 `SoftwareSuite`.
 Only the controller evaluates this file; measured Malt workers still load just
 their backend, package, and feature entrypoint.
+The path becomes absolute and must exist. Including a Julia definition executes
+its top-level code, so only load trusted files. A defined factory takes precedence
+over the `suite` binding; wrong return types and load/factory errors are raised.
 """
 function load_software_suite(path::AbstractString; factory::Symbol = :build_suite)
     definition = abspath(String(path))
@@ -1194,6 +1447,10 @@ end
 
 Load and execute a suite definition. When `reports` is a path, write the JSON,
 Markdown, and JUnit representations consumed by CI and user interfaces.
+Return the [`SoftwareSuiteResult`](@ref), not report paths. Other keywords are
+forwarded to [`run_suite`](@ref), not to report writers. With the default strict
+execution, a suite failure is raised before the optional report-writing step;
+use `strict=false` to export completed failure records.
 """
 function run_suite_file(path::AbstractString; profile::Symbol = :quick,
         reports = nothing, factory::Symbol = :build_suite, kwargs...)
@@ -1203,9 +1460,13 @@ function run_suite_file(path::AbstractString; profile::Symbol = :quick,
 end
 
 """
+    suite_passed(result::SoftwareSuiteResult) -> Bool
+
 Return whether no run has status `:error`, `:blocked` or `:invalid`.
 Unavailable runs do not fail this execution predicate. Use `suite_verdict`
 to distinguish partial execution from validated results.
+An empty or entirely unavailable result can satisfy this execution predicate;
+it is not a minimum-coverage or regression-budget assertion.
 """
 function suite_passed(result::SoftwareSuiteResult)
     !any(run -> run.status in (:error, :blocked, :invalid), result.runs)
@@ -1234,7 +1495,13 @@ function suite_verdict(result::SoftwareSuiteResult)
 end
 
 """
-Return a TypedTables table with one row per feature run: suite, package, feature, target version, comparison key, status, elapsed orchestration seconds and message.
+    suite_summary(result::SoftwareSuiteResult) -> TypedTables.Table
+
+Return one row per feature run with columns `suite`, `package`, `feature`,
+`version`, `comparison_key`, `status`, `elapsed_seconds` and `message`.
+Elapsed seconds measure orchestration, including preparation, not benchmark
+sample time. No observations are rerun or written; use backend summary/plot
+APIs for measured metrics.
 """
 function suite_summary(result::SoftwareSuiteResult)
     return Table(
@@ -1266,8 +1533,13 @@ function _resource_envelope_payloads(run::FeatureRun)
 end
 
 """
-Return the dictionary representation of a SoftwareSuiteResult with schema, execution verdict and per-run summaries and qualification.
-This is an in-memory conversion; it does not write a report or run a workload.
+    suite_dict(result::SoftwareSuiteResult) -> Dict{String,Any}
+
+Return schema `perfchecker-suite-result/1`, suite/profile/timestamps,
+execution `passed` and `verdict`, and ordered run summaries, resource envelopes
+and qualification/provenance evidence. A run's `summary` is the first checker
+summary row when present, not the complete sample/profile distribution. Use a
+run bundle for portable raw observations. This only converts supplied evidence.
 """
 function suite_dict(result::SoftwareSuiteResult)
     return Dict{String, Any}(
@@ -1377,7 +1649,10 @@ function write_suite_junit(result::SoftwareSuiteResult, path::AbstractString)
 end
 
 """
-    write_suite_reports(result, directory; formats, relative_limits=Dict(),
+    write_suite_reports(result::SoftwareSuiteResult, directory;
+                        formats=(:json, :markdown, :junit, :bundle, :version_series,
+                            :version_comparison_json, :version_comparison_markdown),
+                        relative_limits=Dict(),
                         min_samples=1, sample_statistics=Dict(),
                         default_sample_statistic=:median)
 
@@ -1385,6 +1660,17 @@ Export a completed suite and return written paths. Defaults include JSON,
 Markdown, JUnit, a run bundle, version series and version-comparison reports.
 The comparison options control evidence reduction and budgets. Ordinary report
 files are replaced; bundles use new run directories. No workload is rerun.
+`relative_limits` uses metric-string keys and fractional budgets;
+`sample_statistics`, `default_sample_statistic` and positive `min_samples`
+are forwarded to [`compare_suite_versions`](@ref). Without limits, version
+comparisons remain diagnostic/inconclusive even for a passed execution.
+The return value is a vector of written file or bundle-directory paths.
+
+```julia
+# Export an already completed result, including its failures if present.
+paths = write_suite_reports(result, "perf/results/local";
+    relative_limits=Dict("julia.wall.time" => 0.05), min_samples=3)
+```
 """
 function write_suite_reports(result::SoftwareSuiteResult, directory::AbstractString;
         formats = (:json, :markdown, :junit, :bundle, :version_series,
@@ -1429,11 +1715,22 @@ function write_suite_reports(result::SoftwareSuiteResult, directory::AbstractStr
 end
 
 """
-Load `DrWatson`, then convert a suite plan (or a suite with `profile=:quick`) into parameter dictionaries for each planned run. No measurement is started.
+    drwatson_parameters(plan::SuitePlan) -> Vector{Dict{String,Any}}
+    drwatson_parameters(suite::SoftwareSuite; profile=:quick, kwargs...)
+
+Load `DrWatson` to enable these methods. Return one parameter dictionary per
+planned row with suite, package, feature, version, comparison key and planned
+status. The suite overload calls [`plan_suite`](@ref), forwarding keywords;
+registry/project inspection can occur but no measurement is started.
 """
 function drwatson_parameters end
 """
-Load `DrWatson`, then derive a filename from a planned run's suite, package, feature and target version; `suffix="jld2"` selects the default extension. This does not write a file.
+    drwatson_savename(run::PlannedFeatureRun; suffix="jld2") -> String
+
+Load `DrWatson` to enable this method. Delegate filename generation to
+`DrWatson.savename` using suite, package, feature and target-version parameters.
+`suffix` chooses the extension. No directory/file is created and no source or
+dependency fingerprint is included in this filename.
 """
 function drwatson_savename end
 """

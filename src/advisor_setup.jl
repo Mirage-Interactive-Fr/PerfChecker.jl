@@ -8,16 +8,34 @@ function _advisor_draft(input::AbstractDict; discovery = false)
     AdvisorConfig(; (Symbol(k) => v for (k, v) in values)...)
 end
 
-"Extension point for optional connection checks and local model management."
+"""
+    advisor_setup_transport(config, action, model)
+
+Provider extension hook called in a setup worker by [`advisor_setup`](@ref).
+The HTTP advisor extension implements connection probes, model/tool listings
+and authorized local Ollama management, returning a status dictionary.
+The base fallback throws `ArgumentError` when no provider method is available.
+Call the public worker API for timeout/cancellation and confirmation validation;
+direct invocation does not provide that lifecycle boundary.
+"""
 advisor_setup_transport(config, action, model) = throw(ArgumentError("Setup is unavailable for this provider; install HTTP in the controller environment."))
 
 """
-    advisor_setup(configuration; action=:probe, model="", confirmed=false, project, cancellation)
+    advisor_setup(configuration; action=:probe, model="", confirmed=false,
+                  project=dirname(Base.active_project()), cancellation=CancellationToken())
 
 Check a connection or discover available models/MCP tools without sending project
 evidence. Ollama `:pull`, `:delete`, and `:unload` require explicit confirmation
 and a loopback endpoint. Operations run in a cancellable worker. Model files are
 managed by the existing Ollama server, never bundled with PerfChecker.
+Accept an `AdvisorConfig` or draft dictionary. `:validate` returns validated
+configuration immediately without contacting a provider; `:probe`/`:models`
+allow an MCP discovery draft with no selected tool. Return a status dictionary,
+with worker results labelled `perfchecker-advisor-setup/1`, `evidence_sent=false`
+and `generation_tested=false`. Missing provider packages can be unavailable;
+connection errors become diagnostic results. Invalid actions, model names or
+unconfirmed/nonlocal management raise `ArgumentError` before execution.
+Cancellation stops the worker; partial provider-owned downloads may remain.
 """
 function advisor_setup(input::Union{AdvisorConfig, AbstractDict}; action::Symbol = :probe,
         model::AbstractString = "", confirmed::Bool = false,
@@ -61,7 +79,17 @@ function _advisor_setup_inprocess(config, request)
     end
 end
 
-"Start a cancellable setup task for web/Pluto clients. Opening a view never calls this."
+"""
+    launch_advisor_setup(input; kwargs...)
+
+Start [`advisor_setup`](@ref) asynchronously and return an `InvestigationJob`
+with action `:advisor_setup`. Forward setup keywords and use the job's own
+cancellation token. Inspect with [`investigation_status`](@ref), wait with
+[`wait_investigation`](@ref), or request cancellation with [`cancel!`](@ref).
+Setup errors are retained in the job as `status=:error`; successful worker
+status/result is copied to the job. Calling this explicitly starts setup;
+constructing or displaying an investigation view does not.
+"""
 function launch_advisor_setup(input; kwargs...)
     job = InvestigationJob(
         string(uuid4()), :advisor_setup, CancellationToken(), nothing, :running,

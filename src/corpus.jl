@@ -2,8 +2,20 @@
     write_property_corpus(path, cases; producer="manual", metadata=Dict(), force=false)
 
 Persist JSON-compatible property-generated cases before benchmarking them. The
-result is an immutable input artifact: generation and shrinking do not run in
-the timed worker.
+result is a frozen input artifact: generation and shrinking do not run in
+the timed worker. Return the absolute destination path, creating parents and
+writing schema `perfchecker-property-corpus/1`, producer, UTC creation time,
+case count, metadata with string keys and the cases. Existing files raise
+`ArgumentError` unless `force=true`. Cases and metadata must be JSON-compatible;
+serialization and filesystem errors propagate.
+
+```jldoctest
+julia> mktempdir() do directory
+           path = write_property_corpus(joinpath(directory, "inputs.json"), [[1, 2], [3]]);
+           read_property_corpus(path)["count"]
+       end
+2
+```
 """
 function write_property_corpus(path::AbstractString, cases::AbstractVector;
         producer::AbstractString = "manual", metadata::AbstractDict = Dict(),

@@ -1,6 +1,14 @@
 const PERFORMANCE_PLOT_SCHEMA = "perfchecker-plot/1"
 
-"Backend-neutral plot description consumed by Makie, Oxygen, notebooks and CI exporters."
+"""
+    PerformancePlot(id, kind, title, description, encoding, data, options)
+
+Backend-neutral saved-evidence view with plot identity/kind, human-readable
+labels, field encodings, data records and renderer options. Obtain a validated
+model with [`performance_plot`](@ref), then render it using an interface package
+or serialize it using [`performance_plot_dict`](@ref). This internal model
+stores records without starting a measurement or choosing a graphics backend.
+"""
 struct PerformancePlot
     id::String
     kind::Symbol
@@ -12,8 +20,11 @@ struct PerformancePlot
 end
 
 """
-Return the dictionary representation of a performance plot view model for interface transport.
-This is an in-memory conversion; it does not write a report or run a workload.
+    performance_plot_dict(plot::PerformancePlot)
+
+Return `perfchecker-plot/1` with identity, string kind, title, description,
+encoding, data and options. Nested dictionaries and records are retained, not
+deep-copied. No renderer is loaded and no report, HTML or image is written.
 """
 function performance_plot_dict(plot::PerformancePlot)
     return Dict{String, Any}(
@@ -306,7 +317,18 @@ function _tradeoff_catalog(bundle::RunBundle)
     return entries
 end
 
-"List every plot supported by the evidence contained in a run bundle."
+"""
+    plot_catalog(bundle::RunBundle)
+
+Return dictionaries describing plot IDs, kinds, titles and identifying metrics
+available from the bundle's saved observations. Include supported normalized
+benchmark metrics, version series/distributions/deltas, time/allocation
+tradeoffs, allocation site/file/stack plots and CPU/wall profiles.
+Entries are ordered by package/feature, preferring normalized metrics; their IDs
+are content-derived identities accepted by [`performance_plot`](@ref).
+A bundle without supported observations returns an empty list. No workload or
+graphics backend is started; malformed evidence errors propagate.
+"""
 function plot_catalog(bundle::RunBundle)
     plots = vcat(
         _normalized_catalog(bundle), _series_catalog(bundle), _tradeoff_catalog(bundle),
@@ -625,7 +647,8 @@ function _tradeoff_records(bundle, entry)
 end
 
 """
-    performance_plot(bundle, [id]; reference_version=nothing, version=nothing, top=40, min_percentage=5)
+    performance_plot(bundle, [id]; reference_version=nothing, version=nothing,
+                     statistic=:minimum, top=40, min_percentage=5)
 
 Build a backend-neutral plot. With no identifier, prefer overlaid BenchmarkTools
 or Chairmarks metrics. By default, use each version's minimum sample, divided by
@@ -641,6 +664,12 @@ Allocation pies combine sites contributing strictly less than `min_percentage`
 percent of the selected version's allocated bytes into "Other allocation sites".
 The default is 5%; exactly 5% remains separate. Set `min_percentage=0` to disable
 this threshold. `top` still caps legend entries, including the combined remainder.
+Return a `PerformancePlot` from saved records without rerunning workloads.
+`version` selects allocation/profile versions; normalized metrics use
+`reference_version` instead. Unknown plot IDs, absent plottable measurements,
+unsupported statistics or invalid grouping limits raise `ArgumentError` in the
+applicable plot builder. Use [`performance_plot_dict`](@ref) for transport or
+[`performance_figure`](@ref) after loading PerfCheckerMakie to render the model.
 """
 function performance_plot(bundle::RunBundle, id::AbstractString; version = nothing,
         reference_version = nothing, statistic::Symbol = :minimum,
@@ -744,10 +773,28 @@ function performance_plot(bundle::RunBundle; kwargs...)
         bundle, catalog[isnothing(preferred) ? 1 : preferred]["id"]; kwargs...)
 end
 
-"Extension point implemented by MakieExt."
+"""
+    performance_figure(plot::PerformancePlot)
+    performance_figure(bundle::RunBundle, [id]; kwargs...)
+
+Load `PerfCheckerMakie` and a Makie backend to render a saved-evidence plot as a
+Makie figure. Bundle overloads first call [`performance_plot`](@ref), forwarding
+its selection/grouping keywords. Unsupported plot kinds raise `ArgumentError`.
+No workload is rerun, and rendering does not save an image; use the active
+backend's save API for an explicit export. Without the companion's methods,
+calling this generic function raises `MethodError`.
+"""
 function performance_figure end
 
-"Extension point implemented by WGLMakieExt."
+"""
+    performance_plot_html(plot::PerformancePlot)
+
+Load `PerfCheckerMakie` and `WGLMakie` to render the plot as an embeddable
+interactive HTML string. The companion's WGLMakie extension supplies the method;
+without it, this generic raises `MethodError`. Rendering consumes saved data
+and does not start a measurement or write/deploy an HTML page. The caller owns
+embedding and any file export.
+"""
 function performance_plot_html end
 
 @testitem "Performance plot grammar" tags=[:unit, :plots] begin

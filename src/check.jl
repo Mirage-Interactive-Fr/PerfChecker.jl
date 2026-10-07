@@ -829,41 +829,58 @@ function perf_plot end
 """
     table_to_pie(table, ::Val{backend}; kwargs...)
 
-Create a pie chart from a backend table. Currently implemented by the Makie
+Load `PerfCheckerMakie` to create a pie chart from a backend table. Implemented by the companion
 package for allocation tables with `Val(:alloc)`. Sites below 5% of allocated
 bytes are combined by default. Use `min_percentage=0` to show smaller sites;
-`top=40` caps legend entries, including the combined remainder.
+`top=40` caps legend entries, including the combined remainder. Return a Makie
+figure; an allocation table without sites logs an error and returns `nothing`.
+The table must contain byte counts and filename/line columns. This visualizes
+saved values without running a check or saving an image.
 """
 function table_to_pie end
 
 """
     checkres_to_scatterlines(result::CheckerResult, ::Val{backend}; kwargs...)
 
-Create an evolution plot from a `CheckerResult`. Plotting dispatch is explicit:
-use `Val(:benchmark)`, `Val(:chairmark)`, or `Val(:alloc)`.
+Load `PerfCheckerMakie` and a backend to create an evolution figure from saved
+`CheckerResult` tables. Dispatch is explicit: use `Val(:benchmark)`,
+`Val(:chairmark)` or `Val(:alloc)`. Benchmark/Chairmarks views overlay version
+minima normalized per metric (minimum = 1); allocation views aggregate by file.
+Collector-specific keywords apply only to methods accepting them. Result tables
+must align with package specs; no workload is run or image saved.
 """
 function checkres_to_scatterlines end
 
 """
     checkres_to_pie(result::CheckerResult, ::Val{backend}; kwargs...)
 
-Create pie charts from a `CheckerResult`. For allocation checks this returns
+Load `PerfCheckerMakie` to create pie charts from a `CheckerResult`. For allocation checks this returns
 pairs mapping version labels to Makie figures. Forwards `min_percentage` and
-`top` to [`table_to_pie`](@ref).
+`top` to [`table_to_pie`](@ref). Values can be `nothing` for empty tables.
+This reads saved allocation tables and package labels without running workloads
+or exporting figures; load a Makie backend for rendering.
 """
 function checkres_to_pie end
 
 """
     saveplot(...)
 
-Reserved extension point for saving backend-specific plots.
+Reserved extension point for saving backend-specific plots. Core does not
+provide a saving method, and current interface figures can be saved with the
+active Makie backend's API. An unsupported call raises `MethodError`.
+Defining a provider method must make its destination and overwrite behavior
+explicit; calling this generic alone does not select a backend or destination.
 """
 function saveplot end
 
 """
     checkres_to_boxplots(result::CheckerResult, ::Val{backend}; kwarg=:times)
 
-Create boxplots from a `CheckerResult` for the selected metric column.
+Load `PerfCheckerMakie` to return a figure of version distributions from a
+`CheckerResult` for `Val(:benchmark)` or `Val(:chairmark)`. `kwarg` is the
+symbolic table column (default `:times`); values retain collector units.
+Missing columns or misaligned package/table data raise normal access errors.
+This reads saved samples without measuring, normalizing units or saving a file.
 """
 function checkres_to_boxplots end
 
@@ -871,7 +888,11 @@ function checkres_to_boxplots end
     to_table(raw_result) -> TypedTables.Table
 
 Convert a backend-specific raw result into a table stored by PerfChecker.
-Backends should extend this method for their raw result types.
+Backends extend this method for their raw result types. Core supplies methods
+for allocation, Julia CPU/wall profile and explicit/interface network records;
+optional benchmark collectors add their own raw-result methods. A table
+preserves backend columns and units without attaching run-bundle provenance.
+Unsupported raw types raise `MethodError`; no measurement or file write occurs.
 """
 function to_table end
 

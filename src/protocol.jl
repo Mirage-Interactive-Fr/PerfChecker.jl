@@ -4,7 +4,16 @@ const BUNDLE_INTEGRITY_SCHEMA = "perfchecker-bundle-integrity/1"
 const _BUNDLE_DOCUMENTS = ("manifest.json", "measurement-definitions.json",
     "observations.jsonl", "diagnostics.jsonl", "artifacts.json")
 
-"A self-contained, language-neutral performance result bundle."
+"""
+    RunBundle(manifest, measurement_definitions, observations, diagnostics, artifacts)
+
+In-memory portable evidence: a string-keyed manifest and vectors of dictionaries
+for measurement definitions, observations, diagnostics and artifact descriptors.
+Construction stores supplied records without validating their schema or loading
+artifact bytes. Use [`read_run_bundle`](@ref) for saved bundles or
+[`read_provider_result`](@ref) for validated external results.
+[`bundle_passed`](@ref) checks execution; comparison APIs decide regressions.
+"""
 struct RunBundle
     manifest::Dict{String, Any}
     measurement_definitions::Vector{Dict{String, Any}}
@@ -13,7 +22,19 @@ struct RunBundle
     artifacts::Vector{Dict{String, Any}}
 end
 
-"A command provider that emits `perfchecker-provider-result/1` JSON."
+"""
+    ExternalCommandSpec(id::Symbol, language, command; directory=pwd(),
+                        environment=Dict{String,String}(), timeout_seconds=300)
+
+Describe an external provider invoked without a shell by
+[`run_external_command`](@ref). `command` is a nonempty vector of executable
+and arguments; `directory` must exist and is normalized to an absolute path.
+Environment keys/values are converted to strings and added to inherited values.
+The positive timeout is in seconds. Invalid commands, directories and nonpositive
+timeouts raise `ArgumentError`; construction does not start a process.
+The provider must write `perfchecker-provider-result/1` JSON to the runtime's
+`PERFCHECKER_OUTPUT` path. Language is descriptive metadata, not executable selection.
+"""
 struct ExternalCommandSpec
     id::Symbol
     language::String
@@ -37,8 +58,12 @@ function ExternalCommandSpec(id::Symbol, language::AbstractString,
 end
 
 """
-Return the dictionary representation of an ExternalCommandSpec describing a command without executing it.
-This is an in-memory conversion; it does not write a report or run a workload.
+    external_command_dict(spec::ExternalCommandSpec)
+
+Return provider identity, language, command arguments, directory, sorted
+environment **names** and timeout. Environment values are deliberately omitted;
+command arguments can still contain caller-supplied sensitive text. This
+representation describes configuration without executing or writing it.
 """
 function external_command_dict(spec::ExternalCommandSpec)
     return Dict{String, Any}(
@@ -145,7 +170,21 @@ function _bundle_integrity(root::AbstractString)
         "files" => files)
 end
 
-"Verify the immutable protocol documents of a run bundle."
+"""
+    verify_run_bundle(directory; require_integrity=false)
+
+Check `integrity.json` against all five protocol documents: manifest,
+measurement definitions, observations, diagnostics and artifact descriptors.
+Require SHA-256 algorithm, exactly one record per permitted filename, matching
+byte lengths and digests. Return `status="verified"`, `verified=true` and names
+on success. Artifact payload files under `artifacts/` are outside this digest set.
+
+Without an integrity manifest, return `legacy_unverified` unless
+`require_integrity=true`. Missing directories, malformed manifests, unexpected
+paths or size/digest mismatches raise `ArgumentError`. This establishes byte
+integrity, not workload correctness, provenance authenticity or schema validity
+of every observation. No files are changed.
+"""
 function verify_run_bundle(directory::AbstractString; require_integrity::Bool = false)
     root = abspath(String(directory))
     isdir(root) || throw(ArgumentError("bundle directory does not exist: $root"))
@@ -657,8 +696,13 @@ function bundle_passed(bundle::RunBundle)
 end
 
 """
-Return the dictionary representation of a RunBundle manifest and, with `include_records=true` (default), its definitions, observations, diagnostics and artifacts.
-This is an in-memory conversion; it does not write a report or run a workload.
+    bundle_dict(bundle::RunBundle; include_records=true)
+
+Return a dictionary containing schema, manifest and execution pass flag.
+By default also include definitions, observations, diagnostics and artifact
+descriptors; set `include_records=false` for metadata alone. Nested collections
+are retained, not deep-copied. No integrity verification, measurement or file
+export is performed.
 """
 function bundle_dict(bundle::RunBundle; include_records::Bool = true)
     payload = Dict{String, Any}(
@@ -674,7 +718,28 @@ function bundle_dict(bundle::RunBundle; include_records::Bool = true)
     return payload
 end
 
-"Write a run bundle using a temporary sibling and an atomic directory rename."
+"""
+    write_run_bundle(bundle::RunBundle, directory)
+
+Write canonical protocol JSON/JSONL plus SHA-256 `integrity.json` and an empty
+`artifacts/` directory, then rename a temporary sibling to the absolute
+destination. Return that destination. Parent directories are created; any
+existing destination path raises `ArgumentError`. Temporary output is removed
+on success or failure. Artifact descriptors are serialized, but referenced
+artifact payloads are not copied by this writer.
+Serialization/filesystem errors propagate. Saving records does not validate
+their correctness, authenticate their origin or establish fresh measurement.
+
+```jldoctest
+julia> bundle = RunBundle(Dict{String,Any}("schema_version" => "perfchecker-run-bundle/1", "state" => "complete"), [Dict{String,Any}()], Dict{String,Any}[], Dict{String,Any}[], Dict{String,Any}[]);
+
+julia> mktempdir() do directory
+           path = write_run_bundle(bundle, joinpath(directory, "run"));
+           verify_run_bundle(path; require_integrity=true)["verified"]
+       end
+true
+```
+"""
 function write_run_bundle(bundle::RunBundle, directory::AbstractString)
     destination = abspath(String(directory))
     ispath(destination) &&
@@ -723,7 +788,14 @@ end
 
 Read and validate a `perfchecker-run-bundle/1` directory. Integrity metadata is
 verified by default when present and can be made mandatory with
-`require_integrity=true`.
+`require_integrity=true`. Return a [`RunBundle`](@ref), preserving record order
+and unknown fields. `verify_integrity=false` skips the integrity check entirely,
+including `require_integrity`; use that combination only for deliberate legacy
+inspection or migration. Missing JSONL documents are read as empty lists when
+the integrity check does not require them.
+Unsupported schemas and malformed definition/artifact documents raise
+`ArgumentError`; file/JSON errors propagate. This does not open artifact
+payloads or execute stored workloads.
 """
 function read_run_bundle(directory::AbstractString; verify_integrity::Bool = true,
         require_integrity::Bool = false)
@@ -743,7 +815,16 @@ function read_run_bundle(directory::AbstractString; verify_integrity::Bool = tru
         Dict{String, Any}.(artifacts))
 end
 
-"Rewrite a legacy/unverified bundle into a new digest-protected destination."
+"""
+    migrate_run_bundle(source, destination)
+
+Read `source` with integrity checking disabled and save its records to a new
+destination using [`write_run_bundle`](@ref). Return the absolute destination;
+source files are unchanged and existing destinations are rejected. This adds
+digest protection to the records now read; it cannot retroactively prove a
+legacy bundle's authenticity. Artifact payloads are not copied. Parsing and
+writing errors propagate.
+"""
 function migrate_run_bundle(source::AbstractString, destination::AbstractString)
     bundle = read_run_bundle(source; verify_integrity = false)
     return write_run_bundle(bundle, destination)
@@ -896,7 +977,18 @@ function _provider_result(payload::AbstractDict)
     return RunBundle(manifest, definitions, observations, diagnostics, artifacts)
 end
 
-"Read and validate a language-neutral provider result."
+"""
+    read_provider_result(path)
+
+Parse `perfchecker-provider-result/1` JSON and return a [`RunBundle`](@ref).
+Validate measurement definitions, unique definition IDs, numeric observations
+and references, normalizing run/attempt UUIDs and record identity. Omitted
+UUIDs are generated; optional runtime/environment fields are retained and
+execution state defaults to `complete`. This normalization is independent of
+executing the provider or checking workload correctness.
+Unsupported schema or invalid records raise `ArgumentError`; file and JSON
+errors propagate. No files or artifact payloads are written.
+"""
 function read_provider_result(path::AbstractString)
     _provider_result(_json_parsefile(abspath(String(path))))
 end
@@ -1042,7 +1134,22 @@ function _remove_temporary_file(path::AbstractString)
     return nothing
 end
 
-"Run a non-Julia provider in its own process and ingest its result grammar."
+"""
+    run_external_command(spec::ExternalCommandSpec; bundle_root=nothing, strict=false)
+
+Start the configured command in its directory, adding its environment plus
+`PERFCHECKER_OUTPUT` (a temporary JSON path) and `PERFCHECKER_CASE_ID`.
+Return a [`RunBundle`](@ref). Timeout, nonzero exit or missing result file produce
+a failed bundle; invalid result JSON/schema and launch failures propagate.
+Nonempty stderr on a successful result becomes a bounded warning diagnostic.
+Owned process trees are stopped and temporary result/output resources cleaned
+before returning; arbitrary provider-created files remain provider-owned.
+
+If `bundle_root` is set, write `run-<run_id>` there, including failed evidence.
+With `strict=true`, an unsuccessful bundle raises an error after optional
+writing. This explicitly executes external code; an exit code alone does not
+establish workload correctness or a performance-budget pass.
+"""
 function run_external_command(spec::ExternalCommandSpec; bundle_root = nothing,
         strict::Bool = false)
     output_path, output_stream = mktemp()

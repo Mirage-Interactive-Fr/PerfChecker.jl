@@ -25,12 +25,16 @@ ENV["PERFCHECKER_DOCS_VERSION"] = docs_version
 ENV["PERFCHECKER_DOCS_CHANNEL"] = docs_channel
 ENV["PERFCHECKER_DOCS_HOSTING"] = docs_sftp ? "sftp" : "github"
 
+source_root = normpath(joinpath(@__DIR__, ".."))
+source_revision = strip(read(`git -C $source_root rev-parse HEAD`, String))
+source_remote = Documenter.Remotes.GitHub("Mirage-Interactive-Fr", "PerfChecker.jl")
+DocMeta.setdocmeta!(PerfChecker, :DocTestSetup, :(using PerfChecker); recursive = true)
+
 makedocs(;
     modules = [PerfChecker],
     build = build_directory,
     authors = "PerfChecker contributors",
-    repo = "https://github.com/Mirage-Interactive-Fr/PerfChecker.jl",
-    remotes = Dict(),
+    remotes = Dict(source_root => (source_remote, source_revision)),
     sitename = "PerfChecker.jl",
     format = DocumenterVitepress.MarkdownVitepress(
         build_vitepress = false,
@@ -41,7 +45,7 @@ makedocs(;
         deploy_url = docs_url,
         description = "Deep, reproducible performance testing for Julia packages and software suites"
     ),
-    checkdocs = :exports,
+    checkdocs = :all,
     pages = [
         "Home" => "index.md",
         "Manual" => [
@@ -100,7 +104,8 @@ makedocs(;
         ],
         "Reference" => [
             "Reference index" => "reference/index.md",
-            "Julia API" => "reference/api.md",
+            "Public API" => "reference/public-api.md",
+            "Full API" => "reference/api.md",
             "TestItems and tags" => "test-items.md",
             "Collectors" => "reference/checks.md",
             "Tool catalogue" => "tool-catalog.md",
