@@ -50,12 +50,20 @@ end
     port = getsockname(socket)[2]
     close(socket)
     requests = Any[]
+    receipts = Pair{String, Float64}[]
+    case_started = Ref(time_ns())
+    function reset_requests!()
+        empty!(requests)
+        empty!(receipts)
+        case_started[] = time_ns()
+    end
     mode = Ref(:good)
     called = Ref(false)
     encode(value) = sprint(io -> PerfChecker.JSON.print(io, value))
     reply(id, result) = HTTP.Response(200, ["Content-Type" => "application/json"],
         encode(Dict("jsonrpc" => "2.0", "id" => id, "result" => result)))
     server = HTTP.serve!("127.0.0.1", port; verbose = false) do request
+        push!(receipts, String(request.method) => (time_ns() - case_started[]) / 1e9)
         if request.method == "DELETE"
             push!(requests, (body = Dict("method" => "DELETE"), headers = request.headers))
             return HTTP.Response(204)
@@ -63,6 +71,7 @@ end
         body = PerfChecker._json_parse(String(request.body))
         push!(requests, (body = body, headers = request.headers))
         method = body["method"]
+        push!(receipts, String(method) => (time_ns() - case_started[]) / 1e9)
         method == "notifications/initialized" && return HTTP.Response(202)
         if method == "initialize"
             return HTTP.Response(200,
@@ -127,7 +136,7 @@ end
         status == "complete" || @error "Mock MCP worker failed" status worker_phase=get(
             result, "worker_phase", "unknown") worker_log_excerpt=get(
             result, "worker_log_excerpt", "") elapsed_seconds=get(
-            result, "elapsed_seconds", 0)
+            result, "elapsed_seconds", 0) received_requests=copy(receipts)
         @test status == "complete"
         status == "complete"
     end
@@ -147,7 +156,7 @@ end
             @test occursin("Vérifiez", warmup["external_review"])
         end
         for version in ("2026-07-28", "2025-11-25")
-            empty!(requests)
+            reset_requests!()
             result = chat_advice(messages; config = config(version), advice)
             completed(result) || continue
             @test result["advisor_mode"] == "advice"
@@ -184,7 +193,7 @@ end
                 @test HTTP.header(headers, "Mcp-Session-Id") == "chat-session"
             end
         end
-        empty!(requests)
+        reset_requests!()
         result = chat_advice(
             [message("user", "Comment configurer PerfChecker ?")]; config = config())
         if completed(result)
@@ -202,12 +211,24 @@ end
             end
         end
         for selected_mode in (:tool_error, :interaction, :oversized, :padded, :empty)
+            reset_requests!()
             mode[] = selected_mode
             result = chat_advice(messages; config = config(), advice)
+            calls = filter(r -> r.body["method"] == "tools/call", requests)
+            received_call = length(calls) == 1
+            reached_validation = get(result, "worker_phase", "unknown") in (
+                "mcp_tools_call", "response_validation")
+            result["status"] == "error" && received_call && reached_validation ||
+                @error "Rejected mock MCP response did not reach its tool call" selected_mode status=result["status"] worker_phase=get(
+                    result, "worker_phase", "unknown") worker_log_excerpt=get(
+                    result, "worker_log_excerpt", "") elapsed_seconds=result["elapsed_seconds"] received_requests=copy(receipts)
             @test result["status"] == "error" && result["fallback"] == advice
+            @test received_call
+            result["status"] == "error" && received_call || continue
             @test !haskey(result, "external_review")
-            @test result["worker_phase"] in ("mcp_tools_call", "response_validation")
+            @test reached_validation
         end
+        reset_requests!()
         mode[] = :unicode_boundary
         result = chat_advice(messages; config = config())
         completed(result) && @test length(result["external_review"]) == 16000
@@ -220,7 +241,7 @@ end
             write(joinpath(original, "workload.jl"), "original\n")
             write(joinpath(checkout, "workload.jl"), "before\n")
             for version in ("2026-07-28", "2025-11-25")
-                empty!(requests)
+                reset_requests!()
                 result = implement_advice(
                     messages; config = config(version, "implement"), advice,
                     workspace = checkout)
@@ -244,31 +265,40 @@ end
             write(configuration, encode(PerfChecker._advisor_config(config())))
             write(source, encode(Dict("messages" => messages, "advice" => advice)))
             output = IOBuffer()
+            reset_requests!()
             @test perfchecker_main(
                 ["chat", "--source=$source", "--advisor-config=$configuration"];
                 stdout = output) == 0
-            @test PerfChecker._json_parse(String(take!(output)))["message_count"] == 3
+            result = PerfChecker._json_parse(String(take!(output)))
+            @test tool_call() !== nothing
+            completed(result) && @test result["message_count"] == 3
             write(configuration,
                 encode(PerfChecker._advisor_config(config("2026-07-28", "implement"))))
             write(source, encode(Dict("messages" => messages, "workspace" => checkout)))
+            reset_requests!()
             @test perfchecker_main(
                 ["implement", "--source=$source", "--advisor-config=$configuration"];
                 stdout = output) == 0
-            @test PerfChecker._json_parse(String(take!(output)))["implementation_status"] ==
-                  "requires_diff_review"
+            result = PerfChecker._json_parse(String(take!(output)))
+            @test tool_call() !== nothing
+            completed(result) &&
+                @test result["implementation_status"] == "requires_diff_review"
             mode[] = :tool_error
+            reset_requests!()
             @test perfchecker_main(
                 ["implement", "--source=$source", "--advisor-config=$configuration"];
                 stdout = output) == 1
             @test PerfChecker._json_parse(String(take!(output)))["status"] == "error"
+            @test tool_call() !== nothing
         end
         mode[] = :good
-        empty!(requests)
+        reset_requests!()
         token = CancellationToken()
         cancel!(token)
         result = chat_advice(messages; config = config(), cancellation = token)
         @test result["status"] == "cancelled" && isempty(requests)
         mode[] = :slow
+        reset_requests!()
         called[] = false
         token = CancellationToken()
         canceller = @async begin
@@ -282,6 +312,7 @@ end
         wait(canceller)
         @test called[] && result["status"] == "cancelled"
         @test !haskey(result, "external_review")
+        reset_requests!()
         result = chat_advice(messages; config = config(timeout = 0.01))
         @test result["status"] == "timeout"
         @test haskey(result, "worker_phase") && haskey(result, "worker_log_excerpt")

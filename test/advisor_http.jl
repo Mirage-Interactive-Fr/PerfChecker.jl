@@ -5,8 +5,11 @@
     port = getsockname(socket)[2]
     close(socket)
     requested = Dict{String, Any}[]
+    receipts = Pair{String, Float64}[]
+    case_started = Ref(time_ns())
     mode = Ref(:good)
     server = HTTP.serve!("127.0.0.1", port; verbose = false) do request
+        push!(receipts, String(request.method) => (time_ns() - case_started[]) / 1e9)
         body = PerfChecker._json_parse(String(request.body))
         push!(requested, body)
         if mode[] == :slow
@@ -34,17 +37,25 @@
             ["Content-Type" => "application/json"], "{}";
             readtimeout = 120, connect_timeout = 120, retry = false)
         @test warmup.status == 200
-        empty!(requested)
         for (protocol, path) in (
             (:chat_completions, "/v1/chat/completions"), (
                 :chat_completions_schema, "/v1/chat/completions"), (:ollama, "/api/chat"))
+            empty!(requested)
+            empty!(receipts)
+            case_started[] = time_ns()
             result = narrate_advice(advice;
                 config = AdvisorConfig(;
                     protocol, endpoint = "http://127.0.0.1:$port$path", timeout = 45))
-            result["status"] == "complete" ||
-                @error "Mock advisor request failed" protocol status=result["status"] message=get(
-                    result, "message", "") elapsed_seconds=result["elapsed_seconds"]
+            received_post = !isempty(receipts) &&
+                            all(first(receipt) == "POST" for receipt in receipts)
+            result["status"] == "complete" && received_post ||
+                @error "Mock advisor request failed" protocol status=result["status"] worker_phase=get(
+                    result, "worker_phase", "unknown") worker_log_excerpt=get(
+                    result, "worker_log_excerpt", "") elapsed_seconds=result["elapsed_seconds"] received_requests=copy(receipts)
             @test result["status"] == "complete"
+            @test received_post && !isempty(requested)
+            result["status"] == "complete" && !isempty(requested) || continue
+            @test !any(haskey(body, "tools") for body in requested)
             @test only(result["cards"])["evidence_id"] == "e1"
             @test isempty(result["usage"])
             @test occursin("in English", first(last(requested)["messages"])["content"])
@@ -56,22 +67,42 @@
             end
         end
         mode[] = :unknown
+        empty!(requested)
+        empty!(receipts)
+        case_started[] = time_ns()
         result = narrate_advice(advice;
             config = AdvisorConfig(
                 endpoint = "http://127.0.0.1:$port/v1/chat/completions", timeout = 45))
+        received_post = !isempty(receipts) &&
+                        all(first(receipt) == "POST" for receipt in receipts)
+        reached_validation = get(result, "worker_phase", "unknown") == "response_validation"
+        result["status"] == "error" && received_post && reached_validation ||
+            @error "Rejected mock advisor response did not reach validation" status=result["status"] worker_phase=get(
+                result, "worker_phase", "unknown") worker_log_excerpt=get(
+                result, "worker_log_excerpt", "") elapsed_seconds=result["elapsed_seconds"] received_requests=copy(receipts)
         @test result["status"] == "error" && isempty(result["cards"])
+        @test received_post && !isempty(requested)
+        @test reached_validation
         @test result["fallback"] == advice
         @test !any(haskey(body, "tools") for body in requested)
+        empty!(requested)
+        empty!(receipts)
+        case_started[] = time_ns()
         token = CancellationToken()
         cancel!(token)
         result = narrate_advice(advice;
             cancellation = token,
             config = AdvisorConfig(endpoint = "http://127.0.0.1:$port/v1/chat/completions"))
         @test result["status"] == "cancelled"
+        @test isempty(receipts) && isempty(requested)
+        empty!(requested)
+        empty!(receipts)
+        case_started[] = time_ns()
         result = narrate_advice(advice;
             config = AdvisorConfig(provider_package = "PerfCheckerNoSuchProvider",
                 protocol = :custom, timeout = 45))
         @test result["status"] == "unavailable"
+        @test isempty(receipts) && isempty(requested)
     finally
         close(server)
     end

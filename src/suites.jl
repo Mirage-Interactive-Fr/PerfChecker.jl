@@ -593,7 +593,7 @@ mutable struct SuiteJob
     result::Base.RefValue{Any}
     error::Base.RefValue{Any}
     progress::Base.RefValue{Dict{String, Any}}
-    cancelled::Base.RefValue{Bool}
+    cancelled::Threads.Atomic{Bool}
 end
 
 function _suite_progress(plan::SuitePlan, runs::Vector{FeatureRun};
@@ -1024,7 +1024,7 @@ function launch_suite(plan::SuitePlan;
     result = Ref{Any}(nothing)
     captured_error = Ref{Any}(nothing)
     progress = Ref(_suite_progress(plan, FeatureRun[]; state = :queued))
-    cancelled = Ref(false)
+    cancelled = Threads.Atomic{Bool}(false)
     update_progress = payload -> begin
         progress[] = payload
         _notify_suite_progress(progress_callback, payload)
@@ -1069,17 +1069,28 @@ suite_job_progress(job::SuiteJob) = copy(job.progress[])
     cancel_suite!(job::SuiteJob) -> Bool
 
 Request interruption of an active suite task and mark it as cancelling. Return
-`false` if the task already finished. A `true` return acknowledges the request;
+`false` if the task already finished or cancellation was already requested.
+A `true` return acknowledges the request;
 use `wait_suite` or the job status to observe completed cancellation and cleanup.
 """
 function cancel_suite!(job::SuiteJob)
     istaskdone(job.task) && return false
-    job.cancelled[] = true
+    # Claim the request once before interrupting the task. Repeated requests
+    # must never interrupt the finally blocks that perform worker cleanup.
+    Threads.atomic_cas!(job.cancelled, false, true) && return false
     job.status[] = :cancelling
     job.progress[]["state"] = "cancelling"
     schedule(job.task, InterruptException(); error = true)
     return true
 end
+
+"""
+    cancel!(job::SuiteJob) -> Bool
+
+Request suite cancellation through the shared job API. Equivalent to
+`cancel_suite!`; wait for the task or `wait_suite` before closing its controller.
+"""
+cancel!(job::SuiteJob) = cancel_suite!(job)
 
 """
 Return the dictionary representation of a SuiteJob snapshot, including a completed result or failure message when available.
