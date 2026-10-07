@@ -66,6 +66,10 @@ end
     as_dict = PerfChecker.hwinfo_to_dict(info)
     @test as_dict["machine"] == info.machine
     @test as_dict["corecount"] == info.corecount
+    if Sys.ARCH === :i686
+        @test info.simdbytes >= 16
+        @test all(>(0), info.corecount)
+    end
     mktempdir() do dir
         id = PerfChecker.uuid4()
         path = joinpath(dir, "$(id).json")

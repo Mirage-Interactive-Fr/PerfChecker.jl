@@ -179,6 +179,7 @@ function PerfChecker.advisor_transport(
     session = ""
     try
         if config.mcp_version == "2025-11-25"
+            PerfChecker._advisor_phase(:mcp_initialize)
             initialized, session = mcp_post(config,
                 mcp_request(config, "initialize", 1,
                     Dict("protocolVersion" => config.mcp_version, "capabilities" => Dict(),
@@ -187,6 +188,7 @@ function PerfChecker.advisor_transport(
                 throw(ArgumentError("MCP server selected an unsupported version"))
             haskey(get(initialized, "capabilities", Dict()), "tools") ||
                 throw(ArgumentError("MCP server does not expose tools"))
+            PerfChecker._advisor_phase(:mcp_initialized_notification)
             mcp_post(
                 config, Dict("jsonrpc" => "2.0", "method" => "notifications/initialized");
                 session, notification = true)
@@ -195,6 +197,7 @@ function PerfChecker.advisor_transport(
         for page in 1:32
             params = cursor === nothing ? Dict{String, Any}() :
                      Dict{String, Any}("cursor" => cursor)
+            PerfChecker._advisor_phase(:mcp_tools_list)
             catalog, _ = mcp_post(
                 config, mcp_request(config, "tools/list", page + 1, params); session)
             tools = get(catalog, "tools", nothing)
@@ -221,6 +224,7 @@ function PerfChecker.advisor_transport(
             throw(ArgumentError("selected MCP tool requires additional configured arguments"))
         headers = config.mcp_version == "2026-07-28" ? mcp_tool_headers(schema, arguments) :
                   Pair{String, String}[]
+        PerfChecker._advisor_phase(:mcp_tools_call)
         result, _ = mcp_post(config,
             mcp_request(config, "tools/call", 100,
                 Dict("name" => config.mcp_tool, "arguments" => arguments));
@@ -253,6 +257,7 @@ function PerfChecker.advisor_transport(
     finally
         # Legacy session release is best-effort and never masks the advice result.
         if !isempty(session)
+            PerfChecker._advisor_phase(:mcp_session_release)
             headers = [
                 "Mcp-Session-Id" => session, "MCP-Protocol-Version" => config.mcp_version]
             isempty(config.api_key_env) || push!(headers,
