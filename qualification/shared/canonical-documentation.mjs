@@ -4,6 +4,7 @@ import { readdir, readFile, access } from 'node:fs/promises';
 import { resolve, join, relative, posix } from 'node:path';
 import { spawn } from 'node:child_process';
 import { once } from 'node:events';
+import { readExport } from '../../website/deploy-sftp.mjs';
 const root = resolve(process.argv[2] ?? 'website/build/sftp');
 const origin = 'https://perfchecker.mirageinteractive.fr';
 const browserChecks = process.argv.includes('--browser');
@@ -19,6 +20,8 @@ for (const channel of await readdir(root)) {
   const site = join(root, channel, 'site');
   const info = JSON.parse(await readFile(join(site, 'build-info.json'), 'utf8'));
   assert.equal(info.channel, channel); assert.equal(info.url, origin + info.base);
+  const exportArtifact = await readExport(site, info.channel, info.revision);
+  console.log(`${channel}: SFTP export preflight passed (${exportArtifact.files.length} files)`);
   const pages = await enumerate(site);
   for (const file of pages) {
     const route = relative(site, file).replaceAll('\\', '/');
