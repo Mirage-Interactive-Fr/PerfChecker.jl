@@ -209,7 +209,10 @@ Use it to inspect the public API or deliberately rerun a check. Interactive term
 
 ## Julia debugging
 
-Install the Julia VS Code extension (`julialang.language-julia`) and open a saved Julia source file belonging to the selected package. Choose **PerfChecker: Debug current Julia file**. PerfChecker delegates to the Julia debug adapter with the selected scenario project and stops on entry.
+Install the Julia VS Code extension (`julialang.language-julia`) and open a saved Julia source file belonging to the selected package. Choose **PerfChecker: Debug current Julia file**. PerfChecker delegates to the Julia debug adapter, requests the selected scenario project in its launch configuration and stops on entry. Inspect the actual runtime project before relying on that environment.
+
+!!! warning "Candidate debugger project qualification is incomplete"
+    The Julia 1.12.7 qualification reached the expected version and correctness result, but `Base.active_project()` resolved to the workspace project instead of the requested controller project. The project selection is being corrected and has not passed its oracle. Inspect `VERSION` and `Base.active_project()` in the stopped debug session; a successful launch alone does not validate the selected project.
 
 1. Use deterministic advice to identify a workload or correctness failure.
 2. Open its source and set a breakpoint.
