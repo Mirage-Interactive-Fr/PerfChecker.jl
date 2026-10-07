@@ -27,6 +27,33 @@ node website/preview.mjs   # browse the completed site at http://127.0.0.1:8870/
 
 The build rejects missing references and dead links. The core test suite checks that every exported binding is defined and documented. Review content too: an existing docstring is not proof that its arguments are correct.
 
+## Canonical publication
+
+The canonical stable site is [perfchecker.mirageinteractive.fr](https://perfchecker.mirageinteractive.fr/).
+Main updates publish development documentation under `/dev/`; stable tags
+publish a version under `/vX.Y.Z/` and select the latest stable version for the
+root. A delayed old tag leaves the selected newer version in place. Every
+canonical channel uses `.html` page links, so plain static hosting needs no
+rewrite rules. The GitHub mirror keeps its own base and version catalogue.
+
+The Documentation workflow checks builds, navigation, search and SFTP publication
+policy without publishing from a pull request. Builds never receive server
+credentials, and completed exports remain downloadable if a transfer fails.
+An initial main deployment updates only `/dev/` and preserves the existing
+root. Register the reviewed final commit first; TagBot then creates the stable
+tag that triggers version publication.
+
+Publication uses SFTP with a pinned server key and no remote shell. Uploads
+preserve existing versions and unrelated files. Individual files are replaced
+through temporary-file renames; the whole tree is not changed atomically. After
+an interruption, retry the same publication rather than deleting the server's
+contents. The version catalogue lists channels actually published on that host.
+
+Maintainers can find the variables, secrets, export layout, locking and recovery
+procedure in the repository's
+[deployment guide](https://github.com/Mirage-Interactive-Fr/PerfChecker.jl/blob/main/website/DEPLOYMENT.md).
+These documentation checks do not replace the package's complete qualification.
+
 ## Information architecture
 
 - **Manual** — from a test to an operation benchmark, then results, suites, comparisons, profiling and CI.
