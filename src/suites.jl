@@ -1082,6 +1082,14 @@ function cancel_suite!(job::SuiteJob)
 end
 
 """
+    cancel!(job::SuiteJob) -> Bool
+
+Request suite cancellation through the shared job API. Equivalent to
+`cancel_suite!`; wait for the task or `wait_suite` before closing its controller.
+"""
+cancel!(job::SuiteJob) = cancel_suite!(job)
+
+"""
 Return the dictionary representation of a SuiteJob snapshot, including a completed result or failure message when available.
 This is an in-memory conversion; it does not write a report or run a workload.
 """

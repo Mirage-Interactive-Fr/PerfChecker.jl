@@ -178,16 +178,17 @@ end
         try
             @test timedwait(() -> isfile(marker) || istaskdone(job.task), 180) == :ok
             @test isfile(marker)
-            @test cancel_suite!(job)
+            @test cancel!(job)
             @test timedwait(() -> istaskdone(job.task), 45) == :ok
             @test_throws InterruptException wait_suite(job)
             @test suite_job_dict(job)["status"] == "cancelled"
+            @test !cancel!(job)
             @test !isfile(unexpected)
             pid = parse(Int, read(marker, String))
             @test read(operation_file * ".$pid.mem", String) == original
             @test length(PerfChecker.find_malloc_files([source])) == 3
         finally
-            istaskdone(job.task) || cancel_suite!(job)
+            istaskdone(job.task) || cancel!(job)
             wait(job.task)
         end
 

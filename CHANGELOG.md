@@ -5,6 +5,8 @@
 - Keep test discovery and catalogue synchronization working when Julia source
   contains long text or embedded NUL characters, including generated Pluto
   notebooks. Real fixture files and the discovery root boundary remain enforced.
+- Fix the Pluto suite Cancel button by supporting `cancel!(job::SuiteJob)`,
+  including worker shutdown and preservation of existing allocation traces.
 
 ## 1.0.0
 
