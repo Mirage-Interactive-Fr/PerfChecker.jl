@@ -18,13 +18,29 @@ const intentName = '.perfchecker-promotion.json';
 const stableName = '.perfchecker-stable.json';
 const refreshName = '.perfchecker-stable-refresh.json';
 const assert = (condition, message) => { if (!condition) throw new Error(message); };
+// A dispatch can document an older stable package without changing the Actions
+// revision or trusting that main still contains that package's source.
+export function documentationSourceConfiguration(env) {
+  assert(revisionPattern.test(env.GITHUB_SHA ?? '') && env.GITHUB_SHA.length === 40, 'Invalid Actions revision');
+  const version = env.PERFCHECKER_DOCS_SOURCE_VERSION ?? '';
+  const revision = env.PERFCHECKER_DOCS_SOURCE_REVISION ?? '';
+  const explicit = !!(version || revision);
+  if (explicit) {
+    assert(env.GITHUB_ACTIONS === 'true' && env.GITHUB_EVENT_NAME === 'workflow_dispatch' &&
+      env.GITHUB_REF === 'refs/heads/main' && env.PERFCHECKER_DOCS_STABLE_REFRESH === 'true',
+    'An explicit documentation source requires a stable dispatch on main');
+    assert(versionPattern.test(version) && version === version.trim() && revisionPattern.test(revision) && revision.length === 40,
+      'Supply a stable version and immutable documentation source SHA together');
+  }
+  return { explicit, version: explicit ? version : undefined, revision: explicit ? revision : env.GITHUB_SHA };
+}
 // Permit documentation changes while checking every other path against the
 // immutable release tree, including package metadata and optional providers.
 export async function validateStableDocumentationSource(repository, version, revision) {
   assert(versionPattern.test(version) && revisionPattern.test(revision), 'Invalid stable documentation identity');
   const git = async args => (await promisify(execFile)('git', ['-C', repository, ...args],
     { encoding: 'utf8', maxBuffer: 4 * 1024 * 1024 })).stdout;
-  assert((await git(['rev-parse', 'HEAD'])).trim() === revision, 'Documentation checkout differs from the Actions source');
+  assert((await git(['rev-parse', 'HEAD'])).trim() === revision, 'Documentation checkout differs from the selected source');
   const releaseRevision = (await git(['rev-parse', '--verify', `${version}^{commit}`])).trim();
   const changes = ((await git(['diff', '--name-only', '-z', releaseRevision, revision])) +
     (await git(['diff', '--name-only', '-z', revision]))).split('\0').filter(Boolean);
@@ -32,6 +48,10 @@ export async function validateStableDocumentationSource(repository, version, rev
     path === '.github/workflows/Documentation.yml' || path === 'qualification/shared/canonical-documentation.mjs' ||
     path === 'qualification/shared/static-website-browser.mjs';
   assert(changes.every(allowed), 'Stable documentation source changes files outside documentation and its checks');
+  // Project.toml is already required to match the immutable release exactly.
+  const project = await readFile(join(repository, 'Project.toml'), 'utf8');
+  const packageVersion = /^version\s*=\s*"([^"]+)"\s*(?:#.*)?$/m.exec(project.split(/^\s*\[/m)[0])?.[1];
+  assert(`v${packageVersion}` === version, 'Documentation package version differs from the selected stable tag');
   return releaseRevision;
 }
 export function compareVersions(a, b) {
@@ -76,6 +96,7 @@ export function hostVerifier(knownHosts, host, port) {
   return key => !revoked.some(k => equal(k, key)) && keys.some(k => equal(k, key));
 }
 export function deploymentConfiguration(env) {
+  const source = documentationSourceConfiguration(env);
   assert(env.PERFCHECKER_DOCS_SFTP_DEPLOY === 'true', 'SFTP deployment is disabled');
   assert(env.PERFCHECKER_DOCS_REF_DELETED !== 'true', 'Deleted refs cannot deploy documentation');
   assert(env.GITHUB_ACTIONS === 'true' && ['push', 'workflow_dispatch'].includes(env.GITHUB_EVENT_NAME),
@@ -88,7 +109,8 @@ export function deploymentConfiguration(env) {
     versionPattern.test(env.GITHUB_REF_NAME ?? '') && env.GITHUB_REF === `refs/tags/${env.GITHUB_REF_NAME}`),
   'Only main and stable tag pushes can deploy');
   if (refresh) assert(versionPattern.test(env.PERFCHECKER_DOCS_STABLE_VERSION ?? ''), 'Invalid stable refresh version');
-  assert(revisionPattern.test(env.GITHUB_SHA ?? ''), 'Invalid source revision');
+  if (source.explicit) assert(source.version === env.PERFCHECKER_DOCS_STABLE_VERSION,
+    'Explicit documentation version differs from the stable refresh version');
   const port = Number(env.PERFCHECKER_DOCS_SFTP_PORT ?? 22);
   const host = env.PERFCHECKER_DOCS_SFTP_HOST ?? '';
   const knownHosts = env.PERFCHECKER_DOCS_SFTP_KNOWN_HOSTS ?? '';
@@ -96,7 +118,8 @@ export function deploymentConfiguration(env) {
   assert(/^[A-Za-z0-9_.-]+$/.test(env.PERFCHECKER_DOCS_SFTP_USER ?? ''), 'Invalid SFTP user');
   assert(env.PERFCHECKER_DOCS_SFTP_PASSWORD || env.PERFCHECKER_DOCS_SFTP_SSH_KEY, 'Missing SFTP authentication');
   return { channel, version: refresh ? env.PERFCHECKER_DOCS_STABLE_VERSION : channel === 'release' ? env.GITHUB_REF_NAME : undefined,
-    revision: env.GITHUB_SHA, root: validateRoot(env.PERFCHECKER_DOCS_SFTP_ROOT ?? ''),
+    revision: source.revision, sourceRepository: source.explicit ? env.PERFCHECKER_DOCS_SOURCE_REPOSITORY : undefined,
+    root: validateRoot(env.PERFCHECKER_DOCS_SFTP_ROOT ?? ''),
     sequence: Number(env.GITHUB_RUN_NUMBER), connection: { host, port,
       username: env.PERFCHECKER_DOCS_SFTP_USER, hostVerifier: verify,
       password: env.PERFCHECKER_DOCS_SFTP_PASSWORD,
@@ -363,7 +386,7 @@ async function main() {
     options.validatedExports = await validateDocumentationExports(options);
     if (options.channel === 'stable-refresh') {
       phase = 'source-validation';
-      options.releaseRevision = await validateStableDocumentationSource(process.cwd(), options.version, options.revision);
+      options.releaseRevision = await validateStableDocumentationSource(options.sourceRepository ?? process.cwd(), options.version, options.revision);
     }
     phase = 'connection';
     console.log('Connecting to the pinned SFTP host');
