@@ -4,6 +4,11 @@ function _checker_overlay(
     isempty(result.tables) && return _decorate!(
         _no_samples!(figure, axis); tool = collector, tags = result.tags, axis_kwargs)
     props = TypedTables.columnnames(first(result.tables))
+    # Current collector tables retain this compatibility alias alongside the
+    # real memory/bytes column. It is not an independent measured dimension.
+    if :memory in props || :bytes in props
+        props = filter(!=(:bytes_or_memory), props)
+    end
     order = sortperm([string(pkg.version) for pkg in result.pkgs];
         by = label -> PerfChecker._version_point_key(Dict("version" => label)))
     versions = string.([result.pkgs[i].version for i in order])

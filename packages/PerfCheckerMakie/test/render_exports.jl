@@ -22,6 +22,8 @@
         figures = checkres_figures(backend_result, Val(backend))
         @test length(figures) == 5
         @test length(unique(first.(figures))) == 5
+        overlay_axis = only(filter(item -> item isa Axis, last(first(figures)).content))
+        @test count(item -> item isa Makie.ScatterLines, overlay_axis.scene.plots) == 4
         expected = backend === :benchmark ?
                    ["Elapsed time (ns)", "GC time (ns)",
             "Allocated memory (bytes)", "Allocation count"] :
@@ -60,6 +62,18 @@
         @test_throws ArgumentError checkres_figures(
             backend_result, Val(backend); kinds = [:trajectory], metrics = [:times])
     end
+    alias_table = PerfChecker.Table(times = [1.0, 2.0], gctimes = [0.0, 0.0],
+        bytes_or_memory = [10, 20], allocs = [1, 2])
+    alias_result = PerfChecker.CheckerResult(
+        [alias_table, alias_table], nothing, [:legacy], result.pkgs)
+    for backend in (:benchmark, :chairmark)
+        alias_figure = checkres_to_scatterlines(alias_result, Val(backend))
+        alias_axis = only(filter(item -> item isa Axis, alias_figure.content))
+        alias_curves = filter(item -> item isa Makie.ScatterLines, alias_axis.scene.plots)
+        @test length(alias_curves) == 4
+        @test any(curve -> curve.label[] == "bytes_or_memory", alias_curves)
+    end
+    @test alias_table.bytes_or_memory == [10, 20]
     blue = checkres_to_scatterlines(result, Val(:chairmark);
         figure_kwargs = (size = (480, 320),),
         axis_kwargs = (backgroundcolor = :white, title = "Custom", subtitle = "Context"),
