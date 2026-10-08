@@ -48,7 +48,15 @@ jobs:
       - uses: julia-actions/cache@v3
       - name: Pin the real CSV major and exercise the Core I/O contract
         run: |
-          julia --startup-file=no --project=. -e 'using Pkg; Pkg.add(Pkg.PackageSpec(name="CSV", version="1.1.0")); Pkg.pin("CSV"); Pkg.test(; allow_reresolve=false)'
+          julia --startup-file=no --project=. -e '
+            using Pkg, TOML
+            project = TOML.parsefile("Project.toml")
+            specs = [Pkg.PackageSpec(name="CSV", version="1.1.0")]
+            append!(specs, [Pkg.PackageSpec(name=name, uuid=project["extras"][name]) for name in project["targets"]["test"]])
+            Pkg.add(specs)
+            Pkg.pin("CSV")
+            Pkg.test(; allow_reresolve=false)
+          '
 
   formatter:
     runs-on: ${{ matrix.os }}
