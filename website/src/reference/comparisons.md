@@ -2,6 +2,10 @@
 
 Options for adding releases, Git revisions and comparison policies to a suite.
 
+```@raw html
+<a id="Define-candidates-in-Julia"></a>
+```
+
 ## Candidates
 
 ```julia
@@ -16,6 +20,10 @@ package = PackageSuite("Bibliography"; source, worker_environment,
 ```
 
 Use a full Git revision when a branch can move. `compatibility_version` selects a feature variant; it does not change the candidate's source identity.
+
+```@raw html
+<a id="Exact-and-grouped-references"></a>
+```
 
 ## References
 
@@ -38,6 +46,10 @@ ComparisonPolicy("experiments-vs-recent";
 
 Aggregations: `:median` (default), `:mean`, `:minimum`, `:maximum`.
 
+```@raw html
+<a id="Use-the-VS-Code-target-picker"></a>
+```
+
 ## VS Code target picker
 
 The visual suite editor scans the package repository into branches, tags and recent commits. The free-form field also parses:
@@ -50,6 +62,10 @@ The visual suite editor scans the package repository into branches, tags and rec
 
 Saved selections go to `perf/perfchecker-ui.json`, which the CLI reads with `--config`.
 
+```@raw html
+<a id="Use-repeated-CLI-targets"></a>
+```
+
 ## CLI targets
 
 ```sh
@@ -59,6 +75,10 @@ julia --startup-file=no --project=. -e 'using PerfChecker; exit(perfchecker_main
 ```
 
 For larger configurations, prefer the shared UI JSON file over shell-escaped JSON.
+
+```@raw html
+<a id="Comparability-rules"></a>
+```
 
 ## Comparability
 
@@ -71,13 +91,4 @@ For larger configurations, prefer the shared UI JSON file over shell-escaped JSO
 
 ```@raw html
 <DocMedia src="/examples/bibliography/figures/history-delta.svg" alt="Change in median export time for eight Bibliography tags against tag 0.1.0" caption="The reference is 0.1.0. Negative means less time, positive means more. This recorded comparison has no acceptance budget; the bars are not pass or fail labels." />
-```
-
-
-```@raw html
-<a id="Define-candidates-in-Julia"></a>
-<a id="Exact-and-grouped-references"></a>
-<a id="Use-the-VS-Code-target-picker"></a>
-<a id="Use-repeated-CLI-targets"></a>
-<a id="Comparability-rules"></a>
 ```

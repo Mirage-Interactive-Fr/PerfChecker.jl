@@ -15,6 +15,10 @@ Strings such as `perfchecker-run-bundle/1` identify a **data format** — not a 
 
 The integer changes only when the contract requires a new reader. If your integration sees an unsupported version, report it — do not guess that it follows version 1.
 
+```@raw html
+<a id="Contents"></a>
+```
+
 ## Directory layout
 
 ```text
@@ -56,7 +60,3 @@ list_run_bundles("perf/results"; recursive = true)
 - Reused evidence stays labelled as reused; it never impersonates a fresh run.
 
 Before making a regression decision, a consumer must verify integrity, schema version, completion state, diagnostic severity and measurement-definition identity.
-
-```@raw html
-<a id="Contents"></a>
-```

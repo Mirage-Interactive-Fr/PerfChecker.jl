@@ -1,3 +1,7 @@
+```@raw html
+<a id="Hosted-controller-and-remote-agents"></a>
+```
+
 # Remote controllers and agents
 
 Operate a shared service with remote workers. A local test or CI job does not need this.
@@ -23,6 +27,10 @@ run_studio_agent(
     agent_id = "linux-amd64-01",
     token = ENV["PERFCHECKER_AGENT_TOKEN"],
 )
+```
+
+```@raw html
+<a id="Authentication-and-authorization"></a>
 ```
 
 ## Authentication
@@ -60,8 +68,3 @@ One progress model drives Oxygen, VS Code, REPL, Pluto, CLI JSONL and agents.
 
 - States: queued, leased, running, complete, failed, cancelled.
 - Consumers should use stable job/run IDs, tolerate reconnects, and verify the final bundle before accepting it into CI or documentation.
-
-```@raw html
-<a id="Hosted-controller-and-remote-agents"></a>
-<a id="Authentication-and-authorization"></a>
-```

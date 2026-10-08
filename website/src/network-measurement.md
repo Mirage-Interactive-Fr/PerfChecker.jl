@@ -2,6 +2,10 @@
 
 Network collectors measure what a workload sends and receives. Application counters report payload; OS counters also capture packets and protocol overhead. Pick a collector that can attribute traffic to your workload **before** using a byte or packet limit.
 
+```@raw html
+<a id="Read-the-network-numbers"></a>
+```
+
 ## Read the numbers
 
 - **Payload bytes** — application data.
@@ -57,7 +61,3 @@ On Windows use `--provider=wsl2_netns` and optionally `--distribution=Ubuntu`. A
 - On loopback, a transfer appears in **both** transmit and receive counters; summing them double-counts.
 - A remote response time should include endpoint identity and experiment conditions; it is not an intrinsic package property.
 - Windows host-interface collection is available through `Get-NetAdapterStatistics`. Native Windows process-tree attribution through ETW/WFP or Pktmon is not implemented; use the WSL provider.
-
-```@raw html
-<a id="Read-the-network-numbers"></a>
-```

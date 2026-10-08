@@ -44,6 +44,10 @@ features:
 ```
 
 
+```@raw html
+<a id="From-a-passing-test-to-a-performance-comparison"></a>
+```
+
 ## What it does
 
 - Runs existing Julia `@testitem`s, or operations you define.
@@ -63,6 +67,10 @@ features:
 - Have an operation? [Measure an operation](tutorials/quick-tour.md).
 - Want to compare? [Suites and comparisons](suites-and-comparisons.md).
 
+```@raw html
+<a id="Use-the-results-in-your-own-workflow"></a>
+```
+
 ## Interfaces
 
 - [VS Code](interfaces/vscode.md) — run one item while editing.
@@ -80,8 +88,3 @@ features:
 
 [Report a problem](https://github.com/Mirage-Interactive-Fr/PerfChecker.jl/issues),
 [improve a page](contributing/documentation.md), or open a pull request.
-
-```@raw html
-<a id="From-a-passing-test-to-a-performance-comparison"></a>
-<a id="Use-the-results-in-your-own-workflow"></a>
-```

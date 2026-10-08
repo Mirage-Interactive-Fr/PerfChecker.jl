@@ -1,6 +1,14 @@
+```@raw html
+<a id="Understand-performance-measurements"></a>
+```
+
 # Understand the result
 
 What each number means, and when two numbers may be compared.
+
+```@raw html
+<a id="Wall-time:-how-long-the-operation-takes"></a>
+```
 
 ## Wall time
 
@@ -9,6 +17,10 @@ Elapsed clock time across the measured operation, including any waiting inside i
 - The workload definition decides the boundary. Read it before interpreting a timing.
 - Units: 1 s = 1,000 ms = 1,000,000 µs = 1,000,000,000 ns.
 - **CPU time** counts processor execution. Threads consume it in parallel, and waiting uses none.
+
+```@raw html
+<a id="Samples,-repetitions-and-distributions"></a>
+```
 
 ## Samples and distributions
 
@@ -21,6 +33,10 @@ Elapsed clock time across the measured operation, including any waiting inside i
 
 A small microbenchmark does not establish a production p99. That needs production-like input, concurrency and load.
 
+```@raw html
+<a id="Allocated-bytes,-allocation-count-and-live-memory"></a>
+```
+
 ## Allocations and memory
 
 - **Allocated bytes** — memory obtained during the operation.
@@ -28,6 +44,10 @@ A small microbenchmark does not establish a production p99. That needs productio
 - **Live memory** — memory still retained afterwards.
 
 Allocated bytes, allocation count and live memory are three separate quantities. One large buffer can allocate more bytes than many small objects; many small objects cost more management work. Neither equals resident process memory. See [Process memory](../process-memory.md).
+
+```@raw html
+<a id="Garbage-collection:-reclaiming-unused-objects"></a>
+```
 
 ## Garbage collection
 
@@ -40,6 +60,10 @@ Never merge the two.
 - Zero recorded GC time in a short sample does not mean zero allocations — the collector may simply not have run.
 - Do not add GC time to elapsed time; the elapsed interval already contains it.
 
+```@raw html
+<a id="Warm-code,-first-calls-and-state"></a>
+```
+
 ## Warm and cold code
 
 - Julia compiles methods on first call.
@@ -47,6 +71,10 @@ Never merge the two.
 - A **cold** or first-call experiment must include the startup, loading or compilation boundary explicitly.
 
 Warm latency says nothing about `using YourPackage`.
+
+```@raw html
+<a id="Flame-graphs:-where-sampled-work-accumulates"></a>
+```
 
 ## Flame graphs
 
@@ -58,6 +86,17 @@ Warm latency says nothing about `using YourPackage`.
 
 CPU, wall-time and allocation flame graphs look similar but weight different things. Read the metric, unit and legend first.
 
+```@raw html
+<a id="Inspect-three-recorded-Bibliography-profiles"></a>
+```
+
+Inspect the [three recorded Bibliography profiles](investigate.md#Recorded-examples)
+to compare CPU, wall-time and allocation weights on the same workload.
+
+```@raw html
+<a id="Read-a-result-across-several-tools"></a>
+```
+
 ## Comparability
 
 Compare two numbers only when their measurement definitions and comparison keys agree. A run records the conditions so a consumer can check.
@@ -66,6 +105,10 @@ Compare two numbers only when their measurement definitions and comparison keys 
 - A changed runtime or environment is a **warning**.
 - A missing measurement stays missing. It never becomes an improvement.
 
+
+```@raw html
+<a id="Try-it-with-Bibliography"></a>
+```
 
 ## Recorded examples
 
@@ -85,16 +128,3 @@ Compare two numbers only when their measurement definitions and comparison keys 
 
 - [Collectors](../reference/checks.md) — what each tool records.
 - [Investigate a change](investigate.md) — locate the cost with a profile.
-
-```@raw html
-<a id="Understand-performance-measurements"></a>
-<a id="Wall-time:-how-long-the-operation-takes"></a>
-<a id="Samples,-repetitions-and-distributions"></a>
-<a id="Allocated-bytes,-allocation-count-and-live-memory"></a>
-<a id="Garbage-collection:-reclaiming-unused-objects"></a>
-<a id="Flame-graphs:-where-sampled-work-accumulates"></a>
-<a id="Inspect-three-recorded-Bibliography-profiles"></a>
-<a id="Warm-code,-first-calls-and-state"></a>
-<a id="Read-a-result-across-several-tools"></a>
-<a id="Try-it-with-Bibliography"></a>
-```

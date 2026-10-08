@@ -1,7 +1,7 @@
 import { defineConfig } from 'vitepress'
 import { tabsMarkdownPlugin } from 'vitepress-plugin-tabs'
 import footnote from 'markdown-it-footnote'
-import { existsSync, readFileSync, mkdirSync, writeFileSync } from 'node:fs'
+import { existsSync, readFileSync, readdirSync, mkdirSync, writeFileSync } from 'node:fs'
 import { dirname, resolve, sep } from 'node:path'
 import { createHash } from 'node:crypto'
 import { fileURLToPath } from 'node:url'
@@ -17,6 +17,49 @@ const docsChannel = process.env.PERFCHECKER_DOCS_CHANNEL ?? 'stable'
 // Use this config's public tree: Documenter has already copied the source tree
 // when VitePress loads its generated config. Fetched assets must enter that copy.
 const mediaRoot = resolve(fileURLToPath(new URL('../public/', import.meta.url)))
+// Reserve the real image/poster geometry before lazy images finish loading.
+// Without it, a route's fragment can move below the viewport after navigation.
+function imageDimensions(bytes: Buffer): { width: number; height: number } {
+  if (bytes.length >= 24 && bytes.subarray(0, 8).equals(Buffer.from('89504e470d0a1a0a', 'hex')))
+    return { width: bytes.readUInt32BE(16), height: bytes.readUInt32BE(20) }
+  if (bytes.length >= 2 && bytes.readUInt16BE(0) === 0xffd8) {
+    for (let at = 2; at + 9 <= bytes.length;) {
+      if (bytes[at] !== 0xff) break
+      const marker = bytes[at + 1]
+      if (marker === 0xff) { at++; continue }
+      if (marker === 0xda || marker === 0xd9) break
+      const length = bytes.readUInt16BE(at + 2)
+      if (length < 2 || at + length + 2 > bytes.length) break
+      if ([0xc0, 0xc1, 0xc2, 0xc3, 0xc5, 0xc6, 0xc7, 0xc9, 0xca, 0xcb, 0xcd, 0xce, 0xcf].includes(marker))
+        return { width: bytes.readUInt16BE(at + 7), height: bytes.readUInt16BE(at + 5) }
+      at += length + 2
+    }
+  }
+  const svg = bytes.toString('utf8').match(/<svg\b[^>]*>/i)?.[0]
+  if (svg) {
+    const attribute = (name: string) => svg.match(new RegExp(`\\b${name}\\s*=\\s*(["'])(.*?)\\1`, 'i'))?.[2]
+    const viewBox = attribute('viewBox')?.trim().split(/[\s,]+/).map(Number)
+    if (viewBox?.length === 4 && viewBox.every(Number.isFinite) && viewBox[2] > 0 && viewBox[3] > 0)
+      return { width: viewBox[2], height: viewBox[3] }
+    const pixels = (value: string | undefined) => value?.match(/^\s*(\d+(?:\.\d+)?)\s*(?:px)?\s*$/i)?.[1]
+    const width = Number(pixels(attribute('width')))
+    const height = Number(pixels(attribute('height')))
+    if (width > 0 && height > 0) return { width, height }
+  }
+  throw new Error('Local image has no supported PNG/JPEG/SVG dimensions')
+}
+const imageSizes: Record<string, { width: number; height: number }> = {}
+function collectImageSizes(directory: string, prefix = '') {
+  for (const entry of readdirSync(directory, { withFileTypes: true })) {
+    const name = prefix + entry.name
+    if (entry.isDirectory()) collectImageSizes(resolve(directory, entry.name), name + '/')
+    else if (/\.(?:png|jpe?g|svg)$/i.test(entry.name)) {
+      const size = imageDimensions(readFileSync(resolve(directory, entry.name)))
+      if (size.width <= 0 || size.height <= 0) throw new Error(`Invalid image dimensions: ${name}`)
+      imageSizes['/' + name] = size
+    }
+  }
+}
 const media = JSON.parse(readFileSync(resolve(process.cwd(), 'media.json'), 'utf8'))
 for (const item of Object.values(media) as any[]) {
   const file = resolve(mediaRoot, item.file)
@@ -54,6 +97,7 @@ for (const item of Object.values(media) as any[]) {
       throw new Error(`Recording does not match media.json: ${item.file}`)
   }
 }
+collectImageSizes(mediaRoot)
 
 const config = defineConfig({
   base: 'REPLACE_ME_DOCUMENTER_VITEPRESS',
@@ -65,6 +109,7 @@ const config = defineConfig({
   cleanUrls: !sftp,
   vite: { define: {
     __PERFCHECKER_MEDIA__: JSON.stringify(media),
+    __PERFCHECKER_IMAGES__: JSON.stringify(imageSizes),
     __DEPLOY_ABSPATH__: JSON.stringify('REPLACE_ME_DOCUMENTER_VITEPRESS_DEPLOY_ABSPATH'),
     __PERFCHECKER_DOCS_VERSION__: JSON.stringify(docsChannel === 'dev' ? 'dev' : `v${docsVersion}`),
   } },

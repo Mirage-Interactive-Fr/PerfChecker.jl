@@ -1,6 +1,14 @@
+```@raw html
+<a id="Compare-versions-and-revisions"></a>
+```
+
 # Compare two versions
 
 A **baseline** is the revision you compare against; a **candidate** is the revision you evaluate. Hold dependencies fixed to isolate one source change.
+
+```@raw html
+<a id="Run-the-two-revision-example"></a>
+```
 
 ## Run the example
 
@@ -10,6 +18,10 @@ julia --project=.controller/core compare-exports.jl run
 ```
 
 The script compares `export_bibtex` with BenchmarkTools between parent `6a4cc90` and streaming-export commit `575ec81`, with BibInternal and BibParser pinned for both.
+
+```@raw html
+<a id="Investigate-the-difference"></a>
+```
 
 ## Read the result
 
@@ -75,16 +87,9 @@ Limits are relative fractions; `check` fails when a limit fails. `compare` write
 ```@raw html
 <details class="reference-details"><summary>Configuration reference</summary>
 <p id="Define-candidates-in-Julia"><a href="../reference/comparisons.html#Define-candidates-in-Julia">Define candidates in Julia</a></p>
-<p id="Exact-and-grouped-references"><a href="../reference/comparisons.html#Exact-and-grouped-references">Exact and grouped references</a></p>
+<p><a href="../reference/comparisons.html#Exact-and-grouped-references">Exact and grouped references</a></p>
 <p id="Use-the-VS-Code-target-picker"><a href="../reference/comparisons.html#Use-the-VS-Code-target-picker">VS Code target picker</a></p>
 <p id="Use-repeated-CLI-targets"><a href="../reference/comparisons.html#Use-repeated-CLI-targets">Command-line targets</a></p>
 <p id="Comparability-rules"><a href="../reference/comparisons.html#Comparability-rules">Comparability rules</a></p>
 </details>
-```
-
-
-```@raw html
-<a id="Compare-versions-and-revisions"></a>
-<a id="Run-the-two-revision-example"></a>
-<a id="Investigate-the-difference"></a>
 ```

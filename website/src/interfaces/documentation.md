@@ -1,6 +1,14 @@
+```@raw html
+<a id="Documenter-integration"></a>
+```
+
 # Documenter
 
 Generate a documentation page from a saved run. The build reads the results; it does not rerun the benchmark.
+
+```@raw html
+<a id="Build-one-performance-page"></a>
+```
 
 ## One page
 
@@ -31,6 +39,10 @@ block = PerformanceDocumentBlock(
 documenter_page(bundle, "docs/src/generated/performance.md"; blocks = [block])
 ```
 
+```@raw html
+<a id="Shared-declarative-configuration"></a>
+```
+
 Add the generated page to your Documenter `pages` list. Use `documenter_makedocs` or `documenter_vitepress_makedocs` to materialize blocks during the normal build.
 
 ## Publication rules
@@ -44,9 +56,3 @@ Add the generated page to your Documenter `pages` list. Use `documenter_makedocs
 ## Next
 
 [Run bundles](../reference/run-bundles.md) describes the files the page is built from.
-
-```@raw html
-<a id="Documenter-integration"></a>
-<a id="Build-one-performance-page"></a>
-<a id="Shared-declarative-configuration"></a>
-```

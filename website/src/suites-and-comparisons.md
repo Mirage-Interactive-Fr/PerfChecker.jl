@@ -6,6 +6,11 @@
 - A **run** is the saved result of executing a plan.
 - A **comparison** is the change from a chosen reference, with optional pass/fail limits.
 
+```@raw html
+<a id="A-concrete-example:-Bibliography"></a>
+<a id="Start-with-the-code-you-already-have"></a>
+```
+
 ## A concrete example
 
 To see how BibTeX export changed between Bibliography 0.1.0 and 0.4.0:
@@ -23,6 +28,10 @@ Run one of these before measuring:
 - One operation — inline `@check`, with preparation outside the measured expression. See the [Julia API](reference/api.md).
 - Several workloads, versions or collectors — [Define a suite](software-suites.md).
 
+```@raw html
+<a id="Follow-one-experiment-through-the-interfaces"></a>
+```
+
 ## Interfaces do not change meaning
 
 The Julia API, VS Code, Oxygen and Pluto select what to run and read the same saved results. Makie renders them. Choose an interface for convenience, not for a different measurement.
@@ -34,13 +43,10 @@ The Julia API, VS Code, Oxygen and Pluto select what to run and read the same sa
 <DocMedia src="/examples/bibliography/figures/history-time.svg" alt="Bibliography export timing across nine tagged versions, from 0.1.0 to 0.4.0" caption="Actual recorded measurements: 100 samples per version, Windows, Julia 1.13.0, one worker thread. Each point is a median; lower means less elapsed time." />
 ```
 
+```@raw html
+<a id="Continue-from-here"></a>
+```
+
 ## Next
 
 [Define a suite](software-suites.md) and add a candidate revision to compare.
-
-```@raw html
-<a id="A-concrete-example:-Bibliography"></a>
-<a id="Start-with-the-code-you-already-have"></a>
-<a id="Follow-one-experiment-through-the-interfaces"></a>
-<a id="Continue-from-here"></a>
-```
