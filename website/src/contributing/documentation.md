@@ -2,6 +2,35 @@
 
 Contributions are welcome, from fixing a sentence to adding a reproducible example. Use **Edit this page**, or [open an issue](https://github.com/Mirage-Interactive-Fr/PerfChecker.jl/issues).
 
+## Work together
+
+PerfChecker adopts the practical contribution principles of
+[ColPrac](https://github.com/SciML/ColPrac): focused pull requests, constructive
+review, documented changes and passing checks. Discuss a large API or workflow
+change in an issue before implementing it. Describe the problem, the resulting
+behavior and the checks you actually ran; identify platforms or integrations
+you could not exercise.
+
+Follow the surrounding code and the repository's JuliaFormatter configuration,
+which uses the SciML style. Keep unrelated formatting out of the pull request.
+Add regression tests for a behavior change, update docstrings and examples when
+an API changes, and build the documentation when editing a guide. A fast result
+still needs an independent correctness check and reproducible measurement
+conditions. Use semantic versioning when assessing compatibility.
+
+Review the proposed change before merging and let the required CI checks pass;
+do not bypass them to resolve a failing check. Prefer review by someone other
+than the author when another maintainer is available. ColPrac's independent
+approval rule is not guaranteed here: a sole maintainer may review and merge
+their own change after recording its scope and validation in the pull request.
+State that exception plainly rather than presenting self-review as independent
+approval. Address review comments respectfully and keep fixes easy to inspect.
+
+Package registration remains a deliberate maintainer action after reviewing
+the final commit. TagBot creates the release tag after registration; a merged
+pull request or successful development deployment does not make a registered
+release. See the publication procedure below for documentation channels.
+
 ## Write for someone trying the tool
 
 - Introduce the operation before its configuration.

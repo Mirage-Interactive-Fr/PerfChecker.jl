@@ -86,9 +86,16 @@ agent_ids = ["linux-amd64-01"]
 ```
 
 The placeholders intentionally fail validation until replaced. Compute a digest
-with `bytes2hex(SHA.sha256(token))` in Julia; store the token outside the
-repository. Supply the worker's token through `PERFCHECKER_AGENT_TOKEN`, as in
-the example above. A digest is not a token accepted by the service.
+in Julia from a token supplied privately through the environment:
+
+```julia
+using SHA
+digest = bytes2hex(SHA.sha256(ENV["PERFCHECKER_STUDIO_TOKEN"]))
+```
+
+Put that digest in the user store and keep the token outside the repository.
+Supply the worker's separate token through `PERFCHECKER_AGENT_TOKEN`, as in the
+example above. A digest is not a token accepted by the service.
 
 - `admin` — UI administration.
 - `runner` — job creation.

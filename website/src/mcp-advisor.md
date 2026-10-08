@@ -219,6 +219,28 @@ Open **PerfChecker: Chat with performance advisor**. Select saved deterministic 
 
 The agent receives an instruction to answer in the user's language, distinguish measurements from hypotheses, and provide advice without modifying code or running experiments. When no evidence is selected, it is told no saved measurements were attached. You can still ask how to configure or use PerfChecker.
 
+For a completed report, the attached advice can include measurement summaries
+even when it has no recommendations. This context requires the development
+1.0.1 candidate; regenerating advice with registered 1.0.0 does not add it.
+Use the [development controller setup](interfaces/vscode-configuration.md#Prepare-a-controller).
+Each summary identifies the case and
+target, collector, quantity and unit, with the recorded minimum, median and
+maximum. Execution status and correctness status remain separate. Correctness
+also identifies its scope: the bundle, a matching case and target, or an
+unrecorded or ambiguous result. Different comparison variants remain separate.
+
+Read the record meaning beside its count. An operation measurement, a profile
+frame and an allocation-profile record describe different observations;
+`record_count` is not automatically a number of independent experiment repeats.
+Operation totals also retain whether their state was fresh or reused.
+PerfChecker builds these summaries from explicitly supplied bundles. Older
+advice files can still be attached without summaries; regenerate advice from
+the intended saved bundle to discuss its measurements, as in the example below.
+The evidence limit can omit summaries. If the request reports **no measurement
+summaries were sent in this request**, inspect the attachment and configured
+limit before interpreting the answer; that message does not say the saved
+report contains no measurements.
+
 Replies are unverified text, separate from deterministic findings. Embedded HTML is displayed as text. Suggested commands are not executed by advice chat. You may implement the suggestions yourself.
 
 ```@raw html
@@ -229,14 +251,17 @@ Replies are unverified text, separate from deterministic findings. Embedded HTML
 <DocMedia src="/assets/screenshots/vscode-advice-chat.png" alt="Actual PerfChecker V1 Advice webview rendered in Chromium with selected allocation evidence, two user questions, two replies and a follow-up prompt" caption="Use follow-up questions to separate observations from hypotheses and agree on validation before preparing an implementation. The actual V1 webview displays a demonstration conversation and evidence; select the image to read the full exchange." />
 ```
 
-The public Julia API exposes the same bounded conversation:
+The public Julia API exposes the same bounded conversation. This complete
+request example requires your configured, running MCP server and a completed
+bundle; replace the configuration and bundle paths with your saved files:
 
 ```julia
-using PerfChecker
+using PerfChecker, HTTP
 config = load_advisor_config("perf/advisor.json")
+bundle = read_run_bundle("perf/results/YOUR-BUNDLE")
+saved_advice = advise(bundle)
 messages = [Dict("role" => "user", "content" => "How should I verify these allocations?")]
-result = chat_advice(messages; config,
-    advice = read_advice("perf/results/advice.json"))
+result = chat_advice(messages; config, advice = saved_advice)
 display(investigation_view(result))
 ```
 
