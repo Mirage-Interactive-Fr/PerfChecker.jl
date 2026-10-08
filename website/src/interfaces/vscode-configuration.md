@@ -64,6 +64,15 @@ then follow [MCP configuration](../mcp-advisor.md). The setup installs the liste
 measurement packages. The separate Pluto environment uses the qualified Pluto
 release's own HTTP dependency range.
 
+The corrected 1.0.1 notebook setup installs and checks **PerfCheckerPluto 1.0.1
+or newer within the 1.x series**, separately from the controller. An existing
+Pluto project using companion 1.0.0 requires an explicit upgrade confirmation;
+the compatibility check does not update it silently. Declining keeps that
+environment unchanged. Wait for the corrected extension, Core 1.0.1 in General
+and the `v1.0.1` repository tag before using this setup. See the
+[separate Pluto installation recipe](../guide/installation.md#Prepare-the-integrated-Pluto-candidate)
+and [existing notebook migration](vscode-workflows.md#Use-the-corrected-suite-plot-renderer).
+
 
 Open **Preferences: Open Workspace Settings (JSON)**, or the selected folder's
 settings in a multi-root workspace, and set the example below in
@@ -197,7 +206,7 @@ The explicit local Codex connection supplies these implementation tool names in 
 | Codex connection refused | Check native executable, required flags, existing login and absence of project `.codex` configuration |
 | Saved advisor config seems inactive | Disconnect the temporary Codex connection to resume your saved provider |
 | Pluto setup cannot resolve HTTP | Use the separate `plutoProject`; qualified Pluto 1.0.4 uses HTTP 1.x, while the MCP controller uses HTTP 2.x |
-| Existing Pluto/controller project has Core 1.0.0 | The 1.0.1 candidate requires an explicit upgrade after Core 1.0.1 becomes available in General |
+| Existing Pluto/controller project has Core 1.0.0 or the Pluto project has companion 1.0.0 | Confirm the selected environment's explicit upgrade after Core 1.0.1 and companion tag `v1.0.1` are available; existing suite notebook source also needs the migration above |
 | Notebook session unavailable | Inspect **PerfChecker Pluto** output and [session controls](vscode-workflows.md#Manage-the-session-and-saved-source); public 1.0.0 needs an installed Julia kernel |
 
 Worker logs are available through **PerfChecker: Show worker output**. Keep tokens out of configuration files and troubleshooting reports.

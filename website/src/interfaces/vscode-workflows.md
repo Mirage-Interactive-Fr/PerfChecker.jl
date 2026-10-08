@@ -80,7 +80,8 @@ this section. Install the corrected releases before using the candidate steps.
 
 The integrated Pluto workflow requires **PerfChecker for VS Code 1.0.1 or newer**
 and the corrected **PerfChecker core 1.0.1 or newer**. Both releases must be
-available before following this workflow.
+available before following this workflow. Its separate notebook environment also
+requires **PerfCheckerPluto 1.0.1 or newer within the 1.x series**.
 Use **PerfChecker: New Pluto notebook** to create a native `.jl` notebook, or
 **PerfChecker: Open Pluto notebook** to reopen one in an interactive editor tab.
 The extension starts a Julia-backed Pluto session and displays its actual
@@ -97,8 +98,9 @@ notebook interface inside VS Code.
 4. If the separate Pluto environment is missing or incompatible, review the
    installation prompt. **Install Pluto environment** downloads the listed
    packages into `perfchecker.plutoProject`, whose default is `perf/pluto`.
-   Cancelling leaves the installation unrequested; opening Studio never installs
-   those packages.
+   A project with an older companion requires an explicit upgrade confirmation.
+   Cancelling leaves that environment unchanged; opening Studio never installs
+   or upgrades those packages.
 5. Wait for the notebook tab to become ready. In **Feature suite**, select the
    workload, collector and target, inspect the printed plan, then choose
    **Launch selected checks**.
@@ -135,9 +137,10 @@ workers. A missing analyzer is unavailable rather than a passing diagnosis.
 ### Keep the Pluto environment separate
 
 The candidate integration targets Pluto **1.0.4**, the corrected PerfChecker
-core, PlutoUI, BenchmarkTools, Chairmarks and its official PerfCheckerPluto companion.
-Use the companion tag recorded by the qualified extension release. Set the folder configuration explicitly
-when you use several environments:
+core, PlutoUI, BenchmarkTools, Chairmarks and **PerfCheckerPluto 1.0.1** from
+repository tag `v1.0.1`. The core registration and tag must be available before
+installation. Set the folder configuration explicitly when you use several
+environments:
 
 ```json
 {
@@ -154,6 +157,38 @@ later Pluto releases may support both ranges. Do not install this stable Pluto
 setup into the measurement/MCP controller; the guided installer refuses that
 overlap. See [optional interface installation](../guide/installation.md) if you
 prefer to prepare the environment manually.
+
+### Use the corrected suite plot renderer
+
+Companion 1.0.1 generates a separate document for each standalone plot, keeping
+its JavaScript module state separate when the selected plot changes. Native
+canvas rendering and imports in this isolated document are still being
+qualified; the earlier recorded notebook passages do not establish this fix.
+
+Updating the companion does not rewrite an existing `.jl` notebook. Suite
+notebooks generated with companion 1.0.0 retain their earlier plot-rendering
+cell. After explicitly preparing the corrected environment, create a **new
+Feature suite notebook** with **PerfChecker: New Pluto notebook**, or regenerate
+into a new file. Keep the old notebook, edits and saved reports.
+
+For manual generation, run this from the measured package root with its suite
+at `perf/suite.jl`, after the releases and tag above are available:
+
+```julia
+import Pkg
+Pkg.activate("perf/pluto")  # The separately prepared notebook environment.
+using PerfChecker, PerfCheckerPluto
+@assert v"1.0.1" <= Base.pkgversion(PerfCheckerPluto) < v"2.0.0"
+new_notebook = joinpath(pwd(), "perf", "notebooks", "performance-1.0.1.jl")
+write_suite_notebook(new_notebook;
+    suite_path = joinpath(pwd(), "perf", "suite.jl"),
+    project = dirname(Base.active_project()))
+```
+
+The generator refuses an existing destination by default. Choose a different
+new filename if this one already exists. Open the new source, review the suite
+and report paths, then launch checks explicitly; the existing notebook and
+completed reports remain unchanged.
 
 ### Edit, save and reopen
 

@@ -131,6 +131,22 @@ These are VS Code editor tabs and native surfaces. Arrange them with VS Code's e
 
 The suite editor supports global and per-feature check selection, version ranges, filtering, sorting and ordering. Name targets for a branch, tag, commit, working tree or release, then choose exact or grouped baselines. Grouped references can use median, mean, minimum or maximum aggregation.
 
+The corrected 1.0.1 suite designer orders numeric target labels first: `1`,
+`1.2` or `1.2.3`, optionally prefixed by `v` or `dev@`, with prerelease and build
+suffixes. Prereleases precede their matching release; numeric prerelease
+components compare as numbers and precede text components, which use ASCII
+order. A shorter otherwise equal prerelease precedes a longer one. At equal
+version precedence, a release label precedes `dev@`; remaining label ties use
+lexical order. Opaque Git labels follow lexically, and bare `dev` comes last.
+For example:
+`0.1.0 < dev@0.1.0 < 0.5.0 < baseline < dev`.
+
+Release bounds compare version precedence rather than label spelling or build
+metadata: `1`, `1.0` and `1.0.0` are equivalent, and a bound of `1.2.3` includes
+the release label `v1.2.3+build.7`. These bounds apply to declared release
+targets. Sorting and filtering control the suite selection; they do not change
+the recorded version-series data.
+
 Save the selection with **Save configuration** in the suite editor. The default
 is `perf/perfchecker-ui.json`; compatible web and documentation interfaces can
 read the same configuration. In extension 1.0.0, the separate command-palette
