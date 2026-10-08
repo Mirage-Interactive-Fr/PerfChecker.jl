@@ -1,8 +1,9 @@
 name = "PerfCheckerMakie"
 uuid = "1039c70d-de90-4811-a202-d36e08616791"
-version = "1.0.0"
+version = "1.0.1"
 
 [compat]
+CairoMakie = "0.15"
 Bonito = "4, 5"
 Makie = "0.24"
 PerfChecker = "1"
@@ -22,6 +23,7 @@ TypedTables = "9d95f2ec-7b3d-5a63-8d20-e2491e220bb9"
 WGLMakieExt = ["WGLMakie", "Bonito"]
 
 [extras]
+CairoMakie = "13f3f980-e62b-5c42-98c6-ff1f3baf88f0"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 TestItemRunner = "f8b46487-2199-4994-9208-9a1283c18c0a"
 
@@ -29,7 +31,7 @@ TestItemRunner = "f8b46487-2199-4994-9208-9a1283c18c0a"
 path = "../.."
 
 [targets]
-test = ["Test", "TestItemRunner"]
+test = ["Test", "TestItemRunner", "CairoMakie"]
 
 [weakdeps]
 Bonito = "824d6782-a2ef-11e9-3a09-e5662e0c26f8"

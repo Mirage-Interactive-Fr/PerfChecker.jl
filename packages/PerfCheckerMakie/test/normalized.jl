@@ -44,7 +44,7 @@ version = "0.1.0"
         @test axis.ylabel[] == "ratio to minimum (reference = 1)"
         absolute = suite_dashboard(result; view = :absolute)
         axis = only(filter(item -> item isa Axis, absolute.content))
-        @test axis.ylabel[] == "minimum time"
+        @test axis.ylabel[] == "minimum elapsed time (s)"
         @test any(plot -> plot isa Makie.BarPlot, axis.scene.plots)
         @test_throws ArgumentError suite_dashboard(result; view = :invalid)
     end
