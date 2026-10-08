@@ -165,15 +165,17 @@ end
 function _advisor_measurement_row(summary)
     summary isa AbstractDict || throw(ArgumentError("invalid measurement summary"))
     strings = ("id", "run_id", "attempt_id", "case_id", "target_id",
-        "measurement_definition", "scope", "aggregation", "record_semantics", "metric",
-        "unit", "collector", "status", "correctness")
+        "measurement_definition", "comparison_fingerprint", "scope", "aggregation", "record_semantics", "metric",
+        "unit", "collector", "bundle_status", "correctness", "correctness_scope")
     all(
         key -> get(summary, key, nothing) isa AbstractString &&
                    !isempty(summary[key]) && length(summary[key]) <= 512,
         strings) ||
         throw(ArgumentError("invalid measurement summary identifiers"))
     all(key -> _advice_identifier(summary[key]),
-        ("run_id", "attempt_id", "case_id", "target_id")) &&
+            ("run_id", "attempt_id", "target_id")) &&
+        _advice_case_identifier(summary["case_id"]) &&
+        occursin(r"^[0-9a-f]{64}$", summary["comparison_fingerprint"]) &&
         summary["scope"] in _ADVICE_MEASUREMENT_SCOPES ||
         throw(ArgumentError("invalid measurement summary scope or identity"))
     canonical = _advice_measurement_definition(Dict(
@@ -183,14 +185,19 @@ function _advisor_measurement_row(summary)
     canonical === nothing &&
         throw(ArgumentError("unsupported measurement summary definition"))
     get(summary, "kind", "") == "measurement" &&
-        summary["status"] in ("complete", "failed", "error", "unavailable",
+        summary["bundle_status"] in ("complete", "failed", "error", "unavailable",
             "cancelled", "timeout", "invalid", "unknown") &&
-        summary["correctness"] in ("passed", "failed", "not_checked") ||
+        summary["correctness"] in ("passed", "failed", "not_checked") &&
+        summary["correctness_scope"] in (
+            "bundle", "case_target", "not_recorded", "ambiguous_case_target") ||
         throw(ArgumentError("invalid measurement summary status"))
     semantics = _advice_record_semantics(summary["measurement_definition"],
         summary["collector"], summary["aggregation"])
     semantics !== nothing && summary["record_semantics"] == semantics ||
         throw(ArgumentError("invalid measurement record semantics"))
+    summary["correctness_scope"] in ("not_recorded", "ambiguous_case_target") &&
+        summary["correctness"] != "not_checked" &&
+        throw(ArgumentError("unqualified measurement cannot claim correctness"))
     count = get(summary, "record_count", nothing)
     count isa Integer && !(count isa Bool) && 0 < count <= 2^53 - 1 ||
         throw(ArgumentError("invalid measurement summary record count"))
@@ -204,7 +211,7 @@ function _advisor_measurement_row(summary)
         throw(ArgumentError("invalid measured summary values"))
     identity = Dict(key => summary[key]
     for key in ("run_id", "attempt_id", "case_id", "target_id",
-        "measurement_definition", "scope", "aggregation"))
+        "measurement_definition", "comparison_fingerprint", "scope", "aggregation"))
     summary["id"] == "measurement-" * _content_digest(identity) ||
         throw(ArgumentError("measurement summary identity differs from its evidence"))
     Dict{String, Any}(key => summary[key]

@@ -24,7 +24,16 @@ end
 
 function _advice_identifier(value)
     value isa AbstractString &&
+        !occursin(r"^[A-Za-z]:", value) &&
         occursin(r"^[\p{L}\p{N}_][\p{L}\p{N}_.:@+-]{0,255}$", value)
+end
+
+function _advice_case_identifier(value)
+    _advice_identifier(value) && return true
+    value isa AbstractString && length(value) <= 512 && !occursin(r"^[A-Za-z]:", value) ||
+        return false
+    segments = split(value, '/')
+    length(segments) == 3 && all(_advice_identifier, segments)
 end
 
 const _ADVICE_MEASUREMENT_SCOPES = ("workload", "whole_operation", "current_process",
@@ -43,6 +52,19 @@ function _advice_measurement_definition(definition)
                 "benchmark", "chairmark", "profile", "wall_profile", "profile_alloc")) &&
             return nothing
     else
+        totals = match(
+            r"^(julia\.alloc\.(?:bytes|count))/profile-independent-totals-v1/(fresh|reuse)$",
+            id)
+        if totals !== nothing
+            metric = first(totals.captures)
+            get(definition, "collector", "") == "profile_alloc" || return nothing
+            canonical = (
+                metric = metric, unit = metric == "julia.alloc.bytes" ? "By" : "1",
+                collector = "profile_alloc")
+            get(definition, "metric", "") == canonical.metric &&
+                get(definition, "unit", "") == canonical.unit || return nothing
+            return canonical
+        end
         matched = id isa AbstractString ?
                   match(
             r"^(julia\.(?:wall\.time|alloc\.bytes|alloc\.count))/shared-(benchmark|chairmark|profile|profile_alloc|profile-independent-totals)/[0-9a-f]{64}$", id) :
@@ -65,12 +87,14 @@ function _advice_measurement_definition(definition)
 end
 
 function _advice_record_semantics(id, collector, aggregation)
+    totals = occursin("/shared-profile-independent-totals/", id) ||
+             occursin("/profile-independent-totals-v1/", id)
     if aggregation == "independent_operation_total"
-        occursin("/shared-profile-independent-totals/", id) || return nothing
+        totals || return nothing
         return "independent_operation_total"
     end
     aggregation == "sample" || return nothing
-    occursin("/shared-profile-independent-totals/", id) && return nothing
+    totals && return nothing
     occursin("/shared-", id) && return "operation_measurement"
     collector == "alloc" && return "allocation_site"
     collector == "profile_alloc" && return "allocation_profile_record"
@@ -84,7 +108,7 @@ function _advice_measurement_summaries(bundle::RunBundle)
     definitions = Dict(String(item["id"]) => item
     for item in bundle.measurement_definitions
     if get(item, "id", nothing) isa AbstractString)
-    groups = Dict{NTuple{5, String}, Vector{Float64}}()
+    groups = Dict{NTuple{6, String}, Vector{Float64}}()
     seen = Dict{Any, Float64}()
     for observation in bundle.observations
         id = get(observation, "measurement_definition", "")
@@ -102,14 +126,17 @@ function _advice_measurement_summaries(bundle::RunBundle)
         value isa Integer && abs(big(value)) > 2^53 - 1 && continue
         case_id, target_id = get(observation, "case_id", ""),
         get(observation, "target_id", "")
-        _advice_identifier(case_id) && _advice_identifier(target_id) || continue
+        _advice_case_identifier(case_id) && _advice_identifier(target_id) || continue
         scope = get(
             observation, "scope", get(definition, "attribution_scope", "unspecified"))
         scope in _ADVICE_MEASUREMENT_SCOPES || continue
         converted = Float64(value)
         isfinite(converted) || continue
+        comparison = get(observation, "comparison_key", nothing)
+        comparison === nothing || comparison isa AbstractString || continue
+        fingerprint = _content_digest(comparison)
         key = (String(case_id), String(target_id), String(id),
-            String(scope), String(aggregation))
+            String(scope), String(aggregation), fingerprint)
         # A canonical column and its compatibility alias describe one record.
         # Equal values at different indices remain distinct observations.
         index = get(observation, "sample_index", nothing)
@@ -126,31 +153,39 @@ function _advice_measurement_summaries(bundle::RunBundle)
         push!(get!(groups, key, Float64[]), converted)
     end
     qualification = get(bundle.manifest, "qualification", Dict())
-    correctness = get(qualification, "correctness", "not_checked")
-    if isempty(qualification)
-        checks = get(bundle.manifest, "run_qualifications", [])
-        statuses = [get(get(get(check, "evidence", Dict()), "correctness", Dict()),
-                        "status", "not_checked") for check in checks]
-        correctness = "failed" in statuses ? "failed" :
-                      !isempty(statuses) && all(==("passed"), statuses) ? "passed" :
-                      "not_checked"
-    end
-    correctness in ("passed", "failed", "not_checked") || (correctness = "not_checked")
     status = get(bundle.manifest, "state", "unknown")
     status in (
         "complete", "failed", "error", "unavailable", "cancelled", "timeout", "invalid") ||
         (status = "unknown")
     status == "complete" && !bundle_passed(bundle) && (status = "error")
     summaries = Dict{String, Any}[]
-    for ((case_id, target_id, id, scope, aggregation), values) in sort!(
+    for ((case_id, target_id, id, scope, aggregation, fingerprint), values) in sort!(
         collect(groups); by = first)
+        correctness = get(qualification, "correctness", "not_checked")
+        correctness_scope = isempty(qualification) ? "not_recorded" : "bundle"
+        if isempty(qualification)
+            checks = filter(
+                check -> get(check, "case_id", "") == case_id &&
+                    get(check, "target_id", "") == target_id,
+                get(bundle.manifest, "run_qualifications", []))
+            statuses = unique([get(
+                                   get(get(check, "evidence", Dict()),
+                                       "correctness", Dict()),
+                                   "status", "not_checked") for check in checks])
+            correctness = length(statuses) == 1 ? only(statuses) : "not_checked"
+            correctness_scope = isempty(statuses) ? "not_recorded" :
+                                length(statuses) == 1 ? "case_target" :
+                                "ambiguous_case_target"
+        end
+        correctness in ("passed", "failed", "not_checked") || (correctness = "not_checked")
         canonical = _advice_measurement_definition(definitions[id])
         run_id = get(bundle.manifest, "run_id", "")
         attempt_id = get(bundle.manifest, "attempt_id", "")
         _advice_identifier(run_id) && _advice_identifier(attempt_id) || continue
         identity = Dict("run_id" => run_id, "attempt_id" => attempt_id,
             "case_id" => case_id, "target_id" => target_id,
-            "measurement_definition" => id, "scope" => scope, "aggregation" => aggregation)
+            "measurement_definition" => id, "scope" => scope, "aggregation" => aggregation,
+            "comparison_fingerprint" => fingerprint)
         semantics = _advice_record_semantics(id, canonical.collector, aggregation)
         push!(summaries,
             merge(identity,
@@ -158,7 +193,8 @@ function _advice_measurement_summaries(bundle::RunBundle)
                     "id" => "measurement-" * _content_digest(identity),
                     "kind" => "measurement", "metric" => canonical.metric,
                     "unit" => canonical.unit, "collector" => canonical.collector,
-                    "status" => status, "correctness" => correctness,
+                    "bundle_status" => status, "correctness" => correctness,
+                    "correctness_scope" => correctness_scope,
                     "record_count" => length(values), "record_semantics" => semantics, "minimum" => minimum(values),
                     "median" => _median(values), "maximum" => maximum(values))))
     end
@@ -188,17 +224,26 @@ controls a sample-count recommendation; it is not a guarantee of tail accuracy.
 
 `measurement_summaries` contains canonical measured quantities from only the
 supplied bundles, independently of whether a recommendation exists. Each record
-preserves its definition, unit, collector, execution/correctness status and
-aggregation. `record_count` counts saved records: `operation_measurement` denotes
+preserves its definition, unit, collector, bundle execution status, correctness
+status and its scope, and aggregation. `record_count` counts saved records: `operation_measurement` denotes
 operation measurements, while allocation sites, allocation-profile records,
 profile frames and interface captures are explicitly distinguished. Their
 minimum/median/maximum describe those records, not an operation cost or a count
 of independent repetitions. Independent operation totals remain separate.
 Compatibility aliases with the same definition and sample/table index count once.
+Distinct comparison keys remain separate via a fingerprint; their text is not
+copied. Conflicting correctness statuses at the same case/target are represented
+as `not_checked` with `correctness_scope="ambiguous_case_target"`, rather than
+attributed to an arbitrary variant. Bundle execution status is not a verdict on
+an individual case. Direct manifest correctness has scope `bundle`; matching
+suite qualifications have scope `case_target`, or `not_recorded` if absent.
 
 Only known definitions/scopes and bounded identifiers (letters, numbers and
-`_.:@+-`, at most 256 characters) are projected. Path-shaped identifiers and
-unknown quantities are omitted; caller-chosen identifiers can still contain
+`_.:@+-`, at most 256 characters per identifier/segment) are projected. Canonical
+suite case IDs also allow exactly three such slash-separated segments (512
+characters total). Absolute
+paths, Windows drives, backslashes, parent traversal and unknown quantities are
+omitted; caller-chosen identifiers can still contain
 sensitive text. Source, attributes, parameters, diagnostics and artifacts are
 not copied or read. Review identifiers before sharing the resulting report.
 

@@ -200,7 +200,7 @@ end
         @test all(
             row -> row["record_count"] == 100 &&
                        row["record_semantics"] == "operation_measurement" &&
-                       row["status"] == "complete" && row["correctness"] == "passed",
+                       row["bundle_status"] == "complete" && row["correctness"] == "passed",
             summaries)
         reset_requests!()
         expected_evidence[] = summaries
