@@ -1,8 +1,16 @@
+```@raw html
+<a id="Julia-and-native-performance-tools"></a>
+```
+
 # Julia and native profiling
 
 Locate where an operation spends time.
 
 Use Julia's tools first. Use a native profiler to inspect a C/C++/Fortran dependency or activity outside Julia.
+
+```@raw html
+<a id="Choose-an-instrument-from-the-question"></a>
+```
 
 ## Pick an instrument from the question
 
@@ -23,6 +31,14 @@ explicit capture status, measured totals and attribution scope before selecting
 a hotspot; unsampled or unattributed allocations are not zero allocations.
 See the [allocation collector contract](reference/checks.md#Profiles).
 
+```@raw html
+<a id="JET:-possible-inference-and-dispatch-problems"></a>
+<a id="Cthulhu:-inspect-the-compiler's-view-interactively"></a>
+<a id="SnoopCompile:-investigate-compilation-work"></a>
+<a id="AllocCheck:-inspect-possible-allocation-paths"></a>
+<a id="Precompilation-tools-and-package-quality"></a>
+```
+
 ## Static analysis and compilation
 
 These inspect code, not measured cost. Treat a diagnostic as a hypothesis and confirm practical cost with a benchmark.
@@ -33,6 +49,14 @@ These inspect code, not measured cost. Treat a diagnostic as a hypothesis and co
 - **AllocCheck** — statically visible allocation and dispatch paths in generated LLVM.
 - **PrecompileTools / PackageCompiler** — change the startup/artifact tradeoff; compare cold import, first call, steady state, build cost and artifact size separately.
 - **Aqua** — package quality (ambiguities, unused type parameters). A pass is not a latency or memory budget.
+
+```@raw html
+<a id="Memcheck:-invalid-memory-operations-and-leaks"></a>
+<a id="Callgrind:-instruction-cost-along-a-call-graph"></a>
+<a id="Cachegrind:-instructions-and-optional-simulated-caches"></a>
+<a id="Massif-and-heaptrack:-native-heap-growth"></a>
+<a id="Hardware-counters:-events-on-the-actual-processor"></a>
+```
 
 ## Linux native tools
 
@@ -63,6 +87,10 @@ Units matter: instruction counts, cache misses and heap sizes are not elapsed se
 - Julia exposes Tracy/VTune timing zones and DTrace/bpftrace probes; coverage depends on the build.
 - **Sanitizers** diagnose memory errors or races; their overhead cannot be treated as production performance.
 
+```@raw html
+<a id="GPU,-distributed-and-foreign-runtimes"></a>
+```
+
 ## GPU, distributed, foreign runtimes
 
 - CUDA: synchronize before comparing completed costs; separate host/device transfer from kernels.
@@ -70,23 +98,10 @@ Units matter: instruction counts, cache misses and heap sizes are not elapsed se
 - Native dependency fingerprints, actual devices, transfer boundaries, rank identities and fallback detection are required before interpreting these measurements.
 - macOS tooling stays inventoried; no Mac validation is claimed.
 
+```@raw html
+<a id="Qualification-experiment"></a>
+```
+
 ## Before calling an adapter supported
 
 Run four controls: a healthy workload, a known native leak, a known CPU hotspot and a child-process workload. Check symbol/source attribution, nonzero diagnostics for injected defects, bounded cancellation, artifact completeness and matching dependency identities. Then rerun unchanged controls without the profiler to measure its perturbation. Windows and Linux need their own evidence.
-
-```@raw html
-<a id="Julia-and-native-performance-tools"></a>
-<a id="Choose-an-instrument-from-the-question"></a>
-<a id="JET:-possible-inference-and-dispatch-problems"></a>
-<a id="Cthulhu:-inspect-the-compiler's-view-interactively"></a>
-<a id="SnoopCompile:-investigate-compilation-work"></a>
-<a id="AllocCheck:-inspect-possible-allocation-paths"></a>
-<a id="Precompilation-tools-and-package-quality"></a>
-<a id="Memcheck:-invalid-memory-operations-and-leaks"></a>
-<a id="Callgrind:-instruction-cost-along-a-call-graph"></a>
-<a id="Cachegrind:-instructions-and-optional-simulated-caches"></a>
-<a id="Massif-and-heaptrack:-native-heap-growth"></a>
-<a id="Hardware-counters:-events-on-the-actual-processor"></a>
-<a id="GPU,-distributed-and-foreign-runtimes"></a>
-<a id="Qualification-experiment"></a>
-```

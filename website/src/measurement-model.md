@@ -10,6 +10,10 @@ resource × lifecycle phase × execution regime × scope × method × statistic
 
 For example: startup, import, first execution and steady-state time are four measurements. Julia heap bytes, native heap bytes, process RSS and GPU memory are four resources.
 
+```@raw html
+<a id="Required-measurement-context"></a>
+```
+
 ## Required context
 
 Every measurement definition states:
@@ -35,6 +39,10 @@ Suite bundles retain controller thread count, hardware fingerprint, local Git re
 - A changed runtime or resolved environment is a warning, because controlled campaigns may vary one deliberately.
 - Older bundles with missing fingerprints carry less comparability information.
 
+```@raw html
+<a id="Julia-performance-families"></a>
+```
+
 ## Measurement families
 
 - **Warm CPU execution** — latency, throughput, CPU user/system, GC. BenchmarkTools, Chairmarks.
@@ -56,6 +64,14 @@ Suite bundles retain controller thread count, hardware fingerprint, local Git re
 - **Load/endurance** — tail latency, backpressure, errors, recovery. Isolated staged-load scenarios.
 
 Static analyzers emit diagnostics, not timings. A JET or AllocCheck finding can guide attribution; it is never presented as measured cost.
+
+```@raw html
+<a id="Package-archetypes"></a>
+```
+
+The former package-archetype discussion is covered by these measurement
+families. Choose collectors from the operation's actual resources and lifecycle,
+and define its input preparation and correctness outcome explicitly.
 
 ## Process and external memory
 
@@ -94,6 +110,10 @@ declared package → resolved artifact → loaded native image → spawned proce
 
 `dependency_evidence()` snapshots the first layer's current process. `ProbeSpec` adds a feature-owned functional check inside the prepared worker. Successful resolution alone never proves an ABI or symbol is usable. Julia allocation counters never claim to cover native allocators.
 
+```@raw html
+<a id="Julia-stable-versus-candidate-runtimes"></a>
+```
+
 ## Julia runtimes
 
 `JuliaRuntimeSpec` adds a runtime axis separate from package versions.
@@ -106,10 +126,3 @@ Two campaign styles:
 
 - **Strict runtime attribution** keeps source, dependencies, workload and machine fixed while Julia changes.
 - **Realistic compatibility** resolves independently under each runtime and reports dependency differences without attributing them to Julia.
-
-```@raw html
-<a id="Required-measurement-context"></a>
-<a id="Julia-performance-families"></a>
-<a id="Package-archetypes"></a>
-<a id="Julia-stable-versus-candidate-runtimes"></a>
-```

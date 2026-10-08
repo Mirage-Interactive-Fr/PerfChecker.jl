@@ -40,6 +40,40 @@ begin
     end
 end
 """
+    # Each static export creates its own Bonito root session. Keep its WGLMakie
+    # module state in a separate document when Pluto replaces the selected plot.
+    plot_frame = raw"""
+begin
+    @doc "    SuitePlotFrame(html, title)
+
+Display a standalone plot export in a separate HTML document. `html` is the
+complete document returned by `performance_plot_html`; `title` names the plot
+for assistive technology. Rendering escapes both values once as HTML attributes
+and emits an iframe with scripts allowed and same-origin access omitted.
+
+Each instance has a fresh DOM identifier so replacing a Pluto result also
+replaces the document and its JavaScript module state, including when an HTML
+export is reused from a cache. The frame follows the notebook width, reserves
+between 360 and 760 CSS pixels of height, and lets the export fit its own canvas.
+Constructing or displaying the frame does not launch a measurement or a worker.
+" struct SuitePlotFrame
+        html::String
+        title::String
+        token::String
+    end
+    SuitePlotFrame(html::AbstractString, title::AbstractString) =
+        SuitePlotFrame(String(html), String(title), string(gensym(:perfchecker_plot)))
+    function Base.show(io::IO, ::MIME"text/html", frame::SuitePlotFrame)
+        attribute(value) = replace(value, '&' => "&amp;", '<' => "&lt;",
+            '>' => "&gt;", '"' => "&quot;", '\'' => "&#39;")
+        print(io, "<iframe data-perfchecker-plot-frame='", attribute(frame.token),
+            "' id='", attribute(frame.token), "' title='", attribute(frame.title),
+            "' sandbox='allow-scripts' style='display:block;width:100%;",
+            "height:min(760px,85vh);min-height:360px;border:0' srcdoc='",
+            attribute(frame.html), "'></iframe>")
+    end
+end
+"""
     cells = [
         "begin\n    import Pkg\n    Pkg.activate($(repr(abspath(project))); io = devnull)\n    using PerfChecker, PlutoUI, Markdown\nend",
         "md\"\"\"# PerfChecker suite\nFilter the plan, then press **Launch selected checks**. Changing controls never starts workers. Use **Refresh status** while a job runs, then **Save completed reports**.\"\"\"",
@@ -108,7 +142,8 @@ end""",
             "plot_bundle = job_result !== nothing ? PerfChecker._suite_run_bundle(job_result) : begin; saved_bundle = joinpath(dirname(result_path), \"bundles\", \"run-\" * string(get(report, \"run_id\", \"\"))); isdir(saved_bundle) ? read_run_bundle(saved_bundle) : nothing; end",
             "plot_entries = plot_bundle === nothing ? [] : plot_catalog(plot_bundle)",
             "@bind selected_plot Select(isempty(plot_entries) ? [\"\" => \"No completed measurements\"] : [entry[\"id\"] => entry[\"title\"] * \" · \" * entry[\"label\"] for entry in plot_entries])",
-            "if plot_bundle !== nothing && !isempty(selected_plot); if Base.find_package(\"PerfCheckerMakie\") === nothing || Base.find_package(\"WGLMakie\") === nothing; md\"Install PerfCheckerMakie and WGLMakie in this notebook environment to display plots.\"; else; @eval using PerfCheckerMakie, WGLMakie; HTML(performance_plot_html(performance_plot(plot_bundle, selected_plot))); end; end"
+            plot_frame,
+            "if plot_bundle !== nothing && !isempty(selected_plot); if Base.find_package(\"PerfCheckerMakie\") === nothing || Base.find_package(\"WGLMakie\") === nothing; md\"Install PerfCheckerMakie and WGLMakie in this notebook environment to display plots.\"; else; @eval using PerfCheckerMakie, WGLMakie; let plot = performance_plot(plot_bundle, selected_plot); SuitePlotFrame(performance_plot_html(plot), \"Performance plot: \" * plot.title); end; end; end"
         ])
     # Keep internal plans, paths and task objects out of the rendered dashboard.
     hidden_outputs = Set(["suite_path", "result_path", "reports_root", "full_plan",

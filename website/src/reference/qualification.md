@@ -2,6 +2,10 @@
 
 A PerfChecker release is used with interface packages, Julia versions and external tools. `PerfCheckerQualification` checks an explicit candidate collection; one passing test cannot cover every combination.
 
+```@raw html
+<a id="What-is-tested-after-a-change"></a>
+```
+
 ## What runs after a change
 
 - Routine CI checks changed interfaces and their consumers with current dependencies on Linux.
@@ -44,7 +48,3 @@ Publishing development documentation does not certify the packages it describes.
   [property-based workloads](extensions.md#Property-based-workloads).
 - Up to four jobs run on separate GitHub-hosted virtual machines. Each job keeps sequential workers, one Julia compute thread, single-thread BLAS and a four-thread computation budget.
 - No measurement is validated merely because a tool executable was found.
-
-```@raw html
-<a id="What-is-tested-after-a-change"></a>
-```

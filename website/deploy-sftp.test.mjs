@@ -8,7 +8,8 @@ import { execFileSync } from 'node:child_process';
 import ssh2 from 'ssh2';
 const { Server, utils } = ssh2;
 import { hostVerifier, validateRoot, readExport, publishDocumentation, connectSftp,
-  deploymentConfiguration, validateDocumentationExports, validateStableDocumentationSource, failureClass } from './deploy-sftp.mjs';
+  deploymentConfiguration, documentationSourceConfiguration, validateDocumentationExports,
+  validateStableDocumentationSource, failureClass } from './deploy-sftp.mjs';
 const revision = 'a'.repeat(40), nextRevision = 'b'.repeat(40);
 class MemorySftp {
   constructor() { this.files = new Map(); this.dirs = new Map([['/www', 0o755]]); this.operations = []; this.fail = null; }
@@ -67,6 +68,8 @@ test('stable source validation accepts only documentation differences from an ex
   await writeFile(join(root, 'website/guide.md'), 'illustrated guide'); git('add', '.'); git('commit', '-m', 'docs');
   const docsRevision = git('rev-parse', 'HEAD');
   assert.equal(await validateStableDocumentationSource(root, 'v1.0.0', docsRevision), tagRevision);
+  git('tag', 'v1.0.1', tagRevision);
+  await assert.rejects(validateStableDocumentationSource(root, 'v1.0.1', docsRevision), /package version differs/);
   await writeFile(join(root, 'Project.toml'), 'uncommitted package change');
   await assert.rejects(validateStableDocumentationSource(root, 'v1.0.0', docsRevision), /outside documentation/);
   await writeFile(join(root, 'Project.toml'), 'version = "1.0.0"\n');
@@ -80,6 +83,37 @@ test('stable source validation accepts only documentation differences from an ex
     git('revert', '--no-edit', 'HEAD');
     assert.equal(await validateStableDocumentationSource(root, 'v1.0.0', git('rev-parse', 'HEAD')), tagRevision);
   }
+});
+test('explicit source inputs require a complete immutable pair on a stable main dispatch', () => {
+  const env = { GITHUB_ACTIONS: 'true', GITHUB_EVENT_NAME: 'workflow_dispatch', GITHUB_REF: 'refs/heads/main',
+    GITHUB_SHA: revision, PERFCHECKER_DOCS_STABLE_REFRESH: 'true',
+    PERFCHECKER_DOCS_SOURCE_VERSION: 'v1.0.0', PERFCHECKER_DOCS_SOURCE_REVISION: nextRevision };
+  const before = JSON.stringify(env);
+  assert.deepEqual(documentationSourceConfiguration(env), { explicit: true, version: 'v1.0.0', revision: nextRevision });
+  assert.equal(JSON.stringify(env), before, 'The Actions revision is never replaced by the documentation revision');
+  for (const change of [{ PERFCHECKER_DOCS_SOURCE_VERSION: '' }, { PERFCHECKER_DOCS_SOURCE_REVISION: '' },
+    { PERFCHECKER_DOCS_SOURCE_VERSION: '1.0.0' }, { PERFCHECKER_DOCS_SOURCE_VERSION: 'v1.0.0-rc1' },
+    { PERFCHECKER_DOCS_SOURCE_VERSION: 'v1.0.0\n' },
+    { PERFCHECKER_DOCS_SOURCE_REVISION: 'main' }, { PERFCHECKER_DOCS_SOURCE_REVISION: 'b'.repeat(39) },
+    { PERFCHECKER_DOCS_SOURCE_REVISION: 'b'.repeat(40) + '\n' }, { GITHUB_SHA: '' },
+    { GITHUB_EVENT_NAME: 'push' }, { GITHUB_EVENT_NAME: 'pull_request' },
+    { GITHUB_REF: 'refs/tags/v1.0.0' }, { GITHUB_REF: 'refs/heads/other' },
+    { PERFCHECKER_DOCS_STABLE_REFRESH: 'false' }, { GITHUB_ACTIONS: 'false' }])
+    assert.throws(() => documentationSourceConfiguration({ ...env, ...change }));
+  for (const event of ['push', 'pull_request', 'workflow_dispatch'])
+    assert.deepEqual(documentationSourceConfiguration({ GITHUB_SHA: revision, GITHUB_EVENT_NAME: event }),
+      { explicit: false, version: undefined, revision }, 'Ordinary sources retain the Actions revision');
+});
+test('explicit stable exports bind the documentation SHA rather than the Actions SHA', async t => {
+  const source = documentationSourceConfiguration({ GITHUB_ACTIONS: 'true', GITHUB_EVENT_NAME: 'workflow_dispatch',
+    GITHUB_REF: 'refs/heads/main', GITHUB_SHA: revision, PERFCHECKER_DOCS_STABLE_REFRESH: 'true',
+    PERFCHECKER_DOCS_SOURCE_VERSION: 'v1.0.0', PERFCHECKER_DOCS_SOURCE_REVISION: nextRevision });
+  const actionsExport = await exportsFor(t), sourceExport = await exportsFor(t, '1.0.0', source.revision);
+  const options = { channel: 'stable-refresh', version: source.version, revision: source.revision };
+  await assert.rejects(validateDocumentationExports({ ...options, site: actionsExport.stableSite }), /source or channel/);
+  const { primary, stable } = await validateDocumentationExports({ ...options, site: sourceExport.stableSite });
+  assert.equal(primary.info.revision, nextRevision); assert.equal(primary.info.version, '1.0.0');
+  assert.equal(primary.info.base, '/'); assert.equal(stable, null, 'No version archive is required or selected');
 });
 test('an explicit stable refresh updates only root files and its own provenance marker', async t => {
   const old = await exportsFor(t), updated = await exportsFor(t, '1.0.0', nextRevision), sftp = new MemorySftp();
@@ -255,6 +289,16 @@ test('CI credentials cannot be used by PRs, arbitrary refs or disabled deploymen
   const manual = { ...env, GITHUB_EVENT_NAME: 'workflow_dispatch', PERFCHECKER_DOCS_STABLE_REFRESH: 'true',
     PERFCHECKER_DOCS_STABLE_VERSION: 'v1.0.0' };
   assert.equal(deploymentConfiguration(manual).channel, 'stable-refresh');
+  assert.equal(deploymentConfiguration(manual).revision, revision);
+  const explicit = { ...manual, PERFCHECKER_DOCS_SOURCE_VERSION: 'v1.0.0',
+    PERFCHECKER_DOCS_SOURCE_REVISION: nextRevision, PERFCHECKER_DOCS_SOURCE_REPOSITORY: 'stable-doc-source' };
+  assert.equal(deploymentConfiguration(explicit).revision, nextRevision);
+  assert.equal(deploymentConfiguration(explicit).sourceRepository, 'stable-doc-source');
+  assert.equal(explicit.GITHUB_SHA, revision);
+  assert.throws(() => deploymentConfiguration({ ...explicit, PERFCHECKER_DOCS_STABLE_VERSION: 'v1.0.1' }), /version differs/);
+  for (const ordinary of [env, tagged, { ...env, GITHUB_EVENT_NAME: 'workflow_dispatch' }])
+    assert.throws(() => deploymentConfiguration({ ...ordinary, PERFCHECKER_DOCS_SOURCE_VERSION: 'v1.0.0',
+      PERFCHECKER_DOCS_SOURCE_REVISION: nextRevision }), /stable dispatch on main/);
   for (const change of [{ GITHUB_REF: 'refs/heads/dev' }, { GITHUB_EVENT_NAME: 'push' },
     { GITHUB_EVENT_NAME: 'pull_request' }, { PERFCHECKER_DOCS_STABLE_VERSION: '1.0.0' }])
     assert.throws(() => deploymentConfiguration({ ...manual, ...change }));

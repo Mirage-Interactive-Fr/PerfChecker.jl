@@ -13,6 +13,14 @@ on:
         options: [dev, stable]
         default: dev
         required: true
+      stable_version:
+        description: Optional published stable tag (for example v1.0.0); requires docs_source_revision and publication=stable on main
+        type: string
+        required: false
+      docs_source_revision:
+        description: Optional immutable documentation-only source commit (full 40-character SHA); requires stable_version
+        type: string
+        required: false
 
 permissions:
   contents: read
@@ -41,6 +49,8 @@ jobs:
     timeout-minutes: 60
     outputs:
       stable-version: ${{ steps.version.outputs.stable-version }}
+      source-revision: ${{ steps.version.outputs.source-revision }}
+      explicit-source: ${{ steps.version.outputs.explicit-source }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -55,13 +65,31 @@ jobs:
           cache: npm
           cache-dependency-path: website/package-lock.json
       - uses: julia-actions/cache@v3
+      - name: Test publication policy and real SSH/SFTP authentication
+        working-directory: website
+        run: |
+          npm ci --ignore-scripts --no-audit --no-fund
+          npm run test:sftp
       - name: Select the documented version
         id: version
         shell: bash
         env:
           REFRESH_STABLE: ${{ github.event_name == 'workflow_dispatch' && inputs.publication == 'stable' }}
+          PERFCHECKER_DOCS_STABLE_REFRESH: ${{ github.event_name == 'workflow_dispatch' && inputs.publication == 'stable' }}
+          PERFCHECKER_DOCS_SOURCE_VERSION: ${{ inputs.stable_version }}
+          PERFCHECKER_DOCS_SOURCE_REVISION: ${{ inputs.docs_source_revision }}
         run: |
-          version=$(julia --startup-file=no -e 'using TOML; print(TOML.parsefile("Project.toml")["version"])')
+          node --input-type=module <<'NODE'
+          import {appendFileSync} from 'node:fs';
+          import {documentationSourceConfiguration} from './website/deploy-sftp.mjs';
+          const source = documentationSourceConfiguration(process.env);
+          appendFileSync(process.env.GITHUB_OUTPUT, `source-revision=${source.revision}\nexplicit-source=${source.explicit}\n`);
+          NODE
+          if [[ -n "$PERFCHECKER_DOCS_SOURCE_VERSION" ]]; then
+            version=${PERFCHECKER_DOCS_SOURCE_VERSION#v}
+          else
+            version=$(julia --startup-file=no -e 'using TOML; print(TOML.parsefile("Project.toml")["version"])')
+          fi
           if [[ "$GITHUB_REF_TYPE" == tag || "$REFRESH_STABLE" == true ]]; then
             [[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "Expected a stable tagged version"; exit 1; }
           fi
@@ -74,20 +102,39 @@ jobs:
           fi
           echo "PERFCHECKER_DOCS_VERSION=$version" >> "$GITHUB_ENV"
           echo "stable-version=v$version" >> "$GITHUB_OUTPUT"
-      - name: Install documentation dependencies
-        run: julia --startup-file=no --project=website -e 'using Pkg; Pkg.develop(path="."); Pkg.instantiate()'
-      - name: Test publication policy and real SSH/SFTP authentication
-        working-directory: website
+      - name: Check out the explicit immutable documentation source
+        if: steps.version.outputs.explicit-source == 'true'
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ steps.version.outputs.source-revision }}
+          path: stable-doc-source
+          persist-credentials: false
+      - name: Verify the explicit stable package and documentation source
+        if: steps.version.outputs.explicit-source == 'true'
+        env:
+          SOURCE_REVISION: ${{ steps.version.outputs.source-revision }}
+          STABLE_VERSION: ${{ steps.version.outputs.stable-version }}
         run: |
-          npm ci --ignore-scripts --no-audit --no-fund
-          npm run test:sftp
+          git -C stable-doc-source fetch --no-tags --depth=1 origin "refs/tags/$STABLE_VERSION:refs/tags/$STABLE_VERSION"
+          julia --startup-file=no -e 'using TOML; @assert "v" * TOML.parsefile("stable-doc-source/Project.toml")["version"] == ENV["STABLE_VERSION"]'
+          node --input-type=module -e 'import {validateStableDocumentationSource} from "./website/deploy-sftp.mjs"; await validateStableDocumentationSource("stable-doc-source", process.env.STABLE_VERSION, process.env.SOURCE_REVISION);'
+      - name: Install documentation dependencies
+        if: steps.version.outputs.explicit-source != 'true'
+        run: julia --startup-file=no --project=website -e 'using Pkg; Pkg.develop(path="."); Pkg.instantiate()'
+      - name: Install explicit stable documentation dependencies
+        if: steps.version.outputs.explicit-source == 'true'
+        working-directory: stable-doc-source
+        run: |
+          julia --startup-file=no --project=website -e 'using Pkg; Pkg.develop(path="."); Pkg.instantiate()'
+          npm ci --prefix website --ignore-scripts --no-audit --no-fund
       - name: Verify stable documentation has the released package source
-        if: github.event_name == 'workflow_dispatch' && inputs.publication == 'stable'
+        if: github.event_name == 'workflow_dispatch' && inputs.publication == 'stable' && steps.version.outputs.explicit-source != 'true'
         run: >-
           node --input-type=module -e
           'import {validateStableDocumentationSource} from "./website/deploy-sftp.mjs";
           await validateStableDocumentationSource(process.cwd(), "v" + process.env.PERFCHECKER_DOCS_VERSION, process.env.GITHUB_SHA);'
       - name: Build the GitHub mirror
+        if: steps.version.outputs.explicit-source != 'true'
         shell: bash
         env:
           PERFCHECKER_DOCS_HOSTING: github
@@ -102,6 +149,7 @@ jobs:
           fi
           julia --startup-file=no --project=website website/make.jl
       - name: Build canonical development documentation
+        if: steps.version.outputs.explicit-source != 'true'
         env:
           PERFCHECKER_DOCS_HOSTING: sftp
           PERFCHECKER_DOCS_CHANNEL: dev
@@ -110,7 +158,7 @@ jobs:
           PERFCHECKER_DOCS_BUILD_DIR: build/sftp/dev
         run: julia --startup-file=no --project=website website/make.jl
       - name: Build canonical version and stable exports
-        if: github.ref_type == 'tag' || github.event_name == 'pull_request' || inputs.publication == 'stable'
+        if: steps.version.outputs.explicit-source != 'true' && (github.ref_type == 'tag' || github.event_name == 'pull_request' || inputs.publication == 'stable')
         shell: bash
         env:
           PERFCHECKER_DOCS_HOSTING: sftp
@@ -125,23 +173,39 @@ jobs:
           PERFCHECKER_DOCS_URL=https://perfchecker.mirageinteractive.fr/ \
           PERFCHECKER_DOCS_BUILD_DIR=build/sftp/stable \
           julia --startup-file=no --project=website website/make.jl
+      - name: Build only the explicit stable root export
+        if: steps.version.outputs.explicit-source == 'true'
+        working-directory: stable-doc-source
+        env:
+          PERFCHECKER_DOCS_HOSTING: sftp
+          PERFCHECKER_DOCS_CHANNEL: stable
+          PERFCHECKER_DOCS_BASE: /
+          PERFCHECKER_DOCS_URL: https://perfchecker.mirageinteractive.fr/
+          PERFCHECKER_DOCS_BUILD_DIR: build/sftp/stable
+        run: julia --startup-file=no --project=website website/make.jl
       - name: Install the browser checker
         working-directory: qualification
         run: |
           npm ci --ignore-scripts --no-audit --no-fund
           npx playwright install --with-deps chromium
       - name: Check canonical HTML, search, assets and version metadata
+        if: steps.version.outputs.explicit-source != 'true'
         run: node qualification/shared/canonical-documentation.mjs website/build/sftp --browser
+      - name: Check the explicit stable root HTML, search, assets and version metadata
+        if: steps.version.outputs.explicit-source == 'true'
+        working-directory: stable-doc-source
+        run: node "$GITHUB_WORKSPACE/qualification/shared/canonical-documentation.mjs" website/build/sftp --browser
       - name: Save canonical exports before any transfer
         uses: actions/upload-artifact@v7
         with:
           name: documentation-sftp-exports
           path: |
-            website/build/sftp
-            !website/build/sftp/**/.documenter
+            ${{ steps.version.outputs.explicit-source == 'true' && 'stable-doc-source/' || '' }}website/build/sftp
+            !${{ steps.version.outputs.explicit-source == 'true' && 'stable-doc-source/' || '' }}website/build/sftp/**/.documenter
           if-no-files-found: error
           retention-days: 14
       - name: Save the GitHub mirror export
+        if: steps.version.outputs.explicit-source != 'true'
         uses: actions/upload-artifact@v7
         with:
           name: documentation-github-export
@@ -152,6 +216,7 @@ jobs:
         if: >-
           github.event_name != 'pull_request' &&
           github.ref == 'refs/heads/main' &&
+          steps.version.outputs.explicit-source != 'true' &&
           vars.PERFCHECKER_DOCS_DEPLOY == 'true'
         run: julia --startup-file=no --project=website website/deploy.jl
         env:
@@ -181,11 +246,19 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: '22'
+      - name: Check out the same explicit documentation source for publication validation
+        if: needs.documentation.outputs.explicit-source == 'true'
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ needs.documentation.outputs.source-revision }}
+          path: stable-doc-source
+          persist-credentials: false
       - name: Read the immutable stable tag for an explicit documentation refresh
         if: github.event_name == 'workflow_dispatch' && inputs.publication == 'stable'
         env:
           STABLE_VERSION: ${{ needs.documentation.outputs.stable-version }}
-        run: git fetch --no-tags --depth=1 origin "refs/tags/$STABLE_VERSION:refs/tags/$STABLE_VERSION"
+          SOURCE_REPOSITORY: ${{ needs.documentation.outputs.explicit-source == 'true' && 'stable-doc-source' || '.' }}
+        run: git -C "$SOURCE_REPOSITORY" fetch --no-tags --depth=1 origin "refs/tags/$STABLE_VERSION:refs/tags/$STABLE_VERSION"
       - uses: actions/download-artifact@v8
         with:
           name: documentation-sftp-exports
@@ -197,6 +270,9 @@ jobs:
         env:
           PERFCHECKER_DOCS_STABLE_REFRESH: ${{ github.event_name == 'workflow_dispatch' && inputs.publication == 'stable' }}
           PERFCHECKER_DOCS_STABLE_VERSION: ${{ needs.documentation.outputs.stable-version }}
+          PERFCHECKER_DOCS_SOURCE_VERSION: ${{ inputs.stable_version }}
+          PERFCHECKER_DOCS_SOURCE_REVISION: ${{ needs.documentation.outputs.explicit-source == 'true' && needs.documentation.outputs.source-revision || '' }}
+          PERFCHECKER_DOCS_SOURCE_REPOSITORY: stable-doc-source
           PERFCHECKER_DOCS_REF_DELETED: ${{ github.event.deleted }}
           PERFCHECKER_DOCS_SFTP_DEPLOY: ${{ vars.PERFCHECKER_DOCS_SFTP_DEPLOY_V2 }}
           PERFCHECKER_DOCS_SFTP_HOST: ${{ vars.PERFCHECKER_DOCS_SFTP_HOST }}

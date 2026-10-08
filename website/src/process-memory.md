@@ -39,6 +39,10 @@ FeatureSpec(:export_bibtex;
 
 `process_memory_snapshot()` exposes the same adapter for diagnostics; `process_memory_capabilities()` lists the available counters.
 
+```@raw html
+<a id="External-memory-contract"></a>
+```
+
 ## External memory
 
 A package with native handles, pools, mapped arenas or device staging memory can name a callback in the feature options:
@@ -94,9 +98,4 @@ This turns a vague claim such as "memory is fine" into three independent asserti
 
 ```@raw html
 <DocMedia src="/examples/bibliography/figures/history-memory.svg" alt="Allocated bytes per Bibliography export across nine tags, from 4480 bytes at 0.1.0 to 8352 at 0.4.0" caption="Julia allocation activity per operation. These values are neither retained heap size nor resident process memory. All nine points come from recorded measurements." />
-```
-
-
-```@raw html
-<a id="External-memory-contract"></a>
 ```

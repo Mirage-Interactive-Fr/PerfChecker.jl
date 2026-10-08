@@ -1,3 +1,7 @@
+```@raw html
+<a id="Report-queries-and-documentation-blocks"></a>
+```
+
 # Report queries
 
 A query selects existing results by package, feature, metric or another field. It contains no Julia expressions and never launches a worker.
@@ -25,6 +29,10 @@ result = query_bundle(bundle, query)
 - Operators: `equals`, `not_equals`, `one_of`, `contains`, `prefix`, `greater_or_equal`, `less_or_equal`, `exists`.
 - Queries do not invent missing data. A selection with no matching records is empty.
 
+```@raw html
+<a id="Portable-documentation-block"></a>
+```
+
 ## Documentation blocks
 
 ```julia
@@ -39,8 +47,3 @@ documenter_page(bundle, "src/performance.md"; blocks = [block])
 The `perfchecker-document-block/1` model carries the query result, requested views, interactive link and run/runtime/environment provenance. Rendering never executes the measured workload.
 
 See [Documenter integration](interfaces/documentation.md) for a complete page.
-
-```@raw html
-<a id="Report-queries-and-documentation-blocks"></a>
-<a id="Portable-documentation-block"></a>
-```

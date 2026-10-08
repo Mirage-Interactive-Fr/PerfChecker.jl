@@ -55,11 +55,23 @@ installation confirmation. Setup uses `juliaExecutable`; cancellation requests
 worker cleanup, and **PerfChecker: Show worker output** records dependency
 errors.
 
+```@raw html
+<DocMedia video short recording="perfchecker-vscode-v101-short-01" src="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-01-r2.mp4" poster="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-01-r2-poster.jpg" subtitles="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-01-r2-en.vtt" walkthrough="/interfaces/vscode-videos.html#Full-tutorial" chapter="02 · Prepare Julia and the selected workspace" preload="none" alt="Actual native PerfChecker existing controller selection, resolved project and Studio Ready status" caption="Choose Use an existing controller, select the prepared project and wait for Studio Ready. The closing Reading guide summarizes the environment checks to make after setup. Recorded candidate: VSIX 7add564, Core 4eec7f3, VS Code 1.141.0 on Linux. The controller was prepared from Core source before recording; registered installation has separate qualification." />
+```
 
 For an MCP or local Codex connection, add `HTTP` explicitly to this controller,
 then follow [MCP configuration](../mcp-advisor.md). The setup installs the listed
 measurement packages. The separate Pluto environment uses the qualified Pluto
 release's own HTTP dependency range.
+
+The corrected 1.0.1 notebook setup installs and checks **PerfCheckerPluto 1.0.1
+or newer within the 1.x series**, separately from the controller. An existing
+Pluto project using companion 1.0.0 requires an explicit upgrade confirmation;
+the compatibility check does not update it silently. Declining keeps that
+environment unchanged. Wait for the corrected extension, Core 1.0.1 in General
+and the `v1.0.1` repository tag before using this setup. See the
+[separate Pluto installation recipe](../guide/installation.md#Prepare-the-integrated-Pluto-candidate)
+and [existing notebook migration](vscode-workflows.md#Use-the-corrected-suite-plot-renderer).
 
 
 Open **Preferences: Open Workspace Settings (JSON)**, or the selected folder's
@@ -91,7 +103,7 @@ an interactive inspection surface; successful imports there are a useful setup
 check, not a performance result.
 
 ```@raw html
-<DocMedia video short recording="perfchecker-vscode-v101-short-09" src="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-09.mp4" poster="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-09-poster.jpg" subtitles="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-09-en.vtt" preload="metadata" alt="Actual native PerfChecker terminal, Julia REPL and debug sessions using two folder-specific controller projects" caption="Inspect VERSION and the actual active project in each surface. This recording uses Julia extension 1.249.2 with Julia 1.12.7 for REPL and debug, and Julia 1.13.1 for PerfChecker workers. Recorded build: VSIX 2e722, Core 4eec, VS Code 1.141 on Linux; the two source debug sessions have independent controller projects." />
+<DocMedia video short recording="perfchecker-vscode-v101-short-09" src="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-09.mp4" poster="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-09-poster.jpg" subtitles="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-09-en.vtt" walkthrough="/interfaces/vscode-videos.html#Full-tutorial" chapter="02 · Prepare Julia and the selected workspace" preload="none" alt="Actual native PerfChecker terminal, Julia REPL and debug sessions using two folder-specific controller projects" caption="Inspect VERSION and the actual active project in each surface. This recording uses Julia extension 1.249.2 with Julia 1.12.7 for REPL and debug, and Julia 1.13.1 for PerfChecker workers. Recorded build: VSIX 2e722, Core 4eec, VS Code 1.141 on Linux; the two source debug sessions have independent controller projects." />
 ```
 
 ## Core and suite settings
@@ -152,7 +164,7 @@ For another MCP agent, use **PerfChecker: Configure advisor and manage models** 
 | `advisorConfig` | empty | JSON config path; takes precedence over provider settings |
 | `advisorProtocol` | `chat_completions` | Provider protocol; chat requires `mcp_http` |
 | `advisorEndpoint` | local Chat Completions URL | Existing model or MCP endpoint |
-| `advisorModel` | `local` | Provider model identifier; not an installation |
+| `advisorModel` | `local` | Chat Completions/Ollama model identifier; ignored by MCP HTTP |
 | `advisorInstructions` | empty | Prompt customization, up to 5,000 characters |
 | `advisorMcpTool` | empty | Explicit advice tool |
 | `advisorMcpPromptArgument` | `prompt` | Argument receiving instructions and bounded context |
@@ -163,6 +175,8 @@ For another MCP agent, use **PerfChecker: Configure advisor and manage models** 
 | `advisorKeyEnvironment` | empty | Name of the environment variable containing the token |
 | `advisorTimeout` | `90` | Total provider-worker deadline in seconds |
 | `advisorInvestigates` | `false` | Structured model selection of declared experiments |
+
+The MCP server selects its own model and output limits. If its tool schema accepts model or limit options, put those named arguments in `advisorMcpArguments`; the generic provider's `model` and `max_tokens` fields are not sent by the MCP transport.
 
 Disabling `advisorEnabled` keeps deterministic advice usable and retains already installed model files. An explicitly connected Codex chat remains authorized for that session; choose **Disconnect Codex** to stop using it and resume the saved disabled provider state. [MCP configuration](../mcp-advisor.md#Configure-the-advice-tool) includes complete JSON and VS Code examples.
 
@@ -192,7 +206,7 @@ The explicit local Codex connection supplies these implementation tool names in 
 | Codex connection refused | Check native executable, required flags, existing login and absence of project `.codex` configuration |
 | Saved advisor config seems inactive | Disconnect the temporary Codex connection to resume your saved provider |
 | Pluto setup cannot resolve HTTP | Use the separate `plutoProject`; qualified Pluto 1.0.4 uses HTTP 1.x, while the MCP controller uses HTTP 2.x |
-| Existing Pluto/controller project has Core 1.0.0 | The 1.0.1 candidate requires an explicit upgrade after Core 1.0.1 becomes available in General |
+| Existing Pluto/controller project has Core 1.0.0 or the Pluto project has companion 1.0.0 | Confirm the selected environment's explicit upgrade after Core 1.0.1 and companion tag `v1.0.1` are available; existing suite notebook source also needs the migration above |
 | Notebook session unavailable | Inspect **PerfChecker Pluto** output and [session controls](vscode-workflows.md#Manage-the-session-and-saved-source); public 1.0.0 needs an installed Julia kernel |
 
 Worker logs are available through **PerfChecker: Show worker output**. Keep tokens out of configuration files and troubleshooting reports.

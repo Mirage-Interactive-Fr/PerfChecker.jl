@@ -12,8 +12,15 @@ const MAX_CACHE_ENTRIES = 64
 
 function _flame_plot_html(plot::PerfChecker.PerformancePlot)
     data_json = replace(PerfChecker._canonical_json(plot.data), "</" => "<\\/")
-    title_json = PerfChecker._canonical_json(
-        "$(plot.title) · $(plot.options["selected_version"])")
+    title_json = replace(
+        PerfChecker._canonical_json(
+            "$(plot.title) · $(plot.options["selected_version"]) · $(PerfCheckerMakie._model_collector(plot))"),
+        "</" => "<\\/")
+    tags = get(plot.options, "tags", String[])
+    tags_json = replace(
+        PerfChecker._canonical_json("Tags: " *
+                                    (isempty(tags) ? "none" : join(string.(tags), ", "))),
+        "</" => "<\\/")
     value_label_json = PerfChecker._canonical_json(String(plot.options["value_label"]))
     allocation_json = plot.kind === :allocation_flamegraph ? "true" : "false"
     return """<!doctype html>
@@ -30,6 +37,7 @@ function _flame_plot_html(plot::PerfChecker.PerformancePlot)
 <script>
 const DATA=$data_json;
 const TITLE=$title_json;
+const TAGS=$tags_json;
 const VALUE_LABEL=$value_label_json;
 const ALLOCATION_ONLY=$allocation_json;
 const NS="http://www.w3.org/2000/svg";
@@ -55,6 +63,7 @@ function tooltipText(item){const lines=["<strong>"+escapeHtml(item.label)+"</str
 function escapeHtml(value){return String(value).replace(/[&<>\"']/g,char=>({"&":"&amp;","<":"&lt;",">":"&gt;",'\"':"&quot;","'":"&#39;"}[char]))}
 function showTip(item,event){tip.innerHTML=tooltipText(item);tip.style.display="block";const x=Math.min(event.clientX+14,window.innerWidth-tip.offsetWidth-10);const y=Math.min(event.clientY+14,window.innerHeight-tip.offsetHeight-10);tip.style.left=Math.max(8,x)+"px";tip.style.top=Math.max(8,y)+"px"}
 svg.append(element("text",{x:svgWidth/2,y:29,"text-anchor":"middle",class:"title"},TITLE));
+svg.append(element("text",{x:svgWidth/2,y:48,"text-anchor":"middle",class:"note"},TAGS));
 for(let tick=0;tick<=100;tick+=10){const x=marginLeft+plotWidth*tick/100;svg.append(element("line",{x1:x,x2:x,y1:marginTop,y2:svgHeight-marginBottom,class:"grid"}));svg.append(element("text",{x:x,y:svgHeight-marginBottom+19,"text-anchor":"middle",class:"tick"},tick))}
 svg.append(element("text",{x:marginLeft+plotWidth/2,y:svgHeight-18,"text-anchor":"middle",class:"axis-label"},"share of captured "+VALUE_LABEL.toLowerCase()+" (%)"));
 const yLabelPosition=marginTop+(svgHeight-marginTop-marginBottom)/2;const yLabel=element("text",{x:20,y:yLabelPosition,"text-anchor":"middle",class:"axis-label",transform:"rotate(-90 20 "+yLabelPosition+")"},"call stack depth");svg.append(yLabel);
@@ -129,7 +138,8 @@ function PerfChecker.performance_plot_html(plot::PerfChecker.PerformancePlot)
         if plot.kind === :normalized_metrics
             template = read(joinpath(@__DIR__, "../src/assets/normalized.html"), String)
             data = replace(
-                PerfChecker._canonical_json(PerfChecker.performance_plot_dict(plot)),
+                PerfChecker._canonical_json(merge(PerfChecker.performance_plot_dict(plot),
+                    Dict("collector_label" => PerfCheckerMakie._model_collector(plot)))),
                 "</" => "<\\/")
             html = replace(template, "__PERFCHECKER_NORMALIZED_PLOT__" => data)
             length(HTML_CACHE) >= MAX_CACHE_ENTRIES &&
@@ -155,6 +165,8 @@ function PerfChecker.performance_plot_html(plot::PerfChecker.PerformancePlot)
                         "width" => "$(width)px", "height" => "$(height)px",
                         "transform-origin" => "top left"));
                 id = "offline-viewport",
+                role = "img",
+                var"aria-label" = "$(plot.title) · $(PerfCheckerMakie._model_collector(plot)) · Tags: $(join(string.(get(plot.options, "tags", String[])), ", "))",
                 style = Bonito.Styles(
                     "width" => "100%", "height" => "$(height)px",
                     "overflow" => "hidden", "background" => "#f7f9fc"))

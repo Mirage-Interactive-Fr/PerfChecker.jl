@@ -189,6 +189,7 @@ function _normalized_plot(
         "package" => entry["package"], "feature" => entry["feature"],
         "workload" => entry["workload"], "unit" => "ratio", "versions" => versions,
         "reference_version" => reference, "statistic" => string(statistic), "collector" => entry["collector"],
+        "tags" => source isa RunBundle ? get(source.manifest, "tags", String[]) : String[],
         "zero_reference_policy" => "equal zeros = 1 (unchanged); nonzero / zero = unavailable")
     return PerformancePlot(entry["id"], :normalized_metrics,
         "$(entry["package"]) · $(entry["feature"]) · relative to $reference",
@@ -290,29 +291,47 @@ function _profile_catalog(bundle::RunBundle)
         collect(identities); by = first)]
 end
 
+function _tradeoff_collector(series)
+    metric = String(series["metric"])
+    definition = String(series["measurement_definition"])
+    return startswith(definition, "$metric/") ?
+           chop(definition; head = length(metric) + 1, tail = 0) : definition
+end
+
 function _tradeoff_catalog(bundle::RunBundle)
-    grouped = Dict{Tuple{String, String, String}, Dict{String, Any}}()
+    grouped = Dict{NTuple{4, String}, Dict{String, Any}}()
     for series in suite_version_series(bundle)
         metric = String(series["metric"])
         metric in ("julia.wall.time", "julia.alloc.bytes") || continue
         key = (String(series["package"]), String(series["feature"]),
-            _plot_base_comparison_key(series))
+            _plot_base_comparison_key(series), _tradeoff_collector(series))
         get!(grouped, key, Dict{String, Any}())[metric] = series
     end
     entries = Dict{String, Any}[]
-    for ((package, feature, comparison_key), metrics) in sort!(collect(grouped); by = first)
-        all(haskey(metrics, metric)
-        for metric in ("julia.wall.time", "julia.alloc.bytes")) ||
-            continue
+    complete = filter(
+        pair -> all(haskey(last(pair), metric)
+        for metric in ("julia.wall.time", "julia.alloc.bytes")),
+        collect(grouped))
+    for ((package, feature, comparison_key, collector), metrics) in sort!(
+        complete; by = first)
+        # Retain existing IDs for one collector. Ambiguous comparisons get
+        # distinct IDs and labels; measurements are never combined across tools.
+        multiple = count(
+            pair -> first(pair)[1:3] == (package, feature, comparison_key), complete) > 1
+        identity = multiple ? (comparison_key, collector) : (comparison_key,)
+        suffix = multiple ? " · $collector" : ""
         push!(entries,
             Dict{String, Any}(
                 "id" => _plot_id(
-                    :time_allocation_tradeoff, package, feature, comparison_key),
+                    :time_allocation_tradeoff, package, feature, identity...),
                 "kind" => "time_allocation_tradeoff", "package" => package,
                 "feature" => feature, "comparison_key" => comparison_key,
+                "collector" => collector,
+                "time_series_id" => metrics["julia.wall.time"]["series_id"],
+                "allocation_series_id" => metrics["julia.alloc.bytes"]["series_id"],
                 "metric" => "julia.wall.time+julia.alloc.bytes", "unit" => "s+By",
-                "title" => "$package · $feature · time/allocation trade-off",
-                "label" => "Time vs allocations"))
+                "title" => "$package · $feature · time/allocation trade-off$suffix",
+                "label" => "Time vs allocations$suffix"))
     end
     return entries
 end
@@ -326,6 +345,9 @@ benchmark metrics, version series/distributions/deltas, time/allocation
 tradeoffs, allocation site/file/stack plots and CPU/wall profiles.
 Entries are ordered by package/feature, preferring normalized metrics; their IDs
 are content-derived identities accepted by [`performance_plot`](@ref).
+Time/allocation tradeoffs pair metrics only within the same collector identity.
+Comparisons with multiple collectors expose separate labeled entries; existing
+IDs are retained when only one collector supplies a complete pair.
 A bundle without supported observations returns an empty list. No workload or
 graphics backend is started; malformed evidence errors propagate.
 """
@@ -629,13 +651,9 @@ function _flame_records(observations; version = nothing, top::Integer = 40)
 end
 
 function _tradeoff_records(bundle, entry)
-    matching = [series
-                for series in suite_version_series(bundle)
-                if series["package"] == entry["package"] &&
-                   series["feature"] == entry["feature"] &&
-                   _plot_base_comparison_key(series) == entry["comparison_key"]]
-    time = only(filter(series -> series["metric"] == "julia.wall.time", matching))
-    bytes = only(filter(series -> series["metric"] == "julia.alloc.bytes", matching))
+    series = suite_version_series(bundle)
+    time = only(filter(item -> item["series_id"] == entry["time_series_id"], series))
+    bytes = only(filter(item -> item["series_id"] == entry["allocation_series_id"], series))
     times = Dict(String(point["version"]) => point for point in time["points"])
     allocations = Dict(String(point["version"]) => point for point in bytes["points"])
     versions = sort!(collect(intersect(keys(times), keys(allocations)));
@@ -665,6 +683,9 @@ percent of the selected version's allocated bytes into "Other allocation sites".
 The default is 5%; exactly 5% remains separate. Set `min_percentage=0` to disable
 this threshold. `top` still caps legend entries, including the combined remainder.
 Return a `PerformancePlot` from saved records without rerunning workloads.
+Standard models retain their measurement definitions (or normalized collector)
+and manifest tags in presentation options so renderers can label evidence
+without inferring its collector from units.
 `version` selects allocation/profile versions; normalized metrics use
 `reference_version` instead. Unknown plot IDs, absent plottable measurements,
 unsupported statistics or invalid grouping limits raise `ArgumentError` in the
@@ -761,6 +782,28 @@ function performance_plot(bundle::RunBundle, id::AbstractString; version = nothi
     else
         throw(ArgumentError("unsupported performance plot kind $kind"))
     end
+    # Presentation retains the collector's existing identity; units alone cannot
+    # distinguish collectors. These fields do not change observations or IDs.
+    definitions = if haskey(entry, "series_id")
+        [series["measurement_definition"]]
+    elseif haskey(entry, "definition")
+        [entry["definition"]]
+    elseif startswith(string(kind), "allocation_")
+        unique([observation["measurement_definition"]
+                for observation in _allocation_observations(bundle)
+                if get(observation, "case_id", "") == entry["case_id"]])
+    elseif kind === :time_allocation_tradeoff
+        unique([item["measurement_definition"]
+                for item in suite_version_series(bundle)
+                if item["package"] == entry["package"] &&
+                       item["feature"] == entry["feature"] &&
+                       item["series_id"] in (
+                           entry["time_series_id"], entry["allocation_series_id"])])
+    else
+        String[]
+    end
+    options["measurement_definitions"] = definitions
+    options["tags"] = get(bundle.manifest, "tags", String[])
     return PerformancePlot(String(entry["id"]), kind, String(entry["title"]),
         description, encoding, data, options)
 end
@@ -779,7 +822,9 @@ end
 
 Load `PerfCheckerMakie` and a Makie backend to render a saved-evidence plot as a
 Makie figure. Bundle overloads first call [`performance_plot`](@ref), forwarding
-its selection/grouping keywords. Unsupported plot kinds raise `ArgumentError`.
+its selection/grouping keywords. The companion accepts separate `figure_kwargs`,
+`axis_kwargs` and `plot_kwargs` attribute bundles plus presentation `tags`.
+Unsupported plot kinds raise `ArgumentError`.
 No workload is rerun, and rendering does not save an image; use the active
 backend's save API for an explicit export. Without the companion's methods,
 calling this generic function raises `MethodError`.
@@ -823,6 +868,67 @@ function performance_plot_html end
     plot = performance_plot(bundle, trajectory["id"])
     @test performance_plot_dict(plot)["schema_version"] == "perfchecker-plot/1"
     @test length(plot.data) == 3
+end
+
+@testitem "Tradeoffs preserve distinct collectors and legacy identities" tags=[
+    :unit, :plots] begin
+    using PerfChecker
+    observations = Dict{String, Any}[]
+    for (collector, scale) in (("benchmarktools-v1", 1), ("chairmarks-v1", 10)),
+        (metric, unit, value) in (("julia.wall.time", "s", 1.0),
+            ("julia.alloc.bytes", "By", 100.0)),
+        (version, factor) in (("1.0.0", 1), ("1.1.0", 2))
+
+        push!(observations,
+            Dict{String, Any}(
+                "case_id" => "Demo/parse/$collector", "target_id" => version,
+                "comparison_key" => "parse/v1::$metric/$collector",
+                "metric" => metric, "measurement_definition" => "$metric/$collector",
+                "value" => value * scale * factor, "unit" => unit,
+                "attributes" => Dict("package" => "Demo", "feature" => "parse",
+                    "workload" => "parse", "version" => version, "target_kind" => "release")))
+    end
+    bundle(records) = RunBundle(Dict{String, Any}("run_id" => "tradeoff"),
+        Dict{String, Any}[], records, Dict{String, Any}[], Dict{String, Any}[])
+    source = bundle(observations)
+    evidence = deepcopy(observations)
+    entries = filter(
+        item -> item["kind"] == "time_allocation_tradeoff", plot_catalog(source))
+    @test length(entries) == 2
+    @test [entry["collector"] for entry in entries] ==
+          ["benchmarktools-v1", "chairmarks-v1"]
+    @test length(unique(entry["id"] for entry in entries)) == 2
+    @test plot_catalog(source) == plot_catalog(bundle(reverse(observations)))
+    for (entry, scale) in zip(entries, (1, 10))
+        collector = entry["collector"]
+        @test occursin(collector, entry["label"])
+        model = performance_plot(source, entry["id"])
+        @test [point["version"] for point in model.data] == ["1.0.0", "1.1.0"]
+        @test [point["time"] for point in model.data] == scale .* [1.0, 2.0]
+        @test [point["bytes"] for point in model.data] == scale .* [100.0, 200.0]
+        @test Set(model.options["measurement_definitions"]) ==
+              Set(["julia.wall.time/$collector", "julia.alloc.bytes/$collector"])
+        single = bundle(filter(
+            item -> endswith(item["measurement_definition"], collector), observations))
+        legacy = only(filter(
+            item -> item["kind"] == "time_allocation_tradeoff", plot_catalog(single)))
+        @test legacy["id"] ==
+              PerfChecker._plot_id(:time_allocation_tradeoff, "Demo", "parse", "parse/v1")
+        @test performance_plot(single, legacy["id"]).data == model.data
+    end
+    @test observations == evidence
+    # VersionComparison exports supply series directly, without a RunBundle
+    # manifest. Preserve this public writer and avoid fabricating absent tags.
+    comparison = compare_suite_versions(source)
+    mktempdir() do directory
+        file = write_version_series_json(comparison, joinpath(directory, "series.json"))
+        exported = PerfChecker.JSON.parse(read(file, String))
+        @test length(exported["plots"]) == 2
+        @test all(plot -> isempty(plot["options"]["tags"]), exported["plots"])
+        @test Set(plot["options"]["collector"] for plot in exported["plots"]) ==
+              Set(["benchmarktools-v1", "chairmarks-v1"])
+        @test length(exported["series"]) == 4
+    end
 end
 
 @testitem "Allocation plot grammar" tags=[:unit, :plots, :allocations] begin

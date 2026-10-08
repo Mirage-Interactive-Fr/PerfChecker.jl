@@ -81,6 +81,31 @@ providers and schemas are checked rather than guessed from a partial source list
 The publisher verifies the checkout SHA and tag again before connecting. Missing
 tags or changed package source refuse the refresh.
 
+When `main` already contains another package version, provide both optional
+dispatch inputs: `stable_version` (for example `v1.0.0`) and
+`docs_source_revision` (the complete 40-character SHA of a reviewed
+documentation-only commit). Leave both empty for the ordinary refresh described
+above. Explicit inputs are accepted only with `publication=stable` on `main`;
+an incomplete pair, branch name, prerelease or another event/ref is rejected.
+
+The explicit source must retain the selected tag's exact `Project.toml`, package
+source, optional providers and every other non-documentation file. Its TOML
+version must equal the selected stable tag. Only the same documentation paths
+listed above may differ. Build and publication use separate checkouts of that
+same immutable source; the publisher and workflow remain from the Actions
+revision on `main`. `GITHUB_SHA` is not overridden. The generated
+`build-info.json` and source links identify the documentation source SHA, and
+the publisher rejects exports or checkouts carrying another SHA.
+
+This explicit route builds and checks only the stable root export. It neither
+builds nor publishes `/dev/`, the GitHub mirror or a version archive. The
+ordinary PR, main, tag and stable-refresh routes keep their existing behavior.
+After reviewing the source commit and workflow PR, dispatch **Documentation** on
+**main** with **stable**, the existing stable tag and the reviewed source SHA.
+Inspect the saved export and completed SFTP receipt; the action still refuses
+unless that version is the server's already completed current stable release.
+Do not select a newly registered package or create a tag to repair older docs.
+
 Under the remote lock, the selected version must already be the current stable
 release with matching archive, completed stable and promotion records. An
 incomplete first tag publication or a newer pending promotion refuses the action.

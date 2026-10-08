@@ -2,6 +2,10 @@
 
 CI repeats an experiment you can already run locally. Decide which result should fail the job, and keep the reports.
 
+```@raw html
+<a id="Existing-test-items"></a>
+```
+
 ## Measure existing test items
 
 ```sh
@@ -17,6 +21,10 @@ For functional jobs that must exclude `:perf_only`, load PerfChecker and TestIte
 
 ```julia
 @run_package_tests filter=testitem_filter(:test)
+```
+
+```@raw html
+<a id="GitHub-Actions-example"></a>
 ```
 
 ## GitHub Actions
@@ -49,6 +57,10 @@ jobs:
           path: results/items
 ```
 
+```@raw html
+<a id="Software-suites-and-regression-gates"></a>
+```
+
 ## Regression gates
 
 Run a suite, then compare two saved bundles:
@@ -63,15 +75,12 @@ julia --startup-file=no --project=. -e 'using PerfChecker; exit(perfchecker_main
 - They are illustrative, not universal thresholds. Inspect distributions before choosing one.
 - `check` fails when a limit fails; `compare` does not.
 
+```@raw html
+<a id="Retain-the-right-artifacts"></a>
+```
+
 ## Keep the right artifacts
 
 - Native items: `testitems.json`.
 - Suite runs: the whole report directory, including `bundles/`.
 - Keep runners, thread settings and fixtures comparable between baseline and candidate.
-
-```@raw html
-<a id="Existing-test-items"></a>
-<a id="GitHub-Actions-example"></a>
-<a id="Software-suites-and-regression-gates"></a>
-<a id="Retain-the-right-artifacts"></a>
-```

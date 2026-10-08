@@ -1,8 +1,16 @@
+```@raw html
+<a id="DataStructures:-a-complete-container-investigation"></a>
+```
+
 # DataStructures: 35 containers
 
 Construction and use of a container can cost very differently. A deque may be cheap to drain and expensive to build.
 
 This example measures **35 containers** across **DataStructures 0.19.0–0.19.6**, then follows five workloads back to 0.11.0.
+
+```@raw html
+<a id="1.-Open-the-example-and-check-one-answer"></a>
+```
 
 ## Open the example
 
@@ -23,6 +31,10 @@ For the deque, the case has three parts:
 - `verify` compares the answer with the original permutation.
 
 The runner times only `operation`. For the separate `build` case, construction is the measured operation — a faster constructor cannot hide a slower removal path.
+
+```@raw html
+<a id="2.-Select-a-structure,-operation-and-release-range"></a>
+```
 
 ## Select a structure, operation and range
 
@@ -63,6 +75,12 @@ Choose the item for whole-test cost, the suite for the container operation alone
 ```
 
 
+```@raw html
+<a id="3.-Inspect-every-container-separately"></a>
+<a id="Four-measurements-on-one-plot"></a>
+<a id="Explore-the-separate-curves-and-distributions"></a>
+```
+
 Each container has a tab for construction and a tab for use. The overlay divides each release's minimum sample by that metric's minimum across releases; `1` is the lowest observed value. A zero GC minimum means a short sample had no collection, not that collection is free.
 
 ```@raw html
@@ -82,6 +100,10 @@ Keep the two collectors' samples separate; they sample differently.
 <RecordedFigures directory="/examples/real-packages/containers-collectors" />
 ```
 
+
+```@raw html
+<a id="4.-Follow-eight-years-of-releases"></a>
+```
 
 ## Follow eight years of releases
 
@@ -112,6 +134,11 @@ Compare 0.17.20 with 0.18.0 for the heap ordering transition, and 0.18.22 with 0
 
 The vector implementation mostly exercises Base Julia, so it acts as a control. Changes in its timings across tags are likely machine noise, not a DataStructures change.
 
+```@raw html
+<a id="5.-Explain-the-cost-with-profiles-and-diagnostics"></a>
+<a id="CPU,-wall-time-and-allocation-stacks"></a>
+```
+
 ## Explain the cost
 
 ```sh
@@ -131,6 +158,12 @@ julia --project=.controller/analyzers scenarios.jl diagnose datastructures event
 - The latency diagnostic separates source loading, first operation and warm operation.
 
 ```@raw html
+<a id="Loading,-compilation-and-warm-execution"></a>
+<a id="Allocation-pressure-and-garbage-collection"></a>
+<a id="Reachable-objects,-resident-memory-and-locks"></a>
+```
+
+```@raw html
 <DiagnosticReports source="/examples/real-packages/datastructures-diagnostics/diagnosis.json" />
 <DocMedia src="/examples/real-packages/datastructures-diagnostics/latency.svg" alt="Loading, first-operation and warm-operation latency for the DataStructures heap" />
 <DocMedia src="/examples/real-packages/datastructures-diagnostics/gc.svg" alt="Allocated bytes and garbage-collection time for five heap operations" />
@@ -143,6 +176,10 @@ julia --project=.controller/analyzers scenarios.jl diagnose datastructures event
 
 
 The lock diagnostic counts conflicts; this example runs on one thread. RSS is memory resident for the whole process, including Julia and native libraries. Growth can reflect intended output or a cache, not necessarily a leak.
+
+```@raw html
+<a id="Native-tools-and-non-Julia-dependencies"></a>
+```
 
 ### Native tools
 
@@ -169,6 +206,10 @@ Each tool gets a bounded 512-event, three-operation workload and a 180-second bu
 
 A second Callgrind capture excludes startup and counts three warmed lifecycles: 550,591 instrumented instructions for this fixture — instruction count, not CPU time, for one revision.
 
+```@raw html
+<a id="Package-quality-and-the-live-Julia-heap"></a>
+```
+
 ### Package quality
 
 ```sh
@@ -184,6 +225,10 @@ The heap snapshot groups GC-managed objects by **shallow size**; it does not com
 <DocMedia src="/examples/real-packages/datastructures-diagnostics/heap-types.svg" alt="Shallow sizes of GC-managed object categories in the DataStructures diagnostic worker" />
 ```
 
+
+```@raw html
+<a id="6.-Keep-inputs-and-experiment-provenance"></a>
+```
 
 ## Keep inputs reproducible
 
@@ -202,6 +247,10 @@ For a shared scenario catalog:
 ```sh
 julia --project=. scenarios.jl plan datastructures
 julia --project=. scenarios.jl run datastructures
+```
+
+```@raw html
+<a id="7.-Replay-the-same-experiment-in-each-interface"></a>
 ```
 
 ## Replay in each interface
@@ -226,6 +275,27 @@ VS Code workspace settings:
 }
 ```
 
+```@raw html
+<a id="REPL-and-Unicode-terminal-plots"></a>
+<a id="Makie-and-exportable-figures"></a>
+<a id="A-dedicated-Pluto-notebook"></a>
+<a id="Web-Studio-and-VS-Code"></a>
+<a id="Web-interface-(Oxygen)-and-VS-Code"></a>
+<a id="To-reopen-a-completed-run-directly:"></a>
+```
+
+For terminal plots, Makie, Pluto and reopening a completed run, follow the
+[interface recipes](interfaces.md). Download the notebook below for the same
+DataStructures experiment.
+
+```@raw html
+<p><a href="../examples/real-packages/datastructures-notebook.jl" download>Download the DataStructures notebook (.jl)</a></p>
+```
+
+```@raw html
+<a id="8.-Turn-a-candidate-regression-into-a-reproducible-report"></a>
+```
+
 ## Turn a candidate into a report
 
 1. Fix the workload, seed, Julia version and dependency environment.
@@ -234,33 +304,3 @@ VS Code workspace settings:
 4. Choose the metric, aggregation and acceptable noise before setting a threshold.
 
 Keep the report and environment fingerprints with an issue or proposed optimization. See [Documentation guide](../contributing/documentation.md).
-
-```@raw html
-<p><a href="../examples/real-packages/datastructures-notebook.jl" download>Download the DataStructures notebook (.jl)</a></p>
-```
-
-```@raw html
-<a id="DataStructures:-a-complete-container-investigation"></a>
-<a id="1.-Open-the-example-and-check-one-answer"></a>
-<a id="2.-Select-a-structure,-operation-and-release-range"></a>
-<a id="3.-Inspect-every-container-separately"></a>
-<a id="4.-Follow-eight-years-of-releases"></a>
-<a id="Four-measurements-on-one-plot"></a>
-<a id="Explore-the-separate-curves-and-distributions"></a>
-<a id="5.-Explain-the-cost-with-profiles-and-diagnostics"></a>
-<a id="CPU,-wall-time-and-allocation-stacks"></a>
-<a id="Loading,-compilation-and-warm-execution"></a>
-<a id="Allocation-pressure-and-garbage-collection"></a>
-<a id="Reachable-objects,-resident-memory-and-locks"></a>
-<a id="Native-tools-and-non-Julia-dependencies"></a>
-<a id="Package-quality-and-the-live-Julia-heap"></a>
-<a id="6.-Keep-inputs-and-experiment-provenance"></a>
-<a id="7.-Replay-the-same-experiment-in-each-interface"></a>
-<a id="REPL-and-Unicode-terminal-plots"></a>
-<a id="Makie-and-exportable-figures"></a>
-<a id="A-dedicated-Pluto-notebook"></a>
-<a id="Web-Studio-and-VS-Code"></a>
-<a id="Web-interface-(Oxygen)-and-VS-Code"></a>
-<a id="To-reopen-a-completed-run-directly:"></a>
-<a id="8.-Turn-a-candidate-regression-into-a-reproducible-report"></a>
-```

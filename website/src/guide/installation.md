@@ -50,39 +50,52 @@ Use `packages/PerfCheckerPluto` or `packages/PerfCheckerMakie` for the others.
 ### Prepare the integrated Pluto candidate
 
 The VS Code Pluto integration is being qualified for extension **1.0.1** and
-requires corrected **PerfChecker core 1.0.1**. Wait for these releases before
-following its installation steps. Public extension 1.0.0 retains its earlier
+requires corrected **PerfChecker core 1.0.1** and **PerfCheckerPluto 1.0.1**.
+Wait for the corrected extension, Core 1.0.1 in General and TagBot's `v1.0.1`
+repository tag before following its installation steps. Public extension 1.0.0 retains its earlier
 notebook workflow; the standalone Pluto interface above is already available.
 
 The candidate's explicit **Install Pluto environment** action prepares
 `perf/pluto`. Review the listed packages and selected folder before confirming.
-For manual setup, run this from the package root after Core 1.0.1 is in General:
+For a disposable setup check, run this after the registration and tag above are
+available. It creates a new project and does not modify an existing controller
+or notebook environment:
 
 ```julia
 import Pkg
-Pkg.activate("perf/pluto")
+pluto_project = mktempdir()
+Pkg.activate(pluto_project)
 Pkg.add(Pkg.PackageSpec(name = "PerfChecker", version = "1.0.1"))
 Pkg.add(Pkg.PackageSpec(name = "Pluto", version = "1.0.4"))
 Pkg.add(["PlutoUI", "BenchmarkTools", "Chairmarks"])
 Pkg.add(Pkg.PackageSpec(
     url = "https://github.com/Mirage-Interactive-Fr/PerfChecker.jl",
-    rev = "v1.0.0",
+    rev = "v1.0.1",
     subdir = "packages/PerfCheckerPluto"))
 using PerfChecker, PerfCheckerPluto, Pluto, PlutoUI
+@assert v"1.0.1" <= Base.pkgversion(PerfCheckerPluto) < v"2.0.0"
 Pkg.status()
 ```
 
-The companion's v1.0.0 source supports the corrected core within its 1.x range.
-The final extension qualification will record its exact companion tag. Pluto
-1.0.4's published dependency range uses HTTP 1.x; the qualified MCP controller
+`mktempdir()` removes this disposable environment when Julia exits. For ongoing
+manual use, choose an unused project directory instead; for guided setup,
+confirm installation or the explicit upgrade of your selected Pluto project.
+An older companion is reported as incompatible rather than upgraded silently.
+The companion installation uses its repository subdirectory at `v1.0.1`; the
+other companion packages retain their own versions. Pluto 1.0.4's published
+dependency range uses HTTP 1.x; the qualified MCP controller
 uses HTTP 2.x. Keep these environments separate. Later Pluto versions can have
 different dependency ranges; check their published compatibility before changing
 the qualified version.
 
-Set `perfchecker.plutoProject` to `perf/pluto`, then follow
+Set `perfchecker.plutoProject` to the persistent project you explicitly prepared
+(the guided default is `perf/pluto`), then follow
 [the integrated notebook workflow](../interfaces/vscode-workflows.md#Pluto-notebooks-in-VS-Code)
 for generation, reactive editing, explicit checks and session cleanup. Packages
 and analyzers used by measured workers belong in their selected target project.
+Existing generated suite notebooks retain their earlier cells; use
+[a new notebook file](../interfaces/vscode-workflows.md#Use-the-corrected-suite-plot-renderer)
+to obtain the corrected plot renderer without overwriting saved work.
 
 ## Environments
 

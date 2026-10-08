@@ -1,6 +1,14 @@
+```@raw html
+<a id="Julia-RC-and-nightly-campaigns"></a>
+```
+
 # Julia runtimes
 
 A runtime campaign changes Julia while keeping the package source, workloads and measurement definitions fixed.
+
+```@raw html
+<a id="Prepare-Julia-channels"></a>
+```
 
 ## Prepare channels
 
@@ -14,6 +22,10 @@ juliaup add nightly
 
 Each runtime is probed in a fresh process; the resolved version, commit, bindir and LLVM version are recorded.
 
+```@raw html
+<a id="Run-from-the-CLI"></a>
+```
+
 ## Run a campaign
 
 ```sh
@@ -26,6 +38,10 @@ julia --startup-file=no --project=. -e 'using PerfChecker; exit(perfchecker_main
 - Each runtime gets a child controller and normal isolated workers.
 - Startup and history files are disabled.
 - `--resume=true` continues an interrupted campaign.
+
+```@raw html
+<a id="Use-explicit-runtime-specs"></a>
+```
 
 ## Explicit specs
 
@@ -56,6 +72,10 @@ PerfChecker ranks source lines whose sampled CPU or allocation weight increased,
 !!! warning "Attribution is not causality"
     A dominant Base, stdlib or compiler frame is a candidate for reduction, not proof of a Julia bug. PerfChecker reports when the evidence is only ranked and not enough for an automatic minimal working example.
 
+```@raw html
+<a id="Produce-a-useful-Julia-issue"></a>
+```
+
 ## File a useful issue
 
 Reduce in this order:
@@ -66,11 +86,3 @@ Reduce in this order:
 4. the effective Project/Manifest and hardware context;
 5. a short reproduction command;
 6. the ranked profile artifact as supporting evidence.
-
-```@raw html
-<a id="Julia-RC-and-nightly-campaigns"></a>
-<a id="Prepare-Julia-channels"></a>
-<a id="Run-from-the-CLI"></a>
-<a id="Use-explicit-runtime-specs"></a>
-<a id="Produce-a-useful-Julia-issue"></a>
-```
