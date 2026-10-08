@@ -17,7 +17,7 @@ bundle_directory = "results/<run>/bundles/<bundle>"  # printed by the suite run
 bundle = read_run_bundle(bundle_directory)
 catalog = plot_catalog(bundle)
 model = performance_plot(bundle)
-figure = performance_figure(model)
+figure = performance_figure(bundle)
 html = performance_plot_html(model)
 ```
 
@@ -26,6 +26,69 @@ html = performance_plot_html(model)
 - `performance_figure` renders it with Makie; `performance_plot_html` exports standalone HTML.
 
 A native-item `testitems.json` is not a suite bundle and is not accepted here.
+
+## Customize and export Makie figures
+
+Load `PerfCheckerMakie` and a display or export backend. Makie settings have
+three explicit namespaces, so a plot's color cannot collide with an axis or
+figure setting. User attributes override presentation defaults; collector names
+and tags are appended to customized titles and subtitles. Unavailable
+measurements remain gaps. Version tick labels default to vertical (`pi/2`).
+Collector names appear in titles and tags in subtitles. Bundle rendering
+resolves the collector from its measurement definition. For a manually built
+model without collector identity, pass `tool="BenchmarkTools"` (or the actual
+collector) explicitly; the default says the collector is unspecified.
+
+```julia
+using PerfChecker, PerfCheckerMakie, CairoMakie
+
+figure = performance_figure(bundle;
+    figure_kwargs = (size = (1000, 600),),
+    axis_kwargs = (backgroundcolor = :white,),
+    plot_kwargs = (color = :navy,), tags = [:comparison])
+saveplot("comparison.svg", figure) # parent directory must exist
+saveplot("comparison.png", figure; px_per_unit = 2)
+```
+
+`figure_kwargs` go to `Figure`, `axis_kwargs` to its axes, and `plot_kwargs` to
+the primary recipe: lines for trajectories, scatterlines for overlays,
+boxplot for distributions, barplot for allocations/deltas/flames, pie or
+heatmap for their respective views. Inspection overlays and reference lines
+retain their own settings. NamedTuples and Symbol-keyed dictionaries are
+accepted; invalid attributes produce Makie's normal error. Static SVG/PNG
+images do not retain interactive tooltips or measurement provenance.
+
+For legacy `CheckerResult` values, the same attribute bundles are accepted by
+`checkres_to_scatterlines`, `checkres_to_boxplots`, `checkres_to_pie` and
+`table_to_pie`. `checkres_figures(result, Val(:benchmark))` collects named
+one trajectory and four distribution figures; `Val(:chairmark)` uses Chairmarks and
+`Val(:alloc)` collects an allocation trajectory and one pie per version.
+Select only relevant views with `kinds=[:trajectory]`, `[:distribution]` or
+`[:pie]` as supported by that collector.
+Distributions default to `times`, `gctimes`, `memory`, `allocs` for BenchmarkTools
+and `times`, `gctimes`, `bytes`, `allocs` for Chairmarks. The `bytes_or_memory`
+alias is excluded. Select a subset with `metrics=[:times, :allocs]`; the selected
+columns must exist in every table, and filenames identify their metric.
+BenchmarkTools time and GC time remain nanoseconds; Chairmarks time remains
+seconds and its GC column remains a unitless fraction. Memory is bytes and
+allocations are counts. No conversion or mixture of these units is performed.
+
+```julia
+figures = checkres_figures(result, Val(:chairmark);
+    kinds = [:distribution], metrics = [:times, :bytes, :allocs])
+paths = saveplot("visuals", figures; format = :png)
+```
+
+Collection exports create the explicit directory, normalize labels into
+portable filenames, and reject colliding names before writing. Existing
+destinations, including symlinks, are preserved by default. Replacement
+requires `overwrite=true`; directories are never replaced. Empty/nonfinite
+samples render a labeled figure; nonfinite samples are omitted and missing
+versions are not converted into zero measurements. A failed collection export
+can retain figures completed earlier in the collection.
+Custom colors also update allocation legends. If flamegraph colors are
+overridden, a visible note explains that colors no longer encode diagnostics;
+the measured frame details remain available through inspection.
 
 ## Normalized overlay
 

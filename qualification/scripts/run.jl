@@ -143,7 +143,8 @@ try
         execute("packages/PerfCheckerPluto/test/generated_controls.jl")
         execute("qualification/shared/contracts.jl")
     elseif suite == "plots"
-        prepare("test/environments/wgl"; satellites = ["PerfCheckerMakie"])
+        prepare("test/environments/wgl"; packages = ["CairoMakie"],
+            satellites = ["PerfCheckerMakie"])
         execute("packages/PerfCheckerMakie/test/runtests.jl")
     elseif suite == "supposition"
         Sys.WORD_SIZE == 64 || error("Supposition qualification requires 64-bit Julia")
