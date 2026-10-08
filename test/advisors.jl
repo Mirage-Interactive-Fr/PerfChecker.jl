@@ -52,6 +52,164 @@
     @test isempty(envelope["recommendations"])
 end
 
+@testitem "Bounded investigation preserves configured MCP decisions and limits" tags=[
+    :integration, :advisor, :bounded_advisor] begin
+    using PerfChecker, HTTP, Sockets
+    project = dirname(Base.active_project())
+    socket = listen(ip"127.0.0.1", 0)
+    port = getsockname(socket)[2]
+    close(socket)
+    requests = Any[]
+    calls = Ref(0)
+    stop_after_first = Ref(false)
+    instructions = "Select the second declared experiment; never invent an experiment."
+    arguments = Dict("locale" => "English",
+        "options" => Dict(
+            "nested" => [Dict("enabled" => true)], "empty" => Any[]))
+    encode(value) = sprint(io -> PerfChecker.JSON.print(io, value))
+    server = HTTP.serve!("127.0.0.1", port; verbose = false) do request
+        request.method == "DELETE" && return HTTP.Response(204)
+        body = PerfChecker._json_parse(String(request.body))
+        push!(requests, (body = body, headers = request.headers))
+        method = body["method"]
+        method == "notifications/initialized" && return HTTP.Response(202)
+        result = if method == "initialize"
+            Dict("protocolVersion" => "2025-11-25",
+                "capabilities" => Dict("tools" => Dict()),
+                "serverInfo" => Dict("name" => "bounded-test", "version" => "1"))
+        elseif method == "tools/list"
+            Dict("tools" => [Dict("name" => "choose_experiment",
+                "inputSchema" => Dict("type" => "object",
+                    "properties" => Dict(
+                        "question" => Dict("type" => "string"),
+                        "locale" => Dict("type" => "string"),
+                        "options" => Dict("type" => "object")),
+                    "required" => ["question", "locale", "options"]))])
+        else
+            calls[] += 1
+            prompt = body["params"]["arguments"]["question"]
+            evidence = PerfChecker._json_parse(last(split(
+                prompt, "\n\nPerfChecker evidence:\n")))
+            selection = stop_after_first[] && calls[] > 1 ? "stop" :
+                        last(evidence["allowed_experiments"])["id"]
+            Dict("structuredContent" => Dict("cards" => [], "experiment_id" => selection))
+        end
+        headers = ["Content-Type" => "application/json"]
+        method == "initialize" && push!(headers, "Mcp-Session-Id" => "bounded-session")
+        HTTP.Response(200, headers,
+            encode(Dict(
+                "jsonrpc" => "2.0", "id" => body["id"], "result" => result)))
+    end
+    config(version) = AdvisorConfig(protocol = :mcp_http,
+        endpoint = "http://127.0.0.1:$port/mcp", mcp_tool = "choose_experiment",
+        mcp_prompt_argument = "question", mcp_arguments = arguments,
+        mcp_version = version, mcp_response = :structured, instructions = instructions,
+        model = "configured-model", max_tokens = 237, max_evidence_chars = 4321,
+        timeout = 120)
+    try
+        # Compile the real POST handlers before measuring isolated worker deadlines.
+        for version in ("2026-07-28", "2025-11-25")
+            Base.invokelatest(advisor_transport, Val(:mcp_http), config(version),
+                Dict("messages" => [Dict("content" => instructions),
+                    Dict("content" => encode(Dict("evidence" => [],
+                        "allowed_experiments" => [Dict(
+                            "id" => "experiment-2", "purpose" => "readiness")])))]))
+        end
+        mktempdir() do root
+            source = joinpath(root, "cases.jl")
+            write(source,
+                """
+  make_case(p) = (prepare=()->2,
+      operation=x->(write(p["marker"], string(getpid())); sleep(get(p, "delay", 0)); x*x),
+      verify=(x,result)->result==4)
+  """)
+            first_marker, chosen_marker = joinpath(root, "first"), joinpath(root, "chosen")
+            catalog = ScenarioCatalog(root,
+                [ScenarioSpec(id; source, factory = "make_case",
+                     parameters = Dict("marker" => marker), collectors = [:benchmark])
+                 for (id, marker) in (("first", first_marker), ("chosen", chosen_marker))])
+            for version in ("2026-07-28", "2025-11-25")
+                empty!(requests)
+                calls[] = 0
+                selected = config(version)
+                before = deepcopy(PerfChecker._advisor_config(selected))
+                result = investigate(
+                    catalog; project, advisor = selected, tools = Symbol[],
+                    samples = 1, max_experiments = 1, budget_seconds = 120)
+                @test result["status"] == "budget_exhausted"
+                @test result["limits"] ==
+                      Dict("max_experiments" => 1, "budget_seconds" => 120)
+                @test length(result["experiments"]) == length(result["runs"]) == 1
+                @test only(result["experiments"])["id"] == "experiment-2"
+                @test only(result["experiments"])["status"] == "complete"
+                @test only(result["runs"])["scenario"]["id"] == "chosen"
+                @test only(result["runs"])["qualification"]["correctness"] == "passed"
+                @test only(result["decisions"])["status"] == "complete"
+                @test only(result["decisions"])["experiment_id"] == "experiment-2"
+                @test only(result["unexecuted"])["id"] == "experiment-1"
+                @test isfile(chosen_marker) && !isfile(first_marker)
+                @test PerfChecker._advisor_config(selected) == before
+                tool_calls = filter(r -> r.body["method"] == "tools/call", requests)
+                @test length(tool_calls) == 1
+                call = only(tool_calls)
+                @test call.body["params"]["name"] == selected.mcp_tool
+                received = call.body["params"]["arguments"]
+                @test received["locale"] == arguments["locale"]
+                @test received["options"] == arguments["options"]
+                @test startswith(received["question"], instructions)
+                @test !haskey(received, "prompt")
+                @test HTTP.header(HTTP.Request("POST", "/", call.headers),
+                    "MCP-Protocol-Version") == version
+                @test length(PerfChecker._json_parse(last(split(received["question"],
+                    "\n\nPerfChecker evidence:\n")))["allowed_experiments"]) == 2
+            end
+
+            empty!(requests)
+            calls[] = 0
+            stop_after_first[] = true
+            stopped = investigate(catalog; project, advisor = config("2026-07-28"),
+                tools = Symbol[], samples = 1, max_experiments = 2, budget_seconds = 120)
+            @test stopped["status"] == "advisor_stopped"
+            @test length(stopped["experiments"]) == 1 && calls[] == 2
+            @test last(stopped["decisions"])["experiment_id"] == "stop"
+            @test !isfile(first_marker)
+
+            empty!(requests)
+            calls[] = 0
+            stop_after_first[] = false
+            rm(chosen_marker)
+            slow = ScenarioCatalog(root,
+                [catalog.scenarios[1],
+                    ScenarioSpec("chosen";
+                        source, factory = "make_case",
+                        parameters = Dict("marker" => chosen_marker,
+                            "delay" => 120),
+                        collectors = [:benchmark])])
+            bounded = investigate(slow; project, advisor = config("2026-07-28"),
+                tools = Symbol[], samples = 1, max_experiments = 2,
+                budget_seconds = 45, timeout = 120)
+            @test bounded["status"] == "budget_exhausted"
+            @test bounded["elapsed_seconds"] < 65
+            @test only(bounded["decisions"])["status"] == "complete"
+            @test only(bounded["experiments"])["status"] == "incomplete"
+            @test only(bounded["runs"])["qualification"]["availability"] == "timeout"
+            @test isfile(chosen_marker) && !isfile(first_marker)
+            @test calls[] == 1 && length(bounded["unexecuted"]) == 1
+            # Assert the actual worker has exited before mktempdir removes the fixture.
+            pid = parse(Int, read(chosen_marker, String))
+            if Sys.iswindows()
+                process_list = read(
+                    ignorestatus(`tasklist /FI $("PID eq $pid") /FO CSV /NH`), String)
+                @test !occursin(",\"$pid\",", process_list)
+            else
+                @test isempty(strip(read(ignorestatus(`ps -p $pid -o stat=`), String)))
+            end
+        end
+    finally
+        close(server)
+    end
+end
+
 @testitem "Unavailable scenarios and nonexecuting catalogue tools" tags=[:unit, :advisor] begin
     using PerfChecker
     Runtime = PerfChecker.SharedScenarioRuntime
