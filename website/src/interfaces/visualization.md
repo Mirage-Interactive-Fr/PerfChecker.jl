@@ -89,6 +89,11 @@ can retain figures completed earlier in the collection.
 Custom colors also update allocation legends. If flamegraph colors are
 overridden, a visible note explains that colors no longer encode diagnostics;
 the measured frame details remain available through inspection.
+`suite_dashboard(result; view=:absolute)` displays minimum elapsed time in
+seconds. BenchmarkTools nanoseconds are converted for this figure only;
+Chairmarks seconds are retained. A legacy collector without known time units
+is excluded with a visible explanation. Original samples and summaries remain
+unchanged; their raw values may use different collector units.
 
 ## Normalized overlay
 
