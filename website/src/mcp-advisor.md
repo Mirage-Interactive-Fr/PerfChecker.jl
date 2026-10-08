@@ -22,6 +22,32 @@ In either MCP route, the controller must contain PerfChecker V1 and `HTTP`.
 first. Advice and implementation are separate actions: receiving an answer never
 approves a source edit.
 
+### Check the controller transport
+
+From your package root, install the transport in the project selected as
+**Runner Project**, not only in the package or scenario worker:
+
+```julia
+import Pkg
+Pkg.activate("perf/controller") # Use your actual selected controller path.
+Pkg.add("HTTP")
+using PerfChecker, HTTP
+Base.get_extension(PerfChecker, :HTTPAdvisorExt) !== nothing
+```
+
+The final expression must return `true`. For an existing controller, keep its
+PerfChecker version and choose the `HTTP` release allowed by its compatibility
+bounds. Loading `HTTP` in a different Julia project cannot enable the transport
+in the advisor worker. The measured package may keep a separate Scenario
+Project with its own collector dependencies.
+
+If the connection reports **advisor protocol extension is unavailable**, check
+the resolved Runner Project, install `HTTP` there, and retry the connection.
+An agent login or API key does not install this Julia dependency. Once connected,
+select a completed saved report in chat and check the displayed attachment
+before asking about its measurements; a conversation without an attachment
+cannot explain that report's results.
+
 For interactive experiments, the [integrated Pluto candidate](interfaces/vscode-workflows.md#Pluto-notebooks-in-VS-Code)
 keeps notebook execution in its separate project. Launch the chosen checks,
 inspect their correctness and save completed reports before selecting that saved

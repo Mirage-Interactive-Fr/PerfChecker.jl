@@ -7,6 +7,7 @@ PerfChecker = "6309bf6b-a531-4b08-891e-8ee981e5c424"
 PerfChecker = {path = ".."}
 
 [compat]
+PerfChecker = "1"
 Documenter = "1.19"
 DocumenterVitepress = "0.3.5"
 julia = "1.10"

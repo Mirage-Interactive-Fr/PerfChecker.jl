@@ -73,6 +73,29 @@ julia --startup-file=no --project=.controller/pluto pluto.jl
 
 The notebook has explicit **Launch**, **Cancel**, **Refresh** and **Save** controls. Opening it, changing a selector or reloading the page starts no measurement. Pluto still evaluates reactive Julia cells; inspect unfamiliar notebook source before opening it in a trusted environment.
 
+The download is the notebook's Julia source, including its cells and cell order.
+Use the copy shipped with the documentation version you are reading, alongside
+that checkout's example files. A screenshot is a recorded result, not a runnable
+notebook. If the first cell asks for `.controller/pluto/Project.toml`, check that
+you saved `notebook.jl` in `examples/bibliography/` and ran the setup command
+there. Reopen that file after correcting its location; changing the directory
+does not recreate a measurement.
+
+For HTTP workloads, download the separate Oxygen notebook:
+
+```@raw html
+<p><a href="../examples/real-packages/oxygen-notebook.jl" download="oxygen-notebook.jl"><strong>Download the Oxygen notebook (.jl)</strong></a></p>
+```
+
+Save it in `examples/kitchen-sink/`, run `julia --startup-file=no setup.jl pluto`
+there, then open it in that controller's Pluto session. Its first cell uses
+`.controller/pluto` relative to the example directory; `PERFCHECKER_EXAMPLE_ROOT`
+can explicitly select that directory when the notebook is stored elsewhere.
+The notebook separates an in-process HTTP feature from actual socket traffic,
+checks the response oracle, and reads the selected version history. Follow the
+[Oxygen walkthrough](../real-packages/oxygen.md) for the workload boundaries and
+saved figures.
+
 To generate a notebook for your own suite:
 
 ```julia
