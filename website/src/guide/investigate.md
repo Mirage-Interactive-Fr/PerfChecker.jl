@@ -1,3 +1,7 @@
+```@raw html
+<a id="Investigate-a-performance-change"></a>
+```
+
 # Investigate a change
 
 Find which calls account for a cost change.
@@ -49,6 +53,10 @@ Profiling adds overhead, so confirm the change with BenchmarkTools or Chairmarks
 - [Native profiling](../native-profiling.md) — Julia runtime and external libraries.
 
 
+```@raw html
+<a id="Inspect-three-recorded-Bibliography-profiles"></a>
+```
+
 ## Recorded examples
 
 ```@raw html
@@ -58,8 +66,3 @@ Profiling adds overhead, so confirm the change with BenchmarkTools or Chairmarks
 ## Next
 
 [Run checks in CI](../tutorials/ci.md).
-
-```@raw html
-<a id="Investigate-a-performance-change"></a>
-<a id="Inspect-three-recorded-Bibliography-profiles"></a>
-```

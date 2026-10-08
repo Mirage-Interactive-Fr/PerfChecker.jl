@@ -1,3 +1,7 @@
+```@raw html
+<a id="Send-PerfChecker-evidence-to-an-MCP-assistant"></a>
+```
+
 # MCP advice and implementation
 
 Connect PerfChecker to a tool on an existing MCP server. PerfChecker acts as the **MCP client** calling your agent's tools. Discuss performance evidence in advice mode, then explicitly request implementation after reviewing the answer. PerfChecker's deterministic findings remain available without an agent or network connection.
@@ -43,6 +47,10 @@ PERFCHECKER_TEST_CODEX=/path/to/codex node --test test/codex-real.test.mjs
 ```
 
 This sends real model requests against your existing account and removes its disposable Node/Git fixture. It qualifies the connector lifecycle; it does not establish a performance improvement for your Julia package.
+
+```@raw html
+<a id="Configure-the-assistant"></a>
+```
 
 ## Configure the advice tool
 
@@ -117,6 +125,10 @@ The equivalent essential folder settings are:
 Tool names and prompt-argument names are checked before the request. Required extra arguments must be configured. `max_tokens` configures model-provider requests; a generic MCP tool controls its own model limits and cost policy.
 
 For remote servers, use HTTPS and set `allow_remote = true`. Put the Bearer token in the named environment variable available to VS Code's extension host, never in the JSON or `mcp_arguments`. OAuth login/refresh is not implemented.
+
+```@raw html
+<a id="Prompt-and-results"></a>
+```
 
 ## Talk to the advisor
 
@@ -230,6 +242,10 @@ Chat additionally sends your typed messages and retained earlier replies. Anythi
 
 The local Codex connector can additionally inspect files in the selected advice workspace or isolated implementation checkout; a bounded evidence projection does not prevent those reads. Text results carry `reference_status = "unstructured_not_verified"`; individual statements get no invented citations. No API here adopts a performance baseline automatically.
 
+```@raw html
+<a id="Optional-bounded-investigation"></a>
+```
+
 ## Structured investigations
 
 Structured mode belongs to bounded investigation, rather than free-form implementation chat. The local Codex connection supplies text chat tools. Disconnect it before configuring an external structured tool. To let that assistant select an experiment, use `mcp_response = "structured"` and enable `advisorInvestigates`. The tool returns:
@@ -285,10 +301,3 @@ See the official [2026-07-28 Streamable HTTP specification](https://modelcontext
 | Codex disconnected after reload | Connect again; saved provider settings and Git recovery are retained |
 
 Unsupported interactions, malformed responses and tool errors retain the deterministic fallback. A failed optional advisor does not change measured verdicts.
-
-```@raw html
-<a id="Send-PerfChecker-evidence-to-an-MCP-assistant"></a>
-<a id="Configure-the-assistant"></a>
-<a id="Prompt-and-results"></a>
-<a id="Optional-bounded-investigation"></a>
-```

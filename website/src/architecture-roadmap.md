@@ -16,6 +16,10 @@ The Julia satellites live in `packages/` in the same repository, so a shared-con
 
 PerfChecker does not need a global active backend. A notebook, a web job and a VS Code item have their own controller state and may stay open together.
 
+```@raw html
+<a id="Extensions-that-remain-useful"></a>
+```
+
 ## Extensions that stay useful
 
 Small interoperability methods stay in Julia extensions: BenchmarkTools and Chairmarks measurements, the TestItemRunner bridge, UnicodePlots rendering and Documenter report blocks. They adapt an existing API without owning an application or a large dependency tree.
@@ -43,7 +47,10 @@ A collection is a set of compatible, tested component versions — not one Manif
 
 The [qualification contract](reference/qualification.md) requires the same candidate revisions, campaign ID, successful lanes and unmodified artifacts before publication. A targeted PR result cannot promote a complete collection.
 
+
+```@raw html
 <a id="Register-packages-from-the-shared-repository"></a>
+```
 
 ## Registering from the shared repository
 
@@ -57,6 +64,15 @@ The local `[sources.PerfChecker]` path is a development convenience when an inte
 
 Registration is separate per package, for example `@JuliaRegistrator register subdir=packages/PerfCheckerWeb` on a published release commit. The engine version required by an interface's compat bounds must also be registered.
 
+```@raw html
+<a id="Temporary-previews-before-registration"></a>
+```
+
+For an unregistered interface, use the explicit repository-subdirectory recipe
+in [Installation](guide/installation.md#Optional-packages). A candidate requires
+its published revision and dependencies; the documentation does not establish
+that a future release is available.
+
 ## Test items and performance evidence
 
 - The TestItemRunner bridge discovers existing declarations and can run one item in a fresh process.
@@ -66,14 +82,12 @@ Registration is separate per package, for example `@JuliaRegistrator register su
 
 Saved bundles retain the metric definition, runtime, source identity, environment and qualification outcome needed to judge comparability.
 
+```@raw html
+<a id="Platform-and-prediction-limits"></a>
+```
+
 ## Platform limits
 
 - Windows and Linux are recorded separately.
 - macOS is not currently qualified.
 - The cross-machine estimator is an experimental planning aid; predictions never replace measurements or qualify a blocking CI decision.
-
-```@raw html
-<a id="Extensions-that-remain-useful"></a>
-<a id="Platform-and-prediction-limits"></a>
-<a id="Temporary-previews-before-registration"></a>
-```

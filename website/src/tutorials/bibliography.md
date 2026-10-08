@@ -1,3 +1,7 @@
+```@raw html
+<a id="Bibliography:-run-the-complete-suite"></a>
+```
+
 # Bibliography: the complete suite
 
 Bibliography imports, processes and exports bibliographic entries. Its parser and data model live in BibParser and BibInternal, so a slower export need not come from the parser.
@@ -13,6 +17,10 @@ New to profiling? Read [Understand the result](../guide/understanding-measuremen
 - `history.jl run` — compare nine released stacks.
 - `compare-exports.jl run` — compare one source change with dependencies fixed.
 - VS Code, Oxygen, Pluto — the same selections through controls.
+
+```@raw html
+<a id="Prepare-the-example-once"></a>
+```
 
 ## Prepare once
 
@@ -32,6 +40,10 @@ Preparation creates `sources.toml`, `suite.jl`, several launchers, `.sources/` (
 - Bibliography 0.4.0 — `575ec81`
 
 Preparation does not modify your existing checkouts. A later run checks the recorded revisions and refuses to replace local edits.
+
+```@raw html
+<a id="Inspect-the-full-suite"></a>
+```
 
 ## Inspect the suite
 
@@ -57,6 +69,10 @@ julia --project=.controller/core run.jl plan
 
 Planning starts no worker. Check the status column before running.
 
+```@raw html
+<a id="Run-the-seven-timing-checks"></a>
+```
+
 ## Select a package, workload and collector
 
 ```sh
@@ -77,11 +93,19 @@ print_suite_plan(selected)
 
 `features = :export_bibtex` matches the logical workload across collectors; you do not need the technical leaf name.
 
+```@raw html
+<a id="Why-the-sampling-profiles-reuse-their-inputs"></a>
+```
+
 ### Why the sampling profiles reuse their input
 
 The CPU and wall-time profiles call the original workload repeatedly with one prepared input during a continuous sampling window. These workloads read their inputs, and `verify-reuse.jl` checks that two calls leave state and file bytes unchanged. Timing and allocation collectors keep fresh state.
 
 An empty profile is missing evidence, not proof the operation is free. Never copy this reuse policy to a workload that mutates its input.
+
+```@raw html
+<a id="Read-the-report-before-interpreting-the-graph"></a>
+```
 
 ## Read the report before the graph
 
@@ -92,6 +116,11 @@ Open `suite-report.md` first. The same run is available as `suite-result.json` a
 - A quick run against one target has no baseline. It cannot show an improvement.
 - Preserve unavailable collectors and worker failures instead of filtering them into an apparent pass.
 
+```@raw html
+<a id="Open-the-same-suite-in-the-REPL"></a>
+<a id="Open-the-web-interface"></a>
+```
+
 ## Open the interfaces
 
 ```sh
@@ -101,9 +130,14 @@ julia setup.jl pluto &&  julia --project=.controller/pluto pluto.jl
 julia setup.jl items &&  julia --project=.controller/items items.jl performance
 ```
 
-Open the web interface at <http://127.0.0.1:8871/perfchecker/v1/>.
-
+```@raw html
 <a id="Open-the-web-studio"></a>
+```
+
+After starting `web.jl` above, open `http://127.0.0.1:8871/perfchecker/v1/`
+on the same machine. This address belongs to your local server and is available
+only while that command is running.
+
 
 ### Watch one export check
 
@@ -117,6 +151,15 @@ Open the web interface at <http://127.0.0.1:8871/perfchecker/v1/>.
 After `history.jl run`, open **Results**, filter **Profile** to **historical**, and select the campaign. Choose feature `export_bibtex`, metric `julia.wall.time`, view `version_series`. Switch to `julia.alloc.bytes` for allocated bytes, `distribution` for all 900 timings, or `version_delta` for comparisons against 0.1.0.
 
 The run is `partially_executed`: eight planned workloads do not exist in earlier versions, so their points are absent. `inconclusive` means no acceptance threshold was configured.
+
+```@raw html
+<a id="Use-VS-Code"></a>
+```
+
+For suite checks in VS Code, open `examples/bibliography/`, set **PerfChecker:
+Runner Project** to `.controller/core`, and select `suite.jl` in Studio. Choose
+the export workload and its collector before launching. The native TestItems
+below use their separate `.controller/items` environment.
 
 ## Reuse the upstream tests as native items
 
@@ -206,17 +249,4 @@ To locate the calls responsible for a cost, continue with [Investigating a chang
 
 ```@raw html
 <DocMedia src="/examples/bibliography/figures/history-time.svg" alt="Bibliography export medians across nine tagged versions on a linear microsecond axis" caption="One hundred samples per tag, Windows, Julia 1.13.0, one worker thread. Inputs match; the dependency stack evolves with the tags. Lower means less elapsed time." />
-```
-
-
-```@raw html
-<a id="Bibliography:-run-the-complete-suite"></a>
-<a id="Prepare-the-example-once"></a>
-<a id="Inspect-the-full-suite"></a>
-<a id="Run-the-seven-timing-checks"></a>
-<a id="Why-the-sampling-profiles-reuse-their-inputs"></a>
-<a id="Read-the-report-before-interpreting-the-graph"></a>
-<a id="Open-the-same-suite-in-the-REPL"></a>
-<a id="Open-the-web-interface"></a>
-<a id="Use-VS-Code"></a>
 ```

@@ -37,6 +37,11 @@ If this is your first setup, follow [Prepare a controller](vscode-configuration.
 
 See [Installation](../guide/installation.md) for the core and interface packages, and [VS Code configuration](vscode-configuration.md) for complete settings and environment examples.
 
+```@raw html
+<a id="Run-one-existing-item"></a>
+<a id="Read-the-result-before-comparing-it"></a>
+```
+
 ## Get a first result
 
 For a project using `@testitem`:
@@ -88,6 +93,10 @@ For a suite, use **PerfChecker: Create feature suite** if you need a starter, or
 
 These are VS Code editor tabs and native surfaces. Arrange them with VS Code's editor groups; the activity bar is an entry point, not the available working area.
 
+```@raw html
+<a id="Visual-suite-editor"></a>
+```
+
 ## Design a suite and compare targets
 
 The suite editor supports global and per-feature check selection, version ranges, filtering, sorting and ordering. Name targets for a branch, tag, commit, working tree or release, then choose exact or grouped baselines. Grouped references can use median, mean, minimum or maximum aggregation.
@@ -105,6 +114,10 @@ Collector toggles select or deselect matching runs. Unavailable conditions show 
 
 ```@raw html
 <DocMedia src="/assets/screenshots/vscode-suite-designer.png" alt="Running PerfChecker V1 suite-designer webview with workload filters, selected check types, target controls and a run-selection summary" caption="Review the exact runs before executing: filtering controls visibility, while selection controls what will run. The screenshot uses demonstration workloads in the extension's real suite designer." />
+```
+
+```@raw html
+<a id="Results"></a>
 ```
 
 ### Choose the evidence for your question
@@ -146,6 +159,10 @@ package → feature → check type → target
 ```
 
 Read [Suites and comparisons](../suites-and-comparisons.md) before interpreting a result across environments or machines. Never infer an improvement from a profile weight alone.
+
+```@raw html
+<a id="Optional-investigations"></a>
+```
 
 ## Investigate and verify
 
@@ -223,12 +240,4 @@ Use **PerfChecker: Show worker output** for execution diagnostics. See [configur
 
 ```@raw html
 <DocMedia src="/examples/bibliography/vscode/native-items.png" alt="Bibliography export workload passed in VS Code while its format API item remains unrun" caption="Earlier native Testing controller example: one selected Bibliography item executed. This image does not show the Studio or implementation workflow." />
-```
-
-```@raw html
-<a id="Run-one-existing-item"></a>
-<a id="Read-the-result-before-comparing-it"></a>
-<a id="Visual-suite-editor"></a>
-<a id="Results"></a>
-<a id="Optional-investigations"></a>
 ```

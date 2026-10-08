@@ -25,12 +25,15 @@ ENV["PERFCHECKER_DOCS_VERSION"] = docs_version
 ENV["PERFCHECKER_DOCS_CHANNEL"] = docs_channel
 ENV["PERFCHECKER_DOCS_HOSTING"] = docs_sftp ? "sftp" : "github"
 
+source_root = normpath(joinpath(@__DIR__, ".."))
+source_revision = strip(read(`git -C $source_root rev-parse HEAD`, String))
+source_remote = Documenter.Remotes.GitHub("Mirage-Interactive-Fr", "PerfChecker.jl")
+
 makedocs(;
     modules = [PerfChecker],
     build = build_directory,
     authors = "PerfChecker contributors",
-    repo = "https://github.com/Mirage-Interactive-Fr/PerfChecker.jl",
-    remotes = Dict(),
+    remotes = Dict(source_root => (source_remote, source_revision)),
     sitename = "PerfChecker.jl",
     format = DocumenterVitepress.MarkdownVitepress(
         build_vitepress = false,

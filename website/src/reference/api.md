@@ -8,6 +8,10 @@ The public API exported by `PerfChecker`. For an executable introduction, start 
 - Shared scenarios: `run_scenarios`, `diagnose`, `compare_scenarios`.
 - Optional MCP APIs: `chat_advice` for bounded conversation; `implement_advice` for an explicit tool on a caller-owned isolated checkout. The caller owns checkpointing and diff review outside the VS Code extension; see [the MCP guide](../mcp-advisor.md).
 
+```@raw html
+<a id="Interface-API-ownership"></a>
+```
+
 ## Interface packages
 
 Some entry points are implemented by an interface package. Install and load the owner to get its method.
@@ -23,15 +27,14 @@ Some entry points are implemented by an interface package. Install and load the 
 Modules = [PerfChecker]
 ```
 
+```@raw html
+<a id="Public-docstrings"></a>
+```
+
 ## Docstrings
 
 ```@autodocs
 Modules = [PerfChecker]
 Public = true
 Order = [:module, :constant, :type, :macro, :function]
-```
-
-```@raw html
-<a id="Interface-API-ownership"></a>
-<a id="Public-docstrings"></a>
 ```

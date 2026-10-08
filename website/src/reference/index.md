@@ -1,3 +1,7 @@
+```@raw html
+<a id="How-to-use-this-reference"></a>
+```
+
 # Reference
 
 Look up a format, option or function after you have chosen a workflow. For a first runnable example, start with [Quickstart](../guide/first-check.md).
@@ -10,7 +14,3 @@ Look up a format, option or function after you have chosen a workflow. For a fir
 - [Julia API](api.md) — function arguments and docstrings.
 
 Paths in these pages (`perf/suite.jl`, `results/...`) are files you supply or reports you already saved — not packages.
-
-```@raw html
-<a id="How-to-use-this-reference"></a>
-```

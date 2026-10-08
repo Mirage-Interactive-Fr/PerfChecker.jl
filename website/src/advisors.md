@@ -1,9 +1,17 @@
+```@raw html
+<a id="Optional-models-and-bounded-investigations"></a>
+```
+
 # Optional advisors
 
 PerfChecker's deterministic advice works with no model and no network. An optional model can explain saved evidence or pick the next experiment from an explicit catalogue. Advice does not execute suggested commands. MCP implementation uses a separately configured tool and reviewed isolated checkout; see [MCP advice and implementation](mcp-advisor.md).
 
 - Generated prose is unverified. Correctness, quality, performance and availability keep independent verdicts.
 - The deterministic advisor remains the fallback for any provider failure.
+
+```@raw html
+<a id="Local-default-and-interchangeable-providers"></a>
+```
 
 ## Providers
 
@@ -48,6 +56,10 @@ The projection does not include raw logs, source files, automatic source-locatio
 
 Validation checks references and allowed actions — not the truth of the prose. Evidence IDs must exist; duplicates and unknown experiment IDs are rejected; response size is bounded.
 
+```@raw html
+<a id="Investigation-limits"></a>
+```
+
 ## Bounded investigations
 
 ```julia
@@ -63,7 +75,15 @@ result = investigate(catalog; project = "perf", advisor = config,
 - An experiment marked complete means its execution completed — not that performance is acceptable.
 - No threshold or baseline is adopted automatically.
 
+```@raw html
+<a id="Interfaces"></a>
+```
+
 `discover`, `sync`, `tools`, `diagnose`, `narrate`, `chat`, `implement`, `investigate` and `evaluate-advisors` have CLI counterparts. Implementation callers outside VS Code own checkpointing and diff review.
+
+```@raw html
+<a id="Evaluate-usefulness-before-increasing-autonomy"></a>
+```
 
 ## Evaluate usefulness before adding autonomy
 
@@ -77,11 +97,3 @@ Run `evaluate.jl` in a prepared environment, optionally with a provider config. 
 - Local inference has no API fee, but energy and machine costs are unmeasured.
 
 Results from one small model and host do not establish general model accuracy.
-
-```@raw html
-<a id="Optional-models-and-bounded-investigations"></a>
-<a id="Local-default-and-interchangeable-providers"></a>
-<a id="Investigation-limits"></a>
-<a id="Interfaces"></a>
-<a id="Evaluate-usefulness-before-increasing-autonomy"></a>
-```

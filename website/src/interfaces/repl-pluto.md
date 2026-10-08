@@ -1,6 +1,14 @@
+```@raw html
+<a id="Read-the-numbers-in-either-interface"></a>
+```
+
 # REPL and Pluto
 
 Use the REPL for a short command-driven session. Use Pluto to keep an editable notebook with controls and plots.
+
+```@raw html
+<a id="REPL-workflow"></a>
+```
 
 ## REPL
 
@@ -22,6 +30,10 @@ result = run_suite_repl(selected; overrides, strict = false)
 
 The configurator filters packages, features, check types and targets. It prints the resolved plan before running.
 
+```@raw html
+<a id="Use-a-saved-suite-bundle,-as-loaded-in-the-plotting-tutorial."></a>
+```
+
 For terminal-native summaries, add UnicodePlots to the controller:
 
 ```julia
@@ -32,6 +44,10 @@ terminal_plot(bundle, plot_id)
 ```
 
 Terminal plots are a compact fallback. They do not replace hover, linked selection or source drill-down in the graphical views.
+
+```@raw html
+<a id="Pluto-dashboard"></a>
+```
 
 ## Pluto
 
@@ -83,10 +99,3 @@ Measurements run in fresh workers. The notebook shows their status and result ro
 ## Next
 
 [Plots](visualization.md) explores saved bundles visually.
-
-```@raw html
-<a id="Read-the-numbers-in-either-interface"></a>
-<a id="REPL-workflow"></a>
-<a id="Use-a-saved-suite-bundle,-as-loaded-in-the-plotting-tutorial."></a>
-<a id="Pluto-dashboard"></a>
-```

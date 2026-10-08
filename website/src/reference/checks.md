@@ -1,3 +1,8 @@
+```@raw html
+<a id="Check-catalog"></a>
+<a id="Implemented-backends"></a>
+```
+
 # Collectors
 
 A **check type** selects how a workload is measured. Each runs in an isolated worker with the chosen collector.
@@ -8,6 +13,10 @@ A **check type** selects how a workload is measured. Each runs in an isolated wo
 
 ## Benchmarks
 
+```@raw html
+<a id="BenchmarkTools:-elapsed-time-and-allocation-cost"></a>
+```
+
 ### `:benchmark` (BenchmarkTools)
 
 Elapsed time, GC time, allocated bytes and allocation count. The default choice.
@@ -15,6 +24,10 @@ Elapsed time, GC time, allocated bytes and allocation count. The default choice.
 - Inspect the distribution, not only the median.
 - Preparation outside the measured expression is excluded.
 - Requires BenchmarkTools.
+
+```@raw html
+<a id="Chairmarks:-another-repeated-measurement-collector"></a>
+```
 
 ### `:chairmark` (Chairmarks)
 
@@ -25,6 +38,10 @@ The same quantities as a low-overhead alternative for short measurements.
 
 ## Profiles
 
+```@raw html
+<a id="CPU-profiling:-find-frequently-observed-call-paths"></a>
+```
+
 ### `:profile` — CPU samples
 
 Sampling profiler call stacks. A sample is not a call count.
@@ -32,11 +49,19 @@ Sampling profiler call stacks. A sample is not a call count.
 - Follow a wide branch into its callees and inspect the source.
 - An empty capture is missing evidence, not a zero-cost function.
 
+```@raw html
+<a id="Wall-time-profiling:-investigate-tasks-and-waiting"></a>
+```
+
 ### `:wall_profile` — task wall-time samples
 
 Captures task stacks, including tasks that are waiting. Requires Julia 1.12 or later.
 
 - Use it when elapsed time is high but CPU samples do not explain it.
+
+```@raw html
+<a id="Allocation-profiling:-find-where-objects-are-created"></a>
+```
 
 ### `:profile_alloc` — allocation stacks
 
@@ -73,6 +98,10 @@ CSV profile caches retain this qualification in a matching
 `.csv.allocation-profile.toml` sidecar. A legacy cache without it is recomputed
 instead of guessing what an empty table meant.
 
+```@raw html
+<a id="Line-allocation-tracking:-attribute-bytes-to-source"></a>
+```
+
 ### `:alloc` — allocation by source line
 
 Allocation bytes attributed to file and line.
@@ -104,6 +133,10 @@ covered by the include journal. A forcibly killed controller, power loss or
 repeated interruption that prevents its cleanup code from running can leave
 traces; no blanket deletion of a package's `.mem` files is performed on restart.
 
+```@raw html
+<a id="Network-collectors:-payload,-traffic-and-attribution"></a>
+```
+
 ## Network
 
 - `:network` — counters the workload reports. Safe to gate CI on those counters.
@@ -111,6 +144,10 @@ traces; no blanket deletion of a package's `.mem` files is performed on restart.
 - `:network_isolated` — dedicated network namespace. Safe to gate CI.
 
 See [Network measurement](../network-measurement.md) for attribution and which counts double on loopback.
+
+```@raw html
+<a id="One-feature,-several-checks"></a>
+```
 
 ## One workload, several checks
 
@@ -145,18 +182,4 @@ The entrypoint is ordinary Julia and must return the same result for every targe
 
 ```@raw html
 <DocMedia src="/examples/bibliography/figures/profile-allocations.png" alt="Recorded Bibliography export flame graph weighted by sampled allocation bytes" caption="A real capture at revision 575ec81, weighted by sampled allocation bytes. Width includes descendants; the 40 highest-weight stacks are retained. Open the interactive profiles to zoom and inspect full call paths." />
-```
-
-
-```@raw html
-<a id="Check-catalog"></a>
-<a id="BenchmarkTools:-elapsed-time-and-allocation-cost"></a>
-<a id="Chairmarks:-another-repeated-measurement-collector"></a>
-<a id="CPU-profiling:-find-frequently-observed-call-paths"></a>
-<a id="Wall-time-profiling:-investigate-tasks-and-waiting"></a>
-<a id="Allocation-profiling:-find-where-objects-are-created"></a>
-<a id="Line-allocation-tracking:-attribute-bytes-to-source"></a>
-<a id="Network-collectors:-payload,-traffic-and-attribution"></a>
-<a id="Implemented-backends"></a>
-<a id="One-feature,-several-checks"></a>
 ```

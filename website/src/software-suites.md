@@ -1,3 +1,7 @@
+```@raw html
+<a id="Software-suites"></a>
+```
+
 # Define a suite
 
 A `SoftwareSuite` names the packages, workloads, collectors and versions to measure — a Julia configuration object, not a package to install.
@@ -7,6 +11,10 @@ A `SoftwareSuite` names the packages, workloads, collectors and versions to meas
 - `FeatureSpec` — one workload file, collector and settings.
 - `PackageSuite` — a target package, its worker environment and its features.
 - `SoftwareSuite` — the participating package suites and comparisons.
+
+```@raw html
+<a id="Open-the-supplied-suite"></a>
+```
 
 ## Load and inspect
 
@@ -21,6 +29,11 @@ print_suite_plan(plan)
 
 Planning lists checks. It does not measure anything.
 
+```@raw html
+<a id="Select-one-workload-and-one-collector"></a>
+<a id="Run-and-save"></a>
+```
+
 ## Select and run
 
 ```julia
@@ -34,6 +47,11 @@ result = run_suite_repl(selected; reports = report_directory, strict = false,
 ```
 
 A new directory preserves earlier measurements. Read `suite-report.md` first.
+
+```@raw html
+<a id="Understand-its-workload-definition"></a>
+<a id="Adapt-the-suite-to-your-package"></a>
+```
 
 ## Workload lifecycle
 
@@ -59,6 +77,10 @@ The controller holds PerfChecker and the interface you use. `worker_environment`
 
 Do not substitute one environment for the other.
 
+```@raw html
+<a id="Add-versions-and-comparisons"></a>
+```
+
 ## Profiles
 
 - `:quick` — current local sources.
@@ -75,17 +97,10 @@ Add candidates with `SuiteCandidate` and references with `ComparisonPolicy`. See
 <DocMedia src="/examples/bibliography/figures/history-samples.svg" alt="Bibliography export samples grouped by nine tagged versions" caption="The same export workload can be repeated across a version matrix. Each dot is one recorded timing. The quick selection above measures just the pinned development revision; it does not produce this nine-version history." />
 ```
 
+```@raw html
+<a id="Continue-with-the-same-experiment"></a>
+```
+
 ## Next
 
 [Compare two versions](tutorials/comparisons.md).
-
-```@raw html
-<a id="Software-suites"></a>
-<a id="Open-the-supplied-suite"></a>
-<a id="Understand-its-workload-definition"></a>
-<a id="Select-one-workload-and-one-collector"></a>
-<a id="Run-and-save"></a>
-<a id="Adapt-the-suite-to-your-package"></a>
-<a id="Add-versions-and-comparisons"></a>
-<a id="Continue-with-the-same-experiment"></a>
-```

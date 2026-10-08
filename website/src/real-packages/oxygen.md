@@ -1,8 +1,16 @@
+```@raw html
+<a id="Oxygen:-from-individual-routes-to-real-network-traffic"></a>
+```
+
 # Oxygen: HTTP features and network traffic
 
 An HTTP request involves several operations: matching a route, parsing parameters, running a handler and writing a response. This example measures those in-process, then adds a client and server to measure real socket traffic.
 
 It compares **seven HTTP features across 14 Oxygen releases (1.0.0–1.11.0)**, three application routes that process JSON events, and network measurements from 1.7.0 to 1.11.0.
+
+```@raw html
+<a id="1.-Start-with-a-request-whose-answer-is-known"></a>
+```
 
 ## 1. Check one request
 
@@ -30,6 +38,10 @@ This calls `/features/add/19/23`. Oxygen parses the two typed path parameters, c
 - `html` — `Oxygen.html` helper; exact HTML body.
 - `binary` — `Oxygen.binary`, 4 KiB echo; bytes equal the submission.
 - `not_found` — missing-route dispatch; HTTP 404.
+
+```@raw html
+<a id="2.-Follow-recent-patches-and-locate-a-candidate-regression"></a>
+```
 
 ## 2. Follow releases
 
@@ -61,6 +73,10 @@ Only Oxygen's version is fixed explicitly. Pkg resolves HTTP, DataStructures and
     HTTP.jl versions 0.9, 1 and 2 are **package** versions. The HTTP/1.1 and HTTP/2 **wire protocols** are a separate matter. The loopback experiment below uses plain HTTP without TLS.
 
 ```@raw html
+<a id="Separate-figures-for-every-feature"></a>
+```
+
+```@raw html
 <p>Each feature has tabs for the complete history and the 1.10 patches. Hover or focus a point for its value; use the metric buttons to show or hide curves.</p>
 <WorkloadAtlas directory="/examples/real-packages/oxygen-features" />
 <PackageGallery package-name="Oxygen feature catalogue" directory="/examples/real-packages/oxygen-features" />
@@ -78,6 +94,10 @@ julia --project=.controller/oxygen items.jl run http_plain
 
 Tagged `:perf_only`, `:oxygen` and a feature tag. A whole-item measurement includes setup and assertions; the suite's operation timing excludes them.
 
+```@raw html
+<a id="3.-Add-application-work-without-mixing-package-comparisons"></a>
+```
+
 ## 3. Add application work
 
 ```sh
@@ -94,6 +114,11 @@ Compare the heap route with the plain-text case. If only the heap route changes,
 <WorkloadAtlas directory="/examples/real-packages/oxygen" />
 ```
 
+
+```@raw html
+<a id="Follow-the-recent-server-releases,-patch-by-patch"></a>
+<a id="Compare-socket-measurements-across-releases"></a>
+```
 
 ## 4. Measure real network traffic
 
@@ -114,6 +139,10 @@ julia --project=.controller/linux oxygen/network-history.jl
 ```
 
 The packet experiment selects `lo`, echoes four sizes (64 B, 4 KiB, 64 KiB, 1 MiB) and verifies all 30 responses byte-for-byte at each. Three idle windows establish whether unrelated loopback traffic was visible.
+
+```@raw html
+<a id="Latency,-throughput,-bytes-and-packets-are-different-measurements"></a>
+```
 
 ### Keep the measurements apart
 
@@ -149,6 +178,10 @@ The capability probe checks namespace and nftables support first. The recorded i
 
 The older releases were measured only in the in-process experiment. These Linux socket measurements are a separate experiment from the Windows in-process timings.
 
+```@raw html
+<a id="5.-Find-the-expensive-call-paths"></a>
+```
+
 ## 5. Find expensive call paths
 
 ```sh
@@ -163,6 +196,12 @@ julia --project=.controller/extras profiles.jl results/YOUR-PROFILE-RUN exports/
 
 
 Profiling adds overhead. Re-measure a proposed change with BenchmarkTools or Chairmarks. If a short request yields too few CPU samples, profile a larger input or repeat longer.
+
+```@raw html
+<a id="First-request-versus-warm-request"></a>
+<a id="Allocation-activity-and-garbage-collection"></a>
+<a id="Reachable-objects,-RSS-and-locks"></a>
+```
 
 ## 6. Diagnose inference, startup, allocation and retention
 
@@ -196,6 +235,10 @@ The seven reports use 2,048 events, matching the timing history. The scenario sc
 ```
 
 
+```@raw html
+<a id="Native-libraries-and-memory-tools"></a>
+```
+
 ### Native libraries
 
 On Linux/WSL:
@@ -213,6 +256,10 @@ julia --startup-file=no --project=.controller/linux native-run.jl oxygen
 
 The recorded run completed Callgrind, Massif and heaptrack with a passing oracle. Memcheck and Cachegrind hit their time limit during Julia compilation; their reports are incomplete. Massif's axis counts instrumented instructions, not seconds. No GPU, remote-host or hardware-counter measurements were run.
 
+```@raw html
+<a id="7.-Preserve-experiments-and-reuse-the-same-evidence"></a>
+```
+
 ## 7. Reuse the same evidence
 
 ```sh
@@ -227,10 +274,10 @@ julia --project=.controller/web web.jl oxygen-features
 
 The web interface runs on port 8873 by default; the loopback experiment uses a separate port and router. Choose the **historical** profile for all 14 releases, then set **Samples = 30**, **Evals = 1**, **Seconds = 0.25**, **Threads = 1**. DrWatson caches under the stored parameters; set `PERFCHECKER_FORCE=true` to measure again.
 
+
 ```@raw html
 <a id="Oxygen-Web-Studio-and-VS-Code"></a>
 ```
-
 
 VS Code settings for `examples/kitchen-sink`:
 
@@ -242,30 +289,20 @@ VS Code settings for `examples/kitchen-sink`:
 }
 ```
 
-To share an improvement, include the before/after results and the change that produced them. See [Documentation guide](../contributing/documentation.md).
-
 ```@raw html
-<p><a href="../examples/real-packages/oxygen-notebook.jl" download>Download the Oxygen notebook (.jl)</a></p>
-```
-
-```@raw html
-<a id="Oxygen:-from-individual-routes-to-real-network-traffic"></a>
-<a id="1.-Start-with-a-request-whose-answer-is-known"></a>
-<a id="2.-Follow-recent-patches-and-locate-a-candidate-regression"></a>
-<a id="Separate-figures-for-every-feature"></a>
-<a id="3.-Add-application-work-without-mixing-package-comparisons"></a>
-<a id="Latency,-throughput,-bytes-and-packets-are-different-measurements"></a>
-<a id="Follow-the-recent-server-releases,-patch-by-patch"></a>
-<a id="Compare-socket-measurements-across-releases"></a>
-<a id="5.-Find-the-expensive-call-paths"></a>
-<a id="First-request-versus-warm-request"></a>
-<a id="Allocation-activity-and-garbage-collection"></a>
-<a id="Reachable-objects,-RSS-and-locks"></a>
-<a id="Native-libraries-and-memory-tools"></a>
-<a id="7.-Preserve-experiments-and-reuse-the-same-evidence"></a>
 <a id="REPL-and-Unicode-plots"></a>
 <a id="Makie-and-standalone-HTML"></a>
 <a id="A-dedicated-Pluto-notebook"></a>
 <a id="Web-interface-(Oxygen)-and-VS-Code"></a>
 <a id="Or-reopen-a-completed-report:"></a>
+```
+
+For terminal plots, Makie, Pluto and reopening a completed run, follow the
+[interface recipes](interfaces.md). Download the notebook below for the same
+Oxygen experiment.
+
+To share an improvement, include the before/after results and the change that produced them. See [Documentation guide](../contributing/documentation.md).
+
+```@raw html
+<p><a href="../examples/real-packages/oxygen-notebook.jl" download>Download the Oxygen notebook (.jl)</a></p>
 ```
