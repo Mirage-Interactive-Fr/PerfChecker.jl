@@ -5,7 +5,9 @@ import {createRequire} from 'node:module';
 import {pathToFileURL} from 'node:url';
 import path from 'node:path';
 
-const {chromium} = createRequire(import.meta.url)('playwright');
+const tooling = process.env.PERFCHECKER_PLOT_BROWSER_TOOLING;
+const resolveFrom = tooling ? path.join(path.resolve(tooling), 'package.json') : import.meta.url;
+const {chromium} = createRequire(resolveFrom)('playwright');
 assert(process.argv.length >= 3 && process.argv.length <= 4,
   'Expected exported HTML and an optional screenshot destination');
 const browser = await chromium.launch({
