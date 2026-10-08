@@ -189,7 +189,7 @@ function _normalized_plot(
         "package" => entry["package"], "feature" => entry["feature"],
         "workload" => entry["workload"], "unit" => "ratio", "versions" => versions,
         "reference_version" => reference, "statistic" => string(statistic), "collector" => entry["collector"],
-        "tags" => get(source.manifest, "tags", String[]),
+        "tags" => source isa RunBundle ? get(source.manifest, "tags", String[]) : String[],
         "zero_reference_policy" => "equal zeros = 1 (unchanged); nonzero / zero = unavailable")
     return PerformancePlot(entry["id"], :normalized_metrics,
         "$(entry["package"]) · $(entry["feature"]) · relative to $reference",
@@ -917,6 +917,18 @@ end
         @test performance_plot(single, legacy["id"]).data == model.data
     end
     @test observations == evidence
+    # VersionComparison exports supply series directly, without a RunBundle
+    # manifest. Preserve this public writer and avoid fabricating absent tags.
+    comparison = compare_suite_versions(source)
+    mktempdir() do directory
+        file = write_version_series_json(comparison, joinpath(directory, "series.json"))
+        exported = PerfChecker.JSON.parse(read(file, String))
+        @test length(exported["plots"]) == 2
+        @test all(plot -> isempty(plot["options"]["tags"]), exported["plots"])
+        @test Set(plot["options"]["collector"] for plot in exported["plots"]) ==
+              Set(["benchmarktools-v1", "chairmarks-v1"])
+        @test length(exported["series"]) == 4
+    end
 end
 
 @testitem "Allocation plot grammar" tags=[:unit, :plots, :allocations] begin
