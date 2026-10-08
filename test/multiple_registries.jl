@@ -13,14 +13,17 @@
             mkpath(path)
             entries = String[]
             for (package_uuid, package_path, versions) in packages
-                push!(entries, "\"$package_uuid\" = { name = \"$package_name\", path = \"$package_path\" }")
+                push!(entries,
+                    "\"$package_uuid\" = { name = \"$package_name\", path = \"$package_path\" }")
                 location = joinpath(path, package_path)
                 mkpath(location)
                 write(joinpath(location, "Package.toml"),
                     "name = \"$package_name\"\nuuid = \"$package_uuid\"\nrepo = \"https://example.invalid/fixture.git\"\n")
-                write(joinpath(location, "Versions.toml"), join([
-                    "[\"$version\"]\ngit-tree-sha1 = \"0000000000000000000000000000000000000000\"\n"
-                    for version in versions], '\n'))
+                write(joinpath(location, "Versions.toml"),
+                    join(
+                        ["[\"$version\"]\ngit-tree-sha1 = \"0000000000000000000000000000000000000000\"\n"
+                         for version in versions],
+                        '\n'))
             end
             write(joinpath(path, "Registry.toml"),
                 "name = \"$name\"\nuuid = \"$uuid\"\nrepo = \"https://example.invalid/$name.git\"\n\n[packages]\n" *
@@ -50,25 +53,30 @@
             push!(DEPOT_PATH, depot)
             registries = Pkg.Registry.reachable_registries()
             @test sort([registry.name for registry in registries]) ==
-                (compressed_available ? ["Compressed", "Custom", "General"] :
-                 ["Custom", "General"])
+                  (compressed_available ? ["Compressed", "Custom", "General"] :
+                   ["Custom", "General"])
             @test all(registry -> startswith(registry.path, registry_root), registries)
-            @test length(only(filter(registry -> registry.name == "Custom", registries)).pkgs) == 2
-            @test PerfChecker.get_pkg_versions(package_name, ["General"]) == [v"0.1.0", v"0.2.0"]
-            @test PerfChecker.get_pkg_versions(package_name, ["Custom"]) == [v"0.1.0", v"0.3.0", v"0.4.0"]
+            @test length(only(filter(
+                registry -> registry.name == "Custom", registries)).pkgs) == 2
+            @test PerfChecker.get_pkg_versions(package_name, ["General"]) ==
+                  [v"0.1.0", v"0.2.0"]
+            @test PerfChecker.get_pkg_versions(package_name, ["Custom"]) ==
+                  [v"0.1.0", v"0.3.0", v"0.4.0"]
             @test PerfChecker.get_pkg_versions(package_name, ["General", "Custom"]) ==
-                [v"0.1.0", v"0.2.0", v"0.3.0", v"0.4.0"]
+                  [v"0.1.0", v"0.2.0", v"0.3.0", v"0.4.0"]
             expected = compressed_available ?
                        [v"0.1.0", v"0.2.0", v"0.3.0", v"0.4.0", v"0.5.0"] :
                        [v"0.1.0", v"0.2.0", v"0.3.0", v"0.4.0"]
             @test PerfChecker.get_pkg_versions(package_name) == expected
             @test isempty(PerfChecker.get_pkg_versions(package_name, ["Missing"]))
             @test isempty(PerfChecker.get_pkg_versions(package_name, String[]))
-            @test PerfChecker.get_pkg_versions(package_name, ["Custom", "General", "Custom"]) ==
-                [v"0.1.0", v"0.2.0", v"0.3.0", v"0.4.0"]
+            @test PerfChecker.get_pkg_versions(
+                package_name, ["Custom", "General", "Custom"]) ==
+                  [v"0.1.0", v"0.2.0", v"0.3.0", v"0.4.0"]
             @test isempty(PerfChecker.get_pkg_versions("MissingPackage"))
             if compressed_available
-                @test PerfChecker.get_pkg_versions(package_name, ["Compressed"]) == [v"0.3.0", v"0.5.0"]
+                @test PerfChecker.get_pkg_versions(package_name, ["Compressed"]) ==
+                      [v"0.3.0", v"0.5.0"]
             end
         finally
             empty!(DEPOT_PATH)

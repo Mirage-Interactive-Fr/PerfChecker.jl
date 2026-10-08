@@ -54,8 +54,9 @@ end
             :targets => ["PerfCheckerListFixture"], :payload => [17, 23, 41],
             :journal => journal)
         if Sys.islinux()
-            options[:expected_affinity] = strip(only(filter(line ->
-                startswith(line, "Cpus_allowed_list:"), readlines("/proc/self/status"))))
+            options[:expected_affinity] = strip(only(filter(
+                line -> startswith(line, "Cpus_allowed_list:"),
+                readlines("/proc/self/status"))))
         end
         before = deepcopy(options)
         preparation = quote
@@ -85,7 +86,9 @@ end
             PerfCheckerListFixture.allocate(d[:payload])
         end
         @test length(results) == 4
-        @test all(result -> result isa PerfChecker.CheckerResult && length(result.tables) == 1, results)
+        @test all(
+            result -> result isa PerfChecker.CheckerResult && length(result.tables) == 1,
+            results)
         @test :bytes in propertynames(only(results[1].tables))
         @test :memory in propertynames(only(results[2].tables))
         @test :filename in propertynames(only(results[3].tables))
