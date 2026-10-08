@@ -1,22 +1,26 @@
 """
     get_pkg_versions(name::String, regname=nothing) -> Vector{VersionNumber}
 
-Find all registered versions of `name` in the installed registries.
+Return the sorted, deduplicated union of versions registered under `name` in
+the installed registries. Entries with that name are considered even when
+their package UUIDs or paths differ between registries. This reads registry
+metadata without adding packages or updating registries.
 
 Example:
 
 ```julia-repl
 julia> get_pkg_versions("ConstraintLearning")
 7-element Vector{VersionNumber}:
+ v"0.1.0"
+ v"0.1.1"
+ v"0.1.2"
+ v"0.1.3"
  v"0.1.4"
  v"0.1.5"
- v"0.1.0"
  v"0.1.6"
- v"0.1.1"
- v"0.1.3"
- v"0.1.2"
 ```
-The optional `regname` argument restricts the lookup to registry names.
+The optional vector `regname` restricts the lookup to those registry names;
+an empty vector or unmatched names returns an empty result.
 """
 function get_pkg_versions(name::String,
         regname::Union{Nothing, Vector{String}} = nothing)::Vector{VersionNumber}
