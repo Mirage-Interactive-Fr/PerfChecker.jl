@@ -203,10 +203,8 @@ function metadata_has_result(metadata::AbstractString, result::UUID)
     header = split(first(lines), ',')
     idx = findfirst(==("result_uuid"), header)
     idx === nothing && return false
-    return any(lines[2:end]) do line
-        cols = split(line, ',')
-        length(cols) >= idx && cols[idx] == string(result)
-    end
+    return any(row -> isequal(row.result_uuid, string(result)),
+        CSV.File(metadata; select = [:result_uuid], types = Dict(:result_uuid => String)))
 end
 
 function cached_output_path(
