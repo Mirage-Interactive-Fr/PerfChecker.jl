@@ -120,7 +120,7 @@ VS Code, the scenario studio, Pluto and the CLI all use `select_scenarios`, `lau
 <a id="API-reference"></a>
 ```
 
-See the [public API](reference/public-api.md) for their contracts.
+See the [Julia API](reference/api.md) for their contracts.
 
 ```@raw html
 <a id="Memory-and-contention-diagnostics"></a>
