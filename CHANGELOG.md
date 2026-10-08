@@ -2,6 +2,10 @@
 
 ## 1.0.1
 
+- PerfCheckerPluto 1.0.1 displays each standalone plot export in its own
+  sandboxed iframe, keeping JavaScript module state separate when a notebook
+  switches plots. The cached export is preserved; its document and accessible
+  title are escaped for `srcdoc`, and its canvas fits inside a responsive frame.
 - Preserve configured MCP tools, arguments, response mode and instructions when
   a bounded investigation caps the advisor timeout by its remaining budget.
 - Keep test discovery and catalogue synchronization working when Julia source
