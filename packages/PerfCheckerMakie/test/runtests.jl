@@ -1,4 +1,5 @@
-using TestItemRunner, PerfCheckerMakie
+using TestItemRunner, PerfCheckerMakie, CairoMakie
+CairoMakie.activate!()
 rendering = Base.find_package("WGLMakie") !== nothing
 if rendering
     using WGLMakie

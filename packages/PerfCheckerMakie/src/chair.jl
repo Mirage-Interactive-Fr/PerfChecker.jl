@@ -1,30 +1,25 @@
+"""
+Render finite Chairmarks metric minima as normalized version curves. Accept the
+same Figure, Axis and scatterlines attribute bundles and zero/missing-sample
+semantics as `checkres_to_scatterlines(result, Val(:benchmark))`. Title and
+subtitle retain the Chairmarks collector and result tags. No workload is rerun.
+"""
 function PerfChecker.checkres_to_scatterlines(
-        x::PerfChecker.CheckerResult, ::Val{:chairmark})
-    return _checker_overlay(x, "Chairmarks")
+        x::PerfChecker.CheckerResult, ::Val{:chairmark};
+        figure_kwargs = (;), axis_kwargs = (;), plot_kwargs = (;))
+    return _checker_overlay(x, "Chairmarks"; figure_kwargs, axis_kwargs, plot_kwargs)
 end
 
-function PerfChecker.checkres_to_boxplots(
-        x::PerfChecker.CheckerResult, ::Val{:chairmark}; kwarg::Symbol = :times)
-    di = Dict()
-    datax, datay = [], []
-
-    for i in eachindex(x.tables)
-        j = x.tables[i]
-        p = x.pkgs[i]
-        g = map(TypedTables.GetProperty{kwarg}(), j)
-        append!(datax, fill(i, length(g)))
-        append!(datay, g)
-    end
-
-    versionnums = [x.pkgs[i].version for i in eachindex(x.pkgs)]
-    f = Figure()
-    ax = f[1, 1] = Axis(f)
-    ax.xticks = (eachindex(versionnums), string.(versionnums))
-    ax.xlabel = "versions"
-    ax.ylabel = string(kwarg)
-    boxplot!(datax, datay, label = string(kwarg))
-    ax.title = x.pkgs[1].name
-    ax.xticklabelrotation = 45.0
-    f[1, 2] = Legend(f, ax)
-    return f
+"""
+Render finite Chairmarks version distributions from `kwarg` (default `:times`).
+Accept explicit Figure, Axis and boxplot attribute bundles. Empty/nonfinite
+samples produce a labeled Figure; collector units, title and tags are retained.
+`:times` is seconds, `:gctimes` is GC fraction, `:bytes` is allocated bytes,
+and `:allocs` is an allocation count. Values are not converted between collectors.
+Version labels default to pi/2. Rendering neither measures nor writes files.
+"""
+function PerfChecker.checkres_to_boxplots(x::PerfChecker.CheckerResult, ::Val{:chairmark};
+        kwarg::Symbol = :times, figure_kwargs = (;), axis_kwargs = (;), plot_kwargs = (;))
+    return _checker_boxplots(
+        x, "Chairmarks"; kwarg, figure_kwargs, axis_kwargs, plot_kwargs)
 end
