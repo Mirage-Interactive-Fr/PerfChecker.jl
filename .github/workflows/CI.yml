@@ -90,7 +90,6 @@ jobs:
           - {companion: PerfCheckerLinuxPerf, version: '1', arch: x86}
     env:
       COUNTER_COMPANION: ${{ matrix.companion }}
-      JULIA_DEPOT_PATH: ${{ runner.temp }}/counter-depot-${{ matrix.companion }}-${{ matrix.version }}-${{ matrix.arch }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -102,4 +101,5 @@ jobs:
           arch: ${{ matrix.arch }}
       - name: Prepare a separate worker project and test the real counter provider
         run: |
+          export JULIA_DEPOT_PATH="$RUNNER_TEMP/counter-depot-$COUNTER_COMPANION-${{ matrix.version }}-${{ matrix.arch }}"
           julia --startup-file=no -e 'using Pkg; root = pwd(); companion = joinpath(root, "packages", ENV["COUNTER_COMPANION"]); fixture = joinpath(companion, "test", "fixtures", "CounterFixture"); Pkg.activate(joinpath(ENV["RUNNER_TEMP"], "counter-worker")); Pkg.develop([Pkg.PackageSpec(path=root), Pkg.PackageSpec(path=companion), Pkg.PackageSpec(path=fixture)]); Pkg.instantiate(); Pkg.status(); include(joinpath(companion, "test", "runtests.jl"))'
