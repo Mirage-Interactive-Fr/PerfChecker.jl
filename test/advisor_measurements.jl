@@ -177,7 +177,7 @@ end
 
 @testitem "Real saved BenchmarkTools suite projects memory once per observation" tags=[
     :integration, :advisor] begin
-    using PerfChecker, BenchmarkTools
+    using PerfChecker, BenchmarkTools, HTTP, Sockets
     mktempdir() do root
         entrypoint = joinpath(root, "workload.jl")
         write(entrypoint,
@@ -213,6 +213,78 @@ end
         append!(saved.observations, aliases)
         @test only(filter(row -> row["metric"] == "julia.alloc.bytes",
             PerfChecker._advice_measurement_summaries(saved)))["record_count"] == 100
+        # Export the same measured result with explicitly chosen, valid long
+        # run identifiers. Only export metadata changes, never the measurements.
+        long_export = PerfChecker._suite_run_bundle(result;
+            run_id = repeat("r", 256), attempt_id = repeat("a", 256))
+        budget_bundle = read_run_bundle(write_run_bundle(
+            long_export, joinpath(root, "budget-bundle")))
+        budget_advice = advise(budget_bundle)
+        @test isempty(budget_advice["recommendations"])
+        encode(value) = sprint(io -> PerfChecker.JSON.print(io, value))
+        @test all(row -> row["record_count"] == 100 && length(encode([row])) > 1000,
+            budget_advice["measurement_summaries"])
+        @test all(
+            row -> row["run_id"] == repeat("r", 256) &&
+                row["attempt_id"] == repeat("a", 256),
+            budget_advice["measurement_summaries"])
+        socket = listen(ip"127.0.0.1", 0)
+        port = getsockname(socket)[2]
+        close(socket)
+        checking, inspected = Ref(false), Ref(false)
+        server = HTTP.serve!("127.0.0.1", port; verbose = false) do request
+            body = PerfChecker._json_parse(String(request.body))
+            body["method"] == "notifications/initialized" && return HTTP.Response(202)
+            response = if body["method"] == "initialize"
+                Dict("protocolVersion" => "2025-11-25",
+                    "capabilities" => Dict("tools" => Dict()),
+                    "serverInfo" => Dict("name" => "budget-test", "version" => "1"))
+            elseif body["method"] == "tools/list"
+                Dict("resultType" => "complete",
+                    "tools" => [Dict("name" => "advise",
+                        "inputSchema" => Dict("type" => "object",
+                            "properties" => Dict("prompt" => Dict("type" => "string")),
+                            "required" => ["prompt"]))])
+            else
+                prompt = body["params"]["arguments"]["prompt"]
+                if checking[]
+                    transmitted = PerfChecker._json_parse(last(split(
+                        prompt, "\n\nPerfChecker evidence:\n")))
+                    @test isempty(transmitted["evidence"])
+                    @test occursin(
+                        "no measurement summaries were sent in this request", prompt)
+                    @test occursin(
+                        "Do not infer that the saved report contains no measurements",
+                        prompt)
+                    @test !occursin(
+                        "this attached report contains no usable measurement summaries",
+                        prompt)
+                    @test !occursin("no saved measurements were attached", prompt)
+                    inspected[] = true # These checks run before the provider reply.
+                end
+                Dict("resultType" => "complete",
+                    "content" => [Dict("type" => "text",
+                        "text" => "The request contains no projected measurements.")])
+            end
+            HTTP.Response(200, ["Content-Type" => "application/json"],
+                encode(Dict("jsonrpc" => "2.0", "id" => body["id"], "result" => response)))
+        end
+        try
+            config = AdvisorConfig(
+                protocol = :mcp_http, endpoint = "http://127.0.0.1:$port/mcp",
+                mcp_tool = "advise", max_evidence_chars = 1000, timeout = 120)
+            Base.invokelatest(advisor_transport, Val(:mcp_http), config,
+                Dict("messages" => [Dict("content" => "budget readiness")]))
+            checking[] = true
+            reply = chat_advice(
+                [Dict("role" => "user", "content" => "What can these results establish?")];
+                config, advice = budget_advice)
+            @test reply["status"] == "complete" && inspected[]
+            @test isempty(reply["evidence_ids"]) && reply["evidence_truncated"]
+            @test reply["fallback"] == budget_advice
+        finally
+            close(server)
+        end
     end
 end
 
