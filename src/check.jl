@@ -753,6 +753,27 @@ function check_function(x::Symbol, d::NamedTuple, block1, block2; kwargs...)
     return check_function(x, Dict{Symbol, Any}(pairs(d)), block1, block2; kwargs...)
 end
 
+function check_function(backends::AbstractVector,
+        options::Union{Dict, NamedTuple, PerfConfig}, block1, block2; kwargs...)
+    isempty(backends) && throw(ArgumentError("at least one check backend is required"))
+    all(backend -> backend isa Symbol, backends) ||
+        throw(ArgumentError("check backends must all be Symbols"))
+    requested = Symbol[backend for backend in backends]
+    options = options isa NamedTuple ? Dict{Symbol, Any}(pairs(options)) : options
+    # Resolve every collector and validate every configuration before starting
+    # the first worker. Preserve repeated requests and their original order.
+    fallback = which(check, Tuple{Any, Any, Any})
+    configs = map(requested) do backend
+        which(check, Tuple{Dict{Symbol, Any}, Expr, typeof(Val(backend))}) == fallback &&
+            throw(ArgumentError("check backend $backend is unavailable; load its collector package"))
+        config = normalize_config(backend, options)
+        run_targets(config)
+        config
+    end
+    return [check_function(backend, copy(config.options), block1, block2; kwargs...)
+            for (backend, config) in zip(requested, configs)]
+end
+
 """
     @check backend config begin
         # preparation code
@@ -761,6 +782,13 @@ end
     end
 
 Run a performance check using `backend` and return a `CheckerResult`.
+Alternatively, pass a nonempty vector of backend symbols to return a vector of
+`CheckerResult`s in that order. All collectors and configurations are validated
+before any worker starts. Repeated symbols perform separate checks; each check
+uses the same preparation and measured blocks and retains its own cleanup.
+Load optional collector packages before requesting their symbols (for example,
+`BenchmarkTools` for `:benchmark` and `Chairmarks` for `:chairmark`). An error in
+a check stops the sequence after that check's cleanup.
 
 The public `config` argument is usually a `Dict`. PerfChecker merges it with
 backend defaults, validates it with `normalize_config`, copies the environment
@@ -771,11 +799,17 @@ metadata.
 Example:
 
 ```julia
-using PerfChecker, BenchmarkTools
+using PerfChecker, BenchmarkTools, Chairmarks
 
 config = Dict(:path => @__DIR__, :samples => 10, :evals => 1)
 
 result = @check :benchmark config begin
+    using Random
+end begin
+    sum(rand(Random.MersenneTwister(1), 1_000))
+end
+
+results = @check [:alloc, :benchmark, :chairmark] config begin
     using Random
 end begin
     sum(rand(Random.MersenneTwister(1), 1_000))
