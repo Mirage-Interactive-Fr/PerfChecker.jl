@@ -19,8 +19,9 @@ const props = defineProps<{
   external?: boolean
 }>()
 const entry = computed(() => props.recording ? __PERFCHECKER_MEDIA__[props.recording] : undefined)
-const mediaState = computed(() => props.external && entry.value?.download_url?.startsWith('https://') ? 'external' :
-  entry.value?.youtube_id ? 'youtube' : entry.value?.local_available ? 'local' : 'pending')
+const mediaState = computed(() => entry.value?.youtube_id ? 'youtube' :
+  props.external && entry.value?.download_url?.startsWith('https://') ? 'external' :
+    entry.value?.local_available ? 'local' : 'pending')
 const videoSource = computed(() => mediaState.value === 'external' ? entry.value!.download_url : withBase(props.src))
 const playYouTube = ref(false)
 const mediaType = computed(() => props.src.endsWith('.mp4') ? 'video/mp4' : 'video/webm')

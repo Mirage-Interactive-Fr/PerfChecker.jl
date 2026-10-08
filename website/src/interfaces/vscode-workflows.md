@@ -39,7 +39,7 @@ only that recorded configuration; it does not establish a general property
 of the function.
 
 ```@raw html
-<DocMedia video short recording="perfchecker-vscode-v101-short-15" src="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-15.mp4" poster="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-15-poster.jpg" subtitles="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-15-en.vtt" preload="metadata" alt="Actual PerfChecker saved distribution, allocation median of 48 bytes, raw series and source JSON in native VS Code" caption="Inspect actual worker measurements in their own units. The 48 B median is read from the recorded Example hello report. Recorded build: VSIX 75f84f, Core 975d, VS Code 1.141 on Linux." />
+<DocMedia video short recording="perfchecker-vscode-v101-short-15" src="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-15.mp4" poster="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-15-poster.jpg" subtitles="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-15-en.vtt" walkthrough="/interfaces/vscode-videos.html#Full-tutorial" chapter="06 · Read the saved plots" preload="none" alt="Actual PerfChecker saved distribution, allocation median of 48 bytes, raw series and source JSON in native VS Code" caption="Inspect actual worker measurements in their own units. The 48 B median is read from the recorded Example hello report. Recorded build: VSIX 75f84f, Core 975d, VS Code 1.141 on Linux." />
 ```
 
 ### Read normalized overlays
@@ -49,7 +49,7 @@ metric's minimum; inspect the raw value and unit in the tooltip before drawing
 a conclusion. The example below preserves the actual saved version series.
 
 ```@raw html
-<DocMedia video short recording="perfchecker-vscode-v101-short-04" src="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-04.mp4" poster="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-04-poster.jpg" subtitles="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-04-en.vtt" preload="metadata" alt="Actual native PerfChecker minimum-relative chart, raw units and recorded version tooltip" caption="Read each metric against its own minimum, then inspect its raw value. The recorded tooltip is 136 ns with ratio 1.0149; units remain separate. Recorded build: VSIX 75f84f, Core 975d, VS Code 1.141 on Linux." />
+<DocMedia video short recording="perfchecker-vscode-v101-short-04" src="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-04.mp4" poster="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-04-poster.jpg" subtitles="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-04-en.vtt" walkthrough="/interfaces/vscode-videos.html#Full-tutorial" chapter="06 · Read the saved plots" preload="none" alt="Actual native PerfChecker minimum-relative chart, raw units and recorded version tooltip" caption="Read each metric against its own minimum, then inspect its raw value. The recorded tooltip is 136 ns with ratio 1.0149; units remain separate. Recorded build: VSIX 75f84f, Core 975d, VS Code 1.141 on Linux." />
 ```
 
 ### Follow a recorded profile
@@ -60,7 +60,7 @@ boundary. Use a profile to choose a workload and a correctness protocol for
 the next experiment.
 
 ```@raw html
-<DocMedia video short recording="perfchecker-vscode-v101-short-16" src="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-16.mp4" poster="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-16-poster.jpg" subtitles="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-16-en.vtt" preload="metadata" alt="Actual native PerfChecker CPU flame graph with a closer view of sum_squares, materialize and copy" caption="Follow real recorded profile stacks. The closer view preserves the original frame labels; profile weights describe the stated collector. Recorded build: VSIX 75f84f, Core 975d, VS Code 1.141 on Linux." />
+<DocMedia video short recording="perfchecker-vscode-v101-short-16" src="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-16.mp4" poster="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-16-poster.jpg" subtitles="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-16-en.vtt" walkthrough="/interfaces/vscode-videos.html#Full-tutorial" chapter="07 · Inspect a real flame graph" preload="none" alt="Actual native PerfChecker CPU flame graph with a closer view of sum_squares, materialize and copy" caption="Follow real recorded profile stacks. The closer view preserves the original frame labels; profile weights describe the stated collector. Recorded build: VSIX 75f84f, Core 975d, VS Code 1.141 on Linux." />
 ```
 
 These are passages from the full tutorial, with English captions and the
@@ -167,6 +167,10 @@ prefer to prepare the environment manually.
    source. Changing selectors or reopening retains saved evidence without
    launching the checks again.
 
+```@raw html
+<DocMedia video short recording="perfchecker-vscode-v101-short-05" src="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-05.mp4" poster="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-05-poster.jpg" subtitles="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-05-en.vtt" walkthrough="/interfaces/vscode-videos.html#Full-tutorial" chapter="08 · Pluto notebooks inside VS Code" preload="none" alt="Actual native PerfChecker Pluto cell editing, reactive output, source autosave, Save completed reports and notebook reopening" caption="Submit a cell edit, inspect its reactive output and retain the saved notebook source separately from completed reports. Then reopen the actual notebook. The source interaction is slowed and frames are held for reading. Recorded candidate: VSIX 7add564, Core 4eec7f3, VS Code 1.141.0 on Linux." />
+```
+
 ### Manage the session and saved source
 
 | Control | Effect |
@@ -188,6 +192,20 @@ in the PerfChecker header to reopen its saved source. Stop and restart request
 cancellation of owned PerfChecker jobs and wait for their cleanup before closing
 the notebook worker. Wait for the final status and inspect diagnostics when a
 shutdown reports an error.
+
+The Pluto homepage's **Shutdown** action opens a confirmation dialog inside
+the notebook, where VS Code can display it. **Cancel** or **Escape** keeps the
+notebook worker running. **Confirm** accepts that notebook's original shutdown
+question; the other notebook sessions and the shared server remain available.
+
+Pluto's Julia/HTML exports and actions that open another browsing context use
+your default browser. Normal **New**, **Open** and **Recent** navigation stays
+inside the VS Code editor. See the [qualification notes](vscode.md#Qualification-and-reporting-a-problem)
+for the established platform scope of these browser interactions.
+
+```@raw html
+<DocMedia video short recording="perfchecker-vscode-v101-short-17" src="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-17.mp4" poster="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-17-poster.jpg" subtitles="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-17-en.vtt" walkthrough="/interfaces/vscode-videos.html#Full-tutorial" chapter="08 · Pluto notebooks inside VS Code" preload="none" alt="Actual native PerfChecker Pluto evaluated cell, Shutdown confirmation Cancel and Confirm, and final session state" caption="Inspect the evaluated result 9, cancel the notebook's shutdown question, then confirm it and inspect the final session state. Actions are slowed and frames held for reading. Recorded candidate: VSIX b899ea751d7b, Core 59578c840d94, VS Code 1.141.0 on Linux. Owned workers, private files and allocation journals were checked before test teardown; the shared listener remained available. This passage does not establish every platform or arbitrary callback completion after a forced stop." />
+```
 
 Core cleans its owned worker environments, allocation journals and `.mem`
 files separately. A workload's `cleanup(state)` callback runs during normal
