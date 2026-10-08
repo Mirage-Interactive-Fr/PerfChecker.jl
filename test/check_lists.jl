@@ -27,6 +27,13 @@ end
     import Pkg
 
     mktempdir() do directory
+        collector_versions = Dict(string(nameof(collector)) => Base.pkgversion(collector)
+        for collector in (BenchmarkTools, Chairmarks))
+        core_project = Pkg.TOML.parsefile(joinpath(
+            dirname(pathof(PerfChecker)), "..", "Project.toml"))
+        for (name, version) in collector_versions
+            @test version in Pkg.Types.semver_spec(core_project["compat"][name])
+        end
         environment = joinpath(directory, "environment")
         mkpath(joinpath(environment, "src"))
         write(joinpath(environment, "Project.toml"), """
@@ -37,6 +44,10 @@ version = "0.1.0"
 [deps]
 BenchmarkTools = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
 Chairmarks = "0ca39b1e-fe0b-4e98-acfc-b1656634c4de"
+
+[compat]
+BenchmarkTools = "=$(collector_versions["BenchmarkTools"])"
+Chairmarks = "=$(collector_versions["Chairmarks"])"
 """)
         source = joinpath(environment, "src", "PerfCheckerListFixture.jl")
         write(source, """
@@ -52,7 +63,7 @@ end
         options = Dict(:path => environment, :quiet => true, :samples => 1,
             :evals => 1, :seconds => 0.01, :repeat => false,
             :targets => ["PerfCheckerListFixture"], :payload => [17, 23, 41],
-            :journal => journal)
+            :journal => journal, :collector_versions => collector_versions)
         if Sys.islinux()
             options[:expected_affinity] = strip(only(filter(
                 line -> startswith(line, "Cpus_allowed_list:"),
@@ -61,26 +72,40 @@ end
         before = deepcopy(options)
         preparation = quote
             using PerfCheckerListFixture
+            import Pkg
+            resolved_versions = Dict(info.name => info.version
+            for info in values(Pkg.dependencies())
+            if haskey(d[:collector_versions], info.name))
+            @assert resolved_versions == d[:collector_versions]
             @assert d[:payload] == [17, 23, 41]
             if Sys.islinux()
                 @assert strip(only(filter(line -> startswith(line, "Cpus_allowed_list:"),
                     readlines("/proc/self/status")))) == d[:expected_affinity]
             end
             open(d[:journal], "a") do io
-                println(io, getpid(), '\t', dirname(Base.active_project()))
+                println(io, getpid(), '\t', dirname(Base.active_project()), '\t',
+                    resolved_versions["BenchmarkTools"], '\t',
+                    resolved_versions["Chairmarks"])
             end
         end
         workload = :(PerfCheckerListFixture.allocate(d[:payload]))
         backends = [:chairmark, :benchmark, :alloc, :benchmark]
         results = @check backends options begin
             using PerfCheckerListFixture
+            import Pkg
+            resolved_versions = Dict(info.name => info.version
+            for info in values(Pkg.dependencies())
+            if haskey(d[:collector_versions], info.name))
+            @assert resolved_versions == d[:collector_versions]
             @assert d[:payload] == [17, 23, 41]
             if Sys.islinux()
                 @assert strip(only(filter(line -> startswith(line, "Cpus_allowed_list:"),
                     readlines("/proc/self/status")))) == d[:expected_affinity]
             end
             open(d[:journal], "a") do io
-                println(io, getpid(), '\t', dirname(Base.active_project()))
+                println(io, getpid(), '\t', dirname(Base.active_project()), '\t',
+                    resolved_versions["BenchmarkTools"], '\t',
+                    resolved_versions["Chairmarks"])
             end
         end begin
             PerfCheckerListFixture.allocate(d[:payload])
@@ -98,6 +123,10 @@ end
         workers = split.(readlines(journal), '\t')
         @test length(workers) == 4
         @test length(unique(first.(workers))) == 4
+        @test all(
+            row -> VersionNumber(row[3]) == collector_versions["BenchmarkTools"] &&
+                VersionNumber(row[4]) == collector_versions["Chairmarks"],
+            workers)
         @test all(row -> !ispath(row[2]), workers)
         if Sys.islinux()
             @test all(row -> !ispath("/proc/" * row[1]), workers)
@@ -121,6 +150,8 @@ end
         @test occursin("list workload failure", sprint(showerror, failure))
         failed_workers = split.(readlines(journal), '\t')
         @test length(failed_workers) == 1
+        @test VersionNumber(only(failed_workers)[3]) == collector_versions["BenchmarkTools"]
+        @test VersionNumber(only(failed_workers)[4]) == collector_versions["Chairmarks"]
         @test !ispath(only(failed_workers)[2])
         Sys.islinux() && @test !ispath("/proc/" * only(failed_workers)[1])
         @test read(preserved, String) == original
