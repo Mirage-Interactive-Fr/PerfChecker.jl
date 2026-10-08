@@ -145,6 +145,26 @@ try
     elseif suite == "plots"
         prepare("test/environments/wgl"; satellites = ["PerfCheckerMakie"])
         execute("packages/PerfCheckerMakie/test/runtests.jl")
+    elseif suite == "tachikoma"
+        prepare(; packages = ["Test", "CairoMakie"],
+            satellites = ["PerfCheckerTachikoma", "PerfCheckerMakie"])
+        captures = joinpath(environment, "terminal-captures")
+        withenv("PERFCHECKER_TACHIKOMA_TEST_PIXELS" => "1",
+            "PERFCHECKER_TACHIKOMA_CAPTURES" => captures) do
+            execute("packages/PerfCheckerTachikoma/test/runtests.jl")
+        end
+        receipt["terminal_captures"] = [begin
+                                            file = "plot-$width-$height.svg"
+                                            source = joinpath(captures, file)
+                                            isfile(source) ||
+                                                error("Missing terminal capture $file")
+                                            cp(source, joinpath(output, file);
+                                                force = true)
+                                            Dict("file" => file,
+                                                "sha256" => file_digest(source),
+                                                "source" => "Tachikoma TestBackend cells; not a physical terminal")
+                                        end
+                                        for (width, height) in ((40, 12), (80, 24))]
     elseif suite == "supposition"
         Sys.WORD_SIZE == 64 || error("Supposition qualification requires 64-bit Julia")
         prepare("test/environments/supposition")

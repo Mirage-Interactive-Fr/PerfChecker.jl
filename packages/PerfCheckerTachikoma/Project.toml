@@ -1,0 +1,32 @@
+name = "PerfCheckerTachikoma"
+uuid = "62732417-0f79-4b0f-bcf8-4246188b2099"
+version = "1.0.1"
+
+[deps]
+PerfChecker = "6309bf6b-a531-4b08-891e-8ee981e5c424"
+Tachikoma = "468859d6-42d8-48b7-8ad9-1d312e0e3b0a"
+UnicodePlots = "b8865327-cd53-5732-bb35-84acbb429228"
+
+[compat]
+Makie = "0.24"
+PerfChecker = "1"
+PerfCheckerMakie = "1"
+Tachikoma = "2.7"
+UnicodePlots = "3"
+julia = "1.10"
+
+[weakdeps]
+Makie = "ee78f7c6-11fb-53f2-987a-cfe4a2b5a57a"
+PerfCheckerMakie = "1039c70d-de90-4811-a202-d36e08616791"
+
+[extensions]
+MakieExt = ["Makie", "PerfCheckerMakie"]
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]
+
+[sources.PerfChecker]
+path = "../.."
