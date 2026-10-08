@@ -146,7 +146,7 @@ try
         prepare("test/environments/wgl"; satellites = ["PerfCheckerMakie"])
         execute("packages/PerfCheckerMakie/test/runtests.jl")
     elseif suite == "tachikoma"
-        prepare(; packages = ["Test", "CairoMakie"],
+        prepare(; packages = ["Test", "CairoMakie", "Tachikoma"],
             satellites = ["PerfCheckerTachikoma", "PerfCheckerMakie"])
         captures = joinpath(environment, "terminal-captures")
         withenv("PERFCHECKER_TACHIKOMA_TEST_PIXELS" => "1",
