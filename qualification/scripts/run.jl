@@ -143,8 +143,41 @@ try
         execute("packages/PerfCheckerPluto/test/generated_controls.jl")
         execute("qualification/shared/contracts.jl")
     elseif suite == "plots"
-        prepare("test/environments/wgl"; satellites = ["PerfCheckerMakie"])
+        prepare("test/environments/wgl"; packages = ["CairoMakie"],
+            satellites = ["PerfCheckerMakie"])
         execute("packages/PerfCheckerMakie/test/runtests.jl")
+        html = joinpath(output, "normalized-browser.html")
+        execute("packages/PerfCheckerMakie/test/normalized_browser.jl"; extra = [html])
+        mktempdir() do tooling
+            # Match the existing qualification Playwright pin, without adding
+            # browser tooling to a product or documentation environment.
+            write(joinpath(tooling, "package.json"), "{\"private\":true}")
+            npm = Sys.iswindows() ? `cmd /d /c npm.cmd` : `npm`
+            browser_environment = (
+                "PLAYWRIGHT_BROWSERS_PATH" => joinpath(tooling, "browsers"),
+                "npm_config_cache" => joinpath(tooling, "npm-cache"),
+                "PERFCHECKER_PLOT_BROWSER_TOOLING" => tooling)
+            run(addenv(
+                Cmd(
+                    `$npm install --ignore-scripts --no-audit --no-fund --save-dev --save-exact playwright@1.63.0`;
+                    dir = tooling),
+                browser_environment...))
+            install = Sys.iswindows() ||
+                      get(ENV, "PERFCHECKER_BROWSER_DEPS_READY", "false") == "true" ?
+                      `$npm exec -- playwright install chromium` :
+                      `$npm exec -- playwright install --with-deps chromium`
+            run(addenv(Cmd(install; dir = tooling), browser_environment...))
+            capture_environment(tooling, "plot-browser-tooling")
+            screenshot = joinpath(output, "normalized-browser.png")
+            result = joinpath(output, "normalized-browser-result.json")
+            command = `node $(joinpath(root, "packages/PerfCheckerMakie/test/normalized_browser.mjs")) $html $screenshot`
+            write(result, read(addenv(command, browser_environment...), String))
+            push!(receipt["environments"],
+                Dict("label" => "plot-browser",
+                    [key => Dict("file" => basename(file), "sha256" => file_digest(file))
+                     for (key, file) in (
+                        ("html", html), ("screenshot", screenshot), ("result", result))]...))
+        end
     elseif suite == "tachikoma"
         prepare(; packages = ["Test", "CairoMakie", "Tachikoma"],
             satellites = ["PerfCheckerTachikoma", "PerfCheckerMakie"])

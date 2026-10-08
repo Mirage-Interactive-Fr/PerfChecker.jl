@@ -863,13 +863,23 @@ or exporting figures; load a Makie backend for rendering.
 function checkres_to_pie end
 
 """
-    saveplot(...)
+    saveplot(path, figure; overwrite=false, kwargs...)
+    saveplot(directory, named_figures; format=:svg, overwrite=false, kwargs...)
 
-Reserved extension point for saving backend-specific plots. Core does not
-provide a saving method, and current interface figures can be saved with the
-active Makie backend's API. An unsupported call raises `MethodError`.
-Defining a provider method must make its destination and overwrite behavior
-explicit; calling this generic alone does not select a backend or destination.
+Load `PerfCheckerMakie` for methods exporting existing Makie figures to explicit
+SVG/PNG destinations. Load an export backend such as CairoMakie first:
+
+```julia
+using PerfChecker, PerfCheckerMakie, CairoMakie
+figure = CairoMakie.Figure()
+saveplot("example.svg", figure) # parent directory must exist
+```
+
+Existing files are preserved unless `overwrite=true`; directories are never
+replaced. The companion's collection method accepts name/Figure pairs and
+checks portable filenames and collisions before writing. Extra keywords go to
+Makie's `save`. Core alone provides this generic without methods, so unsupported
+calls raise `MethodError`. Exporting a figure does not rerun measurements.
 """
 function saveplot end
 
