@@ -1,3 +1,7 @@
+```@raw html
+<a id="Existing-TestItemRunner-items"></a>
+```
+
 # Existing TestItems
 
 PerfChecker discovers `@testitem` declarations and measures selected items in worker processes. One item can both check correctness with TestItemRunner and record time and allocations with PerfChecker.
@@ -63,7 +67,3 @@ Correctness and a performance budget are separate. Item reports do not adopt a r
 ## Next
 
 For warmed operations or control over preparation, use [Shared scenarios](shared-scenarios.md).
-
-```@raw html
-<a id="Existing-TestItemRunner-items"></a>
-```

@@ -1,3 +1,7 @@
+```@raw html
+<a id="Machine-similarity-and-experimental-transfer"></a>
+```
+
 # Machine calibration
 
 Use this when CI and developer machines differ and you want a rough estimate before running a full local suite. The output is an estimate with diagnostics, not a measured local result and never a release gate.
@@ -17,6 +21,10 @@ Records CPU, architecture, OS, core counts, SIMD width, installed memory and Jul
 - Record quotas, affinity and container limits explicitly in `limits`; the capture does not verify them.
 
 `similar_machines(target, profiles)` ranks same-OS/architecture profiles by numerical differences and CPU identity — a shortlist, not evidence of comparable performance.
+
+```@raw html
+<a id="Small-calibration-battery"></a>
+```
 
 ## Calibration battery
 
@@ -47,8 +55,3 @@ The result is a central estimate plus an envelope widened by calibration errors.
 - A single sample, incompatible contexts or an unstable calibration yield `insufficient_evidence`. PerfChecker never fabricates an estimate.
 
 The CLI exposes `machine --label=runner-a` and `estimate --source=transfer.json` (with `target`, `references` and `workload` fields).
-
-```@raw html
-<a id="Machine-similarity-and-experimental-transfer"></a>
-<a id="Small-calibration-battery"></a>
-```

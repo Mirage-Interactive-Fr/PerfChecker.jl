@@ -101,6 +101,7 @@ collector and target selectors filter the plan; **Launch selected checks**
 starts it explicitly. The notebook environment stays separate from the newest
 Oxygen web stack because their HTTP.jl compatibility constraints differ.
 
+
 ```@raw html
 <a id="Oxygen-Web-Studio"></a>
 ```
@@ -114,7 +115,9 @@ julia --project=.controller/web web.jl datastructures
 julia --project=.controller/web web.jl oxygen
 ```
 
-Open `http://127.0.0.1:8873/perfchecker/v1/`. Select a workload, then a collector and a version
+After starting one of the `web.jl` commands above, open
+`http://127.0.0.1:8873/perfchecker/v1/` on the same machine. This local address
+is available only while that server is running. Select a workload, then a collector and a version
 range. Start with `heap_2048` / `benchmark` for DataStructures or `heap_request`
 / `benchmark` for Oxygen. Review the number of selected checks before launching.
 Runs launched by the studio are saved under `results/web-datastructures` or

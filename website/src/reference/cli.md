@@ -47,6 +47,10 @@ julia --startup-file=no --project=. -e 'using PerfChecker; exit(perfchecker_main
 - The default run performs a compatibility preflight.
 - Each JSONL progress line starts with `PERFCHECKER_PROGRESS `.
 
+```@raw html
+<a id="Git-targets-and-comparisons"></a>
+```
+
 ## Compare and gate
 
 ```sh
@@ -60,6 +64,10 @@ julia --startup-file=no --project=. -e 'using PerfChecker; exit(perfchecker_main
 - `--statistic=metric=p95` selects `median`, `mean`, `minimum`, `maximum`, `p95` or `p99`.
 - When both selected values are exactly zero, an explicit policy passes: the candidate preserved the baseline.
 
+```@raw html
+<a id="Network-command"></a>
+```
+
 ## Network
 
 ```sh
@@ -71,8 +79,3 @@ julia --startup-file=no --project=. -e 'using PerfChecker; exit(perfchecker_main
 On Windows use `--provider=wsl2_netns` with optional `--distribution=<name>`. Output is omitted by default; opt in with `--include-output=true`.
 
 POSIX line continuations (`\`) do not work in PowerShell; put each command on one line.
-
-```@raw html
-<a id="Git-targets-and-comparisons"></a>
-<a id="Network-command"></a>
-```

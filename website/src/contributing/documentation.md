@@ -78,6 +78,10 @@ Introduce every collector with one or two paragraphs: the question it answers, t
 - Explain unavailable workloads and failed preparation; never replace them with zero.
 - When two collectors expose similarly named fields, explain the difference locally (BenchmarkTools GC time vs Chairmarks GC fraction).
 
+```@raw html
+<a id="Screenshot-policy"></a>
+```
+
 ## Screenshots
 
 Store images under `website/src/public/assets/screenshots/<interface>/`. Use actual application output only.
@@ -89,6 +93,10 @@ Store images under `website/src/public/assets/screenshots/<interface>/`. Use act
 5. Prefer SVG for diagrams, PNG/WebP for UI, static Makie export for plots.
 6. Verify light and dark themes when the component supports them.
 7. Refresh images when labels or flows change, not every release.
+
+```@raw html
+<a id="Recordings-outside-Git"></a>
+```
 
 ## Recordings
 
@@ -129,8 +137,3 @@ the poster. This does not make YouTube tracker-free.
 - run doctests and any TestItems the examples affect;
 - verify screenshots at their rendered size;
 - state which commands passed and which integrations you did not exercise.
-
-```@raw html
-<a id="Screenshot-policy"></a>
-<a id="Recordings-outside-Git"></a>
-```

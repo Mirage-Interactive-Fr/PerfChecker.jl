@@ -1,3 +1,8 @@
+```@raw html
+<a id="Real-package-examples"></a>
+<a id="Choose-a-starting-point"></a>
+```
+
 # Examples
 
 Complete experiments with scripts, saved measurements and notebooks. Each page explains what its figures measure and how to reproduce them.
@@ -5,6 +10,10 @@ Complete experiments with scripts, saved measurements and notebooks. Each page e
 - [Bibliography](../tutorials/bibliography.md) — import, parse and export entries across nine releases.
 - [DataStructures](datastructures.md) — construct and use 35 containers across eight years.
 - [Oxygen](oxygen.md) — HTTP features, application routes and real network traffic.
+
+```@raw html
+<a id="Get-the-runnable-examples"></a>
+```
 
 ## Get the code
 
@@ -28,6 +37,10 @@ $env:JULIA_NUM_GC_THREADS = '1'
 $env:OPENBLAS_NUM_THREADS = '1'
 ```
 
+```@raw html
+<a id="Understand-the-output"></a>
+```
+
 ## Read the output
 
 A run prints a new directory under `results/`, holding the report, a machine-readable result and a bundle every interface can reopen. A successful run means the selected measurements completed and their correctness checks passed — no performance budget was applied.
@@ -36,10 +49,3 @@ A run prints a new directory under `results/`, holding the report, a machine-rea
 
 - New to profiling? Read [Understand the result](../guide/understanding-measurements.md).
 - Continue the manual with [Bibliography](../tutorials/bibliography.md).
-
-```@raw html
-<a id="Real-package-examples"></a>
-<a id="Choose-a-starting-point"></a>
-<a id="Get-the-runnable-examples"></a>
-<a id="Understand-the-output"></a>
-```

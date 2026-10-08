@@ -1,6 +1,14 @@
+```@raw html
+<a id="Oxygen-web-studio"></a>
+```
+
 # Web interface (Oxygen)
 
 Select workloads and versions, start measurements and browse finished runs in a browser.
+
+```@raw html
+<a id="Start-with-one-Bibliography-check"></a>
+```
 
 ## Start a Bibliography check
 
@@ -11,7 +19,15 @@ julia --startup-file=no setup.jl web
 julia --startup-file=no --project=.controller/web web.jl
 ```
 
-Open `http://127.0.0.1:8871/perfchecker/v1/`. Select Bibliography, `export_bibtex` and `benchmark`, review the plan, then launch.
+After starting `web.jl` above, open `http://127.0.0.1:8871/perfchecker/v1/`
+on the same machine. This local address is available only while the server is
+running. Select Bibliography, `export_bibtex` and `benchmark`, review the plan,
+then launch.
+
+```@raw html
+<a id="Reopen-existing-suite-reports"></a>
+<a id="Read-a-saved-result"></a>
+```
 
 ## Reopen saved runs
 
@@ -21,7 +37,13 @@ using PerfChecker, PerfCheckerWeb, PerfCheckerMakie, Oxygen, WGLMakie
 serve_suite("perf/results"; host = "127.0.0.1", port = 8080)
 ```
 
-Open `http://127.0.0.1:8080/perfchecker/v1/`. Rendering a saved plot does not rerun the benchmark.
+After `serve_suite` starts, open `http://127.0.0.1:8080/perfchecker/v1/`
+on the same machine. Keep that Julia server running while using the interface.
+Rendering a saved plot does not rerun the benchmark.
+
+```@raw html
+<a id="Studio-workflow"></a>
+```
 
 ## What the studio does
 
@@ -31,6 +53,23 @@ Open `http://127.0.0.1:8080/perfchecker/v1/`. Rendering a saved plot does not re
 - launch a local job and follow progress;
 - open artifacts, logs, allocation views, distributions and flame graphs;
 - serialize the current selection so another page can open the same evidence.
+
+```@raw html
+<a id="Compare-a-saved-history"></a>
+```
+
+For a saved history, follow the [nine-version Bibliography exploration](../tutorials/bibliography.md#Explore-all-nine-versions-in-Oxygen).
+```@raw html
+<a id="Other-workload-types"></a>
+```
+
+For other inputs, use the [native TestItem routes](../test-items.md#Interfaces)
+or [scenario studio](../shared-scenarios.md#Interfaces); a suite, scenario catalog
+and native-item report have different entry points.
+
+```@raw html
+<a id="Safety-boundary"></a>
+```
 
 ## Safety
 
@@ -55,16 +94,4 @@ See [Remote controllers](../operations/hosted.md) before exposing a controller b
 
 ```@raw html
 <DocMedia src="/examples/bibliography/history-web/history-time.png" alt="Oxygen showing the Bibliography export timing curve across nine tagged versions" caption="Nine actual measured versions, selected from the saved historical campaign. Inspect a point to read its exact version and value." />
-```
-
-
-```@raw html
-<a id="Oxygen-web-studio"></a>
-<a id="Start-with-one-Bibliography-check"></a>
-<a id="Reopen-existing-suite-reports"></a>
-<a id="Read-a-saved-result"></a>
-<a id="Studio-workflow"></a>
-<a id="Compare-a-saved-history"></a>
-<a id="Other-workload-types"></a>
-<a id="Safety-boundary"></a>
 ```

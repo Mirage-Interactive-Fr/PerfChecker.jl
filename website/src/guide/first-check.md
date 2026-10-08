@@ -65,6 +65,10 @@ result = run_testitems(root; ids = [item["id"]], samples = 1, threads = 1, repor
 
 `not_compared` means the item ran and was measured, but was not compared with a baseline or budget.
 
+```@raw html
+<a id="Read-the-measurements"></a>
+```
+
 ## Read the measurement
 
 ```julia
@@ -78,6 +82,10 @@ The run is saved:
 
 ```julia
 isfile(joinpath(reports, "testitems.json"))
+```
+
+```@raw html
+<a id="Use-your-existing-tests"></a>
 ```
 
 ## Select from your own package
@@ -106,8 +114,3 @@ The active environment must contain the package's test dependencies.
 
 - To time export alone, with input preparation outside the timer, read [Measure an operation](../tutorials/quick-tour.md).
 - To interpret time, allocations and GC, read [Understand the result](understanding-measurements.md).
-
-```@raw html
-<a id="Read-the-measurements"></a>
-<a id="Use-your-existing-tests"></a>
-```

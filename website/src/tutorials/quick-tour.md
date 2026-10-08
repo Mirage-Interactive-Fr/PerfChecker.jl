@@ -1,6 +1,14 @@
+```@raw html
+<a id="Bibliography-in-three-small-steps"></a>
+```
+
 # Measure an operation
 
 Time one operation with its input prepared **before** timing starts.
+
+```@raw html
+<a id="2.-Run-just-the-export-check"></a>
+```
 
 From a PerfChecker checkout:
 
@@ -28,6 +36,10 @@ julia --startup-file=no --project=.controller/core run.jl profile_alloc Bibliogr
 
 Other collectors: `benchmark`, `chairmark`, `profile`, `wall_profile` (Julia 1.12+).
 
+```@raw html
+<a id="3.-Compare-versions-and-inspect-the-variation"></a>
+```
+
 ## Compare versions
 
 ```sh
@@ -36,6 +48,10 @@ julia --startup-file=no --project=.controller/core history.jl run
 ```
 
 This runs nine Bibliography versions and four workloads. Earlier versions do not define every workload, so those combinations are `unavailable` — not slow, failed or zero.
+
+```@raw html
+<a id="1.-Read-a-measured-result"></a>
+```
 
 ## Read a result
 
@@ -56,15 +72,11 @@ This runs nine Bibliography versions and four workloads. Earlier versions do not
 <DocMedia src="/examples/bibliography/figures/history-samples.svg" alt="All 900 recorded Bibliography export timings grouped by nine tagged versions, with a median marker for each group" caption="One point per recorded export timing; the dark horizontal marks are medians. Slow observations remain visible. This shows sampling variation, not the order in which requests completed." />
 ```
 
+```@raw html
+<a id="Choose-your-next-step"></a>
+```
+
 ## Next
 
 - [Compare two versions](comparisons.md) while holding dependencies fixed.
 - [Investigate a change](../guide/investigate.md) with a profile.
-
-```@raw html
-<a id="Bibliography-in-three-small-steps"></a>
-<a id="1.-Read-a-measured-result"></a>
-<a id="2.-Run-just-the-export-check"></a>
-<a id="3.-Compare-versions-and-inspect-the-variation"></a>
-<a id="Choose-your-next-step"></a>
-```

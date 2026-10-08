@@ -1,3 +1,7 @@
+```@raw html
+<a id="Makie-and-interactive-plots"></a>
+```
+
 # Plots
 
 PerfCheckerMakie turns saved measurements into figures. Every view is built from a saved run; none of them re-measures.
@@ -35,6 +39,10 @@ The default Benchmarks view overlays elapsed time, GC, allocated bytes and alloc
 
 Use `performance_plot(bundle; statistic = :median)` to normalize medians, or `reference_version = :latest` to choose a different denominator. Absolute plots in original units stay available.
 
+```@raw html
+<a id="Available-views"></a>
+```
+
 ## View families
 
 - **Benchmarks** — normalized overlay, version curves, distributions, delta, metric trade-off.
@@ -44,6 +52,10 @@ Use `performance_plot(bundle; statistic = :median)` to normalize medians, or `re
 - A version curve's connecting segment is a visual guide, not a measurement of unmeasured releases.
 - A delta view computes `(candidate - baseline) / baseline`. Negative means a reduction for time and bytes. A zero baseline makes the change undefined.
 - Allocation pies group sites below 5% of allocated bytes into **Other**. Change the threshold with `performance_plot(bundle, pie_id; min_percentage = 2)`, or disable it with `0`.
+
+```@raw html
+<a id="Linked-inspection"></a>
+```
 
 ## Flame graphs
 
@@ -55,6 +67,11 @@ Standalone HTML keeps point inspection for distributions and version series, and
 
 Makie, WGLMakie and Pluto run in the controller. A worker receives the target package, workload and selected collector only. Visualization happens after the result crosses the run-bundle boundary.
 
+
+```@raw html
+<a id="Compare-nine-Bibliography-versions"></a>
+<a id="Read-the-recorded-evolution"></a>
+```
 
 ## Recorded examples
 
@@ -69,11 +86,3 @@ Makie, WGLMakie and Pluto run in the controller. A worker receives the target pa
 ## Next
 
 [Documenter](documentation.md) embeds saved measurements in your own documentation.
-
-```@raw html
-<a id="Makie-and-interactive-plots"></a>
-<a id="Compare-nine-Bibliography-versions"></a>
-<a id="Read-the-recorded-evolution"></a>
-<a id="Available-views"></a>
-<a id="Linked-inspection"></a>
-```
