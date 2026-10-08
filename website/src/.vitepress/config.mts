@@ -35,14 +35,25 @@ function imageDimensions(bytes: Buffer): { width: number; height: number } {
       at += length + 2
     }
   }
-  throw new Error('Local image has no supported PNG/JPEG dimensions')
+  const svg = bytes.toString('utf8').match(/<svg\b[^>]*>/i)?.[0]
+  if (svg) {
+    const attribute = (name: string) => svg.match(new RegExp(`\\b${name}\\s*=\\s*(["'])(.*?)\\1`, 'i'))?.[2]
+    const viewBox = attribute('viewBox')?.trim().split(/[\s,]+/).map(Number)
+    if (viewBox?.length === 4 && viewBox.every(Number.isFinite) && viewBox[2] > 0 && viewBox[3] > 0)
+      return { width: viewBox[2], height: viewBox[3] }
+    const pixels = (value: string | undefined) => value?.match(/^\s*(\d+(?:\.\d+)?)\s*(?:px)?\s*$/i)?.[1]
+    const width = Number(pixels(attribute('width')))
+    const height = Number(pixels(attribute('height')))
+    if (width > 0 && height > 0) return { width, height }
+  }
+  throw new Error('Local image has no supported PNG/JPEG/SVG dimensions')
 }
 const imageSizes: Record<string, { width: number; height: number }> = {}
 function collectImageSizes(directory: string, prefix = '') {
   for (const entry of readdirSync(directory, { withFileTypes: true })) {
     const name = prefix + entry.name
     if (entry.isDirectory()) collectImageSizes(resolve(directory, entry.name), name + '/')
-    else if (/\.(?:png|jpe?g)$/i.test(entry.name)) {
+    else if (/\.(?:png|jpe?g|svg)$/i.test(entry.name)) {
       const size = imageDimensions(readFileSync(resolve(directory, entry.name)))
       if (size.width <= 0 || size.height <= 0) throw new Error(`Invalid image dimensions: ${name}`)
       imageSizes['/' + name] = size

@@ -51,17 +51,17 @@ const mediaType = computed(() => props.src.endsWith('.mp4') ? 'video/mp4' : 'vid
         referrerpolicy="strict-origin-when-cross-origin" allow="encrypted-media; picture-in-picture; fullscreen"
         allowfullscreen />
       <button v-else class="doc-video-button" type="button" @click="playYouTube = true">
-        <img v-if="poster" :src="withBase(poster)" :alt="alt" :width="dimensions?.width" :height="dimensions?.height" loading="lazy" />
+        <img v-if="poster" :src="withBase(poster)" :alt="alt" :width="dimensions?.width" :height="dimensions?.height" :style="geometry" loading="lazy" />
         <span>Watch the walkthrough on YouTube</span>
       </button>
     </template>
     <div v-else-if="video" class="doc-video-pending">
-      <img v-if="poster" :src="withBase(poster)" :alt="alt" :width="dimensions?.width" :height="dimensions?.height" loading="lazy" />
+      <img v-if="poster" :src="withBase(poster)" :alt="alt" :width="dimensions?.width" :height="dimensions?.height" :style="geometry" loading="lazy" />
       <p v-if="entry?.download_url">Download the recording below to watch it now, or follow the written walkthrough below.</p>
       <p v-else>This build has no embedded recording. Follow the written walkthrough below.</p>
     </div>
     <a v-else :href="withBase(src)" :aria-label="`Open full-size image: ${alt}`">
-      <img :src="withBase(src)" :alt="alt" :width="dimensions?.width" :height="dimensions?.height" loading="lazy" />
+      <img :src="withBase(src)" :alt="alt" :width="dimensions?.width" :height="dimensions?.height" :style="geometry" loading="lazy" />
     </a>
     <figcaption>{{ caption }}</figcaption>
     <p v-if="video && walkthrough"><a :href="withBase(walkthrough)">Full walkthrough<span v-if="chapter"> · {{ chapter }}</span></a></p>
