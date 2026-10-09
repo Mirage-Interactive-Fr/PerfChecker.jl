@@ -23,6 +23,41 @@ env:
   UV_THREADPOOL_SIZE: '1'
 
 jobs:
+  csv-contract:
+    name: CSV 1.1.0 - Julia ${{ matrix.version }} - ${{ matrix.arch }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - {version: '1.10', arch: x64}
+          - {version: '1', arch: x86}
+    env:
+      PERFCHECKER_TEST_TAGS: csv_contract
+      PERFCHECKER_EXPECT_CSV_VERSION: '1.1.0'
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: julia-actions/setup-julia@v3
+        with:
+          version: ${{ matrix.version }}
+          arch: ${{ matrix.arch }}
+      - uses: julia-actions/cache@v3
+      - name: Pin the real CSV major and exercise the Core I/O contract
+        run: |
+          julia --startup-file=no --project=. -e '
+            using Pkg, TOML
+            project = TOML.parsefile("Project.toml")
+            specs = [Pkg.PackageSpec(name="CSV", version="1.1.0")]
+            append!(specs, [Pkg.PackageSpec(name=name, uuid=project["extras"][name]) for name in project["targets"]["test"]])
+            Pkg.add(specs)
+            Pkg.pin("CSV")
+            Pkg.test(; allow_reresolve=false)
+          '
+
   formatter:
     runs-on: ${{ matrix.os }}
     strategy:
