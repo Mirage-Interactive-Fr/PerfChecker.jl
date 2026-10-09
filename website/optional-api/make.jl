@@ -118,7 +118,7 @@ inputs = [@__FILE__, joinpath(@__DIR__, slug, "Project.toml"),
 receipt = Dict{String, Any}(
     "schema" => "perfchecker-optional-doc-export/1", "channel" => "dev",
     "source_revision" => source_revision,
-    "source_tree" => strip(read(`git -C $root rev-parse HEAD^{tree}`, String)),
+    "source_tree" => strip(read(Cmd(["git", "-C", root, "rev-parse", "HEAD^{tree}"]), String)),
     "core_version" => string(pkgversion(PerfChecker)), "owner" => owner_name,
     "owner_uuid" => string(Base.PkgId(owner).uuid),
     "owner_version" => string(pkgversion(owner)), "julia" => string(VERSION),
