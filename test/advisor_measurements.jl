@@ -288,6 +288,9 @@ end
                     "content" => [Dict("type" => "text",
                         "text" => "The request contains no projected measurements.")])
             end
+            if body["method"] == "tools/list" && haskey(body["params"], "_meta")
+                merge!(response, Dict("ttlMs" => 0, "cacheScope" => "private"))
+            end
             HTTP.Response(200, ["Content-Type" => "application/json"],
                 encode(Dict("jsonrpc" => "2.0", "id" => body["id"], "result" => response)))
         end

@@ -53,11 +53,21 @@
         @test result["choices"][1]["message"]["content"] == "complete"
     end
     chunked_provider([
-        "{\"jsonrpc\":\"2.0\",\"id\":1,", "\"result\":{\"tools\":[]}}"]) do port
+        "{\"jsonrpc\":\"2.0\",\"id\":1,",
+        "\"result\":{\"resultType\":\"complete\",\"ttlMs\":0,\"cacheScope\":\"private\",\"tools\":[]}}"]) do port
         config = AdvisorConfig(
             protocol = :mcp_http, endpoint = "http://127.0.0.1:$port/mcp", mcp_tool = "ask")
         message = Base.invokelatest(extension.mcp_request, config, "tools/list", 1, Dict())
-        result, _ = Base.invokelatest(extension.mcp_post, config, message)
+        phases = Symbol[]
+        original = PerfChecker._advisor_phase_hook[]
+        PerfChecker._advisor_phase_hook[] = phase -> push!(phases, phase)
+        result = try
+            first(Base.invokelatest(extension.mcp_post, config, message))
+        finally
+            PerfChecker._advisor_phase_hook[] = original
+        end
         @test isempty(result["tools"])
+        @test phases == [:mcp_http_open, :mcp_stream_ready, :mcp_response_headers_wait,
+            :mcp_response_body_read, :mcp_response_body_complete]
     end
 end

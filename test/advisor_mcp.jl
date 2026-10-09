@@ -16,6 +16,18 @@
     @test_throws ArgumentError extension.mcp_response(response(Int64(1)), true)
     @test_throws ArgumentError extension.mcp_response(response(Int64(1)), 1.0)
     @test_throws ArgumentError extension.mcp_response(response(Int64(1)), "1")
+    config = AdvisorConfig(protocol = :mcp_http, mcp_tool = "custom-advice")
+    for method in ("server/discover", "tools/list", "tools/call")
+        message = extension.mcp_request(config, method, 1)
+        @test message["params"]["_meta"] == Dict(
+            "io.modelcontextprotocol/protocolVersion" => "2026-07-28",
+            "io.modelcontextprotocol/clientInfo" => Dict(
+                "name" => "PerfChecker", "version" => string(pkgversion(PerfChecker))),
+            "io.modelcontextprotocol/clientCapabilities" => Dict())
+    end
+    legacy = AdvisorConfig(protocol = :mcp_http, mcp_tool = "custom-advice",
+        mcp_version = "2025-11-25")
+    @test !haskey(extension.mcp_request(legacy, "tools/list", 1)["params"], "_meta")
 end
 
 @testitem "MCP advice tools, custom prompts and qualification boundaries" tags=[
@@ -67,6 +79,11 @@ end
             mode[] == :text ?
             Dict("content" => [Dict("type" => "text", "text" => encode(answer))]) :
             Dict("structuredContent" => answer)
+        end
+        if method == "tools/list" && haskey(body["params"], "_meta")
+            result = merge(Dict{String, Any}(result),
+                Dict("resultType" => "complete", "ttlMs" => 0,
+                    "cacheScope" => "private"))
         end
         payload = Dict("jsonrpc" => "2.0", "id" => mode[] == :wrong_id ? 999 : body["id"],
             "result" => result)
