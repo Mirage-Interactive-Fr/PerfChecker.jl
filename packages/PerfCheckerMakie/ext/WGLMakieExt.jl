@@ -77,50 +77,103 @@ notes.forEach((line,index)=>svg.append(element("text",{x:legendX,y:legendY+legen
 </script></body></html>"""
 end
 
-function _offline_point_controls(session, figure, plot)
-    plot.kind in (:distribution, :version_series) || return nothing
+function _offline_point_controls(session, figure, source_plot)
+    source_plot.kind in (:distribution, :version_series, :version_delta,
+        :time_allocation_tradeoff) || return nothing
+    # Match the finite records consumed by the existing Makie recipes exactly.
+    plot = PerfCheckerMakie._finite_plot(source_plot)
     isempty(plot.data) && return nothing
     axis = only(filter(item -> item isa Makie.Axis, figure.content))
-    points = filter(item -> item isa Makie.Scatter, axis.scene.plots)
-    isempty(points) && return nothing
-    labels = unique(String(item["version"]) for item in plot.data)
-    positions = [Point2f(findfirst(==(String(item["version"])), labels), item["value"])
-                 for item in plot.data]
-    # Keep the point picker usable even for very large sample collections.
-    choices = unique(round.(
-        Int, range(1, length(positions); length = min(100, length(positions)))))
-    selector = Bonito.Slider(choices; value = first(choices),
-        var"aria-label" = "Inspect measured point")
-    highlight = scatter!(axis, [first(positions)]; color = :orange, markersize = 14,
-        strokecolor = :black, strokewidth = 1, inspectable = false)
-    readout = Bonito.DOM.output(
-        "Point 1: $(plot.data[1]["value"]) $(plot.options["unit"]) · $(plot.data[1]["version"])";
-        id = "point-readout", var"aria-live" = "polite")
     data = plot.data
-    unit = String(plot.options["unit"])
-    onjs(session, selector.value,
-        js"""function(index) {
-    const item = $(data)[index - 1];
-    $(readout).textContent = 'Point ' + index + ': ' + item.value + ' ' + $(unit) + ' · ' + item.version;
+    if plot.kind === :version_delta
+        positions = [Point2f(index, 100 * item["relative_delta"])
+                     for (index, item) in pairs(data)]
+        points = [scatter!(axis, positions; color = :white, markersize = 7,
+            strokecolor = PerfCheckerMakie._PLOT_PALETTE[1], strokewidth = 1.5,
+            depth_shift = -0.001)]
+        labels = ["$(item["baseline_version"]) → $(item["candidate_version"]) · change: $(100 * item["relative_delta"])% · $(get(item, "status", "unknown"))"
+                  for item in data]
+    elseif plot.kind === :time_allocation_tradeoff
+        recipe = only(filter(item -> item isa Makie.ScatterLines, axis.scene.plots))
+        points = filter(
+            item -> item isa Makie.Scatter, Makie.collect_atomic_plots([recipe]))
+        positions = [Point2f(item["bytes"], item["time"]) for item in data]
+        time_unit, allocation_unit = PerfChecker._tradeoff_plot_units(plot.options)
+        labels = ["$(item["version"]) · $(item["bytes"]) $allocation_unit · $(item["time"]) $time_unit"
+                  for item in data]
+    else
+        points = filter(item -> item isa Makie.Scatter, axis.scene.plots)
+        versions = unique(String(item["version"]) for item in data)
+        positions = [Point2f(
+                         findfirst(==(String(item["version"])), versions), item["value"])
+                     for item in data]
+        labels = ["$(item["version"]) · $(item["value"]) $(plot.options["unit"])"
+                  for item in data]
+    end
+    isempty(points) && return nothing
+    selector = Bonito.DOM.input(; type = "number", min = 1, max = length(data),
+        step = 1, value = 1, id = "point-index", var"aria-label" = "Recorded point index",
+        style = "width:7rem")
+    highlight = scatter!(axis, [first(positions)];
+        color = PerfCheckerMakie._PLOT_PALETTE[2], markersize = 14,
+        strokecolor = :white, strokewidth = 1.5, inspectable = true, depth_shift = -0.002)
+    readout = Bonito.DOM.output("Point 1: $(first(labels))";
+        id = "point-readout", var"aria-live" = "polite")
+    Bonito.evaljs(session,
+        js"""
+(() => {
+  const input = $(selector), output = $(readout), labels = $(labels);
+  let latest = 0;
+  input.addEventListener('input', () => {
+    const token = ++latest, index = Number(input.value);
+    document.querySelectorAll('.popup.show').forEach(popup => popup.classList.remove('show'));
+    delete output.dataset.error;
+    const valid = Number.isInteger(index) && index >= 1 && index <= labels.length;
+    input.setAttribute('aria-invalid', String(!valid));
+    if (!valid) { output.setAttribute('aria-busy', 'false'); output.textContent = 'Choose a point from 1 to ' + labels.length; return; }
+    output.textContent = 'Point ' + index + ': ' + labels[index - 1];
+    output.setAttribute('aria-busy', 'true');
     Promise.all([$(first(points)), $(highlight)]).then(([sources, targets]) => {
-        const source = sources[0].geometry.attributes;
-        const target = targets[0].geometry.attributes;
-        const key = ['wgl_positions', 'pos', 'offset'].find(key => source[key] && target[key]);
-        if (!key) throw new Error('WGLMakie point positions are unavailable');
-        const input = source[key], output = target[key];
-        for (let component = 0; component < output.itemSize; component++) {
-            output.array[component] = input.array[(index - 1) * input.itemSize + component];
-        }
-        output.needsUpdate = true;
+      if (token !== latest) return;
+      input.dataset.sourcePlot = sources[0].plot_uuid;
+      input.dataset.highlightPlot = targets[0].plot_uuid;
+      const source = sources[0].geometry.attributes, target = targets[0].geometry.attributes;
+      const key = ['wgl_positions', 'pos', 'offset'].find(key => source[key] && target[key]);
+      if (!key) throw new Error('WGLMakie point positions are unavailable');
+      const positions = source[key], selected = target[key];
+      for (let component = 0; component < selected.itemSize; component++) {
+        selected.array[component] = positions.array[(index - 1) * positions.itemSize + component];
+      }
+      selected.needsUpdate = true;
+      input.dataset.appliedIndex = String(index);
+      output.setAttribute('aria-busy', 'false');
+    }).catch(error => {
+      if (token !== latest) return;
+      output.setAttribute('aria-busy', 'false');
+      output.dataset.error = String(error.message || error);
+      output.textContent = 'Point inspection unavailable: ' + output.dataset.error;
     });
-}""")
+  });
+  input.dispatchEvent(new Event('input'));
+})();
+""")
     callback = js"""(mesh, index) => {
-        const item = $(data)[index];
-        return item ? ('Point ' + (index + 1) + ': ' + item.value + ' ' + $(unit) + ' · ' + item.version) : '';
+        const input = $(selector);
+        if (mesh.plot_uuid === input.dataset.highlightPlot) {
+            if (input.getAttribute('aria-invalid') === 'true' ||
+                $(readout).getAttribute('aria-busy') !== 'false' || $(readout).dataset.error) {
+                return 'Select a valid point and wait for its position to finish updating.';
+            }
+            index = Number(input.dataset.appliedIndex) - 1;
+        }
+        const label = $(labels)[index];
+        if (label === undefined) return '';
+        return 'Point ' + (index + 1) + ': ' + label;
     }"""
-    tooltip = WGLMakie.ToolTip(figure, callback; plots = points)
+    tooltip = WGLMakie.ToolTip(figure, callback; plots = [points; highlight])
     controls = Bonito.DOM.div(
-        Bonito.DOM.label("Inspect measured point: ", selector), readout,
+        Bonito.DOM.label("Recorded point ", selector, " of $(length(data))"), readout;
+        id = "point-controls",
         style = Bonito.Styles("display" => "flex", "gap" => "1rem",
             "flex-wrap" => "wrap", "padding" => "0.8rem", "font-family" => "sans-serif"))
     return controls, tooltip
@@ -130,9 +183,10 @@ end
 Render a self-contained HTML document. Normalized measurements provide metric
 visibility, selection of recorded versions, viewport zoom and pan, exact point
 inspection, and SVG/CSV export. Selection preserves the original ratios.
-Point plots include an offline inspection slider and JavaScript tooltips; flame
-graphs have keyboard and pointer inspection. Other Makie 2D zoom and Julia
-DataInspector callbacks are not exported.
+WGL figures provide viewport zoom and pan. Series, distributions, deltas and
+tradeoffs include an exact point index and JavaScript popups on point clicks.
+Flame graphs have keyboard and pointer inspection. Julia DataInspector and
+ordinary Makie axis zoom callbacks are not exported.
 """
 function PerfChecker.performance_plot_html(plot::PerfChecker.PerformancePlot)
     return lock(RENDER_LOCK) do
@@ -183,27 +237,15 @@ function PerfChecker.performance_plot_html(plot::PerfChecker.PerformancePlot)
         session = Bonito.export_static(io, app)
         close(session)
         html = String(take!(io))
-        # A standalone export has no Julia layout callback. Fit the complete
-        # recorded figure instead of resizing only its WebGL viewport, which
-        # clips axes and later versions in narrow documentation columns.
-        fit_script = """<script>
-function fitOfflineFigure() {
-  const viewport = document.getElementById('offline-viewport');
-  const figure = document.getElementById('offline-figure');
-  if (!viewport || !figure) return;
-  const fit = () => {
-    const availableHeight = Math.max(100, window.innerHeight - viewport.offsetTop - 12);
-    const scale = Math.min(1, viewport.clientWidth / $width, availableHeight / $height);
-    figure.style.transform = 'scale(' + scale + ')';
-    viewport.style.height = ($height * scale) + 'px';
-  };
-  new ResizeObserver(fit).observe(viewport);
-  window.addEventListener('resize', fit);
-  fit();
-}
-if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fitOfflineFigure);
-else fitOfflineFigure();
-</script>"""
+        # Controls manipulate the actual exported figure, with no Julia callbacks.
+        script = read(joinpath(@__DIR__, "../src/assets/offline.js"), String)
+        data = replace(
+            PerfChecker._canonical_json(PerfChecker.performance_plot_dict(plot)),
+            "</" => "<\\/")
+        script = replace(script, "__PERFCHECKER_OFFLINE_MODEL__" => data,
+            "__PERFCHECKER_OFFLINE_WIDTH__" => string(width),
+            "__PERFCHECKER_OFFLINE_HEIGHT__" => string(height))
+        fit_script = "<script>" * script * "</script>"
         html = replace(html, "</body>" => fit_script * "</body>")
         length(HTML_CACHE) >= MAX_CACHE_ENTRIES &&
             delete!(HTML_CACHE, first(keys(HTML_CACHE)))
