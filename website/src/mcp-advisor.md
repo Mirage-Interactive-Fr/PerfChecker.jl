@@ -6,13 +6,16 @@
 
 Connect PerfChecker to an advice tool on your MCP server. PerfChecker is the **MCP client**: it discovers tools and calls the one you select. Discuss saved evidence, review the answer, then explicitly request implementation through a separately configured tool. The server may use an agent or another service to produce its answer. Deterministic findings remain available without a connection.
 
-[MCP](https://modelcontextprotocol.io/specification/2026-07-28/server/tools) is a standard protocol for exposing tools. A tool server does not necessarily contain a language model or an agent. For this workflow, choose a tool that accepts the supplied prompt and returns advice. PerfChecker currently uses **Streamable HTTP**, with JSON or request-scoped SSE replies; a stdio-only server needs a compatible bridge. Start and manage your server independently. The optional local Codex connector is one example, not a requirement for chat or implementation.
+[MCP](https://modelcontextprotocol.io/specification/2026-07-28/server/tools) is a standard protocol for exposing tools. A tool server does not necessarily contain a language model or an agent. For this workflow, choose a tool that accepts the supplied prompt and returns advice. Use an independently managed **Streamable HTTP** server, or explicitly launch a native **stdio** server from VS Code. The optional local Codex connector is one example, not a requirement for chat or implementation.
+
+The local stdio connector and connection-panel labels below belong to the extension **1.0.1 development candidate**. They are not part of the public 1.0.0 extension. The Julia client still uses HTTP; the extension adapts its session-local HTTP connection to the selected stdio server.
 
 ## Choose a connection
 
 | What you already have | Use | First action |
 | --- | --- | --- |
 | A compatible HTTP MCP server with an advice tool | Saved MCP configuration | Start your server, then discover and select its advice tool |
+| A native MCP stdio server executable with an advice tool | Temporary local stdio connection | Choose **Connect local MCP server**, discover its tools, then explicitly connect |
 | Only a model's Chat Completions URL | The provider interface for evidence narration | Use [Provider setup](advisor-ui.md); this URL is not an MCP server |
 | No advice service or server | Deterministic findings and manual changes | Measure and diagnose, then inspect the saved advice |
 | An authenticated native Codex CLI | Optional temporary local connector | Use the **Codex CLI (optional)** example below |
@@ -60,12 +63,12 @@ explicit chat actions; reopening a notebook does not request an agent turn.
 
 ## Configure the advice tool
 
-After preparing the controller, open **PerfChecker: Configure advisor and manage models** in VS Code.
+After preparing the controller, open **PerfChecker: Configure MCP connection and models** in VS Code, or **Configure MCP connection** in chat. The following steps configure a saved HTTP provider; use [Connect a local stdio server](#Connect-a-local-stdio-server) for an explicitly launched process.
 
-1. Select **MCP HTTP**, enter your server endpoint and its supported revision (`2026-07-28` or `2025-11-25`).
+1. In **Mode**, select **Advisor provided by an MCP HTTP tool**, enter your **Server address** and supported **MCP version** (`2026-07-28` or `2025-11-25`).
 2. Choose **Test connection / discover**. This reads the tool catalogue without sending saved evidence or requesting advice.
 3. Inspect the chosen advice tool's schema and choose **Use**. Set its exact prompt argument and required extra arguments.
-4. Use **text** response mode for chat: the tool must accept the configured string prompt and return nonempty text. Then save. Check `perfchecker.advisorConfig`: a selected JSON file takes precedence over provider settings.
+4. Use **Text advice · no automatic experiments or Apply** response mode for chat: the tool must accept the configured string prompt and return nonempty text. Choose **Save configuration**. Check `perfchecker.advisorConfig`: a selected JSON file takes precedence over provider settings.
 5. Open **PerfChecker: Chat with performance advisor**, deliberately attach a completed report, and ask one question. A successful catalogue probe proves neither answer generation nor the quality of an answer.
 
 In the discovered inventory, select **Use** beside the advice tool your server actually provides.
@@ -124,11 +127,32 @@ The equivalent essential folder settings are:
 }
 ```
 
+## Connect a local stdio server
+
+Start with the [controller transport check](#Check-the-controller-transport), even for stdio. The selected Runner Project needs PerfChecker and `HTTP`; installing an MCP executable does not enable that Julia transport. Use a trusted workspace and finish or cancel the current advisor operation before connecting.
+
+1. In chat, choose **Connect local MCP server**, or run **PerfChecker: Connect local MCP server (stdio)**. The connection panel selects **Local MCP server · stdio** in **Mode**.
+2. Enter **Absolute MCP server executable**, **Executable arguments (JSON array)** and **Absolute server working directory**. Choose the explicit **MCP version** your server supports. The executable must be a native executable file; Windows `.cmd` and `.bat` launchers are unsupported. The executable and arguments are passed directly, without shell interpretation or expansion; no login command is inferred. Pass each argument as its own JSON string. Do not enter credentials in either argument field.
+3. Choose **Test connection / discover**. This explicitly starts the server and reads `tools/list`, following pagination up to 32 pages. It sends no saved evidence and calls no advice or implementation tool. Open **Required arguments and tool schema** beside the tool you intend to use.
+4. Choose **Use** for advice. Check **Selected MCP tool**, **Prompt argument** and **Other tool arguments (JSON)** against its actual schema. The prompt must be a string argument; the tool must return nonempty text. Supply all other required arguments without overriding the prompt field. MCP supplies no universal advice-tool name or model.
+5. If you want implementation, choose **Use for implementation** beside a trusted tool. Check **Optional implementation tool**, **Implementation prompt argument**, **Isolated checkout argument** and **Other implementation arguments (JSON)** separately. Prompt and checkout argument names must differ. Each arguments object is limited to 12,000 bytes and must omit its reserved fields. An advice-only tool cannot edit code merely because it appears in this inventory.
+6. Choose **Connect for this editor session**. This checks the selected tools and required argument names, without requesting advice. Open chat, deliberately attach completed evidence if relevant, and ask a question. Discovery and connection do not prove that the tool can answer it.
+
+Here, **local** means local to the **VS Code extension host**. In Remote SSH or a development container, executable paths, working directories, environment variables and the isolated implementation checkout belong to that remote host or container. A server running on your desktop does not automatically see those files. Choose an implementation tool that can access and honor the supplied checkout on the extension host.
+
+The server inherits the extension host environment except private PerfChecker connector tokens. Other environment variables and filesystem permissions remain available to the server; choose its executable and environment deliberately. PerfChecker drains server stderr without displaying arbitrary log content. MCP and this connector do not provide an operating-system sandbox or guarantee that an advice tool has no side effects.
+
+The live executable choice, tool selections, loopback endpoint and generated credential are session-only. They are not written to settings or `perf/advisor.json`. Optional `advisorMcpStdioCommand`, `advisorMcpStdioArguments` and `advisorMcpStdioDirectory` settings only prefill the form; opening the panel or restarting the editor does not start a server. A connected local provider takes precedence over saved provider configuration, including a saved disabled state. Disconnect to resume that saved configuration.
+
+Choose **Cancel operation** during setup to stop the owned process. Closing an unconnected discovery panel also stops its discovery server; closing the configuration panel after connecting keeps the session available to chat. Closing Chat stops its stdio server even when idle; explicitly reconnect to use that connection again. Finish or cancel an active request before choosing **Disconnect local MCP server** in chat or the panel, or running **PerfChecker: Disconnect local MCP server**. Cancellation, timeout, EOF or server exit closes the local connection and requires an explicit reconnect. Wait for cleanup; a cleanup failure is reported and can be retried with Disconnect. PerfChecker does not adopt unrelated server processes.
+
+Implementation remains a separate reviewed request. [Save your files, create the Git checkpoint, inspect the collected diff, Apply and Restore](#Switch-from-advice-to-implementation) exactly as for an HTTP tool. Stopping a server cannot undo edits it already made; an interrupted request is not evidence that its checkout is unchanged.
+
 ## Understand configuration fields
 
 | JSON field | Contract |
 | --- | --- |
-| `protocol` | `mcp_http` for MCP; Chat Completions uses a different adapter |
+| `protocol` | `mcp_http` in the Julia/JSON configuration; VS Code's stdio mode supplies a temporary HTTP adapter |
 | `endpoint` | Plain local HTTP(S), or explicitly allowed remote HTTPS; no credentials/query/fragment |
 | `mcp_version` | `2026-07-28`, or `2025-11-25` for a legacy server |
 | `mcp_tool` | One explicitly selected tool; checked with `tools/list` |
@@ -312,7 +336,7 @@ A tool with filesystem access can inspect files beyond the bounded evidence proj
 
 ## Structured investigations
 
-Structured mode belongs to bounded investigation, rather than free-form implementation chat. The local Codex connection supplies text chat tools. Disconnect it before configuring an external structured tool. To let that assistant select an experiment, use `mcp_response = "structured"` and enable `advisorInvestigates`. The tool returns:
+Structured mode belongs to bounded investigation, rather than free-form implementation chat. Local stdio and Codex connections supply text chat tools. Disconnect a temporary connector before configuring a saved external structured tool. To let that assistant select an experiment, use `mcp_response = "structured"` and enable `advisorInvestigates`. The tool returns:
 
 ```json
 {
@@ -349,7 +373,9 @@ Replace `chat` with `implement` only with an implementation-tool config and a ca
 
 PerfChecker supports the HTTP subset needed for one explicit tool: JSON and request-scoped SSE replies, paginated discovery (at most 32 pages), legacy initialization/session release, and modern request metadata plus annotated argument headers. Revisions are explicit; no silent downgrade occurs. Responses are capped at **1 MB**; redirects and automatic retries are disabled.
 
-See the official [2026-07-28 Streamable HTTP specification](https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/streamable-http) and [2025-11-25 transport specification](https://modelcontextprotocol.io/specification/2025-11-25/basic/transports) for the server contracts. PerfChecker does not implement native stdio, deprecated HTTP+SSE endpoints, sampling, elicitation, roots, subscriptions, tasks or multi-round-trip `input_required` interactions. Choose a tool that can complete the configured request without those features. Interactive OAuth login and refresh are also unavailable.
+See the official [2026-07-28 Streamable HTTP specification](https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/streamable-http) and [2025-11-25 transport specification](https://modelcontextprotocol.io/specification/2025-11-25/basic/transports) for the server contracts. The extension's stdio connector uses newline-delimited JSON-RPC: `2025-11-25` initializes a session and `2026-07-28` discovers server capabilities and includes request metadata. Both require the tools capability and the exact selected revision; there is no downgrade. Messages are capped at 1 MB, and the local Julia-to-stdio adapter accepts requests up to 250,000 bytes. Server requests and interactive continuations are refused.
+
+Deprecated HTTP+SSE endpoints, sampling, elicitation, roots, subscriptions, tasks, interactive OAuth login/refresh and multi-round-trip `input_required` interactions are unavailable. Choose a tool that can complete the configured request without those features. The stdio mode is an extension connector for text advice and explicit implementation, not a new Julia `AdvisorConfig(protocol = :mcp_stdio)` provider or a structured-experiment selector.
 
 ## Connection examples
 
