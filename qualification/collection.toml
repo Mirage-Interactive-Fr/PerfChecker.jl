@@ -16,7 +16,7 @@ paths = ["src/", "bin/", "Project.toml", "Manifest.toml", "test/", "ext/", "exam
 suites = ["core", "native", "shared", "supposition", "legacy_interfaces", "legacy_protocol"]
 
 [components.docs]
-depends = ["core", "contracts", "web", "pluto", "plots", "analyzers", "vscode"]
+depends = ["core", "contracts", "web", "pluto", "plots", "analyzers", "vscode", "tachikoma"]
 paths = ["website/", "ext/DocumenterExt/", "ext/DocumenterVitepressExt/"]
 suites = ["docs"]
 
@@ -29,6 +29,11 @@ suites = ["plots"]
 depends = ["core", "contracts"]
 paths = ["packages/PerfCheckerPluto/"]
 suites = ["pluto"]
+
+[components.tachikoma]
+depends = ["core", "contracts", "plots"]
+paths = ["packages/PerfCheckerTachikoma/"]
+suites = ["tachikoma"]
 
 [components.vscode]
 depends = ["core", "contracts"]
@@ -99,6 +104,10 @@ oses = ["ubuntu-latest"]
 [suites.supposition]
 julias = ["1"]
 oses = ["ubuntu-latest", "windows-latest"]
+
+[suites.tachikoma]
+julias = ["1.10", "1"]
+oses = ["ubuntu-latest"]
 
 [suites.vscode]
 julias = ["1"]

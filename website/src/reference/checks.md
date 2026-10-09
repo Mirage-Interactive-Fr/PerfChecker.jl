@@ -145,6 +145,41 @@ traces; no blanket deletion of a package's `.mem` files is performed on restart.
 
 See [Network measurement](../network-measurement.md) for attribution and which counts double on loopback.
 
+## Optional hardware counters
+
+[PerfCheckerLinuxPerf](https://github.com/Mirage-Interactive-Fr/PerfChecker.jl/blob/main/packages/PerfCheckerLinuxPerf/README.md)
+and [PerfCheckerLIKWID](https://github.com/Mirage-Interactive-Fr/PerfChecker.jl/blob/main/packages/PerfCheckerLIKWID/README.md)
+are optional companions with an explicit Julia `run_counter_suite` API or
+`counter_executor` passed to a Julia suite runner. Until separately registered,
+develop each companion from the monorepo into its prepared worker project.
+Keep the worker projects separate: LinuxPerf 0.4.2 requires PrettyTables 2,
+whereas LIKWID 0.4.6 requires PrettyTables 3.
+
+LinuxPerf counts the calling OS thread's user-space execution, excluding other
+threads and child processes. LIKWID measures a native counter window on selected
+CPUs within inherited affinity; attribution depends on its access mode and PID
+configuration, and direct/daemon modes can include unrelated activity. Both run
+the operation and synchronization once inside the window, then stop before the
+oracle. Neither performs an implicit warmup or rerun.
+
+Counts use unit `1`; CPU cycles are counts, not a duration. LinuxPerf records
+enabled/running times separately in nanoseconds. LIKWID retains raw event values
+with explicitly declared units and a separate group time in seconds; this API
+does not expose enabled/running times. Do not mix these windows with benchmark
+timing samples or infer elapsed time from cycle counts.
+
+Linux perf-event permissions and, for LIKWID, a usable native `liblikwid` are
+prerequisites. The companions do not change kernel settings, capabilities or
+affinity. An `unavailable` result is missing evidence, never a zero counter or a
+successful hardware measurement. LinuxPerf's `counter_not_scheduled` refusal
+can occur after the operation, so inspect its lifecycle before retrying.
+
+This initial integration does not wire a native selector into default CLI,
+VSCode, Pluto or MCP workflows. The Web companion forwards an explicit Julia
+executor at source level; a real hardware-counter HTTP/UI job has not been
+qualified. See the companion READMEs for the exact supported architectures,
+worker preparation, raw-value limits and current qualification scope.
+
 ```@raw html
 <a id="One-feature,-several-checks"></a>
 ```

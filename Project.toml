@@ -8,7 +8,7 @@ Aqua = "0.8"
 Base64 = "1"
 # Version 1.8.0 overflows Int32 before bounding its trial allocation estimate.
 BenchmarkTools = "1.0 - 1.7, 1.8.1 - 1"
-CSV = "0.10"
+CSV = "0.10, 1"
 Chairmarks = "1"
 CoverageTools = "1"
 # CpuId 0.3.1 and 0.3.2 misidentify Julia's :i686 architecture (upstream #62).

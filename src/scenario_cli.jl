@@ -20,12 +20,10 @@ function _scenario_cli(command, positional, options, stdout)
         implement_advice(input["messages"]; config, project,
             workspace = input["workspace"], workspace_argument = get(
                 input, "workspace_argument", "workspace"),
-            advice = get(input, "advice",
-                Dict("schema_version" => ADVICE_SCHEMA, "recommendations" => []))) :
+            advice = get(input, "advice", nothing)) :
         command == "chat" ?
         chat_advice(input["messages"]; config, project,
-            advice = get(input, "advice",
-                Dict("schema_version" => ADVICE_SCHEMA, "recommendations" => []))) :
+            advice = get(input, "advice", nothing)) :
         command == "narrate" ? narrate_advice(input; config, project) :
         evaluate_advisors(input["cases"]; config, project,
             include_investigator = _cli_bool(options, "investigator"),
