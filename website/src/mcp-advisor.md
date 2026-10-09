@@ -4,20 +4,20 @@
 
 # MCP advice and implementation
 
-Connect PerfChecker to a tool on an existing MCP server. PerfChecker acts as the **MCP client** calling your agent's tools. Discuss performance evidence in advice mode, then explicitly request implementation after reviewing the answer. PerfChecker's deterministic findings remain available without an agent or network connection.
+Connect PerfChecker to an advice tool on your MCP server. PerfChecker is the **MCP client**: it discovers tools and calls the one you select. Discuss saved evidence, review the answer, then explicitly request implementation through a separately configured tool. The server may use an agent or another service to produce its answer. Deterministic findings remain available without a connection.
 
-MCP is a **tool protocol**, not a model endpoint. The chosen tool must accept a prompt and produce an answer, directly or through its own agent. A server exposing only unrelated data tools cannot generate performance advice. For an external server, you manage its installation and startup. The VS Code extension also provides the explicit local Codex connector below.
+[MCP](https://modelcontextprotocol.io/specification/2026-07-28/server/tools) is a standard protocol for exposing tools. A tool server does not necessarily contain a language model or an agent. For this workflow, choose a tool that accepts the supplied prompt and returns advice. PerfChecker currently uses **Streamable HTTP**, with JSON or request-scoped SSE replies; a stdio-only server needs a compatible bridge. Start and manage your server independently. The optional local Codex connector is one example, not a requirement for chat or implementation.
 
 ## Choose a connection
 
 | What you already have | Use | First action |
 | --- | --- | --- |
-| An authenticated native Codex CLI | The extension's temporary local connector | Open Advisor chat and choose **Connect Codex CLI** |
-| An HTTP MCP agent that can answer a prompt | Explicit external MCP configuration | Start your server, then discover and select its advice tool |
+| A compatible HTTP MCP server with an advice tool | Saved MCP configuration | Start your server, then discover and select its advice tool |
 | Only a model's Chat Completions URL | The provider interface for evidence narration | Use [Provider setup](advisor-ui.md); this URL is not an MCP server |
-| No agent account or server | Deterministic findings and manual changes | Measure and diagnose, then inspect the saved advice |
+| No advice service or server | Deterministic findings and manual changes | Measure and diagnose, then inspect the saved advice |
+| An authenticated native Codex CLI | Optional temporary local connector | Use the **Codex CLI (optional)** example below |
 
-In either MCP route, the controller must contain PerfChecker V1 and `HTTP`.
+For each supported MCP connection, the controller must contain PerfChecker V1 and `HTTP`.
 [Prepare the controller](interfaces/vscode-configuration.md#Prepare-a-controller)
 first. Advice and implementation are separate actions: receiving an answer never
 approves a source edit.
@@ -54,89 +54,25 @@ inspect their correctness and save completed reports before selecting that saved
 evidence in Advisor chat. Follow-up questions and implementation review remain
 explicit chat actions; reopening a notebook does not request an agent turn.
 
-## Connect an authenticated Codex CLI
-
-PerfChecker can connect an installed, authenticated Codex CLI through a local MCP bridge with separate advice and implementation tools. The connector invokes `codex exec`; it does not require `codex mcp-server`.
-
-1. Use a native Codex CLI supporting the flags below and authenticate it yourself with `codex login` in a terminal. Prepare the Julia controller with PerfChecker and `HTTP`, as described in [VS Code configuration](interfaces/vscode-configuration.md).
-2. If the executable is outside VS Code's PATH, set **PerfChecker: Codex Executable** (`perfchecker.codexExecutable`) to its native binary path. On Windows, use the native `.exe`; npm `.cmd` and `.bat` launchers are unsupported.
-3. Open the trusted package workspace and **PerfChecker: Chat with performance advisor**. Choose **Connect Codex CLI**, or run **PerfChecker: Connect authenticated Codex CLI**. PerfChecker checks version, supported flags and existing login without starting a model turn.
-4. Ask for advice, optionally attaching saved evidence. Review the answer, then use the [explicit implementation workflow](#Switch-from-advice-to-implementation) if you want the agent to prepare a change.
-5. Choose **Disconnect Codex**, or run **PerfChecker: Disconnect local Codex**, to return to your saved advisor configuration. After an editor reload, connect again when needed.
-
-Qualification used **Codex 0.159.2** for the executable contract and connector
-lifecycle, and **Codex 0.162.0-alpha.2** for authenticated multi-turn advice and
-reviewed source implementation. Two separate source fixtures were exercised:
-
-| Source and controller | What the authenticated test checked |
-| --- | --- |
-| JavaScript fixture, including requests through the registered PerfChecker 1.0.0 Julia CLI | Contextual advice, an isolated patch, Node correctness, diff review, apply, exact restore and cancellation |
-| Julia `sum_squares`, Julia 1.13.1 and Core 1.0.1 source tree `4fbc3c25543aa4f9b1154c227e5432f0cd62df91` | Two advice turns, an isolated source-only patch, real Julia correctness and allocation probes, apply, exact restore, cancellation of a started Codex turn and disconnect |
-
-The Julia proof used the 1.0.1 source checkout, before General registration. It
-checked empty Float64 input, signed values and a 1,000-element Float64 vector:
-the expected results were `0.0`, `14.0` and `333833500.0`. The warmed
-`@allocated` probe recorded **8072 B before and 0 B after** for that specific
-workload. It did not measure a timing improvement or establish equivalence for
-all Julia element types.
-
-These authenticated connector tests are separate from native VS Code footage
-using a controlled MCP response fixture. That footage exercises real editor
-controls and Julia workers; its scripted responses are identified in the
-captions. Consult the release qualification report for the final native
-platform matrix. These are the CLI versions actually exercised; intermediate
-releases have not been qualified by inference.
-
-The connector requires `--no-daemon`, `--ignore-user-config` and `--ignore-rules`,
-plus the `exec` ephemeral, sandbox and output flags. Its probe checks the selected
-executable. Unsupported installations fail explicitly. Use your own external
-MCP agent if these flags are unavailable. See the official
-[Codex noninteractive workflow example](https://developers.openai.com/cookbook/examples/codex/build_iterative_repair_loops_with_codex)
-for the CLI execution model.
-
-PerfChecker starts an authenticated HTTP endpoint on `127.0.0.1` with a random port. The endpoint and automatically generated Bearer token exist only in this editor session. They are not saved in settings or `perf/advisor.json`. The explicit connection authorizes chat for this session, including when your saved provider is disabled. It temporarily takes precedence over saved provider configuration; disconnecting or reloading restores that configuration and its enabled/disabled state. Never copy this temporary endpoint into a configuration file.
-
-The advice tool is `ask_perfchecker(prompt)` and uses the CLI's `read-only` sandbox. The implementation tool is `implement_perfchecker(prompt, workspace)` and uses `workspace-write` in the canonical temporary PerfChecker checkout. Both run without the shared Codex daemon so cancellation owns the launched process. The checkpoint, diff review and restore workflow remain the same as for an external agent.
-
-The connector uses your existing account and the CLI's default model. Custom user profiles, model/provider configuration, MCP servers, hooks and rules are not inherited. A project or implementation copy containing project `.codex` configuration is refused before invocation. Sandbox support depends on the CLI installation and platform. The agent can inspect files in its working directory; the configured model provider processes the requested context, and ordinary account usage or charges apply. Git proposals and checkpoints remain recoverable independently of the connection.
-
-Maintainers can reproduce the authenticated connector test from the extension
-repository after `npm test`:
-
-```sh
-PERFCHECKER_TEST_CODEX=/path/to/codex node --test test/codex-real.test.mjs
-```
-
-For the separate Julia-source proof, select the Julia executable, controller
-project and exact expected Core tree deliberately:
-
-```sh
-PERFCHECKER_TEST_CODEX=/path/to/codex \
-PERFCHECKER_TEST_CODEX_JULIA=1 \
-PERFCHECKER_TEST_JULIA=/path/to/julia \
-PERFCHECKER_TEST_JULIA_PROJECT=/path/to/controller \
-PERFCHECKER_TEST_CORE_TREE=4fbc3c25543aa4f9b1154c227e5432f0cd62df91 \
-node --test --test-name-pattern='real Codex Julia implementation' test/codex-real.test.mjs
-```
-
-The controller needs the stated PerfChecker source and `HTTP`. These opt-in
-tests send real model requests against your existing account and remove their
-disposable source, Git and implementation fixtures. Use their source and
-measurement boundaries when interpreting the result for your own package.
-
 ```@raw html
 <a id="Configure-the-assistant"></a>
 ```
 
 ## Configure the advice tool
 
-Install `HTTP` deliberately in the controller environment. In VS Code, open **PerfChecker: Configure advisor and manage models**, select **MCP HTTP**, set the server endpoint and revision, discover its tools, and select an advice tool. The probe checks the connection/catalogue; it does not establish the quality of the tool's reasoning.
+After preparing the controller, open **PerfChecker: Configure advisor and manage models** in VS Code.
 
-In the discovered inventory, select **Use** beside your agent's advice tool.
+1. Select **MCP HTTP**, enter your server endpoint and its supported revision (`2026-07-28` or `2025-11-25`).
+2. Choose **Test connection / discover**. This reads the tool catalogue without sending saved evidence or requesting advice.
+3. Inspect the chosen advice tool's schema and choose **Use**. Set its exact prompt argument and required extra arguments.
+4. Use **text** response mode for chat: the tool must accept the configured string prompt and return nonempty text. Then save. Check `perfchecker.advisorConfig`: a selected JSON file takes precedence over provider settings.
+5. Open **PerfChecker: Chat with performance advisor**, deliberately attach a completed report, and ask one question. A successful catalogue probe proves neither answer generation nor the quality of an answer.
+
+In the discovered inventory, select **Use** beside the advice tool your server actually provides.
 Inspect its input schema: replace the prompt argument if it is not `prompt`, and
 provide its other required arguments without secrets. Tool names and argument
 names are case-sensitive. The screenshot's `ask_perfchecker` is a demonstration
-inventory; the external-server example below uses the placeholder `ask`. Use
+inventory; the illustrative configuration below uses `review_export`. Use
 your server's actual name and schema in both the file and extension settings.
 
 The native walkthrough below uses the local protocol fixture `ask_fixture`.
@@ -152,16 +88,16 @@ these fixture values are not universal MCP defaults.
 <DocMedia src="/assets/screenshots/vscode-mcp-settings.png" alt="Actual PerfChecker V1 advisor setup webview in Chromium with a demonstration MCP HTTP endpoint, tool inventory and selected advice tool" caption="Use your server's endpoint and exact tool name, then probe and save the configuration. This running webview shows a local demonstration configuration and an example tool inventory; the address is not a service supplied to every user." />
 ```
 
-A complete local example for `perf/advisor.json` is:
+The following illustrative schema uses `review_export(question, context)` for advice. These are example names, not MCP defaults or a supplied service. Use them only if your running server exposes this schema; otherwise copy its discovered names. The loopback address refers to that deliberately started local server. A complete `perf/advisor.json` example is:
 
 ```json
 {
   "protocol": "mcp_http",
   "endpoint": "http://127.0.0.1:8765/mcp",
   "mcp_version": "2026-07-28",
-  "mcp_tool": "ask",
-  "mcp_prompt_argument": "prompt",
-  "mcp_arguments": {},
+  "mcp_tool": "review_export",
+  "mcp_prompt_argument": "question",
+  "mcp_arguments": {"context": {"language": "Julia"}},
   "mcp_response": "text",
   "timeout": 90,
   "max_evidence_chars": 12000,
@@ -171,7 +107,7 @@ A complete local example for `perf/advisor.json` is:
 }
 ```
 
-Replace the address and `ask` with values from your server. `ask` is a placeholder, not a standard MCP tool. Set `perfchecker.advisorConfig` to this file, or leave it empty and use extension settings instead. A configuration file takes precedence over provider settings when the temporary Codex connection is disconnected.
+Replace the address, tool and arguments with your server's actual values. Set `perfchecker.advisorConfig` to this file, or leave it empty and use extension settings instead. A selected configuration file takes precedence over provider settings. A temporary optional connector must be disconnected before returning to this saved configuration.
 
 The equivalent essential folder settings are:
 
@@ -180,9 +116,9 @@ The equivalent essential folder settings are:
   "perfchecker.advisorProtocol": "mcp_http",
   "perfchecker.advisorEndpoint": "http://127.0.0.1:8765/mcp",
   "perfchecker.advisorMcpVersion": "2026-07-28",
-  "perfchecker.advisorMcpTool": "ask",
-  "perfchecker.advisorMcpPromptArgument": "prompt",
-  "perfchecker.advisorMcpArguments": {},
+  "perfchecker.advisorMcpTool": "review_export",
+  "perfchecker.advisorMcpPromptArgument": "question",
+  "perfchecker.advisorMcpArguments": {"context": {"language": "Julia"}},
   "perfchecker.advisorMcpResponse": "text",
   "perfchecker.advisorInvestigates": false
 }
@@ -205,7 +141,7 @@ The equivalent essential folder settings are:
 | `api_key_env` | Environment-variable name for an optional Bearer token |
 | `allow_remote` | Explicitly permits transmission to a remote HTTPS endpoint |
 
-Tool names and prompt-argument names are checked before the request. Required extra arguments must be configured. `model` and `max_tokens` configure Chat Completions/Ollama requests and are not sent by the MCP transport. The MCP server selects its own model, limits and cost policy. Put any model or limit arguments accepted by the selected tool's schema in `mcp_arguments`.
+Tool names and prompt-argument names are checked before the request. Required extra arguments must be configured. `model` and `max_tokens` configure Chat Completions/Ollama requests and are not sent by the MCP transport. Any model, limits and cost policy belong to the selected server tool. Put any model or limit arguments accepted by the selected tool's schema in `mcp_arguments`.
 
 For remote servers, use HTTPS and set `allow_remote = true`. Put the Bearer token in the named environment variable available to VS Code's extension host, never in the JSON or `mcp_arguments`. OAuth login/refresh is not implemented.
 
@@ -217,7 +153,7 @@ For remote servers, use HTTPS and set `allow_remote = true`. Put the Bearer toke
 
 Open **PerfChecker: Chat with performance advisor**. Select saved deterministic advice if relevant, ask a question, and read the answer in the full editor tab. Follow-up questions include earlier exchanges as bounded context. Changing the selected evidence starts a conversation for that evidence.
 
-The agent receives an instruction to answer in the user's language, distinguish measurements from hypotheses, and provide advice without modifying code or running experiments. When no evidence is selected, it is told no saved measurements were attached. You can still ask how to configure or use PerfChecker.
+The advice tool receives an instruction to answer in the user's language, distinguish measurements from hypotheses, and provide advice without modifying code or running experiments. This instruction does not enforce the absence of side effects; the selected service must honor the advice-only contract. When no evidence is selected, the tool is told no saved measurements were attached. You can still ask how to configure or use PerfChecker.
 
 For a completed report, the attached advice can include measurement summaries
 even when it has no recommendations. This context requires the development
@@ -269,17 +205,17 @@ Messages alternate user/assistant and end with a user question: at most **21 mes
 
 ## Switch from advice to implementation
 
-The explicit Codex connection supplies its two tool names automatically. For an external MCP server, configure the extension's separate implementation fields:
+If your server also provides a trusted implementation tool, configure its separate tool, prompt and checkout argument names. Advice-only servers can still support chat; they do not gain implementation capability from this configuration. For example, a server exposing `prepare_export_patch(instruction, checkout, context)` would use:
 
 ```json
 {
-  "perfchecker.advisorImplementationMcpTool": "implement",
-  "perfchecker.advisorImplementationMcpPromptArgument": "prompt",
-  "perfchecker.advisorImplementationMcpWorkspaceArgument": "workspace"
+  "perfchecker.advisorImplementationMcpTool": "prepare_export_patch",
+  "perfchecker.advisorImplementationMcpPromptArgument": "instruction",
+  "perfchecker.advisorImplementationMcpWorkspaceArgument": "checkout"
 }
 ```
 
-`implement` is also a placeholder. Select a trusted tool that can inspect/edit/test a supplied checkout. Implementation reuses the advice connection, revision, credentials and additional arguments, then substitutes the explicitly configured tool and prompt name. The prompt/workspace argument names must differ; extra arguments cannot override either.
+These names are illustrative too. Select a tool that can inspect, edit and test the supplied isolated checkout and actually honors that path. Implementation reuses the advice connection, revision, credentials and additional arguments, then substitutes the explicitly configured tool and prompt name. The prompt/workspace argument names must differ; extra arguments cannot override either. In this example, both tool schemas must accept the configured `context` object. Check that shared extra arguments are valid for the implementation tool too.
 
 ```@raw html
 <DocMedia video short recording="perfchecker-vscode-v101-short-07" src="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-07.mp4" poster="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-07-poster.jpg" subtitles="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-07-en.vtt" walkthrough="/interfaces/vscode-videos.html#Full-tutorial" chapter="11 · A checkpoint and an isolated implementation" preload="none" alt="Actual native PerfChecker preparation action, warning and recovery checkpoint prefix" caption="Review the warning, save editor buffers and explicitly prepare an isolated proposal. The close view preserves the real Prepare implementation button and checkpoint prefix; the full reference continues outside the portrait frame and remains available in the editor. Recorded build: VSIX 75f84f, Core 975d, VS Code 1.141 on Linux, controlled MCP replies." />
@@ -368,7 +304,7 @@ without redaction; check them before transmitting evidence.
 
 Chat additionally sends your typed messages and retained earlier replies. Anything you paste, including code or paths, therefore becomes part of the request. Implementation additionally sends the isolated checkout's absolute path, and the selected tool can inspect code accessible there. Authentication is sent only in the configured request header. Consider the endpoint's data/cost policy before opting into a remote connection.
 
-The local Codex connector can additionally inspect files in the selected advice workspace or isolated implementation checkout; a bounded evidence projection does not prevent those reads. Text results carry `reference_status = "unstructured_not_verified"`; individual statements get no invented citations. No API here adopts a performance baseline automatically.
+A tool with filesystem access can inspect files beyond the bounded evidence projection; that projection does not restrict its filesystem permissions. The optional local Codex connector, for example, can inspect the selected advice workspace or isolated implementation checkout. Text results carry `reference_status = "unstructured_not_verified"`; individual statements get no invented citations. No API here adopts a performance baseline automatically.
 
 ```@raw html
 <a id="Optional-bounded-investigation"></a>
@@ -413,7 +349,95 @@ Replace `chat` with `implement` only with an implementation-tool config and a ca
 
 PerfChecker supports the HTTP subset needed for one explicit tool: JSON and request-scoped SSE replies, paginated discovery (at most 32 pages), legacy initialization/session release, and modern request metadata plus annotated argument headers. Revisions are explicit; no silent downgrade occurs. Responses are capped at **1 MB**; redirects and automatic retries are disabled.
 
-See the official [2026-07-28 Streamable HTTP specification](https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/streamable-http) and [2025-11-25 transport specification](https://modelcontextprotocol.io/specification/2025-11-25/basic/transports) for the server contracts. PerfChecker does not implement stdio, deprecated HTTP+SSE endpoints, sampling, elicitation, roots, subscriptions or arbitrary tool chains.
+See the official [2026-07-28 Streamable HTTP specification](https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/streamable-http) and [2025-11-25 transport specification](https://modelcontextprotocol.io/specification/2025-11-25/basic/transports) for the server contracts. PerfChecker does not implement native stdio, deprecated HTTP+SSE endpoints, sampling, elicitation, roots, subscriptions, tasks or multi-round-trip `input_required` interactions. Choose a tool that can complete the configured request without those features. Interactive OAuth login and refresh are also unavailable.
+
+## Connection examples
+
+The HTTP tool configuration above is the common path. Connector-specific names and executable requirements apply only to the corresponding example.
+
+```@raw html
+<a id="Connect-an-authenticated-Codex-CLI"></a>
+<a id="Local-connector-steps"></a>
+```
+
+::: tabs
+
+== HTTP tool configuration
+
+Use [Configure the advice tool](#Configure-the-advice-tool) with your server's discovered schema. The example uses `review_export(question, context)`; it does not require Codex. For implementation, configure a separate trusted tool and follow the same [review, checkpoint and recovery workflow](#Switch-from-advice-to-implementation).
+
+== Codex CLI (optional)
+
+### Local connector steps
+
+PerfChecker can connect an installed, authenticated Codex CLI through a local MCP bridge with separate advice and implementation tools. The connector invokes `codex exec`; it does not require `codex mcp-server`.
+
+1. Use a native Codex CLI supporting the flags below and authenticate it yourself with `codex login` in a terminal. Prepare the Julia controller with PerfChecker and `HTTP`, as described in [VS Code configuration](interfaces/vscode-configuration.md).
+2. If the executable is outside VS Code's PATH, set **PerfChecker: Codex Executable** (`perfchecker.codexExecutable`) to its native binary path. On Windows, use the native `.exe`; npm `.cmd` and `.bat` launchers are unsupported.
+3. Open the trusted package workspace and **PerfChecker: Chat with performance advisor**. Choose **Connect Codex CLI**, or run **PerfChecker: Connect authenticated Codex CLI**. PerfChecker checks version, supported flags and existing login without starting a model turn.
+4. Ask for advice, optionally attaching saved evidence. Review the answer, then use the [explicit implementation workflow](#Switch-from-advice-to-implementation) if you want the agent to prepare a change.
+5. Choose **Disconnect Codex**, or run **PerfChecker: Disconnect local Codex**, to return to your saved advisor configuration. After an editor reload, connect again when needed.
+
+Qualification used **Codex 0.159.2** for the executable contract and connector
+lifecycle, and **Codex 0.162.0-alpha.2** for authenticated multi-turn advice and
+reviewed source implementation. Two separate source fixtures were exercised:
+
+| Source and controller | What the authenticated test checked |
+| --- | --- |
+| JavaScript fixture, including requests through the registered PerfChecker 1.0.0 Julia CLI | Contextual advice, an isolated patch, Node correctness, diff review, apply, exact restore and cancellation |
+| Julia `sum_squares`, Julia 1.13.1 and Core 1.0.1 source tree `4fbc3c25543aa4f9b1154c227e5432f0cd62df91` | Two advice turns, an isolated source-only patch, real Julia correctness and allocation probes, apply, exact restore, cancellation of a started Codex turn and disconnect |
+
+The Julia proof used the 1.0.1 source checkout, before General registration. It
+checked empty Float64 input, signed values and a 1,000-element Float64 vector:
+the expected results were `0.0`, `14.0` and `333833500.0`. The warmed
+`@allocated` probe recorded **8072 B before and 0 B after** for that specific
+workload. It did not measure a timing improvement or establish equivalence for
+all Julia element types.
+
+These authenticated connector tests are separate from native VS Code footage
+using a controlled MCP response fixture. That footage exercises real editor
+controls and Julia workers; its scripted responses are identified in the
+captions. Consult the release qualification report for the final native
+platform matrix. These are the CLI versions actually exercised; intermediate
+releases have not been qualified by inference.
+
+The connector requires `--no-daemon`, `--ignore-user-config` and `--ignore-rules`,
+plus the `exec` ephemeral, sandbox and output flags. Its probe checks the selected
+executable. Unsupported installations fail explicitly. Use a compatible HTTP server and advice tool if these flags are unavailable. See the official
+[Codex noninteractive workflow example](https://developers.openai.com/cookbook/examples/codex/build_iterative_repair_loops_with_codex)
+for the CLI execution model.
+
+PerfChecker starts an authenticated HTTP endpoint on `127.0.0.1` with a random port. The endpoint and automatically generated Bearer token exist only in this editor session. They are not saved in settings or `perf/advisor.json`. The explicit connection authorizes chat for this session, including when your saved provider is disabled. It temporarily takes precedence over saved provider configuration; disconnecting or reloading restores that configuration and its enabled/disabled state. Never copy this temporary endpoint into a configuration file.
+
+The advice tool is `ask_perfchecker(prompt)` and uses the CLI's `read-only` sandbox. The implementation tool is `implement_perfchecker(prompt, workspace)` and uses `workspace-write` in the canonical temporary PerfChecker checkout. Both run without the shared Codex daemon so cancellation owns the launched process. The checkpoint, diff review and restore workflow remain the same as for an external agent.
+
+The connector uses your existing account and the CLI's default model. Custom user profiles, model/provider configuration, MCP servers, hooks and rules are not inherited. A project or implementation copy containing project `.codex` configuration is refused before invocation. Sandbox support depends on the CLI installation and platform. The agent can inspect files in its working directory; the configured model provider processes the requested context, and ordinary account usage or charges apply. Git proposals and checkpoints remain recoverable independently of the connection.
+
+Maintainers can reproduce the authenticated connector test from the extension
+repository after `npm test`:
+
+```sh
+PERFCHECKER_TEST_CODEX=/path/to/codex node --test test/codex-real.test.mjs
+```
+
+For the separate Julia-source proof, select the Julia executable, controller
+project and exact expected Core tree deliberately:
+
+```sh
+PERFCHECKER_TEST_CODEX=/path/to/codex \
+PERFCHECKER_TEST_CODEX_JULIA=1 \
+PERFCHECKER_TEST_JULIA=/path/to/julia \
+PERFCHECKER_TEST_JULIA_PROJECT=/path/to/controller \
+PERFCHECKER_TEST_CORE_TREE=4fbc3c25543aa4f9b1154c227e5432f0cd62df91 \
+node --test --test-name-pattern='real Codex Julia implementation' test/codex-real.test.mjs
+```
+
+The controller needs the stated PerfChecker source and `HTTP`. These opt-in
+tests send real model requests against your existing account and remove their
+disposable source, Git and implementation fixtures. Use their source and
+measurement boundaries when interpreting the result for your own package.
+
+:::
 
 ## Troubleshooting
 
@@ -431,7 +455,7 @@ See the official [2026-07-28 Streamable HTTP specification](https://modelcontext
 | Git transformation unsupported | Check attributes for filters/LFS, working-tree encoding or ident expansion |
 | Codex executable unsupported | Native binary with the required flags; versions exercised are 0.159.2 and 0.162.0-alpha.2 |
 | Codex not authenticated | Run `codex login` yourself, then reconnect |
-| Project `.codex` configuration refused | Use a clean workspace or your explicitly configured external MCP agent |
+| Project `.codex` configuration refused | Use a clean workspace or your explicitly configured compatible HTTP advice tool |
 | Codex disconnected after reload | Connect again; saved provider settings and Git recovery are retained |
 
 Unsupported interactions, malformed responses and tool errors retain the deterministic fallback. A failed optional advisor does not change measured verdicts.

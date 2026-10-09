@@ -153,9 +153,9 @@ Unavailable is separate from passing or failing. Remove a tool you do not need, 
 
 ## Advice and MCP settings
 
-For an installed authenticated Codex CLI, use **PerfChecker: Connect authenticated Codex CLI** or **Connect Codex CLI** in Chat. The [named-agent recipe](../mcp-advisor.md#Connect-an-authenticated-Codex-CLI) documents supported executables, sandbox boundaries and existing-account usage. This session connection supplies the advice and implementation tools without overwriting your saved settings or JSON configuration.
+Use **PerfChecker: Configure advisor and manage models** to configure a compatible **MCP HTTP** server. Enter its endpoint and explicit protocol revision, choose **Test connection / discover**, inspect the tool schema, then select its advice tool and save. Chat requires `mcp_http` and `text` response mode. Tool, prompt and extra-argument names come from that schema: MCP defines no standard advice-tool name. Discovery sends no saved evidence and does not test answer generation.
 
-For another MCP agent, use **PerfChecker: Configure advisor and manage models** to check the connection, discover tools and save configuration. For chat, select `mcp_http`, a tool that accepts an advice request, and `text` response mode. A tool named `ask` is only an example; MCP defines no standard chat-tool name.
+MCP is the tool protocol; the selected service must actually provide advice. PerfChecker currently has no native stdio transport or interactive OAuth login. See the [standalone connection recipe](../mcp-advisor.md#Configure-the-advice-tool) for the controller dependency, configuration precedence and HTTP boundaries. An authenticated Codex CLI is an [optional connector example](../mcp-advisor.md#Connect-an-authenticated-Codex-CLI), with its own executable and sandbox requirements; it is not required by this workflow.
 
 | Setting | Default | Meaning |
 | --- | --- | --- |
@@ -190,7 +190,7 @@ Disabling `advisorEnabled` keeps deterministic advice usable and retains already
 
 Implementation reuses the MCP endpoint, revision, authentication and extra arguments. Its tool and prompt/workspace names are explicit extension settings; an advice reply cannot select them automatically. Prompt and workspace names must differ. Extra arguments cannot override either reserved field.
 
-The explicit local Codex connection supplies these implementation tool names in memory. External servers must access the isolated checkout. A remote HTTPS endpoint has no automatic access to your local filesystem. Use a trusted local tool, or a deliberately configured shared filesystem/bridge with its own confinement. MCP does not provide an operating-system sandbox.
+A configured implementation tool must access and honor the supplied isolated checkout. The optional local Codex connector supplies its own tool names in memory. A remote HTTPS endpoint has no automatic access to your local filesystem. Use a trusted local tool, or a deliberately configured shared filesystem/bridge with its own confinement. MCP does not provide an operating-system sandbox.
 
 ## Troubleshooting
 
