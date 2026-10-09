@@ -40,9 +40,10 @@
       zoomLevel.textContent=Math.round(zoom*100)+'%';
     };
     const resize=()=>{
+      if(viewport.clientWidth<=2)return;
       const availableHeight=Math.max(540,Math.min(720,window.innerHeight-viewport.offsetTop-50));
       viewport.style.height=availableHeight+'px';
-      fitScale=Math.max(Math.min(1,900/width),Math.min(1,(viewport.clientWidth-2)/width,(availableHeight-2)/height));
+      fitScale=Math.min(1,(viewport.clientWidth-2)/width,(availableHeight-2)/height);
       renderSize();
     };
     const zoomTo=value=>{

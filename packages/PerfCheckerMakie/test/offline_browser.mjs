@@ -22,6 +22,19 @@ try {
   await page.locator('canvas').waitFor();
   const input=page.getByRole('spinbutton',{name:'Recorded point index',exact:true});
   await input.waitFor();
+  await page.getByRole('button',{name:'Fit plot',exact:true}).waitFor();
+  await page.locator('#offline-viewport').evaluate(node=>{node.style.display='none'});
+  await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+  assert.equal(await page.locator('#offline-viewport').evaluate(node=>node.clientWidth),0);
+  assert(await page.locator('#offline-figure').evaluate(node=>new DOMMatrix(getComputedStyle(node).transform).a>0),
+    'A hidden plot keeps a positive scale while its width is zero');
+  await page.locator('#offline-viewport').evaluate(node=>node.style.removeProperty('display'));
+  await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+  const shownFigure=await page.locator('#offline-figure').boundingBox(),shownFrame=await page.locator('#offline-viewport').boundingBox();
+  assert(shownFigure.width>0&&shownFigure.height>0&&shownFigure.x>=shownFrame.x&&shownFigure.y>=shownFrame.y&&
+    shownFigure.x+shownFigure.width<=shownFrame.x+shownFrame.width+1&&
+    shownFigure.y+shownFigure.height<=shownFrame.y+shownFrame.height+1,
+    'Showing a hidden plot restores a complete, positive-scale Fit');
   const count=Number(await input.getAttribute('max'));
   assert(count>0);
   const fields=model.kind==='version_delta'?['relative_delta']:model.kind==='time_allocation_tradeoff'?['bytes','time']:['value'];
@@ -131,7 +144,17 @@ try {
   assert.equal(exported.kind,model.kind);
   if(process.argv[4])await page.screenshot({path:path.resolve(process.argv[4]),fullPage:true,animations:'disabled'});
   await page.setViewportSize({width:390,height:844});
+  await page.getByRole('button',{name:'Fit plot',exact:true}).click();
+  await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+  const mobileFit=await figure.boundingBox(),mobileFrame=await viewport.boundingBox();
+  assert(mobileFit.x>=mobileFrame.x&&mobileFit.y>=mobileFrame.y&&
+    mobileFit.x+mobileFit.width<=mobileFrame.x+mobileFrame.width+1&&
+    mobileFit.y+mobileFit.height<=mobileFrame.y+mobileFrame.height+1,
+    'Initial mobile Fit shows the entire figure, including its title and axes');
+  if(process.argv[4])await page.screenshot({path:path.resolve(process.argv[4]).replace(/\.png$/,'-mobile-fit.png'),fullPage:false,animations:'disabled'});
   assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'Mobile overflow is internal');
+  await page.getByRole('button',{name:'Zoom in',exact:true}).click();
+  await page.getByRole('button',{name:'Zoom in',exact:true}).click();
   await input.fill('1');if(count>1)await input.press('ArrowUp');
   assert.equal(await input.inputValue(),String(Math.min(2,count)));
   await page.locator('#point-readout[aria-busy="false"]').waitFor();
@@ -145,7 +168,7 @@ try {
   assert((await popup.innerText()).startsWith('Point '+Math.min(2,count)+':'),'Native picking follows the visible mobile point');
   await assertPopupBounds();
   assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'The mobile popup stays within the page');
-  if(process.argv[4])await page.screenshot({path:path.resolve(process.argv[4]).replace(/\.png$/,'-mobile.png'),fullPage:false,animations:'disabled'});
+  if(process.argv[4])await page.screenshot({path:path.resolve(process.argv[4]).replace(/\.png$/,'-mobile-inspection.png'),fullPage:false,animations:'disabled'});
   assert.deepEqual(errors,[]);
   console.log(JSON.stringify({status:'passed',kind:model.kind,points:count,readout,errors}));
 } finally {await browser.close();}

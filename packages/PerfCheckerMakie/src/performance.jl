@@ -412,14 +412,16 @@ function _tradeoff_figure(plot; figure_kwargs = (;), plot_kwargs = (;))
     for (index, item) in pairs(plot.data)
         push!(get!(annotations, (xs[index], ys[index]), String[]), String(item["version"]))
     end
-    for ((x, y), versions) in annotations
-        distinct_versions = unique(versions)
-        label = length(distinct_versions) == 1 ?
-                _version_tick_label(only(distinct_versions)) :
-                "$(length(distinct_versions)) versions"
-        text!(axis, x, y; text = label,
-            align = (:left, :bottom), offset = (7, 5), fontsize = 12)
+    positions = unique(collect(zip(xs, ys)))
+    labels = map(positions) do position
+        distinct_versions = unique(annotations[position])
+        return length(distinct_versions) == 1 ?
+               _version_tick_label(only(distinct_versions)) :
+               "$(length(distinct_versions)) versions"
     end
+    annotation!(axis, first.(positions), last.(positions); text = labels,
+        fontsize = 12, style = Makie.Ann.Styles.Line(), color = (:gray, 0.65),
+        textcolor = :black, linewidth = 0.8)
     axis.xlabel = "allocation ($allocation_unit)"
     axis.ylabel = "wall time ($time_unit)"
     _has_positive_range(xs) && (axis.xscale = Makie.pseudolog10)
