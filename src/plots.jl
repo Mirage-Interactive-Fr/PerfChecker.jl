@@ -903,13 +903,19 @@ calling this generic function raises `MethodError`.
 function performance_figure end
 
 """
-    performance_plot_html(plot::PerformancePlot)
+    performance_plot_html(plot::PerformancePlot;
+                          asset_directory=nothing, html_directory=nothing)
 
 Load `PerfCheckerMakie` and `WGLMakie` to render the plot as an embeddable
 interactive HTML string. The companion's WGLMakie extension supplies the method;
 without it, this generic raises `MethodError`. Rendering consumes saved data
 and does not start a measurement or write/deploy an HTML page. The caller owns
-embedding and any file export.
+embedding and any file export. By default the string includes its assets for
+standalone use. To share WGL assets between pages, provide both `asset_directory`
+and `html_directory`: Bonito writes assets only to the former and generates links
+relative to the latter, where the caller will save the HTML. Move or deploy both
+directories together without changing their relative layout. Normalized plots and
+flame graphs already use compact standalone HTML and do not write shared assets.
 """
 function performance_plot_html end
 

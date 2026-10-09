@@ -253,7 +253,20 @@ function _offline_point_controls(session, figure, source_plot)
 end
 
 """
-Render a self-contained HTML document. Normalized measurements provide metric
+    performance_plot_html(plot; asset_directory=nothing, html_directory=nothing)
+
+Render an interactive HTML document from a recorded plot. By default, the document
+contains its assets and can be saved as a standalone file.
+
+To share WGL assets between several documents, pass both `asset_directory` (the
+directory where Bonito writes assets) and `html_directory` (the directory where
+the returned HTML will be saved). Links are relative to `html_directory`; deploy
+or move the HTML and asset directories together, preserving their relative layout.
+This function returns HTML without writing an HTML file or creating its directory.
+Shared-asset exports bypass the standalone HTML cache. Normalized plots and flame
+graphs already use compact standalone HTML and do not write shared assets.
+
+Normalized measurements provide metric
 visibility, selection of recorded versions, viewport zoom and pan, exact point
 inspection, and SVG/CSV export. Selection preserves the original ratios.
 WGL figures provide viewport zoom and pan. Series, distributions, deltas,
@@ -267,10 +280,27 @@ paths and values, including frames too thin to click. They provide viewport
 zoom/pan/Fit and original-model JSON and SVG-view downloads. Julia DataInspector and
 ordinary Makie axis zoom callbacks are not exported.
 """
-function PerfChecker.performance_plot_html(plot::PerfChecker.PerformancePlot)
+function PerfChecker.performance_plot_html(plot::PerfChecker.PerformancePlot;
+        asset_directory = nothing, html_directory = nothing)
+    if (asset_directory === nothing) != (html_directory === nothing)
+        throw(ArgumentError("asset_directory and html_directory must be provided together"))
+    end
+    shared_assets = asset_directory !== nothing
+    asset_server = if shared_assets
+        for (name, directory) in ((:asset_directory, asset_directory),
+            (:html_directory, html_directory))
+            directory isa AbstractString && !isempty(strip(directory)) ||
+                throw(ArgumentError("$name must be a nonempty directory path"))
+            ispath(directory) && !isdir(directory) &&
+                throw(ArgumentError("$name points to a file rather than a directory"))
+        end
+        Bonito.AssetFolder(abspath(asset_directory), abspath(html_directory))
+    else
+        nothing
+    end
     return lock(RENDER_LOCK) do
         key = PerfChecker._content_digest(PerfChecker.performance_plot_dict(plot))
-        haskey(HTML_CACHE, key) && return HTML_CACHE[key]
+        !shared_assets && haskey(HTML_CACHE, key) && return HTML_CACHE[key]
         if plot.kind === :normalized_metrics
             template = read(joinpath(@__DIR__, "../src/assets/normalized.html"), String)
             data = replace(
@@ -280,16 +310,20 @@ function PerfChecker.performance_plot_html(plot::PerfChecker.PerformancePlot)
                         for row in plot.data)))),
                 "</" => "<\\/")
             html = replace(template, "__PERFCHECKER_NORMALIZED_PLOT__" => data)
-            length(HTML_CACHE) >= MAX_CACHE_ENTRIES &&
-                delete!(HTML_CACHE, first(keys(HTML_CACHE)))
-            HTML_CACHE[key] = html
+            if !shared_assets
+                length(HTML_CACHE) >= MAX_CACHE_ENTRIES &&
+                    delete!(HTML_CACHE, first(keys(HTML_CACHE)))
+                HTML_CACHE[key] = html
+            end
             return html
         end
         if plot.kind in (:allocation_flamegraph, :cpu_flamegraph, :wall_flamegraph)
             html = _flame_plot_html(plot)
-            length(HTML_CACHE) >= MAX_CACHE_ENTRIES &&
-                delete!(HTML_CACHE, first(keys(HTML_CACHE)))
-            HTML_CACHE[key] = html
+            if !shared_assets
+                length(HTML_CACHE) >= MAX_CACHE_ENTRIES &&
+                    delete!(HTML_CACHE, first(keys(HTML_CACHE)))
+                HTML_CACHE[key] = html
+            end
             return html
         end
         WGLMakie.activate!(; resize_to = nothing, framerate = 24)
@@ -313,7 +347,7 @@ function PerfChecker.performance_plot_html(plot::PerfChecker.PerformancePlot)
             return Bonito.DOM.div(controls, canvas, tooltip)
         end
         io = IOBuffer()
-        session = Bonito.export_static(io, app)
+        session = Bonito.export_static(io, app; asset_server)
         close(session)
         html = String(take!(io))
         # Controls manipulate the actual exported figure, with no Julia callbacks.
@@ -326,10 +360,43 @@ function PerfChecker.performance_plot_html(plot::PerfChecker.PerformancePlot)
             "__PERFCHECKER_OFFLINE_HEIGHT__" => string(height))
         fit_script = "<script>" * script * "</script>"
         html = replace(html, "</body>" => fit_script * "</body>")
-        length(HTML_CACHE) >= MAX_CACHE_ENTRIES &&
-            delete!(HTML_CACHE, first(keys(HTML_CACHE)))
-        HTML_CACHE[key] = html
+        if !shared_assets
+            length(HTML_CACHE) >= MAX_CACHE_ENTRIES &&
+                delete!(HTML_CACHE, first(keys(HTML_CACHE)))
+            HTML_CACHE[key] = html
+        end
         return html
+    end
+end
+
+@testitem "Shared HTML asset directories are explicit" tags=[:unit, :plots, :wgl, :assets] begin
+    using PerfChecker, PerfCheckerMakie, WGLMakie
+
+    plot = PerfChecker.PerformancePlot("asset-paths", :cpu_flamegraph,
+        "CPU samples", "Empty profile", Dict{String, Any}(), Dict{String, Any}[],
+        Dict{String, Any}("selected_version" => "demo", "value_label" => "samples"))
+    standalone = performance_plot_html(plot)
+    mktempdir() do directory
+        assets, html = joinpath(directory, "assets"), joinpath(directory, "pages")
+        @test_throws ArgumentError performance_plot_html(plot; asset_directory = assets)
+        @test_throws ArgumentError performance_plot_html(plot; html_directory = html)
+        @test_throws ArgumentError performance_plot_html(plot;
+            asset_directory = "", html_directory = html)
+        @test_throws ArgumentError performance_plot_html(plot;
+            asset_directory = assets, html_directory = " ")
+        @test_throws ArgumentError performance_plot_html(plot;
+            asset_directory = 1, html_directory = html)
+        file = joinpath(directory, "file")
+        write(file, "not a directory")
+        @test_throws ArgumentError performance_plot_html(plot;
+            asset_directory = file, html_directory = html)
+        @test_throws ArgumentError performance_plot_html(plot;
+            asset_directory = assets, html_directory = file)
+        @test performance_plot_html(plot; asset_directory = assets,
+            html_directory = html) == standalone
+        @test !ispath(assets)
+        @test !ispath(html)
+        @test performance_plot_html(plot) == standalone
     end
 end
 

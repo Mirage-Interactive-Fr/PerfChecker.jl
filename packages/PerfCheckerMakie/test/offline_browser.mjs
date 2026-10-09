@@ -1,5 +1,5 @@
 // Exercise a genuine public WGL export against its saved source model.
-// Usage: node offline_browser.mjs EXPORT.html SOURCE.json [SCREENSHOT.png]
+// Usage: node offline_browser.mjs EXPORT.html|HTTP_URL SOURCE.json [SCREENSHOT.png]
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -8,6 +8,7 @@ import {pathToFileURL} from 'node:url';
 
 assert(process.argv.length >= 4 && process.argv.length <= 5);
 const saved=JSON.parse(fs.readFileSync(process.argv[3],'utf8')),model=saved.plot??saved;
+const target=/^https?:\/\//.test(process.argv[2])?new URL(process.argv[2]):pathToFileURL(path.resolve(process.argv[2]));
 const tooling=process.env.PERFCHECKER_PLOT_BROWSER_TOOLING;
 const {chromium}=createRequire(tooling?path.join(path.resolve(tooling),'package.json'):import.meta.url)('playwright');
 const browser=await chromium.launch({headless:true,
@@ -18,7 +19,10 @@ try {
   page.on('pageerror',error=>errors.push(error.message));
   page.on('requestfailed',request=>errors.push(request.url()+': '+request.failure()?.errorText));
   page.on('response',response=>{if(response.status()>=400)errors.push(response.url()+': '+response.status())});
-  await page.goto(pathToFileURL(path.resolve(process.argv[2])).href);
+  page.on('request',request=>{const url=new URL(request.url());
+    if(target.protocol!=='file:'&&['http:','https:'].includes(url.protocol)&&url.origin!==target.origin)
+      errors.push('Export requires an external origin: '+url.href);});
+  await page.goto(target.href);
   await page.locator('canvas').waitFor();
   const input=page.getByRole('spinbutton',{name:'Recorded point index',exact:true});
   await input.waitFor();
@@ -54,7 +58,7 @@ try {
     await page.getByRole('button',{name:'Download plot model JSON',exact:true}).click();
     const download=await downloaded;assert.equal(await download.failure(),null);
     let json='';for await(const chunk of await download.createReadStream())json+=chunk.toString();
-    assert.deepEqual(JSON.parse(json).data,model.data);
+    assert.deepEqual(JSON.parse(json),model,'The download retains the complete saved model');
     assert.equal(await page.locator('.popup.show').count(),0);
     assert((await page.locator('.plot-help').innerText()).startsWith('No positive allocation weight.'));
     if(process.argv[4])await page.screenshot({path:path.resolve(process.argv[4]),fullPage:true});
@@ -240,7 +244,13 @@ try {
   await page.mouse.click(...(await inspectGeometry()).sourcePixel);
   assert((await popup.innerText()).startsWith('Point '+count+':'),'Native picking follows the visible zoomed point');
   await assertPopupBounds();
-  await viewport.evaluate(node=>node.scrollBy(20,20));
+  const popupPan=await viewport.evaluate(node=>{
+    const before=[node.scrollLeft,node.scrollTop];
+    node.scrollBy(node.scrollLeft>0?-20:20,node.scrollTop>0?-20:20);
+    return {before,after:[node.scrollLeft,node.scrollTop]};
+  });
+  assert(popupPan.after.some((value,index)=>value!==popupPan.before[index]),
+    'The popup dismissal test pans away from the current edge: '+JSON.stringify(popupPan));
   await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
   assert.equal(await popup.count(),0,'Panning closes the popup at its previous point position');
   await viewport.focus();await page.keyboard.press('0');
@@ -253,6 +263,7 @@ try {
   assert.deepEqual(exported.data,model.data,'The exported model retains every saved value');
   assert.deepEqual(exported.options,model.options,'The exported model retains its units and provenance');
   assert.equal(exported.kind,model.kind);
+  assert.deepEqual(exported,model,'The download retains the complete saved model');
   if(process.argv[4])await page.screenshot({path:path.resolve(process.argv[4]),fullPage:true,animations:'disabled'});
   await page.setViewportSize({width:390,height:844});
   await page.getByRole('button',{name:'Fit plot',exact:true}).click();
@@ -292,6 +303,6 @@ try {
   assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'The mobile popup stays within the page');
   if(process.argv[4])await page.screenshot({path:path.resolve(process.argv[4]).replace(/\.png$/,'-mobile-inspection.png'),fullPage:false,animations:'disabled'});
   assert.deepEqual(errors,[]);
-  console.log(JSON.stringify({status:'passed',kind:model.kind,points:count,readout,errors}));
+  console.log(JSON.stringify({status:'passed',kind:model.kind,points:count,readout,popupPan,errors}));
   }
 } finally {await browser.close();}
