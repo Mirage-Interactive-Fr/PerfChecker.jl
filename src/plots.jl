@@ -298,26 +298,71 @@ function _tradeoff_collector(series)
            chop(definition; head = length(metric) + 1, tail = 0) : definition
 end
 
+"""
+    _tradeoff_units(time_unit, allocation_unit)
+
+Validate a tradeoff's recorded time and allocation dimensions and return their
+unit strings without converting values. Time accepts `s`, `ms`, `us`, `µs`, `μs`
+or `ns`; allocation accepts bytes (`By`). Unsupported dimensions raise
+`ArgumentError`.
+"""
+function _tradeoff_units(time_unit, allocation_unit)
+    time_unit in ("s", "ms", "us", "µs", "μs", "ns") ||
+        throw(ArgumentError("Tradeoff time requires an explicit supported time unit"))
+    allocation_unit == "By" ||
+        throw(ArgumentError("Tradeoff allocation requires recorded bytes (By)"))
+    return String(time_unit), String(allocation_unit)
+end
+
+"""
+    _tradeoff_plot_units(options)
+
+Read and validate explicit `time_unit` and `allocation_unit` plot options.
+If either is absent, return `("unit unspecified", "unit unspecified")`: legacy
+combined labels such as `s+By` did not establish the original units. Present but
+incompatible units raise `ArgumentError`; numeric measurements are unchanged.
+"""
+function _tradeoff_plot_units(options)
+    # Older serialized models stamped s+By without checking their source units.
+    # That combined label cannot establish the dimensions of their raw values.
+    all(key -> haskey(options, key), ("time_unit", "allocation_unit")) ||
+        return ("unit unspecified", "unit unspecified")
+    return _tradeoff_units(options["time_unit"], options["allocation_unit"])
+end
+
 function _tradeoff_catalog(bundle::RunBundle)
-    grouped = Dict{NTuple{4, String}, Dict{String, Any}}()
+    grouped = Dict{NTuple{4, String}, Dict{String, Vector{Any}}}()
     for series in suite_version_series(bundle)
         metric = String(series["metric"])
         metric in ("julia.wall.time", "julia.alloc.bytes") || continue
         key = (String(series["package"]), String(series["feature"]),
             _plot_base_comparison_key(series), _tradeoff_collector(series))
-        get!(grouped, key, Dict{String, Any}())[metric] = series
+        metrics = get!(grouped, key, Dict{String, Vector{Any}}())
+        push!(get!(metrics, metric, Any[]), series)
     end
     entries = Dict{String, Any}[]
     complete = filter(
         pair -> all(haskey(last(pair), metric)
         for metric in ("julia.wall.time", "julia.alloc.bytes")),
         collect(grouped))
-    for ((package, feature, comparison_key, collector), metrics) in sort!(
-        complete; by = first)
+    valid = filter(complete) do pair
+        candidates = last(pair)
+        all(records -> length(records) == 1, values(candidates)) || return false
+        time_unit = get(only(candidates["julia.wall.time"]), "unit", "")
+        allocation_unit = get(only(candidates["julia.alloc.bytes"]), "unit", "")
+        return time_unit in ("s", "ms", "us", "µs", "μs", "ns") && allocation_unit == "By"
+    end
+    # Filter first: unavailable pairs must not rename the valid collector's ID
+    # or hide independent series/distribution views.
+    for ((package, feature, comparison_key, collector), candidates) in sort!(
+        valid; by = first)
+        metrics = Dict(metric => only(records) for (metric, records) in candidates)
+        time_unit = get(metrics["julia.wall.time"], "unit", "")
+        allocation_unit = get(metrics["julia.alloc.bytes"], "unit", "")
         # Retain existing IDs for one collector. Ambiguous comparisons get
         # distinct IDs and labels; measurements are never combined across tools.
         multiple = count(
-            pair -> first(pair)[1:3] == (package, feature, comparison_key), complete) > 1
+            pair -> first(pair)[1:3] == (package, feature, comparison_key), valid) > 1
         identity = multiple ? (comparison_key, collector) : (comparison_key,)
         suffix = multiple ? " · $collector" : ""
         push!(entries,
@@ -329,7 +374,9 @@ function _tradeoff_catalog(bundle::RunBundle)
                 "collector" => collector,
                 "time_series_id" => metrics["julia.wall.time"]["series_id"],
                 "allocation_series_id" => metrics["julia.alloc.bytes"]["series_id"],
-                "metric" => "julia.wall.time+julia.alloc.bytes", "unit" => "s+By",
+                "metric" => "julia.wall.time+julia.alloc.bytes",
+                "unit" => "$time_unit+$allocation_unit",
+                "time_unit" => time_unit, "allocation_unit" => allocation_unit,
                 "title" => "$package · $feature · time/allocation trade-off$suffix",
                 "label" => "Time vs allocations$suffix"))
     end
@@ -347,7 +394,11 @@ Entries are ordered by package/feature, preferring normalized metrics; their IDs
 are content-derived identities accepted by [`performance_plot`](@ref).
 Time/allocation tradeoffs pair metrics only within the same collector identity.
 Comparisons with multiple collectors expose separate labeled entries; existing
-IDs are retained when only one collector supplies a complete pair.
+IDs are retained when only one collector supplies a valid pair. A pair requires
+one unambiguous series per metric, a supported time unit and allocation bytes
+(`By`). Ambiguous or incompatible pairs are omitted without hiding independent
+series and distributions. Tradeoff entries retain separate `time_unit` and
+`allocation_unit` fields and both source series IDs; values are not converted.
 A bundle without supported observations returns an empty list. No workload or
 graphics backend is started; malformed evidence errors propagate.
 """
@@ -363,9 +414,14 @@ function plot_catalog(bundle::RunBundle)
 end
 
 function _catalog_entry(bundle::RunBundle, id::AbstractString)
-    entry = findfirst(item -> item["id"] == id, plot_catalog(bundle))
-    entry === nothing && throw(ArgumentError("unknown performance plot $id"))
-    return plot_catalog(bundle)[entry]
+    catalog = plot_catalog(bundle)
+    entry = findfirst(item -> item["id"] == id, catalog)
+    if entry === nothing
+        startswith(id, "time-allocation-tradeoff-") && throw(ArgumentError(
+            "Unknown or unavailable tradeoff $id: a tradeoff requires one unambiguous time series with a supported time unit and one allocation series in By for the same workload and collector"))
+        throw(ArgumentError("unknown performance plot $id"))
+    end
+    return catalog[entry]
 end
 
 function _series_by_id(bundle::RunBundle, id::AbstractString)
@@ -513,6 +569,7 @@ function _allocation_line_records(bundle, case_id; version = nothing, top::Integ
     return records, versions, selected
 end
 
+"Aggregate observed allocation cells without inferring zero for an absent version/site pair."
 function _allocation_heatmap_records(bundle, case_id; top::Integer = 40)
     grouped = Dict{Tuple{String, String}, Float64}()
     totals = Dict{String, Float64}()
@@ -534,8 +591,9 @@ function _allocation_heatmap_records(bundle, case_id; top::Integer = 40)
     labels = first.(first(sort!(collect(totals); by = item -> -last(item)),
         min(length(totals), max(Int(top), 1))))
     data = [Dict{String, Any}("version" => version, "label" => label,
-                "bytes" => get(grouped, (version, label), 0.0))
-            for label in labels for version in versions]
+                "bytes" => grouped[(version, label)])
+            for label in labels
+            for version in versions if haskey(grouped, (version, label))]
     return data, versions, labels
 end
 
@@ -682,10 +740,17 @@ Allocation pies combine sites contributing strictly less than `min_percentage`
 percent of the selected version's allocated bytes into "Other allocation sites".
 The default is 5%; exactly 5% remains separate. Set `min_percentage=0` to disable
 this threshold. `top` still caps legend entries, including the combined remainder.
+Allocation heatmaps retain only observed version/site pairs, including explicit
+zero weights. Their complete axis labels remain in the options, with
+`missing_cell_policy="not_observed"`; absent cells are not measured zeros.
 Return a `PerformancePlot` from saved records without rerunning workloads.
 Standard models retain their measurement definitions (or normalized collector)
 and manifest tags in presentation options so renderers can label evidence
 without inferring its collector from units.
+Tradeoffs preserve raw recorded values and identify `time_unit`,
+`allocation_unit`, `time_series_id` and `allocation_series_id` in their options,
+with `unit_source="recorded_series"`. Only the compatible, unambiguous pairs
+advertised by `plot_catalog` are available.
 `version` selects allocation/profile versions; normalized metrics use
 `reference_version` instead. Unknown plot IDs, absent plottable measurements,
 unsupported statistics or invalid grouping limits raise `ArgumentError` in the
@@ -738,6 +803,7 @@ function performance_plot(bundle::RunBundle, id::AbstractString; version = nothi
         options["versions"] = versions
         options["labels"] = labels
         options["top"] = Int(top)
+        options["missing_cell_policy"] = "not_observed"
         encoding = Dict("x" => "version", "y" => "label", "color" => "bytes")
     elseif kind === :allocation_flamegraph
         observations = _allocation_records(bundle, entry["case_id"])
@@ -778,6 +844,11 @@ function performance_plot(bundle::RunBundle, id::AbstractString; version = nothi
         encoding = Dict("x" => "percentage", "y" => "depth", "color" => "status")
     elseif kind === :time_allocation_tradeoff
         data = _tradeoff_records(bundle, entry)
+        for key in (
+            "time_unit", "allocation_unit", "time_series_id", "allocation_series_id")
+            options[key] = entry[key]
+        end
+        options["unit_source"] = "recorded_series"
         encoding = Dict("x" => "bytes", "y" => "time", "label" => "version")
     else
         throw(ArgumentError("unsupported performance plot kind $kind"))
@@ -832,13 +903,19 @@ calling this generic function raises `MethodError`.
 function performance_figure end
 
 """
-    performance_plot_html(plot::PerformancePlot)
+    performance_plot_html(plot::PerformancePlot;
+                          asset_directory=nothing, html_directory=nothing)
 
 Load `PerfCheckerMakie` and `WGLMakie` to render the plot as an embeddable
 interactive HTML string. The companion's WGLMakie extension supplies the method;
 without it, this generic raises `MethodError`. Rendering consumes saved data
 and does not start a measurement or write/deploy an HTML page. The caller owns
-embedding and any file export.
+embedding and any file export. By default the string includes its assets for
+standalone use. To share WGL assets between pages, provide both `asset_directory`
+and `html_directory`: Bonito writes assets only to the former and generates links
+relative to the latter, where the caller will save the HTML. Move or deploy both
+directories together without changing their relative layout. Normalized plots and
+flame graphs already use compact standalone HTML and do not write shared assets.
 """
 function performance_plot_html end
 
@@ -868,6 +945,72 @@ function performance_plot_html end
     plot = performance_plot(bundle, trajectory["id"])
     @test performance_plot_dict(plot)["schema_version"] == "perfchecker-plot/1"
     @test length(plot.data) == 3
+end
+
+@testitem "Tradeoffs retain recorded dimensions without hiding valid series" tags=[
+    :unit, :plots] begin
+    using PerfChecker
+    function records(time_unit, allocation_unit = "By")
+        observations = Dict{String, Any}[]
+        for (metric, unit, value) in (("julia.wall.time", time_unit, 400.0),
+                ("julia.alloc.bytes", allocation_unit, 2048.0)),
+            (version, scale) in (("1.0.0", 1), ("1.1.0", 2))
+
+            push!(observations,
+                Dict{String, Any}("metric" => metric,
+                    "measurement_definition" => "$metric/benchmarktools-v1",
+                    "comparison_key" => "parse/v1::$metric/benchmarktools-v1",
+                    "unit" => unit, "value" => value * scale,
+                    "attributes" => Dict("package" => "Demo", "feature" => "parse",
+                        "workload" => "parse", "version" => version, "target_kind" => "release")))
+        end
+        return observations
+    end
+    bundle(observations) = RunBundle(Dict{String, Any}("run_id" => "tradeoff-units"),
+        Dict{String, Any}[], observations, Dict{String, Any}[], Dict{String, Any}[])
+    for unit in ("ns", "s")
+        observations = records(unit)
+        before = deepcopy(observations)
+        source = bundle(observations)
+        entry = only(filter(
+            item -> item["kind"] == "time_allocation_tradeoff", plot_catalog(source)))
+        model = performance_plot(source, entry["id"])
+        @test entry["unit"] == "$unit+By"
+        @test model.options["time_unit"] == unit
+        @test model.options["allocation_unit"] == "By"
+        @test model.options["unit_source"] == "recorded_series"
+        @test model.options["time_series_id"] == entry["time_series_id"]
+        @test model.options["allocation_series_id"] == entry["allocation_series_id"]
+        @test [point["time"] for point in model.data] == [400.0, 800.0]
+        @test observations == before
+    end
+    mixed = [records("ns");
+             filter(item -> item["metric"] == "julia.wall.time", records("s"))]
+    incompatible_collector = records("By")
+    for item in incompatible_collector, key in ("measurement_definition", "comparison_key")
+        item[key] = replace(item[key], "benchmarktools-v1" => "chairmarks-v1")
+    end
+    valid_entry = only(PerfChecker._tradeoff_catalog(bundle(records("ns"))))
+    with_invalid = only(PerfChecker._tradeoff_catalog(bundle([records("ns");
+                                                              incompatible_collector])))
+    @test with_invalid["id"] == valid_entry["id"]
+    @test with_invalid["collector"] == valid_entry["collector"]
+    for observations in (
+        mixed, records("By"), records("ns", "s"), records("ns", "kB"), records(""))
+        source = bundle(observations)
+        catalog = plot_catalog(source)
+        @test !any(item -> item["kind"] == "time_allocation_tradeoff", catalog)
+        series = first(filter(item -> item["kind"] == "version_series", catalog))
+        distribution = first(filter(item -> item["kind"] == "distribution", catalog))
+        @test !isempty(performance_plot(source, series["id"]).data)
+        @test !isempty(performance_plot(source, distribution["id"]).data)
+        @test_throws ArgumentError performance_plot(source,
+            PerfChecker._plot_id(:time_allocation_tradeoff, "Demo", "parse", "parse/v1"))
+    end
+    @test PerfChecker._tradeoff_plot_units(Dict("unit" => "s+By")) ==
+          ("unit unspecified", "unit unspecified")
+    @test_throws ArgumentError PerfChecker._tradeoff_plot_units(
+        Dict("time_unit" => "By", "allocation_unit" => "s"))
 end
 
 @testitem "Tradeoffs preserve distinct collectors and legacy identities" tags=[
@@ -977,6 +1120,42 @@ end
     @test !isempty(plots["allocation_flamegraph"].data)
     series = only(filter(item -> item["kind"] == "version_series", catalog))
     @test performance_plot(bundle, series["id"]).data[1]["value"] == 160.0
+end
+
+@testitem "Allocation heatmaps distinguish absent cells from explicit zero observations" tags=[
+    :unit, :plots, :allocations] begin
+    using PerfChecker
+    definition = Dict{String, Any}("id" => "julia.alloc.bytes/profile-allocs-v1",
+        "metric" => "julia.alloc.bytes", "unit" => "By")
+    observations = [Dict{String, Any}(
+                        "case_id" => "demo/Demo/allocations", "target_id" => version,
+                        "comparison_key" => "allocations/v1", "metric" => "julia.alloc.bytes",
+                        "measurement_definition" => definition["id"], "value" => bytes, "unit" => "By",
+                        "attributes" => Dict(
+                            "package" => "Demo", "feature" => "allocations",
+                            "version" => version, "target_kind" => "release",
+                            "source_file" => file, "source_line" => 10))
+                    for (version, file, bytes) in (("1.0.0", "src/a.jl", 100.0),
+        ("1.0.0", "src/a.jl", 20.0), ("1.1.0", "src/b.jl", 0.0))]
+    bundle = RunBundle(
+        Dict{String, Any}("run_id" => "sparse-allocation-heatmap",
+            "suite" => "demo", "state" => "complete"),
+        [definition],
+        observations,
+        Dict{String, Any}[], Dict{String, Any}[])
+    before = deepcopy(bundle.observations)
+    entry = only(filter(item -> item["kind"] == "allocation_heatmap", plot_catalog(bundle)))
+    model = performance_plot(bundle, entry["id"])
+    @test model.options["missing_cell_policy"] == "not_observed"
+    @test model.options["versions"] == ["1.0.0", "1.1.0"]
+    @test Set(model.options["labels"]) == Set(["src/a.jl:10", "src/b.jl:10"])
+    cells = Dict((row["version"], row["label"]) => row["bytes"] for row in model.data)
+    @test length(cells) == length(model.data) == 2
+    @test cells[("1.0.0", "src/a.jl:10")] == 120.0
+    @test cells[("1.1.0", "src/b.jl:10")] == 0.0
+    @test !haskey(cells, ("1.0.0", "src/b.jl:10"))
+    @test !haskey(cells, ("1.1.0", "src/a.jl:10"))
+    @test bundle.observations == before
 end
 
 @testitem "CPU flame graph grammar" tags=[:unit, :plots, :profile, :flamegraph] begin

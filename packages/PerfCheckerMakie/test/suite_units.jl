@@ -38,9 +38,9 @@ version = "0.1.0"
             figure_kwargs = (size = (800, 500),), plot_kwargs = (color = :red,))
         axis = only(filter(item -> item isa Axis, figure.content))
         @test axis.ylabel[] == "minimum elapsed time (s)"
-        @test axis.subtitle[] == "Tags: recorded"
-        @test occursin("BenchmarkTools", axis.title[])
-        @test occursin("Chairmarks", axis.title[])
+        @test endswith(axis.subtitle[], "Tags: recorded")
+        @test occursin("BenchmarkTools", axis.subtitle[])
+        @test occursin("Chairmarks", axis.subtitle[])
         bars = only(filter(item -> item isa Makie.BarPlot, axis.scene.plots))
         @test [point[2] for point in bars[1][]] == [1.0, 1.0]
         @test any(

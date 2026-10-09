@@ -34,8 +34,8 @@
         @test all(pair -> !occursin("bytes_or_memory", first(pair)), figures)
         for (_, figure) in figures
             axis = only(filter(item -> item isa Axis, figure.content))
-            @test occursin(tool, axis.title[])
-            @test axis.subtitle[] == "Tags: small, validated"
+            @test !occursin(tool, axis.title[])
+            @test axis.subtitle[] == "$tool · Tags: small, validated"
             @test axis.xticklabelrotation[] ≈ pi / 2
             @test length(unique(vec(Makie.colorbuffer(figure)))) > 20
         end
@@ -84,8 +84,8 @@
         plot_kwargs = (color = :red, linewidth = 9))
     @test size(blue.scene) == (480, 320)
     blue_axis = only(filter(item -> item isa Axis, blue.content))
-    @test blue_axis.title[] == "Custom · Chairmarks"
-    @test blue_axis.subtitle[] == "Context · Tags: small, validated"
+    @test blue_axis.title[] == "Custom"
+    @test blue_axis.subtitle[] == "Context · Chairmarks · Tags: small, validated"
     @test size(red.scene) == (480, 320)
     blue_image, red_image = Makie.colorbuffer(blue), Makie.colorbuffer(red)
     @test count(blue_image .!= red_image) > 100
@@ -111,8 +111,8 @@
     @test length(allocation_figures) == 2
     for (_, figure) in allocation_figures
         allocation_axis = only(filter(item -> item isa Axis, figure.content))
-        @test occursin("Julia allocation tracking", allocation_axis.title[])
-        @test allocation_axis.subtitle[] == "Tags: sites"
+        @test !occursin("Julia allocation tracking", allocation_axis.title[])
+        @test allocation_axis.subtitle[] == "Julia allocation tracking · Tags: sites"
         @test length(unique(vec(Makie.colorbuffer(figure)))) > 20
     end
     mktempdir() do directory

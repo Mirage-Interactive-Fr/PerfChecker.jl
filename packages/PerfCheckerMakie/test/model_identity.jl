@@ -68,8 +68,8 @@
                    "Julia allocation tracking"
         figure = performance_figure(model; figure_kwargs = (size = (640, 480),))
         axis = only(filter(item -> item isa Axis, figure.content))
-        @test occursin(expected, axis.title[])
-        @test axis.subtitle[] == "Tags: reviewed"
+        @test startswith(axis.title[], model.title)
+        @test axis.subtitle[] == "$expected · Tags: reviewed"
         @test length(unique(vec(Makie.colorbuffer(figure)))) > 20
         if model.kind in (
             :version_series, :distribution, :version_delta, :normalized_metrics,
