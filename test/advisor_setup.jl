@@ -5,6 +5,7 @@
     close(listener)
     calls = Any[]
     slow = Ref(false)
+    active_request = Ref(false)
     encode(value) = sprint(io -> PerfChecker.JSON.print(io, value))
     server = HTTP.serve!("127.0.0.1", port; verbose = false) do request
         request.target == "/ready" && return HTTP.Response(200, "ready")
@@ -12,7 +13,14 @@
                 isempty(request.body) ? Dict() :
                 PerfChecker._json_parse(String(request.body))
         push!(calls, (method = request.method, target = request.target, input = input))
-        slow[] && sleep(20)
+        if slow[]
+            active_request[] = true
+            try
+                sleep(20)
+            finally
+                active_request[] = false
+            end
+        end
         body = if request.target == "/api/tags"
             Dict("models" => [Dict(
                 "name" => "tiny:latest", "size" => 523000000, "digest" => "shared")])
@@ -90,13 +98,21 @@
         slow[] = true
         before = length(calls)
         job = launch_advisor_setup(local_config)
-        deadline = time() + 40
-        while length(calls) == before && time() < deadline
+        deadline = time() + local_config.timeout
+        while !active_request[] && time() < deadline &&
+                  investigation_status(job; include_result = false)["status"] == "running"
             sleep(0.1)
         end
-        @test length(calls) > before
+        reached_request = active_request[] && length(calls) > before
+        reached_request ||
+            @error "Advisor setup cancellation did not reach an active request" job=investigation_status(job) received_requests=copy(calls) controller_pid=getpid()
+        @test reached_request
         cancel!(job)
-        @test wait_investigation(job)["status"] == "cancelled"
+        final = wait_investigation(job)
+        reached_request ||
+            @error "Advisor setup worker stopped without observed transport" job=final received_requests=copy(calls) controller_pid=getpid()
+        @test final["status"] == "cancelled"
+        @test istaskdone(job.task)
         @test all(call -> !haskey(call.input, "messages"), calls)
     finally
         slow[] = false
