@@ -408,8 +408,16 @@ function _tradeoff_figure(plot; figure_kwargs = (;), plot_kwargs = (;))
             item = plot.data[index]
             "$(item["version"])\n$(round(Float64(item["bytes"]); sigdigits = 6)) $allocation_unit\n$(round(Float64(item["time"]); sigdigits = 6)) $time_unit"
         end)
+    annotations = Dict{Tuple{Float64, Float64}, Vector{String}}()
     for (index, item) in pairs(plot.data)
-        text!(axis, xs[index], ys[index]; text = String(item["version"]),
+        push!(get!(annotations, (xs[index], ys[index]), String[]), String(item["version"]))
+    end
+    for ((x, y), versions) in annotations
+        distinct_versions = unique(versions)
+        label = length(distinct_versions) == 1 ?
+                _version_tick_label(only(distinct_versions)) :
+                "$(length(distinct_versions)) versions"
+        text!(axis, x, y; text = label,
             align = (:left, :bottom), offset = (7, 5), fontsize = 12)
     end
     axis.xlabel = "allocation ($allocation_unit)"

@@ -76,6 +76,13 @@ try {
   const readout=await page.locator('#point-readout').innerText();
   for(const field of ['version','baseline_version','candidate_version','value','bytes','time'])
     if(field in row)assert(readout.includes(String(row[field])),`Missing exact ${field} at point ${count}`);
+  if(model.kind==='time_allocation_tradeoff'){
+    const specified=typeof model.options.time_unit==='string'&&typeof model.options.allocation_unit==='string';
+    assert(readout.endsWith(' '+(specified?model.options.time_unit:'unit unspecified')),
+      'The native readout keeps the recorded time unit');
+    assert(readout.includes(' '+(specified?model.options.allocation_unit:'unit unspecified')+' · '),
+      'The native readout keeps the recorded allocation unit');
+  }
   await input.fill('0');
   assert.equal(await input.getAttribute('aria-invalid'),'true');
   assert.equal(await popup.count(),0,'An invalid selection closes the previous point popup');
@@ -120,6 +127,7 @@ try {
   let json='';for await(const chunk of await download.createReadStream())json+=chunk.toString();
   const exported=JSON.parse(json);
   assert.deepEqual(exported.data,model.data,'The exported model retains every saved value');
+  assert.deepEqual(exported.options,model.options,'The exported model retains its units and provenance');
   assert.equal(exported.kind,model.kind);
   if(process.argv[4])await page.screenshot({path:path.resolve(process.argv[4]),fullPage:true,animations:'disabled'});
   await page.setViewportSize({width:390,height:844});

@@ -23,6 +23,26 @@
     end
 end
 
+@testitem "Tradeoff annotations group coincident versions without changing points" tags=[:plots] begin
+    using PerfChecker, PerfCheckerMakie, Makie
+    data = [Dict{String, Any}("version" => version, "bytes" => bytes, "time" => time)
+            for (version, bytes, time) in (("1.0.0", 100.0, 400.0),
+        ("1.1.0", 100.0, 400.0), ("1.2.0", 200.0, 300.0))]
+    model = PerfChecker.PerformancePlot("coincident", :time_allocation_tradeoff,
+        "Coincident observations", "Regression fixture", Dict{String, Any}(), data,
+        Dict{String, Any}("time_unit" => "ns", "allocation_unit" => "By"))
+    before = deepcopy(performance_plot_dict(model))
+    figure = performance_figure(model)
+    axis = only(filter(item -> item isa Axis, figure.content))
+    labels = [only(item.text[]) for item in axis.scene.plots if item isa Makie.Text]
+    @test length(labels) == 2
+    @test "2 versions" in labels
+    @test "1.2.0" in labels
+    curve = only(filter(item -> item isa Makie.ScatterLines, axis.scene.plots))
+    @test length(curve[1][]) == 3
+    @test performance_plot_dict(model) == before
+end
+
 @testitem "Tradeoff Core compatibility includes the required unit contract" tags=[:plots] begin
     using PerfChecker, PerfCheckerMakie
     project = PerfChecker.Pkg.Types.read_project(joinpath(
