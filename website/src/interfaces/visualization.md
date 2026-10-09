@@ -29,6 +29,18 @@ A native-item `testitems.json` is not a suite bundle and is not accepted here.
 
 ## Customize and export Makie figures
 
+This section uses the **PerfCheckerMakie 1.0.1 development candidate**:
+`figure_kwargs`, `axis_kwargs`, `plot_kwargs`, `saveplot`, `checkres_figures`
+and the export behavior below are additions to that companion. The public
+1.0.0 companion still provides `performance_figure` and saved-model rendering;
+installing registered PerfChecker 1.0.0 does not supply these newer methods.
+For the candidate, use the [repository-subdirectory installation](../guide/installation.md#Optional-packages)
+with `subdir = "packages/PerfCheckerMakie"` and the reviewed source revision
+`f0af0831499cbd05a43eb44974164309f0553e82`, whose
+[companion source](https://github.com/Mirage-Interactive-Fr/PerfChecker.jl/tree/f0af0831499cbd05a43eb44974164309f0553e82/packages/PerfCheckerMakie)
+declares version 1.0.1. These candidate instructions do not assume a published
+`v1.0.1` tag or a General registration.
+
 Load `PerfCheckerMakie` and a display or export backend. Makie settings have
 three explicit namespaces, so a plot's color cannot collide with an axis or
 figure setting. User attributes override presentation defaults; collector names
