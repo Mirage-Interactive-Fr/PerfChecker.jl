@@ -52,7 +52,7 @@ Use `packages/PerfCheckerPluto` or `packages/PerfCheckerMakie` for the others.
 PerfCheckerTachikoma, PerfCheckerLinuxPerf and PerfCheckerLIKWID are separate
 **1.0.1 source companions**, not registered packages. They are absent from the
 immutable `v1.0.0` tag. The recipes below use reviewed revision
-`63f5cc4bfc2c55de521487f68b0df143107762f3` and do not imply a new General release
+`7cfe034e6dd9a443708f6610785ce823276f4ab0` and do not imply a new General release
 or hardware qualification. Keep an existing checkout unchanged: the following
 commands assume a new, unused destination under `~/.julia/dev`.
 
@@ -60,7 +60,7 @@ commands assume a new, unused destination under `~/.julia/dev`.
 git clone https://github.com/Mirage-Interactive-Fr/PerfChecker.jl \
     "$HOME/.julia/dev/PerfChecker-source-101"
 git -C "$HOME/.julia/dev/PerfChecker-source-101" checkout --detach \
-    63f5cc4bfc2c55de521487f68b0df143107762f3
+    7cfe034e6dd9a443708f6610785ce823276f4ab0
 ```
 
 For the optional terminal interface, choose an unused controller project:
@@ -83,7 +83,7 @@ Pkg.status()
 The companion declares compatibility with Tachikoma starting at 2.7 and
 UnicodePlots 3; inspect the actual resolved versions. Loading it starts no
 terminal or measurement. See its
-[README](https://github.com/Mirage-Interactive-Fr/PerfChecker.jl/blob/63f5cc4bfc2c55de521487f68b0df143107762f3/packages/PerfCheckerTachikoma/README.md)
+[README](https://github.com/Mirage-Interactive-Fr/PerfChecker.jl/blob/7cfe034e6dd9a443708f6610785ce823276f4ab0/packages/PerfCheckerTachikoma/README.md)
 for explicit `tui` calls, run/cancel controls and optional raster setup. Controlled
 terminal tests do not qualify every physical terminal or macOS/Windows.
 
@@ -131,9 +131,9 @@ Pkg.status()
 
 Both companions' compatibility bounds pin their native Julia wrapper version.
 Inspect the resolved environment and target path before running the declared
-suite. The [LinuxPerf recipe](https://github.com/Mirage-Interactive-Fr/PerfChecker.jl/blob/63f5cc4bfc2c55de521487f68b0df143107762f3/packages/PerfCheckerLinuxPerf/README.md)
+suite. The [LinuxPerf recipe](https://github.com/Mirage-Interactive-Fr/PerfChecker.jl/blob/7cfe034e6dd9a443708f6610785ce823276f4ab0/packages/PerfCheckerLinuxPerf/README.md)
 uses backend `:linuxperf`, an explicit `counter_environment`, exact events and a
-verified workload. The [LIKWID recipe](https://github.com/Mirage-Interactive-Fr/PerfChecker.jl/blob/63f5cc4bfc2c55de521487f68b0df143107762f3/packages/PerfCheckerLIKWID/README.md)
+verified workload. The [LIKWID recipe](https://github.com/Mirage-Interactive-Fr/PerfChecker.jl/blob/7cfe034e6dd9a443708f6610785ce823276f4ab0/packages/PerfCheckerLIKWID/README.md)
 uses backend `:likwid`, exact event/counter pairs, declared units and CPUs inside
 inherited affinity. Its worker launch removes `LIKWID_PERF_PID` temporarily and
 restores the controller environment afterwards; it does not retarget a foreign PID.

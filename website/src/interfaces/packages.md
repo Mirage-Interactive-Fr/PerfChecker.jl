@@ -32,8 +32,8 @@ See [Installation](../guide/installation.md) for what to add.
 
 PerfCheckerTachikoma is a **1.0.1 source companion**, loaded explicitly rather
 than enabled by default. It uses Tachikoma 2.7 and UnicodePlots 3. It is not a
-separately registered package; its [source and installation recipe](https://github.com/Mirage-Interactive-Fr/PerfChecker.jl/tree/63f5cc4bfc2c55de521487f68b0df143107762f3/packages/PerfCheckerTachikoma)
-are in `packages/PerfCheckerTachikoma` at revision `63f5cc4b`.
+separately registered package; its [source and installation recipe](https://github.com/Mirage-Interactive-Fr/PerfChecker.jl/tree/7cfe034e6dd9a443708f6610785ce823276f4ab0/packages/PerfCheckerTachikoma)
+are in `packages/PerfCheckerTachikoma` at revision `7cfe034e`.
 
 After preparing that companion and your suite's controller:
 

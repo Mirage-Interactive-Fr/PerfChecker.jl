@@ -5,7 +5,7 @@
 :root{font:14px system-ui,sans-serif;color:#17243b;background:#f6f8fb;color-scheme:light}
 *{box-sizing:border-box}body{margin:0;padding:20px}.app{max-width:1440px;margin:auto}
 .brand{font-size:11px;letter-spacing:.08em;color:#64748b}h1{font-size:clamp(18px,2vw,25px);line-height:1.3;margin:8px 0}#tags,#description{color:#526078;line-height:1.55;font-size:12px}
-.toolbar,.controls{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin:12px 0}.toolbar label{display:flex;align-items:center;gap:6px}.spacer{flex:1}
+.toolbar,.controls{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin:12px 0}.toolbar label{display:flex;align-items:center;flex-wrap:wrap;gap:6px;min-width:0;max-width:100%}.toolbar select{min-width:0;max-width:100%}.spacer{flex:1}
 button,select{font:inherit;color:inherit;border:1px solid #c8d2e1;background:white;border-radius:6px;padding:7px 10px;cursor:pointer}button:hover{background:#edf2fa}button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid #2563eb;outline-offset:2px}
 .controls label{display:flex;align-items:center;gap:7px;border:1px solid #d5ddeb;border-radius:7px;padding:7px 10px;background:white;cursor:pointer}.controls input{accent-color:currentColor}.controls label:has(input:not(:checked)){opacity:.55}
 .scroll{overflow:auto;border:1px solid #d5ddeb;border-radius:10px;background:white}.plot-scroll{height:clamp(480px,55vh,620px);cursor:grab;touch-action:pan-x pan-y}.plot-scroll.dragging{cursor:grabbing}svg{display:block;min-width:900px;margin-inline:auto}svg text{fill:#526078;font-size:12px}circle{cursor:crosshair}circle:focus{outline:2px solid #17243b}

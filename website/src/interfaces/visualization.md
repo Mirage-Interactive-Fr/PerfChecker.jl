@@ -134,11 +134,15 @@ including patch windows, retain their SVG and JSON. WGL views share local assets
 in `examples/plot-assets` to avoid repeating large JavaScript modules. Keep that
 directory and the pages in the same relative layout when copying these published
 exports. To create one self-contained file instead, call `performance_plot_html`
-without directory options. The recorded JSON and SVG remain unchanged. Without
-`--interactive`, the existing publication command only refreshes the aliases and
-downloadable notebooks and does not load WGLMakie. The documentation embeds the
-same HTML file that can be opened separately. Views without a published HTML
-export show their actual static SVG instead.
+without directory options. The recorded JSON and SVG remain unchanged. To refresh
+only the five published normalized views and their two HTML aliases, use
+`--interactive-normalized` instead. This mode requires the renderer and publication
+recipe to be committed in the same checkout and prints that commit and tree before
+rendering. It preserves the catalogues, other HTML exports and shared assets.
+With neither flag, the command only refreshes the aliases and downloadable
+notebooks and does not load WGLMakie. The documentation embeds the same HTML file
+that can be opened separately. Views without a published HTML export show their
+actual static SVG instead.
 
 ## Customize and export Makie figures
 
@@ -149,8 +153,8 @@ and the export behavior below are additions to that companion. The public
 installing registered PerfChecker 1.0.0 does not supply these newer methods.
 For the candidate, use the [repository-subdirectory installation](../guide/installation.md#Optional-packages)
 with `subdir = "packages/PerfCheckerMakie"` and the reviewed source revision
-`63f5cc4bfc2c55de521487f68b0df143107762f3`, whose
-[companion source](https://github.com/Mirage-Interactive-Fr/PerfChecker.jl/tree/63f5cc4bfc2c55de521487f68b0df143107762f3/packages/PerfCheckerMakie)
+`7cfe034e6dd9a443708f6610785ce823276f4ab0`, whose
+[companion source](https://github.com/Mirage-Interactive-Fr/PerfChecker.jl/tree/7cfe034e6dd9a443708f6610785ce823276f4ab0/packages/PerfCheckerMakie)
 declares version 1.0.1. These candidate instructions do not assume a published
 `v1.0.1` tag or a General registration.
 
@@ -161,7 +165,7 @@ registered Core 1.0.0 beside it does not satisfy that contract:
 ```julia
 using Pkg
 repository = "https://github.com/Mirage-Interactive-Fr/PerfChecker.jl"
-revision = "63f5cc4bfc2c55de521487f68b0df143107762f3"
+revision = "7cfe034e6dd9a443708f6610785ce823276f4ab0"
 Pkg.add([
     PackageSpec(url = repository, rev = revision),
     PackageSpec(url = repository, rev = revision, subdir = "packages/PerfCheckerMakie"),
