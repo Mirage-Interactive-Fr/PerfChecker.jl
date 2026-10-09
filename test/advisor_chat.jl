@@ -84,18 +84,21 @@ end
                         "capabilities" => Dict("tools" => Dict()),
                         "serverInfo" => Dict("name" => "test", "version" => "1")))))
         elseif method == "tools/list"
-            return reply(body["id"],
-                Dict("resultType" => "complete",
-                    "tools" => [Dict("name" => name,
-                                    "inputSchema" => Dict("type" => "object",
-                                        "properties" => Dict(
-                                            "question" => Dict("type" => "string"),
-                                            "options" => Dict("type" => "object"),
-                                            "workspace" => Dict("type" => "string")),
-                                        "required" => name == "implement" ?
-                                                      ["question", "workspace"] :
-                                                      ["question"]))
-                                for name in ("advise", "implement")]))
+            result = Dict{String, Any}("resultType" => "complete",
+                "tools" => [Dict("name" => name,
+                                "inputSchema" => Dict("type" => "object",
+                                    "properties" => Dict(
+                                        "question" => Dict("type" => "string"),
+                                        "options" => Dict("type" => "object"),
+                                        "workspace" => Dict("type" => "string")),
+                                    "required" => name == "implement" ?
+                                                  ["question", "workspace"] :
+                                                  ["question"]))
+                            for name in ("advise", "implement")])
+            if haskey(body["params"], "_meta")
+                merge!(result, Dict("ttlMs" => 0, "cacheScope" => "private"))
+            end
+            return reply(body["id"], result)
         end
         called[] = true
         mode[] == :slow && sleep(5)
@@ -283,7 +286,7 @@ end
             calls = filter(r -> r.body["method"] == "tools/call", requests)
             received_call = length(calls) == 1
             reached_validation = get(result, "worker_phase", "unknown") in (
-                "mcp_tools_call", "response_validation")
+                "mcp_response_body_read", "mcp_response_body_complete", "response_validation")
             result["status"] == "error" && received_call && reached_validation ||
                 @error "Rejected mock MCP response did not reach its tool call" selected_mode status=result["status"] worker_phase=get(
                     result, "worker_phase", "unknown") worker_log_excerpt=get(

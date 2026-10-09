@@ -10,6 +10,29 @@
     @test_throws ArgumentError AdvisorConfig(endpoint = "https://example.com/v1/chat/completions")
     @test AdvisorConfig(endpoint = "https://example.com/v1/chat/completions",
         allow_remote = true).allow_remote
+    for path in ("/v1.0/mcp", "/mcp%20gateway/%CF%80", "/tools%2Fask",
+        raw"/!$&'()*+,;=:@-._~/mcp")
+        endpoint = "http://127.0.0.1:8081" * path
+        @test AdvisorConfig(endpoint = endpoint).endpoint == endpoint
+    end
+    @test AdvisorConfig(endpoint = "http://[::1]:8081/api.v2/mcp%20gateway").allow_remote ==
+          false
+    for endpoint in ("http://127.0.0.1:0/mcp", "http://127.0.0.1:65536/mcp",
+        "http://127.0.0.1:999999/mcp", "http://127.0.0.1/mcp%",
+        "http://127.0.0.1/mcp%2", "http://127.0.0.1/mcp%GG",
+        "http://127.0.0.1/mcp%0aInjected", "http://127.0.0.1/mcp%0DInjected",
+        "http://127.0.0.1/mcp%00", "http://127.0.0.1/mcp%7f",
+        "http://127.0.0.1/mcp%5Cescape", raw"http://127.0.0.1/mcp\escape",
+        "http://127.0.0.1/mcp with space", "http://127.0.0.1/mcp?token=secret",
+        "http://127.0.0.1/mcp#fragment", "http://localhost@remote.example/mcp",
+        "https://user:secret@example.com/api.v2/mcp")
+        @test_throws ArgumentError AdvisorConfig(endpoint = endpoint, allow_remote = true)
+    end
+    @test_throws ArgumentError AdvisorConfig(endpoint = "https://example.com/api.v2/mcp%20gateway")
+    @test_throws ArgumentError AdvisorConfig(
+        endpoint = "http://example.com/api.v2/mcp%20gateway", allow_remote = true)
+    @test AdvisorConfig(endpoint = "https://example.com/api.v2/mcp%20gateway",
+        allow_remote = true).allow_remote
     for arguments in ((endpoint = "http://example.com", allow_remote = true),
         (endpoint = "https://user:secret@example.com",),
         (max_tokens = 0,), (timeout = Inf,), (protocol = "code()",),
@@ -93,6 +116,11 @@ end
             selection = stop_after_first[] && calls[] > 1 ? "stop" :
                         last(evidence["allowed_experiments"])["id"]
             Dict("structuredContent" => Dict("cards" => [], "experiment_id" => selection))
+        end
+        if method == "tools/list" && haskey(body["params"], "_meta")
+            result = merge(Dict{String, Any}(result),
+                Dict("resultType" => "complete", "ttlMs" => 0,
+                    "cacheScope" => "private"))
         end
         headers = ["Content-Type" => "application/json"]
         method == "initialize" && push!(headers, "Mcp-Session-Id" => "bounded-session")

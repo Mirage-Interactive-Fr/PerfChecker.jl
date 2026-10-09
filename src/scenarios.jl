@@ -343,7 +343,9 @@ function _advisor_worker_diagnostics(logpath::AbstractString)
     end
     phases = ("dependencies_loading", "request_loading", "provider_loading",
         "provider_loaded", "transport", "mcp_initialize", "mcp_initialized_notification",
-        "mcp_tools_list", "mcp_tools_call", "mcp_session_release", "response_validation",
+        "mcp_tools_list", "mcp_tools_call", "mcp_discover", "mcp_session_release",
+        "mcp_http_open", "mcp_stream_ready", "mcp_response_headers_wait",
+        "mcp_response_body_read", "mcp_response_body_complete", "response_validation",
         "response_write", "failed", "complete")
     markers = String[]
     phase = "process_start"

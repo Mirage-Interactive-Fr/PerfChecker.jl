@@ -90,12 +90,15 @@ function mcp_post(config, message; session = "", notification = false,
         push!(headers, "Authorization" => "Bearer " * key)
     end
     output, received_session = Ref{Any}(), Ref("")
+    PerfChecker._advisor_phase(:mcp_http_open)
     HTTP.open("POST", config.endpoint, headers; retry = false, redirect = false,
         readtimeout = ceil(Int, config.timeout), connect_timeout = ceil(
             Int, min(config.timeout, 10)),
         status_exception = false) do stream
+        PerfChecker._advisor_phase(:mcp_stream_ready)
         write(stream, sprint(io -> PerfChecker.JSON.print(io, message)))
         HTTP.closewrite(stream)
+        PerfChecker._advisor_phase(:mcp_response_headers_wait)
         response = HTTP.startread(stream)
         response.status == (notification ? 202 : 200) ||
             throw(ArgumentError("MCP endpoint returned HTTP $(response.status); check protocol version and authentication"))
@@ -103,9 +106,14 @@ function mcp_post(config, message; session = "", notification = false,
         session_value = received_session[]
         length(session_value) <= 1024 && all(c -> 0x21 <= Int(c) <= 0x7e, session_value) ||
             throw(ArgumentError("invalid MCP session identifier"))
-        output[] = notification ? nothing :
-                   mcp_read(
-            stream, HTTP.header(response, "Content-Type", ""), message["id"])
+        if notification
+            output[] = nothing
+        else
+            PerfChecker._advisor_phase(:mcp_response_body_read)
+            output[] = mcp_read(
+                stream, HTTP.header(response, "Content-Type", ""), message["id"])
+            PerfChecker._advisor_phase(:mcp_response_body_complete)
+        end
     end
     output[], received_session[]
 end
@@ -116,7 +124,7 @@ function mcp_request(config, method, id, params = Dict{String, Any}())
         params["_meta"] = Dict(
             "io.modelcontextprotocol/protocolVersion" => config.mcp_version,
             "io.modelcontextprotocol/clientInfo" => Dict(
-                "name" => "PerfChecker", "version" => "1.0.0"),
+                "name" => "PerfChecker", "version" => string(pkgversion(PerfChecker))),
             "io.modelcontextprotocol/clientCapabilities" => Dict())
     end
     Dict("jsonrpc" => "2.0", "id" => id, "method" => method, "params" => params)
@@ -183,10 +191,12 @@ function PerfChecker.advisor_transport(
             initialized, session = mcp_post(config,
                 mcp_request(config, "initialize", 1,
                     Dict("protocolVersion" => config.mcp_version, "capabilities" => Dict(),
-                        "clientInfo" => Dict("name" => "PerfChecker", "version" => "1.0.0"))))
+                        "clientInfo" => Dict("name" => "PerfChecker",
+                            "version" => string(pkgversion(PerfChecker))))))
             get(initialized, "protocolVersion", "") == config.mcp_version ||
                 throw(ArgumentError("MCP server selected an unsupported version"))
-            haskey(get(initialized, "capabilities", Dict()), "tools") ||
+            get(get(initialized, "capabilities", Dict()), "tools", nothing) isa
+            AbstractDict ||
                 throw(ArgumentError("MCP server does not expose tools"))
             PerfChecker._advisor_phase(:mcp_initialized_notification)
             mcp_post(

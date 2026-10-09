@@ -26,26 +26,77 @@ function setup_http(config, method, endpoint; body = nothing, empty_ok = false)
     return empty_ok && isempty(bytes) ? Dict() : PerfChecker._json_parse(String(bytes))
 end
 
+# Discovery metadata is self-reported and used for display, never authorization.
+function mcp_server_metadata(result, version; modern)
+    !modern || get(result, "resultType", nothing) == "complete" ||
+        throw(ArgumentError("Invalid MCP discovery result type."))
+    versions = modern ? get(result, "supportedVersions", nothing) :
+               [get(result, "protocolVersion", nothing)]
+    versions isa AbstractVector && 1 <= length(versions) <= 32 &&
+        all(v -> v isa AbstractString && occursin(r"^[0-9]{4}-[0-9]{2}-[0-9]{2}$", v),
+            versions) ||
+        throw(ArgumentError("Invalid MCP supported-version inventory."))
+    version in versions ||
+        throw(ArgumentError("The server does not advertise the configured MCP version; select a supported version explicitly."))
+    capabilities = get(result, "capabilities", nothing)
+    capabilities isa AbstractDict && get(capabilities, "tools", nothing) isa AbstractDict ||
+        throw(ArgumentError("This MCP server does not advertise tools support."))
+    advertised = Dict{String, Any}()
+    for name in ("tools", "resources", "prompts", "completions", "logging", "sampling",
+        "roots", "elicitation", "tasks")
+        haskey(capabilities, name) || continue
+        value = capabilities[name]
+        value isa AbstractDict ||
+            throw(ArgumentError("Invalid MCP capability declaration."))
+        flags = Dict{String, Bool}()
+        for flag in ("listChanged", "subscribe")
+            haskey(value, flag) || continue
+            value[flag] isa Bool || throw(ArgumentError("Invalid MCP capability flag."))
+            flags[flag] = value[flag]
+        end
+        advertised[name] = flags
+    end
+    meta = get(result, "_meta", Dict())
+    meta isa AbstractDict || throw(ArgumentError("Invalid MCP server metadata."))
+    info = modern ? get(meta, "io.modelcontextprotocol/serverInfo", Dict()) :
+           get(result, "serverInfo", Dict())
+    info isa AbstractDict || throw(ArgumentError("Invalid MCP server identity."))
+    identity = Dict{String, String}()
+    for key in ("name", "version", "title")
+        haskey(info, key) || continue
+        info[key] isa AbstractString ||
+            throw(ArgumentError("Invalid MCP server identity field."))
+        identity[key] = first(info[key], 256)
+    end
+    Dict("protocol_version" => version, "supported_versions" => String.(versions),
+        "capabilities" => advertised, "server_info" => identity)
+end
+
 function setup_mcp_tools(config)
     session = ""
     try
         if config.mcp_version == "2025-11-25"
+            PerfChecker._advisor_phase(:mcp_initialize)
             result, session = mcp_post(config,
                 mcp_request(config, "initialize", 1,
                     Dict("protocolVersion" => config.mcp_version, "capabilities" => Dict(),
-                        "clientInfo" => Dict("name" => "PerfChecker", "version" => "1.0.0"))))
-            get(result, "protocolVersion", "") == config.mcp_version ||
-                throw(ArgumentError("Unsupported MCP version selected by server."))
-            haskey(get(result, "capabilities", Dict()), "tools") ||
-                throw(ArgumentError("This MCP server exposes no tools."))
+                        "clientInfo" => Dict("name" => "PerfChecker",
+                            "version" => string(pkgversion(PerfChecker))))))
+            server = mcp_server_metadata(result, config.mcp_version; modern = false)
+            PerfChecker._advisor_phase(:mcp_initialized_notification)
             mcp_post(
                 config, Dict("jsonrpc" => "2.0", "method" => "notifications/initialized");
                 session, notification = true)
+        else
+            PerfChecker._advisor_phase(:mcp_discover)
+            result, _ = mcp_post(config, mcp_request(config, "server/discover", 1))
+            server = mcp_server_metadata(result, config.mcp_version; modern = true)
         end
         entries, cursor, seen = Any[], nothing, Set{String}()
         for page in 1:32
             params = cursor === nothing ? Dict{String, Any}() :
                      Dict{String, Any}("cursor" => cursor)
+            PerfChecker._advisor_phase(:mcp_tools_list)
             result, _ = mcp_post(
                 config, mcp_request(config, "tools/list", page + 1, params); session)
             rows = get(result, "tools", nothing)
@@ -65,12 +116,13 @@ function setup_mcp_tools(config)
             length(entries) <= 1024 ||
                 throw(ArgumentError("Too many MCP tools to display."))
             cursor = get(result, "nextCursor", nothing)
-            cursor === nothing && return entries
+            cursor === nothing && return (tools = entries, server = server)
             cursor isa String || throw(ArgumentError("Invalid MCP catalogue cursor."))
         end
         throw(ArgumentError("MCP inventory exceeds 32 pages."))
     finally
         if !isempty(session)
+            PerfChecker._advisor_phase(:mcp_session_release)
             headers = [
                 "Mcp-Session-Id" => session, "MCP-Protocol-Version" => config.mcp_version]
             isempty(config.api_key_env) || push!(headers,
@@ -90,10 +142,11 @@ function PerfChecker.advisor_setup_transport(
     if config.protocol == :mcp_http
         action in (:probe, :models) ||
             throw(ArgumentError("MCP tools cannot manage local model files."))
-        entries = setup_mcp_tools(config)
-        selected = any(t -> t["name"] == config.mcp_tool, entries)
+        inventory = setup_mcp_tools(config)
+        selected = any(t -> t["name"] == config.mcp_tool, inventory.tools)
         return Dict(
-            "status" => "complete", "tools" => entries, "selected_available" => selected,
+            "status" => "complete", "tools" => inventory.tools,
+            "server" => inventory.server, "selected_available" => selected,
             "message" => "MCP connected. Select a tool that answers prompts. No tool was called.")
     elseif config.protocol == :ollama
         endswith(config.endpoint, "/api/chat") ||
