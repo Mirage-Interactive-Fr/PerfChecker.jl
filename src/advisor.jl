@@ -13,8 +13,10 @@ available in the advisor's `project` environment.
 
 # Connection and limits
 
-- `endpoint` is a plain HTTP(S) URL without credentials, a query or a fragment.
-  Loopback HTTP is accepted; any other host requires HTTPS and `allow_remote=true`.
+- `endpoint` is an HTTP(S) URL without credentials, a query or a fragment.
+  Paths accept RFC 3986 path characters and valid percent escapes; raw whitespace,
+  backslashes and encoded control characters are rejected. HTTP is accepted for
+  `localhost`, `127.0.0.1` and `[::1]`; other hosts require HTTPS and `allow_remote=true`.
 - `model` selects the model for Chat Completions and Ollama. PerfChecker does
   not bundle a model; the MCP transport does not send this field.
 - `timeout` bounds the isolated request, including worker startup, in seconds
@@ -74,10 +76,15 @@ struct AdvisorConfig
             instructions = "", mcp_tool = "", mcp_prompt_argument = "prompt",
             mcp_arguments = Dict{String, Any}(), mcp_version = "2026-07-28", mcp_response = :text)
         address = match(
-            r"^https?://(\[[0-9a-fA-F:]+\]|[a-zA-Z0-9.-]+)(?::[0-9]+)?(/[a-zA-Z0-9/_-]*)?$",
+            r"^https?://(\[[0-9a-fA-F:]+\]|[a-zA-Z0-9.-]+)(?::([0-9]{1,5}))?((?:/(?:[A-Za-z0-9/_~.!$&'()*+,;=:@-]|%[0-9a-fA-F]{2})*)?)$",
             endpoint)
         address === nothing &&
             throw(ArgumentError("use a plain HTTP(S) endpoint without credentials, query or fragment"))
+        port = address.captures[2]
+        port === nothing || 1 <= Base.parse(Int, port) <= 65535 ||
+            throw(ArgumentError("endpoint port must be in 1:65535"))
+        occursin(r"%(?:0[0-9a-f]|1[0-9a-f]|7f|5c)"i, address.captures[3]) &&
+            throw(ArgumentError("endpoint path must not encode controls or backslashes"))
         host = lowercase(address.captures[1])
         local_host = host in ("localhost", "127.0.0.1", "[::1]")
         local_host || (allow_remote && startswith(endpoint, "https://")) ||
@@ -536,6 +543,9 @@ the checkout. This function does not apply changes or create a backup. The tool
 receives an absolute workspace path in addition to bounded conversation and advice.
 MCP and the prompt do not enforce a filesystem sandbox; configure a trusted tool
 that confines its operations to this checkout and can access its filesystem.
+Only the workspace path is transmitted, not its files. A remote server needs
+separately configured access to that isolated copy; HTTP does not provide a mount
+or upload the checkout.
 
 `messages` follows [`chat_advice`](@ref)'s alternating conversation contract.
 `workspace` must exist; its resolved absolute path is sent under

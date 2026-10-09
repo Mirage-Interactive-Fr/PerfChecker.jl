@@ -32,7 +32,12 @@ Accept an `AdvisorConfig` or draft dictionary. `:validate` returns validated
 configuration immediately without contacting a provider; `:probe`/`:models`
 allow an MCP discovery draft with no selected tool. Return a status dictionary,
 with worker results labelled `perfchecker-advisor-setup/1`, `evidence_sent=false`
-and `generation_tested=false`. Missing provider packages can be unavailable;
+and `generation_tested=false`. MCP probes use the explicitly configured version:
+2026 discovery reads `server/discover` before listing tools; 2025 uses `initialize`.
+The `server` result contains the selected protocol, advertised versions, bounded
+server identity and known capabilities. These are self-reported display metadata,
+not trusted authorization or a guarantee that a tool can generate advice.
+Missing provider packages can be unavailable;
 connection errors become diagnostic results. Invalid actions, model names or
 unconfirmed/nonlocal management raise `ArgumentError` before execution.
 Cancellation stops the worker; partial provider-owned downloads may remain.
@@ -68,8 +73,11 @@ end
 function _advisor_setup_inprocess(config, request)
     Base.find_package("HTTP") === nothing && return Dict("status" => "unavailable",
         "message" => "Install HTTP in the PerfChecker controller environment to connect a provider.")
+    _advisor_phase(:provider_loading)
     Base.require(Main, :HTTP)
+    _advisor_phase(:provider_loaded)
     try
+        _advisor_phase(:transport)
         Base.invokelatest(advisor_setup_transport, config,
             Symbol(request["setup_action"]), request["setup_model"])
     catch error

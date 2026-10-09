@@ -5,6 +5,8 @@
     close(listener)
     calls = Any[]
     slow = Ref(false)
+    mcp_mode = Ref(:valid)
+    mcp_version = Ref("2026-07-28")
     active_request = Ref(false)
     encode(value) = sprint(io -> PerfChecker.JSON.print(io, value))
     server = HTTP.serve!("127.0.0.1", port; verbose = false) do request
@@ -32,15 +34,56 @@
             return HTTP.Response(200, "")
         elseif request.target == "/api/generate"
             Dict("done" => true, "response" => "")
-        elseif request.target == "/mcp"
-            @test input["method"] == "tools/list"
-            Dict("jsonrpc" => "2.0",
-                "id" => input["id"],
-                "result" => Dict("tools" => [
-                    Dict(
-                    "name" => "ask", "description" => "Advice <script>unsafe</script>",
-                    "inputSchema" => Dict("type" => "object", "required" => ["question"],
-                        "properties" => Dict("question" => Dict("type" => "string"))))]))
+        elseif request.target in ("/mcp", "/api.v2/mcp%20gateway")
+            request.method == "DELETE" && return HTTP.Response(204)
+            method = input["method"]
+            method == "notifications/initialized" && return HTTP.Response(202)
+            if method == "initialize"
+                @test input["params"]["clientInfo"]["version"] ==
+                      string(pkgversion(PerfChecker))
+                return HTTP.Response(200, ["Content-Type" => "application/json"],
+                    encode(Dict("jsonrpc" => "2.0", "id" => input["id"],
+                        "result" => Dict("protocolVersion" => "2025-11-25",
+                            "capabilities" => Dict("tools" => Dict()),
+                            "serverInfo" => Dict(
+                                "name" => "generic-fixture", "version" => "1")))))
+            end
+            if mcp_version[] == "2026-07-28"
+                meta = input["params"]["_meta"]
+                @test meta["io.modelcontextprotocol/protocolVersion"] == "2026-07-28"
+                @test meta["io.modelcontextprotocol/clientInfo"] ==
+                      Dict(
+                    "name" => "PerfChecker", "version" => string(pkgversion(PerfChecker)))
+                @test meta["io.modelcontextprotocol/clientCapabilities"] == Dict()
+            else
+                @test !haskey(input["params"], "_meta")
+            end
+            if method == "server/discover"
+                capabilities = mcp_mode[] == :no_tools ? Dict("resources" => Dict()) :
+                               Dict(
+                    "tools" => Dict("listChanged" => false), "resources" => Dict())
+                versions = mcp_mode[] == :wrong_version ? ["2025-11-25"] : ["2026-07-28"]
+                return HTTP.Response(200, ["Content-Type" => "application/json"],
+                    encode(Dict("jsonrpc" => "2.0", "id" => input["id"],
+                        "result" => Dict("resultType" => "complete", "ttlMs" => 0,
+                            "cacheScope" => "private", "supportedVersions" => versions,
+                            "capabilities" => capabilities,
+                            "_meta" => Dict("io.modelcontextprotocol/serverInfo" => Dict(
+                                "name" => repeat("é", 400), "version" => "1",
+                                "private" => "SERVER_PRIVATE"))))))
+            end
+            @test method == "tools/list"
+            result = Dict{String, Any}("tools" => [
+                Dict(
+                "name" => "ask", "description" => "Advice <script>unsafe</script>",
+                "inputSchema" => Dict("type" => "object", "required" => ["question"],
+                    "properties" => Dict("question" => Dict("type" => "string"))))])
+            if mcp_version[] == "2026-07-28"
+                merge!(result,
+                    Dict("resultType" => "complete", "ttlMs" => 0,
+                        "cacheScope" => "private"))
+            end
+            Dict("jsonrpc" => "2.0", "id" => input["id"], "result" => result)
         else
             return HTTP.Response(401, "never expose this provider error")
         end
@@ -84,6 +127,44 @@
         @test mcp["status"] == "complete"
         @test only(mcp["tools"])["name"] == "ask"
         @test !mcp["selected_available"]
+        @test mcp["server"]["protocol_version"] == "2026-07-28"
+        @test mcp["server"]["supported_versions"] == ["2026-07-28"]
+        @test mcp["server"]["capabilities"] ==
+              Dict("tools" => Dict("listChanged" => false), "resources" => Dict())
+        @test length(mcp["server"]["server_info"]["name"]) == 256
+        @test !occursin("SERVER_PRIVATE", string(mcp["server"]))
+        @test [call.input["method"] for call in calls if call.target == "/mcp"] ==
+              ["server/discover", "tools/list"]
+        modern = AdvisorConfig(
+            protocol = :mcp_http, endpoint = draft["endpoint"], mcp_tool = "ask")
+        for mode in (:wrong_version, :no_tools)
+            mcp_mode[] = mode
+            before = length(calls)
+            @test_throws ArgumentError Base.invokelatest(
+                advisor_setup_transport, modern, :probe, "")
+            @test length(calls) == before + 1
+            @test last(calls).input["method"] == "server/discover"
+        end
+        mcp_mode[] = :valid
+        mcp_version[] = "2025-11-25"
+        legacy = AdvisorConfig(protocol = :mcp_http, endpoint = draft["endpoint"],
+            mcp_tool = "ask", mcp_version = "2025-11-25")
+        before = length(calls)
+        old = Base.invokelatest(advisor_setup_transport, legacy, :probe, "")
+        @test old["server"]["protocol_version"] == "2025-11-25"
+        @test old["server"]["server_info"]["name"] == "generic-fixture"
+        @test [call.input["method"] for call in calls[(before + 1):end]] ==
+              ["initialize", "notifications/initialized", "tools/list"]
+        mcp_version[] = "2026-07-28"
+        encoded = AdvisorConfig(protocol = :mcp_http,
+            endpoint = "http://127.0.0.1:$port/api.v2/mcp%20gateway", mcp_tool = "ask")
+        before = length(calls)
+        path_probe = Base.invokelatest(advisor_setup_transport, encoded, :probe, "")
+        @test path_probe["status"] == "complete"
+        @test [call.target for call in calls[(before + 1):end]] ==
+              ["/api.v2/mcp%20gateway", "/api.v2/mcp%20gateway"]
+        @test [call.input["method"] for call in calls[(before + 1):end]] ==
+              ["server/discover", "tools/list"]
         @test_throws ArgumentError advisor_setup(draft; action = :validate)
         chat = AdvisorConfig(
             endpoint = "http://127.0.0.1:$port/v1/chat/completions", model = "tiny")
