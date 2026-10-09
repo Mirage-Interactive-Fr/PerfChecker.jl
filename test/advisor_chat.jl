@@ -131,7 +131,7 @@ end
     "nested" => [Dict("empty_array" => Any[], "empty_object" => Dict{String, Any}())])),
     kwargs...) = AdvisorConfig(
         protocol = :mcp_http, endpoint = "http://127.0.0.1:$port/mcp", mcp_tool = tool,
-        mcp_prompt_argument = "question", mcp_version = version, timeout = 60;
+        mcp_prompt_argument = "question", mcp_version = version, timeout = 120;
         mcp_arguments, kwargs...)
     message(role, content) = Dict("role" => role, "content" => content)
     messages = [message("user", "Pourquoi ces allocations ?"),
@@ -159,7 +159,10 @@ end
     try
         # Compile JSON parsing and every MCP handler before an isolated worker's
         # deadline starts. GET readiness does not exercise these POST branches.
-        # Keep worker startup, cancellation and the original 60-second budget real.
+        # Fresh workers still compile their own provider within the deadline.
+        # On macOS CI, HTTP readiness took 50 seconds and a valid response took
+        # 70 seconds. Allow 120 seconds for successful cold-worker fixtures;
+        # cancellation and the explicit short-deadline case below remain real.
         for version in ("2026-07-28", "2025-11-25")
             warmup = Base.invokelatest(PerfChecker.advisor_transport, Val(:mcp_http),
                 config(version; timeout = 120),
@@ -400,7 +403,7 @@ end
         called[] = false
         token = CancellationToken()
         canceller = @async begin
-            deadline = time() + 65
+            deadline = time() + 125
             while !called[] && time() < deadline
                 sleep(0.05)
             end
@@ -413,6 +416,9 @@ end
         reset_requests!()
         result = chat_advice(messages; config = config(timeout = 0.01))
         @test result["status"] == "timeout"
+        # Worker startup is part of the product deadline, not an unbounded
+        # readiness allowance. The warmed controller must stop this worker.
+        @test result["elapsed_seconds"] < 5
         @test haskey(result, "worker_phase") && haskey(result, "worker_log_excerpt")
         extension = Base.get_extension(PerfChecker, :HTTPAdvisorExt)
         for newline in ("\n", "\r\n", "\r")

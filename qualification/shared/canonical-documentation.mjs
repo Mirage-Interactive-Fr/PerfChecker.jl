@@ -65,14 +65,19 @@ for (const channel of channels) {
       const provenance = await readFile(join(site, 'optional-api', `${slug}.toml`), 'utf8');
       assert.ok(provenance.includes(`source_revision = "${info.revision}"`), `${owner}: source revision`);
       assert.ok(provenance.includes(`owner = "${owner}"`), `${owner}: owner provenance`);
-      const bindings = [...provenance.matchAll(/^\[\[bindings\]\]$/gm)].length;
-      assert.ok(bindings > 0, `${owner}: real Docs records`);
+      const bindings = provenance.split(/^\[\[bindings\]\]\r?\n/m).slice(1)
+        .map(block => block.split(/^\[/m)[0]);
+      assert.ok(bindings.length > 0, `${owner}: real Docs records`);
+      assert.ok(bindings.every(block => /^public_api = (?:true|false)$/m.test(block)),
+        `${owner}: every Docs record declares its API page`);
       for (const page of ['public-api', 'full-api']) {
         const html = await readFile(join(site, 'optional-api', slug, `${page}.html`), 'utf8');
-        assert.equal([...html.matchAll(/class="jldocstring custom-block"/g)].length, bindings,
+        const expected = page === 'full-api' ? bindings.length :
+          bindings.filter(block => /^public_api = true$/m.test(block)).length;
+        assert.equal([...html.matchAll(/class="jldocstring custom-block"/g)].length, expected,
           `${owner}/${page}: visible Julia docstring bodies`);
         assert.equal([...html.matchAll(new RegExp(`/blob/${info.revision}/packages/${owner}/`, 'g'))].length,
-          bindings, `${owner}/${page}: exact source links`);
+          expected, `${owner}/${page}: exact source links`);
         assert.ok(!/```@(docs|autodocs|index)|\]\(@ref/.test(html), `${owner}: raw Julia directive`);
       }
       const inventory = await readFile(join(site, 'optional-api', `${slug}.inv`));

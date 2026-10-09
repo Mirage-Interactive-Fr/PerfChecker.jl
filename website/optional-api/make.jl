@@ -97,6 +97,7 @@ end
 sort!(expected; by = string)
 actual = sort(filter(name -> name != nameof(owner), names(owner)); by = string)
 actual == expected || error("The public binding inventory changed; review the prototype")
+documented_names = slug == "makie" ? vcat(expected, [:performance_plot_html]) : expected
 records = Dict{String, Any}[]
 method_records = Dict{String, Any}[]
 for docmodule in docmodules
@@ -118,6 +119,8 @@ for docmodule in docmodules
                     "docstring_module" => string(docstring.data[:module]),
                     "signature" => string(signature), "public" => status.ispublic,
                     "exported" => status.isexported, "source" => relative,
+                    "public_api" => binding.var == nameof(owner) ||
+                        binding.var in documented_names,
                     "line" => Int(docstring.data[:linenumber]),
                     "source_sha256" => bytes2hex(sha256(read(source)))))
         end
@@ -128,7 +131,6 @@ for name in expected
     isempty(Documenter.DocSystem.getdocs(binding; modules = docmodules, aliases = false)) &&
         error("Missing actual companion docstring for $owner_name.$name")
 end
-documented_names = slug == "makie" ? vcat(expected, [:performance_plot_html]) : expected
 for name in documented_names
     binding = Documenter.DocSystem.binding(owner, name)
     value = getfield(binding.mod, binding.var)

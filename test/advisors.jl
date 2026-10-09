@@ -211,20 +211,30 @@ end
             stop_after_first[] = false
             rm(chosen_marker)
             factory_marker = joinpath(root, "chosen-factory")
+            # macOS CI spent about 44 seconds in the cold MCP decision worker,
+            # leaving only one second of the old 45-second global budget for
+            # scenario startup. Fund the same 120-second MCP readiness allowance
+            # used above plus 45 seconds for the scenario to enter its operation.
+            # Both the workload sleep and its individual timeout exceed the
+            # global budget, so only investigation exhaustion can stop it.
+            budget_seconds = 120 + 45
             slow = ScenarioCatalog(root,
                 [catalog.scenarios[1],
                     ScenarioSpec("chosen";
                         source, factory = "make_timeout_case",
                         parameters = Dict("marker" => chosen_marker,
-                            "factory_marker" => factory_marker, "delay" => 120),
+                            "factory_marker" => factory_marker,
+                            "delay" => 2budget_seconds),
                         # BenchmarkTools execution is covered above; this case
                         # isolates the deadline on a sleeping operation via stdlib Profile.
                         collectors = [:profile])])
             bounded = investigate(slow; project, advisor = config("2026-07-28"),
                 tools = Symbol[], samples = 1, max_experiments = 2,
-                budget_seconds = 45, timeout = 120)
+                budget_seconds, timeout = 2budget_seconds)
             @test bounded["status"] == "budget_exhausted"
-            @test bounded["elapsed_seconds"] < 65
+            @test bounded["limits"] ==
+                  Dict("max_experiments" => 2, "budget_seconds" => budget_seconds)
+            @test bounded["elapsed_seconds"] < budget_seconds + 20
             @test only(bounded["decisions"])["status"] == "complete"
             @test only(bounded["experiments"])["status"] == "incomplete"
             @test only(bounded["runs"])["qualification"]["availability"] == "timeout"

@@ -36,3 +36,15 @@ extension. Its docstring is rendered from that extension, not copied from Core.
 ```@docs
 PerfChecker.performance_plot_html(::PerfChecker.PerformancePlot)
 ```
+
+## Internal WGLMakie helpers
+
+These helpers implement inspection of recorded points in exported figures.
+
+```@autodocs
+Modules = [Base.get_extension(PerfCheckerMakie, :WGLMakieExt)]
+Public = false
+Private = true
+Filter = value -> value !== PerfChecker.performance_plot_html
+Order = [:function]
+```
