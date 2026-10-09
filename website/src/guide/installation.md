@@ -47,6 +47,104 @@ Pkg.add(Pkg.PackageSpec(
 
 Use `packages/PerfCheckerPluto` or `packages/PerfCheckerMakie` for the others.
 
+### Source companions for 1.0.1
+
+PerfCheckerTachikoma, PerfCheckerLinuxPerf and PerfCheckerLIKWID are separate
+**1.0.1 source companions**, not registered packages. They are absent from the
+immutable `v1.0.0` tag. The recipes below use reviewed revision
+`1a7577da782ba8676683f3ceefcb8dccf055afe5` and do not imply a new General release
+or hardware qualification. Keep an existing checkout unchanged: the following
+commands assume a new, unused destination under `~/.julia/dev`.
+
+```sh
+git clone https://github.com/Mirage-Interactive-Fr/PerfChecker.jl \
+    "$HOME/.julia/dev/PerfChecker-source-101"
+git -C "$HOME/.julia/dev/PerfChecker-source-101" checkout --detach \
+    1a7577da782ba8676683f3ceefcb8dccf055afe5
+```
+
+For the optional terminal interface, choose an unused controller project:
+
+```julia
+import Pkg
+source = joinpath(homedir(), ".julia", "dev", "PerfChecker-source-101")
+controller = joinpath(homedir(), ".julia", "environments", "perfchecker-tachikoma-101")
+Pkg.activate(controller)
+Pkg.develop([
+    Pkg.PackageSpec(path = source),
+    Pkg.PackageSpec(path = joinpath(source, "packages", "PerfCheckerTachikoma")),
+])
+Pkg.instantiate()
+using PerfChecker, PerfCheckerTachikoma
+Pkg.status()
+@doc PerfCheckerTachikoma.tui
+```
+
+The companion declares compatibility with Tachikoma starting at 2.7 and
+UnicodePlots 3; inspect the actual resolved versions. Loading it starts no
+terminal or measurement. See its
+[README](https://github.com/Mirage-Interactive-Fr/PerfChecker.jl/blob/1a7577da782ba8676683f3ceefcb8dccf055afe5/packages/PerfCheckerTachikoma/README.md)
+for explicit `tui` calls, run/cancel controls and optional raster setup. Controlled
+terminal tests do not qualify every physical terminal or macOS/Windows.
+
+Hardware-counter companions belong in their **explicit worker projects**, with
+the exact target already prepared. They are collectors, unlike the Web/Pluto/Makie
+rendering interfaces. Do not combine the current LinuxPerf 0.4.2 / PrettyTables 2
+and LIKWID 0.4.6 / PrettyTables 3 projects. Choose one recipe per fresh project;
+`target_source` below must be your existing, reviewed Julia target checkout.
+
+```julia
+import Pkg
+source = joinpath(homedir(), ".julia", "dev", "PerfChecker-source-101")
+target_source = joinpath(homedir(), ".julia", "dev", "Example")
+worker_project = joinpath(homedir(), ".julia", "environments", "perfchecker-linuxperf-worker-101")
+Pkg.activate(worker_project)
+Pkg.develop([
+    Pkg.PackageSpec(path = source),
+    Pkg.PackageSpec(path = joinpath(source, "packages", "PerfCheckerLinuxPerf")),
+    Pkg.PackageSpec(path = target_source),
+])
+Pkg.instantiate()
+using PerfChecker, PerfCheckerLinuxPerf
+Pkg.status()
+@doc PerfCheckerLinuxPerf.run_counter_suite
+```
+
+For LIKWID, use a different project and develop its companion instead:
+
+```julia
+import Pkg
+source = joinpath(homedir(), ".julia", "dev", "PerfChecker-source-101")
+target_source = joinpath(homedir(), ".julia", "dev", "Example")
+worker_project = joinpath(homedir(), ".julia", "environments", "perfchecker-likwid-worker-101")
+Pkg.activate(worker_project)
+Pkg.develop([
+    Pkg.PackageSpec(path = source),
+    Pkg.PackageSpec(path = joinpath(source, "packages", "PerfCheckerLIKWID")),
+    Pkg.PackageSpec(path = target_source),
+])
+Pkg.instantiate()
+using PerfChecker, PerfCheckerLIKWID
+Pkg.status()
+@doc PerfCheckerLIKWID.run_counter_suite
+```
+
+Both companions' compatibility bounds pin their native Julia wrapper version.
+Inspect the resolved environment and target path before running the declared
+suite. The [LinuxPerf recipe](https://github.com/Mirage-Interactive-Fr/PerfChecker.jl/blob/1a7577da782ba8676683f3ceefcb8dccf055afe5/packages/PerfCheckerLinuxPerf/README.md)
+uses backend `:linuxperf`, an explicit `counter_environment`, exact events and a
+verified workload. The [LIKWID recipe](https://github.com/Mirage-Interactive-Fr/PerfChecker.jl/blob/1a7577da782ba8676683f3ceefcb8dccf055afe5/packages/PerfCheckerLIKWID/README.md)
+uses backend `:likwid`, exact event/counter pairs, declared units and CPUs inside
+inherited affinity. Its worker launch removes `LIKWID_PERF_PID` temporarily and
+restores the controller environment afterwards; it does not retarget a foreign PID.
+
+Linux perf-event access and LIKWID's native library are independent prerequisites.
+Installing Julia packages does not grant permissions, install `liblikwid` or
+change CPU affinity. Refusal remains unavailable, never zero or hardware success.
+Default CLI/VSCode/Pluto/MCP selectors do not wire these executors. Use the
+[explicit Julia counter API](../reference/api.md#Hardware-counter-APIs); hardware
+HTTP/UI qualification remains pending.
+
 ### Prepare the integrated Pluto candidate
 
 The VS Code Pluto integration is being qualified for extension **1.0.1** and
@@ -101,7 +199,9 @@ to obtain the corrected plot renderer without overwriting saved work.
 
 - Put PerfChecker and its collectors in your **controller** environment.
 - The measured target and its dependencies go in the **worker** environment.
-- Interface packages never belong in a measurement environment.
+- Web/Pluto/Makie rendering interfaces belong outside measurement environments.
+  Optional hardware-counter companions are required in their explicitly selected
+  worker projects; follow the separate recipes above.
 
 A suite declares its worker environment; PerfChecker prepares it before measuring.
 
