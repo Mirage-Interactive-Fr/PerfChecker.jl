@@ -84,9 +84,10 @@ Only Oxygen's version is fixed explicitly. Pkg resolves HTTP, DataStructures and
 
 ### Explore two native interactive views
 
-This selection replays two saved models with the public **PerfChecker 1.0.0 and PerfCheckerMakie 1.0.0** renderers: the binary-response normalized history (56 metric/version records) and its wall-time distribution (420 observations across 14 Oxygen releases). It does not run another benchmark. The [original catalogue](../examples/real-packages/oxygen-features/catalog.json) and the linked JSON measurements are unchanged.
+This selection replays two saved models with the public **PerfChecker 1.0.0 and PerfCheckerMakie 1.0.0** renderers: the binary-response normalized history (56 metric/version records) and its wall-time distribution (420 observations across 14 Oxygen releases). It does not run another benchmark.
 
 ```@raw html
+<p>The <a href="../examples/real-packages/oxygen-features/catalog.json">original catalogue</a> and the linked JSON measurements are unchanged.</p>
 <PackageGallery package-name="Oxygen native interactive selection" directory="/examples/real-packages/oxygen-features-native100" />
 ```
 
