@@ -132,11 +132,13 @@ function _offline_point_controls(session, figure, source_plot)
         positions = Point2f[]
         for item in data
             ix = version_index[String(item["version"])]
-            iy = site_index[String(item["label"])]
-            matrix[ix, iy] == convert(eltype(matrix), item["bytes"]) ||
+            site_position = site_index[String(item["label"])]
+            matrix[ix, site_position] == convert(eltype(matrix), item["bytes"]) ||
                 error("Native allocation texture differs from its recorded cell")
-            push!(cell_indices, (ix - 1) + (iy - 1) * length(versions))
-            push!(positions, Point2f((xs[ix] + xs[ix + 1]) / 2, (ys[iy] + ys[iy + 1]) / 2))
+            push!(cell_indices, (ix - 1) + (site_position - 1) * length(versions))
+            push!(positions,
+                Point2f((xs[ix] + xs[ix + 1]) / 2,
+                    (ys[site_position] + ys[site_position + 1]) / 2))
         end
         labels = ["$(item["version"]) · $(item["label"]) · $(item["bytes"]) $(plot.options["unit"])"
                   for item in data]
