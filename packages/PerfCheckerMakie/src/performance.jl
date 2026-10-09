@@ -375,21 +375,109 @@ const _FLAME_STATUS_COLORS = Dict(
     "inference_warning" => RGBf(0.46, 0.20, 0.72),
     "gc_event" => RGBf(0.95, 0.50, 0.08))
 
+"Use the same recorded-label palette and diagnostic overrides in live and exported flame graphs."
+function _flame_colors(plot)
+    labels = sort!(unique!(String[String(item["label"]) for item in plot.data]))
+    palette = make_colors(length(labels))
+    label_colors = Dict(label => palette[index] for (index, label) in pairs(labels))
+    return [get(_FLAME_STATUS_COLORS, String(get(item, "status", "normal")),
+                label_colors[String(item["label"])]) for item in plot.data]
+end
+
+"Composite a frame over its actual axis background before choosing black or white text."
+function _flame_label_color(color, background)
+    foreground, backdrop = RGBAf(Makie.to_color(color)), RGBAf(Makie.to_color(background))
+    alpha = foreground.alpha + backdrop.alpha * (1 - foreground.alpha)
+    channels = ntuple(3) do index
+        front = (foreground.r, foreground.g, foreground.b)[index]
+        back = (backdrop.r, backdrop.g, backdrop.b)[index]
+        alpha == 0 ? 0.0 :
+        (front * foreground.alpha + back * backdrop.alpha * (1 - foreground.alpha)) / alpha
+    end
+    linear(value) = value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055)^2.4
+    luminance = sum(weight * linear(value)
+    for (weight, value) in zip((0.2126, 0.7152, 0.0722), channels))
+    return (luminance + 0.05) / 0.05 >= 1.05 / (luminance + 0.05) ? RGBf(0, 0, 0) :
+           RGBf(1, 1, 1)
+end
+
+"Use native font bounds and projected rectangle bounds in both dimensions, including resize and zoom."
+function _flame_labels!(figure, axis, bars, data)
+    rectangles = only(filter(item -> item isa Makie.Poly, bars.plots))[1]
+    # This is the same color conversion used by Cairo for scalar, vector and mapped bar colors.
+    assembled = Makie.assemble_colors(bars.color[], bars.color, bars)
+    resolved = if assembled isa Makie.ColorMapping
+        lift(bars, assembled.color_scaled, assembled.colormap,
+            assembled.colorrange_scaled, assembled.lowclip, assembled.highclip,
+            assembled.nan_color, assembled.color_mapping_type) do values,
+        palette, range, low, high, missing, mapping
+            Makie.numbers_to_colors(values, palette, identity, range,
+                low, high, missing, mapping == Makie.continuous)
+        end
+    else
+        assembled
+    end
+    colors = lift(bars, resolved) do value
+        converted = Makie.to_color(value)
+        result = converted isa AbstractVector ? converted : fill(converted, length(data))
+        length(result) == length(data) ||
+            throw(ArgumentError("Flame colors must resolve to one color per recorded frame"))
+        result
+    end
+    for (index, item) in pairs(data)
+        rectangle = rectangles[][index]
+        center = (minimum(rectangle) + maximum(rectangle)) / 2
+        visible = Observable(false)
+        color = lift(bars, colors, axis.backgroundcolor,
+            figure.scene.backgroundcolor) do fills, axis_color, figure_color
+            front, back = RGBAf(Makie.to_color(axis_color)),
+            RGBAf(Makie.to_color(figure_color))
+            alpha = front.alpha + back.alpha * (1 - front.alpha)
+            background = alpha == 0 ? RGBAf(0, 0, 0, 0) :
+                         RGBAf(
+                (front.r * front.alpha + back.r * back.alpha * (1 - front.alpha)) / alpha,
+                (front.g * front.alpha + back.g * back.alpha * (1 - front.alpha)) / alpha,
+                (front.b * front.alpha + back.b * back.alpha * (1 - front.alpha)) / alpha, alpha)
+            _flame_label_color(fills[index], background)
+        end
+        label = text!(axis, center; text = String(item["label"]),
+            align = (:center, :center), fontsize = 11, color, visible, inspectable = false)
+        bounds = Makie.full_boundingbox_obs(label, :pixel)
+        onany(axis.scene, bounds, axis.scene.camera.projectionview,
+            axis.scene.viewport, rectangles; update = true) do text_bounds, _, viewport,
+        boxes
+            box = boxes[index]
+            first_corner = Makie.project(axis.scene, :data, :pixel, minimum(box))
+            last_corner = Makie.project(axis.scene, :data, :pixel, maximum(box))
+            lower, upper = min.(first_corner, last_corner), max.(first_corner, last_corner)
+            lower = max.(lower, Point3f(0, 0, -Inf))
+            upper = min.(upper, Point3f(Makie.widths(viewport)..., Inf))
+            text_lower, text_upper = minimum(text_bounds), maximum(text_bounds)
+            visible[] = all(isfinite, text_lower) && all(isfinite, text_upper) &&
+                        all(
+                            d -> text_lower[d] >= lower[d] + 2 &&
+                                text_upper[d] <= upper[d] - 2,
+                            1:2)
+        end
+    end
+    return figure
+end
+
 function _flame_tooltip(item, plot)
     value_label = String(plot.options["value_label"])
     lines = String[
         "Frame: $(item["label"])",
         "Path: $(join(item["path"], " → "))",
-        "Share: $(round(Float64(item["percentage"]); digits = 3))%",
-        "Weight: $(round(Float64(item["value"]); sigdigits = 6)) $value_label"]
+        "Share: $(item["percentage"])%",
+        "Weight: $(item["value"]) $value_label"]
     dispatch_value = Float64(get(item, "runtime_dispatch_value", 0.0))
     dispatch_percentage = Float64(get(item, "runtime_dispatch_percentage", 0.0))
     dispatch_value > 0 && push!(lines,
-        "Runtime dispatch: $(round(dispatch_percentage; digits = 2))% ($(round(dispatch_value; sigdigits = 6)) $value_label)")
+        "Runtime dispatch: $dispatch_percentage% ($dispatch_value $value_label)")
     gc_value = Float64(get(item, "gc_event_value", 0.0))
     gc_percentage = Float64(get(item, "gc_event_percentage", 0.0))
     gc_value > 0 && push!(lines,
-        "Garbage collection: $(round(gc_percentage; digits = 2))% ($(round(gc_value; sigdigits = 6)) $value_label)")
+        "Garbage collection: $gc_percentage% ($gc_value $value_label)")
     inference_status = String.(get(item, "inference_status", String[]))
     return_types = String.(get(item, "inferred_return_type", String[]))
     isempty(inference_status) || push!(lines,
@@ -404,7 +492,7 @@ end
 function _flame_legend!(figure, allocation_only; custom_colors = false)
     if custom_colors
         Label(figure[1, 2],
-            "Custom frame colors.\nColors do not encode diagnostics.\nHover any frame for full diagnostics.";
+            "Custom frame colors.\nColors do not encode diagnostics.\nComplete paths and values:\ninteractive inspection.";
             tellwidth = false, justification = :left, halign = :left,
             color = RGBf(0.30, 0.35, 0.42), fontsize = 12)
         return figure
@@ -413,7 +501,7 @@ function _flame_legend!(figure, allocation_only; custom_colors = false)
     if allocation_only
         elements = [PolyElement(color = normal_color)]
         labels = ["sampled allocation frame"]
-        note = "Width = share of allocated bytes.\nHover any frame for its full path."
+        note = "Colors distinguish labels,\nnot performance gains.\nWidth = share of allocated bytes.\nComplete paths and values:\ninteractive inspection."
     else
         statuses = ("normal", "runtime_dispatch", "inference_warning", "gc_event")
         colors = [normal_color;
@@ -422,7 +510,7 @@ function _flame_legend!(figure, allocation_only; custom_colors = false)
         labels = [
             "sampled Julia frame", "runtime dispatch", "non-concrete inferred return",
             "garbage collection"]
-        note = "Red = observed dynamic dispatch.\nPurple = non-concrete inferred return.\nOrange = garbage collection.\nHover any frame for full diagnostics."
+        note = "Colors distinguish labels,\nnot performance gains.\nRed = observed dynamic dispatch.\nPurple = non-concrete inferred return.\nOrange = garbage collection.\nComplete paths and values:\ninteractive inspection."
     end
     legend_grid = figure[1, 2] = GridLayout()
     Legend(legend_grid[1, 1], elements, labels;
@@ -438,29 +526,18 @@ function _flamegraph_figure(plot; figure_kwargs = (;), plot_kwargs = (;))
     maximum_depth = maximum(item -> Int(item["depth"]), plot.data)
     figure, axis = _performance_figure(
         "$(plot.title) · $(plot.options["selected_version"])";
-        figure_kwargs, size = (1400, 620))
-    labels = sort!(unique!(String[String(item["label"]) for item in plot.data]))
-    palette = make_colors(length(labels))
-    label_colors = Dict(label => palette[index] for (index, label) in pairs(labels))
+        figure_kwargs, size = (1400, max(620, 24maximum_depth + 180)))
     allocation_only = plot.kind === :allocation_flamegraph
     depths = Float64[Int(item["depth"]) for item in plot.data]
     starts = Float64[100 * Float64(item["x0"]) for item in plot.data]
     stops = Float64[100 * Float64(item["x1"]) for item in plot.data]
-    rectangle_colors = [get(_FLAME_STATUS_COLORS, String(get(item, "status", "normal")),
-                            label_colors[String(item["label"])])
-                        for item in plot.data]
-    _recipe!(barplot!, axis, depths, stops; plot_kwargs, fillto = starts, direction = :x,
+    rectangle_colors = _flame_colors(plot)
+    bars = _recipe!(
+        barplot!, axis, depths, stops; plot_kwargs, fillto = starts, direction = :x,
         width = 0.84, gap = 0, color = rectangle_colors, strokecolor = :white,
         strokewidth = 0.8, inspectable = true,
         inspector_label = (self, index, position) -> _flame_tooltip(plot.data[index], plot))
-    for item in plot.data
-        x0 = 100 * Float64(item["x0"])
-        width = 100 * (Float64(item["x1"]) - Float64(item["x0"]))
-        width >= 7 || continue
-        text!(axis, x0 + width / 2, Int(item["depth"]);
-            text = String(item["label"]), align = (:center, :center), fontsize = 11,
-            color = RGBf(0.04, 0.08, 0.13))
-    end
+    _flame_labels!(figure, axis, bars, plot.data)
     xlims!(axis, 0, 100)
     ylims!(axis, 0.4, maximum_depth + 0.6)
     axis.xlabel = "share of captured $(lowercase(String(plot.options["value_label"]))) (%)"
