@@ -180,7 +180,10 @@ manual use, choose an unused project directory instead; for guided setup,
 confirm installation or the explicit upgrade of your selected Pluto project.
 An older companion is reported as incompatible rather than upgraded silently.
 The companion installation uses its repository subdirectory at `v1.0.1`; the
-other companion packages retain their own versions. Pluto 1.0.4's published
+companion is not yet separately registered in General. Core registration alone
+does not make `Pkg.add("PerfCheckerPluto")` available; that requires its own
+[subdirectory registration](../contributing/documentation.md#Register-Core-and-its-companions).
+The other companion packages retain their own versions. Pluto 1.0.4's published
 dependency range uses HTTP 1.x; the qualified MCP controller
 uses HTTP 2.x. Keep these environments separate. Later Pluto versions can have
 different dependency ranges; check their published compatibility before changing
