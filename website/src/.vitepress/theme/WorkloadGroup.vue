@@ -8,7 +8,7 @@ const operationNames:Record<string,string>={build:'Construction',lookup:'Lookup'
 const options=computed(()=>props.group.cases.flatMap((view:any)=>{
  const op=view.workload.split('_').at(-1)
  const name=operationNames[op]??(view.collector?.startsWith('chairmarks')?'Chairmarks':'BenchmarkTools')
- return [{view,label:props.group.cases.length>1?name:'All releases',json:view.json,svg:view.svg,patch:false},
+ return [{view,label:props.group.cases.length>1?name:'All releases',json:view.json,svg:view.svg,html:view.html,patch:false},
  ...(view.patch_windows??[]).map((patch:any)=>({view,...patch,label:(props.group.cases.length>1?name+' · ':'')+patch.label,patch:true}))]
 }))
 const active=computed(()=>options.value[selected.value])
@@ -37,7 +37,7 @@ function key(event:KeyboardEvent,index:number){
    <h4>{{ active.view.workload.replaceAll('_',' ') }} · {{ active.view.collector?.startsWith('chairmarks')?'Chairmarks':'BenchmarkTools' }}</h4>
    <p>{{ explanation }}</p>
    <p v-if="active.patch">This view focuses on {{ active.label }}. Ratios keep the reference minimum from the complete history.</p>
-   <NormalizedMeasurements compact :key="active.json" :source="directory+'/'+active.json" :figure="directory+'/'+active.svg" :package-name="active.view.package" />
+   <NormalizedMeasurements compact :key="active.json" :source="directory+'/'+active.json" :figure="directory+'/'+active.svg" :html="active.html?directory+'/'+active.html:undefined" :package-name="active.view.package" />
    <p class="observation">{{ observations(active.view.id) }}{{ active.patch?' This observation refers to the full history.':'' }}</p>
    <a :href="withBase(directory+'/'+active.view.terminal)">Unicode plot of the complete history</a>
   </div>

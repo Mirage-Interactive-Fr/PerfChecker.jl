@@ -7,7 +7,7 @@ import { withBase } from 'vitepress'
     <iframe class="doc-interactive"
       :src="withBase('/examples/bibliography/export-timing.html')"
       title="Interactive WGLMakie distribution of measured Bibliography export timings"
-      loading="lazy" sandbox="allow-scripts allow-same-origin" />
+      loading="lazy" sandbox="allow-scripts allow-same-origin allow-downloads" />
     <figcaption>Bibliography 575ec81 · Julia 1.13.0 · Windows · 1 worker thread · 12 September 2026. Fifty measured samples exported with PerfCheckerMakie and WGLMakie.</figcaption>
   </figure>
   <p><a :href="withBase('/examples/bibliography/export-timing.html')">Open the plot on its own</a> or

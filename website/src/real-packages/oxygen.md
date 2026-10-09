@@ -77,10 +77,20 @@ Only Oxygen's version is fixed explicitly. Pkg resolves HTTP, DataStructures and
 ```
 
 ```@raw html
-<p>Each feature has tabs for the complete history and the 1.10 patches. Hover or focus a point for its value; use the metric buttons to show or hide curves.</p>
+<p>Choose a feature or a release range to read its static figure. Recorded values, full-size figures and Unicode plots remain available alongside it.</p>
 <WorkloadAtlas directory="/examples/real-packages/oxygen-features" />
 <PackageGallery package-name="Oxygen feature catalogue" directory="/examples/real-packages/oxygen-features" />
 ```
+
+### Explore two native interactive views
+
+This selection replays two saved models with the public **PerfChecker 1.0.0 and PerfCheckerMakie 1.0.0** renderers: the binary-response normalized history (56 metric/version records) and its wall-time distribution (420 observations across 14 Oxygen releases). It does not run another benchmark. The [original catalogue](../examples/real-packages/oxygen-features/catalog.json) and the linked JSON measurements are unchanged.
+
+```@raw html
+<PackageGallery package-name="Oxygen native interactive selection" directory="/examples/real-packages/oxygen-features-native100" />
+```
+
+In the normalized view, hide metrics to inspect overlapping points, then hover or focus a point for its saved value and ratio. The 1.0.0 distribution selector offers up to 100 positions across the saved point list; all 420 observations remain in the JSON. On narrow screens, move across the graph with **Graph position** or the **Left** and **Right** buttons, or open the native plot on its own. These controls move the viewport; they do not zoom or change the measurements. These 1.0.0 views do not offer distribution zoom or CSV export; use the separate JSON and full-size figure links. The rest of this catalogue remains available as native Cairo figures, Unicode plots and recorded tables.
 
 
 Wall time is the entire in-process request pipeline. Allocated bytes and allocation count include parsing and response creation; they are not network bytes or resident memory. Each metric is divided by its own minimum across the history.
