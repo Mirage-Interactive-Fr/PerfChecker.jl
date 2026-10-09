@@ -48,7 +48,24 @@ function _studio_response(prefix::String; writable::Bool, auth_required::Bool = 
             "X-Content-Type-Options" => "nosniff"])
 end
 
-"Build a bearer-token authenticator from SHA-256 token digests."
+"""
+    studio_token_authenticator(users::AbstractDict) -> Function
+
+Build a bearer-token verifier from SHA-256 digest keys and caller-supplied
+identities. The returned function hashes a token and returns the matching
+identity, or `nothing`. Digest keys are normalized to lowercase; this dictionary
+overload does not validate their format or the identity's roles. It does not
+create credentials, grant roles, start a server or change the supplied store.
+
+```julia
+using SHA, PerfChecker, PerfCheckerWeb
+identity = Dict("id" => "reader", "roles" => ["viewer"])
+digest = bytes2hex(sha256("example-token")) # demonstration token only
+authenticate = studio_token_authenticator(Dict(digest => identity))
+@assert authenticate("example-token") === identity
+@assert authenticate("different-token") === nothing
+```
+"""
 function PerfChecker.studio_token_authenticator(users::AbstractDict)
     normalized = Dict{String, Any}(lowercase(String(digest)) => identity
     for (digest, identity) in pairs(users))
@@ -58,6 +75,18 @@ function PerfChecker.studio_token_authenticator(users::AbstractDict)
     end
 end
 
+"""
+    studio_token_authenticator(path::AbstractString) -> Function
+
+Read a TOML user store once and build the digest-to-identity verifier. Each
+`[[users]]` entry requires a nonempty `id`, a 64-character hexadecimal
+`token_sha256` and nonempty `roles`; `name` defaults to `id`, and `agent_ids` is
+optional. Missing files, missing IDs, invalid digests, empty roles or an empty
+store raise `ArgumentError`; TOML parsing errors propagate. Relative paths are
+resolved from the working directory. Later file changes are
+not watched: rebuild the verifier to load them. Plaintext tokens are not read
+from this file, and this function does not provision or rotate credentials.
+"""
 function PerfChecker.studio_token_authenticator(path::AbstractString)
     source = abspath(String(path))
     isfile(source) || throw(ArgumentError("Studio user store does not exist: $source"))
@@ -935,7 +964,32 @@ function _agent_request(server::String, path::String, token::String;
     return response.status, parsed
 end
 
-"Poll a hosted Studio and execute leased jobs with this machine's isolated runner."
+"""
+    run_studio_agent(suite::SoftwareSuite; server, token, agent_id,
+        version_provider=get_pkg_versions, executor=PerfChecker._default_suite_executor,
+        poll_seconds=2, heartbeat_seconds=30, max_jobs=typemax(Int), once=false) -> Int
+
+Poll a hosted Studio for leased jobs, validate each selected plan against the
+local `suite`, run it locally and upload its bundle or failure. `server` is the
+Studio API base URL including its route prefix, for example
+`"https://perf.example.org/perfchecker/v1"`; `token` is an issued bearer token
+authorized for `agent_id`. Startup probes network-isolation capabilities, and
+accepted jobs can create workload processes and reports. Keep the controller,
+suite and credentials under the caller's control. Remote connections require
+HTTPS; plain HTTP is accepted only for the supported loopback URL forms.
+
+Return the number of attempted leases, including failed attempts when
+`once=false`, rather than a count of successful jobs. `once=true` makes one claim
+request: return 0 if no job is available, return 1 after a completed attempt, or
+rethrow an execution/reporting error. Otherwise, empty claims keep polling;
+`max_jobs` bounds attempted leases, not idle polling time. Claim-request errors
+propagate. `poll_seconds` must be nonnegative; `heartbeat_seconds` and `max_jobs`
+must be positive.
+
+Heartbeats report progress asynchronously. Each attempt signals its heartbeat
+task to finish but does not wait for that task before returning or polling again.
+Load `PerfCheckerWeb` to enable this method; it does not start a local HTTP server.
+"""
 function PerfChecker.run_studio_agent(suite::PerfChecker.SoftwareSuite;
         server::AbstractString, token::AbstractString, agent_id::AbstractString,
         version_provider = PerfChecker.get_pkg_versions,

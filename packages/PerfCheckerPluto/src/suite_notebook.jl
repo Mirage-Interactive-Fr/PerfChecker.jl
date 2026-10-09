@@ -10,6 +10,13 @@ are explicit buttons. A notebook without `suite_path` only reads saved reports.
 `project` identifies the prepared controller environment; it need not be the
 notebook directory. Relative report paths are resolved beside the notebook;
 relative suite paths are resolved from the caller's working directory.
+
+Return the absolute notebook path. Refuse to overwrite an existing file unless
+`force=true`; validate generated cell syntax, create parent directories and write
+the notebook. Generation does not install dependencies, start Pluto or execute
+the suite. On opening, cells activate `project` and, when supplied, load the suite
+factory and build its plan. The controller project must already contain
+`PerfChecker` and `PlutoUI`; plotting also needs `PerfCheckerMakie` and WGLMakie.
 """
 function PerfChecker.write_suite_notebook(path::AbstractString;
         result_path::AbstractString = "results/suite-result.json", suite_path = nothing,

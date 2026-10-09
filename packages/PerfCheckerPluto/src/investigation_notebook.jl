@@ -1,4 +1,26 @@
-"Write a Pluto dashboard with explicit launch/cancel controls over the shared investigation APIs. Requires PlutoUI in the selected controller environment."
+"""
+    write_investigation_notebook(path::AbstractString; root=pwd(),
+        catalog=joinpath(root, "perf", "scenarios.toml"), project=root, force=false) -> String
+
+Write an investigation controller notebook and return its absolute path. Refuse
+an existing file unless `force=true`; validate generated cell syntax before
+creating parent directories and writing the file. Relative `root`, `catalog`
+and `project` paths are resolved from the caller's working directory.
+
+The selected project must already provide `PerfChecker`, `PerfCheckerPluto` and
+`PlutoUI`, plus any dependencies needed by the chosen actions. Generated cells
+activate that project and load the catalog when opened; a missing catalog gives
+an empty scenario selection. Writing the notebook does not install packages,
+start Pluto, run targets or contact an advisor. Launch, Cancel and advisor setup
+actions are explicit controls; changing a selector does not launch work.
+
+```julia
+using PerfChecker, PerfCheckerPluto
+notebook = write_investigation_notebook("perf/notebooks/investigation.jl";
+    root=pwd(), project=abspath("perf/pluto"))
+# launch_pluto_dashboard(notebook) starts Pluto explicitly.
+```
+"""
 function PerfChecker.write_investigation_notebook(
         path::AbstractString; root::AbstractString = pwd(),
         catalog::AbstractString = joinpath(root, "perf", "scenarios.toml"),
