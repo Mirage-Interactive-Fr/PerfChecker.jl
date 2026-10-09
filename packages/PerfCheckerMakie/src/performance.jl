@@ -9,18 +9,19 @@ function _performance_figure(title::AbstractString; size = (1100, 620), figure_k
 end
 
 function _empty_performance_figure(
-        plot::PerfChecker.PerformancePlot; figure_kwargs = (;), plot_kwargs = (;))
+        plot::PerfChecker.PerformancePlot; figure_kwargs = (;), plot_kwargs = (;),
+        message = "No evidence available")
     figure = _figure(;
         figure_kwargs, size = (900, 480), backgroundcolor = RGBf(0.96, 0.97, 0.99))
     axis = Axis(figure[1, 1]; title = plot.title, xticklabelrotation = pi / 2)
     hidedecorations!(axis)
     hidespines!(axis)
-    Label(figure[1, 1], "No evidence available";
+    Label(figure[1, 1], message;
         fontsize = 24, color = RGBf(0.32, 0.38, 0.45))
     return figure
 end
 
-function _finite_plot(plot)
+function _finite_plot(plot; include_zero_pie::Bool = false)
     fields = plot.kind in (:version_series, :distribution) ? ("value",) :
              plot.kind === :version_delta ? ("relative_delta",) :
              plot.kind === :time_allocation_tradeoff ? ("bytes", "time") :
@@ -31,7 +32,8 @@ function _finite_plot(plot)
         all(field -> get(item, field, nothing) isa Real && isfinite(item[field]), fields)
     end
     if plot.kind === :allocation_pie
-        data = filter(item -> item["bytes"] > 0, data)
+        data = filter(
+            item -> item["bytes"] > 0 || (include_zero_pie && item["bytes"] == 0), data)
     elseif plot.kind === :normalized_metrics
         data = filter(
             item -> isnothing(get(item, "ratio", nothing)) ||
@@ -212,16 +214,81 @@ function _allocation_files_figure(plot; figure_kwargs = (;), plot_kwargs = (;))
     return _add_inspector(figure)
 end
 
+"""
+Map recorded pie rows to the strictly positive sectors present in the native mesh.
+The inspection position is the triangle's centroid, inside the rendered sector.
+Zero rows have no native sector: retain an empty vertex range and triangle with
+a NaN position, without inventing a clickable surface. Reject a mismatch between
+the positive recorded rows and native sectors.
+"""
+function _allocation_pie_inspection(recipe::Makie.Pie, data)
+    poly = only(filter(item -> item isa Makie.Poly, recipe.plots))
+    pieces = poly.meshes[]
+    length(pieces) == count(item -> item["bytes"] > 0, data) ||
+        error("Native allocation pie sectors differ from its positive recorded rows")
+    weights = recipe[3][]
+    weights == Float64[row["bytes"] for row in data if row["bytes"] > 0] ||
+        error("Native allocation pie weights differ from its recorded row order")
+    source = only(filter(item -> item isa Makie.Mesh, Makie.collect_atomic_plots([recipe])))
+    vertices = Makie.GeometryBasics.coordinates(source[1][])
+    length(vertices) ==
+    sum(piece -> length(Makie.GeometryBasics.coordinates(piece)), pieces) ||
+        error("Native allocation pie does not retain its sector vertices")
+    positions, ranges, triangles = Point2f[], Vector{Int}[], Vector{Int}[]
+    offset = 0
+    for piece in pieces
+        coordinates = Makie.GeometryBasics.coordinates(piece)
+        indices = offset .+ collect(eachindex(coordinates))
+        all(isapprox.(vertices[indices], coordinates)) ||
+            error("Native allocation pie mesh order differs from its sectors")
+        selected, largest_area = Int[], 0.0
+        for face in Makie.GeometryBasics.faces(piece)
+            # GeometryBasics GL faces store offset integers; use their Julia indices.
+            corners = coordinates[Base.to_index.(face)]
+            a, b, c = corners
+            area = abs((b[1] - a[1]) * (c[2] - a[2]) - (b[2] - a[2]) * (c[1] - a[1]))
+            if area > largest_area
+                largest_area = area
+                selected = offset .+ Base.to_index.(collect(face))
+            end
+        end
+        push!(positions,
+            isempty(selected) ? Point2f(NaN, NaN) : Point2f(sum(vertices[selected]) / 3))
+        push!(ranges, indices .- 1)
+        push!(triangles, selected .- 1)
+        offset += length(coordinates)
+    end
+    positive = 0
+    row_positions, row_ranges, row_triangles = Point2f[], Vector{Int}[], Vector{Int}[]
+    for row in data
+        if row["bytes"] == 0
+            push!(row_positions, Point2f(NaN, NaN))
+            push!(row_ranges, Int[])
+            push!(row_triangles, Int[])
+        else
+            positive += 1
+            push!(row_positions, positions[positive])
+            push!(row_ranges, ranges[positive])
+            push!(row_triangles, triangles[positive])
+        end
+    end
+    return (;
+        source, positions = row_positions, ranges = row_ranges, triangles = row_triangles)
+end
+
 function _allocation_pie_figure(plot; figure_kwargs = (;), plot_kwargs = (;))
     isempty(plot.data) && return _empty_performance_figure(plot; figure_kwargs, plot_kwargs)
+    data = filter(item -> item["bytes"] > 0, plot.data)
+    isempty(data) && return _empty_performance_figure(plot; figure_kwargs, plot_kwargs,
+        message = "No positive allocation weight")
     figure = _figure(;
         figure_kwargs, size = (1100, 650), backgroundcolor = RGBf(0.96, 0.97, 0.99))
     axis = Axis(figure[1, 1];
         title = "$(plot.title) · $(plot.options["selected_version"])",
         aspect = DataAspect(), backgroundcolor = :white)
-    labels = String[String(item["label"]) for item in plot.data]
-    values = Float64[item["bytes"] for item in plot.data]
-    percentages = Float64[item["percentage"] for item in plot.data]
+    labels = String[String(item["label"]) for item in data]
+    values = Float64[item["bytes"] for item in data]
+    percentages = Float64[item["percentage"] for item in data]
     colors = make_colors(length(labels))
     _recipe!(pie!, axis, values; plot_kwargs, color = colors,
         strokecolor = :white, strokewidth = 2,
@@ -451,6 +518,8 @@ Makie attributes raise Makie's normal error. Collector and tags appear in the
 subtitle; pass tool explicitly for manually built models
 whose collector identity is absent. Collector names and tag lists are appended
 to customized subtitles while titles are preserved. Empty evidence returns a labeled figure.
+Allocation pies draw strictly positive weights; an all-zero recorded model returns
+a "No positive allocation weight" figure without dividing by a zero total.
 """
 function PerfChecker.performance_figure(plot::PerfChecker.PerformancePlot;
         figure_kwargs = (;), axis_kwargs = (;), plot_kwargs = (;), tags = get(
@@ -467,7 +536,9 @@ function PerfChecker.performance_figure(plot::PerfChecker.PerformancePlot;
         throw(ArgumentError("Makie does not support performance plot kind $(plot.kind)"))
     _attributes(axis_kwargs)
     _attributes(plot_kwargs)
-    figure = renderers[plot.kind](_finite_plot(plot); figure_kwargs, plot_kwargs)
+    figure = renderers[plot.kind](
+        _finite_plot(plot; include_zero_pie = plot.kind === :allocation_pie);
+        figure_kwargs, plot_kwargs)
     label = isnothing(tool) ? _model_collector(plot) : String(tool)
     return _decorate!(figure; tool = label, tags, axis_kwargs)
 end

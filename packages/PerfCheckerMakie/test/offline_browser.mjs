@@ -37,9 +37,30 @@ try {
     'Showing a hidden plot restores a complete, positive-scale Fit');
   const count=Number(await input.getAttribute('max'));
   assert(count>0);
-  const fields=model.kind==='version_delta'?['relative_delta']:model.kind==='time_allocation_tradeoff'?['bytes','time']:['allocation_lines','allocation_files','allocation_heatmap'].includes(model.kind)?['bytes']:['value'];
-  const finite=model.data.filter(row=>fields.every(field=>typeof row[field]==='number'&&Number.isFinite(row[field])));
+  const fields=model.kind==='version_delta'?['relative_delta']:model.kind==='time_allocation_tradeoff'?['bytes','time']:['allocation_lines','allocation_files','allocation_heatmap','allocation_pie'].includes(model.kind)?['bytes']:['value'];
+  const finite=model.data.filter(row=>fields.every(field=>typeof row[field]==='number'&&Number.isFinite(row[field]))&&(model.kind!=='allocation_pie'||row.bytes>=0));
   assert.equal(count,finite.length,'The picker follows the same finite records as the actual figure');
+  if(model.kind==='allocation_pie'&&finite.every(row=>row.bytes===0)){
+    assert.equal(await input.getAttribute('data-readout-only'),'true');
+    assert.equal(await input.getAttribute('data-source-plot'),null,'An all-zero pie has no fabricated source mesh');
+    for(let index=0;index<count;index++){
+      await input.fill(String(index+1));
+      const text=await page.locator('#point-readout').innerText();
+      assert(text.includes(finite[index].version)&&text.includes(finite[index].label)&&text.includes('no visible sector'));
+    }
+    await input.fill('0');assert.equal(await input.getAttribute('aria-invalid'),'true');
+    await input.fill('1');assert.equal(await input.getAttribute('aria-invalid'),'false');
+    const downloaded=page.waitForEvent('download');
+    await page.getByRole('button',{name:'Download plot model JSON',exact:true}).click();
+    const download=await downloaded;assert.equal(await download.failure(),null);
+    let json='';for await(const chunk of await download.createReadStream())json+=chunk.toString();
+    assert.deepEqual(JSON.parse(json).data,model.data);
+    assert.equal(await page.locator('.popup.show').count(),0);
+    assert((await page.locator('.plot-help').innerText()).startsWith('No positive allocation weight.'));
+    if(process.argv[4])await page.screenshot({path:path.resolve(process.argv[4]),fullPage:true});
+    assert.deepEqual(errors,[]);
+    console.log(JSON.stringify({status:'passed',kind:model.kind,zeroRows:count,errors}));
+  } else {
   if(model.kind==='allocation_heatmap'){
     const cells=JSON.parse(await input.getAttribute('data-source-cells'));
     assert.deepEqual(cells.shape,[model.options.versions.length,model.options.labels.length]);
@@ -57,9 +78,10 @@ try {
     const keys=['wgl_positions','pos','offset','positions_transformed_f32c'];
     const sourceKey=keys.find(key=>source.geometry.attributes[key]),targetKey=keys.find(key=>highlight.geometry.attributes[key]);
     const index=(requestedIndex??Number(input.value))-1,a=source.geometry.attributes[sourceKey],b=highlight.geometry.attributes[targetKey];
-    const ranges=JSON.parse(input.dataset.sourceVertices||'[]'),cells=JSON.parse(input.dataset.sourceCells||'null');
+    const ranges=JSON.parse(input.dataset.sourceVertices||'[]'),cells=JSON.parse(input.dataset.sourceCells||'null'),triangles=JSON.parse(input.dataset.sourceTriangles||'[]');
     const vertices=cells?Array.from({length:a.count},(_,i)=>i):ranges.length?ranges[index]:[index];
     const sourcePoint=Array.from({length:b.itemSize},(_,component)=>{
+      if(triangles.length){const triangle=triangles[index];return triangle.length?Math.fround(triangle.reduce((sum,vertex)=>sum+(component<a.itemSize?a.array[vertex*a.itemSize+component]:0),0)/3):NaN;}
       const values=vertices.map(vertex=>component<a.itemSize?a.array[vertex*a.itemSize+component]:0);
       const lower=Math.min(...values),upper=Math.max(...values);
       if(cells){const cell=cells.indices[index],fraction=component===0?((cell%cells.shape[0])+.5)/cells.shape[0]:component===1?(Math.floor(cell/cells.shape[0])+.5)/cells.shape[1]:.5;
@@ -107,7 +129,8 @@ try {
       'The visible native popup fits entirely within the window');};
   assert((await popup.innerText()).startsWith('Point '+count+':'),'Clicking the visible point identifies the selected record');
   await assertPopupBounds();
-  const firstSource=await inspectGeometry(1);
+  const firstClickable=model.kind==='allocation_pie'?finite.findIndex(row=>row.bytes>0)+1:1;
+  const firstSource=await inspectGeometry(firstClickable);
   await page.mouse.click(...firstSource.sourcePixel);
   const picked=Number((await popup.innerText()).match(/^Point (\d+):/)?.[1]);
   assert(picked>=1&&picked<=count,'An unselected source marker exposes a recorded point');
@@ -126,6 +149,24 @@ try {
   if(['allocation_lines','allocation_files'].includes(model.kind)){
     assert(readout.includes(row.file+(model.kind==='allocation_lines'?':'+row.line:'')),'Allocation inspection identifies the actual source location');
     assert(readout.endsWith(' '+model.options.unit),'Allocation inspection retains the recorded byte unit');
+  }
+  if(model.kind==='allocation_pie'){
+    assert(readout.includes(row.label)&&readout.includes(String(row.percentage)+'%'),'Pie inspection retains the recorded site and percentage');
+    const native=await popup.innerText(),first=finite[firstClickable-1];
+    assert(native.includes(first.version)&&native.includes(first.label),'The native sector click identifies its recorded source row');
+    const triangles=JSON.parse(await input.getAttribute('data-source-triangles'));
+    assert.equal(triangles.length,count);
+    const zero=finite.findIndex(row=>row.bytes===0);
+    if(zero>=0){
+      assert.deepEqual(triangles[zero],[],'A zero-byte sector has no invented native triangle');
+      await input.fill(String(zero+1));
+      await page.locator('#point-readout[aria-busy="false"]').waitFor();
+      const zeroText=await page.locator('#point-readout').innerText();
+      assert(zeroText.includes(finite[zero].label)&&zeroText.includes('no visible sector'));
+      assert((await inspectGeometry(zero+1)).selectedPoint.every(Number.isNaN),'A zero-byte record does not draw a fabricated highlight');
+      await input.fill(String(count));
+      await page.locator('#point-readout[aria-busy="false"]').waitFor();
+    }
   }
   if(model.kind==='allocation_heatmap'){
     assert(readout.includes(row.label),'Heatmap inspection identifies the recorded site');
@@ -252,4 +293,5 @@ try {
   if(process.argv[4])await page.screenshot({path:path.resolve(process.argv[4]).replace(/\.png$/,'-mobile-inspection.png'),fullPage:false,animations:'disabled'});
   assert.deepEqual(errors,[]);
   console.log(JSON.stringify({status:'passed',kind:model.kind,points:count,readout,errors}));
+  }
 } finally {await browser.close();}

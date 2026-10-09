@@ -81,13 +81,40 @@ end
 function _offline_point_controls(session, figure, source_plot)
     source_plot.kind in (:distribution, :version_series, :version_delta,
         :time_allocation_tradeoff, :allocation_lines, :allocation_files,
-        :allocation_heatmap) || return nothing
+        :allocation_heatmap, :allocation_pie) || return nothing
     # Match the finite records consumed by the existing Makie recipes exactly.
-    plot = PerfCheckerMakie._finite_plot(source_plot)
+    plot = PerfCheckerMakie._finite_plot(
+        source_plot; include_zero_pie = source_plot.kind === :allocation_pie)
     isempty(plot.data) && return nothing
     axis = only(filter(item -> item isa Makie.Axis, figure.content))
     data = plot.data
+    if plot.kind === :allocation_pie && all(item -> item["bytes"] == 0, data)
+        labels = ["$(item["version"]) · $(item["label"]) · $(item["bytes"]) $(plot.options["unit"]) · no visible sector"
+                  for item in data]
+        selector = Bonito.DOM.input(;
+            type = "number", min = 1, max = length(data), step = 1,
+            value = 1, id = "point-index", var"aria-label" = "Recorded point index",
+            var"data-readout-only" = "true", style = "width:7rem")
+        readout = Bonito.DOM.output("Point 1: $(first(labels))"; id = "point-readout",
+            var"aria-live" = "polite", var"aria-busy" = "false")
+        Bonito.evaljs(session,
+            js"""(() => {
+  const input=$(selector), output=$(readout), labels=$(labels);
+  input.addEventListener('input',()=>{
+    const index=Number(input.value),valid=Number.isInteger(index)&&index>=1&&index<=labels.length;
+    input.setAttribute('aria-invalid',String(!valid));
+    output.textContent=valid?'Point '+index+': '+labels[index-1]:'Choose a point from 1 to '+labels.length;
+  });
+})();""")
+        return Bonito.DOM.div(
+            Bonito.DOM.label("Recorded point ", selector, " of $(length(data))"), readout;
+            id = "point-controls", style = Bonito.Styles(
+                "display" => "flex", "gap" => "1rem",
+                "flex-wrap" => "wrap", "padding" => "0.8rem")),
+        Bonito.DOM.span()
+    end
     vertex_ranges = Vector{Int}[]
+    sector_triangles = Vector{Int}[]
     cell_indices = Int[]
     cell_shape = Int[]
     if plot.kind === :version_delta
@@ -120,6 +147,17 @@ function _offline_point_controls(session, figure, source_plot)
         end
         labels = ["$(item["version"]) · $(item["file"])$(plot.kind === :allocation_lines ? ":$(item["line"])" : "") · $(item["bytes"]) $(plot.options["unit"])"
                   for item in data]
+    elseif plot.kind === :allocation_pie
+        recipe = only(filter(item -> item isa Makie.Pie, axis.scene.plots))
+        inspection = PerfCheckerMakie._allocation_pie_inspection(recipe, data)
+        length(inspection.positions) == length(data) ||
+            error("Native allocation pie sectors differ from its recorded rows")
+        points = [inspection.source]
+        positions, vertex_ranges, sector_triangles = inspection.positions,
+        inspection.ranges, inspection.triangles
+        labels = ["$(item["version"]) · $(item["label"]) · $(item["bytes"]) $(plot.options["unit"]) · $(item["percentage"])%" *
+                  (isempty(sector_triangles[index]) ? " · no visible sector" : "")
+                  for (index, item) in pairs(data)]
     elseif plot.kind === :allocation_heatmap
         recipe = only(filter(item -> item isa Makie.Heatmap, axis.scene.plots))
         points = [recipe]
@@ -181,8 +219,9 @@ function _offline_point_controls(session, figure, source_plot)
         js"""
 (() => {
   const input = $(selector), output = $(readout), labels = $(labels), vertexRanges = $(vertex_ranges);
-  const cells = $(cell_indices), shape = $(cell_shape);
+  const cells = $(cell_indices), shape = $(cell_shape), triangles = $(sector_triangles);
   if (vertexRanges.length) input.dataset.sourceVertices = JSON.stringify(vertexRanges.map(vertices => Array.from(vertices)));
+  if (triangles.length) input.dataset.sourceTriangles = JSON.stringify(triangles.map(vertices => Array.from(vertices)));
   if (cells.length) input.dataset.sourceCells = JSON.stringify({indices:Array.from(cells), shape:Array.from(shape)});
   let latest = 0;
   input.addEventListener('input', () => {
@@ -205,7 +244,10 @@ function _offline_point_controls(session, figure, source_plot)
       const positions = source[sourceKey], selected = target[targetKey];
       const vertices = vertexRanges.length ? vertexRanges[index - 1] : [index - 1];
       for (let component = 0; component < selected.itemSize; component++) {
-        if (cells.length) {
+        if (triangles.length) {
+          const triangle=triangles[index-1];
+          selected.array[component]=triangle.length?Array.from(triangle,vertex=>component<positions.itemSize?positions.array[vertex*positions.itemSize+component]:0).reduce((sum,value)=>sum+value,0)/3:NaN;
+        } else if (cells.length) {
           let lower=Infinity, upper=-Infinity;
           for(let vertex=0;vertex<positions.count;vertex++) {
             const value=component<positions.itemSize?positions.array[vertex*positions.itemSize+component]:0;
@@ -264,9 +306,10 @@ Render a self-contained HTML document. Normalized measurements provide metric
 visibility, selection of recorded versions, viewport zoom and pan, exact point
 inspection, and SVG/CSV export. Selection preserves the original ratios.
 WGL figures provide viewport zoom and pan. Series, distributions, deltas,
-tradeoffs and allocation line/file/heatmap views include an exact recorded-row index and
+tradeoffs and allocation line/file/heatmap/pie views include an exact recorded-row index and
 JavaScript popups on native mark clicks. Zero-byte allocation rows remain in
-the index even when their bars have no clickable surface.
+the index even when their bars or pie sectors have no clickable surface.
+An all-zero pie provides its recorded-row readout without a fabricated sector or highlight.
 Flame graphs have keyboard and pointer inspection. Julia DataInspector and
 ordinary Makie axis zoom callbacks are not exported.
 """

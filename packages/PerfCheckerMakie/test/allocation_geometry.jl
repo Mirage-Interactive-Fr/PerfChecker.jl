@@ -44,6 +44,59 @@
     @test Makie.widths(first(edge_rectangles))[2] == 0
 end
 
+@testitem "Allocation pie inspection follows native sector triangles including zero rows" tags=[:plots] begin
+    using PerfChecker, PerfCheckerMakie, Makie
+    path = joinpath(pkgdir(PerfChecker), "website", "src", "public", "examples",
+        "real-packages", "oxygen-profiles", "allocation-pie-25c4965602ef4e58.json")
+    record = PerfChecker.JSON.parsefile(path)["plot"]
+    model = PerfChecker.PerformancePlot(record["id"], Symbol(record["kind"]),
+        record["title"], record["description"], record["encoding"], record["data"], record["options"])
+    before = deepcopy(performance_plot_dict(model))
+    @test length(model.data) == 6
+    @test last(model.data)["grouped_sites"] == 26
+    zero = merge(first(model.data),
+        Dict("bytes" => 0.0, "percentage" => 0.0,
+            "file" => "test/zero.jl", "line" => 1, "label" => "test/zero.jl:1"))
+    with_zero = [model.data[1:2]; [zero]; model.data[3:end]]
+    for data in (model.data, with_zero, reverse(with_zero))
+        variant = PerfChecker.PerformancePlot(model.id, model.kind, model.title,
+            model.description, model.encoding, data, model.options)
+        figure = performance_figure(variant)
+        axis = only(filter(item -> item isa Axis, figure.content))
+        pie = only(filter(item -> item isa Makie.Pie, axis.scene.plots))
+        inspection = PerfCheckerMakie._allocation_pie_inspection(pie, data)
+        vertices = Makie.GeometryBasics.coordinates(inspection.source[1][])
+        faces = Makie.GeometryBasics.faces(inspection.source[1][])
+        @test length(inspection.positions) == length(inspection.ranges) ==
+              length(inspection.triangles) == length(data)
+        @test sort(vcat(inspection.ranges...)) == collect(0:(length(vertices) - 1))
+        for (index, row) in pairs(data)
+            triangle = inspection.triangles[index] .+ 1
+            if row["bytes"] == 0
+                @test isempty(inspection.ranges[index])
+                @test isempty(triangle)
+                @test all(isnan, inspection.positions[index])
+            else
+                @test length(triangle) == 3
+                @test all(vertex -> vertex - 1 in inspection.ranges[index], triangle)
+                @test any(face -> Set(Base.to_index.(face)) == Set(triangle), faces)
+                a, b, c = vertices[triangle]
+                @test abs((b[1] - a[1]) * (c[2] - a[2]) - (b[2] - a[2]) * (c[1] - a[1])) > 0
+                @test inspection.positions[index] ≈ Point2f((a + b + c) / 3)
+            end
+        end
+    end
+    all_zero = PerfChecker.PerformancePlot(model.id, model.kind, model.title,
+        model.description, model.encoding, [zero], model.options)
+    empty_figure = performance_figure(all_zero)
+    empty_axis = only(filter(item -> item isa Axis, empty_figure.content))
+    @test !any(item -> item isa Makie.Pie, empty_axis.scene.plots)
+    @test any(item -> item isa Label && item.text[] == "No positive allocation weight",
+        empty_figure.content)
+    @test length(PerfCheckerMakie._finite_plot(all_zero; include_zero_pie = true).data) == 1
+    @test performance_plot_dict(model) == before
+end
+
 @testitem "Allocation heatmaps preserve observed cells and leave absent pairs unmeasured" tags=[:plots] begin
     using PerfChecker, PerfCheckerMakie, Makie
     path = joinpath(pkgdir(PerfChecker), "website", "src", "public", "examples",
