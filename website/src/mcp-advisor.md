@@ -357,6 +357,7 @@ The HTTP tool configuration above is the common path. Connector-specific names a
 
 ```@raw html
 <a id="Connect-an-authenticated-Codex-CLI"></a>
+<a id="Local-connector-steps"></a>
 ```
 
 ::: tabs
