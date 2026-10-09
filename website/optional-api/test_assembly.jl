@@ -39,8 +39,25 @@ exports, receipts = OptionalAPIAssembly.validate_optional_exports(root, revision
                     joinpath(exports, slug, ".documenter", slug, "$page.md"), String)
                 assembled = read(
                     joinpath(markdown, "optional-api", slug, "$page.md"), String)
-                @test replace(assembled, "---\neditLink: false\n---\n" => "---\n---\n";
+                restored = replace(assembled,
+                    "](./public-api" => "](/$slug/public-api",
+                    "](./full-api" => "](/$slug/full-api")
+                @test replace(restored, "---\neditLink: false\n---\n" => "---\n---\n";
                     count = 1) == original
+                @test !occursin(
+                    Regex("\\]\\(/$slug/(?:public|full)-api(?=[#)])"), assembled)
+                for link in eachmatch(r"\]\(\./((?:public|full)-api)#([^)]*)\)", assembled)
+                    target, anchor = link.captures
+                    target_body = read(
+                        joinpath(markdown, "optional-api", slug,
+                            "$target.md"), String)
+                    @test occursin("id='$anchor'", target_body) ||
+                          occursin("id=\"$anchor\"", target_body)
+                end
+                function external_links(body)
+                    [link.match for link in eachmatch(r"https?://[^\s\"'<>)]*", body)]
+                end
+                @test external_links(assembled) == external_links(original)
             end
         end
         @test_throws ErrorException OptionalAPIAssembly.assemble_optional_api(

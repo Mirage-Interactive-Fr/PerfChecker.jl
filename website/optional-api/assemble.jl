@@ -79,6 +79,15 @@ function validate_optional_exports(root, revision;
     return exports, receipts
 end
 
+function canonical_optional_page(body, slug)
+    # Documenter resolves owner-local @ref links against the isolated site's root.
+    # Keep them relative when the page moves under optional-api/<owner>/ so every
+    # canonical hosting base works. External/source URLs and anchors stay intact.
+    links = Regex("\\]\\(/$slug/((?:public|full)-api)(?=[#)])")
+    body = replace(body, links => link -> replace(link, "](/$slug/" => "](./"; count = 1))
+    return replace(body, "---\n---\n" => "---\neditLink: false\n---\n"; count = 1)
+end
+
 function assemble_optional_api(root, markdown, revision;
         exports = joinpath(root, "website", "optional-api", "build", revision))
     exports, receipts = validate_optional_exports(root, revision; exports)
@@ -100,8 +109,7 @@ function assemble_optional_api(root, markdown, revision;
         for page in ("public-api", "full-api")
             path = joinpath(destination, slug, "$page.md")
             body = read(joinpath(directory, ".documenter", slug, "$page.md"), String)
-            write(path,
-                replace(body, "---\n---\n" => "---\neditLink: false\n---\n"; count = 1))
+            write(path, canonical_optional_page(body, slug))
         end
     end
     # A tracked canonical theme consumes this small, generated navigation marker.
