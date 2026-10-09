@@ -11,10 +11,6 @@
     for collector in (:benchmark, :chairmark)
         figure = PerfChecker.checkres_to_scatterlines(result, Val(collector))
         axis = only(filter(item -> item isa Axis, figure.content))
-        @test all(length(label) <= 16 for label in axis.xticks[][2])
-        @test all(length(version) >= 40 for version in model.options["versions"])
-        @test all(length(label) <= 16 for label in axis.xticks[][2])
-        @test all(length(version) >= 40 for version in model.options["versions"])
         curves = filter(item -> item isa Makie.ScatterLines, axis.scene.plots)
         @test length(curves) == 4
         @test all(curve -> all(point -> isfinite(point[2]), curve[1][]), curves)
@@ -44,6 +40,8 @@ end
     before = deepcopy(performance_plot_dict(model))
     figure = performance_figure(model)
     axis = only(filter(item -> item isa Axis, figure.content))
+    @test all(length(label) <= 16 for label in axis.xticks[][2])
+    @test all(length(version) >= 40 for version in model.options["versions"])
     curves = filter(item -> item isa Makie.ScatterLines, axis.scene.plots)
     toggles = filter(item -> item isa Toggle, figure.content)
     @test length(toggles) == length(curves) == 2
