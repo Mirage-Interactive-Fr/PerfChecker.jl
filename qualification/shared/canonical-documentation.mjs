@@ -1,6 +1,6 @@
 // Check the same plain-file routes used by the canonical SFTP host.
 import assert from 'node:assert/strict';
-import { readdir, readFile, access } from 'node:fs/promises';
+import { readdir, readFile, access, mkdir, writeFile } from 'node:fs/promises';
 import { resolve, join, relative, posix } from 'node:path';
 import { spawn } from 'node:child_process';
 import { once } from 'node:events';
@@ -131,7 +131,7 @@ for (const channel of await readdir(root)) {
   const server = spawn(process.execPath, ['website/preview.mjs'], { env: { ...process.env, PORT: '0',
     PERFCHECKER_PREVIEW_SOURCE: site, PERFCHECKER_DOCS_BASE: info.base, PERFCHECKER_PREVIEW_CLEAN_URLS: 'false' },
     stdio: ['ignore', 'pipe', 'pipe'] });
-  let browser;
+  let browser, page;
   try {
     const local = await new Promise((ok, fail) => {
       const timer = setTimeout(() => fail(new Error('Preview did not start')), 20000);
@@ -143,7 +143,7 @@ for (const channel of await readdir(root)) {
       });
     });
     browser = await chromium.launch({ headless: true });
-    const page = await browser.newPage({ viewport: { width: 390, height: 900 } });
+    page = await browser.newPage({ viewport: { width: 390, height: 900 } });
     const errors = [];
     page.on('pageerror', error => errors.push(error.message));
     page.on('response', response => {
@@ -170,11 +170,18 @@ for (const channel of await readdir(root)) {
           await page.locator('.vp-doc tbody tr').filter({ hasText: owner })
             .getByRole('link', { name: api === 'public-api' ? 'Public' : 'Full', exact: true }).click();
           await page.waitForURL(new URL(`optional-api/${slug}/${api}.html`, local).href);
+          const docstring = page.locator('.vp-doc .jldocstring').first();
+          try {
+            await docstring.waitFor({ state: 'visible' });
+          } catch (cause) {
+            throw new Error(`${channel}: ${owner}/${api} did not display its docstrings after navigation to ${page.url()}`, { cause });
+          }
           for (const width of [1440, 390]) {
             await page.setViewportSize({ width, height: 900 });
-            assert.ok(await page.locator('.vp-doc .jldocstring').first().isVisible());
-            assert.ok((await page.locator('.vp-doc .jldocstring').first().innerText()).length > 80);
-            assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1));
+            assert.ok(await docstring.isVisible(), `${channel}: ${owner}/${api} docstrings hidden at ${width}px`);
+            assert.ok((await docstring.innerText()).length > 80, `${channel}: ${owner}/${api} docstring body missing at ${width}px`);
+            assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1),
+              `${channel}: ${owner}/${api} overflows at ${width}px`);
           }
         }
       }
@@ -218,6 +225,19 @@ for (const channel of await readdir(root)) {
     await picker.getByRole('link', { name: label, exact: true }).waitFor({ state: 'visible' });
     assert.deepEqual(errors, []);
     console.log(`${channel}: mobile navigation, search, version picker, six full-size VS Code screenshots and Supposition guide passed in Chromium`);
+  } catch (error) {
+    if (page) {
+      try {
+        const diagnostics = resolve(root, '..', 'browser-diagnostics', channel);
+        await mkdir(diagnostics, { recursive: true });
+        await writeFile(join(diagnostics, 'url.txt'), page.url() + '\n');
+        await writeFile(join(diagnostics, 'page.html'), await page.content());
+        await page.screenshot({ path: join(diagnostics, 'page.png'), fullPage: true });
+      } catch (diagnosticError) {
+        console.error(`${channel}: browser diagnostic capture failed`, diagnosticError);
+      }
+    }
+    throw error;
   } finally {
     await browser?.close(); const closed = once(server, 'exit'); server.kill('SIGTERM'); await closed;
   }

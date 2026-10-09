@@ -293,6 +293,17 @@ jobs:
         if: steps.version.outputs.explicit-source == 'true'
         working-directory: stable-doc-source
         run: node "$GITHUB_WORKSPACE/qualification/shared/canonical-documentation.mjs" website/build/sftp --browser
+      - name: Preserve built site and browser diagnostics
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: documentation-browser-diagnostics
+          path: |
+            ${{ steps.version.outputs.explicit-source == 'true' && 'stable-doc-source/' || '' }}website/build/browser-diagnostics
+            ${{ steps.version.outputs.explicit-source == 'true' && 'stable-doc-source/' || '' }}website/build/sftp
+            !${{ steps.version.outputs.explicit-source == 'true' && 'stable-doc-source/' || '' }}website/build/sftp/**/.documenter
+          if-no-files-found: warn
+          retention-days: 14
       - name: Save canonical exports before any transfer
         uses: actions/upload-artifact@v7
         with:
