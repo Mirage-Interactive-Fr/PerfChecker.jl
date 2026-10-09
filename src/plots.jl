@@ -569,6 +569,7 @@ function _allocation_line_records(bundle, case_id; version = nothing, top::Integ
     return records, versions, selected
 end
 
+"Aggregate observed allocation cells without inferring zero for an absent version/site pair."
 function _allocation_heatmap_records(bundle, case_id; top::Integer = 40)
     grouped = Dict{Tuple{String, String}, Float64}()
     totals = Dict{String, Float64}()
@@ -590,8 +591,9 @@ function _allocation_heatmap_records(bundle, case_id; top::Integer = 40)
     labels = first.(first(sort!(collect(totals); by = item -> -last(item)),
         min(length(totals), max(Int(top), 1))))
     data = [Dict{String, Any}("version" => version, "label" => label,
-                "bytes" => get(grouped, (version, label), 0.0))
-            for label in labels for version in versions]
+                "bytes" => grouped[(version, label)])
+            for label in labels
+            for version in versions if haskey(grouped, (version, label))]
     return data, versions, labels
 end
 
@@ -738,6 +740,9 @@ Allocation pies combine sites contributing strictly less than `min_percentage`
 percent of the selected version's allocated bytes into "Other allocation sites".
 The default is 5%; exactly 5% remains separate. Set `min_percentage=0` to disable
 this threshold. `top` still caps legend entries, including the combined remainder.
+Allocation heatmaps retain only observed version/site pairs, including explicit
+zero weights. Their complete axis labels remain in the options, with
+`missing_cell_policy="not_observed"`; absent cells are not measured zeros.
 Return a `PerformancePlot` from saved records without rerunning workloads.
 Standard models retain their measurement definitions (or normalized collector)
 and manifest tags in presentation options so renderers can label evidence
@@ -798,6 +803,7 @@ function performance_plot(bundle::RunBundle, id::AbstractString; version = nothi
         options["versions"] = versions
         options["labels"] = labels
         options["top"] = Int(top)
+        options["missing_cell_policy"] = "not_observed"
         encoding = Dict("x" => "version", "y" => "label", "color" => "bytes")
     elseif kind === :allocation_flamegraph
         observations = _allocation_records(bundle, entry["case_id"])
@@ -1108,6 +1114,42 @@ end
     @test !isempty(plots["allocation_flamegraph"].data)
     series = only(filter(item -> item["kind"] == "version_series", catalog))
     @test performance_plot(bundle, series["id"]).data[1]["value"] == 160.0
+end
+
+@testitem "Allocation heatmaps distinguish absent cells from explicit zero observations" tags=[
+    :unit, :plots, :allocations] begin
+    using PerfChecker
+    definition = Dict{String, Any}("id" => "julia.alloc.bytes/profile-allocs-v1",
+        "metric" => "julia.alloc.bytes", "unit" => "By")
+    observations = [Dict{String, Any}(
+                        "case_id" => "demo/Demo/allocations", "target_id" => version,
+                        "comparison_key" => "allocations/v1", "metric" => "julia.alloc.bytes",
+                        "measurement_definition" => definition["id"], "value" => bytes, "unit" => "By",
+                        "attributes" => Dict(
+                            "package" => "Demo", "feature" => "allocations",
+                            "version" => version, "target_kind" => "release",
+                            "source_file" => file, "source_line" => 10))
+                    for (version, file, bytes) in (("1.0.0", "src/a.jl", 100.0),
+        ("1.0.0", "src/a.jl", 20.0), ("1.1.0", "src/b.jl", 0.0))]
+    bundle = RunBundle(
+        Dict{String, Any}("run_id" => "sparse-allocation-heatmap",
+            "suite" => "demo", "state" => "complete"),
+        [definition],
+        observations,
+        Dict{String, Any}[], Dict{String, Any}[])
+    before = deepcopy(bundle.observations)
+    entry = only(filter(item -> item["kind"] == "allocation_heatmap", plot_catalog(bundle)))
+    model = performance_plot(bundle, entry["id"])
+    @test model.options["missing_cell_policy"] == "not_observed"
+    @test model.options["versions"] == ["1.0.0", "1.1.0"]
+    @test Set(model.options["labels"]) == Set(["src/a.jl:10", "src/b.jl:10"])
+    cells = Dict((row["version"], row["label"]) => row["bytes"] for row in model.data)
+    @test length(cells) == length(model.data) == 2
+    @test cells[("1.0.0", "src/a.jl:10")] == 120.0
+    @test cells[("1.1.0", "src/b.jl:10")] == 0.0
+    @test !haskey(cells, ("1.0.0", "src/b.jl:10"))
+    @test !haskey(cells, ("1.1.0", "src/a.jl:10"))
+    @test bundle.observations == before
 end
 
 @testitem "CPU flame graph grammar" tags=[:unit, :plots, :profile, :flamegraph] begin

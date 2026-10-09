@@ -37,9 +37,15 @@ try {
     'Showing a hidden plot restores a complete, positive-scale Fit');
   const count=Number(await input.getAttribute('max'));
   assert(count>0);
-  const fields=model.kind==='version_delta'?['relative_delta']:model.kind==='time_allocation_tradeoff'?['bytes','time']:['allocation_lines','allocation_files'].includes(model.kind)?['bytes']:['value'];
+  const fields=model.kind==='version_delta'?['relative_delta']:model.kind==='time_allocation_tradeoff'?['bytes','time']:['allocation_lines','allocation_files','allocation_heatmap'].includes(model.kind)?['bytes']:['value'];
   const finite=model.data.filter(row=>fields.every(field=>typeof row[field]==='number'&&Number.isFinite(row[field])));
   assert.equal(count,finite.length,'The picker follows the same finite records as the actual figure');
+  if(model.kind==='allocation_heatmap'){
+    const cells=JSON.parse(await input.getAttribute('data-source-cells'));
+    assert.deepEqual(cells.shape,[model.options.versions.length,model.options.labels.length]);
+    assert.deepEqual(cells.indices,finite.map(row=>model.options.versions.indexOf(row.version)+model.options.labels.indexOf(row.label)*cells.shape[0]),
+      'Native texture indices preserve the source version/site identity, including sparse grids');
+  }
   const row=finite[count-1];
   await input.fill(String(count));
   await page.locator('#point-readout[aria-busy="false"]').waitFor();
@@ -51,10 +57,14 @@ try {
     const keys=['wgl_positions','pos','offset','positions_transformed_f32c'];
     const sourceKey=keys.find(key=>source.geometry.attributes[key]),targetKey=keys.find(key=>highlight.geometry.attributes[key]);
     const index=(requestedIndex??Number(input.value))-1,a=source.geometry.attributes[sourceKey],b=highlight.geometry.attributes[targetKey];
-    const ranges=JSON.parse(input.dataset.sourceVertices||'[]'),vertices=ranges.length?ranges[index]:[index];
+    const ranges=JSON.parse(input.dataset.sourceVertices||'[]'),cells=JSON.parse(input.dataset.sourceCells||'null');
+    const vertices=cells?Array.from({length:a.count},(_,i)=>i):ranges.length?ranges[index]:[index];
     const sourcePoint=Array.from({length:b.itemSize},(_,component)=>{
       const values=vertices.map(vertex=>component<a.itemSize?a.array[vertex*a.itemSize+component]:0);
-      return Math.fround((Math.min(...values)+Math.max(...values))/2);
+      const lower=Math.min(...values),upper=Math.max(...values);
+      if(cells){const cell=cells.indices[index],fraction=component===0?((cell%cells.shape[0])+.5)/cells.shape[0]:component===1?(Math.floor(cell/cells.shape[0])+.5)/cells.shape[1]:.5;
+        return Math.fround(lower+(upper-lower)*fraction);}
+      return Math.fround((lower+upper)/2);
     });
     const selectedPoint=Array.from(b.array.slice(0,b.itemSize));
     function project(mesh,values){
@@ -72,8 +82,10 @@ try {
         canvas.bottom-(y+(point[1]/point[3]+1)*height/2)/screen.renderer._height*canvas.height];
     }
     const vertexPixels=vertices.map(vertex=>project(source,Array.from({length:a.itemSize},(_,component)=>a.array[vertex*a.itemSize+component])));
-    const pixelHeight=Math.max(...vertexPixels.map(pixel=>pixel[1]))-Math.min(...vertexPixels.map(pixel=>pixel[1]));
-    return {sourcePoint,selectedPoint,sourcePixel:project(source,sourcePoint),selectedPixel:project(highlight,selectedPoint),pixelHeight};
+    const pixelHeight=(Math.max(...vertexPixels.map(pixel=>pixel[1]))-Math.min(...vertexPixels.map(pixel=>pixel[1])))/(cells?cells.shape[1]:1);
+    const gridBounds=cells?{left:Math.min(...vertexPixels.map(pixel=>pixel[0])),right:Math.max(...vertexPixels.map(pixel=>pixel[0])),
+      top:Math.min(...vertexPixels.map(pixel=>pixel[1])),bottom:Math.max(...vertexPixels.map(pixel=>pixel[1]))}:null;
+    return {sourcePoint,selectedPoint,sourcePixel:project(source,sourcePoint),selectedPixel:project(highlight,selectedPoint),pixelHeight,gridBounds};
   },requestedIndex);
   const geometry=await inspectGeometry();
   assert.deepEqual(geometry.selectedPoint,geometry.sourcePoint,'The last selected buffer matches the correct source row');
@@ -114,6 +126,45 @@ try {
   if(['allocation_lines','allocation_files'].includes(model.kind)){
     assert(readout.includes(row.file+(model.kind==='allocation_lines'?':'+row.line:'')),'Allocation inspection identifies the actual source location');
     assert(readout.endsWith(' '+model.options.unit),'Allocation inspection retains the recorded byte unit');
+  }
+  if(model.kind==='allocation_heatmap'){
+    assert(readout.includes(row.label),'Heatmap inspection identifies the recorded site');
+    assert(readout.endsWith(' '+model.options.unit),'Heatmap inspection retains its recorded byte unit');
+    const assertCellText=(text,expected)=>{
+      assert(text.includes(expected.version)&&text.includes(expected.label),'The native cell retains its exact recorded identity');
+      const weight=text.slice(text.lastIndexOf(' · ')+3).split(' ');
+      assert.equal(Number(weight[0]),expected.bytes,'The native cell retains its exact recorded weight');
+      assert.equal(weight[1],model.options.unit);
+    };
+    assertCellText(await popup.innerText(),finite[0]);
+    const missing=[];
+    model.options.versions.forEach((version,x)=>model.options.labels.forEach((label,y)=>{
+      if(!finite.some(row=>row.version===version&&row.label===label))missing.push({x,y});
+    }));
+    if(missing.length){
+      const zero=finite.findIndex(row=>row.bytes===0);
+      assert(zero>=0,'The sparse fixture includes a recorded zero distinct from an absent cell');
+      await input.fill('0');
+      const zeroGeometry=await inspectGeometry(zero+1);
+      await page.mouse.click(...zeroGeometry.sourcePixel);
+      await popup.waitFor();
+      const zeroText=await popup.innerText();
+      assert(zeroText.startsWith('Point '+(zero+1)+':'),'The native zero-valued cell is still an inspectable recorded observation');
+      assertCellText(zeroText,finite[zero]);
+      await input.fill(String(zero+1));
+      await page.locator('#point-readout[aria-busy="false"]').waitFor();
+      assertCellText(await page.locator('#point-readout').innerText(),finite[zero]);
+      await input.fill('0');
+      const beforeMissing=await page.locator('#point-readout').innerText();
+      const bounds=zeroGeometry.gridBounds,{x,y}=missing[0];
+      await page.mouse.click(bounds.left+(x+.5)*(bounds.right-bounds.left)/model.options.versions.length,
+        bounds.bottom-(y+.5)*(bounds.bottom-bounds.top)/model.options.labels.length);
+      await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+      assert.equal(await popup.count(),0,'An absent native cell does not invent a zero-valued popup');
+      assert.equal(await page.locator('#point-readout').innerText(),beforeMissing,'An absent cell does not create a recorded observation');
+      await input.fill(String(count));
+      await page.locator('#point-readout[aria-busy="false"]').waitFor();
+    }
   }
   await input.fill('0');
   assert.equal(await input.getAttribute('aria-invalid'),'true');

@@ -77,16 +77,19 @@ notes.forEach((line,index)=>svg.append(element("text",{x:legendX,y:legendY+legen
 </script></body></html>"""
 end
 
-"Attach recorded-row inspection to native marks, using mesh vertices for allocation bars."
+"Attach recorded-row inspection to native marks, distinguishing mesh vertices from heatmap texture cells."
 function _offline_point_controls(session, figure, source_plot)
     source_plot.kind in (:distribution, :version_series, :version_delta,
-        :time_allocation_tradeoff, :allocation_lines, :allocation_files) || return nothing
+        :time_allocation_tradeoff, :allocation_lines, :allocation_files,
+        :allocation_heatmap) || return nothing
     # Match the finite records consumed by the existing Makie recipes exactly.
     plot = PerfCheckerMakie._finite_plot(source_plot)
     isempty(plot.data) && return nothing
     axis = only(filter(item -> item isa Makie.Axis, figure.content))
     data = plot.data
     vertex_ranges = Vector{Int}[]
+    cell_indices = Int[]
+    cell_shape = Int[]
     if plot.kind === :version_delta
         positions = [Point2f(index, 100 * item["relative_delta"])
                      for (index, item) in pairs(data)]
@@ -116,6 +119,37 @@ function _offline_point_controls(session, figure, source_plot)
             push!(vertex_ranges, collect(indices .- 1))
         end
         labels = ["$(item["version"]) · $(item["file"])$(plot.kind === :allocation_lines ? ":$(item["line"])" : "") · $(item["bytes"]) $(plot.options["unit"])"
+                  for item in data]
+    elseif plot.kind === :allocation_heatmap
+        recipe = only(filter(item -> item isa Makie.Heatmap, axis.scene.plots))
+        points = [recipe]
+        versions, sites = String.(plot.options["versions"]), String.(plot.options["labels"])
+        version_index = Dict(version => index for (index, version) in pairs(versions))
+        site_index = Dict(site => index for (index, site) in pairs(sites))
+        matrix = recipe[3][]
+        size(matrix) == (length(versions), length(sites)) ||
+            error("Native allocation heatmap dimensions differ from its recorded axes")
+        axis.xscale[] === identity && axis.yscale[] === identity ||
+            error("Offline heatmap inspection requires linear native cell coordinates")
+        cell_shape = collect(size(matrix))
+        x, y = recipe[1][], recipe[2][]
+        xs = x isa Makie.EndPoints ? LinRange(first(x), last(x), size(matrix, 1) + 1) : x
+        ys = y isa Makie.EndPoints ? LinRange(first(y), last(y), size(matrix, 2) + 1) : y
+        length(xs) == size(matrix, 1) + 1 && length(ys) == size(matrix, 2) + 1 ||
+            error("Native allocation heatmap does not expose its cell edges")
+        all(isapprox.(xs, LinRange(first(xs), last(xs), length(xs)))) &&
+            all(isapprox.(ys, LinRange(first(ys), last(ys), length(ys)))) ||
+            error("Offline allocation heatmap inspection requires its uniform native grid")
+        positions = Point2f[]
+        for item in data
+            ix = version_index[String(item["version"])]
+            iy = site_index[String(item["label"])]
+            matrix[ix, iy] == convert(eltype(matrix), item["bytes"]) ||
+                error("Native allocation texture differs from its recorded cell")
+            push!(cell_indices, (ix - 1) + (iy - 1) * length(versions))
+            push!(positions, Point2f((xs[ix] + xs[ix + 1]) / 2, (ys[iy] + ys[iy + 1]) / 2))
+        end
+        labels = ["$(item["version"]) · $(item["label"]) · $(item["bytes"]) $(plot.options["unit"])"
                   for item in data]
     elseif plot.kind === :time_allocation_tradeoff
         recipe = only(filter(item -> item isa Makie.ScatterLines, axis.scene.plots))
@@ -147,7 +181,9 @@ function _offline_point_controls(session, figure, source_plot)
         js"""
 (() => {
   const input = $(selector), output = $(readout), labels = $(labels), vertexRanges = $(vertex_ranges);
+  const cells = $(cell_indices), shape = $(cell_shape);
   if (vertexRanges.length) input.dataset.sourceVertices = JSON.stringify(vertexRanges.map(vertices => Array.from(vertices)));
+  if (cells.length) input.dataset.sourceCells = JSON.stringify({indices:Array.from(cells), shape:Array.from(shape)});
   let latest = 0;
   input.addEventListener('input', () => {
     const token = ++latest, index = Number(input.value);
@@ -169,8 +205,18 @@ function _offline_point_controls(session, figure, source_plot)
       const positions = source[sourceKey], selected = target[targetKey];
       const vertices = vertexRanges.length ? vertexRanges[index - 1] : [index - 1];
       for (let component = 0; component < selected.itemSize; component++) {
-        const values = Array.from(vertices, vertex => component < positions.itemSize ? positions.array[vertex * positions.itemSize + component] : 0);
-        selected.array[component] = (Math.min(...values) + Math.max(...values)) / 2;
+        if (cells.length) {
+          let lower=Infinity, upper=-Infinity;
+          for(let vertex=0;vertex<positions.count;vertex++) {
+            const value=component<positions.itemSize?positions.array[vertex*positions.itemSize+component]:0;
+            lower=Math.min(lower,value);upper=Math.max(upper,value);
+          }
+          const cell=cells[index-1],fraction=component===0?((cell%shape[0])+.5)/shape[0]:component===1?(Math.floor(cell/shape[0])+.5)/shape[1]:.5;
+          selected.array[component]=lower+(upper-lower)*fraction;
+        } else {
+          const values = Array.from(vertices, vertex => component < positions.itemSize ? positions.array[vertex * positions.itemSize + component] : 0);
+          selected.array[component] = (Math.min(...values) + Math.max(...values)) / 2;
+        }
       }
       selected.needsUpdate = true;
       input.dataset.appliedIndex = String(index);
@@ -197,6 +243,9 @@ function _offline_point_controls(session, figure, source_plot)
         else if ($(vertex_ranges).length) {
             index = $(vertex_ranges).findIndex(vertices => vertices.includes(index));
         }
+        else if ($(cell_indices).length) {
+            index = $(cell_indices).indexOf(index);
+        }
         const label = $(labels)[index];
         if (label === undefined) return '';
         return 'Point ' + (index + 1) + ': ' + label;
@@ -215,7 +264,7 @@ Render a self-contained HTML document. Normalized measurements provide metric
 visibility, selection of recorded versions, viewport zoom and pan, exact point
 inspection, and SVG/CSV export. Selection preserves the original ratios.
 WGL figures provide viewport zoom and pan. Series, distributions, deltas,
-tradeoffs and allocation line/file views include an exact recorded-row index and
+tradeoffs and allocation line/file/heatmap views include an exact recorded-row index and
 JavaScript popups on native mark clicks. Zero-byte allocation rows remain in
 the index even when their bars have no clickable surface.
 Flame graphs have keyboard and pointer inspection. Julia DataInspector and

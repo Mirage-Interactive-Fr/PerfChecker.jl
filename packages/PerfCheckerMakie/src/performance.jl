@@ -266,25 +266,33 @@ function _allocation_lines_figure(plot; figure_kwargs = (;), plot_kwargs = (;))
     return _add_inspector(figure)
 end
 
+"Render observed allocation cells; leave missing cells transparent and reject ambiguous duplicates."
 function _allocation_heatmap_figure(plot; figure_kwargs = (;), plot_kwargs = (;))
     isempty(plot.data) && return _empty_performance_figure(plot; figure_kwargs, plot_kwargs)
     versions = String.(plot.options["versions"])
     labels = String.(plot.options["labels"])
     version_index = Dict(version => index for (index, version) in pairs(versions))
     label_index = Dict(label => index for (index, label) in pairs(labels))
-    matrix = zeros(Float64, length(versions), length(labels))
+    matrix = fill(NaN, length(versions), length(labels))
+    occupied = Set{Tuple{Int, Int}}()
     for item in plot.data
-        matrix[version_index[String(item["version"])], label_index[String(item["label"])]] = Float64(item["bytes"])
+        cell = (version_index[String(item["version"])], label_index[String(item["label"])])
+        cell in occupied &&
+            throw(ArgumentError("allocation heatmap contains a duplicate version/site cell"))
+        push!(occupied, cell)
+        matrix[cell...] = Float64(item["bytes"])
     end
     height = max(650, 20 * length(labels))
     figure, axis = _performance_figure(plot.title; figure_kwargs, size = (1250, height))
     heat = _recipe!(
         heatmap!, axis, eachindex(versions), eachindex(labels), matrix; plot_kwargs,
-        colorscale = Makie.pseudolog10, colormap = :thermal,
+        colorscale = Makie.pseudolog10, colormap = :thermal, nan_color = :transparent,
         inspector_label = (self, index, position) -> begin
             x = clamp(Int(round(position[1])), 1, length(versions))
             y = clamp(Int(round(position[2])), 1, length(labels))
-            "$(versions[x])\n$(labels[y])\n$(round(matrix[x, y]; sigdigits = 6)) bytes"
+            value = isnan(matrix[x, y]) ? "No recorded allocation observation" :
+                    "$(round(matrix[x, y]; sigdigits = 6)) bytes"
+            "$(versions[x])\n$(labels[y])\n$value"
         end)
     axis.xticks = (collect(eachindex(versions)), versions)
     axis.yticks = (collect(eachindex(labels)), labels)
