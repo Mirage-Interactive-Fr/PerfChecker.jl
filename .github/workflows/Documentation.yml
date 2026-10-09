@@ -134,6 +134,19 @@ jobs:
           node --input-type=module -e
           'import {validateStableDocumentationSource} from "./website/deploy-sftp.mjs";
           await validateStableDocumentationSource(process.cwd(), "v" + process.env.PERFCHECKER_DOCS_VERSION, process.env.GITHUB_SHA);'
+      - name: Test documentation writer compatibility before rendering
+        working-directory: ${{ steps.version.outputs.explicit-source == 'true' && 'stable-doc-source' || '.' }}
+        env:
+          EXPLICIT_DOC_SOURCE: ${{ steps.version.outputs.explicit-source }}
+        run: |
+          if [[ -f website/test_compat.jl ]]; then
+            julia --startup-file=no --project=website website/test_compat.jl
+          elif [[ "$EXPLICIT_DOC_SOURCE" == true && "$PERFCHECKER_DOCS_VERSION" == 1.0.0 ]]; then
+            echo "Legacy explicit stable 1.0.0 snapshot predates the writer compatibility test."
+          else
+            echo "Missing required documentation writer compatibility test" >&2
+            exit 1
+          fi
       - name: Cache isolated PerfCheckerLinuxPerf dependencies
         if: env.PERFCHECKER_DOCS_VERSION == '1.0.1'
         uses: julia-actions/cache@v3
