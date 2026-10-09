@@ -80,6 +80,9 @@ do not interpret missing stacks as zero cost. The [collector reference](../refer
 explains the fields and the difference between raw scenario weights and the
 legacy allocation-stack estimates.
 
+A [bounded investigation](../advisors.md) spends its time budget on provider requests, worker startup and dependency loading as well as the operation itself.
+A timeout can therefore leave no observations; that absence is neither a measured zero nor evidence of the operation's cost.
+
 ## Read a flame graph
 
 - Width is the selected weight: CPU samples, task samples or allocation bytes.

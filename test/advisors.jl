@@ -150,6 +150,10 @@ end
   make_case(p) = (prepare=()->2,
       operation=x->(write(p["marker"], string(getpid())); sleep(get(p, "delay", 0)); x*x),
       verify=(x,result)->result==4)
+  function make_timeout_case(p)
+      write(p["factory_marker"], string(getpid()))
+      return make_case(p)
+  end
   """)
             first_marker, chosen_marker = joinpath(root, "first"), joinpath(root, "chosen")
             catalog = ScenarioCatalog(root,
@@ -206,13 +210,16 @@ end
             calls[] = 0
             stop_after_first[] = false
             rm(chosen_marker)
+            factory_marker = joinpath(root, "chosen-factory")
             slow = ScenarioCatalog(root,
                 [catalog.scenarios[1],
                     ScenarioSpec("chosen";
-                        source, factory = "make_case",
+                        source, factory = "make_timeout_case",
                         parameters = Dict("marker" => chosen_marker,
-                            "delay" => 120),
-                        collectors = [:benchmark])])
+                            "factory_marker" => factory_marker, "delay" => 120),
+                        # BenchmarkTools execution is covered above; this case
+                        # isolates the deadline on a sleeping operation via stdlib Profile.
+                        collectors = [:profile])])
             bounded = investigate(slow; project, advisor = config("2026-07-28"),
                 tools = Symbol[], samples = 1, max_experiments = 2,
                 budget_seconds = 45, timeout = 120)
@@ -221,16 +228,29 @@ end
             @test only(bounded["decisions"])["status"] == "complete"
             @test only(bounded["experiments"])["status"] == "incomplete"
             @test only(bounded["runs"])["qualification"]["availability"] == "timeout"
+            if !isfile(chosen_marker)
+                phase = isfile(factory_marker) ? "factory entered; operation not entered" :
+                        "factory not entered"
+                @info "Bounded investigation did not enter its sleeping operation" phase elapsed_seconds=bounded["elapsed_seconds"] experiment_elapsed_seconds=only(bounded["experiments"])["elapsed_seconds"]
+            end
             @test isfile(chosen_marker) && !isfile(first_marker)
+            @test isfile(factory_marker)
             @test calls[] == 1 && length(bounded["unexecuted"]) == 1
             # Assert the actual worker has exited before mktempdir removes the fixture.
-            pid = parse(Int, read(chosen_marker, String))
-            if Sys.iswindows()
-                process_list = read(
-                    ignorestatus(`tasklist /FI $("PID eq $pid") /FO CSV /NH`), String)
-                @test !occursin(",\"$pid\",", process_list)
-            else
-                @test isempty(strip(read(ignorestatus(`ps -p $pid -o stat=`), String)))
+            # A missing marker remains a failed assertion, without a secondary ENOENT.
+            worker_marker = isfile(chosen_marker) ? chosen_marker : factory_marker
+            if isfile(worker_marker)
+                pid = parse(Int, read(worker_marker, String))
+                if isfile(chosen_marker) && isfile(factory_marker)
+                    @test read(chosen_marker, String) == read(factory_marker, String)
+                end
+                if Sys.iswindows()
+                    process_list = read(
+                        ignorestatus(`tasklist /FI $("PID eq $pid") /FO CSV /NH`), String)
+                    @test !occursin(",\"$pid\",", process_list)
+                else
+                    @test isempty(strip(read(ignorestatus(`ps -p $pid -o stat=`), String)))
+                end
             end
         end
     finally
