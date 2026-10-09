@@ -58,7 +58,7 @@
       const link=document.createElement('a');link.href=url;link.download='perfchecker-'+String(model.kind)+'.json';link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
     });
     viewport.before(toolbar);
-    const help=document.createElement('p');help.className='plot-help';help.textContent=(document.getElementById('point-controls')?'Click a point marker to inspect it. Select an exact point with the index above. ':'')+'Shift-drag or scroll to pan; + / − zoom, 0 fits the plot.';viewport.after(help);
+    const help=document.createElement('p');help.className='plot-help';help.textContent=(document.getElementById('point-controls')?'Click a native mark to inspect it. Select an exact recorded row with the index above. ':'')+'Shift-drag or scroll to pan; + / − zoom, 0 fits the plot.';viewport.after(help);
     viewport.setAttribute('role','group');viewport.tabIndex=0;
     // WGL's picker consumes untransformed canvas coordinates; CSS viewport
     // zoom changes its bounding rectangle. Keep popup page coordinates real.

@@ -43,3 +43,58 @@
     @test length(edge_rectangles) == 30
     @test Makie.widths(first(edge_rectangles))[2] == 0
 end
+
+@testitem "Stacked allocation files retain recorded rows and native segment bounds" tags=[:plots] begin
+    using PerfChecker, PerfCheckerMakie, Makie
+    path = joinpath(pkgdir(PerfChecker), "website", "src", "public", "examples",
+        "real-packages", "oxygen-profiles", "allocation-files-b8a643aada0ef878.json")
+    record = PerfChecker.JSON.parsefile(path)["plot"]
+    model = PerfChecker.PerformancePlot(record["id"], Symbol(record["kind"]),
+        record["title"], record["description"], record["encoding"], record["data"], record["options"])
+    before = deepcopy(performance_plot_dict(model))
+    @test length(model.data) == 9
+    # Reverse the real records to verify that stack order does not replace row identity.
+    for data in (model.data, reverse(model.data))
+        variant = PerfChecker.PerformancePlot(model.id, model.kind, model.title,
+            model.description, model.encoding, data, model.options)
+        figure = performance_figure(variant)
+        axis = only(filter(item -> item isa Axis, figure.content))
+        Makie.update_state_before_display!(figure)
+        @test axis.yscale[] === identity
+        @test minimum(axis.finallimits[])[2] == 0
+        bars = only(filter(item -> item isa Makie.BarPlot, axis.scene.plots))
+        rectangles = only(filter(item -> item isa Makie.Poly, bars.plots))[1][]
+        mesh = only(filter(item -> item isa Makie.Mesh, Makie.collect_atomic_plots([bars])))
+        vertices = Makie.GeometryBasics.coordinates(mesh[1][])
+        @test length(vertices) == 4length(data)
+        @test length(rectangles) == length(data)
+        for (index, row) in pairs(data)
+            lower = sum(
+                (item["bytes"]
+                for item in data
+                if item["version"] == row["version"] && item["file"] < row["file"]);
+                init = 0.0)
+            corners = vertices[(4index - 3):(4index)]
+            @test minimum(last, corners) ≈ lower
+            @test maximum(last, corners) ≈ lower + row["bytes"]
+            @test Makie.widths(rectangles[index])[2] ≈ row["bytes"]
+            @test (minimum(first, corners) + maximum(first, corners)) / 2 ≈ 1
+        end
+    end
+    @test performance_plot_dict(model) == before
+    edge_data = deepcopy(model.data)
+    edge_data[1]["bytes"] = 0.0
+    edge_data[2]["bytes"] = NaN
+    edge = PerfChecker.PerformancePlot(model.id, model.kind, model.title,
+        model.description, model.encoding, edge_data, model.options)
+    finite = PerfCheckerMakie._finite_plot(edge)
+    @test length(finite.data) == 8
+    @test first(finite.data)["bytes"] == 0
+    @test finite.data[2]["file"] == model.data[3]["file"]
+    figure = performance_figure(edge)
+    axis = only(filter(item -> item isa Axis, figure.content))
+    bars = only(filter(item -> item isa Makie.BarPlot, axis.scene.plots))
+    rectangles = only(filter(item -> item isa Makie.Poly, bars.plots))[1][]
+    @test length(rectangles) == 8
+    @test Makie.widths(first(rectangles))[2] == 0
+end

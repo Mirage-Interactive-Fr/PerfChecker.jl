@@ -80,7 +80,7 @@ end
 "Attach recorded-row inspection to native marks, using mesh vertices for allocation bars."
 function _offline_point_controls(session, figure, source_plot)
     source_plot.kind in (:distribution, :version_series, :version_delta,
-        :time_allocation_tradeoff, :allocation_lines) || return nothing
+        :time_allocation_tradeoff, :allocation_lines, :allocation_files) || return nothing
     # Match the finite records consumed by the existing Makie recipes exactly.
     plot = PerfCheckerMakie._finite_plot(source_plot)
     isempty(plot.data) && return nothing
@@ -95,7 +95,7 @@ function _offline_point_controls(session, figure, source_plot)
             depth_shift = -0.001)]
         labels = ["$(item["baseline_version"]) → $(item["candidate_version"]) · change: $(100 * item["relative_delta"])% · $(get(item, "status", "unknown"))"
                   for item in data]
-    elseif plot.kind === :allocation_lines
+    elseif plot.kind in (:allocation_lines, :allocation_files)
         recipe = only(filter(item -> item isa Makie.BarPlot, axis.scene.plots))
         rectangles = only(filter(item -> item isa Makie.Poly, recipe.plots))[1][]
         points = filter(item -> item isa Makie.Mesh, Makie.collect_atomic_plots([recipe]))
@@ -115,7 +115,7 @@ function _offline_point_controls(session, figure, source_plot)
             push!(positions, (lower + upper) / 2)
             push!(vertex_ranges, collect(indices .- 1))
         end
-        labels = ["$(item["version"]) · $(item["file"]):$(item["line"]) · $(item["bytes"]) $(plot.options["unit"])"
+        labels = ["$(item["version"]) · $(item["file"])$(plot.kind === :allocation_lines ? ":$(item["line"])" : "") · $(item["bytes"]) $(plot.options["unit"])"
                   for item in data]
     elseif plot.kind === :time_allocation_tradeoff
         recipe = only(filter(item -> item isa Makie.ScatterLines, axis.scene.plots))
@@ -215,7 +215,7 @@ Render a self-contained HTML document. Normalized measurements provide metric
 visibility, selection of recorded versions, viewport zoom and pan, exact point
 inspection, and SVG/CSV export. Selection preserves the original ratios.
 WGL figures provide viewport zoom and pan. Series, distributions, deltas,
-tradeoffs and allocation-line views include an exact recorded-row index and
+tradeoffs and allocation line/file views include an exact recorded-row index and
 JavaScript popups on native mark clicks. Zero-byte allocation rows remain in
 the index even when their bars have no clickable surface.
 Flame graphs have keyboard and pointer inspection. Julia DataInspector and

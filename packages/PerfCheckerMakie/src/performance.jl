@@ -199,7 +199,8 @@ function _allocation_files_figure(plot; figure_kwargs = (;), plot_kwargs = (;))
     axis.xticklabelrotation = pi / 2
     axis.xlabel = "package version"
     axis.ylabel = "allocated bytes by source file"
-    _has_positive_range(ys) && (axis.yscale = Makie.pseudolog10)
+    # Stacked segment heights must remain proportional to their recorded bytes.
+    ylims!(axis, 0, nothing)
     custom_color = get(_attributes(plot_kwargs), :color, nothing)
     legend_colors, legend_labels = custom_color isa AbstractVector ?
                                    (

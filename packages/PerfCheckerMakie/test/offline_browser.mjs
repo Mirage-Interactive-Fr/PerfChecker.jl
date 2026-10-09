@@ -37,7 +37,7 @@ try {
     'Showing a hidden plot restores a complete, positive-scale Fit');
   const count=Number(await input.getAttribute('max'));
   assert(count>0);
-  const fields=model.kind==='version_delta'?['relative_delta']:model.kind==='time_allocation_tradeoff'?['bytes','time']:model.kind==='allocation_lines'?['bytes']:['value'];
+  const fields=model.kind==='version_delta'?['relative_delta']:model.kind==='time_allocation_tradeoff'?['bytes','time']:['allocation_lines','allocation_files'].includes(model.kind)?['bytes']:['value'];
   const finite=model.data.filter(row=>fields.every(field=>typeof row[field]==='number'&&Number.isFinite(row[field])));
   assert.equal(count,finite.length,'The picker follows the same finite records as the actual figure');
   const row=finite[count-1];
@@ -71,11 +71,21 @@ try {
       return [canvas.left+(x+(point[0]/point[3]+1)*width/2)/screen.renderer._width*canvas.width,
         canvas.bottom-(y+(point[1]/point[3]+1)*height/2)/screen.renderer._height*canvas.height];
     }
-    return {sourcePoint,selectedPoint,sourcePixel:project(source,sourcePoint),selectedPixel:project(highlight,selectedPoint)};
+    const vertexPixels=vertices.map(vertex=>project(source,Array.from({length:a.itemSize},(_,component)=>a.array[vertex*a.itemSize+component])));
+    const pixelHeight=Math.max(...vertexPixels.map(pixel=>pixel[1]))-Math.min(...vertexPixels.map(pixel=>pixel[1]));
+    return {sourcePoint,selectedPoint,sourcePixel:project(source,sourcePoint),selectedPixel:project(highlight,selectedPoint),pixelHeight};
   },requestedIndex);
   const geometry=await inspectGeometry();
   assert.deepEqual(geometry.selectedPoint,geometry.sourcePoint,'The last selected buffer matches the correct source row');
   assert(geometry.sourcePixel.every((value,index)=>Math.abs(value-geometry.selectedPixel[index])<1),'Highlight occupies the actual source point');
+  if(model.kind==='allocation_files'){
+    const spans=await Promise.all(finite.map((_,index)=>inspectGeometry(index+1)));
+    const largest=finite.reduce((best,row,index)=>row.bytes>finite[best].bytes?index:best,0);
+    const pixelsPerByte=spans[largest].pixelHeight/finite[largest].bytes;
+    assert(pixelsPerByte>0);
+    finite.forEach((row,index)=>assert(Math.abs(spans[index].pixelHeight-row.bytes*pixelsPerByte)<0.002,
+      'Every native stacked segment has the same displayed pixels per recorded byte'));
+  }
   if(process.argv[4])await page.screenshot({path:path.resolve(process.argv[4]),fullPage:true});
   console.log(JSON.stringify({kind:model.kind,point:count,geometry}));
   await page.mouse.click(...geometry.sourcePixel);
@@ -101,8 +111,8 @@ try {
     assert(readout.includes(' '+(specified?model.options.allocation_unit:'unit unspecified')+' · '),
       'The native readout keeps the recorded allocation unit');
   }
-  if(model.kind==='allocation_lines'){
-    assert(readout.includes(row.file+':'+row.line),'Allocation inspection identifies the actual source location');
+  if(['allocation_lines','allocation_files'].includes(model.kind)){
+    assert(readout.includes(row.file+(model.kind==='allocation_lines'?':'+row.line:'')),'Allocation inspection identifies the actual source location');
     assert(readout.endsWith(' '+model.options.unit),'Allocation inspection retains the recorded byte unit');
   }
   await input.fill('0');
