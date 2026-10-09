@@ -2,6 +2,35 @@
 
 Contributions are welcome, from fixing a sentence to adding a reproducible example. Use **Edit this page**, or [open an issue](https://github.com/Mirage-Interactive-Fr/PerfChecker.jl/issues).
 
+## Work together
+
+PerfChecker adopts the practical contribution principles of
+[ColPrac](https://github.com/SciML/ColPrac): focused pull requests, constructive
+review, documented changes and passing checks. Discuss a large API or workflow
+change in an issue before implementing it. Describe the problem, the resulting
+behavior and the checks you actually ran; identify platforms or integrations
+you could not exercise.
+
+Follow the surrounding code and the repository's JuliaFormatter configuration,
+which uses the SciML style. Keep unrelated formatting out of the pull request.
+Add regression tests for a behavior change, update docstrings and examples when
+an API changes, and build the documentation when editing a guide. A fast result
+still needs an independent correctness check and reproducible measurement
+conditions. Use semantic versioning when assessing compatibility.
+
+Review the proposed change before merging and let the required CI checks pass;
+do not bypass them to resolve a failing check. Prefer review by someone other
+than the author when another maintainer is available. ColPrac's independent
+approval rule is not guaranteed here: a sole maintainer may review and merge
+their own change after recording its scope and validation in the pull request.
+State that exception plainly rather than presenting self-review as independent
+approval. Address review comments respectfully and keep fixes easy to inspect.
+
+Package registration remains a deliberate maintainer action after reviewing
+the final commit. TagBot creates the release tag after registration; a merged
+pull request or successful development deployment does not make a registered
+release. See the publication procedure below for documentation channels.
+
 ## Write for someone trying the tool
 
 - Introduce the operation before its configuration.
@@ -102,33 +131,38 @@ Store images under `website/src/public/assets/screenshots/<interface>/`. Use act
 
 Keep source recordings outside Git history. The local archive is `.lab/media/<recording>/`; `website/.gitignore` also excludes WebM, MP4 and MOV copies.
 
-For a local tutorial extract, publish its qualified MP4 as an approved release
-asset and record its exact HTTPS `download_url`, `bytes` and `sha256` in
-`website/media.json`. Set `embed_local` to `true` for the twenty guide extracts.
-The build fetches a missing copy, checks its length and digest before writing it
-under the entry's public `file` path, and refuses an existing copy with different
-bytes. The normal documentation exports then include these compressed extracts.
-Keep the long master outside the public tree and link to its separate deliverable.
+New walkthroughs form a YouTube playlist: a short introduction followed by
+thematic chapters, split into independent videos when a topic needs more room.
+Shorts answer one useful question about a backend, interface or feature. Their
+number follows the content; there is no fixed clip quota. Compose portrait
+shots separately, with readable controls and plots.
 
-Use AVC/AAC MP4 with faststart, a readable poster and English VTT captions. The
-guide's `DocMedia` uses `video`, `recording`, `src`, `poster`, `subtitles`,
-`preload="metadata"` and `short` for an extract. Provide a useful caption and,
-once the master is accessible, `walkthrough` and `chapter` for the full tutorial.
-Playback uses native controls and `playsinline`, with no automatic playback.
-For the long master, verify the published asset's bytes/SHA first and add its
-HTTPS manifest entry without `embed_local`. Set `external` on its `DocMedia`
-player to stream that URL while keeping the poster and VTT in the documentation.
-The MP4 stays outside every SFTP export. Test the real hosted file, including
-range seeking and the local captions, before publishing its player or links.
-Retain full-size screenshot links and identify candidate, fixture or recorded
-measurement provenance. Verify loading, seeking, captions and fullscreen on
-desktop and mobile; metadata preloading should not fetch all twenty full clips.
-Place each extract beside its relevant action; use a separate index to browse
-all twenty.
+Start with the result readers want to understand, then explain one action before
+showing it. Use natural English narration, quiet music and enough silence to
+read a reply, plot or completed action. Keep axes, units and qualification
+visible. Identify candidate builds, controlled replies and actual measurements
+accurately. A recorded control test is not a real-package agent conversation.
 
-An explicitly approved YouTube publication can instead set `youtube_id` in the
-manifest. The site loads the privacy-enhanced player only after a reader clicks
-the poster. This does not make YouTube tracker-free.
+After the owner publishes and verifies a video, set its real `youtube_id` in
+`website/media.json`. Use the existing `DocMedia` recording entry with a readable
+poster, descriptive caption and relevant chapter link. The privacy-enhanced
+YouTube player loads only after the reader clicks the poster; it is not
+tracker-free. Opening a documentation page must start no playback and request
+no MP4 or YouTube player. Keep new MP4s out of the public tree and SFTP exports;
+do not set `embed_local` for the new playlist or Shorts.
+
+Provide English captions and inspect them against the spoken track. Check the
+published player, captions, seeking, fullscreen and text size on desktop and
+mobile. Preserve full-size screenshot links and the source of every measured
+figure. Put a useful Short beside its action and link the playlist from the
+recordings index. The guide must still contain the complete commands, steps and
+interpretation for someone who never plays a video.
+
+Existing local clips and their verified release-asset manifest entries remain
+historical examples. When maintaining one, retain its exact HTTPS
+`download_url`, `bytes` and `sha256`; the build rejects changed bytes. Use
+`preload="none"` and explicit playback. Do not present the earlier long master
+as the qualified walkthrough for the new series.
 
 ## Pull-request checklist
 

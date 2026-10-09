@@ -18,6 +18,60 @@ julia --startup-file=no --project=.controller/core run.jl wall_profile  Bibliogr
 
 Keep the printed report directory. Each command collects a separate profile of the same operation.
 
+## Use the same investigation in your interface
+
+Start from one named workload and an explicit check. Keep the input, source
+revision and correctness check beside the result. Selecting a profile is a
+configuration action; launch it deliberately and wait for its saved report.
+
+```@raw html
+<PluginTabs>
+<PluginTabsTab label="VS Code">
+<p>Open <strong>PerfChecker Studio</strong> in the package workspace. Select the
+workload and its profile check, inspect the planned rows, then launch. Open the
+completed run from results and choose its CPU, task or allocation view. For
+shared scenarios, the selected catalog must declare the collector you want;
+changing an interface cannot add an undeclared measurement.</p>
+<p><a href="../interfaces/vscode.html">VS Code workflow</a> ·
+<a href="../interfaces/vscode-configuration.html">Controller and worker setup</a></p>
+<DocMedia src="/assets/screenshots/vscode-studio.png"
+alt="Recorded VS Code Studio workload and check selection"
+caption="Recorded Studio selection. Review the workload and planned check before launching a new run." />
+</PluginTabsTab>
+<PluginTabsTab label="Pluto">
+<p>Open the <a href="../interfaces/repl-pluto.html">runnable Bibliography
+notebook</a> in its prepared environment. Choose the profile check in the plan,
+then press <strong>Launch selected checks</strong>. Refresh its status and save
+completed reports before opening the profile. Reactive selector edits do not
+launch measurements.</p>
+<DocMedia src="/examples/bibliography/pluto/selection.png"
+alt="Recorded Pluto notebook with Bibliography plan selectors"
+caption="The notebook exposes the plan and explicit launch controls. Download its Julia source to reproduce the workflow." />
+</PluginTabsTab>
+<PluginTabsTab label="REPL">
+<p>Use the three commands above for separate allocation, CPU and task profiles,
+or start <code>repl.jl</code> in <code>.controller/core</code> and configure the
+suite interactively. Keep the printed report path; reopen it to inspect the
+existing profile without rerunning the workload.</p>
+<p><a href="../interfaces/repl-pluto.html#REPL">REPL configuration and results</a></p>
+</PluginTabsTab>
+<PluginTabsTab label="Web (Oxygen)">
+<p>Start the <a href="../interfaces/web-studio.html">Web controller</a>. Select
+Bibliography, <code>export_bibtex</code> and the intended profile check. Inspect
+the plan, launch, then open the completed run and its artifacts. The browser
+displays the result; the controller or explicitly selected remote worker runs
+the experiment.</p>
+<DocMedia src="/examples/bibliography/web/selection.png"
+alt="Recorded Oxygen Studio showing Bibliography workload and check selectors"
+caption="Recorded benchmark selection in Web Studio. Choose the profile check for a profiling experiment, rather than interpreting this benchmark as a profile." />
+</PluginTabsTab>
+</PluginTabs>
+```
+
+These recorded selections illustrate each interface. Read the actual check
+label and result status in your own run; they do not establish that a new profile
+has been collected.
+
 If the allocation site table is empty, read its allocation-profile status before
 changing code. `zero_allocations`, `no_samples`, `outside_target_scope` and
 `unattributed_samples` describe different evidence. The measured byte/count

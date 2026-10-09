@@ -73,18 +73,32 @@ and native-item report have different entry points.
 
 ## Safety
 
-Loopback is the default. Binding elsewhere is refused unless `allow_remote_control = true` and an authenticator are set.
+The saved-directory overload above is a report viewer. To launch measurements,
+load a `SoftwareSuite`, whose workload code is installed on the controller.
+Loopback is the default. A suite controller refuses other bindings unless
+`allow_remote_control = true` and an authenticator are set.
 
 ```julia
+suite = load_software_suite("suite.jl")
 auth = studio_token_authenticator("perf/users.toml")
 
-serve_suite("perf/results"; host = "0.0.0.0", port = 8080,
-    allow_remote_control = true, authenticator = auth)
+serve_suite(suite; host = "0.0.0.0", port = 8080,
+    profile = :quick, reports_root = "perf/results",
+    allow_remote_control = true, authenticator = auth,
+    secure_cookies = true)
 ```
 
 The built-in token store keeps SHA-256 token digests and `admin`, `runner` and `agent` roles. Browser sessions use HttpOnly cookies and CSRF checks. TLS, token rotation, backups and public deployment remain your responsibility.
 
-See [Remote controllers](../operations/hosted.md) before exposing a controller beyond a workstation.
+Use the server's LAN hostname or its HTTPS public hostname in the browser;
+`0.0.0.0` is a binding address, not a destination. Keep port 8080 behind the
+intended private network or HTTPS proxy. The browser's token entry creates a
+session; sign out when finished. A controller running on another computer
+measures that computer, unless the plan explicitly selects a registered remote
+worker.
+
+See [Remote controllers](../operations/hosted.md) for the token-store format,
+requests and responses, remote-worker setup and recovery.
 
 ## Recorded examples
 
