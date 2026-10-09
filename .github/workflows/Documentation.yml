@@ -164,13 +164,13 @@ jobs:
         working-directory: ${{ steps.version.outputs.explicit-source == 'true' && 'stable-doc-source' || '.' }}
         run: julia --startup-file=no --project=website website/optional-api/test_assembly.jl
       - name: Preserve companion API provenance and isolated environment pairs
-        if: env.PERFCHECKER_DOCS_VERSION == '1.0.1'
+        if: always() && env.PERFCHECKER_DOCS_VERSION == '1.0.1'
         uses: actions/upload-artifact@v7
         with:
           name: documentation-optional-api-exports
           include-hidden-files: true
           path: |
-            ${{ steps.version.outputs.explicit-source == 'true' && 'stable-doc-source/' || '' }}website/build/optional-api
+            ${{ steps.version.outputs.explicit-source == 'true' && 'stable-doc-source/' || '' }}website/optional-api/build
             ${{ runner.temp }}/optional-api/*-project/Project.toml
             ${{ runner.temp }}/optional-api/*-project/Manifest.toml
           if-no-files-found: error

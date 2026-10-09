@@ -21,7 +21,7 @@ function checked_file(root, relative)
 end
 
 function validate_optional_exports(root, revision;
-        exports = joinpath(root, "website", "build", "optional-api", revision))
+        exports = joinpath(root, "website", "optional-api", "build", revision))
     occursin(r"^[0-9a-f]{40}$", revision) || error("Expected a full source revision")
     strip(read(Cmd(["git", "-C", root, "rev-parse", "HEAD"]), String)) == revision ||
         error("Optional API exports must match the canonical checkout revision")
@@ -80,7 +80,7 @@ function validate_optional_exports(root, revision;
 end
 
 function assemble_optional_api(root, markdown, revision;
-        exports = joinpath(root, "website", "build", "optional-api", revision))
+        exports = joinpath(root, "website", "optional-api", "build", revision))
     exports, receipts = validate_optional_exports(root, revision; exports)
     destination = joinpath(markdown, "optional-api")
     ispath(destination) && error("Optional API destination already exists")

@@ -85,8 +85,8 @@ npm ci --prefix website
 revision="$(git rev-parse HEAD)"
 for companion in linuxperf likwid makie web pluto tachikoma; do
     node website/node_modules/vitepress/bin/vitepress.js build \
-        "website/build/optional-api/$revision/$companion/.documenter" \
-        --outDir "website/build/optional-api/$revision/$companion/site"
+        "website/optional-api/build/$revision/$companion/.documenter" \
+        --outDir "website/optional-api/build/$revision/$companion/site"
 done
 ```
 
@@ -95,7 +95,7 @@ No Node installation is run by the Julia builder.
 
 ## Binding and reference contract
 
-Outputs live under `website/build/optional-api/<source-revision>/<companion>/`,
+Outputs live under `website/optional-api/build/<source-revision>/<companion>/`,
 preserving earlier builds and failed attempts.
 
 - `.documenter/<companion>/public-api.md` renders exported bindings noncanonically.

@@ -152,7 +152,8 @@ sort!(method_records;
     by = entry -> (entry["binding"], entry["signature"], entry["source"], entry["line"]))
 
 include(joinpath(@__DIR__, "..", "compat.jl"))
-build = joinpath(root, "website", "build", "optional-api", source_revision, slug)
+# Core makedocs cleans website/build; these validated exports must outlive it.
+build = joinpath(root, "website", "optional-api", "build", source_revision, slug)
 makedocs(;
     root = @__DIR__, source = "src", build, modules = docmodules,
     pagesonly = true, checkdocs = :all, doctest = false, warnonly = false,
