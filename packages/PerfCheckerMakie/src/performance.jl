@@ -400,19 +400,20 @@ function _tradeoff_figure(plot; figure_kwargs = (;), plot_kwargs = (;))
     figure, axis = _performance_figure(plot.title; figure_kwargs)
     xs = Float64[item["bytes"] for item in plot.data]
     ys = Float64[item["time"] for item in plot.data]
+    time_unit, allocation_unit = PerfChecker._tradeoff_plot_units(plot.options)
     colors = 1:length(plot.data)
     _recipe!(scatterlines!, axis, xs, ys; plot_kwargs, color = colors, colormap = :viridis,
         markersize = 16, linewidth = 2,
         inspector_label = (self, index, position) -> begin
             item = plot.data[index]
-            "$(item["version"])\n$(round(Float64(item["bytes"]); sigdigits = 6)) bytes\n$(round(Float64(item["time"]); sigdigits = 6)) seconds"
+            "$(item["version"])\n$(round(Float64(item["bytes"]); sigdigits = 6)) $allocation_unit\n$(round(Float64(item["time"]); sigdigits = 6)) $time_unit"
         end)
     for (index, item) in pairs(plot.data)
         text!(axis, xs[index], ys[index]; text = String(item["version"]),
             align = (:left, :bottom), offset = (7, 5), fontsize = 12)
     end
-    axis.xlabel = "allocated bytes"
-    axis.ylabel = "wall time (s)"
+    axis.xlabel = "allocation ($allocation_unit)"
+    axis.ylabel = "wall time ($time_unit)"
     _has_positive_range(xs) && (axis.xscale = Makie.pseudolog10)
     _has_positive_range(ys) && (axis.yscale = Makie.pseudolog10)
     return _add_inspector(figure)
