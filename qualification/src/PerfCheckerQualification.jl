@@ -103,6 +103,7 @@ function qualification_plan(collection, paths; revision, full = false,
             suite = lane["suite"]
             suite in ("docs", "legacy_interfaces", "legacy_protocol",
                 "advisor_http1", "advisor_http2") && return false
+            suite == "tachikoma" && lane["os"] == "ubuntu-latest" && return true
             return (lane["os"] == "ubuntu-latest" && lane["julia"] == "1") ||
                    (suite == "core" &&
                     (lane["os"] == "ubuntu-latest" || lane["julia"] == "1"))

@@ -46,6 +46,20 @@ end
     @test impacted_components(collection, ["packages/PerfCheckerWeb/src/studio.jl"]) ==
           ["docs", "web"]
     @test impacted_components(collection, ["website/src/index.md"]) == ["docs"]
+    @test impacted_components(
+        collection, ["packages/PerfCheckerTachikoma/src/PerfCheckerTachikoma.jl"]) ==
+          ["docs", "tachikoma"]
+    terminal = plan(["packages/PerfCheckerTachikoma/src/PerfCheckerTachikoma.jl"])
+    @test Set((lane["os"], lane["julia"])
+    for lane in terminal["lanes"] if lane["suite"] == "tachikoma") ==
+          Set([("ubuntu-latest", "1.10"), ("ubuntu-latest", "1")])
+    @test collection["components"]["tachikoma"]["depends"] == ["core", "contracts", "plots"]
+    @test any(lane -> lane["suite"] == "contracts", terminal["lanes"])
+    terminal_routine = plan(["packages/PerfCheckerTachikoma/src/PerfCheckerTachikoma.jl"];
+        profile = "routine")
+    @test Set((lane["os"], lane["julia"])
+    for lane in terminal_routine["lanes"] if lane["suite"] == "tachikoma") ==
+          Set([("ubuntu-latest", "1.10"), ("ubuntu-latest", "1")])
     @test impacted_components(collection, ["src/check.jl"]) ==
           sort!(collect(keys(collection["components"])))
     @test plan(["schemas/new.json"])["full"]
