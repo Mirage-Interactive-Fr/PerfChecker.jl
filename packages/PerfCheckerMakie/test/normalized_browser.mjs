@@ -104,10 +104,35 @@ try {
   }
   await page.locator('#title').evaluate((node,title)=>node.textContent=title,originalTitle);
   if(process.argv[3])await page.screenshot({path:path.join(path.dirname(path.resolve(process.argv[3])),path.parse(process.argv[3]).name+'-desktop.png')});
-  await page.setViewportSize({width:390,height:844});
-  assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
+  for(const mobile of [{width:390,height:844},{width:360,height:640}]){
+  await page.setViewportSize(mobile);
+  if(process.argv[3])await page.screenshot({path:path.join(path.dirname(path.resolve(process.argv[3])),path.parse(process.argv[3]).name+`-mobile-${mobile.width}-controls.png`)});
+  const mobileLayout=await page.evaluate(()=>({width:innerWidth,document:document.documentElement.scrollWidth,
+    controls:[...document.querySelectorAll('.toolbar label,.toolbar select')].map(node=>{
+      const box=node.getBoundingClientRect();return {tag:node.tagName,left:box.left,right:box.right};})}));
+  assert(mobileLayout.document<=mobileLayout.width+1,JSON.stringify(mobileLayout));
+  assert(mobileLayout.controls.every(box=>box.left>=0&&box.right<=mobileLayout.width),
+    'Long commit selectors remain inside the phone page');
+  for(const name of ['First recorded version','Last recorded version']){
+    const select=page.getByRole('combobox',{name,exact:true});
+    await select.selectOption({label:longOption});
+    assert.equal(await select.locator('option:checked').textContent(),longOption,
+      'The complete commit identity remains selectable on a phone');
+  }
+  assert((await page.locator('svg').boundingBox()).width>=900,
+    'The normalized chart retains its pannable viewport');
+  assert((await points.evaluateAll(nodes=>nodes.map(node=>node.getAttribute('aria-label'))))
+    .every(label=>label.includes(longOption)),'The phone selection retains the complete commit identity');
+  await viewport.evaluate(node=>node.scrollLeft=0);
+  assert.equal(await viewport.evaluate(node=>node.scrollLeft),0);
   await points.last().focus();
   assert.equal(await page.locator('#readout').innerText(),await points.last().getAttribute('aria-label'));
+  assert((await viewport.evaluate(node=>node.scrollLeft))>0,
+    'Focusing the selected commit pans the chart inside its viewport');
+  assert(await page.evaluate(()=>scrollX===0&&document.documentElement.scrollWidth<=innerWidth+1),
+    'Inspecting the selected point does not pan or widen the phone page');
+  if(process.argv[3])await page.screenshot({path:path.join(path.dirname(path.resolve(process.argv[3])),path.parse(process.argv[3]).name+`-mobile-${mobile.width}-inspection.png`)});
+  }
   assert.deepEqual(errors, []);
   if (process.argv[3]) await page.screenshot({path: path.resolve(process.argv[3])});
   console.log(JSON.stringify({status: 'passed', browser: browser.version(),

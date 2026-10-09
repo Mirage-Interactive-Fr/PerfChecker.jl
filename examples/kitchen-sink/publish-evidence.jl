@@ -1,9 +1,52 @@
 using JSON, SHA
-isempty(ARGS) || ARGS == ["--interactive"] ||
-    error("Usage: julia --project=<prepared-environment> publish-evidence.jl [--interactive]")
-interactive = ARGS == ["--interactive"]
+isempty(ARGS) || ARGS == ["--interactive"] || ARGS == ["--interactive-normalized"] ||
+    error("Usage: julia --project=<prepared-environment> publish-evidence.jl [--interactive | --interactive-normalized]")
+interactive = !isempty(ARGS)
+normalized_only = ARGS == ["--interactive-normalized"]
 root = normpath(joinpath(@__DIR__, "../../website/src/public/examples/real-packages"))
-if interactive
+if normalized_only
+    using PerfChecker, PerfCheckerMakie, WGLMakie
+    include(joinpath(@__DIR__, "replay.jl"))
+    source_root = normpath(joinpath(@__DIR__, "../.."))
+    realpath(pkgdir(PerfChecker)) == realpath(source_root) &&
+        realpath(pkgdir(PerfCheckerMakie)) ==
+        realpath(joinpath(source_root, "packages", "PerfCheckerMakie")) ||
+        error("Normalized publication must load the renderer from this checkout")
+    run(`git -C $source_root diff --exit-code HEAD -- Project.toml src packages examples/kitchen-sink/publish-evidence.jl examples/kitchen-sink/replay.jl`)
+    revision = strip(read(`git -C $source_root rev-parse HEAD`, String))
+    tree = strip(read(Cmd(["git", "-C", source_root, "rev-parse", "HEAD^{tree}"]), String))
+    println("Normalized renderer source ", revision, " / tree ", tree)
+    directories = [joinpath(root, package)
+                   for package in (
+        "datastructures", "containers", "oxygen", "oxygen-features")]
+    push!(directories, normpath(joinpath(root, "../bibliography/history")))
+    for directory in directories
+        catalog_path = joinpath(directory, "catalog.json")
+        catalog_hash = bytes2hex(sha256(read(catalog_path)))
+        catalog = JSON.parsefile(catalog_path)
+        entry = only(filter(
+            view -> view["kind"] == "normalized_metrics" &&
+                haskey(view, "html"),
+            catalog["views"]))
+        source = joinpath(directory, get(entry, "json", get(entry, "evidence", "")))
+        input_hash = bytes2hex(sha256(read(source)))
+        get(entry, "html_input_sha256", input_hash) == input_hash ||
+            error("Normalized input differs from its published fingerprint")
+        model = saved_plot(source)
+        model.kind === :normalized_metrics || error("Expected a normalized model")
+        before = deepcopy(performance_plot_dict(model))
+        html = performance_plot_html(model)
+        performance_plot_dict(model) == before || error("Rendering changed the model")
+        bytes2hex(sha256(read(source))) == input_hash ||
+            error("Rendering changed the serialized plot")
+        bytes2hex(sha256(read(catalog_path))) == catalog_hash ||
+            error("Rendering changed the catalogue")
+        destination = joinpath(directory, entry["html"])
+        write(destination, html)
+        println(relpath(destination, source_root), " input_sha256=", input_hash,
+            " html_sha256=", bytes2hex(sha256(html)))
+    end
+elseif interactive
     # Optional rendering belongs to the prepared plots controller, not core setup.
     using PerfChecker, PerfCheckerMakie, WGLMakie
     include(joinpath(@__DIR__, "replay.jl"))
@@ -140,5 +183,6 @@ if !interactive
         cp(joinpath(@__DIR__, name), joinpath(root, name); force = true)
     end
 end
-println(interactive ? "Published the interactive views and HTML aliases" :
+println(normalized_only ? "Published the normalized views and HTML aliases" :
+        interactive ? "Published the interactive views and HTML aliases" :
         "Published the overlay aliases and the three downloadable notebooks")
