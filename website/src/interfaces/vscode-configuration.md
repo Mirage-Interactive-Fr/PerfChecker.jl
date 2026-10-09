@@ -153,9 +153,11 @@ Unavailable is separate from passing or failing. Remove a tool you do not need, 
 
 ## Advice and MCP settings
 
-Use **PerfChecker: Configure advisor and manage models** to configure a compatible **MCP HTTP** server. Enter its endpoint and explicit protocol revision, choose **Test connection / discover**, inspect the tool schema, then select its advice tool and save. Chat requires `mcp_http` and `text` response mode. Tool, prompt and extra-argument names come from that schema: MCP defines no standard advice-tool name. Discovery sends no saved evidence and does not test answer generation.
+Use **PerfChecker: Configure MCP connection and models**, or **Configure MCP connection** in chat. For a saved HTTP provider, choose **Advisor provided by an MCP HTTP tool**, enter its address and explicit revision, then **Test connection / discover**. Inspect **Required arguments and tool schema**, select **Use**, check the prompt and other arguments, then **Save configuration**. Chat requires `mcp_http` and `text` response mode. MCP defines no standard advice-tool name. Discovery sends no saved evidence and does not test answer generation.
 
-MCP is the tool protocol; the selected service must actually provide advice. PerfChecker currently has no native stdio transport or interactive OAuth login. See the [standalone connection recipe](../mcp-advisor.md#Configure-the-advice-tool) for the controller dependency, configuration precedence and HTTP boundaries. An authenticated Codex CLI is an [optional connector example](../mcp-advisor.md#Connect-an-authenticated-Codex-CLI), with its own executable and sandbox requirements; it is not required by this workflow.
+The extension **1.0.1 development candidate** also provides **Connect local MCP server** in chat and **PerfChecker: Connect local MCP server (stdio)**. This opens **Local MCP server · stdio** with an absolute native executable, a JSON argument array and an absolute working directory. Discover its paginated inventory, choose advice with **Use** and optionally a separate tool with **Use for implementation**, then **Connect for this editor session**. Follow the [complete stdio recipe](../mcp-advisor.md#Connect-a-local-stdio-server); this connector is not included in public extension 1.0.0.
+
+MCP is the tool protocol; a server is not necessarily an agent or model. The chosen tool must accept the prompt and return advice. Both connection types require `HTTP` in the selected Julia controller: the stdio connector adapts a temporary HTTP endpoint. **Local** means the extension host, including a Remote SSH host or container; executable paths and checkout access must work there. Interactive OAuth login is unavailable. An authenticated Codex CLI remains an [optional connector example](../mcp-advisor.md#Connect-an-authenticated-Codex-CLI), with its own executable requirements.
 
 | Setting | Default | Meaning |
 | --- | --- | --- |
@@ -171,6 +173,9 @@ MCP is the tool protocol; the selected service must actually provide advice. Per
 | `advisorMcpArguments` | `{}` | Required extra arguments; no prompt override/secrets |
 | `advisorMcpResponse` | `text` | Unverified text, or structured evidence references |
 | `advisorMcpVersion` | `2026-07-28` | Explicit supported MCP protocol revision |
+| `advisorMcpStdioCommand` | empty | Optional absolute executable used to prefill the stdio form; never auto-starts |
+| `advisorMcpStdioArguments` | `[]` | Initial executable argument array; no secrets or shell expressions |
+| `advisorMcpStdioDirectory` | empty | Initial absolute working directory; empty prefills the selected workspace |
 | `advisorAllowRemote` | `false` | Allows transmission to a remote HTTPS endpoint |
 | `advisorKeyEnvironment` | empty | Name of the environment variable containing the token |
 | `advisorTimeout` | `90` | Total provider-worker deadline in seconds |
@@ -178,7 +183,7 @@ MCP is the tool protocol; the selected service must actually provide advice. Per
 
 The MCP server selects its own model and output limits. If its tool schema accepts model or limit options, put those named arguments in `advisorMcpArguments`; the generic provider's `model` and `max_tokens` fields are not sent by the MCP transport.
 
-Disabling `advisorEnabled` keeps deterministic advice usable and retains already installed model files. An explicitly connected Codex chat remains authorized for that session; choose **Disconnect Codex** to stop using it and resume the saved disabled provider state. [MCP configuration](../mcp-advisor.md#Configure-the-advice-tool) includes complete JSON and VS Code examples.
+Disabling `advisorEnabled` keeps deterministic advice usable and retains already installed model files. An explicitly connected local provider takes precedence for that session; **Disconnect local MCP server** or **Disconnect Codex** resumes the saved configuration and its enabled/disabled state. Live stdio selections and generated endpoint/credential are not saved. Reconnect explicitly after editor restart, cancellation, timeout or server exit. The stdio child inherits the extension host environment except private connector tokens; other environment variables remain available to it. Never put secrets in settings or argument fields. [MCP configuration](../mcp-advisor.md#Configure-the-advice-tool) includes complete HTTP JSON and VS Code examples.
 
 ## Implementation settings
 
@@ -187,8 +192,9 @@ Disabling `advisorEnabled` keeps deterministic advice usable and retains already
 | `advisorImplementationMcpTool` | empty | Separate tool authorized after reviewed advice and confirmation |
 | `advisorImplementationMcpPromptArgument` | `prompt` | Implementation prompt argument |
 | `advisorImplementationMcpWorkspaceArgument` | `workspace` | Isolated checkout argument |
+| `advisorImplementationMcpArguments` | unset | Independent implementation arguments; when unset, falls back to advice arguments |
 
-Implementation reuses the MCP endpoint, revision, authentication and extra arguments. Its tool and prompt/workspace names are explicit extension settings; an advice reply cannot select them automatically. Prompt and workspace names must differ. Extra arguments cannot override either reserved field.
+Implementation reuses the MCP endpoint, revision and authentication. Its tool, prompt/workspace names and extra arguments are selected independently; an advice reply cannot select them automatically. For saved HTTP settings, an unset `advisorImplementationMcpArguments` retains the advice arguments; set `{}` for no extra implementation arguments. Prompt and workspace names must differ, and extra arguments cannot override either reserved field. In stdio mode, use the separate implementation fields in the connection panel; they last only for that session.
 
 A configured implementation tool must access and honor the supplied isolated checkout. The optional local Codex connector supplies its own tool names in memory. A remote HTTPS endpoint has no automatic access to your local filesystem. Use a trusted local tool, or a deliberately configured shared filesystem/bridge with its own confinement. MCP does not provide an operating-system sandbox.
 
@@ -204,7 +210,9 @@ A configured implementation tool must access and honor the supplied isolated che
 | Probe passes, chat fails | Check required tool arguments and that the selected tool returns advice |
 | Agent cannot see the code | Check access to the supplied isolated checkout, not the original root |
 | Codex connection refused | Check native executable, required flags, existing login and absence of project `.codex` configuration |
-| Saved advisor config seems inactive | Disconnect the temporary Codex connection to resume your saved provider |
+| Saved advisor config seems inactive | Disconnect the temporary stdio or Codex connection to resume your saved provider |
+| Local MCP executable or checkout is missing | Check absolute paths on the extension host, including Remote SSH/container paths |
+| Local MCP server exited or timed out | Wait for cleanup, inspect its prerequisites, then explicitly reconnect |
 | Pluto setup cannot resolve HTTP | Use the separate `plutoProject`; qualified Pluto 1.0.4 uses HTTP 1.x, while the MCP controller uses HTTP 2.x |
 | Existing Pluto/controller project has Core 1.0.0 or the Pluto project has companion 1.0.0 | Confirm the selected environment's explicit upgrade after Core 1.0.1 and companion tag `v1.0.1` are available; existing suite notebook source also needs the migration above |
 | Notebook session unavailable | Inspect **PerfChecker Pluto** output and [session controls](vscode-workflows.md#Manage-the-session-and-saved-source); public 1.0.0 needs an installed Julia kernel |
