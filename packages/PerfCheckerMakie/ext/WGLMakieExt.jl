@@ -127,9 +127,12 @@ function _offline_point_controls(session, figure, plot)
 end
 
 """
-Render a self-contained HTML document. Point plots include an offline inspection
-slider and JavaScript tooltips; flame graphs have keyboard and pointer inspection.
-Ordinary Makie 2D zoom and Julia DataInspector callbacks are not exported.
+Render a self-contained HTML document. Normalized measurements provide metric
+visibility, selection of recorded versions, viewport zoom and pan, exact point
+inspection, and SVG/CSV export. Selection preserves the original ratios.
+Point plots include an offline inspection slider and JavaScript tooltips; flame
+graphs have keyboard and pointer inspection. Other Makie 2D zoom and Julia
+DataInspector callbacks are not exported.
 """
 function PerfChecker.performance_plot_html(plot::PerfChecker.PerformancePlot)
     return lock(RENDER_LOCK) do
@@ -139,7 +142,9 @@ function PerfChecker.performance_plot_html(plot::PerfChecker.PerformancePlot)
             template = read(joinpath(@__DIR__, "../src/assets/normalized.html"), String)
             data = replace(
                 PerfChecker._canonical_json(merge(PerfChecker.performance_plot_dict(plot),
-                    Dict("collector_label" => PerfCheckerMakie._model_collector(plot)))),
+                    Dict("collector_label" => PerfCheckerMakie._model_collector(plot),
+                        "colors" => Dict(row["metric"] => PerfCheckerMakie._metric_color(row["metric"])
+                        for row in plot.data)))),
                 "</" => "<\\/")
             html = replace(template, "__PERFCHECKER_NORMALIZED_PLOT__" => data)
             length(HTML_CACHE) >= MAX_CACHE_ENTRIES &&

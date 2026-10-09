@@ -1,7 +1,10 @@
 function _performance_figure(title::AbstractString; size = (1100, 620), figure_kwargs = (;))
     figure = _figure(; figure_kwargs, size, backgroundcolor = RGBf(0.96, 0.97, 0.99))
     axis = Axis(figure[1, 1]; title = String(title), backgroundcolor = :white,
-        xgridcolor = (:gray, 0.16), ygridcolor = (:gray, 0.16))
+        titlealign = :left, titlesize = 20, subtitlesize = 12,
+        xlabelsize = 14, ylabelsize = 14, xticklabelsize = 12, yticklabelsize = 12,
+        xgridcolor = (:gray, 0.08), ygridcolor = (:gray, 0.14),
+        topspinevisible = false, rightspinevisible = false)
     return figure, axis
 end
 
@@ -90,7 +93,9 @@ function _normalized_metrics_figure(plot; figure_kwargs = (;), plot_kwargs = (;)
     versions = plot.options["versions"]
     index = Dict(version => i for (i, version) in pairs(versions))
     metrics = unique(String[row["metric"] for row in plot.data])
-    colors = make_colors(length(metrics))
+    colors = Makie.to_color.(_metric_color.(metrics))
+    legend = GridLayout(figure[1, 2]; tellheight = false)
+    Label(legend[1, 1:2], "Measurements"; fontsize = 14, halign = :left)
     for (i, metric) in pairs(metrics)
         rows = filter(row -> row["metric"] == metric, plot.data)
         xs = [index[row["version"]] for row in rows]
@@ -98,21 +103,29 @@ function _normalized_metrics_figure(plot; figure_kwargs = (;), plot_kwargs = (;)
         label = replace(metric, "julia." => "")
         any(row -> row["normalization_status"] == "both_zero", rows) &&
             (label *= " (0/0: unchanged)")
-        _recipe!(scatterlines!, axis, xs, ys; plot_kwargs,
+        curve = _recipe!(scatterlines!, axis, xs, ys; plot_kwargs,
             label, color = colors[i], linewidth = 2,
             markersize = 10, inspector_label = (self, sample, position) -> begin
                 row = rows[sample]
                 "$(row["version"]) · $metric\n$(row["value"]) $(row["unit"])\nratio: $(row["ratio"]) · $(row["normalization_status"])"
             end)
+        legend_color = get(_attributes(plot_kwargs), :color, colors[i])
+        legend_color isa AbstractVector && (legend_color = first(legend_color))
+        toggle = Toggle(legend[i + 1, 1]; active = curve.visible[],
+            framecolor_active = legend_color, width = 34)
+        Label(legend[i + 1, 2], label; color = legend_color, halign = :left,
+            fontsize = 12)
+        on(toggle.active) do visible
+            curve.visible[] = visible
+        end
     end
     hlines!(axis, [1.0]; color = (:gray, 0.6), linestyle = :dash)
-    axis.xticks = (collect(eachindex(versions)), versions)
+    axis.xticks = (collect(eachindex(versions)), _version_tick_label.(versions))
     xlims!(axis, 0.5, length(versions) + 0.5)
     axis.xticklabelrotation = pi / 2
     axis.xlabel = "package version"
     axis.ylabel = "ratio to $(plot.options["reference_version"]) (reference = 1)"
-    axislegend(axis; position = :lt)
-    Label(figure[2, 1],
+    Label(figure[2, 1:2],
         "$(plot.options["zero_reference_policy"]). Gaps indicate unavailable ratios.";
         fontsize = 12, tellwidth = false)
     return _add_inspector(figure)

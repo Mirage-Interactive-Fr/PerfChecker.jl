@@ -1,6 +1,23 @@
+const _PLOT_PALETTE = ["#2563eb", "#c2410c", "#0f766e", "#7e22ce",
+    "#0369a1", "#be185d", "#4d7c0f", "#475569"]
+
+function _metric_color(metric)
+    index = metric == "julia.wall.time" ? 1 :
+            metric in ("julia.gc.time", "julia.gc.fraction") ? 2 :
+            metric == "julia.alloc.bytes" ? 3 : metric == "julia.alloc.count" ? 4 : 8
+    return _PLOT_PALETTE[index]
+end
+
+function _version_tick_label(version)
+    length(string(version)) > 16 ? first(string(version), 12) * "…" : string(version)
+end
+
 function make_colors(l)
-    Makie.distinguishable_colors(
-        l, [Makie.RGB(1, 1, 1), Makie.RGB(0, 0, 0)], dropseed = true)
+    palette = Makie.to_color.(_PLOT_PALETTE)
+    l <= length(palette) && return palette[1:l]
+    return [palette;
+            Makie.distinguishable_colors(l - length(palette),
+                [palette; Makie.RGB(1, 1, 1); Makie.RGB(0, 0, 0)], dropseed = true)]
 end
 
 function _attributes(value)
@@ -11,7 +28,9 @@ function _attributes(value)
 end
 
 function _figure(; figure_kwargs = (;), kwargs...)
-    Figure(; merge((; kwargs...), _attributes(figure_kwargs))...)
+    defaults = (fontsize = 14, figure_padding = 24,
+        backgroundcolor = Makie.RGBf(0.97, 0.98, 0.99))
+    Figure(; merge(defaults, (; kwargs...), _attributes(figure_kwargs))...)
 end
 
 function _recipe!(recipe, args...; plot_kwargs = (;), kwargs...)

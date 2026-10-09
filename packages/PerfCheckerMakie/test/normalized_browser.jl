@@ -4,7 +4,9 @@ using PerfChecker, PerfCheckerMakie, WGLMakie
 observations = Dict{String, Any}[]
 for (metric, unit, value) in (("julia.wall.time", "s", 1.0),
         ("julia.alloc.bytes", "By", 100.0)),
-    (version, scale) in (("1.0.0", 1), ("1.0.1", 2), ("1.1.0", 3)), sample in (1, 2, 3)
+    (version, scale) in (
+        ("1.0.0", 1), ("1.0.1", 2), ("dev@6d742e35a516c7324af4ad14f58ce1780aa28728", 3)),
+    sample in (1, 2, 3)
 
     push!(observations,
         Dict{String, Any}("metric" => metric,
