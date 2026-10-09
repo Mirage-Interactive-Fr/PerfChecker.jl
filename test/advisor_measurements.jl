@@ -40,6 +40,28 @@
             "recommendations" => [], "measurement_summaries" => [row])
         @test PerfChecker._advisor_evidence(advice, AdvisorConfig()) == [row]
     end
+    # These Int64 observation/transport boundaries must also work on 32-bit Julia.
+    max_safe = Int64(9_007_199_254_740_991)
+    @test PerfChecker._ADVICE_MAX_SAFE_INTEGER === max_safe
+    boundary = bundle(:benchmark, :memory; values = Int64[0, 42, max_safe, max_safe + 1])
+    boundary_row = only(PerfChecker._advice_measurement_summaries(boundary))
+    @test boundary_row["record_count"] == 3
+    @test boundary_row["minimum"] == 0 && boundary_row["median"] == 42 &&
+          boundary_row["maximum"] == max_safe
+    @test length(boundary.observations) == 4 &&
+          boundary.observations[4]["value"] == max_safe + 1
+    transported = deepcopy(boundary_row)
+    transported["record_count"] = Int32(100)
+    transported["minimum"], transported["median"], transported["maximum"] = Int64(0),
+    Int64(42), max_safe
+    boundary_advice = Dict("schema_version" => "perfchecker-advice/1",
+        "recommendations" => [], "measurement_summaries" => [transported])
+    @test PerfChecker._advisor_evidence(boundary_advice, AdvisorConfig()) == [transported]
+    for key in ("record_count", "maximum")
+        unsafe = deepcopy(transported)
+        unsafe[key] = max_safe + 1
+        @test_throws ArgumentError PerfChecker._advisor_measurement_row(unsafe)
+    end
     for backend in (:benchmark, :chairmark, :profile_alloc, :profile, :wall_profile)
         column = backend in (:profile, :wall_profile) ? :samples :
                  backend == :profile_alloc ? :bytes : :times

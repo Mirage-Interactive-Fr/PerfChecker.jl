@@ -199,13 +199,14 @@ function _advisor_measurement_row(summary)
         summary["correctness"] != "not_checked" &&
         throw(ArgumentError("unqualified measurement cannot claim correctness"))
     count = get(summary, "record_count", nothing)
-    count isa Integer && !(count isa Bool) && 0 < count <= 2^53 - 1 ||
+    count isa Integer && !(count isa Bool) && 0 < count <= _ADVICE_MAX_SAFE_INTEGER ||
         throw(ArgumentError("invalid measurement summary record count"))
     quantities = ("minimum", "median", "maximum")
     all(
         key -> get(summary, key, nothing) isa Real && !(summary[key] isa Bool) &&
                    isfinite(summary[key]) &&
-                   (!(summary[key] isa Integer) || abs(big(summary[key])) <= 2^53 - 1),
+                   (!(summary[key] isa Integer) ||
+                    abs(big(summary[key])) <= _ADVICE_MAX_SAFE_INTEGER),
         quantities) &&
         summary["minimum"] <= summary["median"] <= summary["maximum"] ||
         throw(ArgumentError("invalid measured summary values"))

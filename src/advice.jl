@@ -1,5 +1,8 @@
 const ADVICE_SCHEMA = "perfchecker-advice/1"
 
+# JSON-safe integer bound must not overflow the native Int on 32-bit Julia.
+const _ADVICE_MAX_SAFE_INTEGER = Int64(2)^53 - 1
+
 # Only canonical measured quantities are eligible for optional advisor context.
 # Saved source paths, arbitrary attributes, parameters and diagnostics are not
 # copied into this projection.
@@ -123,7 +126,7 @@ function _advice_measurement_summaries(bundle::RunBundle)
         semantics === nothing && continue
         value = get(observation, "value", nothing)
         value isa Real && !(value isa Bool) && isfinite(value) || continue
-        value isa Integer && abs(big(value)) > 2^53 - 1 && continue
+        value isa Integer && abs(big(value)) > _ADVICE_MAX_SAFE_INTEGER && continue
         case_id, target_id = get(observation, "case_id", ""),
         get(observation, "target_id", "")
         _advice_case_identifier(case_id) && _advice_identifier(target_id) || continue
