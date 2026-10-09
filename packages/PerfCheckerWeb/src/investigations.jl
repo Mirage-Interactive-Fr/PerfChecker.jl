@@ -44,6 +44,23 @@ function _scenario_studio_html(prefix, token)
 <p><a href="$base/advisor">Configure the advisor and manage models</a></p><section id="evidence" aria-live="polite"></section></main><script src="$base/assets/investigations.js"></script></body></html>"""
 end
 
+"""
+    register_oxygen_routes!(catalog::ScenarioCatalog;
+        prefix="/perfchecker/scenarios", project=catalog.root, catalog_path=nothing,
+        advisor=nothing, reports_root=joinpath(catalog.root, "perf", "results", "investigations"))
+
+Register the scenario investigation UI and routes, and return the Oxygen router.
+Create `reports_root` and load saved advisor settings when present. With
+`catalog_path`, requests reload that catalog file; otherwise they use `catalog`.
+`project` selects the investigation controller environment.
+
+Registration starts neither a listener nor an investigation. Explicit launch
+requests can discover tests, measure, diagnose or use the configured advisor;
+accepted jobs return HTTP 202 and persist evidence under `reports_root`.
+State-changing requests use a session CSRF token, which is not user
+authentication. Host these controls through the loopback-only
+`serve_suite(catalog; ...)` overload.
+"""
 function PerfChecker.register_oxygen_routes!(catalog::PerfChecker.ScenarioCatalog;
         prefix::AbstractString = "/perfchecker/scenarios", project::AbstractString = catalog.root,
         catalog_path = nothing, advisor = nothing,
@@ -369,6 +386,22 @@ function PerfChecker.register_oxygen_routes!(catalog::PerfChecker.ScenarioCatalo
     return api
 end
 
+"""
+    serve_suite(catalog::ScenarioCatalog; host="127.0.0.1", port=8080, async=false,
+        prefix="/perfchecker/scenarios", project=catalog.root, catalog_path=nothing,
+        advisor=nothing, reports_root=joinpath(catalog.root, "perf", "results", "investigations"))
+
+Register the investigation routes and return `Oxygen.serve`'s result. Only
+`127.0.0.1`, `localhost` and `::1` are accepted for `host`; this overload has no
+remote-control override. Route registration creates the report directory and
+loads saved advisor settings, but starts no investigation. Work begins through
+explicit UI/API actions.
+
+`prefix`, `project`, `catalog_path`, `advisor` and `reports_root` configure the
+routes. Only `host`, `port` and `async` are passed to Oxygen; this overload does
+not accept arbitrary server keywords. The default `async=false` uses Oxygen's
+blocking server mode. Load `PerfCheckerWeb` before calling it.
+"""
 function PerfChecker.serve_suite(catalog::PerfChecker.ScenarioCatalog;
         host::AbstractString = "127.0.0.1", port::Integer = 8080, async::Bool = false,
         prefix::AbstractString = "/perfchecker/scenarios", project::AbstractString = catalog.root,
