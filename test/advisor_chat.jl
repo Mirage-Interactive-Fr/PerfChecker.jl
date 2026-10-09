@@ -59,6 +59,8 @@ end
     end
     mode = Ref(:good)
     called = Ref(false)
+    expected_evidence = Ref{Any}(nothing)
+    inspected_before_reply = Ref(false)
     encode(value) = sprint(io -> PerfChecker.JSON.print(io, value))
     reply(id, result) = HTTP.Response(200, ["Content-Type" => "application/json"],
         encode(Dict("jsonrpc" => "2.0", "id" => id, "result" => result)))
@@ -98,6 +100,12 @@ end
         called[] = true
         mode[] == :slow && sleep(5)
         arguments = body["params"]["arguments"]
+        if expected_evidence[] !== nothing
+            transmitted = PerfChecker._json_parse(last(split(
+                arguments["question"], "\n\nPerfChecker evidence:\n")))["evidence"]
+            @test transmitted == expected_evidence[]
+            inspected_before_reply[] = true
+        end
         if body["params"]["name"] == "implement" && mode[] == :good
             write(joinpath(arguments["workspace"], "workload.jl"),
                 "sum_values(xs) = sum(xs)\n")
@@ -155,6 +163,64 @@ end
                 Dict("messages" => [Dict("content" => "mock readiness")]))
             @test occursin("Vérifiez", warmup["external_review"])
         end
+        # CI exercises the canonical saved schema. A explicitly selected real
+        # bundle can additionally qualify the same worker/CLI path without
+        # adding a private path or its source data to the repository.
+        selected_bundle = get(ENV, "PERFCHECKER_ADVISOR_SAVED_BUNDLE", "")
+        measured = if isempty(selected_bundle)
+            fingerprint = repeat("a", 64)
+            definitions = [Dict{String, Any}(
+                               "id" => "$metric/shared-benchmark/$fingerprint",
+                               "metric" => metric, "unit" => unit,
+                               "context" => Dict(
+                                   "collector" => "benchmark", "source" => "PRIVATE_PATH"))
+                           for (metric, unit) in (
+                ("julia.wall.time", "s"), ("julia.alloc.bytes", "By"),
+                ("julia.alloc.count", "1"))]
+            observations = [Dict{String, Any}("case_id" => "export-bibtex",
+                                "target_id" => "local-checkout",
+                                "measurement_definition" => definition["id"], "metric" => definition["metric"],
+                                "unit" => definition["unit"], "scope" => "workload", "aggregation" => "sample",
+                                "sample_index" => index, "value" => definition["unit"] ==
+                                                                    "s" ? 0.001 :
+                                                                    definition["unit"] ==
+                                                                    "By" ? 3024 : 24)
+                            for definition in definitions for index in 1:100]
+            RunBundle(
+                Dict{String, Any}("run_id" => "run", "attempt_id" => "attempt",
+                    "state" => "complete", "qualification" => Dict("correctness" => "passed")),
+                definitions, observations, Dict{String, Any}[], Dict{String, Any}[])
+        else
+            read_run_bundle(selected_bundle)
+        end
+        measured_advice = advise(measured)
+        @test isempty(measured_advice["recommendations"])
+        summaries = measured_advice["measurement_summaries"]
+        @test length(summaries) == 3
+        @test all(
+            row -> row["record_count"] == 100 &&
+                       row["record_semantics"] == "operation_measurement" &&
+                       row["bundle_status"] == "complete" && row["correctness"] == "passed",
+            summaries)
+        reset_requests!()
+        expected_evidence[] = summaries
+        inspected_before_reply[] = false
+        result = chat_advice(messages; config = config(), advice = measured_advice)
+        if completed(result)
+            @test inspected_before_reply[]
+            call = tool_call()
+            if call !== nothing
+                prompt = call.body["params"]["arguments"]["question"]
+                transmitted = PerfChecker._json_parse(last(split(
+                    prompt, "\n\nPerfChecker evidence:\n")))["evidence"]
+                @test transmitted == summaries
+                @test Set(row["unit"] for row in transmitted) == Set(["s", "By", "1"])
+                @test occursin("No recommendations does not mean no measurements", prompt)
+                @test !occursin("no saved measurements were attached", prompt)
+                @test Set(result["evidence_ids"]) == Set(row["id"] for row in summaries)
+            end
+        end
+        expected_evidence[] = nothing
         for version in ("2026-07-28", "2025-11-25")
             reset_requests!()
             result = chat_advice(messages; config = config(version), advice)
@@ -272,6 +338,35 @@ end
             result = PerfChecker._json_parse(String(take!(output)))
             @test tool_call() !== nothing
             completed(result) && @test result["message_count"] == 3
+            for attached in (measured_advice,
+                Dict("schema_version" => "perfchecker-advice/1", "recommendations" => []), nothing)
+                input = attached === nothing ? Dict("messages" => messages) :
+                        Dict("messages" => messages, "advice" => attached)
+                write(source, encode(input))
+                reset_requests!()
+                expected_evidence[] = attached === nothing ? [] :
+                                      get(attached, "measurement_summaries", [])
+                inspected_before_reply[] = false
+                @test perfchecker_main(
+                    ["chat", "--source=$source", "--advisor-config=$configuration"];
+                    stdout = output) == 0
+                result = PerfChecker._json_parse(String(take!(output)))
+                call = tool_call()
+                if completed(result) && call !== nothing
+                    @test inspected_before_reply[]
+                    prompt = call.body["params"]["arguments"]["question"]
+                    @test occursin(
+                        attached === nothing ? "No saved report was attached" :
+                        "A saved report was explicitly attached",
+                        prompt)
+                    @test occursin("no saved measurements were attached", prompt) ==
+                          (attached === nothing)
+                    transmitted = PerfChecker._json_parse(last(split(
+                        prompt, "\n\nPerfChecker evidence:\n")))["evidence"]
+                    @test transmitted == expected_evidence[]
+                end
+            end
+            expected_evidence[] = nothing
             write(configuration,
                 encode(PerfChecker._advisor_config(config("2026-07-28", "implement"))))
             write(source, encode(Dict("messages" => messages, "workspace" => checkout)))

@@ -1,0 +1,31 @@
+name = "PerfCheckerLIKWID"
+uuid = "00985017-4685-4f40-9ee8-39d442cefdbe"
+version = "1.0.1"
+
+[deps]
+JSON = "682c06a0-de6a-54ab-a142-c8b1cf79cde6"
+LIKWID = "bf22376a-e803-4184-b2ed-56326e3bff83"
+PerfChecker = "6309bf6b-a531-4b08-891e-8ee981e5c424"
+Pkg = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
+SHA = "ea8e919c-243c-51af-8825-aaa63cd721ce"
+TOML = "fa267f1f-6049-4f14-aa54-33bafae1ed76"
+UUIDs = "cf7118a7-6976-5b1a-9a39-7adc72f591a4"
+
+[compat]
+JSON = "0.21, 1"
+LIKWID = "=0.4.6"
+PerfChecker = "1"
+Pkg = "1"
+SHA = "0.7, 1"
+TOML = "1"
+UUIDs = "1"
+julia = "1.10"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]
+
+[sources.PerfChecker]
+path = "../.."
