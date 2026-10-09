@@ -105,7 +105,7 @@ Save the selection with **Save configuration** in the suite editor. The default
 is `perf/perfchecker-ui.json`; compatible web and documentation interfaces can
 read the same configuration. In extension 1.0.0, the separate command-palette
 action **PerfChecker: Save shared UI configuration** has a confirmed defect; use
-the editor button while its correction is being prepared. Running the selection
+the editor's **Save configuration** button for this release. Running the selection
 shows progress and leaves saved evidence for later review.
 
 The editor separates filtering from selection. Search, package/target filters and release bounds change what is visible without deselecting hidden runs. **Select visible** and **Clear visible** act on the current filter; **Clear selection** affects the entire selection. The counter reports selected runs, visible runs and selected runs outside the filter. **Run N selected** includes those hidden selections, so review the exact identifier preview before execution. **Show more** pages workload groups without restricting bulk selection.

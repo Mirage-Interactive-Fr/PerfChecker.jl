@@ -104,7 +104,9 @@ Unavailable is separate from passing or failing. Remove a tool you do not need, 
 
 For an installed authenticated Codex CLI, use **PerfChecker: Connect authenticated Codex CLI** or **Connect Codex CLI** in Chat. The [named-agent recipe](../mcp-advisor.md#Connect-an-authenticated-Codex-CLI) documents supported executables, sandbox boundaries and existing-account usage. This session connection supplies the advice and implementation tools without overwriting your saved settings or JSON configuration.
 
-For another MCP agent, use **PerfChecker: Configure advisor and manage models** to check the connection, discover tools and save configuration. For chat, select `mcp_http`, a tool that accepts an advice request, and `text` response mode. A tool named `ask` is only an example; MCP defines no standard chat-tool name.
+For an MCP server with an advice tool, use **PerfChecker: Configure advisor and manage models** to check the connection, discover tools and save configuration. For chat, select `mcp_http`, a tool that accepts an advice request, and `text` response mode. A tool named `ask` is only an example; MCP defines no standard chat-tool name.
+
+Local HTTP endpoints must use `localhost`, `127.0.0.1` or `[::1]`. Other hosts, including private LAN addresses, require HTTPS and `advisorAllowRemote = true` (or `allow_remote = true` in the advisor JSON file). In Remote SSH or a development container, these addresses and executable paths belong to the VS Code extension host. See [MCP configuration fields](../mcp-advisor.md#Understand-configuration-fields) before choosing the endpoint.
 
 | Setting | Default | Meaning |
 | --- | --- | --- |

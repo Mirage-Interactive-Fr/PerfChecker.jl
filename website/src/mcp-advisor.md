@@ -24,7 +24,7 @@ approves a source edit.
 
 ## Connect an authenticated Codex CLI
 
-PerfChecker can connect an installed, authenticated Codex CLI through a local MCP bridge with separate advice and implementation tools. The connector invokes `codex exec`; it does not require `codex mcp-server`.
+PerfChecker can connect an installed, authenticated Codex CLI through a local MCP HTTP bridge with separate advice and implementation tools. Core sends MCP requests to that bridge, which invokes `codex exec`; the CLI itself is not an MCP stdio server in this workflow.
 
 1. Use a native Codex CLI supporting the flags below and authenticate it yourself with `codex login` in a terminal. Prepare the Julia controller with PerfChecker and `HTTP`, as described in [VS Code configuration](interfaces/vscode-configuration.md).
 2. If the executable is outside VS Code's PATH, set **PerfChecker: Codex Executable** (`perfchecker.codexExecutable`) to its native binary path. On Windows, use the native `.exe`; npm `.cmd` and `.bat` launchers are unsupported.
@@ -110,7 +110,7 @@ The equivalent essential folder settings are:
 | JSON field | Contract |
 | --- | --- |
 | `protocol` | `mcp_http` for MCP; Chat Completions uses a different adapter |
-| `endpoint` | Plain local HTTP(S), or explicitly allowed remote HTTPS; no credentials/query/fragment |
+| `endpoint` | HTTP(S) on `localhost`, `127.0.0.1` or `[::1]`, or explicitly allowed remote HTTPS; no credentials/query/fragment |
 | `mcp_version` | `2026-07-28`, or `2025-11-25` for a legacy server |
 | `mcp_tool` | One explicitly selected tool; checked with `tools/list` |
 | `mcp_prompt_argument` | String argument receiving instructions and bounded evidence/conversation |
@@ -122,9 +122,9 @@ The equivalent essential folder settings are:
 | `api_key_env` | Environment-variable name for an optional Bearer token |
 | `allow_remote` | Explicitly permits transmission to a remote HTTPS endpoint |
 
-Tool names and prompt-argument names are checked before the request. Required extra arguments must be configured. `max_tokens` configures model-provider requests; a generic MCP tool controls its own model limits and cost policy.
+Tool names and prompt-argument names are checked before the request. Required extra arguments must be configured. `model` and `max_tokens` configure model-provider requests and are not sent by the MCP transport. A generic MCP tool controls its own model limits and cost policy; configure any options supported by its schema in `mcp_arguments`.
 
-For remote servers, use HTTPS and set `allow_remote = true`. Put the Bearer token in the named environment variable available to VS Code's extension host, never in the JSON or `mcp_arguments`. OAuth login/refresh is not implemented.
+Here, local means one of the three loopback addresses above. A private LAN address such as `192.168.1.20` is remote under this policy: use HTTPS and set `allow_remote = true`. In Remote SSH or a development container, loopback refers to the VS Code extension host, not automatically to your desktop. Put the Bearer token in the named environment variable available to that host, never in the JSON or `mcp_arguments`. OAuth login/refresh is not implemented.
 
 ```@raw html
 <a id="Prompt-and-results"></a>
