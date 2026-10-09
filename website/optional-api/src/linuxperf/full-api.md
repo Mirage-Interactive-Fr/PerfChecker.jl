@@ -15,7 +15,7 @@ PerfCheckerLinuxPerf
 ## Index
 
 ```@index
-Modules = [PerfCheckerLinuxPerf]
+Pages = ["full-api.md"]
 ```
 
 ## Docstrings

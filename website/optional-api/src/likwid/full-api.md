@@ -15,7 +15,7 @@ PerfCheckerLIKWID
 ## Index
 
 ```@index
-Modules = [PerfCheckerLIKWID]
+Pages = ["full-api.md"]
 ```
 
 ## Docstrings

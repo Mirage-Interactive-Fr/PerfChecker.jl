@@ -16,7 +16,7 @@ PerfCheckerWeb
 ## Index
 
 ```@index
-Modules = [PerfCheckerWeb]
+Pages = ["full-api.md"]
 ```
 
 ## Docstrings

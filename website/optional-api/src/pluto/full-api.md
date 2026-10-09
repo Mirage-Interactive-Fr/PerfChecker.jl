@@ -16,7 +16,7 @@ PerfCheckerPluto
 ## Index
 
 ```@index
-Modules = [PerfCheckerPluto]
+Pages = ["full-api.md"]
 ```
 
 ## Docstrings

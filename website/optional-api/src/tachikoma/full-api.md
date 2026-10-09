@@ -16,7 +16,7 @@ PerfCheckerTachikoma
 ## Index
 
 ```@index
-Modules = [PerfCheckerTachikoma]
+Pages = ["full-api.md"]
 ```
 
 ## Docstrings

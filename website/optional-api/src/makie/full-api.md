@@ -16,7 +16,7 @@ PerfCheckerMakie
 ## Index
 
 ```@index
-Modules = [PerfCheckerMakie]
+Pages = ["full-api.md"]
 ```
 
 ## Docstrings
