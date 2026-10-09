@@ -83,9 +83,6 @@ Its prompt field is `question` and its other required argument is the `context`
 object. Select your own server's discovered names and required arguments;
 these fixture values are not universal MCP defaults.
 
-```@raw html
-<DocMedia video short recording="perfchecker-vscode-v101-short-19" src="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-19.mp4" poster="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-19-poster.jpg" subtitles="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-19-en.vtt" walkthrough="/interfaces/vscode-videos.html#Full-tutorial" chapter="10 · MCP configuration and a follow-up conversation" preload="none" alt="Actual native PerfChecker MCP tool inventory, input schema and Use selection confirmation" caption="Discover the server tool, inspect its real properties and required arguments, then select Use. The actual schema frames are held for reading; this local protocol fixture uses ask_fixture, question and context. Recorded build: VSIX 2e722, Core 4eec, VS Code 1.141 on Linux; connection discovery and selection are distinct from answer generation." />
-```
 
 ```@raw html
 <DocMedia src="/assets/screenshots/vscode-mcp-settings.png" alt="Actual PerfChecker V1 advisor setup webview in Chromium with a demonstration MCP HTTP endpoint, tool inventory and selected advice tool" caption="Use your server's endpoint and exact tool name, then probe and save the configuration. This running webview shows a local demonstration configuration and an example tool inventory; the address is not a service supplied to every user." />
@@ -203,9 +200,6 @@ report contains no measurements.
 
 Replies are unverified text, separate from deterministic findings. Embedded HTML is displayed as text. Suggested commands are not executed by advice chat. You may implement the suggestions yourself.
 
-```@raw html
-<DocMedia video short recording="perfchecker-vscode-v101-short-06" src="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-06.mp4" poster="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-06-poster.jpg" subtitles="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-06-en.vtt" walkthrough="/interfaces/vscode-videos.html#Full-tutorial" chapter="10 · MCP configuration and a follow-up conversation" preload="none" alt="Native PerfChecker conversation with a saved measured run, two contextual questions and controlled MCP replies" caption="Attach the actual measured run, ask a follow-up and agree on validation before requesting an edit. The recorded report shows 8072 B median over two samples with correctness passed; measured evidence IDs and bounded context were checked. The local MCP protocol fixture supplies controlled replies, with frames held for reading. Recorded build: VSIX 2e722, Core 4eec, VS Code 1.141 on Linux. Source is unchanged during advice; cancellation is outside this passage." />
-```
 
 ```@raw html
 <DocMedia src="/assets/screenshots/vscode-advice-chat.png" alt="Actual PerfChecker V1 Advice webview rendered in Chromium with selected allocation evidence, two user questions, two replies and a follow-up prompt" caption="Use follow-up questions to separate observations from hypotheses and agree on validation before preparing an implementation. The actual V1 webview displays a demonstration conversation and evidence; select the image to read the full exchange." />
@@ -241,9 +235,6 @@ If your server also provides a trusted implementation tool, configure its separa
 
 These names are illustrative too. Select a tool that can inspect, edit and test the supplied isolated checkout and actually honors that path. Implementation reuses the advice connection, revision, credentials and additional arguments, then substitutes the explicitly configured tool and prompt name. The prompt/workspace argument names must differ; extra arguments cannot override either. In this example, both tool schemas must accept the configured `context` object. Check that shared extra arguments are valid for the implementation tool too.
 
-```@raw html
-<DocMedia video short recording="perfchecker-vscode-v101-short-07" src="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-07.mp4" poster="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-07-poster.jpg" subtitles="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-07-en.vtt" walkthrough="/interfaces/vscode-videos.html#Full-tutorial" chapter="11 · A checkpoint and an isolated implementation" preload="none" alt="Actual native PerfChecker preparation action, warning and recovery checkpoint prefix" caption="Review the warning, save editor buffers and explicitly prepare an isolated proposal. The close view preserves the real Prepare implementation button and checkpoint prefix; the full reference continues outside the portrait frame and remains available in the editor. Recorded build: VSIX 75f84f, Core 975d, VS Code 1.141 on Linux, controlled MCP replies." />
-```
 
 The extension's workflow is:
 
@@ -255,9 +246,6 @@ The extension's workflow is:
 6. Select **Apply reviewed implementation changes** only after checking the actual diff. Application updates working-tree files without changing HEAD or the real Git index.
 7. Rerun relevant correctness checks, including empty inputs, boundary values and the representative types your API accepts, then collect compatible before/after measurements. A shorter expression can change empty-input or numeric behavior. Use **Restore implementation checkpoint** if you need to reverse the applied patch and the repository has not drifted.
 
-```@raw html
-<DocMedia video short recording="perfchecker-vscode-v101-short-20" src="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-20.mp4" poster="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-20-poster.jpg" subtitles="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-20-en.vtt" walkthrough="/interfaces/vscode-videos.html#Full-tutorial" chapter="11 · A checkpoint and an isolated implementation" preload="none" alt="Actual native PerfChecker source diff, initialized sum_squares reduction and explicit human review" caption="Read the actual isolated source diff and its explicit initializer, then validate representative inputs before applying. The recorded Float64 example covers empty, signed and 1,000-element inputs; other types need their own oracle. Recorded build: VSIX 75f84f, Core 975d, VS Code 1.141 on Linux, controlled MCP replies." />
-```
 
 ```@raw html
 <DocMedia src="/assets/screenshots/vscode-implementation.png" alt="Running PerfChecker V1 chat webview showing the implementation warning, checkpoint reference, isolated change summary, reviewed diff and explicit apply action" caption="Review the actual diff before applying. The original working tree is still unchanged at this stage; Restore becomes relevant after Apply. The UI is real, while the advice and edited fixture are demonstration data." />
@@ -282,9 +270,6 @@ V1 also refuses clean/smudge filters (including Git LFS), `working-tree-encoding
 
 ## Checkpoints and recovery
 
-```@raw html
-<DocMedia video short recording="perfchecker-vscode-v101-short-08" src="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-08.mp4" poster="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-08-poster.jpg" subtitles="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-08-en.vtt" walkthrough="/interfaces/vscode-videos.html#Full-tutorial" chapter="12 · Apply, validate, remeasure and restore" preload="none" alt="Actual native PerfChecker Apply and Restore controls with independently checked Julia results and allocation" caption="Apply the reviewed source change, inspect the independent Julia oracle and restore the previous source exactly. The recorded workload's allocation probe is 8072 B before and 0 B after; compatible timing measurements remain a separate step. Recorded build: VSIX 75f84f, Core 975d, VS Code 1.141 on Linux, controlled MCP replies." />
-```
 
 The checkpoint uses a dedicated ref of the form `refs/perfchecker/checkpoints/<id>`. A reviewed proposal also has a retained Git ref. These preserve the proposal/recovery content independently from its temporary checkout. The original branch and staging are preserved.
 

@@ -16566,7 +16566,9 @@
       "terminal": "normalized-metrics-2c8d15cd8058155f.txt",
       "title": "DataStructures · SortedSet_lookup_benchmark · relative to minimum",
       "unit": "ratio",
-      "workload": "SortedSet_lookup"
+      "workload": "SortedSet_lookup",
+      "html": "normalized-metrics-2c8d15cd8058155f.html",
+      "html_input_sha256": "0bddd9d09db46e3842b602e0d6613a1acdc40d126a019c7f4483556ec2d9f318"
     },
     {
       "feature": "SortedSet_lookup_benchmark",
@@ -16596,7 +16598,9 @@
       "svg": "distribution-329d40b7fc63d1eb.svg",
       "terminal": "distribution-329d40b7fc63d1eb.txt",
       "title": "DataStructures · SortedSet_lookup_benchmark · julia.wall.time",
-      "unit": "ns"
+      "unit": "ns",
+      "html": "distribution-329d40b7fc63d1eb.html",
+      "html_input_sha256": "4bffa64c468f9b47566774445fc89e22f6bb05834f9ebc8f1c1dc1f9d1fd6c46"
     },
     {
       "feature": "SortedSet_lookup_benchmark",
@@ -16641,7 +16645,9 @@
       "svg": "time-allocation-tradeoff-99824b690b46f14d.svg",
       "terminal": "time-allocation-tradeoff-99824b690b46f14d.txt",
       "title": "DataStructures · SortedSet_lookup_benchmark · time/allocation trade-off",
-      "unit": "s+By"
+      "unit": "s+By",
+      "html": "time-allocation-tradeoff-99824b690b46f14d.html",
+      "html_input_sha256": "3ba3b58e9db8ca2ed12e5a04da79ec9395427d4fc0fa2c056ea862f1a828167c"
     },
     {
       "feature": "SortedSet_lookup_benchmark",
@@ -16656,7 +16662,9 @@
       "svg": "version-delta-285f19f258857944.svg",
       "terminal": "version-delta-285f19f258857944.txt",
       "title": "DataStructures · SortedSet_lookup_benchmark · julia.wall.time",
-      "unit": "ns"
+      "unit": "ns",
+      "html": "version-delta-285f19f258857944.html",
+      "html_input_sha256": "f98fce9f47752a1436634c2726e9425432e3c24f722e475947ed726fdcfe80a1"
     },
     {
       "feature": "SortedSet_lookup_benchmark",
@@ -16761,7 +16769,9 @@
       "svg": "version-series-fac762c84556343a.svg",
       "terminal": "version-series-fac762c84556343a.txt",
       "title": "DataStructures · SortedSet_lookup_benchmark · julia.wall.time",
-      "unit": "ns"
+      "unit": "ns",
+      "html": "version-series-fac762c84556343a.html",
+      "html_input_sha256": "d963891ef0947177cdae8ef7091ebddcd1b505f31aba257d0d2bb4addddb0b69"
     },
     {
       "collector": "benchmarktools-v1/fresh-state-evals1-v1",
@@ -18883,5 +18893,15 @@
       "title": "DataStructures · Trie_lookup_benchmark · julia.gc.time",
       "unit": "ns"
     }
-  ]
+  ],
+  "interactive_export": {
+    "asset_layout": "shared_relative",
+    "companion_version": "1.0.1",
+    "input_kind": "published_serialized_plot",
+    "recipe": "examples/kitchen-sink/replay.jl:saved_plot",
+    "recipe_sha256": "38ea1ff24fecc064fdf30af471893842266f3f970a92b11b9b24bdda07dd3307",
+    "renderer": "PerfChecker.performance_plot_html",
+    "selected_views": 5,
+    "selection": "guided_examples"
+  }
 }

@@ -336,12 +336,23 @@
       "id": "likwid",
       "name": "LIKWID.jl",
       "category": "hardware",
-      "integration": "candidate",
-      "purpose": "CPU affinity, counters and topology",
+      "integration": "optional_companion",
+      "purpose": "explicit Julia counter execution through PerfCheckerLIKWID",
       "platform": "supported Linux hardware",
       "source": "https://juliaperf.github.io/LIKWID.jl/stable/",
       "qualification": "not_checked",
-      "limitations": "Not an implemented native collector. Requires a qualified adapter or imported evidence."
+      "limitations": "PerfCheckerLIKWID supplies an explicit Julia executor in a separate source-companion environment. Requires LIKWID native libraries, supported Linux hardware and access permissions. Default CLI, VS Code, Pluto and MCP selectors do not select this executor; listing it does not qualify physical counters."
+    },
+    {
+      "id": "linuxperf",
+      "name": "LinuxPerf.jl",
+      "category": "hardware",
+      "integration": "optional_companion",
+      "purpose": "explicit Julia counter execution through PerfCheckerLinuxPerf",
+      "platform": "Linux perf-event permissions",
+      "source": "https://github.com/Mirage-Interactive-Fr/PerfChecker.jl/tree/main/packages/PerfCheckerLinuxPerf",
+      "qualification": "not_checked",
+      "limitations": "PerfCheckerLinuxPerf supplies an explicit Julia executor in a separate source-companion environment. Requires supported events and Linux perf-event permissions. Default CLI, VS Code, Pluto and MCP selectors do not select this executor; listing it does not qualify physical counters."
     },
     {
       "id": "papi",

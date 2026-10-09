@@ -5274,7 +5274,9 @@
       "terminal": "normalized-metrics-708bc15499924df0.txt",
       "title": "Oxygen · heap_benchmark · relative to minimum",
       "unit": "ratio",
-      "workload": "heap_request"
+      "workload": "heap_request",
+      "html": "normalized-metrics-708bc15499924df0.html",
+      "html_input_sha256": "7afdddc3d56c333e4c3e471484a7bbd30e678e672fab495bf95732512529c2bc"
     },
     {
       "feature": "heap_benchmark",
@@ -5319,7 +5321,9 @@
       "svg": "distribution-725f40e1fb459a87.svg",
       "terminal": "distribution-725f40e1fb459a87.txt",
       "title": "Oxygen · heap_benchmark · julia.wall.time",
-      "unit": "ns"
+      "unit": "ns",
+      "html": "distribution-725f40e1fb459a87.html",
+      "html_input_sha256": "45169afbcbb1d46b7e48e7d71433f150ae6f029ba471b8bac7cd2a78eed7a441"
     },
     {
       "feature": "heap_benchmark",
@@ -5349,7 +5353,9 @@
       "svg": "time-allocation-tradeoff-1ce2ceab9ae5a879.svg",
       "terminal": "time-allocation-tradeoff-1ce2ceab9ae5a879.txt",
       "title": "Oxygen · heap_benchmark · time/allocation trade-off",
-      "unit": "s+By"
+      "unit": "s+By",
+      "html": "time-allocation-tradeoff-1ce2ceab9ae5a879.html",
+      "html_input_sha256": "cc4e6e08352207f381485b9247430f23040c7d4a47392c35919898bb7ee0597b"
     },
     {
       "feature": "heap_benchmark",
@@ -5409,7 +5415,9 @@
       "svg": "version-delta-532356b8c694efa5.svg",
       "terminal": "version-delta-532356b8c694efa5.txt",
       "title": "Oxygen · heap_benchmark · julia.wall.time",
-      "unit": "ns"
+      "unit": "ns",
+      "html": "version-delta-532356b8c694efa5.html",
+      "html_input_sha256": "b14e205eca73eb95f4a9cbf978504c2c32fe82294b37b6fa8ee0ab16797fb751"
     },
     {
       "feature": "heap_benchmark",
@@ -5439,7 +5447,9 @@
       "svg": "version-series-7afa11656abffa5d.svg",
       "terminal": "version-series-7afa11656abffa5d.txt",
       "title": "Oxygen · heap_benchmark · julia.wall.time",
-      "unit": "ns"
+      "unit": "ns",
+      "html": "version-series-7afa11656abffa5d.html",
+      "html_input_sha256": "e06141116e9091fa327d72e91c1280d23e6446bf92f9bd339b93903fca9caae3"
     },
     {
       "feature": "heap_benchmark",
@@ -5689,5 +5699,15 @@
       "title": "Oxygen · heap_chairmark · julia.alloc.bytes",
       "unit": "By"
     }
-  ]
+  ],
+  "interactive_export": {
+    "asset_layout": "shared_relative",
+    "companion_version": "1.0.1",
+    "input_kind": "published_serialized_plot",
+    "recipe": "examples/kitchen-sink/replay.jl:saved_plot",
+    "recipe_sha256": "38ea1ff24fecc064fdf30af471893842266f3f970a92b11b9b24bdda07dd3307",
+    "renderer": "PerfChecker.performance_plot_html",
+    "selected_views": 5,
+    "selection": "guided_examples"
+  }
 }

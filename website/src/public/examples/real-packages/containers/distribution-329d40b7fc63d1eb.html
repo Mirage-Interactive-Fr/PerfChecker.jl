@@ -1,0 +1,205 @@
+<!doctype html>
+<html class="bonito-fragment"><head><script src="../../plot-assets/bonito/js/Bonito.bundled5040008371911548254.js" type="module"></script><meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta charset="UTF-8" /><title>Bonito App</title><style>.style_2 {
+  font-family: sans-serif;
+  gap: 1rem;
+  padding: 0.8rem;
+  display: flex;
+  flex-wrap: wrap;
+}
+.style_3 {
+  height: 620px;
+  transform-origin: top left;
+  width: 1100px;
+}
+.style_4 {
+  height: 620px;
+  width: 100%;
+  overflow: hidden;
+  background: #f7f9fc;
+}
+</style><style>.wglmakie-spinner {
+  animation: wglmakie-spin 1.0s linear infinite;
+  position: absolute;
+  left: 50%;
+  z-index: 1000;
+  border-radius: 50%;
+  width: 40px;
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  transform: translate(-50%, -50%);
+  border-top: 4px solid currentColor;
+  height: 40px;
+  pointer-events: none;
+  top: 50%;
+}
+@keyframes wglmakie-spin {
+  100% {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+  0% {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+}
+</style><style>@media (prefers-color-scheme: light) {
+  :root {
+    --bonito-widget-hover-bg: #f3f4f6;
+    color-scheme: light;
+    --bonito-widget-muted-bg: #f3f4f6;
+    accent-color: #3182bb;
+    --bonito-widget-accent: #3182bb;
+    --bonito-widget-fg: #1a1a1a;
+    --bonito-widget-bg: #ffffff;
+    --bonito-widget-border: #9ca3af;
+  }
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bonito-widget-hover-bg: #3a3a40;
+    color-scheme: dark;
+    --bonito-widget-muted-bg: #36363c;
+    accent-color: #6ea8e0;
+    --bonito-widget-accent: #6ea8e0;
+    --bonito-widget-fg: #e8e8ea;
+    --bonito-widget-bg: #2a2a2e;
+    --bonito-widget-border: #52525b;
+  }
+}
+html .noUi-target {
+  box-shadow: none;
+  background: var(--bonito-widget-muted-bg, #fafafa);
+  border-color: var(--bonito-widget-border, #d3d3d3);
+}
+html .noUi-connects {
+  background: var(--bonito-widget-muted-bg, #fafafa);
+}
+html .noUi-connect {
+  background: var(--bonito-widget-accent, #3182bb);
+}
+html .noUi-handle {
+  box-shadow: none;
+  background: var(--bonito-widget-bg, #fff);
+  border-color: var(--bonito-widget-border, #d3d3d3);
+}
+html .noUi-handle::before {
+  background: var(--bonito-widget-border, #d3d3d3);
+}
+html .noUi-handle::after {
+  background: var(--bonito-widget-border, #d3d3d3);
+}
+html .noUi-tooltip {
+  background: var(--bonito-widget-bg, #fff);
+  border-color: var(--bonito-widget-border, #d3d3d3);
+  color: var(--bonito-widget-fg, #000);
+}
+html .noUi-marker {
+  background: var(--bonito-widget-border, #ccc);
+}
+html .noUi-value {
+  color: var(--bonito-widget-fg, inherit);
+}
+</style><script src="../../plot-assets/bonito/js/WGLMakie.bundled1870091951256107923.js" type="module"></script><link rel="stylesheet" type="text/css" href="../../plot-assets/bonito/css/popup15566812377123610001.css" /></head><body><script type="module">Bonito.init_session("019cfab2-47b7-4e7c-a04c-cfbf5f291af3", Bonito.fetch_binary('../../plot-assets/bonito/bin/4b90a34506ea8d620b8b6a27bbe80926d5082db7-11626404319144737856.bin'), "root", false);
+</script><div data-jscall-id="root" id="019cfab2-47b7-4e7c-a04c-cfbf5f291af3"><div data-jscall-id="3"><div data-jscall-id="4" id="point-controls" class=" style_2" style=""><label data-jscall-id="5">Recorded point <input data-jscall-id="1" step="1" type="number" id="point-index" min="1" max="210" aria-label="Recorded point index" value="1" style="width:7rem" /> of 210</label><output data-jscall-id="2" aria-live="polite" id="point-readout">Point 1: 0.19.0 · 20700.0 ns</output></div><div data-jscall-id="6" id="offline-viewport" class=" style_4" role="img" aria-label="DataStructures · SortedSet_lookup_benchmark · julia.wall.time · Collector: unspecified · Tags: " style=""><div data-jscall-id="7" id="offline-figure" class=" style_3" style=""><div data-jscall-id="8" style="width: 100%; height: 100%; position: relative;"><canvas data-jscall-id="9" height="620px" data-lm-suppress-shortcuts="true" width="1100px" data-jp-suppress-context-menu tabindex="0" style="display: block"></canvas><div data-jscall-id="10" class="wglmakie-spinner"></div></div></div></div><span><div data-jscall-id="11" class="popup"></div></span></div></div><script>// Viewport controls for the actual exported WGLMakie figure.
+(() => {
+  const model = {"data":[{"target_kind":"release","value":20700.0,"version":"0.19.0"},{"target_kind":"release","value":14000.0,"version":"0.19.0"},{"target_kind":"release","value":11000.0,"version":"0.19.0"},{"target_kind":"release","value":10800.0,"version":"0.19.0"},{"target_kind":"release","value":10100.0,"version":"0.19.0"},{"target_kind":"release","value":8000.0,"version":"0.19.0"},{"target_kind":"release","value":6700.0,"version":"0.19.0"},{"target_kind":"release","value":7000.0,"version":"0.19.0"},{"target_kind":"release","value":6000.0,"version":"0.19.0"},{"target_kind":"release","value":6100.0,"version":"0.19.0"},{"target_kind":"release","value":5600.0,"version":"0.19.0"},{"target_kind":"release","value":5100.0,"version":"0.19.0"},{"target_kind":"release","value":4800.0,"version":"0.19.0"},{"target_kind":"release","value":6900.0,"version":"0.19.0"},{"target_kind":"release","value":7300.0,"version":"0.19.0"},{"target_kind":"release","value":7100.0,"version":"0.19.0"},{"target_kind":"release","value":6000.0,"version":"0.19.0"},{"target_kind":"release","value":5400.0,"version":"0.19.0"},{"target_kind":"release","value":5100.0,"version":"0.19.0"},{"target_kind":"release","value":6600.0,"version":"0.19.0"},{"target_kind":"release","value":5900.0,"version":"0.19.0"},{"target_kind":"release","value":5100.0,"version":"0.19.0"},{"target_kind":"release","value":4900.0,"version":"0.19.0"},{"target_kind":"release","value":4700.0,"version":"0.19.0"},{"target_kind":"release","value":4700.0,"version":"0.19.0"},{"target_kind":"release","value":6200.0,"version":"0.19.0"},{"target_kind":"release","value":6800.0,"version":"0.19.0"},{"target_kind":"release","value":5300.0,"version":"0.19.0"},{"target_kind":"release","value":4900.0,"version":"0.19.0"},{"target_kind":"release","value":4600.0,"version":"0.19.0"},{"target_kind":"release","value":20100.0,"version":"0.19.1"},{"target_kind":"release","value":12600.0,"version":"0.19.1"},{"target_kind":"release","value":9300.0,"version":"0.19.1"},{"target_kind":"release","value":7400.0,"version":"0.19.1"},{"target_kind":"release","value":7600.0,"version":"0.19.1"},{"target_kind":"release","value":6300.0,"version":"0.19.1"},{"target_kind":"release","value":5300.0,"version":"0.19.1"},{"target_kind":"release","value":4800.0,"version":"0.19.1"},{"target_kind":"release","value":5800.0,"version":"0.19.1"},{"target_kind":"release","value":5200.0,"version":"0.19.1"},{"target_kind":"release","value":4400.0,"version":"0.19.1"},{"target_kind":"release","value":5300.0,"version":"0.19.1"},{"target_kind":"release","value":4800.0,"version":"0.19.1"},{"target_kind":"release","value":4300.0,"version":"0.19.1"},{"target_kind":"release","value":4100.0,"version":"0.19.1"},{"target_kind":"release","value":4000.0,"version":"0.19.1"},{"target_kind":"release","value":4000.0,"version":"0.19.1"},{"target_kind":"release","value":3900.0,"version":"0.19.1"},{"target_kind":"release","value":4000.0,"version":"0.19.1"},{"target_kind":"release","value":4100.0,"version":"0.19.1"},{"target_kind":"release","value":3900.0,"version":"0.19.1"},{"target_kind":"release","value":4000.0,"version":"0.19.1"},{"target_kind":"release","value":4000.0,"version":"0.19.1"},{"target_kind":"release","value":4200.0,"version":"0.19.1"},{"target_kind":"release","value":4000.0,"version":"0.19.1"},{"target_kind":"release","value":3900.0,"version":"0.19.1"},{"target_kind":"release","value":3900.0,"version":"0.19.1"},{"target_kind":"release","value":3800.0,"version":"0.19.1"},{"target_kind":"release","value":4200.0,"version":"0.19.1"},{"target_kind":"release","value":4000.0,"version":"0.19.1"},{"target_kind":"release","value":19800.0,"version":"0.19.2"},{"target_kind":"release","value":12300.0,"version":"0.19.2"},{"target_kind":"release","value":8600.0,"version":"0.19.2"},{"target_kind":"release","value":8000.0,"version":"0.19.2"},{"target_kind":"release","value":6200.0,"version":"0.19.2"},{"target_kind":"release","value":5100.0,"version":"0.19.2"},{"target_kind":"release","value":4600.0,"version":"0.19.2"},{"target_kind":"release","value":4200.0,"version":"0.19.2"},{"target_kind":"release","value":4100.0,"version":"0.19.2"},{"target_kind":"release","value":4200.0,"version":"0.19.2"},{"target_kind":"release","value":4100.0,"version":"0.19.2"},{"target_kind":"release","value":5200.0,"version":"0.19.2"},{"target_kind":"release","value":4500.0,"version":"0.19.2"},{"target_kind":"release","value":5400.0,"version":"0.19.2"},{"target_kind":"release","value":4800.0,"version":"0.19.2"},{"target_kind":"release","value":4200.0,"version":"0.19.2"},{"target_kind":"release","value":4000.0,"version":"0.19.2"},{"target_kind":"release","value":5000.0,"version":"0.19.2"},{"target_kind":"release","value":5000.0,"version":"0.19.2"},{"target_kind":"release","value":4900.0,"version":"0.19.2"},{"target_kind":"release","value":4300.0,"version":"0.19.2"},{"target_kind":"release","value":4000.0,"version":"0.19.2"},{"target_kind":"release","value":4000.0,"version":"0.19.2"},{"target_kind":"release","value":3900.0,"version":"0.19.2"},{"target_kind":"release","value":3800.0,"version":"0.19.2"},{"target_kind":"release","value":3800.0,"version":"0.19.2"},{"target_kind":"release","value":3800.0,"version":"0.19.2"},{"target_kind":"release","value":3700.0,"version":"0.19.2"},{"target_kind":"release","value":4000.0,"version":"0.19.2"},{"target_kind":"release","value":3800.0,"version":"0.19.2"},{"target_kind":"release","value":27800.0,"version":"0.19.3"},{"target_kind":"release","value":18700.0,"version":"0.19.3"},{"target_kind":"release","value":15800.0,"version":"0.19.3"},{"target_kind":"release","value":14300.0,"version":"0.19.3"},{"target_kind":"release","value":12800.0,"version":"0.19.3"},{"target_kind":"release","value":11600.0,"version":"0.19.3"},{"target_kind":"release","value":15600.0,"version":"0.19.3"},{"target_kind":"release","value":14300.0,"version":"0.19.3"},{"target_kind":"release","value":12000.0,"version":"0.19.3"},{"target_kind":"release","value":10900.0,"version":"0.19.3"},{"target_kind":"release","value":10300.0,"version":"0.19.3"},{"target_kind":"release","value":9300.0,"version":"0.19.3"},{"target_kind":"release","value":9200.0,"version":"0.19.3"},{"target_kind":"release","value":9700.0,"version":"0.19.3"},{"target_kind":"release","value":15400.0,"version":"0.19.3"},{"target_kind":"release","value":13500.0,"version":"0.19.3"},{"target_kind":"release","value":10600.0,"version":"0.19.3"},{"target_kind":"release","value":10600.0,"version":"0.19.3"},{"target_kind":"release","value":9600.0,"version":"0.19.3"},{"target_kind":"release","value":8800.0,"version":"0.19.3"},{"target_kind":"release","value":11100.0,"version":"0.19.3"},{"target_kind":"release","value":10800.0,"version":"0.19.3"},{"target_kind":"release","value":10500.0,"version":"0.19.3"},{"target_kind":"release","value":9000.0,"version":"0.19.3"},{"target_kind":"release","value":7400.0,"version":"0.19.3"},{"target_kind":"release","value":7900.0,"version":"0.19.3"},{"target_kind":"release","value":7600.0,"version":"0.19.3"},{"target_kind":"release","value":7700.0,"version":"0.19.3"},{"target_kind":"release","value":11900.0,"version":"0.19.3"},{"target_kind":"release","value":12000.0,"version":"0.19.3"},{"target_kind":"release","value":24400.0,"version":"0.19.4"},{"target_kind":"release","value":17100.0,"version":"0.19.4"},{"target_kind":"release","value":13900.0,"version":"0.19.4"},{"target_kind":"release","value":12900.0,"version":"0.19.4"},{"target_kind":"release","value":10600.0,"version":"0.19.4"},{"target_kind":"release","value":9200.0,"version":"0.19.4"},{"target_kind":"release","value":9500.0,"version":"0.19.4"},{"target_kind":"release","value":8700.0,"version":"0.19.4"},{"target_kind":"release","value":8600.0,"version":"0.19.4"},{"target_kind":"release","value":7700.0,"version":"0.19.4"},{"target_kind":"release","value":7500.0,"version":"0.19.4"},{"target_kind":"release","value":7300.0,"version":"0.19.4"},{"target_kind":"release","value":7000.0,"version":"0.19.4"},{"target_kind":"release","value":6800.0,"version":"0.19.4"},{"target_kind":"release","value":6400.0,"version":"0.19.4"},{"target_kind":"release","value":7900.0,"version":"0.19.4"},{"target_kind":"release","value":7700.0,"version":"0.19.4"},{"target_kind":"release","value":7700.0,"version":"0.19.4"},{"target_kind":"release","value":7300.0,"version":"0.19.4"},{"target_kind":"release","value":7200.0,"version":"0.19.4"},{"target_kind":"release","value":6200.0,"version":"0.19.4"},{"target_kind":"release","value":6200.0,"version":"0.19.4"},{"target_kind":"release","value":8500.0,"version":"0.19.4"},{"target_kind":"release","value":7800.0,"version":"0.19.4"},{"target_kind":"release","value":6700.0,"version":"0.19.4"},{"target_kind":"release","value":6900.0,"version":"0.19.4"},{"target_kind":"release","value":6000.0,"version":"0.19.4"},{"target_kind":"release","value":5900.0,"version":"0.19.4"},{"target_kind":"release","value":5900.0,"version":"0.19.4"},{"target_kind":"release","value":6800.0,"version":"0.19.4"},{"target_kind":"release","value":20300.0,"version":"0.19.5"},{"target_kind":"release","value":12900.0,"version":"0.19.5"},{"target_kind":"release","value":10600.0,"version":"0.19.5"},{"target_kind":"release","value":7800.0,"version":"0.19.5"},{"target_kind":"release","value":6300.0,"version":"0.19.5"},{"target_kind":"release","value":7500.0,"version":"0.19.5"},{"target_kind":"release","value":6100.0,"version":"0.19.5"},{"target_kind":"release","value":5100.0,"version":"0.19.5"},{"target_kind":"release","value":5100.0,"version":"0.19.5"},{"target_kind":"release","value":4600.0,"version":"0.19.5"},{"target_kind":"release","value":4400.0,"version":"0.19.5"},{"target_kind":"release","value":4200.0,"version":"0.19.5"},{"target_kind":"release","value":5600.0,"version":"0.19.5"},{"target_kind":"release","value":5000.0,"version":"0.19.5"},{"target_kind":"release","value":4300.0,"version":"0.19.5"},{"target_kind":"release","value":5400.0,"version":"0.19.5"},{"target_kind":"release","value":5000.0,"version":"0.19.5"},{"target_kind":"release","value":4200.0,"version":"0.19.5"},{"target_kind":"release","value":4400.0,"version":"0.19.5"},{"target_kind":"release","value":4300.0,"version":"0.19.5"},{"target_kind":"release","value":3900.0,"version":"0.19.5"},{"target_kind":"release","value":5200.0,"version":"0.19.5"},{"target_kind":"release","value":4700.0,"version":"0.19.5"},{"target_kind":"release","value":4000.0,"version":"0.19.5"},{"target_kind":"release","value":4100.0,"version":"0.19.5"},{"target_kind":"release","value":4200.0,"version":"0.19.5"},{"target_kind":"release","value":4200.0,"version":"0.19.5"},{"target_kind":"release","value":4300.0,"version":"0.19.5"},{"target_kind":"release","value":4800.0,"version":"0.19.5"},{"target_kind":"release","value":4200.0,"version":"0.19.5"},{"target_kind":"release","value":25300.0,"version":"0.19.6"},{"target_kind":"release","value":19300.0,"version":"0.19.6"},{"target_kind":"release","value":21300.0,"version":"0.19.6"},{"target_kind":"release","value":17700.0,"version":"0.19.6"},{"target_kind":"release","value":15300.0,"version":"0.19.6"},{"target_kind":"release","value":14800.0,"version":"0.19.6"},{"target_kind":"release","value":18300.0,"version":"0.19.6"},{"target_kind":"release","value":16200.0,"version":"0.19.6"},{"target_kind":"release","value":14300.0,"version":"0.19.6"},{"target_kind":"release","value":13100.0,"version":"0.19.6"},{"target_kind":"release","value":16600.0,"version":"0.19.6"},{"target_kind":"release","value":15200.0,"version":"0.19.6"},{"target_kind":"release","value":13000.0,"version":"0.19.6"},{"target_kind":"release","value":12600.0,"version":"0.19.6"},{"target_kind":"release","value":11800.0,"version":"0.19.6"},{"target_kind":"release","value":14400.0,"version":"0.19.6"},{"target_kind":"release","value":12800.0,"version":"0.19.6"},{"target_kind":"release","value":13100.0,"version":"0.19.6"},{"target_kind":"release","value":11300.0,"version":"0.19.6"},{"target_kind":"release","value":12500.0,"version":"0.19.6"},{"target_kind":"release","value":11300.0,"version":"0.19.6"},{"target_kind":"release","value":10000.0,"version":"0.19.6"},{"target_kind":"release","value":9300.0,"version":"0.19.6"},{"target_kind":"release","value":9000.0,"version":"0.19.6"},{"target_kind":"release","value":11900.0,"version":"0.19.6"},{"target_kind":"release","value":8700.0,"version":"0.19.6"},{"target_kind":"release","value":8700.0,"version":"0.19.6"},{"target_kind":"release","value":7300.0,"version":"0.19.6"},{"target_kind":"release","value":8100.0,"version":"0.19.6"},{"target_kind":"release","value":15600.0,"version":"0.19.6"}],"description":"Sample distribution","encoding":{"color":"target_kind","x":"version","y":"value"},"id":"distribution-329d40b7fc63d1eb","kind":"distribution","options":{"feature":"SortedSet_lookup_benchmark","metric":"julia.wall.time","package":"DataStructures","series_id":"77d5eb6b8d76d564","unit":"ns"},"schema_version":"perfchecker-plot/1","title":"DataStructures · SortedSet_lookup_benchmark · julia.wall.time"};
+  const width = 1100, height = 620;
+  function install() {
+    const viewport = document.getElementById('offline-viewport');
+    const figure = document.getElementById('offline-figure');
+    if (!viewport || !figure) throw new Error('The exported Makie figure is missing');
+    const style = document.createElement('style');
+    style.textContent = `
+      body{margin:0;background:#f6f8fb;color:#17243b;font:14px system-ui,sans-serif}
+      .plot-toolbar{display:flex;align-items:center;flex-wrap:wrap;gap:8px;padding:10px 14px}
+      .plot-brand{font-size:11px;letter-spacing:.05em;color:#64748b;margin-right:auto}
+      .plot-toolbar button,#point-controls input{font:inherit;color:inherit;background:white;border:1px solid #c8d2e1;border-radius:6px;padding:7px 10px}
+      .plot-toolbar button{cursor:pointer}.plot-toolbar button:focus-visible,#point-controls input:focus-visible,#offline-viewport:focus-visible{outline:2px solid #2563eb;outline-offset:2px}
+      #point-controls{align-items:center;font-size:13px}#point-controls label{white-space:nowrap}
+      #point-readout{flex:1;min-width:220px;padding:10px;border-left:3px solid #2563eb;background:#edf3ff;overflow-wrap:anywhere}
+      #offline-viewport{box-sizing:border-box;border:1px solid #d5ddeb;background:white!important;overflow:auto!important;touch-action:pan-x pan-y}
+      #offline-surface{position:relative;margin-inline:auto}#offline-figure{position:absolute;left:0;top:0}
+      .popup:not(.show){display:none}.popup{box-sizing:border-box;max-width:calc(100vw - 16px);max-height:calc(100vh - 16px);overflow:auto;overflow-wrap:anywhere}
+      .plot-help{font-size:12px;color:#526078;padding:0 14px 10px;margin:0}
+      @media(max-width:600px){.plot-brand{flex-basis:100%}}
+    `;
+    document.head.append(style);
+    const toolbar = document.createElement('div');
+    toolbar.className = 'plot-toolbar';toolbar.setAttribute('aria-label','Plot controls');
+    const brand = document.createElement('span');brand.className='plot-brand';brand.textContent='PerfChecker.jl · SAVED MEASUREMENTS';toolbar.append(brand);
+    const button = (text,label,action) => {const node=document.createElement('button');node.textContent=text;node.setAttribute('aria-label',label);node.addEventListener('click',action);toolbar.append(node);return node};
+    let zoom=1,fitScale=1,availableHeight=height+2;
+    const surface=document.createElement('div');surface.id='offline-surface';
+    viewport.insertBefore(surface,figure);surface.append(figure);
+    const zoomLevel=document.createElement('output');zoomLevel.setAttribute('aria-live','polite');
+    const hidePopups=()=>document.querySelectorAll('.popup.show').forEach(popup=>popup.classList.remove('show'));
+    viewport.addEventListener('scroll',hidePopups,{passive:true});
+    const renderSize=()=>{
+      hidePopups();
+      const scale=fitScale*zoom;
+      viewport.style.height=Math.min(availableHeight,Math.ceil(height*scale)+2)+'px';
+      figure.style.transform='scale('+scale+')';
+      surface.style.width=(width*scale)+'px';surface.style.height=(height*scale)+'px';
+      zoomLevel.textContent=Math.round(zoom*100)+'%';
+    };
+    const resize=()=>{
+      if(viewport.clientWidth<=2)return;
+      availableHeight=Math.max(120,Math.min(720,window.innerHeight-viewport.offsetTop-50));
+      fitScale=Math.min(1,(viewport.clientWidth-2)/width,(availableHeight-2)/height);
+      renderSize();
+    };
+    const zoomTo=value=>{
+      const previous=zoom;zoom=Math.max(1,Math.min(6,value));renderSize();
+      viewport.scrollLeft=(viewport.scrollLeft+viewport.clientWidth/2)*zoom/previous-viewport.clientWidth/2;
+      viewport.scrollTop=(viewport.scrollTop+viewport.clientHeight/2)*zoom/previous-viewport.clientHeight/2;
+    };
+    const fit=()=>{zoom=1;resize();viewport.scrollTo(0,0)};
+    button('Fit','Fit plot',fit);button('−','Zoom out',()=>zoomTo(zoom/1.5));toolbar.append(zoomLevel);button('+','Zoom in',()=>zoomTo(zoom*1.5));
+    button('Model JSON','Download plot model JSON',()=>{
+      const url=URL.createObjectURL(new Blob([JSON.stringify(model,null,2)],{type:'application/json'}));
+      const link=document.createElement('a');link.href=url;link.download='perfchecker-'+String(model.kind)+'.json';link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+    });
+    viewport.before(toolbar);
+    const help=document.createElement('p');help.className='plot-help';help.textContent=(document.getElementById('point-index')?.dataset.readoutOnly==='true'?'No positive allocation weight. Inspect the recorded zero rows with the index above. ':document.getElementById('point-controls')?'Click a native mark to inspect it. Select an exact recorded row with the index above. ':'')+'Shift-drag or scroll to pan; + / − zoom, 0 fits the plot.';viewport.after(help);
+    viewport.setAttribute('role','group');viewport.tabIndex=0;
+    // WGL's picker consumes untransformed canvas coordinates; CSS viewport
+    // zoom changes its bounding rectangle. Keep popup page coordinates real.
+    viewport.addEventListener('mousedown',event=>{
+      const canvas=event.target.closest('canvas');if(!canvas)return;
+      const box=canvas.getBoundingClientRect();
+      if(!box.width||!box.height)return;
+      Object.defineProperties(event,{
+        clientX:{value:box.left+(event.clientX-box.left)*canvas.clientWidth/box.width},
+        clientY:{value:box.top+(event.clientY-box.top)*canvas.clientHeight/box.height},
+      });
+    },true);
+    viewport.addEventListener('mousedown',()=>{
+      document.querySelectorAll('.popup.show').forEach(popup=>{
+        const box=popup.getBoundingClientRect();
+        popup.style.left=(window.scrollX+Math.max(8,Math.min(box.left,innerWidth-box.width-8)))+'px';
+        popup.style.top=(window.scrollY+Math.max(8,Math.min(box.top,innerHeight-box.height-8)))+'px';
+      });
+    });
+    viewport.addEventListener('keydown',event=>{
+      if(event.target!==viewport)return;
+      if(['+','=','-','0','ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(event.key))event.preventDefault();
+      if(event.key==='+'||event.key==='=')zoomTo(zoom*1.5);
+      else if(event.key==='-')zoomTo(zoom/1.5);
+      else if(event.key==='0')fit();
+      else if(event.key.startsWith('Arrow'))viewport.scrollBy(event.key==='ArrowLeft'?-50:event.key==='ArrowRight'?50:0,event.key==='ArrowUp'?-50:event.key==='ArrowDown'?50:0);
+    });
+    let drag;
+    viewport.addEventListener('pointerdown',event=>{
+      if(event.pointerType!=='mouse'||event.button!==0||!event.shiftKey)return;
+      event.preventDefault();event.stopPropagation();viewport.setPointerCapture(event.pointerId);
+      drag={x:event.clientX,y:event.clientY,left:viewport.scrollLeft,top:viewport.scrollTop};
+    },true);
+    viewport.addEventListener('pointermove',event=>{if(drag){viewport.scrollLeft=drag.left+drag.x-event.clientX;viewport.scrollTop=drag.top+drag.y-event.clientY}});
+    viewport.addEventListener('pointerup',()=>drag=null);viewport.addEventListener('pointercancel',()=>drag=null);
+    let observedWidth;
+    new ResizeObserver(()=>{
+      const nextWidth=viewport.getBoundingClientRect().width;
+      if(nextWidth!==observedWidth){observedWidth=nextWidth;resize()}
+    }).observe(viewport);
+    window.addEventListener('resize',resize);resize();
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install);else install();
+})();
+</script></body></html>

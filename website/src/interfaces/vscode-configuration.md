@@ -55,9 +55,6 @@ installation confirmation. Setup uses `juliaExecutable`; cancellation requests
 worker cleanup, and **PerfChecker: Show worker output** records dependency
 errors.
 
-```@raw html
-<DocMedia video short recording="perfchecker-vscode-v101-short-01" src="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-01-r2.mp4" poster="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-01-r2-poster.jpg" subtitles="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-01-r2-en.vtt" walkthrough="/interfaces/vscode-videos.html#Full-tutorial" chapter="02 · Prepare Julia and the selected workspace" preload="none" alt="Actual native PerfChecker existing controller selection, resolved project and Studio Ready status" caption="Choose Use an existing controller, select the prepared project and wait for Studio Ready. The closing Reading guide summarizes the environment checks to make after setup. Recorded candidate: VSIX 7add564, Core 4eec7f3, VS Code 1.141.0 on Linux. The controller was prepared from Core source before recording; registered installation has separate qualification." />
-```
 
 For an MCP or local Codex connection, add `HTTP` explicitly to this controller,
 then follow [MCP configuration](../mcp-advisor.md). The setup installs the listed
@@ -102,9 +99,6 @@ Run **PerfChecker: Open Julia terminal** and inspect `Base.active_project()` and
 an interactive inspection surface; successful imports there are a useful setup
 check, not a performance result.
 
-```@raw html
-<DocMedia video short recording="perfchecker-vscode-v101-short-09" src="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-09.mp4" poster="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-09-poster.jpg" subtitles="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-09-en.vtt" walkthrough="/interfaces/vscode-videos.html#Full-tutorial" chapter="02 · Prepare Julia and the selected workspace" preload="none" alt="Actual native PerfChecker terminal, Julia REPL and debug sessions using two folder-specific controller projects" caption="Inspect VERSION and the actual active project in each surface. This recording uses Julia extension 1.249.2 with Julia 1.12.7 for REPL and debug, and Julia 1.13.1 for PerfChecker workers. Recorded build: VSIX 2e722, Core 4eec, VS Code 1.141 on Linux; the two source debug sessions have independent controller projects." />
-```
 
 ## Core and suite settings
 

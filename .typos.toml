@@ -9,6 +9,8 @@ extend-exclude = [
     "test/advisor_chat.jl",
     "website/documentation-plan.md",
     "website/src/public/examples/bibliography/timing-evidence.json",
+    # Generated Bonito/WGLMakie bundles and sessions retain their exact exported bytes.
+    "website/src/public/examples/plot-assets/**",
     # Exact Julia runtime type names are evidence, not editable English prose.
     "website/src/public/examples/real-packages/*-diagnostics/heap-types.json",
 ]

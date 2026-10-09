@@ -70,7 +70,7 @@ The same cases exist as TestItems tagged `:perf_only`, `:containers` and the str
 Choose the item for whole-test cost, the suite for the container operation alone.
 
 ```@raw html
-<p>Choose an operation in each container's tabs. Hover or focus a point for its value; use the metric buttons to show or hide curves.</p>
+<p>Choose an operation in each container's tabs. Guided views with a public HTML export provide point inspection and metric checkboxes; the other operations retain their matching static SVG and downloadable measurements.</p>
 <WorkloadAtlas directory="/examples/real-packages/containers" containers />
 ```
 
@@ -82,6 +82,11 @@ Choose the item for whole-test cost, the suite for the container operation alone
 ```
 
 Each container has a tab for construction and a tab for use. The overlay divides each release's minimum sample by that metric's minimum across releases; `1` is the lowest observed value. A zero GC minimum means a short sample had no collection, not that collection is free.
+
+The selected SortedSet lookup examples include interactive normalized curves,
+version curves, distributions, deltas and tradeoffs. Other catalogue entries
+show their static SVG. Open a full-size figure or download its JSON to inspect
+the recorded observations.
 
 ```@raw html
 <PackageGallery package-name="DataStructures container catalogue" directory="/examples/real-packages/containers" />
@@ -121,12 +126,20 @@ Before 0.15 the min-heap constructor was `binary_minheap(input)`. The example se
 
 Compare 0.17.20 with 0.18.0 for the heap ordering transition, and 0.18.22 with 0.19.0 for the next series.
 
+The figures below are PerfChecker exports of the recorded measurements. The
+gallery embeds the public HTML export when one is published, with its own metric
+controls, and otherwise shows the static SVG. Its workload navigation belongs to
+this documentation. To open the same plot outside the site or render its saved
+JSON again, follow [Render a published serialized view again](../interfaces/visualization.md#Render-a-published-serialized-view-again).
+Rendering the JSON preserves its recorded values; it does not recreate a complete
+run bundle or perform a new benchmark.
+
 ### Where the history stops
 
 `compatibility.jl DataStructures` checks old releases in separate processes. **0.9.0 and 0.10.0 fail to load on Julia 1.13** because they define methods for the removed `Base.start` API, so the history starts at 0.11.0. Testing earlier versions needs an older Julia runtime.
 
 ```@raw html
-<NormalizedMeasurements source="/examples/real-packages/datastructures/normalized.json" figure="/examples/real-packages/datastructures/normalized.svg" package-name="DataStructures" />
+<NormalizedMeasurements source="/examples/real-packages/datastructures/normalized.json" figure="/examples/real-packages/datastructures/normalized.svg" html="/examples/real-packages/datastructures/normalized.html" package-name="DataStructures" />
 <WorkloadAtlas directory="/examples/real-packages/datastructures" />
 <PackageGallery package-name="DataStructures" directory="/examples/real-packages/datastructures" />
 ```
@@ -140,6 +153,10 @@ The vector implementation mostly exercises Base Julia, so it acts as a control. 
 ```
 
 ## Explain the cost
+
+These recorded profiles describe **DataStructures 0.19.6 only**. They attribute
+work within that release, rather than comparing two releases. Use the measured
+histories above to compare versions, then profile a workload to locate its cost.
 
 ```sh
 julia --project=. measure.jl profiles

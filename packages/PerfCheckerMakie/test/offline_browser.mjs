@@ -1,5 +1,5 @@
 // Exercise a genuine public WGL export against its saved source model.
-// Usage: node offline_browser.mjs EXPORT.html|HTTP_URL SOURCE.json [SCREENSHOT.png]
+// Usage: node offline_browser.mjs EXPORT.html|HTTP_URL SOURCE.json|- [SCREENSHOT.png]
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -7,7 +7,7 @@ import {createRequire} from 'node:module';
 import {pathToFileURL} from 'node:url';
 
 assert(process.argv.length >= 4 && process.argv.length <= 5);
-const saved=JSON.parse(fs.readFileSync(process.argv[3],'utf8')),model=saved.plot??saved;
+const saved=JSON.parse(fs.readFileSync(process.argv[3]==='-'?0:process.argv[3],'utf8')),model=saved.plot??saved;
 const target=/^https?:\/\//.test(process.argv[2])?new URL(process.argv[2]):pathToFileURL(path.resolve(process.argv[2]));
 const tooling=process.env.PERFCHECKER_PLOT_BROWSER_TOOLING;
 const {chromium}=createRequire(tooling?path.join(path.resolve(tooling),'package.json'):import.meta.url)('playwright');
@@ -133,7 +133,15 @@ try {
       'The visible native popup fits entirely within the window');};
   assert((await popup.innerText()).startsWith('Point '+count+':'),'Clicking the visible point identifies the selected record');
   await assertPopupBounds();
-  const firstClickable=model.kind==='allocation_pie'?finite.findIndex(row=>row.bytes>0)+1:1;
+  let firstClickable=model.kind==='allocation_pie'?finite.findIndex(row=>row.bytes>0)+1:1;
+  if(model.kind==='time_allocation_tradeoff'&&count>1){
+    const candidates=await Promise.all(finite.map((_,index)=>inspectGeometry(index+1)));
+    const separation=candidates.map((candidate,index)=>Math.min(...candidates
+      .filter((_,other)=>other!==index)
+      .map(other=>Math.hypot(...candidate.sourcePixel.map((value,axis)=>value-other.sourcePixel[axis])))));
+    firstClickable=separation.slice(0,-1).reduce((best,value,index)=>value>separation[best]?index:best,0)+1;
+    console.log(JSON.stringify({kind:model.kind,unselectedPoint:firstClickable,separationPixels:separation[firstClickable-1]}));
+  }
   const firstSource=await inspectGeometry(firstClickable);
   await page.mouse.click(...firstSource.sourcePixel);
   const picked=Number((await popup.innerText()).match(/^Point (\d+):/)?.[1]);

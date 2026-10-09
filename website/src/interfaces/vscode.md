@@ -53,9 +53,6 @@ See [Installation](../guide/installation.md) for the core and interface packages
 
 ## Get a first result
 
-```@raw html
-<DocMedia video short recording="perfchecker-vscode-v101-short-10" src="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-10.mp4" poster="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-10-poster.jpg" subtitles="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-10-en.vtt" walkthrough="/interfaces/vscode-videos.html#Full-tutorial" chapter="03 · A first check with TestItemRunner" preload="none" alt="Actual native VS Code first PerfChecker TestItem, source oracle and run controls" caption="Start with the Vector reduction TestItem and its explicit expected sum, then run its native measurement. Recorded build: VSIX 75f84f, Core 6f, VS Code 1.141 on Linux." />
-```
 
 
 For a project using `@testitem`:
@@ -90,9 +87,6 @@ Native TestItem JSON is a separate result from a suite report. The extension's
 **Open visual output** reads saved suite measurements; prepare and run a suite
 for the distribution, profile and version-series workflow below.
 
-```@raw html
-<DocMedia video short recording="perfchecker-vscode-v101-short-02" src="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-02.mp4" poster="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-02-poster.jpg" subtitles="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-02-en.vtt" walkthrough="/interfaces/vscode-videos.html#Full-tutorial" chapter="03 · A first check with TestItemRunner" preload="none" alt="Native VS Code TestItem evidence with measured seconds, bytes and item correctness" caption="Read the actual native item's JSON and its measurement boundary. This excerpt uses the same voice and passage as the full tutorial; its recorded build is VSIX 75f84f, Core 6f, VS Code 1.141 on Linux." />
-```
 
 Browse the [video walkthroughs](vscode-videos.md) for the related workflow.
 
@@ -133,9 +127,6 @@ These are VS Code editor tabs and native surfaces. Arrange them with VS Code's e
 
 ## Design a suite and compare targets
 
-```@raw html
-<DocMedia video short recording="perfchecker-vscode-v101-short-11" src="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-11.mp4" poster="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-11-poster.jpg" subtitles="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-11-en.vtt" walkthrough="/interfaces/vscode-videos.html#Full-tutorial" chapter="04 · Design a suite and select the experiment" preload="none" alt="Actual PerfChecker declared suite source and native workload selection in VS Code" caption="Keep the factory, measured operation and required correctness oracle together. Recorded builds: VSIX 75f84f, Core 6f and 975d, VS Code 1.141 on Linux." />
-```
 
 The suite editor supports global and per-feature check selection, version ranges, filtering, sorting and ordering. Name targets for a branch, tag, commit, working tree or release, then choose exact or grouped baselines. Grouped references can use median, mean, minimum or maximum aggregation.
 
@@ -170,9 +161,6 @@ Collector toggles select or deselect matching runs. Unavailable conditions show 
 <DocMedia src="/assets/screenshots/vscode-suite-designer.png" alt="Running PerfChecker V1 suite-designer webview with workload filters, selected check types, target controls and a run-selection summary" caption="Review the exact runs before executing: filtering controls visibility, while selection controls what will run. The screenshot uses demonstration workloads in the extension's real suite designer." />
 ```
 
-```@raw html
-<DocMedia video short recording="perfchecker-vscode-v101-short-03" src="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-03.mp4" poster="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-03-poster.jpg" subtitles="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-03-en.vtt" walkthrough="/interfaces/vscode-videos.html#Full-tutorial" chapter="04 · Design a suite and select the experiment" preload="none" alt="Actual native PerfChecker suite filtering, visible selection and preview controls" caption="Search for the intended workload, select the visible checks and inspect Preview before running. The close views preserve the actual controls. Recorded build: VSIX 75f84f, Core 975d, VS Code 1.141 on Linux." />
-```
 
 ```@raw html
 <a id="Results"></a>
@@ -180,9 +168,6 @@ Collector toggles select or deselect matching runs. Unavailable conditions show 
 
 ## Choose the evidence for your question
 
-```@raw html
-<DocMedia video short recording="perfchecker-vscode-v101-short-12" src="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-12.mp4" poster="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-12-poster.jpg" subtitles="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-12-en.vtt" walkthrough="/interfaces/vscode-videos.html#Full-tutorial" chapter="04 · Design a suite and select the experiment" preload="none" alt="Actual native PerfChecker check controls for BenchmarkTools, Chairmarks, CPU, wall-time and allocation evidence" caption="Choose the check that answers the question and inspect its prerequisites. The footage shows the real native tutorial workload. Recorded build: VSIX 75f84f, Core 975d, VS Code 1.141 on Linux." />
-```
 
 | Question | Start with | Read before selecting |
 | --- | --- | --- |
@@ -198,9 +183,6 @@ for every supported check and its interpretation.
 
 ### Compare a working change with a known revision
 
-```@raw html
-<DocMedia video short recording="perfchecker-vscode-v101-short-13" src="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-13.mp4" poster="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-13-poster.jpg" subtitles="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-13-en.vtt" walkthrough="/interfaces/vscode-videos.html#Full-tutorial" chapter="05 · Targets, comparison policy and cancellation" preload="none" alt="Actual native PerfChecker comparison package, feature, reference aggregation and target controls" caption="Resolve the intended Git state and review the baseline, candidate and aggregation policy before a comparison. Recorded build: VSIX 75f84f, Core 975d, VS Code 1.141 on Linux." />
-```
 
 1. Prepare a suite containing the same workload for both targets.
 2. Add a named baseline from a branch, tag or recent commit. Prefer a full commit
@@ -232,9 +214,6 @@ Read [Suites and comparisons](../suites-and-comparisons.md) before interpreting 
 
 ## Investigate and verify
 
-```@raw html
-<DocMedia video short recording="perfchecker-vscode-v101-short-18" src="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-18.mp4" poster="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-18-poster.jpg" subtitles="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-18-en.vtt" walkthrough="/interfaces/vscode-videos.html#Full-tutorial" chapter="09 · Scenarios and available analyzers" preload="none" alt="Actual native PerfChecker investigation benchmark, analyzers and Aqua quality diagnostic" caption="Inspect the benchmark and analyzer outcomes individually. The Aqua diagnostic frame is held for reading: the analyzer completed with correctness not checked and quality failed; this passage does not imply a new execution. Recorded build: VSIX 75f84f, Core 975d, VS Code 1.141 on Linux." />
-```
 
 Use **PerfChecker: Open investigations** for shared scenarios. **Discover scenarios from tests** inspects declarations and proposes candidates without executing the target program. Proposed candidates need an explicit factory and correctness oracle before they become measurable cases.
 
@@ -255,9 +234,6 @@ Measure declared cases, diagnose with available analyzers, and choose **Advise f
 
 ## Cancel a run and wait for cleanup
 
-```@raw html
-<DocMedia video short recording="perfchecker-vscode-v101-short-14" src="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-14.mp4" poster="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-14-poster.jpg" subtitles="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-14-en.vtt" walkthrough="/interfaces/vscode-videos.html#Full-tutorial" chapter="05 · Targets, comparison policy and cancellation" preload="none" alt="Actual native PerfChecker investigation cancellation, controller cleanup and recovery checklist" caption="Cancel an active investigation and wait for the final controller-cleanup status. The recovery checklist explains subsequent checks; it does not show those checks executing. Recorded build: VSIX 75f84f, Core 975d, VS Code 1.141 on Linux." />
-```
 
 Use **Cancel** in a suite execution notification, the suite Testing profile, an
 investigation or a native Testing run. PerfChecker asks the Julia controller to

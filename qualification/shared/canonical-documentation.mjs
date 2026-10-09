@@ -5,7 +5,9 @@ import { resolve, join, relative, posix } from 'node:path';
 import { spawn } from 'node:child_process';
 import { once } from 'node:events';
 import { inflateSync } from 'node:zlib';
+import { createHash } from 'node:crypto';
 import { readExport } from '../../website/deploy-sftp.mjs';
+import { checkRecordedInteractions } from './recorded-plots.mjs';
 const root = resolve(process.argv[2] ?? 'website/build/sftp');
 const origin = 'https://perfchecker.mirageinteractive.fr';
 const browserChecks = process.argv.includes('--browser');
@@ -47,7 +49,9 @@ async function enumerate(directory) {
   }
   return paths;
 }
-for (const channel of await readdir(root)) {
+const channels = await readdir(root);
+const interactionChannel = channels.includes('dev') ? 'dev' : channels.includes('stable') ? 'stable' : channels[0];
+for (const channel of channels) {
   const site = join(root, channel, 'site');
   const info = JSON.parse(await readFile(join(site, 'build-info.json'), 'utf8'));
   assert.equal(info.channel, channel); assert.equal(info.url, origin + info.base);
@@ -223,6 +227,83 @@ for (const channel of await readdir(root)) {
     const picker = page.locator('.VPNavBar .VPVersionPicker');
     await picker.getByRole('button', { name: label, exact: true }).click();
     await picker.getByRole('link', { name: label, exact: true }).waitFor({ state: 'visible' });
+    if (channel === interactionChannel) {
+      const catalog = JSON.parse(await readFile(join(site, 'examples/real-packages/containers/catalog.json'), 'utf8'));
+      const marker = catalog.interactive_export;
+      if (info.version === '1.0.1') assert.ok(marker, 'Core 1.0.1 requires the published native interactive exports');
+      if (marker) {
+        assert.equal(marker.renderer, 'PerfChecker.performance_plot_html');
+        assert.equal(marker.input_kind, 'published_serialized_plot');
+        const digest = bytes => createHash('sha256').update(bytes).digest('hex');
+        const guided = marker.selection === 'guided_examples', kinds = new Set();
+        if (info.version === '1.0.1') assert.ok(guided, 'Guided native examples must be selected deliberately');
+        let nativeExports = 0;
+        for (const packageName of ['datastructures', 'containers', 'oxygen', 'oxygen-features',
+          'datastructures-profiles', 'oxygen-profiles']) {
+          const directory = join(site, 'examples/real-packages', packageName);
+          const recorded = JSON.parse(await readFile(join(directory, 'catalog.json'), 'utf8'));
+          assert.equal(recorded.interactive_export?.renderer, marker.renderer);
+          assert.equal(recorded.interactive_export?.companion_version, info.version,
+            `${packageName}: public renderer must match the documented package version`);
+          let selected = 0;
+          for (const view of recorded.views) {
+            for (const entry of [view, ...(view.patch_windows ?? [])]) {
+              if (!entry.html) continue;
+              assert.equal(digest(await readFile(join(directory, entry.json))), entry.html_input_sha256);
+              const html = await readFile(join(directory, entry.html));
+              assert.equal(digest(html), digest(await readFile(join('website/src/public/examples/real-packages', packageName, entry.html))),
+                `${packageName}/${entry.html}: the build must preserve the exact native export`);
+              if (!guided) assert.equal(digest(html), entry.html_sha256);
+              else assert.equal(entry.html_sha256, undefined, 'HTML hashes must not make catalogue provenance circular');
+              kinds.add(view.kind); selected++;
+              nativeExports++;
+            }
+          }
+          if (guided) assert.equal(selected, packageName.endsWith('-profiles') ? 7 : 5,
+            `${packageName}: selected examples cover its useful plot families`);
+          if (['datastructures', 'oxygen'].includes(packageName)) {
+            const sourceHash = digest(await readFile(join(directory, 'normalized.json')));
+            const entry = recorded.views.find(view => view.html_input_sha256 === sourceHash);
+            assert.ok(entry, `${packageName}: normalized alias must retain its source values`);
+            assert.equal(digest(await readFile(join(directory, 'normalized.html'))),
+              digest(await readFile(join(directory, entry.html))));
+          }
+        }
+        assert.equal(nativeExports, guided ? 34 : 103);
+        const normalized = catalog.views.filter(view => view.kind === 'normalized_metrics');
+        assert.equal(normalized.length, 70);
+        for (const view of normalized) {
+          await access(join(site, 'examples/real-packages/containers', view.svg));
+          await access(join(site, 'examples/real-packages/containers', view.json));
+          if (view.html) await access(join(site, 'examples/real-packages/containers', view.html));
+          else if (!guided) assert.fail(`Missing native HTML for ${view.id}`);
+        }
+        if (guided) {
+          assert.equal(kinds.size, 12, 'The guided exports cover all twelve native plot families');
+          const bibliography = join(site, 'examples/bibliography/history');
+          const history = JSON.parse(await readFile(join(bibliography, 'catalog.json'), 'utf8'));
+          assert.equal(history.views.length, 6, 'The six measured Bibliography views remain available');
+          for (const view of history.views) for (const file of [view.html, view.evidence])
+            assert.equal(digest(await readFile(join(bibliography, file))),
+              digest(await readFile(join('website/src/public/examples/bibliography/history', file))),
+              `Bibliography/${file}: the build preserves the measured source and native export`);
+          const assets = exportArtifact.files.filter(file => file.path.startsWith('examples/plot-assets/'));
+          assert(assets.some(file => file.path.endsWith('.js')) && assets.some(file => file.path.endsWith('.bin')),
+            'Shared WGL assets include the JavaScript modules and saved sessions');
+          for (const file of assets) assert.equal(digest(await readFile(file.absolute)),
+            digest(await readFile(join('website/src/public', file.path))), `Shared asset changed: ${file.path}`);
+        }
+        const output = join(root, channel, 'browser-recorded');
+        await mkdir(output, { recursive: true });
+        await page.setViewportSize({ width: 1440, height: 1000 });
+        const checks = await checkRecordedInteractions(page, local, output);
+        await writeFile(join(output, 'recorded-plots-result.json'),
+          JSON.stringify({ passed: true, channel, revision: info.revision, renderer: marker.renderer, checks }, null, 2) + '\n');
+        console.log(`${channel}: ${nativeExports} real-package native HTML/source hashes${guided ? ', six Bibliography exports and shared assets' : ''}, and two aliases passed; public-renderer checks executed: ${checks.join('; ')}`);
+      } else {
+        console.log(`${channel}: legacy ${info.version} export has no native-gallery marker; native interaction checks were not executed`);
+      }
+    }
     assert.deepEqual(errors, []);
     console.log(`${channel}: mobile navigation, search, version picker, six full-size VS Code screenshots and Supposition guide passed in Chromium`);
   } catch (error) {

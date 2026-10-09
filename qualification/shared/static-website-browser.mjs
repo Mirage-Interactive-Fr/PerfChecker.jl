@@ -60,8 +60,9 @@ try{
     await page.screenshot({path:path.join(output,`static-home-${width}.png`),fullPage:true});
     if(width===390){
       const chart=page.locator('.normalized-measurements');
-      await chart.locator('svg').waitFor();
-      const bounds=await chart.locator('svg').evaluate(svg=>{
+      const frame=chart.frameLocator('iframe');
+      await frame.locator('svg circle').last().waitFor();
+      const bounds=await frame.locator('svg').evaluate(svg=>{
         const view=svg.viewBox.baseVal;
         return [...svg.querySelectorAll('text')].map(text=>{
           const box=text.getBBox();
@@ -71,18 +72,22 @@ try{
       });
       // Version labels are rotated. The unrotated axis legend must fit its SVG;
       // the narrow viewport intentionally offers horizontal chart scrolling.
-      assert(bounds.find(box=>box.text==='Bibliography version')?.inside);
-      const scroller=chart.locator('.normalized-scroll');
+      assert(bounds.find(box=>box.text==='Package version')?.inside);
+      const scroller=frame.locator('.scroll').first();
       const sizing=await scroller.evaluate(element=>({client:element.clientWidth,scroll:element.scrollWidth}));
       assert(sizing.scroll>sizing.client);
       await scroller.evaluate(element=>{element.scrollLeft=(element.scrollWidth-element.clientWidth)/2});
       await chart.screenshot({path:path.join(output,'static-chart-390.png')});
-      const lastPoint=chart.locator('svg circle').last();
+      const lastPoint=frame.locator('svg circle').last();
       await lastPoint.focus();
       assert((await scroller.evaluate(element=>element.scrollLeft))>0);
       const viewport=await scroller.boundingBox(), point=await lastPoint.boundingBox();
       assert(point.x>=viewport.x&&point.x+point.width<=viewport.x+viewport.width,
         'Keyboard focus must reveal the final point inside the narrow chart');
+      assert((await frame.locator('#readout').innerText()).includes('ratio'));
+      const exported=await chart.getByRole('link',{name:'Open the same interactive export'}).getAttribute('href');
+      assert.equal(await chart.locator('iframe').getAttribute('src'),exported);
+      assert.equal((await page.request.get(new URL(exported,base).href)).status(),200);
     }
   }
   checks.push('root version catalogue advertises this installed version and the canonical dev channel');

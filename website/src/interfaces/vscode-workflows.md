@@ -38,9 +38,31 @@ count and collector beside the chart. A narrow distribution still describes
 only that recorded configuration; it does not establish a general property
 of the function.
 
-```@raw html
-<DocMedia video short recording="perfchecker-vscode-v101-short-15" src="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-15.mp4" poster="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-15-poster.jpg" subtitles="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-15-en.vtt" walkthrough="/interfaces/vscode-videos.html#Full-tutorial" chapter="06 · Read the saved plots" preload="none" alt="Actual PerfChecker saved distribution, allocation median of 48 bytes, raw series and source JSON in native VS Code" caption="Inspect actual worker measurements in their own units. The 48 B median is read from the recorded Example hello report. Recorded build: VSIX 75f84f, Core 975d, VS Code 1.141 on Linux." />
-```
+With the updated **1.0.1 extension**, compatible versions share the same
+horizontal scale. The metric, unit and measurement definition must agree;
+incompatible series keep separate scales. Read the displayed range before
+comparing the positions of points.
+
+1. Hover, tap or focus a sample to inspect its value and rank in the full
+   sorted sample set.
+2. Choose **Zoom +** to explore around that sample, or around the range centre
+   when no visible sample is selected. **Zoom −** widens the view.
+3. Use **←** (**Pan left**) and **→** (**Pan right**) to move through the
+   recorded range. Open **Range** for exact **Minimum** and **Maximum** values or the keyboard-accessible
+   sliders. These controls update every compatible version together.
+4. Read **visible / total** to see how many samples lie inside the chosen
+   range. Points outside this view remain in the saved data; zoom does not
+   reject outliers or recompute the global statistics.
+5. Choose **Fit** to restore the exact full recorded range, including its
+   extremes. Constant or single-point distributions disable controls that
+   cannot change the view.
+
+The displayed statistics always use the complete recorded distribution.
+Large distributions plot at most 512 sampled points while keeping the extremes
+and full-set sorted ranks. A notice states the plotted and total counts; all samples
+remain available in JSON. These new controls are being qualified for the 1.0.1
+release; the earlier recording below does not demonstrate them.
+
 
 ### Read normalized overlays
 
@@ -48,9 +70,6 @@ Each metric uses its own reference minimum. A ratio of one describes that
 metric's minimum; inspect the raw value and unit in the tooltip before drawing
 a conclusion. The example below preserves the actual saved version series.
 
-```@raw html
-<DocMedia video short recording="perfchecker-vscode-v101-short-04" src="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-04.mp4" poster="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-04-poster.jpg" subtitles="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-04-en.vtt" walkthrough="/interfaces/vscode-videos.html#Full-tutorial" chapter="06 · Read the saved plots" preload="none" alt="Actual native PerfChecker minimum-relative chart, raw units and recorded version tooltip" caption="Read each metric against its own minimum, then inspect its raw value. The recorded tooltip is 136 ns with ratio 1.0149; units remain separate. Recorded build: VSIX 75f84f, Core 975d, VS Code 1.141 on Linux." />
-```
 
 ### Follow a recorded profile
 
@@ -59,15 +78,46 @@ frame names and source locations, then inspect the collector's sampling
 boundary. Use a profile to choose a workload and a correctness protocol for
 the next experiment.
 
-```@raw html
-<DocMedia video short recording="perfchecker-vscode-v101-short-16" src="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-16.mp4" poster="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-16-poster.jpg" subtitles="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-16-en.vtt" walkthrough="/interfaces/vscode-videos.html#Full-tutorial" chapter="07 · Inspect a real flame graph" preload="none" alt="Actual native PerfChecker CPU flame graph with a closer view of sum_squares, materialize and copy" caption="Follow real recorded profile stacks. The closer view preserves the original frame labels; profile weights describe the stated collector. Recorded build: VSIX 75f84f, Core 975d, VS Code 1.141 on Linux." />
-```
 
 These are passages from the full tutorial, with English captions and the
 original narration. The [video walkthrough index](vscode-videos.md) groups
 them by action.
 
 For custom Julia figures, load [PerfCheckerMakie](visualization.md) with your chosen Makie backend. The core notebook's `display(bundle)` presents a bundle; it does not automatically create every optional graphical backend. Save reports or create figures explicitly when you need reusable plots.
+
+## Ask about a saved suite
+
+Attaching suite measurements requires **PerfChecker for VS Code 1.0.1 or
+later** and a controller with **PerfChecker core 1.0.1 or later providing
+canonical measurement summaries**. This integration is being qualified before
+the 1.0.1 release. Core **1.0.0** does not provide those summaries: Send displays
+an explicit limitation and sends no measurements to the provider. Updating the
+extension alone does not update the selected Julia controller.
+
+1. Open the intended workspace and its completed suite output. Keep the saved
+   suite report, version-series report and original run bundle together under
+   that folder's configured reports directory.
+2. Open Chat and select **01 · Advice**. Configure an optional MCP advice tool
+   in text mode, or explicitly connect a local MCP server.
+3. In **Attach saved evidence**, choose the **Suite** entry for the intended
+   run. The existing Investigation entries remain available separately.
+   Opening Chat and choosing the run read its saved metadata without running
+   benchmarks, starting a projection worker or sending a provider request.
+4. Write a question and choose **Send question**. PerfChecker checks the
+   bundle's identity and byte integrity, reads its canonical measurements
+   locally through the selected controller, then sends bounded evidence to
+   the configured MCP tool. The evidence retains quantities, units,
+   measurement definitions, collectors, correctness and execution
+   qualifications. Raw source files and artifacts are not attached.
+5. Inspect the reply as unverified advice. Use **Cancel** to stop an active
+   request and wait for cleanup. A modified or unsupported bundle is refused
+   before the provider receives measurements.
+
+Selection identifies that workspace and saved run explicitly; it does not pick
+a newer unrelated bundle. No new measurement is requested by Send. A small
+sample or an unpaired run remains limited evidence, even when the provider
+returns a confident answer. Compare compatible recorded results and verify
+correctness before accepting a performance claim.
 
 ## Notebook versions
 
@@ -202,9 +252,6 @@ completed reports remain unchanged.
    source. Changing selectors or reopening retains saved evidence without
    launching the checks again.
 
-```@raw html
-<DocMedia video short recording="perfchecker-vscode-v101-short-05" src="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-05.mp4" poster="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-05-poster.jpg" subtitles="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-05-en.vtt" walkthrough="/interfaces/vscode-videos.html#Full-tutorial" chapter="08 · Pluto notebooks inside VS Code" preload="none" alt="Actual native PerfChecker Pluto cell editing, reactive output, source autosave, Save completed reports and notebook reopening" caption="Submit a cell edit, inspect its reactive output and retain the saved notebook source separately from completed reports. Then reopen the actual notebook. The source interaction is slowed and frames are held for reading. Recorded candidate: VSIX 7add564, Core 4eec7f3, VS Code 1.141.0 on Linux." />
-```
 
 ### Manage the session and saved source
 
@@ -238,9 +285,6 @@ your default browser. Normal **New**, **Open** and **Recent** navigation stays
 inside the VS Code editor. See the [qualification notes](vscode.md#Qualification-and-reporting-a-problem)
 for the established platform scope of these browser interactions.
 
-```@raw html
-<DocMedia video short recording="perfchecker-vscode-v101-short-17" src="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-17.mp4" poster="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-17-poster.jpg" subtitles="/assets/videos/vscode/v101/perfchecker-vscode-1.0.1-short-17-en.vtt" walkthrough="/interfaces/vscode-videos.html#Full-tutorial" chapter="08 · Pluto notebooks inside VS Code" preload="none" alt="Actual native PerfChecker Pluto evaluated cell, Shutdown confirmation Cancel and Confirm, and final session state" caption="Inspect the evaluated result 9, cancel the notebook's shutdown question, then confirm it and inspect the final session state. Actions are slowed and frames held for reading. Recorded candidate: VSIX b899ea751d7b, Core 59578c840d94, VS Code 1.141.0 on Linux. Owned workers, private files and allocation journals were checked before test teardown; the shared listener remained available. This passage does not establish every platform or arbitrary callback completion after a forced stop." />
-```
 
 Core cleans its owned worker environments, allocation journals and `.mem`
 files separately. A workload's `cleanup(state)` callback runs during normal

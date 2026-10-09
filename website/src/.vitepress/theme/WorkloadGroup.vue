@@ -8,7 +8,7 @@ const operationNames:Record<string,string>={build:'Construction',lookup:'Lookup'
 const options=computed(()=>props.group.cases.flatMap((view:any)=>{
  const op=view.workload.split('_').at(-1)
  const name=operationNames[op]??(view.collector?.startsWith('chairmarks')?'Chairmarks':'BenchmarkTools')
- return [{view,label:props.group.cases.length>1?name:'All releases',json:view.json,svg:view.svg,patch:false},
+ return [{view,label:props.group.cases.length>1?name:'All releases',json:view.json,svg:view.svg,html:view.html,patch:false},
  ...(view.patch_windows??[]).map((patch:any)=>({view,...patch,label:(props.group.cases.length>1?name+' · ':'')+patch.label,patch:true}))]
 }))
 const active=computed(()=>options.value[selected.value])
@@ -20,7 +20,7 @@ const explanation=computed(()=>{
  if(op==='traverse')return 'Start with a prepared container and measure traversal of its contents. Construction is excluded.'
  if(op==='connectivity')return 'Prepare the unions before timing, then measure the connectivity and group-count checks.'
  if(op==='prefixsum')return 'Prepare the tree before timing, then query the prefix sums.'
- return 'Measure this workload with '+(active.value.view.collector?.startsWith('chairmarks')?'Chairmarks':'BenchmarkTools')+'. Inspect a point to read the recorded value and its unit.'
+ return 'Recorded with '+(active.value.view.collector?.startsWith('chairmarks')?'Chairmarks':'BenchmarkTools')+'. '+(active.value.html?'Inspect a point to read the recorded value and its unit.':'Open the static figure or serialized plot for its values and units.')
 })
 function key(event:KeyboardEvent,index:number){
  const next=event.key==='Home'?0:event.key==='End'?options.value.length-1:event.key==='ArrowRight'?(index+1)%options.value.length:event.key==='ArrowLeft'?(index+options.value.length-1)%options.value.length:null
@@ -37,7 +37,7 @@ function key(event:KeyboardEvent,index:number){
    <h4>{{ active.view.workload.replaceAll('_',' ') }} · {{ active.view.collector?.startsWith('chairmarks')?'Chairmarks':'BenchmarkTools' }}</h4>
    <p>{{ explanation }}</p>
    <p v-if="active.patch">This view focuses on {{ active.label }}. Ratios keep the reference minimum from the complete history.</p>
-   <NormalizedMeasurements compact :key="active.json" :source="directory+'/'+active.json" :figure="directory+'/'+active.svg" :package-name="active.view.package" />
+   <NormalizedMeasurements compact :key="active.json" :source="directory+'/'+active.json" :figure="directory+'/'+active.svg" :html="active.html ? directory+'/'+active.html : undefined" :package-name="active.view.package" />
    <p class="observation">{{ observations(active.view.id) }}{{ active.patch?' This observation refers to the full history.':'' }}</p>
    <a :href="withBase(directory+'/'+active.view.terminal)">Unicode plot of the complete history</a>
   </div>

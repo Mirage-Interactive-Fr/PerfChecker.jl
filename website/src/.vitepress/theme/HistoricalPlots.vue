@@ -47,7 +47,7 @@ watch(view,async(current,_,onCleanup)=>{
       </div>
       <p class="history-reading-guide">{{ readingGuide[selected] }}</p>
       <figure v-if="view" class="doc-screenshot">
-        <iframe :key="view.id" class="doc-interactive history-plot" :src="withBase(root+view.html)" :title="`Measured Bibliography history: ${view.label}`" sandbox="allow-scripts allow-same-origin" />
+        <iframe :key="view.id" class="doc-interactive history-plot" :src="withBase(root+view.html)" :title="`Measured Bibliography history: ${view.label}`" sandbox="allow-scripts allow-same-origin allow-downloads" />
         <figcaption>Same BibTeX input across the tagged versions. Julia {{ catalog.runtime.version }} · Windows · {{ catalog.runtime.threads }} worker thread. Source and dependency revisions are retained with the measurements.</figcaption>
       </figure>
       <p v-if="view?.kind==='normalized_metrics'">Toggle a measurement to isolate its curve; hover or focus a point to inspect its raw value and ratio. Each curve has its own minimum at 1.</p>

@@ -105,6 +105,83 @@ Compare two numbers only when their measurement definitions and comparison keys 
 - A changed runtime or environment is a **warning**.
 - A missing measurement stays missing. It never becomes an improvement.
 
+## Reopen a saved measurement
+
+Keep the report directory printed by the run, including its `suite-result.json`
+and `bundles/` directory. Replace the paths below with that real directory.
+These routes read saved evidence; they do not collect new samples.
+
+::: tabs
+
+== VS Code
+
+Open the workspace containing the original suite. Configure its actual suite
+file, factory and profile, and set `perfchecker.reports` to the saved report directory.
+Refresh the suite plan, then open **Output** for the matching workload or run.
+The plan identifies the workload; the reports supply its recorded values.
+Do not launch the plan again merely to reopen the result. An arbitrary plot
+JSON or an exported `plan.json` is not an importable replacement for this pair.
+
+Select the recorded versions and a compatible metric before comparing their
+distributions. Read the units and the full-distribution summary alongside the
+visible samples. The [VS Code walkthrough](../interfaces/vscode-workflows.md)
+explains the available controls and their version requirements.
+
+== Pluto
+
+In the prepared [Pluto environment](../interfaces/repl-pluto.md#Pluto), generate
+a notebook that reads the saved report:
+
+```julia
+using PerfChecker, PerfCheckerPluto
+reportdir = abspath("results/<run>")
+notebook = prepare_pluto_dashboard("saved-results.jl";
+    project = dirname(Base.active_project()),
+    result_path = joinpath(reportdir, "suite-result.json"))
+launch_pluto_dashboard(notebook)
+```
+
+Without `suite_path`, this notebook reads reports only. Notebook generation and
+launch are separate calls; opening it evaluates its Julia cells but does not
+schedule a benchmark. Keep the report files in place when reopening the notebook.
+Choose a new notebook filename if `saved-results.jl` already exists.
+
+== Web (Oxygen)
+
+In the prepared [Web environment](../interfaces/web-studio.md):
+
+```julia
+using PerfChecker, PerfCheckerWeb, PerfCheckerMakie, WGLMakie
+serve_suite("results/<run>"; host = "127.0.0.1", port = 8080)
+```
+
+While this local server runs, open `http://127.0.0.1:8080/perfchecker/v1/` on
+the same machine. Select the saved run and its available plots. This directory
+overload is a report viewer; a measurement controller requires a suite.
+See [server configuration](../interfaces/web-studio.md#Safety) for remote access.
+
+== REPL / CLI
+
+In a controller with PerfChecker and UnicodePlots installed:
+
+```julia
+using PerfChecker, UnicodePlots
+bundle = read_run_bundle("results/<run>/bundles/<bundle>")
+catalog = plot_catalog(bundle)
+[(entry["id"], entry["title"]) for entry in catalog]
+isempty(catalog) && error("This bundle has no supported plots")
+display(terminal_plot(bundle; plot_id = first(catalog)["id"]))
+```
+
+Use the actual bundle directory and choose a plot ID from its catalogue.
+Terminal plots show saved values; they do not provide the browser's pointer
+controls. A native-item `testitems.json` is a different report format and is
+not accepted by `read_run_bundle`. See the [REPL guide](../interfaces/repl-pluto.md#REPL)
+for selection and report saving, or [Plots](../interfaces/visualization.md)
+for a Makie figure and standalone interactive HTML.
+
+:::
+
 
 ```@raw html
 <a id="Try-it-with-Bibliography"></a>
