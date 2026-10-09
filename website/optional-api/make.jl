@@ -48,18 +48,21 @@ realpath(pkgdir(owner)) == realpath(owner_root) ||
 pkgversion(PerfChecker) == v"1.0.1" ||
     error("This prototype documents development 1.0.1 only, not stable 1.0.0")
 owner_version = VersionNumber(TOML.parsefile(joinpath(owner_root, "Project.toml"))["version"])
-pkgversion(owner) == owner_version || error("The loaded companion version differs from its source")
+pkgversion(owner) == owner_version ||
+    error("The loaded companion version differs from its source")
 pkgversion(Documenter) == v"1.19.0" && pkgversion(DocumenterVitepress) == v"0.3.5" ||
     error("The docsystem and renderer versions must match the prototype pins")
 docmodules = [owner]
 if slug == "makie"
     extension = Base.get_extension(owner, :WGLMakieExt)
-    extension === nothing && error("Load the real WGLMakie/Bonito extension for its API docstring")
+    extension === nothing &&
+        error("Load the real WGLMakie/Bonito extension for its API docstring")
     push!(docmodules, extension)
 elseif slug == "tachikoma"
     Base.get_extension(owner, :MakieExt) === nothing &&
         error("Load the real Makie extension for the plot_pixels method inventory")
-    realpath(pkgdir(PerfCheckerMakie)) == realpath(joinpath(root, "packages", "PerfCheckerMakie")) ||
+    realpath(pkgdir(PerfCheckerMakie)) ==
+    realpath(joinpath(root, "packages", "PerfCheckerMakie")) ||
         error("Tachikoma's Makie companion must load from this checkout")
 end
 
@@ -68,7 +71,8 @@ occursin(r"^[0-9a-f]{40}$", source_revision) || error("A full source revision is
 # A documentation prototype may have uncommitted documentation inputs, whose hashes
 # are recorded below. Runtime source and package metadata must match this revision.
 run(`git -C $root diff --exit-code HEAD -- Project.toml src packages`)
-isempty(strip(read(`git -C $root ls-files --others --exclude-standard src packages`, String))) ||
+isempty(strip(read(
+    `git -C $root ls-files --others --exclude-standard src packages`, String))) ||
     error("Untracked runtime/package files would make source provenance ambiguous")
 
 active_project = Base.active_project()
@@ -85,7 +89,8 @@ dependencies = Pkg.dependencies()
 pretty_tables = [info for info in values(dependencies) if info.name == "PrettyTables"]
 if slug in ("linuxperf", "likwid")
     expected_major = slug == "linuxperf" ? 2 : 3
-    only(pretty_tables).version !== nothing && only(pretty_tables).version.major == expected_major ||
+    only(pretty_tables).version !== nothing &&
+        only(pretty_tables).version.major == expected_major ||
         error("$owner_name requires the separate PrettyTables $expected_major environment")
 end
 
@@ -96,7 +101,7 @@ records = Dict{String, Any}[]
 method_records = Dict{String, Any}[]
 for docmodule in docmodules
     for (binding, multidoc) in sort!(collect(Documenter.DocSystem.getmeta(docmodule));
-            by = entry -> string(first(entry)))
+        by = entry -> string(first(entry)))
         status = Documenter.DocSystem.APIStatus(owner, binding.var)
         for signature in multidoc.order
             docstring = multidoc.docs[signature]
@@ -106,14 +111,15 @@ for docmodule in docmodules
                 error("A companion docstring must be owned by its source package")
             # Record actual Docs metadata, without reconstructing bodies or
             # registering them in a substitute Julia module.
-            push!(records, Dict{String, Any}(
-                "owner" => owner_name, "binding" => string(binding),
-                "binding_module" => string(binding.mod),
-                "docstring_module" => string(docstring.data[:module]),
-                "signature" => string(signature), "public" => status.ispublic,
-                "exported" => status.isexported, "source" => relative,
-                "line" => Int(docstring.data[:linenumber]),
-                "source_sha256" => bytes2hex(sha256(read(source)))))
+            push!(records,
+                Dict{String, Any}(
+                    "owner" => owner_name, "binding" => string(binding),
+                    "binding_module" => string(binding.mod),
+                    "docstring_module" => string(docstring.data[:module]),
+                    "signature" => string(signature), "public" => status.ispublic,
+                    "exported" => status.isexported, "source" => relative,
+                    "line" => Int(docstring.data[:linenumber]),
+                    "source_sha256" => bytes2hex(sha256(read(source)))))
         end
     end
 end
@@ -133,15 +139,17 @@ for name in documented_names
         source = realpath(file)
         relative = replace(relpath(source, root), '\\' => '/')
         startswith(relative, "packages/$owner_name/") || continue
-        push!(method_records, Dict{String, Any}(
-            "owner" => owner_name, "binding" => string(binding),
-            "binding_module" => string(binding.mod),
-            "defining_module" => string(method.module), "signature" => string(method.sig),
-            "source" => relative, "line" => Int(method.line),
-            "source_sha256" => bytes2hex(sha256(read(source)))))
+        push!(method_records,
+            Dict{String, Any}(
+                "owner" => owner_name, "binding" => string(binding),
+                "binding_module" => string(binding.mod),
+                "defining_module" => string(method.module), "signature" => string(method.sig),
+                "source" => relative, "line" => Int(method.line),
+                "source_sha256" => bytes2hex(sha256(read(source)))))
     end
 end
-sort!(method_records; by = entry -> (entry["binding"], entry["signature"], entry["source"], entry["line"]))
+sort!(method_records;
+    by = entry -> (entry["binding"], entry["signature"], entry["source"], entry["line"]))
 
 include(joinpath(@__DIR__, "..", "compat.jl"))
 build = joinpath(root, "website", "build", "optional-api", source_revision, slug)
@@ -149,8 +157,10 @@ makedocs(;
     root = @__DIR__, source = "src", build, modules = docmodules,
     pagesonly = true, checkdocs = :all, doctest = false, warnonly = false,
     sitename = "$owner_name development API",
-    remotes = Dict(root => (Documenter.Remotes.GitHub(
-        "Mirage-Interactive-Fr", "PerfChecker.jl"), source_revision)),
+    remotes = Dict(root => (
+        Documenter.Remotes.GitHub(
+            "Mirage-Interactive-Fr", "PerfChecker.jl"),
+        source_revision)),
     format = DocumenterVitepress.MarkdownVitepress(
         build_vitepress = false, install_npm = false, write_inventory = true,
         inventory_version = string(pkgversion(PerfChecker)),
@@ -177,11 +187,13 @@ for file in rendered_files
     length(anchors) == length(unique(anchors)) || error("Duplicate Julia anchors in $file")
     occursin("/blob/$source_revision/packages/$owner_name/", rendered) ||
         error("No source link to the exact companion revision in $file")
-    occursin("(@ref)", rendered) && error("An unresolved Julia reference survived rendering")
+    occursin("(@ref)", rendered) &&
+        error("An unresolved Julia reference survived rendering")
 end
 inputs = [@__FILE__, joinpath(@__DIR__, slug, "Project.toml"),
     joinpath(@__DIR__, "..", "compat.jl"),
-    joinpath(root, "website", "package.json"), joinpath(root, "website", "package-lock.json"),
+    joinpath(root, "website", "package.json"), joinpath(
+        root, "website", "package-lock.json"),
     joinpath(@__DIR__, "src", ".vitepress", "config.mts"),
     joinpath(@__DIR__, "src", ".vitepress", "theme", "index.ts"),
     joinpath(@__DIR__, "src", ".vitepress", "theme", "style.css"),
@@ -190,21 +202,23 @@ inputs = [@__FILE__, joinpath(@__DIR__, slug, "Project.toml"),
 receipt = Dict{String, Any}(
     "schema" => "perfchecker-optional-doc-export/1", "channel" => "dev",
     "source_revision" => source_revision,
-    "source_tree" => strip(read(Cmd(["git", "-C", root, "rev-parse", "HEAD^{tree}"]), String)),
+    "source_tree" => strip(read(
+        Cmd(["git", "-C", root, "rev-parse", "HEAD^{tree}"]), String)),
     "core_version" => string(pkgversion(PerfChecker)), "owner" => owner_name,
     "owner_uuid" => string(Base.PkgId(owner).uuid),
     "owner_version" => string(pkgversion(owner)), "julia" => string(VERSION),
     "documenter" => string(pkgversion(Documenter)),
     "renderer" => string(pkgversion(DocumenterVitepress)),
-    "pretty_tables" => isempty(pretty_tables) ? "absent" : string(only(pretty_tables).version),
+    "pretty_tables" => isempty(pretty_tables) ? "absent" :
+                       string(only(pretty_tables).version),
     "project_sha256" => bytes2hex(sha256(read(active_project))),
     "manifest_sha256" => bytes2hex(sha256(read(manifest))),
     "bindings" => records, "methods" => method_records,
     "documented_modules" => string.(docmodules),
     "inputs" => [Dict("path" => replace(relpath(file, root), '\\' => '/'),
-        "sha256" => bytes2hex(sha256(read(file)))) for file in inputs],
+                     "sha256" => bytes2hex(sha256(read(file)))) for file in inputs],
     "outputs" => [Dict("path" => replace(relpath(file, build), '\\' => '/'),
-        "sha256" => bytes2hex(sha256(read(file))))
+                      "sha256" => bytes2hex(sha256(read(file))))
                   for file in vcat(rendered_files, [inventory])])
 open(joinpath(build, "api-provenance.toml"), "w") do io
     TOML.print(io, receipt; sorted = true)
