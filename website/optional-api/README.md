@@ -1,21 +1,33 @@
-# Optional API rendering prototype
+# Optional API rendering
 
-This builder renders real Julia docstrings through Documenter 1.19.0 and
-DocumenterVitepress 0.3.5. It does not copy docstrings into another module, measure
-hardware counters, start a frontend, install native libraries or publish a site.
-It is not yet integrated into `website/make.jl` or the Documentation workflow.
+Render real Julia docstrings with Documenter 1.19.0 and DocumenterVitepress 0.3.5.
+The builder does not reconstruct docstrings, measure workloads, open a frontend,
+install native libraries or publish a site. Integration into the main website
+workflow and cross-companion references remains separate work.
 
-LinuxPerf and LIKWID must use **separate projects and private writable depots**.
-The current pinned backends require PrettyTables 2 and 3 respectively. Use Julia
-1.10 or newer. Develop this exact checkout's Core and selected companion explicitly
-in each project; Julia 1.10 must not depend on a `[sources]` table being honored.
-The builder checks loaded package paths, versions, environment configuration and
-PrettyTables before rendering. It never resolves or installs dependencies itself.
+Use one isolated project and private writable depot per companion. LinuxPerf
+0.4.2 requires PrettyTables 2; LIKWID 0.4.6 requires PrettyTables 3. Julia 1.10 or
+newer is required. Develop this exact checkout's Core and companions explicitly;
+Julia 1.10 must not rely on a `[sources]` table.
 
-From the checkout root, create temporary projects and a separate writable depot
-for each companion. The following POSIX shell recipe prepares and renders them
-sequentially. Set thread limits through the environment and inherit CPU affinity
-from the launcher when needed; the builder does not change CPU affinity.
+| Argument | Owner version | Public bindings | Additional coverage |
+| --- | --- | ---: | --- |
+| `linuxperf` | PerfCheckerLinuxPerf 1.0.1 | 7 | Explicit Julia counter executor |
+| `likwid` | PerfCheckerLIKWID 1.0.1 | 7 | Explicit Julia counter executor |
+| `makie` | PerfCheckerMakie 1.0.1 | 8 | Real WGLMakie/Bonito HTML extension |
+| `web` | PerfCheckerWeb 1.0.0 | 5 | Web methods of Core bindings |
+| `pluto` | PerfCheckerPluto 1.0.1 | 4 | Pluto methods of Core bindings |
+| `tachikoma` | PerfCheckerTachikoma 1.0.1 | 6 | Real optional Makie pixel method |
+
+These pages describe the selected source with Core development 1.0.1. Web remains
+version 1.0.0. Do not insert these pages into stable Core 1.0.0 documentation: that
+source does not include the new counter and terminal APIs.
+
+## Prepare and render sequentially
+
+From the checkout root, use temporary projects and separate writable depots.
+Thread limits and CPU affinity come from the caller's launcher. The builder
+never resolves dependencies or changes affinity itself.
 
 ```sh
 set -eu
@@ -25,76 +37,99 @@ export JULIA_NUM_PRECOMPILE_TASKS="${JULIA_NUM_PRECOMPILE_TASKS:-1}"
 export OPENBLAS_NUM_THREADS="${OPENBLAS_NUM_THREADS:-1}"
 export OMP_NUM_THREADS="${OMP_NUM_THREADS:-1}"
 DOCS_WORKSPACE="$(mktemp -d)"
-for companion in linuxperf likwid; do
+for companion in linuxperf likwid makie web pluto tachikoma; do
     project="$DOCS_WORKSPACE/$companion-project"
     mkdir -p "$project"
     cp "website/optional-api/$companion/Project.toml" "$project/Project.toml"
-    if [ "$companion" = linuxperf ]; then
-        export PERFCHECKER_COMPANION=PerfCheckerLinuxPerf
-    else
-        export PERFCHECKER_COMPANION=PerfCheckerLIKWID
-    fi
+    case "$companion" in
+        linuxperf) export PERFCHECKER_COMPANION=PerfCheckerLinuxPerf ;;
+        likwid) export PERFCHECKER_COMPANION=PerfCheckerLIKWID ;;
+        makie) export PERFCHECKER_COMPANION=PerfCheckerMakie ;;
+        web) export PERFCHECKER_COMPANION=PerfCheckerWeb ;;
+        pluto) export PERFCHECKER_COMPANION=PerfCheckerPluto ;;
+        tachikoma) export PERFCHECKER_COMPANION=PerfCheckerTachikoma ;;
+    esac
     export JULIA_DEPOT_PATH="$DOCS_WORKSPACE/$companion-depot"
     julia --startup-file=no --project="$project" -e '
         using Pkg
         root = ENV["PERFCHECKER_SOURCE"]
         owner = ENV["PERFCHECKER_COMPANION"]
-        Pkg.develop([Pkg.PackageSpec(path=root), Pkg.PackageSpec(path=joinpath(root,"packages",owner))])
+        specs = [Pkg.PackageSpec(path=root),
+            Pkg.PackageSpec(path=joinpath(root,"packages",owner))]
+        if owner == "PerfCheckerTachikoma"
+            push!(specs, Pkg.PackageSpec(path=joinpath(root,"packages","PerfCheckerMakie")))
+        end
+        Pkg.develop(specs)
         Pkg.instantiate()'
     julia --startup-file=no --project="$project" website/optional-api/make.jl "$companion"
 done
 ```
 
-Preserve both resolved Project/Manifest pairs with the output receipts when sharing
-a qualification. Remove the temporary projects and depots after they are no longer
-needed. No sysctl, capability or native-library configuration change is part of
-this prototype. Windows users can perform the same two preparations with temporary
-directories and environment variables in PowerShell.
+Preserve resolved Project/Manifest pairs with the receipts. Remove temporary
+projects and depots when no longer needed. No kernel, capability or native-library
+configuration is part of rendering. No counter window, terminal, notebook or HTTP
+server is started.
 
-Each output lives under `website/build/optional-api/<companion>/`:
+## Node theme and HTML
 
-- `.documenter/<companion>/public-api.md` and `full-api.md` contain Documenter's
-  rendered bodies, signatures, canonical/noncanonical anchors and pinned source links.
-- `.documenter/public/objects.inv` is the renderer's real inventory.
-- `api-provenance.toml` records owner/binding/signature metadata, versions, the
-  runtime revision, Project/Manifest hashes and documentation input/output hashes.
+The API theme uses dependencies from the official `website/package-lock.json`:
+VitePress, tabs, footnotes and `markdown-it-mathjax3`. It does not import the
+renderer's default MathJax 4, Nolebase or version-picker plugins. The pinned
+renderer supplies its docstring stylesheet. Use that official lock in this
+development checkout, then build each emitted tree sequentially:
 
-The source paths are namespaced by companion. Full API is canonical; Public API
-uses `canonical=false`. Both render the module docstring and real `@autodocs`.
-The module is explicitly rendered by `@docs` and excluded from the `@autodocs`
-category order, preventing duplicate canonical module documentation.
-Full includes documented private bindings, not undocumented internal functions.
-These new companions are part of development 1.0.1 and are absent from the stable
-1.0.0 source. The prototype refuses to render them as stable 1.0.0 documentation.
+```sh
+npm ci --prefix website
+revision="$(git rev-parse HEAD)"
+for companion in linuxperf likwid makie web pluto tachikoma; do
+    node website/node_modules/vitepress/bin/vitepress.js build \
+        "website/build/optional-api/$revision/$companion/.documenter" \
+        --outDir "website/build/optional-api/$revision/$companion/site"
+done
+```
+
+HTML and browser behavior require independent qualification after Markdown export.
+No Node installation is run by the Julia builder.
 
 ## Binding and reference contract
 
-Both owners export the seven bindings below. Each signature comes from that
-owner's actual Julia Docs metadata, not a shared counter-interface placeholder.
+Outputs live under `website/build/optional-api/<source-revision>/<companion>/`,
+preserving earlier builds and failed attempts.
 
-| Binding | Public API | Full API | Existing docstring references |
-| --- | --- | --- | --- |
-| `CounterRecord` | Yes | Canonical | LIKWID refers to its own `CounterResult` |
-| `CounterResult` | Yes | Canonical | Refers to its own `CounterRecord` |
-| `measure_counters` | Yes | Canonical | No external `@ref` |
-| `counter_bundle` | Yes | Canonical | No external `@ref` |
-| `counter_command` | Yes | Canonical | No external `@ref` |
-| `counter_executor` | Yes | Canonical | Refers to its own `run_counter_suite` |
-| `run_counter_suite` | Yes | Canonical | No external `@ref` |
+- `.documenter/<companion>/public-api.md` renders exported bindings noncanonically.
+- `.documenter/<companion>/full-api.md` is the canonical reference, including
+  documented private bindings. Undocumented functions are not advertised as docs.
+- `.documenter/public/objects.inv` is the real renderer inventory.
+- `api-provenance.toml` records Docs signatures, binding modules, docstring modules
+  and source hashes; separately it records actual local method signatures,
+  defining modules and source locations. Versions, Project/Manifest hashes,
+  builder/pages/theme inputs and the official Node lock hashes are retained.
 
-The builder verifies the public binding set and actual docstring ownership.
-Documenter's `warnonly=false` makes unresolved references or missing docstrings
-fail the render. Source links use the selected checkout's full revision. Runtime
-source must be clean; uncommitted prototype documentation inputs are separately
-hashed, so a local preview is not misrepresented as a committed publication.
+A Core binding can have methods and docstrings defined by a companion:
+`PerfChecker.serve_suite` belongs to Core, while its Web methods and their
+docstrings come from PerfCheckerWeb. The receipt preserves those identities.
+It does not substitute Core's generic docs for missing companion descriptions.
 
-## Qualification still required
+The builder verifies 37 exported bindings against explicit owner lists. Makie's
+WGL extension contributes the explicitly rendered `performance_plot_html`
+docstring even though the extension does not export that Core binding.
+Tachikoma's Makie extension is loaded for its actual `plot_pixels` method inventory.
+No graphics backend is needed to inspect those methods.
 
-Before integration, resolve and render both environments for real. Check every
-public entry in both pages, recorded signatures against Julia help, all intra-module
-references and inventory targets, unique anchors and correct source revisions.
-Then build each emitted `.documenter` tree with the existing website VitePress
-toolchain and check desktop/mobile navigation, visible docstring bodies and links.
-No Node installation is run by this Julia builder. Cross-companion references,
-the other four companion environments and final site assembly remain subsequent
-work; no API or browser qualification is claimed by this source-only prototype.
+Strict Documenter checks reject unresolved references and missing docstrings.
+Source links use the full checkout revision. Runtime/package source must be clean;
+uncommitted documentation inputs are separately hashed.
+
+## Qualification and assembly
+
+Check public entries and overloads against Julia help, all references, unique
+anchors, source revisions and inventory targets. Build real HTML, then inspect
+visible docstring bodies, local search and desktop/mobile navigation. Keep each
+owner's inventory during assembly; common Core bindings must not overwrite one
+another silently.
+
+The main website currently renders only `Modules = [PerfChecker]`. Listing an
+optional package does not render its methods. Sidebar/index and workflow
+integration must consume the isolated exports from one consistent source revision
+and keep stable 1.0.0 separate. Reference rendering neither qualifies physical
+counters nor wires them into native CLI, VS Code, Pluto or MCP selectors.

@@ -1,0 +1,22 @@
+[deps]
+Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
+DocumenterVitepress = "4710194d-e776-4893-9690-8d956a29c365"
+Makie = "ee78f7c6-11fb-53f2-987a-cfe4a2b5a57a"
+PerfChecker = "6309bf6b-a531-4b08-891e-8ee981e5c424"
+PerfCheckerMakie = "1039c70d-de90-4811-a202-d36e08616791"
+PerfCheckerTachikoma = "62732417-0f79-4b0f-bcf8-4246188b2099"
+Pkg = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
+SHA = "ea8e919c-243c-51af-8825-aaa63cd721ce"
+TOML = "fa267f1f-6049-4f14-aa54-33bafae1ed76"
+
+[compat]
+Documenter = "=1.19.0"
+DocumenterVitepress = "=0.3.5"
+Makie = "0.24"
+PerfChecker = "=1.0.1"
+PerfCheckerMakie = "=1.0.1"
+PerfCheckerTachikoma = "=1.0.1"
+Pkg = "1"
+SHA = "0.7, 1"
+TOML = "1"
+julia = "1.10"

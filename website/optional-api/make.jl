@@ -1,25 +1,67 @@
 using Documenter, DocumenterVitepress, Pkg, SHA, TOML
 using PerfChecker
 
-length(ARGS) == 1 && ARGS[1] in ("linuxperf", "likwid") ||
-    error("Usage: julia --project=<isolated-project> website/optional-api/make.jl linuxperf|likwid")
+configurations = Dict(
+    "linuxperf" => (:PerfCheckerLinuxPerf,
+        [:CounterRecord, :CounterResult, :measure_counters, :counter_bundle,
+            :counter_command, :counter_executor, :run_counter_suite]),
+    "likwid" => (:PerfCheckerLIKWID,
+        [:CounterRecord, :CounterResult, :measure_counters, :counter_bundle,
+            :counter_command, :counter_executor, :run_counter_suite]),
+    "makie" => (:PerfCheckerMakie,
+        [:performance_figure, :suite_dashboard, :checkres_to_boxplots,
+            :checkres_to_scatterlines, :checkres_to_pie, :table_to_pie,
+            :checkres_figures, :saveplot]),
+    "web" => (:PerfCheckerWeb,
+        [:serve_suite, :register_oxygen_routes!, :register_testitem_routes!,
+            :studio_token_authenticator, :run_studio_agent]),
+    "pluto" => (:PerfCheckerPluto,
+        [:prepare_pluto_dashboard, :launch_pluto_dashboard, :write_suite_notebook,
+            :write_investigation_notebook]),
+    "tachikoma" => (:PerfCheckerTachikoma,
+        [:SuiteTUI, :tui_model, :tui, :refresh!, :close!, :plot_pixels]))
+length(ARGS) == 1 && haskey(configurations, ARGS[1]) ||
+    error("Usage: julia --project=<isolated-project> website/optional-api/make.jl " *
+          join(sort!(collect(keys(configurations))), "|"))
 slug = only(ARGS)
 if slug == "linuxperf"
     using PerfCheckerLinuxPerf
-else
+elseif slug == "likwid"
     using PerfCheckerLIKWID
+elseif slug == "makie"
+    using PerfCheckerMakie, WGLMakie, Bonito
+elseif slug == "web"
+    using PerfCheckerWeb
+elseif slug == "pluto"
+    using PerfCheckerPluto
+else
+    using PerfCheckerTachikoma, PerfCheckerMakie, Makie
 end
-owner = slug == "linuxperf" ? PerfCheckerLinuxPerf : PerfCheckerLIKWID
+owner_symbol, expected = configurations[slug]
+owner = getfield(Main, owner_symbol)
 owner_name = string(nameof(owner))
 root = realpath(joinpath(@__DIR__, "..", ".."))
 owner_root = joinpath(root, "packages", owner_name)
 realpath(pkgdir(PerfChecker)) == root || error("PerfChecker must load from this checkout")
 realpath(pkgdir(owner)) == realpath(owner_root) ||
     error("The companion must load from this checkout")
-pkgversion(PerfChecker) == pkgversion(owner) == v"1.0.1" ||
+pkgversion(PerfChecker) == v"1.0.1" ||
     error("This prototype documents development 1.0.1 only, not stable 1.0.0")
+owner_version = VersionNumber(TOML.parsefile(joinpath(owner_root, "Project.toml"))["version"])
+pkgversion(owner) == owner_version || error("The loaded companion version differs from its source")
 pkgversion(Documenter) == v"1.19.0" && pkgversion(DocumenterVitepress) == v"0.3.5" ||
     error("The docsystem and renderer versions must match the prototype pins")
+docmodules = [owner]
+if slug == "makie"
+    extension = Base.get_extension(owner, :WGLMakieExt)
+    extension === nothing && error("Load the real WGLMakie/Bonito extension for its API docstring")
+    push!(docmodules, extension)
+elseif slug == "tachikoma"
+    Base.get_extension(owner, :MakieExt) === nothing &&
+        error("Load the real Makie extension for the plot_pixels method inventory")
+    realpath(pkgdir(PerfCheckerMakie)) == realpath(joinpath(root, "packages", "PerfCheckerMakie")) ||
+        error("Tachikoma's Makie companion must load from this checkout")
+end
 
 source_revision = strip(read(`git -C $root rev-parse HEAD`, String))
 occursin(r"^[0-9a-f]{40}$", source_revision) || error("A full source revision is required")
@@ -40,52 +82,78 @@ for key in ("deps", "compat")
         error("The isolated project's $key must match the checked-in configuration")
 end
 dependencies = Pkg.dependencies()
-pretty_tables = only([info for info in values(dependencies) if info.name == "PrettyTables"])
-expected_major = slug == "linuxperf" ? 2 : 3
-pretty_tables.version !== nothing && pretty_tables.version.major == expected_major ||
-    error("$owner_name requires the separate PrettyTables $expected_major environment")
+pretty_tables = [info for info in values(dependencies) if info.name == "PrettyTables"]
+if slug in ("linuxperf", "likwid")
+    expected_major = slug == "linuxperf" ? 2 : 3
+    only(pretty_tables).version !== nothing && only(pretty_tables).version.major == expected_major ||
+        error("$owner_name requires the separate PrettyTables $expected_major environment")
+end
 
-expected = sort([:CounterRecord, :CounterResult, :measure_counters, :counter_bundle,
-    :counter_command, :counter_executor, :run_counter_suite]; by = string)
+sort!(expected; by = string)
 actual = sort(filter(name -> name != nameof(owner), names(owner)); by = string)
 actual == expected || error("The public binding inventory changed; review the prototype")
 records = Dict{String, Any}[]
-for (binding, multidoc) in sort!(collect(Documenter.DocSystem.getmeta(owner));
-        by = entry -> string(first(entry)))
-    status = Documenter.DocSystem.APIStatus(owner, binding.var)
-    for signature in multidoc.order
-        docstring = multidoc.docs[signature]
-        source = realpath(String(docstring.data[:path]))
-        relative = replace(relpath(source, root), '\\' => '/')
-        startswith(relative, "packages/$owner_name/") ||
-            error("A companion docstring must be owned by its source package")
-        # Metadata describes actual Docs entries; their bodies are rendered only by
-        # Documenter, never reconstructed or registered in another Julia module.
-        push!(records, Dict{String, Any}(
-            "owner" => owner_name, "binding" => string(binding),
-            "signature" => string(signature), "public" => status.ispublic,
-            "exported" => status.isexported, "source" => relative,
-            "line" => Int(docstring.data[:linenumber]),
-            "source_sha256" => bytes2hex(sha256(read(source)))))
+method_records = Dict{String, Any}[]
+for docmodule in docmodules
+    for (binding, multidoc) in sort!(collect(Documenter.DocSystem.getmeta(docmodule));
+            by = entry -> string(first(entry)))
+        status = Documenter.DocSystem.APIStatus(owner, binding.var)
+        for signature in multidoc.order
+            docstring = multidoc.docs[signature]
+            source = realpath(String(docstring.data[:path]))
+            relative = replace(relpath(source, root), '\\' => '/')
+            startswith(relative, "packages/$owner_name/") ||
+                error("A companion docstring must be owned by its source package")
+            # Record actual Docs metadata, without reconstructing bodies or
+            # registering them in a substitute Julia module.
+            push!(records, Dict{String, Any}(
+                "owner" => owner_name, "binding" => string(binding),
+                "binding_module" => string(binding.mod),
+                "docstring_module" => string(docstring.data[:module]),
+                "signature" => string(signature), "public" => status.ispublic,
+                "exported" => status.isexported, "source" => relative,
+                "line" => Int(docstring.data[:linenumber]),
+                "source_sha256" => bytes2hex(sha256(read(source)))))
+        end
     end
 end
 for name in expected
     binding = Documenter.DocSystem.binding(owner, name)
-    isempty(Documenter.DocSystem.getdocs(binding; modules = [owner], aliases = false)) &&
+    isempty(Documenter.DocSystem.getdocs(binding; modules = docmodules, aliases = false)) &&
         error("Missing actual companion docstring for $owner_name.$name")
 end
+documented_names = slug == "makie" ? vcat(expected, [:performance_plot_html]) : expected
+for name in documented_names
+    binding = Documenter.DocSystem.binding(owner, name)
+    value = getfield(binding.mod, binding.var)
+    value isa Union{Function, Type} || continue
+    for method in methods(value)
+        file = String(method.file)
+        isfile(file) || continue
+        source = realpath(file)
+        relative = replace(relpath(source, root), '\\' => '/')
+        startswith(relative, "packages/$owner_name/") || continue
+        push!(method_records, Dict{String, Any}(
+            "owner" => owner_name, "binding" => string(binding),
+            "binding_module" => string(binding.mod),
+            "defining_module" => string(method.module), "signature" => string(method.sig),
+            "source" => relative, "line" => Int(method.line),
+            "source_sha256" => bytes2hex(sha256(read(source)))))
+    end
+end
+sort!(method_records; by = entry -> (entry["binding"], entry["signature"], entry["source"], entry["line"]))
 
 include(joinpath(@__DIR__, "..", "compat.jl"))
-build = joinpath(root, "website", "build", "optional-api", slug)
+build = joinpath(root, "website", "build", "optional-api", source_revision, slug)
 makedocs(;
-    root = @__DIR__, source = "src", build, modules = [owner],
+    root = @__DIR__, source = "src", build, modules = docmodules,
     pagesonly = true, checkdocs = :all, doctest = false, warnonly = false,
     sitename = "$owner_name development API",
     remotes = Dict(root => (Documenter.Remotes.GitHub(
         "Mirage-Interactive-Fr", "PerfChecker.jl"), source_revision)),
     format = DocumenterVitepress.MarkdownVitepress(
         build_vitepress = false, install_npm = false, write_inventory = true,
-        inventory_version = string(pkgversion(owner)),
+        inventory_version = string(pkgversion(PerfChecker)),
         repo = "https://github.com/Mirage-Interactive-Fr/PerfChecker.jl",
         devbranch = "main", devurl = "dev",
         deploy_url = "https://perfchecker.mirageinteractive.fr/dev/optional-api/"),
@@ -100,7 +168,7 @@ rendered_files = [joinpath(markdown, slug, page * ".md")
 for file in rendered_files
     rendered = read(file, String)
     occursin("jldocstring", rendered) || error("No rendered Julia docstrings in $file")
-    for name in expected
+    for name in documented_names
         binding = string(Documenter.DocSystem.binding(owner, name))
         occursin("class=\"jlbinding\">$binding</span>", rendered) ||
             error("Missing rendered entry for $binding in $file")
@@ -113,6 +181,10 @@ for file in rendered_files
 end
 inputs = [@__FILE__, joinpath(@__DIR__, slug, "Project.toml"),
     joinpath(@__DIR__, "..", "compat.jl"),
+    joinpath(root, "website", "package.json"), joinpath(root, "website", "package-lock.json"),
+    joinpath(@__DIR__, "src", ".vitepress", "config.mts"),
+    joinpath(@__DIR__, "src", ".vitepress", "theme", "index.ts"),
+    joinpath(@__DIR__, "src", ".vitepress", "theme", "style.css"),
     [joinpath(@__DIR__, "src", slug, page * ".md")
      for page in ("public-api", "full-api")]...]
 receipt = Dict{String, Any}(
@@ -124,10 +196,11 @@ receipt = Dict{String, Any}(
     "owner_version" => string(pkgversion(owner)), "julia" => string(VERSION),
     "documenter" => string(pkgversion(Documenter)),
     "renderer" => string(pkgversion(DocumenterVitepress)),
-    "pretty_tables" => string(pretty_tables.version),
+    "pretty_tables" => isempty(pretty_tables) ? "absent" : string(only(pretty_tables).version),
     "project_sha256" => bytes2hex(sha256(read(active_project))),
     "manifest_sha256" => bytes2hex(sha256(read(manifest))),
-    "bindings" => records,
+    "bindings" => records, "methods" => method_records,
+    "documented_modules" => string.(docmodules),
     "inputs" => [Dict("path" => replace(relpath(file, root), '\\' => '/'),
         "sha256" => bytes2hex(sha256(read(file)))) for file in inputs],
     "outputs" => [Dict("path" => replace(relpath(file, build), '\\' => '/'),

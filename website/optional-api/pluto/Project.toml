@@ -1,0 +1,18 @@
+[deps]
+Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
+DocumenterVitepress = "4710194d-e776-4893-9690-8d956a29c365"
+PerfChecker = "6309bf6b-a531-4b08-891e-8ee981e5c424"
+PerfCheckerPluto = "862b4710-55ee-4fb5-a69c-50e17f92c1f9"
+Pkg = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
+SHA = "ea8e919c-243c-51af-8825-aaa63cd721ce"
+TOML = "fa267f1f-6049-4f14-aa54-33bafae1ed76"
+
+[compat]
+Documenter = "=1.19.0"
+DocumenterVitepress = "=0.3.5"
+PerfChecker = "=1.0.1"
+PerfCheckerPluto = "=1.0.1"
+Pkg = "1"
+SHA = "0.7, 1"
+TOML = "1"
+julia = "1.10"
