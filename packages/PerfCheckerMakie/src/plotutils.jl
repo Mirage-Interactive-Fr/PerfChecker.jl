@@ -13,7 +13,7 @@ function _version_tick_label(version)
 end
 
 function make_colors(l)
-    palette = Makie.to_color.(_PLOT_PALETTE)
+    palette = Makie.RGBf.(Makie.to_color.(_PLOT_PALETTE))
     l <= length(palette) && return palette[1:l]
     return [palette;
             Makie.distinguishable_colors(l - length(palette),

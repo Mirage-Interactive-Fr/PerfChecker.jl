@@ -77,14 +77,16 @@ notes.forEach((line,index)=>svg.append(element("text",{x:legendX,y:legendY+legen
 </script></body></html>"""
 end
 
+"Attach recorded-row inspection to native marks, using mesh vertices for allocation bars."
 function _offline_point_controls(session, figure, source_plot)
     source_plot.kind in (:distribution, :version_series, :version_delta,
-        :time_allocation_tradeoff) || return nothing
+        :time_allocation_tradeoff, :allocation_lines) || return nothing
     # Match the finite records consumed by the existing Makie recipes exactly.
     plot = PerfCheckerMakie._finite_plot(source_plot)
     isempty(plot.data) && return nothing
     axis = only(filter(item -> item isa Makie.Axis, figure.content))
     data = plot.data
+    vertex_ranges = Vector{Int}[]
     if plot.kind === :version_delta
         positions = [Point2f(index, 100 * item["relative_delta"])
                      for (index, item) in pairs(data)]
@@ -92,6 +94,28 @@ function _offline_point_controls(session, figure, source_plot)
             strokecolor = PerfCheckerMakie._PLOT_PALETTE[1], strokewidth = 1.5,
             depth_shift = -0.001)]
         labels = ["$(item["baseline_version"]) → $(item["candidate_version"]) · change: $(100 * item["relative_delta"])% · $(get(item, "status", "unknown"))"
+                  for item in data]
+    elseif plot.kind === :allocation_lines
+        recipe = only(filter(item -> item isa Makie.BarPlot, axis.scene.plots))
+        rectangles = only(filter(item -> item isa Makie.Poly, recipe.plots))[1][]
+        points = filter(item -> item isa Makie.Mesh, Makie.collect_atomic_plots([recipe]))
+        source = only(points)
+        vertices = Makie.GeometryBasics.coordinates(source[1][])
+        length(vertices) == 4length(data) == 4length(rectangles) ||
+            error("Native allocation bars do not retain four vertices per recorded row")
+        positions = Point2f[]
+        for (index, rectangle) in pairs(rectangles)
+            indices = (4index - 3):(4index)
+            corners = vertices[indices]
+            lower = Point2f(minimum(first, corners), minimum(last, corners))
+            upper = Point2f(maximum(first, corners), maximum(last, corners))
+            isapprox(lower, Point2f(minimum(rectangle))) &&
+                isapprox(upper, Point2f(maximum(rectangle))) ||
+                error("Native allocation mesh order differs from its recorded rectangles")
+            push!(positions, (lower + upper) / 2)
+            push!(vertex_ranges, collect(indices .- 1))
+        end
+        labels = ["$(item["version"]) · $(item["file"]):$(item["line"]) · $(item["bytes"]) $(plot.options["unit"])"
                   for item in data]
     elseif plot.kind === :time_allocation_tradeoff
         recipe = only(filter(item -> item isa Makie.ScatterLines, axis.scene.plots))
@@ -122,7 +146,8 @@ function _offline_point_controls(session, figure, source_plot)
     Bonito.evaljs(session,
         js"""
 (() => {
-  const input = $(selector), output = $(readout), labels = $(labels);
+  const input = $(selector), output = $(readout), labels = $(labels), vertexRanges = $(vertex_ranges);
+  if (vertexRanges.length) input.dataset.sourceVertices = JSON.stringify(vertexRanges.map(vertices => Array.from(vertices)));
   let latest = 0;
   input.addEventListener('input', () => {
     const token = ++latest, index = Number(input.value);
@@ -138,11 +163,14 @@ function _offline_point_controls(session, figure, source_plot)
       input.dataset.sourcePlot = sources[0].plot_uuid;
       input.dataset.highlightPlot = targets[0].plot_uuid;
       const source = sources[0].geometry.attributes, target = targets[0].geometry.attributes;
-      const key = ['wgl_positions', 'pos', 'offset'].find(key => source[key] && target[key]);
-      if (!key) throw new Error('WGLMakie point positions are unavailable');
-      const positions = source[key], selected = target[key];
+      const sourceKey = ['wgl_positions', 'pos', 'offset', 'positions_transformed_f32c'].find(key => source[key]);
+      const targetKey = ['wgl_positions', 'pos', 'offset', 'positions_transformed_f32c'].find(key => target[key]);
+      if (!sourceKey || !targetKey) throw new Error('WGLMakie point positions are unavailable');
+      const positions = source[sourceKey], selected = target[targetKey];
+      const vertices = vertexRanges.length ? vertexRanges[index - 1] : [index - 1];
       for (let component = 0; component < selected.itemSize; component++) {
-        selected.array[component] = positions.array[(index - 1) * positions.itemSize + component];
+        const values = Array.from(vertices, vertex => component < positions.itemSize ? positions.array[vertex * positions.itemSize + component] : 0);
+        selected.array[component] = (Math.min(...values) + Math.max(...values)) / 2;
       }
       selected.needsUpdate = true;
       input.dataset.appliedIndex = String(index);
@@ -166,6 +194,9 @@ function _offline_point_controls(session, figure, source_plot)
             }
             index = Number(input.dataset.appliedIndex) - 1;
         }
+        else if ($(vertex_ranges).length) {
+            index = $(vertex_ranges).findIndex(vertices => vertices.includes(index));
+        }
         const label = $(labels)[index];
         if (label === undefined) return '';
         return 'Point ' + (index + 1) + ': ' + label;
@@ -183,8 +214,10 @@ end
 Render a self-contained HTML document. Normalized measurements provide metric
 visibility, selection of recorded versions, viewport zoom and pan, exact point
 inspection, and SVG/CSV export. Selection preserves the original ratios.
-WGL figures provide viewport zoom and pan. Series, distributions, deltas and
-tradeoffs include an exact point index and JavaScript popups on point clicks.
+WGL figures provide viewport zoom and pan. Series, distributions, deltas,
+tradeoffs and allocation-line views include an exact recorded-row index and
+JavaScript popups on native mark clicks. Zero-byte allocation rows remain in
+the index even when their bars have no clickable surface.
 Flame graphs have keyboard and pointer inspection. Julia DataInspector and
 ordinary Makie axis zoom callbacks are not exported.
 """

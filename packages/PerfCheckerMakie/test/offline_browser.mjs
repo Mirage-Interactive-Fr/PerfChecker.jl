@@ -37,7 +37,7 @@ try {
     'Showing a hidden plot restores a complete, positive-scale Fit');
   const count=Number(await input.getAttribute('max'));
   assert(count>0);
-  const fields=model.kind==='version_delta'?['relative_delta']:model.kind==='time_allocation_tradeoff'?['bytes','time']:['value'];
+  const fields=model.kind==='version_delta'?['relative_delta']:model.kind==='time_allocation_tradeoff'?['bytes','time']:model.kind==='allocation_lines'?['bytes']:['value'];
   const finite=model.data.filter(row=>fields.every(field=>typeof row[field]==='number'&&Number.isFinite(row[field])));
   assert.equal(count,finite.length,'The picker follows the same finite records as the actual figure');
   const row=finite[count-1];
@@ -48,9 +48,14 @@ try {
   const inspectGeometry=(requestedIndex=null)=>page.evaluate(requestedIndex=>{
     const input=document.getElementById('point-index');
     const source=WGL.plot_cache[input.dataset.sourcePlot],highlight=WGL.plot_cache[input.dataset.highlightPlot];
-    const key=['wgl_positions','pos','offset'].find(key=>source.geometry.attributes[key]&&highlight.geometry.attributes[key]);
-    const index=(requestedIndex??Number(input.value))-1,a=source.geometry.attributes[key],b=highlight.geometry.attributes[key];
-    const sourcePoint=Array.from(a.array.slice(index*a.itemSize,(index+1)*a.itemSize));
+    const keys=['wgl_positions','pos','offset','positions_transformed_f32c'];
+    const sourceKey=keys.find(key=>source.geometry.attributes[key]),targetKey=keys.find(key=>highlight.geometry.attributes[key]);
+    const index=(requestedIndex??Number(input.value))-1,a=source.geometry.attributes[sourceKey],b=highlight.geometry.attributes[targetKey];
+    const ranges=JSON.parse(input.dataset.sourceVertices||'[]'),vertices=ranges.length?ranges[index]:[index];
+    const sourcePoint=Array.from({length:b.itemSize},(_,component)=>{
+      const values=vertices.map(vertex=>component<a.itemSize?a.array[vertex*a.itemSize+component]:0);
+      return Math.fround((Math.min(...values)+Math.max(...values))/2);
+    });
     const selectedPoint=Array.from(b.array.slice(0,b.itemSize));
     function project(mesh,values){
       const uniforms=mesh.material.uniforms;
@@ -95,6 +100,10 @@ try {
       'The native readout keeps the recorded time unit');
     assert(readout.includes(' '+(specified?model.options.allocation_unit:'unit unspecified')+' · '),
       'The native readout keeps the recorded allocation unit');
+  }
+  if(model.kind==='allocation_lines'){
+    assert(readout.includes(row.file+':'+row.line),'Allocation inspection identifies the actual source location');
+    assert(readout.endsWith(' '+model.options.unit),'Allocation inspection retains the recorded byte unit');
   }
   await input.fill('0');
   assert.equal(await input.getAttribute('aria-invalid'),'true');
