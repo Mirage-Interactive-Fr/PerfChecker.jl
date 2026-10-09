@@ -42,6 +42,7 @@ function _legend_colors(default, plot_kwargs)
     return color isa AbstractVector ? color : fill(color, length(default))
 end
 
+"Preserve plot titles and append recorded collector/tag metadata to native subtitles."
 function _decorate!(figure; tool, tags = nothing, axis_kwargs = (;))
     attributes = _attributes(axis_kwargs)
     tags === nothing ||
@@ -52,11 +53,11 @@ function _decorate!(figure; tool, tags = nothing, axis_kwargs = (;))
         for (key, value) in pairs(attributes)
             setproperty!(axis, key, value)
         end
-        axis.title = "$(axis.title[]) · $tool"
         tag_label = tags === nothing || isempty(tags) ? "Tags: none" :
                     "Tags: $(join(string.(tags), ", "))"
-        axis.subtitle = isempty(axis.subtitle[]) ? tag_label :
-                        "$(axis.subtitle[]) · $tag_label"
+        metadata = "$tool · $tag_label"
+        axis.subtitle = isempty(axis.subtitle[]) ? metadata :
+                        "$(axis.subtitle[]) · $metadata"
     end
     return figure
 end

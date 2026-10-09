@@ -26,7 +26,7 @@
     toolbar.className = 'plot-toolbar';toolbar.setAttribute('aria-label','Plot controls');
     const brand = document.createElement('span');brand.className='plot-brand';brand.textContent='PerfChecker.jl · SAVED MEASUREMENTS';toolbar.append(brand);
     const button = (text,label,action) => {const node=document.createElement('button');node.textContent=text;node.setAttribute('aria-label',label);node.addEventListener('click',action);toolbar.append(node);return node};
-    let zoom=1,fitScale=1;
+    let zoom=1,fitScale=1,availableHeight=height+2;
     const surface=document.createElement('div');surface.id='offline-surface';
     viewport.insertBefore(surface,figure);surface.append(figure);
     const zoomLevel=document.createElement('output');zoomLevel.setAttribute('aria-live','polite');
@@ -35,14 +35,14 @@
     const renderSize=()=>{
       hidePopups();
       const scale=fitScale*zoom;
+      viewport.style.height=Math.min(availableHeight,Math.ceil(height*scale)+2)+'px';
       figure.style.transform='scale('+scale+')';
       surface.style.width=(width*scale)+'px';surface.style.height=(height*scale)+'px';
       zoomLevel.textContent=Math.round(zoom*100)+'%';
     };
     const resize=()=>{
       if(viewport.clientWidth<=2)return;
-      const availableHeight=Math.max(540,Math.min(720,window.innerHeight-viewport.offsetTop-50));
-      viewport.style.height=availableHeight+'px';
+      availableHeight=Math.max(120,Math.min(720,window.innerHeight-viewport.offsetTop-50));
       fitScale=Math.min(1,(viewport.clientWidth-2)/width,(availableHeight-2)/height);
       renderSize();
     };
@@ -94,7 +94,12 @@
     },true);
     viewport.addEventListener('pointermove',event=>{if(drag){viewport.scrollLeft=drag.left+drag.x-event.clientX;viewport.scrollTop=drag.top+drag.y-event.clientY}});
     viewport.addEventListener('pointerup',()=>drag=null);viewport.addEventListener('pointercancel',()=>drag=null);
-    new ResizeObserver(resize).observe(viewport);window.addEventListener('resize',resize);resize();
+    let observedWidth;
+    new ResizeObserver(()=>{
+      const nextWidth=viewport.getBoundingClientRect().width;
+      if(nextWidth!==observedWidth){observedWidth=nextWidth;resize()}
+    }).observe(viewport);
+    window.addEventListener('resize',resize);resize();
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install);else install();
 })();

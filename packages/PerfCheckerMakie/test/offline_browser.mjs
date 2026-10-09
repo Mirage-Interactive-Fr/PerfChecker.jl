@@ -147,6 +147,17 @@ try {
   await page.getByRole('button',{name:'Fit plot',exact:true}).click();
   await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
   const mobileFit=await figure.boundingBox(),mobileFrame=await viewport.boundingBox();
+  assert(mobileFrame.height-mobileFit.height<=4,'Mobile Fit uses the figure height without a large empty viewport');
+  const stableFit=await viewport.evaluate(async node=>{
+    const sizes=[];
+    for(let frame=0;frame<6;frame++){
+      await new Promise(resolve=>requestAnimationFrame(resolve));
+      const box=node.getBoundingClientRect();sizes.push([box.width,box.height]);
+    }
+    return sizes;
+  });
+  assert(stableFit.every(size=>size[0]===stableFit[0][0]&&size[1]===stableFit[0][1]),
+    'The fitted viewport settles without a resize feedback loop');
   assert(mobileFit.x>=mobileFrame.x&&mobileFit.y>=mobileFrame.y&&
     mobileFit.x+mobileFit.width<=mobileFrame.x+mobileFrame.width+1&&
     mobileFit.y+mobileFit.height<=mobileFrame.y+mobileFrame.height+1,

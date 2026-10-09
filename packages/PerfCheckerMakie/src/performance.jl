@@ -438,10 +438,10 @@ axis attributes customize the completed Axis, and plot attributes override the
 primary recipe (lines, scatterlines, boxplot, barplot, pie or heatmap).
 Inspection overlays and reference lines keep their own settings. Attributes
 are presentation only; no workload is run or measurement changed. Unknown
-Makie attributes raise Makie's normal error. Tags appear in the subtitle and
-the collector in the title; pass tool explicitly for manually built models
+Makie attributes raise Makie's normal error. Collector and tags appear in the
+subtitle; pass tool explicitly for manually built models
 whose collector identity is absent. Collector names and tag lists are appended
-to customized titles/subtitles. Empty evidence returns a labeled figure.
+to customized subtitles while titles are preserved. Empty evidence returns a labeled figure.
 """
 function PerfChecker.performance_figure(plot::PerfChecker.PerformancePlot;
         figure_kwargs = (;), axis_kwargs = (;), plot_kwargs = (;), tags = get(
