@@ -46,7 +46,7 @@ realpath(pkgdir(PerfChecker)) == root || error("PerfChecker must load from this 
 realpath(pkgdir(owner)) == realpath(owner_root) ||
     error("The companion must load from this checkout")
 pkgversion(PerfChecker) == v"1.0.1" ||
-    error("This prototype documents development 1.0.1 only, not stable 1.0.0")
+    error("This builder requires Core 1.0.1 source, not Core 1.0.0")
 owner_version = VersionNumber(TOML.parsefile(joinpath(owner_root, "Project.toml"))["version"])
 pkgversion(owner) == owner_version ||
     error("The loaded companion version differs from its source")
@@ -156,7 +156,7 @@ build = joinpath(root, "website", "build", "optional-api", source_revision, slug
 makedocs(;
     root = @__DIR__, source = "src", build, modules = docmodules,
     pagesonly = true, checkdocs = :all, doctest = false, warnonly = false,
-    sitename = "$owner_name development API",
+    sitename = "$owner_name API",
     remotes = Dict(root => (
         Documenter.Remotes.GitHub(
             "Mirage-Interactive-Fr", "PerfChecker.jl"),
@@ -200,7 +200,7 @@ inputs = [@__FILE__, joinpath(@__DIR__, slug, "Project.toml"),
     [joinpath(@__DIR__, "src", slug, page * ".md")
      for page in ("public-api", "full-api")]...]
 receipt = Dict{String, Any}(
-    "schema" => "perfchecker-optional-doc-export/1", "channel" => "dev",
+    "schema" => "perfchecker-optional-doc-export/1", "channel" => "source",
     "source_revision" => source_revision,
     "source_tree" => strip(read(
         Cmd(["git", "-C", root, "rev-parse", "HEAD^{tree}"]), String)),
@@ -223,4 +223,4 @@ receipt = Dict{String, Any}(
 open(joinpath(build, "api-provenance.toml"), "w") do io
     TOML.print(io, receipt; sorted = true)
 end
-println("Rendered actual $owner_name development docstrings in $markdown")
+println("Rendered actual $owner_name docstrings in $markdown")

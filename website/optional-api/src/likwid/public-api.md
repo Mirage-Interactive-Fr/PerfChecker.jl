@@ -1,6 +1,6 @@
 # PerfCheckerLIKWID public API
 
-This development reference uses the actual Julia docstrings of PerfCheckerLIKWID
+This reference uses the actual Julia docstrings of PerfCheckerLIKWID
 1.0.1. These APIs are absent from the stable PerfChecker 1.0.0 source. Rendering
 documentation does not execute a counter window or qualify hardware availability.
 

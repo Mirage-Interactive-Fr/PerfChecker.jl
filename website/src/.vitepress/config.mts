@@ -153,6 +153,7 @@ const config = defineConfig({
         { text: 'Reference index', link: '/reference/' },
         { text: 'Public API', link: '/reference/public-api' },
         { text: 'Full API', link: '/reference/api' },
+        { text: 'Companion APIs', link: '/reference/optional-api' },
         { text: 'Command line', link: '/reference/cli' },
         { text: 'Checks and tools', link: '/reference/checks' },
         { text: 'Run bundles', link: '/reference/run-bundles' },
@@ -232,6 +233,21 @@ config.sitemap = { hostname: new URL(config.base, docsURL.origin).href }
 // Keep the whole documentation visible from every page.
 const sidebar = config.themeConfig?.sidebar
 if (Array.isArray(sidebar)) {
+  // Already-rendered Julia docstrings share this site's theme, search and base.
+  const optionalNavigation = fileURLToPath(new URL('../optional-api/navigation.json', import.meta.url))
+  if (existsSync(optionalNavigation)) {
+    const optional = JSON.parse(readFileSync(optionalNavigation, 'utf8'))
+    if (!/^[a-f0-9]{40}$/.test(optional.source_revision) || optional.owners.length !== 6)
+      throw new Error('Invalid optional API navigation provenance')
+    sidebar.push({ text: 'Companion APIs', items: optional.owners.map(({ slug, name }) => {
+      if (!/^[a-z]+$/.test(slug) || !/^PerfChecker[A-Za-z]+$/.test(name))
+        throw new Error('Invalid companion API namespace')
+      return { text: name, items: [
+        { text: 'Public API', link: `/optional-api/${slug}/public-api` },
+        { text: 'Full API', link: `/optional-api/${slug}/full-api` },
+      ] }
+    }) })
+  }
   for (const group of sidebar) {
     if (!group.items) continue
     group.collapsed = false

@@ -133,6 +133,48 @@ jobs:
           node --input-type=module -e
           'import {validateStableDocumentationSource} from "./website/deploy-sftp.mjs";
           await validateStableDocumentationSource(process.cwd(), "v" + process.env.PERFCHECKER_DOCS_VERSION, process.env.GITHUB_SHA);'
+      - name: Render companion APIs in isolated projects, once per source revision
+        if: env.PERFCHECKER_DOCS_VERSION == '1.0.1'
+        working-directory: ${{ steps.version.outputs.explicit-source == 'true' && 'stable-doc-source' || '.' }}
+        shell: bash
+        run: |
+          export PERFCHECKER_SOURCE="$PWD"
+          for companion in linuxperf likwid makie web pluto tachikoma; do
+            project="$RUNNER_TEMP/optional-api/$companion-project"
+            mkdir -p "$project"
+            cp "website/optional-api/$companion/Project.toml" "$project/Project.toml"
+            export JULIA_DEPOT_PATH="$RUNNER_TEMP/optional-api/$companion-depot"
+            export PERFCHECKER_COMPANION="$companion"
+            julia --startup-file=no --project="$project" -e '
+              using Pkg
+              root = ENV["PERFCHECKER_SOURCE"]
+              slug = ENV["PERFCHECKER_COMPANION"]
+              owners = Dict("linuxperf"=>"PerfCheckerLinuxPerf", "likwid"=>"PerfCheckerLIKWID",
+                "makie"=>"PerfCheckerMakie", "web"=>"PerfCheckerWeb",
+                "pluto"=>"PerfCheckerPluto", "tachikoma"=>"PerfCheckerTachikoma")
+              specs = [Pkg.PackageSpec(path=root),
+                Pkg.PackageSpec(path=joinpath(root,"packages",owners[slug]))]
+              slug == "tachikoma" && push!(specs,
+                Pkg.PackageSpec(path=joinpath(root,"packages","PerfCheckerMakie")))
+              Pkg.develop(specs); Pkg.instantiate()'
+            julia --startup-file=no --project="$project" website/optional-api/make.jl "$companion"
+          done
+      - name: Test canonical assembly against the six real exports
+        if: env.PERFCHECKER_DOCS_VERSION == '1.0.1'
+        working-directory: ${{ steps.version.outputs.explicit-source == 'true' && 'stable-doc-source' || '.' }}
+        run: julia --startup-file=no --project=website website/optional-api/test_assembly.jl
+      - name: Preserve companion API provenance and isolated environment pairs
+        if: env.PERFCHECKER_DOCS_VERSION == '1.0.1'
+        uses: actions/upload-artifact@v7
+        with:
+          name: documentation-optional-api-exports
+          include-hidden-files: true
+          path: |
+            ${{ steps.version.outputs.explicit-source == 'true' && 'stable-doc-source/' || '' }}website/build/optional-api
+            ${{ runner.temp }}/optional-api/*-project/Project.toml
+            ${{ runner.temp }}/optional-api/*-project/Manifest.toml
+          if-no-files-found: error
+          retention-days: 14
       - name: Build the GitHub mirror
         if: steps.version.outputs.explicit-source != 'true'
         shell: bash

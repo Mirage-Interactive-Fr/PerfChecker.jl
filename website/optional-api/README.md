@@ -2,8 +2,9 @@
 
 Render real Julia docstrings with Documenter 1.19.0 and DocumenterVitepress 0.3.5.
 The builder does not reconstruct docstrings, measure workloads, open a frontend,
-install native libraries or publish a site. Integration into the main website
-workflow and cross-companion references remains separate work.
+install native libraries or publish a site. The documentation workflow exports
+all six owners once per source revision and assembles their rendered Markdown
+into the canonical site's theme, navigation and search.
 
 Use one isolated project and private writable depot per companion. LinuxPerf
 0.4.2 requires PrettyTables 2; LIKWID 0.4.6 requires PrettyTables 3. Julia 1.10 or
@@ -19,9 +20,10 @@ Julia 1.10 must not rely on a `[sources]` table.
 | `pluto` | PerfCheckerPluto 1.0.1 | 4 | Pluto methods of Core bindings |
 | `tachikoma` | PerfCheckerTachikoma 1.0.1 | 6 | Real optional Makie pixel method |
 
-These pages describe the selected source with Core development 1.0.1. Web remains
-version 1.0.0. Do not insert these pages into stable Core 1.0.0 documentation: that
-source does not include the new counter and terminal APIs.
+These pages describe the selected Core 1.0.1 source, including development exports
+and the eventual stable 1.0.1 documentation. Web remains version 1.0.0. Do not
+insert these pages into stable Core 1.0.0 documentation: that source does not
+include the new counter and terminal APIs.
 
 ## Prepare and render sequentially
 
@@ -105,6 +107,11 @@ preserving earlier builds and failed attempts.
   defining modules and source locations. Versions, Project/Manifest hashes,
   builder/pages/theme inputs and the official Node lock hashes are retained.
 
+The receipt's `channel = "source"` identifies a reusable source export, not a
+deployment channel. The same revision's export can enter development, versioned
+and stable 1.0.1 builds; their canonical `build-info.json` identifies the actual
+deployment channel. Earlier prototype receipts and builds remain unchanged.
+
 A Core binding can have methods and docstrings defined by a companion:
 `PerfChecker.serve_suite` belongs to Core, while its Web methods and their
 docstrings come from PerfCheckerWeb. The receipt preserves those identities.
@@ -128,8 +135,24 @@ visible docstring bodies, local search and desktop/mobile navigation. Keep each
 owner's inventory during assembly; common Core bindings must not overwrite one
 another silently.
 
-The main website currently renders only `Modules = [PerfChecker]`. Listing an
-optional package does not render its methods. Sidebar/index and workflow
-integration must consume the isolated exports from one consistent source revision
-and keep stable 1.0.0 separate. Reference rendering neither qualifies physical
+The main Documenter pass renders only `Modules = [PerfChecker]`. Its assembly
+step consumes already rendered companion Markdown after that pass; it does not
+copy docstrings into another Julia module or claim Core owns companion methods.
+Assembly rejects missing exports, mixed revisions, changed source/input/output
+hashes and incomplete page sets before copying any pages. The canonical build
+preserves each receipt and inventory under `optional-api/<owner>.toml` and
+`optional-api/<owner>.inv`. Each inventory's relative `<owner>/full-api.html`
+targets resolve under the shared `optional-api/` namespace. Core's inventory
+remains separate, so shared binding names do not overwrite companion overloads.
+Generated pages disable the edit link; their actual Julia source links remain.
+
+Core 1.0.1 canonical builds require the complete matching export set. For an
+explicit documentation-only stable 1.0.1 refresh, the workflow prepares and renders
+all six owners from the selected immutable `stable-doc-source` checkout, tests
+assembly there and retains its exports and environment pairs. Ordinary builds
+use the workflow checkout. Both paths render once and reuse the matching set;
+they never substitute a different source revision's companion docs.
+
+Stable 1.0.0's explicit documentation-only refresh retains its own source and
+builder; it does not acquire these 1.0.1 APIs. Reference rendering neither qualifies physical
 counters nor wires them into native CLI, VS Code, Pluto or MCP selectors.

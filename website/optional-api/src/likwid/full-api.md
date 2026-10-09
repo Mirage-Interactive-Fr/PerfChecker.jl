@@ -1,6 +1,6 @@
 # PerfCheckerLIKWID full API
 
-This development reference renders actual Julia docstrings from PerfCheckerLIKWID
+This reference renders actual Julia docstrings from PerfCheckerLIKWID
 1.0.1, including any documented private bindings. Undocumented internal functions
 are not presented as documented APIs. Start with the [public API](public-api.md).
 

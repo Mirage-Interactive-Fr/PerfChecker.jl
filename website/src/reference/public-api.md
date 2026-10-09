@@ -23,10 +23,13 @@ loaded. An exported generic function can exist before its optional methods are
 available. Loading an interface and constructing a configuration are separate
 from starting a measurement.
 
-The generated entries below cover **Core exports only**. Tachikoma and hardware
-counter bindings belong to their independently loaded companions. Their
-[API index, source docstrings and Julia help examples](api.md#Interface-packages)
-are linked separately; they are not silently imported by this documentation build.
+The generated entries below cover **Core exports only**. The six
+[companion Public and Full APIs](optional-api.md) render their actual Julia
+docstrings in isolated projects and share this site's navigation and search.
+Companion bindings and methods retain their owning modules and pinned source
+links; they are not silently imported into the Core documentation environment.
+The [ownership index and Julia help examples](api.md#Interface-packages) explain
+how to load the selected owner.
 
 ## Exported docstrings
 

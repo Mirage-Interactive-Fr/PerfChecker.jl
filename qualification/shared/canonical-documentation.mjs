@@ -4,10 +4,14 @@ import { readdir, readFile, access } from 'node:fs/promises';
 import { resolve, join, relative, posix } from 'node:path';
 import { spawn } from 'node:child_process';
 import { once } from 'node:events';
+import { inflateSync } from 'node:zlib';
 import { readExport } from '../../website/deploy-sftp.mjs';
 const root = resolve(process.argv[2] ?? 'website/build/sftp');
 const origin = 'https://perfchecker.mirageinteractive.fr';
 const browserChecks = process.argv.includes('--browser');
+const optionalOwners = [['linuxperf', 'PerfCheckerLinuxPerf'], ['likwid', 'PerfCheckerLIKWID'],
+  ['makie', 'PerfCheckerMakie'], ['web', 'PerfCheckerWeb'], ['pluto', 'PerfCheckerPluto'],
+  ['tachikoma', 'PerfCheckerTachikoma']];
 const illustratedGuides = new Set(['interfaces/vscode.html', 'interfaces/vscode-configuration.html',
   'interfaces/vscode-workflows.html', 'interfaces/vscode-videos.html', 'mcp-advisor.html']);
 function htmlIds(html) {
@@ -52,6 +56,41 @@ for (const channel of await readdir(root)) {
   const pages = await enumerate(site);
   const pageIds = new Map();
   for (const file of pages) pageIds.set(file, htmlIds(await readFile(file, 'utf8')));
+  if (info.version === '1.0.1') {
+    for (const [slug, owner] of optionalOwners) {
+      const provenance = await readFile(join(site, 'optional-api', `${slug}.toml`), 'utf8');
+      assert.ok(provenance.includes(`source_revision = "${info.revision}"`), `${owner}: source revision`);
+      assert.ok(provenance.includes(`owner = "${owner}"`), `${owner}: owner provenance`);
+      const bindings = [...provenance.matchAll(/^\[\[bindings\]\]$/gm)].length;
+      assert.ok(bindings > 0, `${owner}: real Docs records`);
+      for (const page of ['public-api', 'full-api']) {
+        const html = await readFile(join(site, 'optional-api', slug, `${page}.html`), 'utf8');
+        assert.equal([...html.matchAll(/class="jldocstring custom-block"/g)].length, bindings,
+          `${owner}/${page}: visible Julia docstring bodies`);
+        assert.equal([...html.matchAll(new RegExp(`/blob/${info.revision}/packages/${owner}/`, 'g'))].length,
+          bindings, `${owner}/${page}: exact source links`);
+        assert.ok(!/```@(docs|autodocs|index)|\]\(@ref/.test(html), `${owner}: raw Julia directive`);
+      }
+      const inventory = await readFile(join(site, 'optional-api', `${slug}.inv`));
+      let start = 0;
+      for (let line = 0; line < 4; line++) start = inventory.indexOf(10, start) + 1;
+      assert.ok(start > 0 && inventory.subarray(0, start).toString().startsWith('# Sphinx inventory version 2'));
+      const rows = inflateSync(inventory.subarray(start)).toString().trim().split('\n');
+      assert.ok(rows.some(row => /\sjl:\S+\s/.test(row)), `${owner}: Julia inventory entries`);
+      for (const row of rows) {
+        const match = /^(.*?)\s+(\S+:\S+)\s+(-?\d+)\s+(\S+)\s+(.*)$/.exec(row);
+        assert.ok(match, `${owner}: inventory row`);
+        const uri = match[4].endsWith('$') ? match[4].slice(0, -1) + match[1] : match[4];
+        const target = new URL(uri, new URL('optional-api/', info.url));
+        assert.ok(target.href.startsWith(new URL(`optional-api/${slug}/`, info.url).href));
+        const file = join(site, decodeURIComponent(target.pathname.slice(info.base.length)));
+        assert.ok(pageIds.has(file), `${owner}: inventory page ${uri}`);
+        if (target.hash) assert.ok(pageIds.get(file).has(decodeURIComponent(target.hash.slice(1))),
+          `${owner}: inventory fragment ${uri}`);
+      }
+    }
+    console.log(`${channel}: six companion Public/Full APIs, Docs/source ownership and namespaced inventories passed`);
+  }
   for (const file of pages) {
     const route = relative(site, file).replaceAll('\\', '/');
     const url = new URL(route === 'index.html' ? '' : route, info.url);
@@ -123,6 +162,28 @@ for (const channel of await readdir(root)) {
     const href = await result.getAttribute('href');
     assert.ok(new URL(href, local).pathname.startsWith(info.base) && new URL(href, local).pathname.endsWith('.html'));
     await result.click(); await page.waitForLoadState('networkidle');
+    if (info.version === '1.0.1') {
+      for (const [slug, owner] of optionalOwners) {
+        for (const api of ['public-api', 'full-api']) {
+          await page.goto(new URL('reference/optional-api.html', local).href,
+            { waitUntil: 'networkidle' });
+          await page.locator('.vp-doc tbody tr').filter({ hasText: owner })
+            .getByRole('link', { name: api === 'public-api' ? 'Public' : 'Full', exact: true }).click();
+          await page.waitForURL(new URL(`optional-api/${slug}/${api}.html`, local).href);
+          for (const width of [1440, 390]) {
+            await page.setViewportSize({ width, height: 900 });
+            assert.ok(await page.locator('.vp-doc .jldocstring').first().isVisible());
+            assert.ok((await page.locator('.vp-doc .jldocstring').first().innerText()).length > 80);
+            assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1));
+          }
+        }
+      }
+      await page.setViewportSize({ width: 1440, height: 900 });
+      await page.locator('.VPNavBar').getByRole('button', { name: /Search/ }).click();
+      await page.locator('.VPLocalSearchBox input').fill('CounterResult');
+      await page.locator('.VPLocalSearchBox .result[href*="optional-api/"]').first().waitFor();
+      await page.keyboard.press('Escape');
+    }
     const illustrated = [
       ['interfaces/vscode.html', ['vscode-studio.png', 'vscode-suite-designer.png']],
       ['interfaces/vscode-workflows.html', ['vscode-results.png']],

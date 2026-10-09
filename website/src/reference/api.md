@@ -37,9 +37,12 @@ Some entry points are implemented by an interface package. Install and load the 
 - **PerfCheckerLinuxPerf / PerfCheckerLIKWID** — each owns its own `CounterRecord`, `CounterResult`, `measure_counters`, `counter_bundle`, `counter_command`, `counter_executor`, `run_counter_suite`.
 
 The generated index and docstrings below cover the **PerfChecker module**.
-The following companion references link to their actual source docstrings at
-revision `1a7577da782ba8676683f3ceefcb8dccf055afe5`. This build does not import
-those modules or claim to generate their autodocs. Install the selected owner
+The [six companion Public and Full APIs](optional-api.md) render their real
+docstrings separately, with signatures and source links pinned to this site's
+source revision. Their isolated projects preserve incompatible dependency
+requirements and their methods of shared Core bindings. The supplementary
+source references below retain the published `1a7577da782ba8676683f3ceefcb8dccf055afe5`
+snapshot and Julia help examples. Install the selected owner
 using [the source-companion recipes](../guide/installation.md#Source-companions-for-1.0.1)
 before using its methods or Julia help.
 
