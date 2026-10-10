@@ -47,7 +47,7 @@ Pkg.add(Pkg.PackageSpec(
 
 The stable Web recipe works with registered Core 1.0.0. The current Pluto and
 Makie 1.0.1 companions require Core 1.0.1 or later; follow the
-[Pluto candidate steps](#Prepare-the-integrated-Pluto-candidate) or the
+[Pluto installation steps](#Prepare-integrated-Pluto-for-VS-Code) or the
 [Makie source recipe](../interfaces/visualization.md#Customize-and-export-Makie-figures).
 Neither companion is separately registered in General yet.
 
@@ -186,17 +186,22 @@ Default CLI/VSCode/Pluto/MCP selectors do not wire these executors. Use the
 [explicit Julia counter API](../reference/api.md#Hardware-counter-APIs); hardware
 HTTP/UI qualification remains pending.
 
-### Prepare the integrated Pluto candidate
+```@raw html
+<a id="Prepare-the-integrated-Pluto-candidate"></a>
+```
 
-The VS Code Pluto integration is being qualified for extension **1.0.1** and
-requires corrected **PerfChecker core 1.0.1** and **PerfCheckerPluto 1.0.1**.
+### Prepare integrated Pluto for VS Code
+
+The published VS Code extension **1.0.1** integrates Pluto and requires
+**PerfChecker core 1.0.1** and **PerfCheckerPluto 1.0.1**.
 Core 1.0.1 is registered in General and the root `v1.0.1` tag is available.
-Wait for the corrected extension before using its guided setup. The Pluto
-companion is available from the tagged repository subdirectory while its own
-General registration is pending. Public extension 1.0.0 retains its earlier
-notebook workflow; the standalone Pluto interface above is already available.
+The Pluto companion is available from the tagged repository subdirectory while
+its own General registration is pending. See the
+[extension download and platform limits](../interfaces/vscode.md#Qualification-and-reporting-a-problem).
+Extension 1.0.0 retains its earlier notebook workflow; the standalone Pluto
+interface above is also available.
 
-The candidate's explicit **Install Pluto environment** action prepares
+The extension's explicit **Install Pluto environment** action prepares
 `perf/pluto`. Review the listed packages and selected folder before confirming.
 For a disposable setup check with the published Core and tagged Pluto source,
 use the recipe below. It creates a new project and does not modify an existing

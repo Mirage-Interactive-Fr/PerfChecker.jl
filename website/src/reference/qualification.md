@@ -59,6 +59,19 @@ frontend or release qualification.
 
 Publishing development documentation does not certify the packages it describes. Pull requests build but cannot publish.
 
+## Registered-package evaluation
+
+The development **Registered PkgEval** workflow evaluates an immutable release
+selected from General on Julia stable and nightly in Linux sandboxes. This is
+separate from checkout CI, collection qualification and documentation publication.
+It does not measure benchmark regressions or qualify all frontends.
+
+See [installed-release evaluation](../tutorials/ci.md#Check-installed-releases-with-PkgEval)
+for source-tree verification, artifact fields, limits, the known 1.0.1 read-only
+fixture failure and how to request a future registered version. A green checkout
+test of a fixture correction cannot be substituted for PkgEval of the release
+that eventually contains it.
+
 ## Limits
 
 - The initial supported platforms are Windows and Linux.

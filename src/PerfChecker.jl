@@ -19,6 +19,7 @@ import Malt: remote_eval_wait, Worker, remote_eval_fetch, stop, fetch
 import Pkg
 import Pkg.Types: PackageSpec, Context
 import Profile
+import Preferences
 import Random
 
 # Extension entry points. Their implementations are loaded only when the
@@ -206,6 +207,9 @@ export probe_spec_dict
 export oracle_spec_dict
 export planned_run_id
 export PerfConfig
+export check_preferences
+export set_check_preferences!
+export reset_check_preferences!
 export perf_setup
 export register_oxygen_routes!
 export read_property_corpus

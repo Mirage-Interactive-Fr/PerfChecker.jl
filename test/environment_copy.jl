@@ -165,3 +165,96 @@ end
         end
     end
 end
+
+@testitem "Read-only seeds produce writable private worker metadata" tags=[
+    :worker_environment, :profile_contract] begin
+    using PerfChecker
+    using SHA, TOML
+    import Pkg
+    mktempdir() do root
+        source, dependency = joinpath(root, "seed"), joinpath(root, "Dependency")
+        metadata = joinpath(source, "metadata")
+        mkpath(metadata)
+        mkpath(joinpath(dependency, "src"))
+        write(joinpath(dependency, "Project.toml"),
+            "name = \"ReadonlyDependency\"\nuuid = \"fa635044-6c9b-4c82-94a4-9aa6ef3a1a43\"\nversion = \"1.0.0\"\n")
+        write(joinpath(dependency, "src", "ReadonlyDependency.jl"),
+            "module ReadonlyDependency\nvalue() = 42\nend\n")
+        project, manifest = joinpath(source, "Project.toml"),
+        joinpath(metadata, "locked.toml")
+        write(project, "manifest = \"metadata/locked.toml\"\n[deps]\n")
+        write(manifest,
+            "manifest_format = \"2.0\"\njulia_version = $(repr(string(VERSION)))\n[deps]\n")
+        chmod(project, 0o444)
+        chmod(manifest, 0o444)
+        chmod(metadata, 0o555)
+        originals = Dict(path => (sha256(read(path)), filemode(path))
+        for path in (project, manifest))
+        directory_mode = filemode(metadata)
+        prepared_root = nothing
+        preparation_project = nothing
+        external_directory = nothing
+        try
+            copied = PerfChecker._copy_check_environment(source, joinpath(root, "copy"))
+            copied_manifest = joinpath(copied, "metadata", "locked.toml")
+            @test filemode(joinpath(copied, "Project.toml")) & 0o200 != 0
+            @test filemode(copied_manifest) & 0o200 != 0
+            # Windows stat reports read/write flags rather than POSIX traversal bits.
+            if !Sys.iswindows()
+                @test filemode(dirname(copied_manifest)) & 0o300 == 0o300
+            end
+            probe, probe_io = mktemp(dirname(copied_manifest))
+            try
+                write(probe_io, "private worker metadata\n")
+                close(probe_io)
+                @test read(probe, String) == "private worker metadata\n"
+            finally
+                isopen(probe_io) && close(probe_io)
+                rm(probe)
+            end
+            @test !ispath(probe)
+            @test !islink(copied_manifest)
+            open(io -> write(io, "\n"), copied_manifest, "a")
+            @test read(manifest) != read(copied_manifest)
+            if !Sys.iswindows()
+                linked = joinpath(source, "Manifest.toml")
+                symlink("metadata/locked.toml", linked)
+                external_directory = mkpath(joinpath(root, "external"))
+                chmod(external_directory, 0o555)
+                symlink("../external", joinpath(source, "linked-directory"))
+                private = PerfChecker._copy_check_environment(
+                    source, joinpath(root, "linked"))
+                @test !islink(joinpath(private, "Manifest.toml"))
+                @test filemode(joinpath(private, "Manifest.toml")) & 0o200 != 0
+                @test islink(joinpath(private, "linked-directory"))
+                @test filemode(external_directory) & 0o777 == 0o555
+            end
+            # The real preparation path must let Pkg write its project/manifest,
+            # using an existing local package rather than downloading a target.
+            preparation_seed = mkpath(joinpath(root, "preparation-seed"))
+            preparation_project = joinpath(preparation_seed, "Project.toml")
+            write(preparation_project, "[deps]\n")
+            chmod(preparation_project, 0o444)
+            preparation_state = (sha256(read(preparation_project)),
+                filemode(preparation_project))
+            config = PerfConfig(:network; path = preparation_seed, include_current = false,
+                devops = Pkg.PackageSpec(path = dependency, name = "ReadonlyDependency"),
+                quiet = true, threads = 1)
+            prepared_root, environment = PerfChecker._prepare_check_environment(config)
+            @test TOML.parsefile(joinpath(environment, "Project.toml"))["deps"][
+                "ReadonlyDependency"] == "fa635044-6c9b-4c82-94a4-9aa6ef3a1a43"
+            @test (sha256(read(preparation_project)), filemode(preparation_project)) ==
+                  preparation_state
+            @test all(path -> (sha256(read(path)), filemode(path)) == originals[path],
+                keys(originals))
+            @test filemode(metadata) == directory_mode
+        finally
+            prepared_root === nothing || rm(prepared_root; recursive = true, force = true)
+            preparation_project === nothing || chmod(preparation_project, 0o644)
+            external_directory === nothing || chmod(external_directory, 0o755)
+            chmod(metadata, 0o755)
+            chmod(project, 0o644)
+            chmod(manifest, 0o644)
+        end
+    end
+end

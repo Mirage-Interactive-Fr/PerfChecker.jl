@@ -60,8 +60,9 @@ comparing the positions of points.
 The displayed statistics always use the complete recorded distribution.
 Large distributions plot at most 512 sampled points while keeping the extremes
 and full-set sorted ranks. A notice states the plotted and total counts; all samples
-remain available in JSON. These new controls are being qualified for the 1.0.1
-release. The native example below shows them in a recorded source build.
+remain available in JSON. These controls are available in extension 1.0.1.
+The native example below shows an earlier recorded source build; see the
+[current release qualification](vscode.md#Qualification-and-reporting-a-problem).
 
 ::: tabs
 
@@ -169,8 +170,8 @@ For custom Julia figures, load [PerfCheckerMakie](visualization.md) with your ch
 
 Attaching suite measurements requires **PerfChecker for VS Code 1.0.1 or
 later** and a controller with **PerfChecker core 1.0.1 or later providing
-canonical measurement summaries**. This integration is being qualified before
-the 1.0.1 release. Core **1.0.0** does not provide those summaries: Send displays
+canonical measurement summaries**. Core **1.0.0** does not provide those
+summaries: Send displays
 an explicit limitation and sends no measurements to the provider. Updating the
 extension alone does not update the selected Julia controller.
 
@@ -201,7 +202,7 @@ correctness before accepting a performance claim.
 
 ## Open a saved diagnostic report
 
-The **1.0.1 extension candidate** can display a saved `perfchecker-diagnosis/1`
+Extension **1.0.1** can display a saved `perfchecker-diagnosis/1`
 JSON report in Investigations. Importing reads existing evidence; it does not
 run a workload or independently verify the file's claims.
 
@@ -282,16 +283,15 @@ workspace through its normal history workflow.
 
 ## Notebook versions
 
-The integrated Pluto workflow below is a **1.0.1 candidate**. Its native editor
-qualification and General installation check are still in progress. Public
-extension **1.0.0** uses the earlier notebook workflow described at the end of
-this section. Install the corrected releases before using the candidate steps.
+The integrated Pluto workflow below is available in extension **1.0.1** with
+Core **1.0.1**. Check the [platform scope and macOS limits](vscode.md#Qualification-and-reporting-a-problem).
+Extension **1.0.0** used the earlier notebook workflow described at the end of
+this section.
 
 ## Pluto notebooks in VS Code
 
 The integrated Pluto workflow requires **PerfChecker for VS Code 1.0.1 or newer**
-and the corrected **PerfChecker core 1.0.1 or newer**. Both releases must be
-available before following this workflow. Its separate notebook environment also
+and **PerfChecker core 1.0.1 or newer**. Its separate notebook environment also
 requires **PerfCheckerPluto 1.0.1 or newer within the 1.x series**.
 Use **PerfChecker: New Pluto notebook** to create a native `.jl` notebook, or
 **PerfChecker: Open Pluto notebook** to reopen one in an interactive editor tab.
@@ -329,10 +329,11 @@ expecting executable checks.
 <DocMedia src="/assets/screenshots/vscode/v101/pluto-macos-intel.png" alt="Native VS Code 1.141.0 on a macOS Intel CI host displaying the generated PerfChecker Pluto suite notebook, its package, workload, collector and target selectors, and Open source, Stop session and Restart session controls" caption="Review the package, workload, collector and target selectors inside the VS Code editor tab. This capture records only an idle notebook opening in the 1.0.1 candidate, with a demonstration package." />
 ```
 
-This native capture uses VSIX candidate `75f84f631ba3`, Core candidate
-`6f6155510aa2` and Julia **1.13.1**. Its configured opening phase passed;
-the complete notebook lifecycle and final release qualification remain in
-progress. The image opens at full resolution when selected.
+This earlier native capture uses VSIX candidate `75f84f631ba3`, Core candidate
+`6f6155510aa2` and Julia **1.13.1**. It records only the configured opening
+phase, not the current release's complete notebook lifecycle. See the
+[current qualification](vscode.md#Qualification-and-reporting-a-problem).
+The image opens at full resolution when selected.
 
 The integration uses the official notebook generators supplied by PerfChecker
 and its PerfCheckerPluto companion. The generated notebook is editable Julia source. Opening it or changing a selector does not request
@@ -347,11 +348,11 @@ workers. A missing analyzer is unavailable rather than a passing diagnosis.
 
 ### Keep the Pluto environment separate
 
-The candidate integration targets Pluto **1.0.4**, the corrected PerfChecker
+The integration targets Pluto **1.0.4**, PerfChecker
 core, PlutoUI, BenchmarkTools, Chairmarks and **PerfCheckerPluto 1.0.1** from
 the root repository tag `v1.0.1`. Core 1.0.1 is registered in General and this
 tag is available; the Pluto companion's separate General registration is
-pending. Wait for the corrected extension before using its guided setup.
+pending. The extension's guided setup uses that public tag.
 Set the folder configuration explicitly when you use several environments:
 
 ```json
@@ -373,9 +374,13 @@ prefer to prepare the environment manually.
 ### Use the corrected suite plot renderer
 
 Companion 1.0.1 generates a separate document for each standalone plot, keeping
-its JavaScript module state separate when the selected plot changes. Native
-canvas rendering and imports in this isolated document are still being
-qualified; the earlier recorded notebook passages do not establish this fix.
+its JavaScript module state separate when the selected plot changes. The
+release's native canvas and interaction checks passed on Linux and Windows,
+with stable VS Code and VS Code 1.96. On Intel macOS the figures and interactions
+rendered successfully, but the check failed during process inspection after
+**Close notebook view**; its final **Stop session** verified cleanup. See the
+[qualification notes](vscode.md#Qualification-and-reporting-a-problem) for that
+limit. The earlier notebook screenshots retain their own source provenance.
 
 Updating the companion does not rewrite an existing `.jl` notebook. Suite
 notebooks generated with companion 1.0.0 retain their earlier plot-rendering
@@ -384,7 +389,7 @@ Feature suite notebook** with **PerfChecker: New Pluto notebook**, or regenerate
 into a new file. Keep the old notebook, edits and saved reports.
 
 For manual generation, run this from the measured package root with its suite
-at `perf/suite.jl`, after the releases and tag above are available:
+at `perf/suite.jl`, using the public `v1.0.1` companion tag:
 
 ```julia
 import Pkg
@@ -550,9 +555,9 @@ These command IDs are available to Etendu/Beautiful Landscape and other extensio
    companion's installation instructions. Its `EtenduGame.toml` must declare
    `id = "etendu.beautifullandscape"` and `entrypoint = "scripts/play.jl"`.
 2. Check the folder's PerfChecker controller environment separately from the
-   renderer environment. The cancellation fix belongs to the **Core 1.0.1
-   candidate**; use its corrected registered release once available. The public
-   Core 1.0.0 provider can leave a rendering worker running after interruption.
+   renderer environment. Use registered **Core 1.0.1** for the cancellation
+   fix. The earlier Core 1.0.0 provider can leave a rendering worker running
+   after interruption.
 3. In the companion, select this folder and a quality profile declared in
    `config/quality.toml`, such as `mobile-leger`. That file uses the
    `beautiful-landscape-quality/1` schema. The game must supply its actual
@@ -575,21 +580,14 @@ identity before comparing runs. The manifest explicitly records GPU timing and
 physical presentation as `unavailable`; these observations do not measure
 displayed frame rate.
 
-Software qualification has exercised the real compiled provider bridge with
-the Landscape v0.1.0 scene, five SDK v0.1.1 modules, Mesa **llvmpipe** on a CPU,
-40 submitted frames after warmup and six real observations in milliseconds.
-Two changing rendered scene buffers were observed before cancellation. The
-corrected candidate stopped all tracked owned processes before the test display
-closed, preserved an unrelated `.mem` file and published no completed evidence
-for the cancelled run.
-
-This opt-in test passed against Core candidate `11011e1f8999`. The package source
-and tests are byte-identical in candidate `975d9351250a` (tree
-`7efea7f007cbdd78141fbebef63eeefcebc0f54e`); only the spelling configuration
-changed. Registration and the extension's final release qualification remain
-separate prerequisites for the public 1.0.1 workflow.
-The native VS Code companion button, hardware GPU timing and physical display
-presentation have not been qualified by this software test.
+An earlier opt-in software check used Core source `11011e1f8999`, the Landscape
+v0.1.0 scene, five SDK v0.1.1 modules and Mesa **llvmpipe** on a CPU. It observed
+40 submitted frames after warmup, six measurements in milliseconds and two
+changing scene buffers. Cancellation stopped the tracked owned processes,
+preserved an unrelated `.mem` file and published no completed evidence for the
+cancelled run. This historical provider check does not qualify the published
+extension's native Landscape controls, hardware GPU timing or physical display
+presentation. See the [release scope](vscode.md#Qualification-and-reporting-a-problem).
 
 Before a live graphics comparison, keep the scene, quality, device and workload
 configuration comparable. Retain the resulting evidence and its configuration;
