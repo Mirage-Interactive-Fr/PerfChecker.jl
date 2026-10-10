@@ -148,8 +148,12 @@ you intend to assess. Then read `status`, `reason`, `exception` when present,
 the installation/precompilation/testing completion fields, and the full log.
 A successful package-test result has `status="test"`. A controller failure,
 failed assertion and timeout are different outcomes; a cancelled job alone does
-not identify the failing test. `duration_seconds` and `peak_rss_bytes` describe
-this sandbox attempt, not a performance regression against another release.
+not identify the failing test. In the pinned controller, `duration_seconds`
+records CPU time for the Testing phase, including completed child processes;
+it is not elapsed wall time. Installation and precompilation phase timings
+also use CPU time. The final `PkgEval … after …s` line reports total elapsed
+wall time around sandbox execution. These timings and `peak_rss_bytes`
+describe this attempt, not a performance regression against another release.
 
 The [initial 1.0.1 evaluation](https://github.com/Mirage-Interactive-Fr/PerfChecker.jl/actions/runs/38044386943)
 tests registered tree `00c133336911b8600d63a8d6c59ce1befc5ce690`.
@@ -164,15 +168,26 @@ The nightly attempt recorded `status="kill"` and `reason="time_limit"` under
 the 2,700-second sandbox budget. Installation and precompilation completed;
 testing did not. This was not the separate 75-minute GitHub job limit. Its
 zero duration and RSS fields are unavailable measurements, not evidence of
-zero cost. The sampled Malt/profile stack does not identify a regression,
-and a source location in a termination log does not establish a REPL hang.
+zero cost. Its final log records 2,833.81 seconds of total wall time, which also
+includes sandbox launch, diagnostic dumps and shutdown; this does not mean
+the configured timer was increased. The sampled Malt/profile stack does not
+identify a regression, and a source location in a termination log does not
+establish a REPL hang.
 Neither attempt qualifies the development corrections or a future release.
 
-That stable attempt took 2,652.31 seconds against the 2,700-second evaluation
-budget. Its 47.69-second margin does not establish enough room for a future
-release with additional tests. The workflow also has a separate 75-minute job
-limit covering controller setup and evaluation. Keep both limits and the
-actual test timings in view; the fixture correction alone does not close
+The stable attempt recorded 2,652.31 seconds of total wall time and 2,385.04
+seconds of Testing CPU time. PkgEval starts its 2,700-second timer after
+launching the sandbox; the total wall-time measurement also includes launch
+and shutdown. Their 47.69-second arithmetic difference is therefore not a
+measured margin on that timer and does not establish room for additional tests.
+See the pinned controller's [timer](https://github.com/JuliaCI/PkgEval.jl/blob/268f1d3d83df9abafb30c372a9755358fab7aa21/src/evaluate.jl#L141-L184)
+and [total-duration measurement](https://github.com/JuliaCI/PkgEval.jl/blob/268f1d3d83df9abafb30c372a9755358fab7aa21/src/evaluate.jl#L363-L367).
+
+Both logs warn that the cpuset controller was unavailable: CPUs 0–1 were
+requested, but kernel enforcement was not verified. The workflow also has a
+separate 75-minute job limit covering controller setup and evaluation. Keep
+these scopes and the actual test timings in view; the fixture correction alone
+does not close
 [the PkgEval follow-up](https://github.com/Mirage-Interactive-Fr/PerfChecker.jl/issues/29).
 
 ### Evaluate a future registered release
