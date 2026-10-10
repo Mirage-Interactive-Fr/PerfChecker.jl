@@ -40,7 +40,11 @@ The Julia API, VS Code, Oxygen and Pluto select what to run and read the same sa
 ## Recorded examples
 
 ```@raw html
-<DocMedia src="/examples/bibliography/figures/history-time.svg" alt="Bibliography export timing across nine tagged versions, from 0.1.0 to 0.4.0" caption="Actual recorded measurements: 100 samples per version, Windows, Julia 1.13.0, one worker thread. Each point is a median; lower means less elapsed time." />
+<figure class="doc-screenshot">
+<iframe class="doc-interactive" src="./examples/bibliography/history/export-time.html" title="Bibliography export medians across nine tagged versions" loading="lazy" sandbox="allow-scripts allow-same-origin allow-downloads"></iframe>
+<figcaption>Native interactive export of medians from 100 samples per tag. Windows · Julia 1.13.0 · one worker thread. Inputs match; dependency revisions follow each tag. Values are in nanoseconds (1,000 ns = 1 µs).</figcaption>
+</figure>
+<p><a href="./examples/bibliography/history/export-time.html">Open the interactive export</a> · <a href="./examples/bibliography/history/export-time.json" download>Download the serialized plot and source revisions</a></p>
 ```
 
 ```@raw html

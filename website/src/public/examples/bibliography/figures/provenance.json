@@ -1,4 +1,7 @@
 {
+  "status": "historical_illustrations_not_used_by_current_documentation",
+  "origin": "website/scripts/render-measured-plots.py; these are Matplotlib illustrations, not PerfChecker frontend exports",
+  "input_hash_status": "Seven of the eight recorded input hashes do not match the current JSON downloads. The historical hashes below are preserved; they do not verify the current downloads.",
   "inputs_sha256": {
     "history/export-time.json": "ca2ad1224ead6717b11c05b3dbaa02637592b6182df5913bff9d6d64787e078d",
     "history/export-memory.json": "ab47f10e565be76f78255e98cd5bf96e596991060b2056ab51e90072500621a2",
