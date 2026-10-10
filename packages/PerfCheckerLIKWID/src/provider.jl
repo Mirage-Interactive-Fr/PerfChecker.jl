@@ -183,6 +183,18 @@ function _counter_execute(planned, config, sink)
         timeout_seconds = get(config.options, :timeout_seconds, 300))
     bundle = run_external_command(command)
     sink(planned, bundle)
+    return _counter_checker_result(bundle, config.options[:tags])
+end
+
+"""
+    _counter_checker_result(bundle::RunBundle, tags)
+
+Convert completed provider evidence to a qualified `PerfChecker.CheckerResult`.
+Retain its raw payload and copied worker qualification without running counters.
+Unavailable, invalid and blocked states raise their existing typed failures;
+other incomplete states raise an error rather than becoming successful results.
+"""
+function _counter_checker_result(bundle::RunBundle, tags)
     qualification = _worker_qualification(bundle)
     state = bundle.manifest["state"]
     state == "unavailable" && throw(CounterUnavailable(
@@ -194,8 +206,8 @@ function _counter_execute(planned, config, sink)
           join([String(get(item, "message", "")) for item in bundle.diagnostics], "; "))
     # The portable provider bundle is authoritative; no benchmark-shaped fake columns.
     qualification["counter_bundle"] = _payload(bundle)
-    CheckerResult([PerfChecker.Table(counter_records = [bundle.observations])],
-        nothing, config.options[:tags], Pkg.PackageSpec[], [qualification])
+    PerfChecker.CheckerResult([PerfChecker.Table(counter_records = [bundle.observations])],
+        nothing, tags, Pkg.PackageSpec[], [qualification])
 end
 
 function _worker_qualification(bundle)

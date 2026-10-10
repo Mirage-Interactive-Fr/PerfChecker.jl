@@ -94,6 +94,21 @@ end
     @test only(changed_mode.observations)["measurement_definition"] !=
           observation["measurement_definition"]
     @test !observation["attributes"]["autopin"]
+    # Project declared raw fixtures through the executor's actual success path;
+    # this is not a claim that this host permits a native counter capture.
+    qualification = PerfChecker._empty_qualification(; correctness = "passed")
+    push!(bundle.diagnostics,
+        Dict{String, Any}("rule_id" => "hardware.counter.qualification",
+            "severity" => "info", "message" => "Declared fixture qualification",
+            "evidence" => qualification))
+    checker = PerfCheckerLIKWID._counter_checker_result(bundle, [:projection])
+    @test checker isa PerfChecker.CheckerResult
+    @test checker.tags == [:projection]
+    @test only(only(checker.tables).counter_records) == bundle.observations
+    @test only(checker.qualifications)["correctness"] == qualification["correctness"]
+    @test only(checker.qualifications)["counter_bundle"] ==
+          PerfCheckerLIKWID._payload(bundle)
+    @test !haskey(qualification, "counter_bundle")
     mktempdir() do directory
         write_run_bundle(bundle, joinpath(directory, "raw"))
         restored = read_run_bundle(joinpath(directory, "raw"))
@@ -104,6 +119,8 @@ end
         :unavailable, "library_unavailable", CounterRecord[], allowed, cpus, nothing))
     @test unavailable.manifest["state"] == "unavailable"
     @test isempty(unavailable.observations)
+    @test_throws PerfCheckerLIKWID.CounterUnavailable PerfCheckerLIKWID._counter_checker_result(
+        unavailable, [:projection])
     @test_throws ArgumentError counter_bundle(CounterResult(
         :complete, "", CounterRecord[], allowed, cpus, nothing))
     @test PerfCheckerLIKWID._checked_call(() -> false)["status"] == "failed"

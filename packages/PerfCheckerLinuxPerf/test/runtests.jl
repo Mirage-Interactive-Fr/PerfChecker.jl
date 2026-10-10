@@ -87,6 +87,21 @@ end
     @test first(bundle.diagnostics)["evidence"]["records"][1]["enabled_ns"] == string(exact)
     @test any(item -> item["rule_id"] == "hardware.counter.numeric_projection_unavailable",
         bundle.diagnostics)
+    # Project declared raw fixtures through the executor's actual success path;
+    # this is not a claim that this host permits a native counter capture.
+    qualification = PerfChecker._empty_qualification(; correctness = "passed")
+    push!(bundle.diagnostics,
+        Dict{String, Any}("rule_id" => "hardware.counter.qualification",
+            "severity" => "info", "message" => "Declared fixture qualification",
+            "evidence" => qualification))
+    checker = PerfCheckerLinuxPerf._counter_checker_result(bundle, [:projection])
+    @test checker isa PerfChecker.CheckerResult
+    @test checker.tags == [:projection]
+    @test only(only(checker.tables).counter_records) == bundle.observations
+    @test only(checker.qualifications)["correctness"] == qualification["correctness"]
+    @test only(checker.qualifications)["counter_bundle"] ==
+          PerfCheckerLinuxPerf._payload(bundle)
+    @test !haskey(qualification, "counter_bundle")
     mktempdir() do directory
         write_run_bundle(bundle, joinpath(directory, "raw"))
         restored = read_run_bundle(joinpath(directory, "raw"))
@@ -97,6 +112,8 @@ end
         :unavailable, "permission_denied", CounterRecord[], 1, [16, 17]))
     @test unavailable.manifest["state"] == "unavailable"
     @test isempty(unavailable.observations)
+    @test_throws PerfCheckerLinuxPerf.CounterUnavailable PerfCheckerLinuxPerf._counter_checker_result(
+        unavailable, [:projection])
     @test_throws ArgumentError counter_bundle(CounterResult(
         :complete, "", CounterRecord[], 1, [16, 17]))
     @test PerfCheckerLinuxPerf._checked_call(() -> false)["status"] == "failed"
