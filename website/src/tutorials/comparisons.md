@@ -12,9 +12,14 @@ A **baseline** is the revision you compare against; a **candidate** is the revis
 
 ## Run the example
 
+Use the [published `v1.0.1` example checkout](../real-packages/index.md#Get-the-code).
+From its repository root, prepare the Bibliography controller before planning or measuring:
+
 ```sh
-julia --project=.controller/core compare-exports.jl plan
-julia --project=.controller/core compare-exports.jl run
+cd examples/bibliography
+julia --startup-file=no setup.jl core
+julia --startup-file=no --project=.controller/core compare-exports.jl plan
+julia --startup-file=no --project=.controller/core compare-exports.jl run
 ```
 
 The script compares `export_bibtex` with BenchmarkTools between parent `6a4cc90` and streaming-export commit `575ec81`, with BibInternal and BibParser pinned for both.
