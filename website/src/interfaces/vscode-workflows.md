@@ -349,9 +349,10 @@ workers. A missing analyzer is unavailable rather than a passing diagnosis.
 
 The candidate integration targets Pluto **1.0.4**, the corrected PerfChecker
 core, PlutoUI, BenchmarkTools, Chairmarks and **PerfCheckerPluto 1.0.1** from
-repository tag `v1.0.1`. The core registration and tag must be available before
-installation. Set the folder configuration explicitly when you use several
-environments:
+the root repository tag `v1.0.1`. Core 1.0.1 is registered in General and this
+tag is available; the Pluto companion's separate General registration is
+pending. Wait for the corrected extension before using its guided setup.
+Set the folder configuration explicitly when you use several environments:
 
 ```json
 {
