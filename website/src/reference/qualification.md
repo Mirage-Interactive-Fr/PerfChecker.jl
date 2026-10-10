@@ -61,14 +61,19 @@ Publishing development documentation does not certify the packages it describes.
 
 ## Registered-package evaluation
 
-The development **Registered PkgEval** workflow evaluates an immutable release
-selected from General on Julia stable and nightly in Linux sandboxes. This is
+The **Registered PkgEval** workflow, introduced in 1.1.0, evaluates an immutable
+release selected from General by default, on Julia stable
+and nightly in Linux sandboxes. An explicit manual Git-candidate mode evaluates
+a fixed PerfChecker commit instead; General then supplies only its dependencies. This is
 separate from checkout CI, collection qualification and documentation publication.
 It does not measure benchmark regressions or qualify all frontends.
+Pull-request checks validate source selection without launching the sandboxes;
+the real evaluations run on a schedule or an explicit manual dispatch.
 
 See [installed-release evaluation](../tutorials/ci.md#Check-installed-releases-with-PkgEval)
 for source-tree verification, artifact fields, limits, the known 1.0.1 read-only
-fixture failure and how to request a future registered version. A green checkout
+fixture failure and how to request a registered version or an unpublished Git
+candidate. A green checkout
 test of a fixture correction cannot be substituted for PkgEval of the release
 that eventually contains it.
 

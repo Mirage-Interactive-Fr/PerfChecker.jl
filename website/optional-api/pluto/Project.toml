@@ -10,7 +10,7 @@ TOML = "fa267f1f-6049-4f14-aa54-33bafae1ed76"
 [compat]
 Documenter = "=1.19.0"
 DocumenterVitepress = "=0.3.5"
-PerfChecker = "=1.0.1"
+PerfChecker = "1.0.1"
 PerfCheckerPluto = "=1.0.1"
 Pkg = "1"
 SHA = "0.7, 1"

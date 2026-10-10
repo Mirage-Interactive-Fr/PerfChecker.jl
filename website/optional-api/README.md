@@ -20,8 +20,9 @@ Julia 1.10 must not rely on a `[sources]` table.
 | `pluto` | PerfCheckerPluto 1.0.1 | 4 | Pluto methods of Core bindings |
 | `tachikoma` | PerfCheckerTachikoma 1.0.1 | 6 | Real optional Makie pixel method |
 
-These pages describe the selected Core 1.0.1 source, including development exports
-and the eventual stable 1.0.1 documentation. Web remains version 1.0.0. Do not
+These pages describe the selected Core 1.x source, version 1.0.1 or later.
+Each receipt records its exact Core version and source revision, separately
+from the companion version. Web remains version 1.0.0. Do not
 insert these pages into stable Core 1.0.0 documentation: that source does not
 include the new counter and terminal APIs.
 
@@ -109,7 +110,7 @@ preserving earlier builds and failed attempts.
 
 The receipt's `channel = "source"` identifies a reusable source export, not a
 deployment channel. The same revision's export can enter development, versioned
-and stable 1.0.1 builds; their canonical `build-info.json` identifies the actual
+and stable builds; their canonical `build-info.json` identifies the actual
 deployment channel. Earlier prototype receipts and builds remain unchanged.
 
 A Core binding can have methods and docstrings defined by a companion:
@@ -146,8 +147,8 @@ targets resolve under the shared `optional-api/` namespace. Core's inventory
 remains separate, so shared binding names do not overwrite companion overloads.
 Generated pages disable the edit link; their actual Julia source links remain.
 
-Core 1.0.1 canonical builds require the complete matching export set. For an
-explicit documentation-only stable 1.0.1 refresh, the workflow prepares and renders
+Core 1.x canonical builds from version 1.0.1 require the complete matching export
+set. For an explicit documentation-only stable refresh, the workflow prepares and renders
 all six owners from the selected immutable `stable-doc-source` checkout, tests
 assembly there and retains its exports and environment pairs. Ordinary builds
 use the workflow checkout. Both paths render once and reuse the matching set;

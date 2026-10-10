@@ -13,9 +13,9 @@ A **check type** selects how a workload is measured. Each runs in an isolated wo
 
 ## Persistent controller defaults
 
-::: info Development API
-This integration is a development addition after PerfChecker 1.0.1. It is not
-part of the registered 1.0.1 release.
+::: info Introduced in 1.1.0
+The Preferences.jl API below requires PerfChecker 1.1.0 or newer.
+Registered PerfChecker 1.0.1 does not include it.
 :::
 
 Use Preferences.jl to retain three defaults in the active Julia project:

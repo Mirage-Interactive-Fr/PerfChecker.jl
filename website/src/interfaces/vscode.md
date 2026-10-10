@@ -26,9 +26,13 @@ separately recorded, measured DataStructures results.
 1. Install VS Code **1.96 or newer** and Julia **1.10 or newer**.
 2. Install [PerfChecker from the Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=mirage-interactive-fr.perfchecker-vscode), or search the Extensions view for `@id:mirage-interactive-fr.perfchecker-vscode`. You can also download the [1.0.1 VSIX](https://github.com/Mirage-Interactive-Fr/PerfCheckerVSCode/releases/download/v1.0.1/perfchecker-vscode-1.0.1.vsix) and use **Extensions → … → Install from VSIX…**. Reload VS Code if prompted. See [VS Code's installation instructions](https://code.visualstudio.com/docs/configure/extensions/extension-marketplace) for either route.
 3. Open the package folder. Trust the workspace when you are prepared to execute its Julia code.
-4. Prepare a Julia controller environment containing the matching PerfChecker build and the collectors you intend to use. Existing TestItems also require TestItemRunner and the package's test dependencies.
-5. Set **PerfChecker: Runner Project** (`perfchecker.runnerProject`) to the controller environment. For shared scenarios, set **Scenario Project** (`perfchecker.scenarioProject`) to the environment containing the measured code and its dependencies.
-6. Run **PerfChecker: Open Studio** from the command palette. In a workspace with several folders, select the package to inspect.
+4. Run **PerfChecker: Open Studio** from the command palette. In a workspace with several folders, select the package to inspect.
+5. Choose **Set up workspace and create suite**, then **Create controller environment**. Confirm **Install controller**. Extension 1.0.1 installs registered Core 1.0.1, BenchmarkTools, Chairmarks and TestItemRunner in `perf/controller`, and selects it as this folder's runner project. This step downloads Julia packages; opening Studio alone does not.
+6. When setup finishes, open **Feature suite** in Studio. Inspect the generated starter or your existing suite before selecting a run. Continue with [Get a first result](#Get-a-first-result) below.
+
+If a suitable controller already exists, choose **Use an existing controller**
+instead. For a custom Julia executable, additional collectors, scenario workers
+or package test dependencies, follow [VS Code configuration](vscode-configuration.md).
 
 The [extension release notes](https://github.com/Mirage-Interactive-Fr/PerfCheckerVSCode/releases/tag/v1.0.1)
 identify the qualified artifact. PerfChecker's Julia registry release and its VS Code
@@ -41,11 +45,11 @@ Opening Studio reads configuration and presents actions. It does not install pac
 <DocMedia src="/assets/screenshots/vscode-studio.png" alt="PerfChecker V1 Studio webview rendered in Chromium, with the selected Example package and actions for suites, results, Julia tests and agent chat" caption="Start here: check the selected package and expand Workspace environment to inspect its controller, then choose an action. This is the running extension webview with a demonstration workspace." />
 ```
 
-If this is your first setup, follow [Prepare a controller](vscode-configuration.md#Prepare-a-controller) before running an item. Use the dedicated controller so adding a profiler or MCP client does not change your package's normal dependency environment.
-
-The [guided setup](vscode-configuration.md#Guided-setup-from-Studio)
-offers an explicit controller installation or an existing project. It requires
-registered Core 1.0.1 before the new notebook/discovery workflow can run.
+The [guided setup](vscode-configuration.md#Guided-setup-from-Studio) keeps the
+controller separate from your package's normal dependency environment. For an
+advanced or manually prepared environment, use [Prepare a controller](vscode-configuration.md#Prepare-a-controller).
+Existing TestItems also need the package under test and its test dependencies
+in that controller; guided setup does not install them automatically.
 
 See [Installation](../guide/installation.md) for the core and interface packages, and [VS Code configuration](vscode-configuration.md) for complete settings and environment examples.
 
@@ -56,7 +60,13 @@ See [Installation](../guide/installation.md) for the core and interface packages
 
 ## Get a first result
 
+1. In Studio, open **Feature suite**. For a newly generated suite, review `perf/suite.jl` and `perf/features/smoke.jl`. The starter checks the package identity; replace it with a representative operation before assessing application performance.
+2. Clear the selection, then select one check and target. Review the exact selected-run preview; filtering alone does not deselect hidden runs.
+3. Choose **Run 1 selected**. The first run may need to prepare its target environment; installation and worker startup are separate from its measured operation.
+4. Read the run's collection and correctness status. Open its **Open visual output** control to inspect the saved measurements. A completed measurement without a comparison policy is not a performance-regression verdict.
+5. Keep the report directory shown in the worker output. Use [saved plots](vscode-workflows.md#Plot-saved-results) to reopen it and [Design a suite and compare targets](#Design-a-suite-and-compare-targets) for a two-version experiment.
 
+### Run existing TestItems
 
 For a project using `@testitem`:
 

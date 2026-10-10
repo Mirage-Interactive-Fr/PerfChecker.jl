@@ -3,7 +3,7 @@
 ## Core package
 
 The Julia API, command line and text REPL are in PerfChecker itself. **PerfChecker
-1.0.1 is registered in Julia General** and requires Julia 1.10 or newer:
+1.x is available in Julia General** and requires Julia 1.10 or newer:
 
 ```julia
 import Pkg
@@ -31,36 +31,22 @@ Install only what you need.
 - Existing TestItems — `Pkg.add("TestItemRunner")`
 - BenchmarkTools — `Pkg.add("BenchmarkTools")`
 - Chairmarks — `Pkg.add("Chairmarks")`
-- Oxygen web interface — `PerfCheckerWeb`, installed from the subdirectory below
-- Pluto notebooks — `PerfCheckerPluto`, using `packages/PerfCheckerPluto`
-- Makie figures — `PerfCheckerMakie`, using `packages/PerfCheckerMakie`
+- Oxygen web interface — [PerfCheckerWeb controller](#Web-controller-with-corrected-shutdown)
+- Pluto notebooks — [PerfCheckerPluto installation](#Prepare-integrated-Pluto-for-VS-Code)
+- Makie figures — [PerfCheckerMakie installation](../interfaces/visualization.md#Customize-and-export-Makie-figures)
 
-The three interface packages have separate identities. This source recipe
-installs the older Web companion from the root `v1.0.0` tag:
-
-```julia
-Pkg.add(Pkg.PackageSpec(
-    url = "https://github.com/Mirage-Interactive-Fr/PerfChecker.jl",
-    rev = "v1.0.0",
-    subdir = "packages/PerfCheckerWeb"))
-```
-
-The stable Web recipe works with registered Core 1.0.0. The current Pluto and
-Makie 1.0.1 companions require Core 1.0.1 or later; follow the
-[Pluto installation steps](#Prepare-integrated-Pluto-for-VS-Code) or the
-[Makie source recipe](../interfaces/visualization.md#Customize-and-export-Makie-figures).
-Neither companion is separately registered in General yet.
+These interface packages have separate identities and are not yet registered in
+General. Use their versioned source recipes. Pluto and Makie 1.0.1 require Core
+1.0.1 or later; the Web companion's package version remains 1.0.0.
 
 ### Web controller with corrected shutdown
 
-The immutable `v1.0.0` tag above does **not** include the corrected agent
-interruption and cleanup-failure behavior described in the
-[hosted guide](../operations/hosted.md#Cancel-and-stop-safely). The root
-`v1.0.1` tag includes these corrections, and Core 1.0.1 is registered in General.
-PerfCheckerWeb's separate General registration is pending; its package version
-remains **1.0.0**. The recipe below keeps the reviewed source revision for both
-Core and Web. Companion versions and package-prefixed tags are managed
-separately from the root tag.
+Use the published root `v1.0.1` tag for both Core and Web. It includes the
+corrected agent interruption and cleanup-failure behavior described in the
+[hosted guide](../operations/hosted.md#Cancel-and-stop-safely). The older root
+`v1.0.0` tag lacks those corrections and is not the recommended Web setup.
+PerfCheckerWeb's package version remains **1.0.0**; companion versions and
+package-prefixed tags are managed separately from the root tag.
 
 Choose a new controller environment, separate from the measured packages and
 from Pluto:
@@ -70,7 +56,7 @@ import Pkg
 controller = joinpath(homedir(), ".julia", "environments", "perfchecker-web-101")
 Pkg.activate(controller)
 repository = "https://github.com/Mirage-Interactive-Fr/PerfChecker.jl"
-revision = "ffbf33f0bda61dfc84adfb8e8e6dfd8a404d0642"
+revision = "v1.0.1"
 Pkg.add([
     Pkg.PackageSpec(url = repository, rev = revision),
     Pkg.PackageSpec(url = repository, rev = revision,

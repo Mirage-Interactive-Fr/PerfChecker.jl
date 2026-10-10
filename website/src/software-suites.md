@@ -41,6 +41,7 @@ selected = filter_suite_plan(plan;
     packages = "Bibliography", features = :export_bibtex, backends = [:benchmark])
 print_suite_plan(selected)
 
+mkpath("results")
 report_directory = mktempdir(abspath("results"); prefix = "export-", cleanup = false)
 result = run_suite_repl(selected; reports = report_directory, strict = false,
     overrides = Dict{Symbol,Any}(:threads => 1, :samples => 50, :evals => 1, :seconds => 0.5))

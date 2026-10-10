@@ -233,11 +233,25 @@ If your server also provides a trusted implementation tool, configure its separa
 {
   "perfchecker.advisorImplementationMcpTool": "prepare_export_patch",
   "perfchecker.advisorImplementationMcpPromptArgument": "instruction",
-  "perfchecker.advisorImplementationMcpWorkspaceArgument": "checkout"
+  "perfchecker.advisorImplementationMcpWorkspaceArgument": "checkout",
+  "perfchecker.advisorImplementationMcpArguments": {"context": {"language": "Julia"}}
 }
 ```
 
-These names are illustrative too. Select a tool that can inspect, edit and test the supplied isolated checkout and actually honors that path. Implementation reuses the advice connection, revision, credentials and additional arguments, then substitutes the explicitly configured tool and prompt name. The prompt/workspace argument names must differ; extra arguments cannot override either. In this example, both tool schemas must accept the configured `context` object. Check that shared extra arguments are valid for the implementation tool too.
+These names are illustrative too. Select a tool that can inspect, edit and test
+the supplied isolated checkout and actually honors that path. Implementation
+reuses the advice connection, protocol revision and credentials, with its own
+tool, prompt and checkout argument names. The prompt and checkout argument
+names must differ; extra arguments cannot override either.
+
+`perfchecker.advisorImplementationMcpArguments` supplies the implementation
+tool's additional arguments independently of the advice tool. If unset, the
+saved HTTP configuration inherits the advice arguments for compatibility; set
+it to `{}` when the implementation tool requires none. In the example above,
+the implementation tool must accept `context`; the advice tool may use a
+different schema. A local stdio connection has its own **Other implementation
+arguments (JSON)** field. Inspect each tool's discovered schema before saving
+or connecting. Neither tool needs to belong to a particular agent provider.
 
 
 The extension's workflow is:

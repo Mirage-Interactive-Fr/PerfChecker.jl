@@ -1,5 +1,28 @@
 # Release notes
 
+## 1.1.0
+
+- Add persistent controller defaults through Preferences.jl for `threads`,
+  `repeat` and `quiet`, with the public `check_preferences`,
+  `set_check_preferences!` and `reset_check_preferences!` APIs. Explicit options
+  take precedence. Suites freeze their defaults before preparing workers;
+  saved qualification records the effective values and origins, while cache
+  identity depends on values alone.
+- Prepare writable private Project and Manifest files from read-only worker
+  seeds before metadata relocation or package installation. Preserve the seed's
+  bytes and permissions, materialize linked metadata, and leave external
+  directory links unchanged.
+- Read Git provenance with optional Git locks disabled, preserving index bytes
+  and the caller's Git environment.
+- Make private copies of installed read-only saved-plot fixtures writable before
+  testing edits. Keep the original fixture's bytes and permissions intact.
+- Add timestamped test-item boundaries and PkgEval source qualification. A Git
+  candidate and a registered archive are separate results; the original 1.0.1
+  stable fixture error and nightly time limit do not qualify this release.
+- Keep companion API documentation and historical plot provenance distinct from
+  the Core version. Companion packages retain their own versions and registration
+  status.
+
 ## 1.0.1
 
 - PerfCheckerPluto 1.0.1 displays each standalone plot export in its own

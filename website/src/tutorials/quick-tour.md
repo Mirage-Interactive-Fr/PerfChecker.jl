@@ -10,7 +10,7 @@ Time one operation with its input prepared **before** timing starts.
 <a id="2.-Run-just-the-export-check"></a>
 ```
 
-From a PerfChecker checkout:
+From the root of the [versioned example checkout](../real-packages/index.md#Get-the-code), run:
 
 ```sh
 cd examples/bibliography

@@ -87,9 +87,9 @@ julia --startup-file=no --project=. -e 'using PerfChecker; exit(perfchecker_main
 
 ## Persistent defaults in CI
 
-::: info Development after 1.0.1
-The Preferences.jl integration below is not included in registered PerfChecker
-1.0.1. Use a reviewed development revision until a release includes it.
+::: info Introduced in 1.1.0
+The Preferences.jl integration below requires PerfChecker 1.1.0 or newer.
+Registered PerfChecker 1.0.1 does not include it.
 :::
 
 [Persistent controller defaults](../reference/checks.md#Persistent-controller-defaults)
@@ -125,8 +125,9 @@ distributions. It does not qualify every companion, editor interface or physical
 counter. Local PkgEval has Linux/kernel and container requirements; see its
 [setup documentation](https://github.com/JuliaCI/PkgEval.jl#quick-start).
 
-PerfChecker's **Registered PkgEval** workflow is a development addition after
-1.0.1. It resolves a General revision to an exact commit, selects a non-yanked
+PerfChecker's **Registered PkgEval** workflow is introduced in 1.1.0.
+In its registered-release mode, it resolves
+a General revision to an exact commit, selects a non-yanked
 registered version, and verifies its registered source tree inside the sandbox.
 It records the PkgEval controller revision, Julia environment and selected
 package identity. It tests that registered archive, **not the workflow branch's
@@ -139,12 +140,14 @@ Open the workflow run and download its artifacts:
 
 | Artifact | What to inspect |
 | --- | --- |
-| `pkgeval-request` | `request.toml`: version, registered tree, General and controller revisions, workflow revision and run URL |
+| `pkgeval-request` | `request.toml`: source kind, package identity, selected tree, General and controller revisions, workflow revision and run URL |
 | `pkgeval-stable` | `result.toml`, `evaluation.log` and `PkgEval-Manifest.toml` for Julia stable |
 | `pkgeval-nightly` | The corresponding files for Julia nightly, evaluated separately |
 
-First match `version`, `registered_tree` and `general_revision` to the release
-you intend to assess. Then read `status`, `reason`, `exception` when present,
+First inspect `source_kind`. For a registered release, match `version`,
+`registered_tree` and `general_revision` to the release you intend to assess.
+For a Git candidate, check its revision, tree and repository instead. Then read
+`status`, `reason`, `exception` when present,
 the installation/precompilation/testing completion fields, and the full log.
 A successful package-test result has `status="test"`. A controller failure,
 failed assertion and timeout are different outcomes; a cancelled job alone does
@@ -157,8 +160,8 @@ describe this attempt, not a performance regression against another release.
 
 The [initial 1.0.1 evaluation](https://github.com/Mirage-Interactive-Fr/PerfChecker.jl/actions/runs/38044386943)
 tests registered tree `00c133336911b8600d63a8d6c59ce1befc5ce690`.
-On Julia stable it reached 2,013 passing assertions, one error and one broken
-assertion. The error came from a replay test that copied an installed read-only
+On Julia stable it reached 2,013 passing assertions, one error and one result in
+Julia's **Broken** category. The error came from a replay test that copied an installed read-only
 JSON fixture and then tried to edit its copy. The development
 [fixture correction](https://github.com/Mirage-Interactive-Fr/PerfChecker.jl/pull/167)
 creates a writable private copy and checks that the original bytes and mode stay
@@ -192,11 +195,12 @@ does not close
 
 ### Evaluate a future registered release
 
-After the workflow is integrated, open **Actions → Registered PkgEval → Run
-workflow**. Supply:
+Open **Actions → Registered PkgEval → Run workflow** on a branch containing
+the workflow. Supply:
 
 | Input | Meaning |
 | --- | --- |
+| `source_kind` | Keep `registered` for an archive selected from General |
 | `package_version` | An already registered version; empty selects the latest non-yanked version at the chosen General revision |
 | `general_revision` | A General commit or ref, resolved and recorded as an exact commit before evaluation |
 | `expected_tree` | Optional registered tree SHA-1; a mismatch stops selection before evaluation |
@@ -204,6 +208,33 @@ workflow**. Supply:
 To assess a fix, wait for the release containing it to be registered and select
 that release and its tree. Re-running 1.0.1 will still test 1.0.1. The weekly
 Monday 04:41 UTC schedule selects the latest non-yanked version at a newly
-resolved General commit. Pull-request runs of this workflow deliberately pin
-the original 1.0.1 evaluation; they are not evidence for development changes.
+resolved General commit. Pull-request checks test the source selector and record
+the original 1.0.1 selection; they do not launch stable or nightly sandboxes.
+That selection receipt is not a new package evaluation.
 Keep the stable and nightly artifacts and report each verdict separately.
+
+### Evaluate an explicit Git candidate
+
+To assess an unpublished fix, manually dispatch the same workflow with
+`source_kind=git_candidate`. Set `candidate_revision` to the exact lowercase
+40-character commit SHA from the
+[PerfChecker repository](https://github.com/Mirage-Interactive-Fr/PerfChecker.jl),
+choose `general_revision` for dependency resolution, and leave `package_version`
+and `expected_tree` empty. Branch names and tags are not accepted as candidate
+revisions. Scheduled evaluations use registered mode; pull-request checks only
+validate selection.
+
+The selector reads the commit's `Project.toml` and records its declared version,
+name and UUID, `candidate_revision`, `candidate_tree` and the fixed
+`source_repository`. PkgEval receives that repository URL and commit revision.
+General supplies its dependencies; it does not supply a registered PerfChecker
+archive for this run.
+
+Inspect the same request, stable and nightly artifacts. Candidate results also
+record `candidate_package_url` and `candidate_package_revision`, with
+`sandbox_registry_tree_verified=false`. The evaluated version must match the
+commit's declared version. These fields identify the requested candidate;
+they do not claim a separate hash verification of PkgEval's installed source.
+The 2,700-second sandbox budget, disabled result cache and separate verdicts
+remain unchanged. A candidate pass can qualify that candidate's tests, but
+cannot repair or qualify the immutable registered 1.0.1 archive.
