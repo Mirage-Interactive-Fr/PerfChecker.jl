@@ -158,8 +158,15 @@ assertion. The error came from a replay test that copied an installed read-only
 JSON fixture and then tried to edit its copy. The development
 [fixture correction](https://github.com/Mirage-Interactive-Fr/PerfChecker.jl/pull/167)
 creates a writable private copy and checks that the original bytes and mode stay
-unchanged. It does not repair the immutable 1.0.1 archive. Nightly is a separate
-result; a pending run is not a pass.
+unchanged. It does not repair the immutable 1.0.1 archive.
+
+The nightly attempt recorded `status="kill"` and `reason="time_limit"` under
+the 2,700-second sandbox budget. Installation and precompilation completed;
+testing did not. This was not the separate 75-minute GitHub job limit. Its
+zero duration and RSS fields are unavailable measurements, not evidence of
+zero cost. The sampled Malt/profile stack does not identify a regression,
+and a source location in a termination log does not establish a REPL hang.
+Neither attempt qualifies the development corrections or a future release.
 
 That stable attempt took 2,652.31 seconds against the 2,700-second evaluation
 budget. Its 47.69-second margin does not establish enough room for a future

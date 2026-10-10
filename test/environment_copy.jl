@@ -199,7 +199,20 @@ end
             copied_manifest = joinpath(copied, "metadata", "locked.toml")
             @test filemode(joinpath(copied, "Project.toml")) & 0o200 != 0
             @test filemode(copied_manifest) & 0o200 != 0
-            @test filemode(dirname(copied_manifest)) & 0o300 == 0o300
+            # Windows stat reports read/write flags rather than POSIX traversal bits.
+            if !Sys.iswindows()
+                @test filemode(dirname(copied_manifest)) & 0o300 == 0o300
+            end
+            probe, probe_io = mktemp(dirname(copied_manifest))
+            try
+                write(probe_io, "private worker metadata\n")
+                close(probe_io)
+                @test read(probe, String) == "private worker metadata\n"
+            finally
+                isopen(probe_io) && close(probe_io)
+                rm(probe)
+            end
+            @test !ispath(probe)
             @test !islink(copied_manifest)
             open(io -> write(io, "\n"), copied_manifest, "a")
             @test read(manifest) != read(copied_manifest)

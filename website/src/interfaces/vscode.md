@@ -215,6 +215,69 @@ package → feature → check type → target
 
 Read [Suites and comparisons](../suites-and-comparisons.md) before interpreting a result across environments or machines. Never infer an improvement from a profile weight alone.
 
+### Read a flame graph with names and colors
+
+In the saved suite's visual output, select the CPU collector and **View →
+Flame graphs**. Keep the package, workload, release and metric visible while
+following a call path.
+
+- **Color by → Function** uses stable colors for function names. Colors help
+  follow calls; they do not indicate speed, improvement or an inference
+  diagnostic. Different names can share a color.
+- **Color by → Diagnostics** shows recorded runtime-dispatch, non-concrete
+  inference and garbage-collection markers. An `unknown` or missing inference
+  status is not a warning. Read the legend and the selected frame's details.
+- **Labels → Function name** keeps recognized Julia frame labels compact.
+  **Full frame** includes their source location. Labels that do not fit are
+  hidden; **Inspect frame** and the readout still expose the complete call path.
+- Use **Zoom +**, the pan arrows and **Fit** to explore without changing the
+  saved weights. Frame widths include child calls, so parent and child weights
+  must not be added together.
+
+These complementary views show one **DataStructures 0.18.13**, **heap_2048**
+CPU capture, not a comparison between versions. It contains 425 retained
+samples. Frame 3 attributes 299 of them, about 70.35%, to the inclusive
+`pop! → heappop! → percolate_down!` path. This share is neither elapsed time
+nor a percentage slowdown.
+
+::: tabs
+
+== Controls
+
+```@raw html
+<DocMedia src="/assets/screenshots/vscode/v101/datastructures-cpu-01813-controls-e68a.png" alt="Native VS Code event_lab output for DataStructures 0.18.13 heap_2048, showing Color by Function, Labels Function name and the function-color legend" caption="Choose the presentation mode explicitly. This native viewport shows the controls; the graph and inspector are shown in the next tabs." />
+```
+
+== Zoomed call path
+
+```@raw html
+<DocMedia src="/assets/screenshots/vscode/v101/datastructures-cpu-01813-zoom-e68a.png" alt="Native VS Code CPU flame graph zoomed to the real pop!, heappop! and percolate_down! branch, with complete function names and varied function colors" caption="Zoom reveals function names in the selected branch. Narrow frames remain in the saved model even when their labels do not fit." />
+```
+
+== Complete inspector
+
+```@raw html
+<DocMedia src="/assets/screenshots/vscode/v101/datastructures-cpu-01813-inspector-e68a.png" alt="Native VS Code inspector showing Frame 3 of 94, inclusive weight 299, metric julia.cpu.samples, the full heap-pop source path and Julia inference unknown" caption="The inspector preserves the full source path and the recorded unknown inference status. Its 70.352941% value is a share of this capture's 425 samples." />
+```
+
+:::
+
+The [profile walkthrough](vscode-workflows.md#Follow-a-recorded-profile)
+includes separate CPU, wall-time and allocation views for DataStructures 0.19.6.
+
+::: details Capture provenance
+
+The images are unchanged native viewports captured on 10 October 2026 (UTC)
+with the published 1.0.1 viewer, archive `e68a9264…`, built from extension
+source [`53d22da`](https://github.com/Mirage-Interactive-Fr/PerfCheckerVSCode/commit/53d22da767664e1072bdfa576dd13bbfa05b7dc5).
+They read historical bundle `8f2ffde5-55b9-43de-b35a-08503f9b6639`, measured on
+Linux with Julia 1.13.1 using Core development source
+[`63f5cc4`](https://github.com/Mirage-Interactive-Fr/PerfChecker.jl/commit/63f5cc4bfc2c55de521487f68b0df143107762f3).
+The data was not recollected with General 1.0.1. Each tab shows a different
+scroll position, rather than all controls and details at once.
+
+:::
+
 ```@raw html
 <a id="Optional-investigations"></a>
 ```
