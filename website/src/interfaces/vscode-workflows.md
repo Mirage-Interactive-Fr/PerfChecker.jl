@@ -240,10 +240,15 @@ values.
 
 Download a report and open it with **PerfChecker: Open saved diagnostic report**:
 
-| Oxygen checkout | Latency report | Reachable-memory report |
-| --- | --- | --- |
-| 1.10.2 | [Original JSON](../examples/real-packages/oxygen-saved-diagnostics/latency-1.10.2.json) | [Original JSON](../examples/real-packages/oxygen-saved-diagnostics/memory-1.10.2.json) |
-| 1.11.0 | [Original JSON](../examples/real-packages/oxygen-saved-diagnostics/latency-1.11.0.json) | [Original JSON](../examples/real-packages/oxygen-saved-diagnostics/memory-1.11.0.json) |
+```@raw html
+<table>
+<thead><tr><th>Oxygen checkout</th><th>Latency report</th><th>Reachable-memory report</th></tr></thead>
+<tbody>
+<tr><td>1.10.2</td><td><a href="../examples/real-packages/oxygen-saved-diagnostics/latency-1.10.2.json">Original JSON</a></td><td><a href="../examples/real-packages/oxygen-saved-diagnostics/memory-1.10.2.json">Original JSON</a></td></tr>
+<tr><td>1.11.0</td><td><a href="../examples/real-packages/oxygen-saved-diagnostics/latency-1.11.0.json">Original JSON</a></td><td><a href="../examples/real-packages/oxygen-saved-diagnostics/memory-1.11.0.json">Original JSON</a></td></tr>
+</tbody>
+</table>
+```
 
 These four diagnostic reports were collected on 10 October 2026 with
 [PerfChecker source ffbf33f](https://github.com/Mirage-Interactive-Fr/PerfChecker.jl/commit/ffbf33f0bda61dfc84adfb8e8e6dfd8a404d0642),
