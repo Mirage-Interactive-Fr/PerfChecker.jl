@@ -990,10 +990,10 @@ function _feature_qualification_block(planned::PlannedFeatureRun, state_name::Sy
     end
 end
 
-function _run_config(planned::PlannedFeatureRun, overrides::AbstractDict)
+function _run_config(planned::PlannedFeatureRun, overrides::AbstractDict;
+        resolve_preferences::Bool = false, preferences = nothing)
     options = copy(planned.feature.options)
     merge!(options, (planned.variant::FeatureVariant).options)
-    get!(options, :quiet, true)
     for (key, value) in pairs(overrides)
         key isa Symbol || throw(ArgumentError("suite override keys must be symbols"))
         options[key] = value
@@ -1049,11 +1049,18 @@ function _run_config(planned::PlannedFeatureRun, overrides::AbstractDict)
     else
         throw(ArgumentError("unsupported suite target kind $(planned.target.kind)"))
     end
+    if resolve_preferences
+        return normalize_config(planned.feature.backend, options;
+            preferences = preferences === nothing ? check_preferences() : preferences,
+            defaults = Dict{Symbol, Any}(:quiet => true))
+    end
+    get!(options, :quiet, true)
     return PerfConfig(planned.feature.backend, options)
 end
 
 "Identity of the package graph prepared for one feature worker."
-function _suite_environment_key(planned::PlannedFeatureRun, config::PerfConfig)
+function _suite_environment_key(planned::PlannedFeatureRun,
+        config::Union{PerfConfig, CheckConfig})
     options = config.options
     requirements = Dict{String, Any}(
         "package_suite" => string(planned.package_suite.id),
@@ -1105,6 +1112,9 @@ function _execute_suite_plan(plan::SuitePlan; executor = _default_suite_executor
         _validate_worker_environments(plan.suite.packages; strict = true)
         _ensure_suite_backends(plan)
     end
+    # Freeze controller preferences once for the plan, before preparation. Workers
+    # receive resolved values rather than consulting their copied environments.
+    preferences = executor === _default_suite_executor ? check_preferences() : nothing
     started = string(Dates.now(Dates.UTC))
     runs = FeatureRun[]
     prepared = Dict{String, String}()
@@ -1131,7 +1141,9 @@ function _execute_suite_plan(plan::SuitePlan; executor = _default_suite_executor
             config = nothing
             environment_key = nothing
             try
-                config = _run_config(planned, overrides)
+                config = _run_config(planned, overrides;
+                    resolve_preferences = executor === _default_suite_executor,
+                    preferences)
                 if executor === _default_suite_executor
                     key = _suite_environment_key(planned, config)
                     environment_key = key
@@ -1192,7 +1204,8 @@ function _execute_suite_plan(plan::SuitePlan; executor = _default_suite_executor
                                 deepcopy(error.evidence) : _empty_qualification()
                 if executor === _default_suite_executor
                     qualification["source_provenance"] = _source_provenance(planned)
-                    if config isa PerfConfig && environment_key !== nothing &&
+                    if config isa Union{PerfConfig, CheckConfig} &&
+                       environment_key !== nothing &&
                        haskey(config.options, :prepared_environment)
                         qualification["environment_provenance"] = get!(
                             environment_provenance, environment_key) do
