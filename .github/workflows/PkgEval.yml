@@ -1,0 +1,216 @@
+name: Registered PkgEval
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/PkgEval.yml'
+  schedule:
+    - cron: '41 4 * * 1'
+  workflow_dispatch:
+    inputs:
+      package_version:
+        description: Registered PerfChecker version (empty selects the latest non-yanked version)
+        type: string
+        default: ''
+      general_revision:
+        description: General commit or ref (resolved to an exact commit before evaluation)
+        type: string
+        default: master
+      expected_tree:
+        description: Optional expected registered package tree SHA-1
+        type: string
+        default: ''
+
+permissions:
+  contents: read
+
+concurrency:
+  group: registered-pkgeval-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  PKGEVAL_REVISION: '268f1d3d83df9abafb30c372a9755358fab7aa21'
+  PKGEVAL_PROJECT: '/home/runner/.julia/dev/PkgEval'
+  JULIA_NUM_THREADS: '1'
+  JULIA_NUM_PRECOMPILE_TASKS: '2'
+  OPENBLAS_NUM_THREADS: '1'
+  OMP_NUM_THREADS: '1'
+
+jobs:
+  select:
+    name: Select registered source
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      general_revision: ${{ steps.registry.outputs.revision }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: julia-actions/setup-julia@v3
+        with:
+          version: '1'
+      # Keep the original 1.0.1 qualification reproducible when reviewing this workflow.
+      # Scheduled runs select a fresh General commit and its latest registered version.
+      - id: registry
+        name: Resolve the General commit
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GENERAL_REVISION: ${{ inputs.general_revision || (github.event_name == 'pull_request' && '7cd7064e459da06bc846db6356cbd1d50e180b79') || 'master' }}
+        run: |
+          set -euo pipefail
+          revision=$(gh api "repos/JuliaRegistries/General/commits/$GENERAL_REVISION" --jq .sha)
+          [[ "$revision" =~ ^[0-9a-f]{40}$ ]]
+          printf 'revision=%s\n' "$revision" >> "$GITHUB_OUTPUT"
+      - name: Select a registered version and verify its tree
+        shell: julia --startup-file=no {0}
+        env:
+          GENERAL_REVISION: ${{ steps.registry.outputs.revision }}
+          REQUESTED_VERSION: ${{ inputs.package_version || (github.event_name == 'pull_request' && '1.0.1') || '' }}
+          EXPECTED_TREE: ${{ inputs.expected_tree || (github.event_name == 'pull_request' && '00c133336911b8600d63a8d6c59ce1befc5ce690') || '' }}
+        run: |
+          using Downloads, TOML
+          mkpath(".pkgeval")
+          registry_revision = ENV["GENERAL_REVISION"]
+          versions_path = Downloads.download(
+              "https://raw.githubusercontent.com/JuliaRegistries/General/" *
+              registry_revision * "/P/PerfChecker/Versions.toml",
+              ".pkgeval/Versions.toml")
+          versions = TOML.parsefile(versions_path)
+          requested = ENV["REQUESTED_VERSION"]
+          version = isempty(requested) ? maximum(VersionNumber(key) for (key, info) in
+              versions if !get(info, "yanked", false)) : VersionNumber(requested)
+          info = get(versions, string(version), nothing)
+          info === nothing && error("PerfChecker $version is not registered at this General commit")
+          get(info, "yanked", false) && error("PerfChecker $version is yanked")
+          tree = info["git-tree-sha1"]
+          occursin(r"^[0-9a-f]{40}$", tree) || error("Invalid registered tree")
+          expected = ENV["EXPECTED_TREE"]
+          isempty(expected) || tree == expected || error("Registered tree does not match the requested tree")
+          request = Dict(
+              "package" => "PerfChecker",
+              "uuid" => "6309bf6b-a531-4b08-891e-8ee981e5c424",
+              "version" => string(version),
+              "registered_tree" => tree,
+              "general_revision" => registry_revision,
+              "pkgeval_revision" => ENV["PKGEVAL_REVISION"],
+              "workflow_revision" => ENV["GITHUB_SHA"],
+              "run_url" => ENV["GITHUB_SERVER_URL"] * "/" * ENV["GITHUB_REPOSITORY"] *
+                  "/actions/runs/" * ENV["GITHUB_RUN_ID"])
+          open(".pkgeval/request.toml", "w") do io
+              TOML.print(io, request; sorted=true)
+          end
+          println("Selected registered PerfChecker $version, tree $tree, General $registry_revision")
+      - uses: actions/upload-artifact@v7
+        with:
+          name: pkgeval-request
+          path: .pkgeval/
+          include-hidden-files: true
+          if-no-files-found: error
+
+  stable:
+    name: PkgEval on Julia stable
+    needs: select
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    env:
+      TARGET_JULIA: stable
+    steps: &evaluate
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@v8
+        with:
+          name: pkgeval-request
+          path: .pkgeval
+      - uses: julia-actions/setup-julia@v3
+        with:
+          version: '1'
+      - name: Allow rootless containers on the disposable runner
+        run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+      - name: Install the pinned PkgEval controller
+        shell: bash
+        run: |
+          set -euo pipefail
+          pkgeval_project="$PKGEVAL_PROJECT"
+          git clone --filter=blob:none --no-checkout https://github.com/JuliaCI/PkgEval.jl.git "$pkgeval_project"
+          git -C "$pkgeval_project" checkout --detach "$PKGEVAL_REVISION"
+          [[ "$(git -C "$pkgeval_project" rev-parse HEAD)" == "$PKGEVAL_REVISION" ]]
+          julia --startup-file=no --project="$pkgeval_project" -e 'using Pkg; Pkg.instantiate()'
+          cp "$pkgeval_project/Manifest.toml" .pkgeval/PkgEval-Manifest.toml
+      - name: Evaluate the registered package in the PkgEval sandbox
+        shell: julia --startup-file=no --project=${{ env.PKGEVAL_PROJECT }} {0}
+        run: |
+          using Dates, TOML, UUIDs
+          request = TOML.parsefile(".pkgeval/request.toml")
+          report = merge(request, Dict(
+              "requested_julia" => ENV["TARGET_JULIA"],
+              "started_at_utc" => string(now(UTC)),
+              "controller_julia" => string(VERSION),
+              "status" => "controller_error",
+              "use_cache" => false,
+              "test_profile" => "full",
+              "time_limit_seconds" => 45 * 60))
+          function save_report()
+              open(".pkgeval/result.toml", "w") do io
+                  TOML.print(io, report; sorted=true)
+              end
+          end
+          save_report()
+          try
+              @eval using PkgEval
+              config = PkgEval.Configuration(
+                  name="registered-" * ENV["TARGET_JULIA"],
+                  julia=ENV["TARGET_JULIA"],
+                  registry="JuliaRegistries/General#" * request["general_revision"],
+                  cpus=[0, 1], threads=1, time_limit=45 * 60)
+              package = PkgEval.Package(name=request["package"],
+                  uuid=UUID(request["uuid"]), version=VersionNumber(request["version"]))
+              report["configuration"] = repr(config)
+              registry = PkgEval.get_registry(config)
+              sandbox_versions = TOML.parsefile(joinpath(registry, "P", "PerfChecker", "Versions.toml"))
+              sandbox_versions[request["version"]]["git-tree-sha1"] == request["registered_tree"] ||
+                  error("PkgEval's sandbox registry does not contain the requested package tree")
+              report["sandbox_registry_tree_verified"] = true
+              save_report()
+              result = PkgEval.evaluate_package(config, package; use_cache=false, echo=true)
+              write(".pkgeval/evaluation.log", result.log)
+              report["status"] = string(result.status)
+              report["reason"] = ismissing(result.reason) ? "" : string(result.reason)
+              report["evaluated_version"] = ismissing(result.version) ? "" : string(result.version)
+              report["duration_seconds"] = result.duration
+              report["peak_rss_bytes"] = result.peak_rss
+              report["installation_completed"] = occursin(r"^Installation completed after"m, result.log)
+              report["precompilation_completed"] = occursin(r"^Precompilation completed after"m, result.log)
+              report["precompilation_failed"] = occursin(r"^Precompilation failed after"m, result.log)
+              report["testing_completed"] = occursin(r"^Testing completed after"m, result.log)
+              report["finished_at_utc"] = string(now(UTC))
+              save_report()
+              result.version == VersionNumber(request["version"]) ||
+                  error("PkgEval did not evaluate the requested registered version")
+              result.status === :test || error("PkgEval did not pass the package tests: $(result.status), $(result.reason)")
+          catch exception
+              report["exception"] = sprint(showerror, exception, catch_backtrace())
+              report["finished_at_utc"] = string(now(UTC))
+              save_report()
+              rethrow()
+          end
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: pkgeval-${{ env.TARGET_JULIA }}
+          path: .pkgeval/
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 30
+
+  nightly:
+    name: PkgEval on Julia nightly
+    needs: [select, stable]
+    if: ${{ always() && !cancelled() && needs.select.result == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    env:
+      TARGET_JULIA: nightly
+    steps: *evaluate
