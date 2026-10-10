@@ -153,8 +153,8 @@ and the export behavior below are additions to that companion. The public
 installing registered PerfChecker 1.0.0 does not supply these newer methods.
 For the candidate, use the [repository-subdirectory installation](../guide/installation.md#Optional-packages)
 with `subdir = "packages/PerfCheckerMakie"` and the reviewed source revision
-`7cfe034e6dd9a443708f6610785ce823276f4ab0`, whose
-[companion source](https://github.com/Mirage-Interactive-Fr/PerfChecker.jl/tree/7cfe034e6dd9a443708f6610785ce823276f4ab0/packages/PerfCheckerMakie)
+`52ed16a5e50143aafc9e52824fde8c0e8693ccb3`, whose
+[companion source](https://github.com/Mirage-Interactive-Fr/PerfChecker.jl/tree/52ed16a5e50143aafc9e52824fde8c0e8693ccb3/packages/PerfCheckerMakie)
 declares version 1.0.1. These candidate instructions do not assume a published
 `v1.0.1` tag or a General registration.
 
@@ -165,7 +165,7 @@ registered Core 1.0.0 beside it does not satisfy that contract:
 ```julia
 using Pkg
 repository = "https://github.com/Mirage-Interactive-Fr/PerfChecker.jl"
-revision = "7cfe034e6dd9a443708f6610785ce823276f4ab0"
+revision = "52ed16a5e50143aafc9e52824fde8c0e8693ccb3"
 Pkg.add([
     PackageSpec(url = repository, rev = revision),
     PackageSpec(url = repository, rev = revision, subdir = "packages/PerfCheckerMakie"),
