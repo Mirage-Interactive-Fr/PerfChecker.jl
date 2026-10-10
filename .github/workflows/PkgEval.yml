@@ -123,8 +123,8 @@ jobs:
           CANDIDATE_TREE: ${{ steps.candidate.outputs.tree }}
           REQUESTED_VERSION: ${{ inputs.package_version || (github.event_name == 'pull_request' && '1.0.1') || '' }}
           EXPECTED_TREE: ${{ inputs.expected_tree || (github.event_name == 'pull_request' && '00c133336911b8600d63a8d6c59ce1befc5ce690') || '' }}
-          PACKAGE_IMAGES: ${{ inputs.package_images || 'upstream' }}
-          TIME_LIMIT_MINUTES: ${{ inputs.time_limit_minutes || '45' }}
+          PACKAGE_IMAGES: ${{ inputs.package_images || (github.event_name == 'schedule' && 'yes') || 'upstream' }}
+          TIME_LIMIT_MINUTES: ${{ inputs.time_limit_minutes || (github.event_name == 'schedule' && '90') || '45' }}
         run: |
           using Downloads, TOML
           include(joinpath(ENV["GITHUB_WORKSPACE"], "qualification", "shared", "pkgeval_source.jl"))
@@ -177,7 +177,7 @@ jobs:
     needs: select
     if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
-    timeout-minutes: ${{ inputs.time_limit_minutes == '90' && 120 || 75 }}
+    timeout-minutes: ${{ (inputs.time_limit_minutes == '90' || github.event_name == 'schedule') && 120 || 75 }}
     env:
       TARGET_JULIA: stable
     steps: &evaluate
@@ -283,7 +283,7 @@ jobs:
     needs: [select, stable]
     if: ${{ always() && !cancelled() && github.event_name != 'pull_request' && needs.select.result == 'success' }}
     runs-on: ubuntu-latest
-    timeout-minutes: ${{ inputs.time_limit_minutes == '90' && 120 || 75 }}
+    timeout-minutes: ${{ (inputs.time_limit_minutes == '90' || github.event_name == 'schedule') && 120 || 75 }}
     env:
       TARGET_JULIA: nightly
     steps: *evaluate

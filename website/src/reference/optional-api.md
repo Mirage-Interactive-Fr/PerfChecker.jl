@@ -1,9 +1,10 @@
 # Companion APIs
 
 These Public and Full references render the real Julia docstrings of the optional
-packages from the same source revision as this Core 1.0.1 site. Each owner is
-loaded in a separate documentation project. Full API includes documented internal
-bindings; it does not promise documentation for every private helper.
+packages from the same source revision as the Core package documented on this
+site. Each owner is loaded in a separate documentation project. Full API includes
+documented internal bindings; it does not promise documentation for every private
+helper.
 
 ```@raw html
 <table>
@@ -24,8 +25,8 @@ bindings. A companion can define methods of a Core binding: for example,
 PerfCheckerWeb defines methods of `PerfChecker.serve_suite`. The Julia signatures,
 source links and per-owner provenance retain that distinction. Makie's real WGL
 extension documents `PerfChecker.performance_plot_html`; that Core binding is not
-an additional export of the extension. Web remains version 1.0.0 alongside Core
-1.0.1.
+an additional export of the extension. Web's own version remains 1.0.0,
+independent of the Core package version.
 
 Each inventory is relative to this site's `optional-api/` directory. Inventories
 remain separate because a shared Core binding can have different methods in
@@ -39,5 +40,5 @@ render a plot, run a terminal interface or measure a hardware counter. LinuxPerf
 and LIKWID require their documented permissions and native prerequisites; their
 explicit Julia executor is not a native CLI, VS Code, Pluto or MCP selector.
 
-The stable Core 1.0.0 site retains its own APIs. These 1.0.1 references are
+The stable Core 1.0.0 site retains its own APIs. These companion references are
 not injected into an explicit documentation-only refresh of that release.

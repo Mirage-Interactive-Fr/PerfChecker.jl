@@ -28,25 +28,23 @@ function get_pkg_versions(name::String,
     indexes = isnothing(regname) ? collect(1:length(regs)) :
               findall(x -> x.name in regname, regs)
 
-    versions = Set{String}()
+    versions = Set{VersionNumber}()
     for i in indexes
         # Accessing pkgs initializes lazy registries on Julia 1.13. The package
         # entry also owns its actual path; custom registries need not use A/Name.
         packages = filter(pkg -> pkg.name == name, collect(values(regs[i].pkgs)))
-        registry = isdefined(regs[i], :in_memory_registry) ? regs[i].in_memory_registry :
-                   nothing
         for package in packages
-            key = replace(joinpath(package.path, "Versions.toml"), '\\' => '/')
-            if registry isa Dict && haskey(registry, key)
-                push!(versions, keys(parse(registry[key]))...)
+            # Pkg owns directory, tarball and binary-cache registry storage.
+            # Julia 1.10 takes only the entry; newer Pkg also needs its registry.
+            info = if applicable(Pkg.Registry.registry_info, regs[i], package)
+                Pkg.Registry.registry_info(regs[i], package)
             else
-                path = joinpath(regs[i].path, key)
-                isfile(path) || continue
-                push!(versions, keys(parse(read(path, String)))...)
+                Pkg.Registry.registry_info(package)
             end
+            union!(versions, keys(info.version_info))
         end
     end
-    return sort!(VersionNumber.(collect(versions)))
+    return sort!(collect(versions))
 end
 
 const VerConfig = Tuple{String, Symbol, Vector{VersionNumber}, Bool}

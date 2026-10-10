@@ -2,6 +2,8 @@
 
 ## 1.1.0
 
+- Read registered versions through Pkg metadata across directory, compressed and
+  binary-cache registries, including metadata already loaded by other operations.
 - Add persistent controller defaults through Preferences.jl for `threads`,
   `repeat` and `quiet`, with the public `check_preferences`,
   `set_check_preferences!` and `reset_check_preferences!` APIs. Explicit options

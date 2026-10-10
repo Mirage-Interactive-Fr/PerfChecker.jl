@@ -210,8 +210,14 @@ the workflow. Supply:
 To assess a fix, wait for the release containing it to be registered and select
 that release and its tree. Re-running 1.0.1 will still test 1.0.1. The weekly
 Monday 04:41 UTC schedule selects the latest non-yanked version at a newly
-resolved General commit. Pull-request checks test the source selector and record
-the original 1.0.1 selection; they do not launch stable or nightly sandboxes.
+resolved General commit. Scheduled evaluations use `package_images=yes` and
+`time_limit_minutes=90`: a 5,400-second complete sandbox budget and a separate
+120-minute GitHub job limit. The recorded inputs and Julia arguments identify
+this configured qualification; it is not an upstream-default result.
+Manual dispatch defaults remain `package_images=upstream` and
+`time_limit_minutes=45`. Pull-request checks retain those defaults, test the
+source selector and record the original 1.0.1 selection; they do not launch
+stable or nightly sandboxes.
 That selection receipt is not a new package evaluation.
 Keep the stable and nightly artifacts and report each verdict separately.
 
@@ -265,10 +271,11 @@ A separate precompilation phase does not give testing another 2,700 seconds.
 Native package-image generation can itself consume more of this budget; selecting
 `yes` does not establish that the full suite will finish within it.
 
-The default sandbox budget remains 45 minutes. An explicit `time_limit_minutes=90`
-dispatch gives the same complete evaluation 5,400 seconds, with a separate
-120-minute GitHub job limit; the default 45-minute evaluation retains its
-75-minute job limit. Tests, thread count and shared-cache policy remain unchanged.
+The manual dispatch default sandbox budget remains 45 minutes. An explicit
+`time_limit_minutes=90` dispatch gives the same complete evaluation 5,400 seconds,
+with a separate 120-minute GitHub job limit; the default 45-minute evaluation
+retains its 75-minute job limit. Tests, thread count and shared-cache policy remain
+unchanged.
 A `yes`/90-minute result is a configured qualification, not a pass under upstream
 defaults. Since it changes both compilation policy and budget, its completion
 alone cannot establish a compilation speedup or repair an earlier timeout.
