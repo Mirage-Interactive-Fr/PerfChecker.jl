@@ -61,7 +61,32 @@ The displayed statistics always use the complete recorded distribution.
 Large distributions plot at most 512 sampled points while keeping the extremes
 and full-set sorted ranks. A notice states the plotted and total counts; all samples
 remain available in JSON. These new controls are being qualified for the 1.0.1
-release; the earlier recording below does not demonstrate them.
+release. The native example below shows them in a recorded source build.
+
+::: tabs
+
+== Inspect the central range
+
+```@raw html
+<DocMedia src="/assets/screenshots/vscode/v101/oxygen-distributions-central-db8b51b.png" alt="Native VS Code comparing Oxygen 1.10.2 and 1.11.0 plain_http timing distributions on the same zoomed scale, with 26 of 30 and 28 of 30 samples visible" caption="The shared viewport is 8,393–22,000 ns. It shows 26/30 samples for 1.10.2 and 28/30 for 1.11.0; the summaries still use all 30 samples per release. Their recorded medians are 16.39 µs and 9.00 µs." />
+```
+
+== Keep the full distribution
+
+```@raw html
+<DocMedia src="/assets/screenshots/vscode/v101/oxygen-distributions-full-db8b51b.png" alt="The same native Oxygen comparison restored to its full common timing range, with all 30 samples and slow extremes visible for each release" caption="Fit restores the full common range, approximately 8.393–98.204 µs. Both cards show 30/30 observations, including the slow extremes omitted from the zoomed viewport. No samples were discarded or recollected." />
+```
+
+:::
+
+This is a real `plain_http` campaign on Linux x86_64, Julia 1.13.1, two worker
+threads, measured on 9 October 2026 (UTC), in bundle
+`32d4d39f-6754-47d3-a79f-ef8005cb9f46`. The native capture uses extension source
+[`db8b51b`](https://github.com/Mirage-Interactive-Fr/PerfCheckerVSCode/commit/db8b51bced8c04bcf3a667f70aa3bb4239f50fb4)
+and Core source
+[`52a0d0c`](https://github.com/Mirage-Interactive-Fr/PerfChecker.jl/commit/52a0d0cd12472606632645700781d02d650f6694).
+The two releases have different dependency stacks: this observation alone
+does not attribute the difference to HTTP or establish a CI regression verdict.
 
 
 ### Read normalized overlays
@@ -73,15 +98,70 @@ a conclusion. The example below preserves the actual saved version series.
 
 ### Follow a recorded profile
 
-Select **Flame graphs** for a check containing real profile stacks. Follow the
-frame names and source locations, then inspect the collector's sampling
-boundary. Use a profile to choose a workload and a correctness protocol for
-the next experiment.
+1. Open the completed suite's visual output. Use **Check** to select the CPU,
+   wall-time or allocation collector, and **View** to select **Flame graphs**.
+   Keep the package, workload and release label beside each card.
+2. Click a visible frame, or enter its number in **Inspect frame**. The
+   **Frame index** slider reaches the same saved frames, including frames too
+   narrow to click at the current scale.
+3. Read **Inclusive weight**, **Metric** and **Call path** below the graph.
+   Inclusive weight includes child calls; adding parent and child weights
+   would count the same activity more than once. A displayed source location
+   can be relative to its package or runtime, rather than an absolute filename.
+4. Use **Zoom +**, **Zoom −** and the pan arrows to explore a region. **Range**
+   exposes explicit viewport bounds, and **Fit** restores the full view.
+   These controls change the presentation, not the saved samples.
+5. Open the corresponding source from the measured release. Use the profile
+   to choose the next experiment, then run correctness checks and ordinary
+   timing measurements before claiming an improvement.
 
+The tabs show real **DataStructures 0.19.6**, **heap_2048** profiles recorded on
+Linux with Julia **1.13.1**. The same campaign also collected DataStructures
+0.18.13; each screenshot below shows the **0.19.6 card only**. These profiles
+attribute activity within a capture. They do not establish a before/after
+speedup or provide per-operation benchmark timings.
 
-These are passages from the full tutorial, with English captions and the
-original narration. The [video walkthrough index](vscode-videos.md) groups
-them by action.
+::: tabs
+
+== CPU samples
+
+```@raw html
+<DocMedia src="/assets/screenshots/vscode/v101/datastructures-cpu-0196-ad57106.png" alt="Native VS Code CPU flame graph for DataStructures 0.19.6 heap_2048, with Inspect frame 3, zoom and pan controls, the heap-pop branch and its complete recorded call path" caption="Frame 3 attributes 312 retained CPU samples to the selected branch, including child calls. Its 76.66% share is a fraction of this capture's CPU sample weight, not a measured percentage slowdown." />
+```
+
+The selected path passes through `pop!`, `heappop!` and `percolate_down!`.
+Inspect the matching release's heap implementation before choosing a change.
+
+== Wall-time samples
+
+```@raw html
+<DocMedia src="/assets/screenshots/vscode/v101/datastructures-wall-0196-ad57106.png" alt="Native VS Code wall-time flame graph for DataStructures 0.19.6 heap_2048, with frame 3 selected, 56 available frames and the inclusive sample weight below the graph" caption="Frame 3 carries 82 wall-time samples, or 71.30% of this capture's weight. Wall-time sampling can include waiting; these values are neither seconds nor interchangeable with the CPU sample count." />
+```
+
+The similar call path does not make the two collectors equivalent. Read the
+metric on the card and use its own captured total.
+
+== Allocated bytes
+
+```@raw html
+<DocMedia src="/assets/screenshots/vscode/v101/datastructures-alloc-0196-ad57106.png" alt="Native VS Code allocation flame graph for DataStructures 0.19.6 heap_2048, with frame 6 selected along BinaryHeap, heapify, similar and Array and the inclusive byte-weight readout" caption="Frame 6 has a weighted allocation estimate of approximately 98,384 bytes. This sampled attribution includes child calls; it is not retained heap size, resident memory or a direct per-operation allocation total." />
+```
+
+Follow the allocation path to distinguish heap construction from heap removal.
+An allocation count and a byte estimate answer different questions; choose
+the metric explicitly before comparing them.
+
+:::
+
+These native images were captured on 9 October 2026 (UTC) with extension candidate
+[`ad57106`](https://github.com/Mirage-Interactive-Fr/PerfCheckerVSCode/commit/ad57106765f741a36e4be00e6ea78ab6c5eff472)
+and Core source
+[`63f5cc4`](https://github.com/Mirage-Interactive-Fr/PerfChecker.jl/commit/63f5cc4bfc2c55de521487f68b0df143107762f3),
+from bundle `8f2ffde5-55b9-43de-b35a-08503f9b6639`. They are separate from the
+historical profile campaign in the [DataStructures example](../real-packages/datastructures.md).
+The saved data was not recollected to take the screenshots. The
+[video walkthrough index](vscode-videos.md) links the written chapters while
+the new videos await publication.
 
 For custom Julia figures, load [PerfCheckerMakie](visualization.md) with your chosen Makie backend. The core notebook's `display(bundle)` presents a bundle; it does not automatically create every optional graphical backend. Save reports or create figures explicitly when you need reusable plots.
 

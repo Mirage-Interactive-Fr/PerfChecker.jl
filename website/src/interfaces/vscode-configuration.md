@@ -56,7 +56,7 @@ worker cleanup, and **PerfChecker: Show worker output** records dependency
 errors.
 
 
-For an MCP or local Codex connection, add `HTTP` explicitly to this controller,
+For an MCP connection, add `HTTP` explicitly to this controller,
 then follow [MCP configuration](../mcp-advisor.md). The setup installs the listed
 measurement packages. The separate Pluto environment uses the qualified Pluto
 release's own HTTP dependency range.

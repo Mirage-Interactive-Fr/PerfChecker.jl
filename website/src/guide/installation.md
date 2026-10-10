@@ -35,8 +35,8 @@ Install only what you need.
 - Pluto notebooks — `PerfCheckerPluto`, using `packages/PerfCheckerPluto`
 - Makie figures — `PerfCheckerMakie`, using `packages/PerfCheckerMakie`
 
-The three interface packages have separate identities. Until their first General
-registrations, install one from its repository subdirectory at the stable tag:
+The three interface packages have separate identities. This source recipe
+installs the older Web companion from the root `v1.0.0` tag:
 
 ```julia
 Pkg.add(Pkg.PackageSpec(
@@ -50,6 +50,41 @@ Makie 1.0.1 companions require Core 1.0.1 or later; follow the
 [Pluto candidate steps](#Prepare-the-integrated-Pluto-candidate) or the
 [Makie source recipe](../interfaces/visualization.md#Customize-and-export-Makie-figures).
 Neither companion is separately registered in General yet.
+
+### Web controller with corrected shutdown
+
+The immutable `v1.0.0` tag above does **not** include the corrected agent
+interruption and cleanup-failure behavior described in the
+[hosted guide](../operations/hosted.md#Cancel-and-stop-safely). Until the new
+root release is registered and tagged, use the reviewed source revision below
+for both Core and Web. PerfCheckerWeb's package version remains **1.0.0**;
+the repository revision identifies this corrected source.
+
+Choose a new controller environment, separate from the measured packages and
+from Pluto:
+
+```julia
+import Pkg
+controller = joinpath(homedir(), ".julia", "environments", "perfchecker-web-101")
+Pkg.activate(controller)
+repository = "https://github.com/Mirage-Interactive-Fr/PerfChecker.jl"
+revision = "ffbf33f0bda61dfc84adfb8e8e6dfd8a404d0642"
+Pkg.add([
+    Pkg.PackageSpec(url = repository, rev = revision),
+    Pkg.PackageSpec(url = repository, rev = revision,
+        subdir = "packages/PerfCheckerWeb"),
+])
+using PerfChecker, PerfCheckerWeb
+Pkg.status()
+```
+
+The corrected path was checked with real HTTP requests and a Malt allocation
+worker on Linux, Julia 1.13.1, Oxygen 1.11.0 and HTTP 2. The 44 assertions cover
+interruption during execution and failure upload, fatal cleanup errors,
+ordinary-error recovery, and preservation of foreign allocation traces.
+This does not establish physical stop propagation to a remote worker: remote
+**Cancel** invalidates its lease, while stopping that agent remains a separate
+action on its host.
 
 ### Source companions for 1.0.1
 

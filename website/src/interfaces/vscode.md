@@ -6,17 +6,18 @@ Follow this page for a first measurement and a version comparison. Continue with
 [configuration](vscode-configuration.md), [plots and Julia tools](vscode-workflows.md)
 or [MCP advice and implementation](../mcp-advisor.md) when you reach those steps.
 
-The screenshots below show the **actual V1 extension webviews running in an
-isolated Chromium test harness**, with demonstration projects and results. They
-are not drawings or screenshots of a complete VS Code window. In VS Code, the
-same webviews open in editor tabs; the surrounding editor and theme may differ.
-Select any screenshot to open its full-resolution image, including the form
-fields and implementation diff.
+The guides include **native VS Code captures** and earlier webview captures.
+Each caption identifies its source and whether it shows demonstration data or
+measured package results. Select an image to inspect it at full resolution.
+The editor's theme and layout can differ on your machine.
 
-The **1.0.1 candidate** adds integrated Pluto notebooks and guided workspace
-setup. Their qualification and publication are still in progress. The six
-screenshots on these pages describe the public 1.0.0 webviews with demonstration data;
-new native screenshots will accompany the qualified Pluto release.
+The **1.0.1 candidate** adds integrated Pluto notebooks, guided workspace setup
+and additional plot controls. Its qualification and publication are still in
+progress. The native suite-designer captures below use extension commit
+[`4fab779`](https://github.com/Mirage-Interactive-Fr/PerfCheckerVSCode/commit/4fab779eae49968b3233fab6ed1d48e4acfbd1b3)
+in VS Code 1.141.0 on Linux, with a controlled test package. The
+[profile walkthrough](vscode-workflows.md#Follow-a-recorded-profile) shows
+separately recorded, measured DataStructures results.
 
 ## Install and prepare
 
@@ -158,7 +159,7 @@ The editor separates filtering from selection. Search, package/target filters an
 Collector toggles select or deselect matching runs. Unavailable conditions show their reason. Add targets from discovered branches, tags and recent commits or enter a supported ref/URL, then inspect the comparison matrix. Missing or overlapping references are reported before a run; refreshing the plan preserves existing selections when their identifiers still exist.
 
 ```@raw html
-<DocMedia src="/assets/screenshots/vscode-suite-designer.png" alt="Running PerfChecker V1 suite-designer webview with workload filters, selected check types, target controls and a run-selection summary" caption="Review the exact runs before executing: filtering controls visibility, while selection controls what will run. The screenshot uses demonstration workloads in the extension's real suite designer." />
+<DocMedia src="/assets/screenshots/vscode/v101/suite-designer-linux-4fab779.png" alt="Detail of the native VS Code 1.141.0 PerfChecker suite editor, with collector toggles, filter controls and the exact selected-run preview" caption="Native Linux capture, extension candidate 4fab779, cropped to the Suite editor without altering its contents. Review the exact runs before executing: filtering changes visibility, while selection determines what runs. PerfCheckerNativeFixture is the controlled test package." />
 ```
 
 
@@ -196,6 +197,10 @@ for every supported check and its interpretation.
    including any hidden by filters, then run the selection.
 6. Open both saved reports and inspect correctness, comparison compatibility and
    the observations. Retain the baseline until the candidate is validated.
+
+```@raw html
+<DocMedia src="/assets/screenshots/vscode/v101/git-reference-linux-4fab779.png" alt="Native VS Code suite editor with workload and collector selections beside the Comparison targets panel, discovered Git reference selector, reference input and Add comparison target button" caption="Choose a discovered reference or enter one explicitly, inspect its label, then add the target. This native 4fab779 capture demonstrates the real controls with a test package; it does not establish a performance difference." />
+```
 
 Changing a branch name or editor selection does not manufacture a compatible
 baseline. The saved evidence records the actual measured configuration.
