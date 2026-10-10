@@ -1757,9 +1757,11 @@ function register_oxygen_routes! end
 
 Load `PerfCheckerWeb` to serve a suite, saved reports, bundle or scenario catalog
 in Oxygen. Available routes depend on the source type. The default host is
-loopback; remote control requires an authenticator and explicit
-`allow_remote_control=true`. Server startup and lifetime options are forwarded
-to Oxygen. Loading a report view does not itself rerun its measurements.
+loopback. Remote-control guards and keyword forwarding depend on the source
+overload: the interactive `SoftwareSuite` form requires an authenticator and
+`allow_remote_control=true` for a remote host, while the scenario catalog form
+is loopback-only. See the `PerfCheckerWeb` methods for route and server options.
+Loading a report view does not itself rerun its measurements.
 """
 function serve_suite end
 """
@@ -1779,7 +1781,13 @@ Load `PerfCheckerWeb`. Register an agent with the specified controller, poll for
 jobs, execute accepted suite plans locally and upload progress/results. This
 performs network requests and runs workload processes; keep the server and suite
 under the caller's control. Use `once=true` for a bounded polling iteration or
-`max_jobs` to bound completed jobs.
+`max_jobs` to bound attempted leases, including failed attempts. Empty claims
+can keep polling indefinitely when `once=false`; `max_jobs` is not an idle-time
+limit. Heartbeat tasks are signalled to finish but are not awaited on return.
+Interruption and incomplete worker/trace cleanup always stop the agent, even
+with `once=false`. Controller-side cancellation of a remote lease does not
+interrupt its measurement; stop the agent cooperatively and allow cleanup to
+finish. An expired lease can be retried, so workloads must tolerate replay.
 """
 function run_studio_agent end
 """

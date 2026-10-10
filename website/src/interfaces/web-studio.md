@@ -93,9 +93,21 @@ The built-in token store keeps SHA-256 token digests and `admin`, `runner` and `
 Use the server's LAN hostname or its HTTPS public hostname in the browser;
 `0.0.0.0` is a binding address, not a destination. Keep port 8080 behind the
 intended private network or HTTPS proxy. The browser's token entry creates a
-session; sign out when finished. A controller running on another computer
+session; it expires automatically, or can be revoked through `DELETE /session`
+with its CSRF token. There is currently no Sign out button; see the
+[session API example](../operations/hosted.md#Browser-sessions).
+A controller running on another computer
 measures that computer, unless the plan explicitly selects a registered remote
 worker.
+
+**Cancel** marks a job cancelled immediately. For a local job, wait for its
+`worker_state` to finish cleanup; an incomplete cleanup changes the final job
+to `failed` and retains its error/inventory paths. For a remote job, Cancel
+rejects its result but does not stop the agent's measurement. Interrupt that
+agent once on its host and let cleanup finish. Force-killing a process can leave
+workers and `.mem` traces behind. See
+[cancel and stop safely](../operations/hosted.md#Cancel-and-stop-safely) for lease
+recovery and the distinction between a cancelled job and a stopped worker.
 
 See [Remote controllers](../operations/hosted.md) for the token-store format,
 requests and responses, remote-worker setup and recovery.

@@ -1,3 +1,33 @@
+"""
+    register_testitem_routes!(root::AbstractString; prefix="/perfchecker/items",
+        project=dirname(Base.active_project()),
+        reports_root=joinpath(root, "perf", "results", "testitems"))
+
+Register existing-test-item controls on Oxygen's current router and return the
+router. Load `PerfCheckerWeb` and `TestItemRunner` first. `root`, `project` and
+`reports_root` are made absolute from the caller's working directory. The
+default for `project` requires an active Julia project. The route
+prefix must contain only letters, digits, underscores, hyphens and slashes, and
+start with `/`.
+
+`GET /items` discovers eligible items without executing them; `GET /state` reads
+the current run state. `POST /run` accepts a JSON object with distinct, nonempty
+`ids` from that discovery. It returns HTTP 202 and runs the selected items
+asynchronously in `project`, writing reports to a fresh directory beneath
+`reports_root`. Invalid or excluded IDs return 400; an already active run returns
+409. Both `POST /run` and `POST /cancel` require the UI session's
+`X-PerfChecker-CSRF` token or return 403. Cancellation acknowledges a request,
+not completed worker cleanup; inspect `/state` for the resulting state.
+
+Registration does not start a listener or execute a test. The CSRF token is not
+authentication; configure exposure separately when starting Oxygen.
+
+```julia
+using PerfChecker, PerfCheckerWeb, TestItemRunner
+routes = register_testitem_routes!(pwd(); project=abspath("perf/controller"))
+# Start Oxygen separately when ready to expose these controls.
+```
+"""
 function PerfChecker.register_testitem_routes!(root::AbstractString;
         prefix::AbstractString = "/perfchecker/items",
         project::AbstractString = dirname(Base.active_project()),

@@ -31,10 +31,31 @@ The resulting inventory identifies the exact package versions and environment fi
 ## Documentation publication
 
 - Development documentation publication is independent of qualification.
-- The `Documentation` workflow installs documentation dependencies, builds Documenter and VitePress, and publishes `/PerfChecker/dev/` from `main`. No package matrix, browser tests or benchmarks.
+- The `Documentation` workflow builds Documenter and VitePress without running a package qualification matrix or benchmarks. Its canonical checker serves the exported files and checks HTML, search, assets, metadata and browser interactions before transfer.
+- An ordinary `main` build exports the canonical SFTP site at `https://perfchecker.mirageinteractive.fr/dev/` and the GitHub mirror at `/PerfChecker/dev/`. Each publisher is enabled separately; a build alone does not prove a transfer succeeded. Pull requests build and check exports but do not publish.
 - The extended qualification produces a `qualified-collection` artifact with the exact tested revisions and environments.
-- Only a complete successful qualification authorizes a package release and stable documentation. The stable publication revalidates all receipts and the site hash, then deploys the exact tested artifact from that campaign at its verified release tag.
+- Collection publication requires a complete successful qualification and revalidates its receipts and site hash. Separately, the `Documentation` workflow builds tagged exports at `/vX.Y.Z/` and the stable root `/`, verifies the tag/version and validates the exports before SFTP publication. Documentation publication alone does not qualify the package collection.
 - The documentation lane also builds the standalone SFTP site for `https://perfchecker.mirageinteractive.fr/`. Its root paths, `.html` links, version catalogue, search and assets are tested on a static server without rewrite rules. The collection validates its separate hash before publishing; it cannot substitute the GitHub mirror for this export.
+
+A manual **stable documentation refresh** is a distinct docs-only route, not a
+new release. Dispatch `Documentation` on `main` with `publication=stable`.
+The ordinary refresh uses main's version and validates it against the existing
+stable tag. For a different reviewed documentation source, supply both
+`stable_version` (for example `v1.0.0`) and a full 40-character
+`docs_source_revision`. The explicit pair is accepted only for that stable
+dispatch on `main`; it does not override the trusted publisher revision.
+
+The explicit source must have the tag's Project.toml version, its checkout HEAD
+must equal the requested SHA, and its diff from the release must pass the
+documentation-only allowlist. Functional package sources and metadata must stay
+unchanged. Build metadata and source links retain that same source SHA, and the
+publisher checks the same source again. This route builds and publishes only
+the stable root: it does not write `/dev/`, the GitHub mirror, a versioned archive
+or the version catalogue. Existing archive/stable guards remain in force.
+See the [deployment contract](https://github.com/Mirage-Interactive-Fr/PerfChecker.jl/blob/1a7577da782ba8676683f3ceefcb8dccf055afe5/website/DEPLOYMENT.md)
+and the [workflow](https://github.com/Mirage-Interactive-Fr/PerfChecker.jl/blob/1a7577da782ba8676683f3ceefcb8dccf055afe5/.github/workflows/Documentation.yml)
+for the exact checks and publication switches. A refresh is not hardware,
+frontend or release qualification.
 
 Publishing development documentation does not certify the packages it describes. Pull requests build but cannot publish.
 

@@ -96,8 +96,9 @@ function PerfChecker.terminal_plot(plot::PerfChecker.PerformancePlot;
     elseif plot.kind === :time_allocation_tradeoff
         x = Float64[Float64(item["bytes"]) for item in plot.data]
         y = Float64[Float64(item["time"]) for item in plot.data]
+        time_unit, allocation_unit = PerfChecker._tradeoff_plot_units(plot.options)
         return UnicodePlots.scatterplot(x, y; title = plot.title,
-            xlabel = "allocated bytes", ylabel = "time (s)", width, height)
+            xlabel = "allocation ($allocation_unit)", ylabel = "time ($time_unit)", width, height)
     end
     throw(ArgumentError("unsupported terminal plot kind $(plot.kind)"))
 end

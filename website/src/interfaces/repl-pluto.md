@@ -15,20 +15,44 @@ Use the REPL for a short command-driven session. Use Pluto to keep an editable n
 From `examples/bibliography/`:
 
 ```sh
+julia --startup-file=no setup.jl core
 julia --startup-file=no --project=.controller/core repl.jl
 ```
 
 Or drive the API yourself:
 
 ```julia
-using PerfChecker
+using PerfChecker, BenchmarkTools, Chairmarks
 
 suite = load_software_suite("suite.jl")
 selected, overrides = configure_suite_repl(suite; profile = :quick)
 result = run_suite_repl(selected; overrides, strict = false)
 ```
 
-The configurator filters packages, features, check types and targets. It prints the resolved plan before running.
+Run that Julia example from `examples/bibliography/` in the prepared
+`.controller/core` environment. The configurator prints available packages,
+features, collectors and versions, then asks for filters and measurement settings.
+For one first measurement, select `Bibliography`, `export_bibtex` and `benchmark`;
+review the printed version rows before confirming. Blank selectors include all
+matching rows. Confirmation returns a plan and overrides; `run_suite_repl` is
+the separate call that starts measurements.
+
+Inspect and explicitly save the returned result in the same session:
+
+```julia
+suite_summary(result)
+suite_verdict(result)
+paths = write_suite_reports(result, "results/repl-example")
+foreach(println, paths)
+```
+
+Choose a fresh report directory for each experiment: ordinary report files are
+replaced on export. The returned paths include a portable bundle directory under
+`bundles/run-…`. Keep that directory to reopen evidence in another interface.
+The suite file defines the experiment; the in-memory selection and overrides
+configure this run; exported reports contain its results. Selecting or exporting
+does not rewrite the suite. The supplied `repl.jl` wrapper already saves reports
+in a new directory and prints its location.
 
 ```@raw html
 <a id="Use-a-saved-suite-bundle,-as-loaded-in-the-plotting-tutorial."></a>
@@ -37,13 +61,21 @@ The configurator filters packages, features, check types and targets. It prints 
 For terminal-native summaries, add UnicodePlots to the controller:
 
 ```julia
-using UnicodePlots
-bundle = read_run_bundle(bundle_directory)
-plot_id = first(plot_catalog(bundle))["id"]
-terminal_plot(bundle, plot_id)
+using PerfChecker, UnicodePlots
+bundle = read_run_bundle("results/repl-example/bundles/<run-directory>")
+catalog = plot_catalog(bundle)
+[(entry["id"], entry["title"]) for entry in catalog]
+isempty(catalog) && error("This bundle has no supported plots")
+display(terminal_plot(bundle; plot_id = first(catalog)["id"], width = 70, height = 18))
 ```
 
-Terminal plots are a compact fallback. They do not replace hover, linked selection or source drill-down in the graphical views.
+Replace `<run-directory>` with the bundle directory printed above. Select an ID
+from the displayed catalogue to change the view; read the title and unit before
+comparing values. Empty or unsupported evidence raises an error rather than
+inventing a zero-valued plot. This command displays saved evidence without
+rerunning it or saving an image. For keyboard navigation and cancellation controls,
+see the [Tachikoma workflow](packages.md#Optional-terminal-UI); for figures and
+interactive exports, see [Plots](visualization.md).
 
 ```@raw html
 <a id="Pluto-dashboard"></a>

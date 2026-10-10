@@ -37,6 +37,20 @@ status and does not confirm cleanup.
 
 ## Plan and run
 
+Start in a prepared controller project containing PerfChecker and the collectors
+used by your existing `perf/suite.jl`. Inspect the plan first:
+
+```sh
+julia --startup-file=no --project=. -e 'using PerfChecker; exit(perfchecker_main(ARGS))' -- plan \
+  --suite=perf/suite.jl --profile=ci
+```
+
+Check the package, workload, collector and target rows. Planning loads your suite
+definition and resolves its targets; it does not measure the workload. Add
+`--output=perf/selected-plan.json` to write that plan as JSON. This file is an
+inspection record: `run` below reads the suite again, so retain the same suite
+and source revision when you proceed.
+
 ```sh
 julia --startup-file=no --project=. -e 'using PerfChecker; exit(perfchecker_main(ARGS))' -- run \
   --suite=perf/suite.jl --profile=ci --reports=perf/results --progress=jsonl
@@ -46,6 +60,29 @@ julia --startup-file=no --project=. -e 'using PerfChecker; exit(perfchecker_main
 - `--run-id=<id>` runs exact plan leaves; it cannot be combined with `--config`.
 - The default run performs a compatibility preflight.
 - Each JSONL progress line starts with `PERFCHECKER_PROGRESS `.
+
+Choose a fresh `--reports` directory when keeping earlier results. A completed
+run writes `suite-result.json`, `suite-report.md`, JUnit output and a portable
+bundle under `bundles/run-…`; a failed compatibility preflight writes
+`compatibility.json` and returns before measurement. Read the final verdict and
+the per-run statuses: exit code zero alone does not assert that every requested
+collector was available or that a regression budget passed.
+
+Use the actual bundle directory, rather than `suite-result.json`, when reopening
+evidence. Replace `<run-directory>` in these commands:
+
+```sh
+julia --startup-file=no --project=. -e 'using PerfChecker; exit(perfchecker_main(ARGS))' -- verify \
+  --bundle='perf/results/bundles/<run-directory>'
+julia --startup-file=no --project=. -e 'using PerfChecker; exit(perfchecker_main(ARGS))' -- report \
+  --bundle='perf/results/bundles/<run-directory>' --reports=perf/reopened-report
+```
+
+`verify` checks integrity and emits JSON; `report` exports the saved evidence
+without rerunning a workload. Keep the suite/workload sources separately from
+these outputs. To inspect the same bundle visually, use the
+[REPL](../interfaces/repl-pluto.md#REPL), [terminal UI](../interfaces/packages.md#Optional-terminal-UI)
+or [plots](../interfaces/visualization.md).
 
 ```@raw html
 <a id="Git-targets-and-comparisons"></a>
@@ -63,6 +100,12 @@ julia --startup-file=no --project=. -e 'using PerfChecker; exit(perfchecker_main
 - Limits are relative fractions; `0.05` allows a 5% increase for a lower-is-better metric.
 - `--statistic=metric=p95` selects `median`, `mean`, `minimum`, `maximum`, `p95` or `p99`.
 - When both selected values are exactly zero, an explicit policy passes: the candidate preserved the baseline.
+
+Both paths must identify actual bundles with compatible measurement boundaries.
+Read `comparison.json` and `comparison.md` in the report directory for coverage,
+units and inconclusive rows. `check` returns 1 when its comparison does not pass;
+`compare` writes the same diagnostic reports without using the verdict as an
+exit-code gate. Neither command starts another measurement.
 
 ```@raw html
 <a id="Network-command"></a>

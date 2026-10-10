@@ -46,7 +46,7 @@ jobs:
     if: github.event.deleted != true
     name: Build documentation exports and test SFTP publication
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 90
     outputs:
       stable-version: ${{ steps.version.outputs.stable-version }}
       source-revision: ${{ steps.version.outputs.source-revision }}
@@ -57,6 +57,7 @@ jobs:
           ref: ${{ github.sha }}
           persist-credentials: false
       - uses: julia-actions/setup-julia@v3
+        id: docs-julia
         with:
           version: '1'
       - uses: actions/setup-node@v7
@@ -133,6 +134,103 @@ jobs:
           node --input-type=module -e
           'import {validateStableDocumentationSource} from "./website/deploy-sftp.mjs";
           await validateStableDocumentationSource(process.cwd(), "v" + process.env.PERFCHECKER_DOCS_VERSION, process.env.GITHUB_SHA);'
+      - name: Test documentation writer compatibility before rendering
+        working-directory: ${{ steps.version.outputs.explicit-source == 'true' && 'stable-doc-source' || '.' }}
+        env:
+          EXPLICIT_DOC_SOURCE: ${{ steps.version.outputs.explicit-source }}
+        run: |
+          if [[ -f website/test_compat.jl ]]; then
+            julia --startup-file=no --project=website website/test_compat.jl
+          elif [[ "$EXPLICIT_DOC_SOURCE" == true && "$PERFCHECKER_DOCS_VERSION" == 1.0.0 ]]; then
+            echo "Legacy explicit stable 1.0.0 snapshot predates the writer compatibility test."
+          else
+            echo "Missing required documentation writer compatibility test" >&2
+            exit 1
+          fi
+      - name: Cache isolated PerfCheckerLinuxPerf dependencies
+        if: env.PERFCHECKER_DOCS_VERSION == '1.0.1'
+        uses: julia-actions/cache@v3
+        with:
+          depot: ${{ runner.temp }}/optional-api/linuxperf-depot
+          cache-name: optional-api-v1-linuxperf-${{ runner.arch }}-${{ steps.docs-julia.outputs.julia-version }}-${{ hashFiles('Project.toml', 'stable-doc-source/Project.toml', '**/website/optional-api/linuxperf/Project.toml', '**/packages/PerfCheckerLinuxPerf/Project.toml') }}
+          save-always: true
+      - name: Cache isolated PerfCheckerLIKWID dependencies
+        if: env.PERFCHECKER_DOCS_VERSION == '1.0.1'
+        uses: julia-actions/cache@v3
+        with:
+          depot: ${{ runner.temp }}/optional-api/likwid-depot
+          cache-name: optional-api-v1-likwid-${{ runner.arch }}-${{ steps.docs-julia.outputs.julia-version }}-${{ hashFiles('Project.toml', 'stable-doc-source/Project.toml', '**/website/optional-api/likwid/Project.toml', '**/packages/PerfCheckerLIKWID/Project.toml') }}
+          save-always: true
+      - name: Cache isolated PerfCheckerMakie dependencies
+        if: env.PERFCHECKER_DOCS_VERSION == '1.0.1'
+        uses: julia-actions/cache@v3
+        with:
+          depot: ${{ runner.temp }}/optional-api/makie-depot
+          cache-name: optional-api-v1-makie-${{ runner.arch }}-${{ steps.docs-julia.outputs.julia-version }}-${{ hashFiles('Project.toml', 'stable-doc-source/Project.toml', '**/website/optional-api/makie/Project.toml', '**/packages/PerfCheckerMakie/Project.toml') }}
+          save-always: true
+      - name: Cache isolated PerfCheckerWeb dependencies
+        if: env.PERFCHECKER_DOCS_VERSION == '1.0.1'
+        uses: julia-actions/cache@v3
+        with:
+          depot: ${{ runner.temp }}/optional-api/web-depot
+          cache-name: optional-api-v1-web-${{ runner.arch }}-${{ steps.docs-julia.outputs.julia-version }}-${{ hashFiles('Project.toml', 'stable-doc-source/Project.toml', '**/website/optional-api/web/Project.toml', '**/packages/PerfCheckerWeb/Project.toml') }}
+          save-always: true
+      - name: Cache isolated PerfCheckerPluto dependencies
+        if: env.PERFCHECKER_DOCS_VERSION == '1.0.1'
+        uses: julia-actions/cache@v3
+        with:
+          depot: ${{ runner.temp }}/optional-api/pluto-depot
+          cache-name: optional-api-v1-pluto-${{ runner.arch }}-${{ steps.docs-julia.outputs.julia-version }}-${{ hashFiles('Project.toml', 'stable-doc-source/Project.toml', '**/website/optional-api/pluto/Project.toml', '**/packages/PerfCheckerPluto/Project.toml') }}
+          save-always: true
+      - name: Cache isolated PerfCheckerTachikoma dependencies
+        if: env.PERFCHECKER_DOCS_VERSION == '1.0.1'
+        uses: julia-actions/cache@v3
+        with:
+          depot: ${{ runner.temp }}/optional-api/tachikoma-depot
+          cache-name: optional-api-v1-tachikoma-${{ runner.arch }}-${{ steps.docs-julia.outputs.julia-version }}-${{ hashFiles('Project.toml', 'stable-doc-source/Project.toml', '**/website/optional-api/tachikoma/Project.toml', '**/packages/PerfCheckerTachikoma/Project.toml', '**/packages/PerfCheckerMakie/Project.toml') }}
+          save-always: true
+      - name: Render companion APIs in isolated projects, once per source revision
+        if: env.PERFCHECKER_DOCS_VERSION == '1.0.1'
+        working-directory: ${{ steps.version.outputs.explicit-source == 'true' && 'stable-doc-source' || '.' }}
+        shell: bash
+        run: |
+          export PERFCHECKER_SOURCE="$PWD"
+          for companion in linuxperf likwid makie web pluto tachikoma; do
+            project="$RUNNER_TEMP/optional-api/$companion-project"
+            mkdir -p "$project"
+            cp "website/optional-api/$companion/Project.toml" "$project/Project.toml"
+            export JULIA_DEPOT_PATH="$RUNNER_TEMP/optional-api/$companion-depot"
+            export PERFCHECKER_COMPANION="$companion"
+            julia --startup-file=no --project="$project" -e '
+              using Pkg
+              root = ENV["PERFCHECKER_SOURCE"]
+              slug = ENV["PERFCHECKER_COMPANION"]
+              owners = Dict("linuxperf"=>"PerfCheckerLinuxPerf", "likwid"=>"PerfCheckerLIKWID",
+                "makie"=>"PerfCheckerMakie", "web"=>"PerfCheckerWeb",
+                "pluto"=>"PerfCheckerPluto", "tachikoma"=>"PerfCheckerTachikoma")
+              specs = [Pkg.PackageSpec(path=root),
+                Pkg.PackageSpec(path=joinpath(root,"packages",owners[slug]))]
+              slug == "tachikoma" && push!(specs,
+                Pkg.PackageSpec(path=joinpath(root,"packages","PerfCheckerMakie")))
+              Pkg.develop(specs); Pkg.instantiate()'
+            julia --startup-file=no --project="$project" website/optional-api/make.jl "$companion"
+          done
+      - name: Test canonical assembly against the six real exports
+        if: env.PERFCHECKER_DOCS_VERSION == '1.0.1'
+        working-directory: ${{ steps.version.outputs.explicit-source == 'true' && 'stable-doc-source' || '.' }}
+        run: julia --startup-file=no --project=website website/optional-api/test_assembly.jl
+      - name: Preserve companion API provenance and isolated environment pairs
+        if: always() && env.PERFCHECKER_DOCS_VERSION == '1.0.1'
+        uses: actions/upload-artifact@v7
+        with:
+          name: documentation-optional-api-exports
+          include-hidden-files: true
+          path: |
+            ${{ steps.version.outputs.explicit-source == 'true' && 'stable-doc-source/' || '' }}website/optional-api/build
+            ${{ runner.temp }}/optional-api/*-project/Project.toml
+            ${{ runner.temp }}/optional-api/*-project/Manifest.toml
+          if-no-files-found: error
+          retention-days: 14
       - name: Build the GitHub mirror
         if: steps.version.outputs.explicit-source != 'true'
         shell: bash
@@ -195,6 +293,17 @@ jobs:
         if: steps.version.outputs.explicit-source == 'true'
         working-directory: stable-doc-source
         run: node "$GITHUB_WORKSPACE/qualification/shared/canonical-documentation.mjs" website/build/sftp --browser
+      - name: Preserve built site and browser diagnostics
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: documentation-browser-diagnostics
+          path: |
+            ${{ steps.version.outputs.explicit-source == 'true' && 'stable-doc-source/' || '' }}website/build/browser-diagnostics
+            ${{ steps.version.outputs.explicit-source == 'true' && 'stable-doc-source/' || '' }}website/build/sftp
+            !${{ steps.version.outputs.explicit-source == 'true' && 'stable-doc-source/' || '' }}website/build/sftp/**/.documenter
+          if-no-files-found: warn
+          retention-days: 14
       - name: Save canonical exports before any transfer
         uses: actions/upload-artifact@v7
         with:

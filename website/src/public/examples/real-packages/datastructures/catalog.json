@@ -4735,7 +4735,9 @@
       "terminal": "normalized-metrics-5f65c40770d704a5.txt",
       "title": "DataStructures · heap_2048_benchmark · relative to minimum",
       "unit": "ratio",
-      "workload": "heap_2048"
+      "workload": "heap_2048",
+      "html": "normalized-metrics-5f65c40770d704a5.html",
+      "html_input_sha256": "822a8f9a64761e10b6cb7ba0b20e5cddd57c12d9db2930182de1ab9a5fefe25d"
     },
     {
       "feature": "heap_2048_benchmark",
@@ -4780,7 +4782,9 @@
       "svg": "distribution-17f47b3b53988c8f.svg",
       "terminal": "distribution-17f47b3b53988c8f.txt",
       "title": "DataStructures · heap_2048_benchmark · julia.wall.time",
-      "unit": "ns"
+      "unit": "ns",
+      "html": "distribution-17f47b3b53988c8f.html",
+      "html_input_sha256": "78dff31b1292bae60c2589e08c96deb4d34152fe240422d405cefd2996f6cb8b"
     },
     {
       "feature": "heap_2048_benchmark",
@@ -4810,7 +4814,9 @@
       "svg": "time-allocation-tradeoff-41fc584b4e2a6d5e.svg",
       "terminal": "time-allocation-tradeoff-41fc584b4e2a6d5e.txt",
       "title": "DataStructures · heap_2048_benchmark · time/allocation trade-off",
-      "unit": "s+By"
+      "unit": "s+By",
+      "html": "time-allocation-tradeoff-41fc584b4e2a6d5e.html",
+      "html_input_sha256": "ed79e72453e9fd7d9b2f10529ff0227ccf3073184bc5877e6733e428937af888"
     },
     {
       "feature": "heap_2048_benchmark",
@@ -4855,7 +4861,9 @@
       "svg": "version-delta-e4e64d3a18547307.svg",
       "terminal": "version-delta-e4e64d3a18547307.txt",
       "title": "DataStructures · heap_2048_benchmark · julia.wall.time",
-      "unit": "ns"
+      "unit": "ns",
+      "html": "version-delta-e4e64d3a18547307.html",
+      "html_input_sha256": "a130f8a362ee9813b9a19d72ea8b3353f250f5e3fa8e02bdd6962c7f075ceca6"
     },
     {
       "feature": "heap_2048_benchmark",
@@ -4900,7 +4908,9 @@
       "svg": "version-series-8502bc17c6d87c29.svg",
       "terminal": "version-series-8502bc17c6d87c29.txt",
       "title": "DataStructures · heap_2048_benchmark · julia.wall.time",
-      "unit": "ns"
+      "unit": "ns",
+      "html": "version-series-8502bc17c6d87c29.html",
+      "html_input_sha256": "1ac738f66c06f746404d5152ba7de389b8051a09f4a6a986bb49e6067d085074"
     },
     {
       "feature": "heap_2048_benchmark",
@@ -5356,5 +5366,15 @@
       "title": "DataStructures · vector_2048_benchmark · julia.alloc.bytes",
       "unit": "By"
     }
-  ]
+  ],
+  "interactive_export": {
+    "asset_layout": "shared_relative",
+    "companion_version": "1.0.1",
+    "input_kind": "published_serialized_plot",
+    "recipe": "examples/kitchen-sink/replay.jl:saved_plot",
+    "recipe_sha256": "38ea1ff24fecc064fdf30af471893842266f3f970a92b11b9b24bdda07dd3307",
+    "renderer": "PerfChecker.performance_plot_html",
+    "selected_views": 5,
+    "selection": "guided_examples"
+  }
 }

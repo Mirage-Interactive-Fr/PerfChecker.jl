@@ -76,7 +76,9 @@
       "svg": "allocation-files-36aa887d312fb2ab.svg",
       "terminal": "allocation-files-36aa887d312fb2ab.txt",
       "title": "DataStructures · heap_32768_alloc · allocations",
-      "unit": "By"
+      "unit": "By",
+      "html": "allocation-files-36aa887d312fb2ab.html",
+      "html_input_sha256": "d99814f207f13dd2064cefddea8458e84516d9c761750f0852042dd1c9286f5a"
     },
     {
       "case_id": "event_lab/DataStructures/heap_32768_alloc",
@@ -91,7 +93,9 @@
       "svg": "allocation-heatmap-cb164d1392b342ff.svg",
       "terminal": "allocation-heatmap-cb164d1392b342ff.txt",
       "title": "DataStructures · heap_32768_alloc · allocations",
-      "unit": "By"
+      "unit": "By",
+      "html": "allocation-heatmap-cb164d1392b342ff.html",
+      "html_input_sha256": "9530f6173b417162c1d6d3350af6a2b03554b3cd359cb2c6d4ccb7a434b18c02"
     },
     {
       "case_id": "event_lab/DataStructures/heap_32768_alloc",
@@ -106,7 +110,9 @@
       "svg": "allocation-lines-9e4fd4f7f3be40ea.svg",
       "terminal": "allocation-lines-9e4fd4f7f3be40ea.txt",
       "title": "DataStructures · heap_32768_alloc · allocations",
-      "unit": "By"
+      "unit": "By",
+      "html": "allocation-lines-9e4fd4f7f3be40ea.html",
+      "html_input_sha256": "09e418b72ff8a1b9fe81c1188c69ff35079c8b1f69ba43ec120b62da5251e522"
     },
     {
       "case_id": "event_lab/DataStructures/heap_32768_alloc",
@@ -121,7 +127,9 @@
       "svg": "allocation-pie-a7f205960a815ab7.svg",
       "terminal": "allocation-pie-a7f205960a815ab7.txt",
       "title": "DataStructures · heap_32768_alloc · allocations",
-      "unit": "By"
+      "unit": "By",
+      "html": "allocation-pie-a7f205960a815ab7.html",
+      "html_input_sha256": "4f4c9b60c45d9d8a3cf1f79e1d0ca0832fdd27801f399e1b0da628972da07c13"
     },
     {
       "feature": "heap_32768_alloc",
@@ -152,7 +160,9 @@
       "svg": "cpu-flamegraph-054b5e59c351c558.svg",
       "terminal": "cpu-flamegraph-054b5e59c351c558.txt",
       "title": "DataStructures · heap_32768_profile · CPU flame graph",
-      "unit": "samples"
+      "unit": "samples",
+      "html": "cpu-flamegraph-054b5e59c351c558.html",
+      "html_input_sha256": "6f08398808a13b08f3124332d288c6264e769b33d59e2f6931cc371a7e9163d6"
     },
     {
       "case_id": "event_lab/DataStructures/heap_32768_profile_alloc",
@@ -182,7 +192,9 @@
       "svg": "allocation-flamegraph-6d6354c132248fdf.svg",
       "terminal": "allocation-flamegraph-6d6354c132248fdf.txt",
       "title": "DataStructures · heap_32768_profile_alloc · allocation flame graph",
-      "unit": "By"
+      "unit": "By",
+      "html": "allocation-flamegraph-6d6354c132248fdf.html",
+      "html_input_sha256": "79f82c106a5506172e7146bbc0fa711e397aaf91b66b2619d609b9453a586645"
     },
     {
       "case_id": "event_lab/DataStructures/heap_32768_profile_alloc",
@@ -273,7 +285,19 @@
       "svg": "wall-flamegraph-1a28318cdf1f7700.svg",
       "terminal": "wall-flamegraph-1a28318cdf1f7700.txt",
       "title": "DataStructures · heap_32768_wall_profile · wall-time flame graph",
-      "unit": "samples"
+      "unit": "samples",
+      "html": "wall-flamegraph-1a28318cdf1f7700.html",
+      "html_input_sha256": "1bb7543df584ff82122ec8720181c4963393cd8378a4a08b43c31b9de8cbc12b"
     }
-  ]
+  ],
+  "interactive_export": {
+    "asset_layout": "shared_relative",
+    "companion_version": "1.0.1",
+    "input_kind": "published_serialized_plot",
+    "recipe": "examples/kitchen-sink/replay.jl:saved_plot",
+    "recipe_sha256": "38ea1ff24fecc064fdf30af471893842266f3f970a92b11b9b24bdda07dd3307",
+    "renderer": "PerfChecker.performance_plot_html",
+    "selected_views": 7,
+    "selection": "guided_examples"
+  }
 }

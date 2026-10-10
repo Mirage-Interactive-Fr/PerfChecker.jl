@@ -56,6 +56,52 @@ node website/preview.mjs   # browse the completed site at http://127.0.0.1:8870/
 
 The build rejects missing references and dead links. The core test suite checks that every exported binding is defined and documented. Review content too: an existing docstring is not proof that its arguments are correct.
 
+## Register Core and its companions
+
+Registration is a human maintainer action on the reviewed final commit, after
+the required checks and documented installation paths pass. Registering Core
+does not register the six packages under `packages/`. They currently await
+their first General registrations; a version in a source `Project.toml` alone
+does not make `Pkg.add("CompanionName")` available.
+
+These packages have independent versions:
+
+| Package | Version | Registrator subdirectory |
+| --- | --- | --- |
+| PerfChecker | 1.0.1 | Repository root |
+| PerfCheckerLinuxPerf | 1.0.1 | `packages/PerfCheckerLinuxPerf` |
+| PerfCheckerLIKWID | 1.0.1 | `packages/PerfCheckerLIKWID` |
+| PerfCheckerMakie | 1.0.1 | `packages/PerfCheckerMakie` |
+| PerfCheckerPluto | 1.0.1 | `packages/PerfCheckerPluto` |
+| PerfCheckerTachikoma | 1.0.1 | `packages/PerfCheckerTachikoma` |
+| PerfCheckerWeb | 1.0.0 | `packages/PerfCheckerWeb` |
+
+First, the maintainer comments `@JuliaRegistrator register` on that final
+commit and waits for Core 1.0.1 to appear in General. Then the maintainer requests
+each companion separately on its reviewed source commit, using
+`@JuliaRegistrator register subdir=packages/PerfCheckerMakie`, for example,
+and the corresponding path from the table. Register Makie before Tachikoma's
+optional Makie integration. Review each registry pull request and its package
+installation checks; new-package registration is distinct from a Core update.
+Each package subtree includes its own copy of the repository's MIT license.
+
+The existing TagBot workflow handles the root and each subdirectory separately.
+It creates `v1.0.1` for Core and namespaced tags such as
+`PerfCheckerMakie-v1.0.1` and `PerfCheckerWeb-v1.0.0` for the companions. Do not
+replace an existing tag. DrWatson and DocumenterVitepress integrations are Core
+extensions of separately maintained dependencies, not additional PerfChecker
+packages to register.
+
+After registration, verify the documented named installations in fresh
+projects and verify the actual tagged documentation before publishing an
+extension release that requires them. A repository-subdirectory installation
+from Core's tag can use the companion source before its separate registration;
+it does not imply that the companion is available by name in General.
+
+See the official [Registrator subdirectory procedure](https://github.com/JuliaRegistries/Registrator.jl#registering-a-package-in-a-subdirectory),
+[TagBot monorepo configuration](https://github.com/JuliaRegistries/TagBot#subpackage-configuration)
+and [General registration checks](https://juliaregistries.github.io/RegistryCI.jl/stable/guidelines/).
+
 ## Canonical publication
 
 The canonical stable site is [perfchecker.mirageinteractive.fr](https://perfchecker.mirageinteractive.fr/).

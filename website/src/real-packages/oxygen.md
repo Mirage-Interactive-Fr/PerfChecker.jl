@@ -77,7 +77,7 @@ Only Oxygen's version is fixed explicitly. Pkg resolves HTTP, DataStructures and
 ```
 
 ```@raw html
-<p>Each feature has tabs for the complete history and the 1.10 patches. Hover or focus a point for its value; use the metric buttons to show or hide curves.</p>
+<p>Each feature has tabs for the complete history and the 1.10 patches. Views with a published HTML export are interactive: normalized views provide metric checkboxes and point inspection; sample, series, delta and tradeoff views provide a recorded-point index and zoom controls. Other views display their matching static SVG and retain the downloadable data.</p>
 <WorkloadAtlas directory="/examples/real-packages/oxygen-features" />
 <PackageGallery package-name="Oxygen feature catalogue" directory="/examples/real-packages/oxygen-features" />
 ```
@@ -108,8 +108,15 @@ Three `/events/` routes decode the same 2,048 events, process them and encode th
 
 Compare the heap route with the plain-text case. If only the heap route changes, look at JSON handling and event processing; if both change, inspect routing and shared dependencies.
 
+These figures use PerfChecker's exported SVG or its public HTML
+renderer. A published HTML view has the same controls here and when opened
+separately; the gallery's workload navigation belongs to this documentation.
+The [serialized-view recipe](../interfaces/visualization.md#Render-a-published-serialized-view-again)
+renders the published plot JSON again without changing its values or making new
+measurements. That plot JSON is not a complete run bundle.
+
 ```@raw html
-<NormalizedMeasurements source="/examples/real-packages/oxygen/normalized.json" figure="/examples/real-packages/oxygen/normalized.svg" package-name="Oxygen event service" />
+<NormalizedMeasurements source="/examples/real-packages/oxygen/normalized.json" figure="/examples/real-packages/oxygen/normalized.svg" html="/examples/real-packages/oxygen/normalized.html" package-name="Oxygen event service" />
 <PackageGallery package-name="Oxygen application history" directory="/examples/real-packages/oxygen" />
 <WorkloadAtlas directory="/examples/real-packages/oxygen" />
 ```
@@ -183,6 +190,9 @@ The older releases were measured only in the in-process experiment. These Linux 
 ```
 
 ## 5. Find expensive call paths
+
+These recorded profiles describe **Oxygen 1.11.0 only**. They attribute work within
+that release; use the multi-version timings above for release comparisons.
 
 ```sh
 julia --project=. oxygen/measure.jl profiles

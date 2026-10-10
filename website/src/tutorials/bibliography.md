@@ -75,23 +75,26 @@ Planning starts no worker. Check the status column before running.
 
 ## Select a package, workload and collector
 
-```sh
-julia --project=.controller/core run.jl benchmark Bibliography export_bibtex
+Choose either route to inspect the same five-collector export plan. Neither starts a measurement.
+
+::: code-group
+
+```sh [CLI]
+julia --startup-file=no --project=.controller/core run.jl plan Bibliography export_bibtex
 ```
 
-Omit the workload to select all workloads in a package. Comma-separate names to select several.
-
-```julia
+```julia [Julia API]
 using PerfChecker
 suite = load_software_suite("suite.jl")
 plan = plan_suite(suite; profile = :quick)
 selected = filter_suite_plan(plan;
-    packages = "Bibliography", features = :export_bibtex,
-    backends = [:benchmark, :profile_alloc])
+    packages = "Bibliography", features = :export_bibtex)
 print_suite_plan(selected)
 ```
 
-`features = :export_bibtex` matches the logical workload across collectors; you do not need the technical leaf name.
+:::
+
+Start Julia with `--project=.controller/core` for the API route. The working directory is `examples/bibliography/` for both routes. `features = :export_bibtex` matches the logical workload across collectors; you do not need the technical leaf name. Omit the workload to select all workloads in a package; the CLI also accepts comma-separated names.
 
 ```@raw html
 <a id="Why-the-sampling-profiles-reuse-their-inputs"></a>
@@ -121,45 +124,88 @@ Open `suite-report.md` first. The same run is available as `suite-result.json` a
 <a id="Open-the-web-interface"></a>
 ```
 
-## Open the interfaces
-
-```sh
-julia --project=.controller/core repl.jl
-julia setup.jl web &&    julia --project=.controller/web web.jl
-julia setup.jl pluto &&  julia --project=.controller/pluto pluto.jl
-julia setup.jl items &&  julia --project=.controller/items items.jl performance
+```@raw html
+<a id="Open-the-interfaces"></a>
+<a id="Watch-one-export-check"></a>
 ```
+
+## Run one export through your interface
+
+Each tab runs **Bibliography → export_bibtex → benchmark** from the same prepared suite. Keep one worker thread, 50 samples, `evals = 1` and 0.5 seconds. Inspect the one-row plan before launching and read its completed report before interpreting a figure. The recorded captures show this workload; they are examples, not a new run on your machine.
 
 ```@raw html
 <a id="Open-the-web-studio"></a>
+<a id="Use-VS-Code"></a>
 ```
 
-After starting `web.jl` above, open `http://127.0.0.1:8871/perfchecker/v1/`
-on the same machine. This address belongs to your local server and is available
-only while that command is running.
+::: tabs
 
+== VS Code
 
-### Watch one export check
+1. Open `examples/bibliography/` as the workspace and set **PerfChecker: Runner Project** to `.controller/core`.
+2. Open Studio, select `suite.jl`, package **Bibliography**, workload **export_bibtex** and collector **benchmark**.
+3. Inspect the one-row plan and the controls above, then explicitly launch it.
+4. Open the completed run and its saved report. A one-target execution has no comparison baseline.
 
-1. Select package **Bibliography**, workload **export_bibtex**. Five cards show its collectors.
-2. Choose **benchmark**, then **Add visible**. The plan holds one of the 35 checks.
-3. Keep one thread, 50 samples and 0.5 seconds, then launch and wait for **complete**.
-4. Open **Results**, choose metric `julia.wall.time` and view `distribution`.
+See [suite selection and results](../interfaces/vscode-workflows.md) for the editor controls. The native TestItems below use their separate `.controller/items` environment; they measure a different scope.
+
+== Pluto
+
+Prepare the optional environment, then launch the supplied notebook:
+
+```sh
+julia --startup-file=no setup.jl pluto
+julia --startup-file=no --project=.controller/pluto pluto.jl
+```
+
+1. Select **Bibliography**, **export_bibtex** and **benchmark**.
+2. Inspect the one-row plan and controls, then press **Launch selected checks**.
+3. Refresh the completed status and explicitly save the reports. Opening the notebook, changing a selector or reloading starts no measurement.
+
+```@raw html
+<p><a href="../examples/bibliography/pluto/notebook.jl" download="notebook.jl"><strong>Download the Bibliography notebook (.jl)</strong></a></p>
+<DocMedia src="/examples/bibliography/pluto/selection.png" alt="Recorded Pluto selection of the Bibliography export benchmark" caption="Recorded selection for this export workload. Launch and report saving are explicit notebook actions." />
+```
+
+== REPL / CLI
+
+From the same example directory, run just the benchmark collector:
+
+```sh
+julia --startup-file=no --project=.controller/core run.jl benchmark Bibliography export_bibtex
+```
+
+The command prints the selected plan, runs it with the controls above and prints its new report directory. Open `suite-report.md` there; `suite-result.json` preserves the same execution. For interactive selection, start `repl.jl` in the same controller and choose the same package, workload and collector.
+
+== Web (Oxygen)
+
+Prepare and start the optional Web controller:
+
+```sh
+julia --startup-file=no setup.jl web
+julia --startup-file=no --project=.controller/web web.jl
+```
+
+Open `http://127.0.0.1:8871/perfchecker/v1/` on the same machine while that server is running.
+
+1. Select package **Bibliography** and workload **export_bibtex**. Its five collector cards appear.
+2. Choose **benchmark**, then **Add visible**. Inspect the one-row plan and controls above.
+3. Launch explicitly and wait for **complete**.
+4. Open **Results**, choose `julia.wall.time` and view `distribution`.
+
+```@raw html
+<DocMedia src="/examples/bibliography/web/selection.png" alt="Recorded Web Studio selection of Bibliography export_bibtex" caption="The recorded export selection in Oxygen Studio. Choose benchmark to time this operation." />
+```
+
+See [Web controller configuration](../interfaces/web-studio.md) for binding, authentication and remote access.
+
+:::
 
 ### Explore all nine versions in Oxygen
 
 After `history.jl run`, open **Results**, filter **Profile** to **historical**, and select the campaign. Choose feature `export_bibtex`, metric `julia.wall.time`, view `version_series`. Switch to `julia.alloc.bytes` for allocated bytes, `distribution` for all 900 timings, or `version_delta` for comparisons against 0.1.0.
 
 The run is `partially_executed`: eight planned workloads do not exist in earlier versions, so their points are absent. `inconclusive` means no acceptance threshold was configured.
-
-```@raw html
-<a id="Use-VS-Code"></a>
-```
-
-For suite checks in VS Code, open `examples/bibliography/`, set **PerfChecker:
-Runner Project** to `.controller/core`, and select `suite.jl` in Studio. Choose
-the export workload and its collector before launching. The native TestItems
-below use their separate `.controller/items` environment.
 
 ## Reuse the upstream tests as native items
 
@@ -179,18 +225,7 @@ In VS Code, set **PerfChecker: Runner Project** to `.controller/items`, then dis
 
 ## Open Pluto
 
-Download the notebook:
-
-```@raw html
-<p><a href="../examples/bibliography/pluto/notebook.jl" download="notebook.jl"><strong>Download the Bibliography notebook (.jl)</strong></a></p>
-```
-
-```sh
-julia --startup-file=no setup.jl pluto
-julia --startup-file=no --project=.controller/pluto pluto.jl
-```
-
-Select **Bibliography**, **export_bibtex** and **benchmark**, check the one-row plan, then **Launch selected checks**. Opening the file, editing a selector or reloading the browser starts no measurement.
+Use the **Pluto** tab above for the runnable notebook, optional environment and explicit launch/save steps. The [Pluto interface guide](../interfaces/repl-pluto.md) covers notebook configuration and shutdown.
 
 ## Compare the package history
 

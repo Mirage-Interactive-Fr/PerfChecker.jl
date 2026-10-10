@@ -143,7 +143,7 @@ try
         execute("packages/PerfCheckerPluto/test/generated_controls.jl")
         execute("qualification/shared/contracts.jl")
     elseif suite == "plots"
-        prepare("test/environments/wgl"; packages = ["CairoMakie"],
+        prepare("test/environments/wgl"; packages = ["CairoMakie", "UnicodePlots"],
             satellites = ["PerfCheckerMakie"])
         execute("packages/PerfCheckerMakie/test/runtests.jl")
         html = joinpath(output, "normalized-browser.html")

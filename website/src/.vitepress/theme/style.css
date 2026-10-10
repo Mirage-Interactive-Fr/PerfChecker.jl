@@ -226,3 +226,11 @@ code {
     display: block;
   }
 }
+/* Keep interface alternatives in one horizontal row on narrow screens. */
+.plugin-tabs--tab-list {
+  display: flex;
+}
+
+.plugin-tabs--tab {
+  flex-shrink: 0;
+}

@@ -165,6 +165,35 @@ until it reaches `complete`, `failed` or `cancelled`; inspect its final report
 rather than treating acceptance as success. For a remote worker, replace
 `local` with the intended `agent:<id>` or `agent:any`.
 
+### Cancel and stop safely
+
+`POST /jobs/cancel` immediately marks the controller's job `cancelled`. What
+happens to the measurement depends on its destination:
+
+- **Local job:** the controller requests cooperative interruption of its suite.
+  Poll `worker_state` until it reaches `cancelled` or `failed`; the job's
+  `state = "cancelled"` alone does not prove that cleanup has finished. If worker
+  or allocation-trace cleanup fails, the final job becomes `failed` and its
+  `message` preserves the error and retained private-inventory paths.
+- **Remote job:** cancellation invalidates the lease and rejects a late result.
+  It does **not** interrupt the agent's current synchronous measurement.
+  Heartbeats carry progress, not stop commands. Interrupt the agent process
+  once on its own host and allow its worker and trace cleanup to finish.
+
+The agent exits on `InterruptException` or `CheckCleanupFailure`, including
+with `once=false`; it does not claim another job after either event. Ordinary
+job/reporting errors can continue to the next lease with `once=false`. A fatal
+exit leaves the current lease unresolved. On a later claim, an expired lease
+can be retried until the controller's `max_agent_attempts` limit is reached.
+Restarting a controller also recovers leased work for another attempt. Design
+workloads to tolerate replay; execution is not exactly once.
+
+Force-killing the controller or agent, a power loss, or repeated interrupts can
+bypass cleanup and leave workers or `.mem` files behind. A retained inventory
+is diagnostic evidence, not permission to delete every `.mem` file in a tested
+package. Follow [allocation cleanup and ownership](../reference/checks.md)
+before restarting after a cleanup failure.
+
 | Response | Recovery |
 | --- | --- |
 | 401 | Check the token and selected service; a token digest cannot authenticate |
@@ -173,10 +202,27 @@ rather than treating acceptance as success. For a remote worker, replace
 | 400 | Read the returned error; check profile, selected rows and bounded overrides |
 | 404 for a job | Verify the exact job ID and controller URL |
 
+### Browser sessions
+
 Browser users enter their token in Studio, which exchanges it for an HttpOnly
 session cookie. Subsequent browser actions include the session's CSRF token;
-the Bearer-token example above does not reuse browser cookies. Sign out to
-remove that session.
+the Bearer-token example above does not reuse browser cookies. Studio currently
+has no Sign out button. A session expires after `session_hours` (eight hours by
+default). To revoke it immediately, use the session API from the browser's
+developer console on the Studio page:
+
+```javascript
+const base = document.body.dataset.apiBase;
+const session = await fetch(`${base}/session`).then(response => response.json());
+const response = await fetch(`${base}/session`, {
+  method: "DELETE",
+  headers: { "X-CSRF-Token": session.csrf_token },
+});
+if (!response.ok) throw new Error(`Session revocation failed: ${response.status}`);
+```
+
+This removes the server-side session and expires its cookie. It does not revoke
+the original bearer token; rotate that credential separately when needed.
 
 ## Capability matching
 

@@ -18,6 +18,41 @@
     end
 end
 
+@testitem "Normalized live controls preserve recorded evidence" tags=[:plots] begin
+    using PerfChecker, PerfCheckerMakie, Makie
+    observations = Dict{String, Any}[]
+    for (metric, unit, value) in (("julia.wall.time", "s", 1.0),
+            ("julia.alloc.bytes", "By", 100.0)),
+        (version, scale) in (("6d742e35a516c7324af4ad14f58ce1780aa28728", 1),
+            ("dev@dd8d424e20a5cd76fce2d0ff15e023d585a1c179", 2))
+
+        push!(observations,
+            Dict{String, Any}("metric" => metric,
+                "measurement_definition" => "$metric/chairmarks-v1", "value" => value *
+                                                                                scale,
+                "comparison_key" => "parse/v1::$metric/chairmarks-v1", "unit" => unit,
+                "attributes" => Dict("package" => "Demo", "feature" => "parse",
+                    "workload" => "parse", "version" => version, "target_kind" => "release")))
+    end
+    bundle = RunBundle(Dict{String, Any}("run_id" => "live-controls"),
+        Dict{String, Any}[], observations, Dict{String, Any}[], Dict{String, Any}[])
+    model = performance_plot(bundle)
+    before = deepcopy(performance_plot_dict(model))
+    figure = performance_figure(model)
+    axis = only(filter(item -> item isa Axis, figure.content))
+    @test all(length(label) <= 16 for label in axis.xticks[][2])
+    @test all(length(version) >= 40 for version in model.options["versions"])
+    curves = filter(item -> item isa Makie.ScatterLines, axis.scene.plots)
+    toggles = filter(item -> item isa Toggle, figure.content)
+    @test length(toggles) == length(curves) == 2
+    toggles[1].active[] = false
+    @test !curves[1].visible[]
+    @test curves[2].visible[]
+    toggles[1].active[] = true
+    @test curves[1].visible[]
+    @test performance_plot_dict(model) == before
+end
+
 @testitem "Suite dashboard retains absolute view" tags=[:plots] begin
     using PerfChecker, PerfCheckerMakie, Makie
     mktempdir() do dir

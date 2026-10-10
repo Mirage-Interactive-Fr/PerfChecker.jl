@@ -27,6 +27,12 @@ ENV["PERFCHECKER_DOCS_HOSTING"] = docs_sftp ? "sftp" : "github"
 
 source_root = normpath(joinpath(@__DIR__, ".."))
 source_revision = strip(read(`git -C $source_root rev-parse HEAD`, String))
+optional_api = docs_version == "1.0.1"
+if optional_api
+    include("optional-api/assemble.jl")
+    # Reject missing/mixed exports before starting the main Documenter build.
+    OptionalAPIAssembly.validate_optional_exports(source_root, source_revision)
+end
 source_remote = Documenter.Remotes.GitHub("Mirage-Interactive-Fr", "PerfChecker.jl")
 DocMeta.setdocmeta!(PerfChecker, :DocTestSetup, :(using PerfChecker); recursive = true)
 
@@ -106,6 +112,7 @@ makedocs(;
             "Reference index" => "reference/index.md",
             "Public API" => "reference/public-api.md",
             "Full API" => "reference/api.md",
+            "Companion APIs" => "reference/optional-api.md",
             "TestItems and tags" => "test-items.md",
             "Collectors" => "reference/checks.md",
             "Tool catalogue" => "tool-catalog.md",
@@ -127,12 +134,16 @@ makedocs(;
     warnonly = false
 )
 
+markdown = joinpath(build_directory, ".documenter")
+if optional_api
+    OptionalAPIAssembly.assemble_optional_api(source_root, markdown, source_revision)
+end
+
 # Use the system Node runtime on both platforms. DocumenterVitepress's bundled
 # Node 20.12 skips the Windows build and is too old for the current Vite version.
 npm = Sys.iswindows() ? `cmd /d /c npm.cmd` : `npm`
 run(Cmd(`$npm ci --no-audit --no-fund`; dir = @__DIR__))
 site = joinpath(build_directory, "site")
-markdown = joinpath(build_directory, ".documenter")
 run(Cmd(`$npm exec -- vitepress build $markdown --outDir $site`; dir = @__DIR__))
 isfile(joinpath(site, "index.html")) || error("VitePress did not produce the site")
 

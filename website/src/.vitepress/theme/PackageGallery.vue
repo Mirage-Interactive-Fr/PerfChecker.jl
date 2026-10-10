@@ -12,7 +12,7 @@ onMounted(async()=>{
     const response=await fetch(withBase(props.directory+'/catalog.json'))
     if(!response.ok) throw new Error('The recorded catalogue could not be loaded.')
     catalog.value=await response.json()
-    selected.value=catalog.value.views.find((v:any)=>v.kind==='normalized_metrics')?.id??catalog.value.views.find((v:any)=>v.kind==='cpu_flamegraph')?.id??catalog.value.views[0]?.id
+    selected.value=catalog.value.views.find((v:any)=>v.html&&v.kind==='normalized_metrics')?.id??catalog.value.views.find((v:any)=>v.html&&v.kind==='cpu_flamegraph')?.id??catalog.value.views.find((v:any)=>v.html)?.id??catalog.value.views[0]?.id
   } catch(e) { error.value=String(e) }
 })
 </script>
@@ -24,7 +24,7 @@ onMounted(async()=>{
       </label>
       <p>{{ catalog.runs.length }} completed checks · {{ catalog.versions.length }} tagged versions · Julia {{ catalog.runtime.version }}</p>
       <template v-if="view">
-        <InteractiveRecordedPlot :key="view.id" :source="directory+'/'+view.json" :figure="directory+'/'+view.svg" :title="view.title+' — '+view.label" :kind="view.kind" :time-unit="catalog.views.find((v:any)=>v.feature===view.feature && v.metric==='julia.wall.time')?.unit" />
+        <InteractiveRecordedPlot :key="view.id" :source="directory+'/'+view.json" :figure="directory+'/'+view.svg" :html="view.html ? directory+'/'+view.html : undefined" :title="view.title+' — '+view.label" :kind="view.kind" />
         <p><a :href="withBase(directory+'/'+view.json)" download>Plot data (JSON)</a> · <a :href="withBase(directory+'/'+view.terminal)">Unicode terminal plot</a> · <a :href="withBase(directory+'/'+view.svg)">Full-size SVG</a></p>
       </template>
       <details v-if="environments.length">

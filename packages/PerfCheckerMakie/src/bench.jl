@@ -53,7 +53,7 @@ Render each saved metric's finite version minima relative to its finite minimum
 across versions. Equal zeros display at one; a nonzero value over zero or an
 absent sample is a gap. NaN and Inf are excluded before finding minima. Return
 a Makie Figure, including a labeled figure when no finite metric exists.
-The title names BenchmarkTools and the subtitle shows result tags. Version
+The subtitle names BenchmarkTools and shows result tags. Version
 ticks are vertical by default. Explicit Figure, Axis and scatterlines attribute
 bundles override presentation defaults without rerunning measurements.
 """
@@ -102,7 +102,7 @@ Values retain their collector units: `:times` and `:gctimes` are nanoseconds,
 `:memory` is bytes, and `:allocs` is an allocation count.
 Empty or entirely nonfinite columns produce
 a labeled Makie Figure; missing columns raise the normal property access error.
-The title names BenchmarkTools and the subtitle shows tags. Attribute bundles
+The subtitle names BenchmarkTools and shows tags. Attribute bundles
 target Figure, Axis and boxplot respectively; version labels default to pi/2.
 No workload is executed or file written.
 """

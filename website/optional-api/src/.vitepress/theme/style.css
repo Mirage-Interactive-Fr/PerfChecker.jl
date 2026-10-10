@@ -1,0 +1,10 @@
+.jldocstring summary,
+.jldocstring .jlbinding {
+  overflow-wrap: anywhere;
+}
+
+.jldocstring.custom-block .source-link {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+}

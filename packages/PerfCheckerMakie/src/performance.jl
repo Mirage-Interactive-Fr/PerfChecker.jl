@@ -1,23 +1,27 @@
 function _performance_figure(title::AbstractString; size = (1100, 620), figure_kwargs = (;))
     figure = _figure(; figure_kwargs, size, backgroundcolor = RGBf(0.96, 0.97, 0.99))
     axis = Axis(figure[1, 1]; title = String(title), backgroundcolor = :white,
-        xgridcolor = (:gray, 0.16), ygridcolor = (:gray, 0.16))
+        titlealign = :left, titlesize = 20, subtitlesize = 12,
+        xlabelsize = 14, ylabelsize = 14, xticklabelsize = 12, yticklabelsize = 12,
+        xgridcolor = (:gray, 0.08), ygridcolor = (:gray, 0.14),
+        topspinevisible = false, rightspinevisible = false)
     return figure, axis
 end
 
 function _empty_performance_figure(
-        plot::PerfChecker.PerformancePlot; figure_kwargs = (;), plot_kwargs = (;))
+        plot::PerfChecker.PerformancePlot; figure_kwargs = (;), plot_kwargs = (;),
+        message = "No evidence available")
     figure = _figure(;
         figure_kwargs, size = (900, 480), backgroundcolor = RGBf(0.96, 0.97, 0.99))
     axis = Axis(figure[1, 1]; title = plot.title, xticklabelrotation = pi / 2)
     hidedecorations!(axis)
     hidespines!(axis)
-    Label(figure[1, 1], "No evidence available";
+    Label(figure[1, 1], message;
         fontsize = 24, color = RGBf(0.32, 0.38, 0.45))
     return figure
 end
 
-function _finite_plot(plot)
+function _finite_plot(plot; include_zero_pie::Bool = false)
     fields = plot.kind in (:version_series, :distribution) ? ("value",) :
              plot.kind === :version_delta ? ("relative_delta",) :
              plot.kind === :time_allocation_tradeoff ? ("bytes", "time") :
@@ -28,7 +32,8 @@ function _finite_plot(plot)
         all(field -> get(item, field, nothing) isa Real && isfinite(item[field]), fields)
     end
     if plot.kind === :allocation_pie
-        data = filter(item -> item["bytes"] > 0, data)
+        data = filter(
+            item -> item["bytes"] > 0 || (include_zero_pie && item["bytes"] == 0), data)
     elseif plot.kind === :normalized_metrics
         data = filter(
             item -> isnothing(get(item, "ratio", nothing)) ||
@@ -90,7 +95,9 @@ function _normalized_metrics_figure(plot; figure_kwargs = (;), plot_kwargs = (;)
     versions = plot.options["versions"]
     index = Dict(version => i for (i, version) in pairs(versions))
     metrics = unique(String[row["metric"] for row in plot.data])
-    colors = make_colors(length(metrics))
+    colors = Makie.to_color.(_metric_color.(metrics))
+    legend = GridLayout(figure[1, 2]; tellheight = false)
+    Label(legend[1, 1:2], "Measurements"; fontsize = 14, halign = :left)
     for (i, metric) in pairs(metrics)
         rows = filter(row -> row["metric"] == metric, plot.data)
         xs = [index[row["version"]] for row in rows]
@@ -98,21 +105,29 @@ function _normalized_metrics_figure(plot; figure_kwargs = (;), plot_kwargs = (;)
         label = replace(metric, "julia." => "")
         any(row -> row["normalization_status"] == "both_zero", rows) &&
             (label *= " (0/0: unchanged)")
-        _recipe!(scatterlines!, axis, xs, ys; plot_kwargs,
+        curve = _recipe!(scatterlines!, axis, xs, ys; plot_kwargs,
             label, color = colors[i], linewidth = 2,
             markersize = 10, inspector_label = (self, sample, position) -> begin
                 row = rows[sample]
                 "$(row["version"]) · $metric\n$(row["value"]) $(row["unit"])\nratio: $(row["ratio"]) · $(row["normalization_status"])"
             end)
+        legend_color = get(_attributes(plot_kwargs), :color, colors[i])
+        legend_color isa AbstractVector && (legend_color = first(legend_color))
+        toggle = Toggle(legend[i + 1, 1]; active = curve.visible[],
+            framecolor_active = legend_color, width = 34)
+        Label(legend[i + 1, 2], label; color = legend_color, halign = :left,
+            fontsize = 12)
+        on(toggle.active) do visible
+            curve.visible[] = visible
+        end
     end
     hlines!(axis, [1.0]; color = (:gray, 0.6), linestyle = :dash)
-    axis.xticks = (collect(eachindex(versions)), versions)
+    axis.xticks = (collect(eachindex(versions)), _version_tick_label.(versions))
     xlims!(axis, 0.5, length(versions) + 0.5)
     axis.xticklabelrotation = pi / 2
     axis.xlabel = "package version"
     axis.ylabel = "ratio to $(plot.options["reference_version"]) (reference = 1)"
-    axislegend(axis; position = :lt)
-    Label(figure[2, 1],
+    Label(figure[2, 1:2],
         "$(plot.options["zero_reference_policy"]). Gaps indicate unavailable ratios.";
         fontsize = 12, tellwidth = false)
     return _add_inspector(figure)
@@ -186,7 +201,8 @@ function _allocation_files_figure(plot; figure_kwargs = (;), plot_kwargs = (;))
     axis.xticklabelrotation = pi / 2
     axis.xlabel = "package version"
     axis.ylabel = "allocated bytes by source file"
-    _has_positive_range(ys) && (axis.yscale = Makie.pseudolog10)
+    # Stacked segment heights must remain proportional to their recorded bytes.
+    ylims!(axis, 0, nothing)
     custom_color = get(_attributes(plot_kwargs), :color, nothing)
     legend_colors, legend_labels = custom_color isa AbstractVector ?
                                    (
@@ -198,16 +214,81 @@ function _allocation_files_figure(plot; figure_kwargs = (;), plot_kwargs = (;))
     return _add_inspector(figure)
 end
 
+"""
+Map recorded pie rows to the strictly positive sectors present in the native mesh.
+The inspection position is the triangle's centroid, inside the rendered sector.
+Zero rows have no native sector: retain an empty vertex range and triangle with
+a NaN position, without inventing a clickable surface. Reject a mismatch between
+the positive recorded rows and native sectors.
+"""
+function _allocation_pie_inspection(recipe::Makie.Pie, data)
+    poly = only(filter(item -> item isa Makie.Poly, recipe.plots))
+    pieces = poly.meshes[]
+    length(pieces) == count(item -> item["bytes"] > 0, data) ||
+        error("Native allocation pie sectors differ from its positive recorded rows")
+    weights = recipe[3][]
+    weights == Float64[row["bytes"] for row in data if row["bytes"] > 0] ||
+        error("Native allocation pie weights differ from its recorded row order")
+    source = only(filter(item -> item isa Makie.Mesh, Makie.collect_atomic_plots([recipe])))
+    vertices = Makie.GeometryBasics.coordinates(source[1][])
+    length(vertices) ==
+    sum(piece -> length(Makie.GeometryBasics.coordinates(piece)), pieces) ||
+        error("Native allocation pie does not retain its sector vertices")
+    positions, ranges, triangles = Point2f[], Vector{Int}[], Vector{Int}[]
+    offset = 0
+    for piece in pieces
+        coordinates = Makie.GeometryBasics.coordinates(piece)
+        indices = offset .+ collect(eachindex(coordinates))
+        all(isapprox.(vertices[indices], coordinates)) ||
+            error("Native allocation pie mesh order differs from its sectors")
+        selected, largest_area = Int[], 0.0
+        for face in Makie.GeometryBasics.faces(piece)
+            # GeometryBasics GL faces store offset integers; use their Julia indices.
+            corners = coordinates[Base.to_index.(face)]
+            a, b, c = corners
+            area = abs((b[1] - a[1]) * (c[2] - a[2]) - (b[2] - a[2]) * (c[1] - a[1]))
+            if area > largest_area
+                largest_area = area
+                selected = offset .+ Base.to_index.(collect(face))
+            end
+        end
+        push!(positions,
+            isempty(selected) ? Point2f(NaN, NaN) : Point2f(sum(vertices[selected]) / 3))
+        push!(ranges, indices .- 1)
+        push!(triangles, selected .- 1)
+        offset += length(coordinates)
+    end
+    positive = 0
+    row_positions, row_ranges, row_triangles = Point2f[], Vector{Int}[], Vector{Int}[]
+    for row in data
+        if row["bytes"] == 0
+            push!(row_positions, Point2f(NaN, NaN))
+            push!(row_ranges, Int[])
+            push!(row_triangles, Int[])
+        else
+            positive += 1
+            push!(row_positions, positions[positive])
+            push!(row_ranges, ranges[positive])
+            push!(row_triangles, triangles[positive])
+        end
+    end
+    return (;
+        source, positions = row_positions, ranges = row_ranges, triangles = row_triangles)
+end
+
 function _allocation_pie_figure(plot; figure_kwargs = (;), plot_kwargs = (;))
     isempty(plot.data) && return _empty_performance_figure(plot; figure_kwargs, plot_kwargs)
+    data = filter(item -> item["bytes"] > 0, plot.data)
+    isempty(data) && return _empty_performance_figure(plot; figure_kwargs, plot_kwargs,
+        message = "No positive allocation weight")
     figure = _figure(;
         figure_kwargs, size = (1100, 650), backgroundcolor = RGBf(0.96, 0.97, 0.99))
     axis = Axis(figure[1, 1];
         title = "$(plot.title) · $(plot.options["selected_version"])",
         aspect = DataAspect(), backgroundcolor = :white)
-    labels = String[String(item["label"]) for item in plot.data]
-    values = Float64[item["bytes"] for item in plot.data]
-    percentages = Float64[item["percentage"] for item in plot.data]
+    labels = String[String(item["label"]) for item in data]
+    values = Float64[item["bytes"] for item in data]
+    percentages = Float64[item["percentage"] for item in data]
     colors = make_colors(length(labels))
     _recipe!(pie!, axis, values; plot_kwargs, color = colors,
         strokecolor = :white, strokewidth = 2,
@@ -252,25 +333,33 @@ function _allocation_lines_figure(plot; figure_kwargs = (;), plot_kwargs = (;))
     return _add_inspector(figure)
 end
 
+"Render observed allocation cells; leave missing cells transparent and reject ambiguous duplicates."
 function _allocation_heatmap_figure(plot; figure_kwargs = (;), plot_kwargs = (;))
     isempty(plot.data) && return _empty_performance_figure(plot; figure_kwargs, plot_kwargs)
     versions = String.(plot.options["versions"])
     labels = String.(plot.options["labels"])
     version_index = Dict(version => index for (index, version) in pairs(versions))
     label_index = Dict(label => index for (index, label) in pairs(labels))
-    matrix = zeros(Float64, length(versions), length(labels))
+    matrix = fill(NaN, length(versions), length(labels))
+    occupied = Set{Tuple{Int, Int}}()
     for item in plot.data
-        matrix[version_index[String(item["version"])], label_index[String(item["label"])]] = Float64(item["bytes"])
+        cell = (version_index[String(item["version"])], label_index[String(item["label"])])
+        cell in occupied &&
+            throw(ArgumentError("allocation heatmap contains a duplicate version/site cell"))
+        push!(occupied, cell)
+        matrix[cell...] = Float64(item["bytes"])
     end
     height = max(650, 20 * length(labels))
     figure, axis = _performance_figure(plot.title; figure_kwargs, size = (1250, height))
     heat = _recipe!(
         heatmap!, axis, eachindex(versions), eachindex(labels), matrix; plot_kwargs,
-        colorscale = Makie.pseudolog10, colormap = :thermal,
+        colorscale = Makie.pseudolog10, colormap = :thermal, nan_color = :transparent,
         inspector_label = (self, index, position) -> begin
             x = clamp(Int(round(position[1])), 1, length(versions))
             y = clamp(Int(round(position[2])), 1, length(labels))
-            "$(versions[x])\n$(labels[y])\n$(round(matrix[x, y]; sigdigits = 6)) bytes"
+            value = isnan(matrix[x, y]) ? "No recorded allocation observation" :
+                    "$(round(matrix[x, y]; sigdigits = 6)) bytes"
+            "$(versions[x])\n$(labels[y])\n$value"
         end)
     axis.xticks = (collect(eachindex(versions)), versions)
     axis.yticks = (collect(eachindex(labels)), labels)
@@ -286,21 +375,109 @@ const _FLAME_STATUS_COLORS = Dict(
     "inference_warning" => RGBf(0.46, 0.20, 0.72),
     "gc_event" => RGBf(0.95, 0.50, 0.08))
 
+"Use the same recorded-label palette and diagnostic overrides in live and exported flame graphs."
+function _flame_colors(plot)
+    labels = sort!(unique!(String[String(item["label"]) for item in plot.data]))
+    palette = make_colors(length(labels))
+    label_colors = Dict(label => palette[index] for (index, label) in pairs(labels))
+    return [get(_FLAME_STATUS_COLORS, String(get(item, "status", "normal")),
+                label_colors[String(item["label"])]) for item in plot.data]
+end
+
+"Composite a frame over its actual axis background before choosing black or white text."
+function _flame_label_color(color, background)
+    foreground, backdrop = RGBAf(Makie.to_color(color)), RGBAf(Makie.to_color(background))
+    alpha = foreground.alpha + backdrop.alpha * (1 - foreground.alpha)
+    channels = ntuple(3) do index
+        front = (foreground.r, foreground.g, foreground.b)[index]
+        back = (backdrop.r, backdrop.g, backdrop.b)[index]
+        alpha == 0 ? 0.0 :
+        (front * foreground.alpha + back * backdrop.alpha * (1 - foreground.alpha)) / alpha
+    end
+    linear(value) = value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055)^2.4
+    luminance = sum(weight * linear(value)
+    for (weight, value) in zip((0.2126, 0.7152, 0.0722), channels))
+    return (luminance + 0.05) / 0.05 >= 1.05 / (luminance + 0.05) ? RGBf(0, 0, 0) :
+           RGBf(1, 1, 1)
+end
+
+"Use native font bounds and projected rectangle bounds in both dimensions, including resize and zoom."
+function _flame_labels!(figure, axis, bars, data)
+    rectangles = only(filter(item -> item isa Makie.Poly, bars.plots))[1]
+    # This is the same color conversion used by Cairo for scalar, vector and mapped bar colors.
+    assembled = Makie.assemble_colors(bars.color[], bars.color, bars)
+    resolved = if assembled isa Makie.ColorMapping
+        lift(bars, assembled.color_scaled, assembled.colormap,
+            assembled.colorrange_scaled, assembled.lowclip, assembled.highclip,
+            assembled.nan_color, assembled.color_mapping_type) do values,
+        palette, range, low, high, missing, mapping
+            Makie.numbers_to_colors(values, palette, identity, range,
+                low, high, missing, mapping == Makie.continuous)
+        end
+    else
+        assembled
+    end
+    colors = lift(bars, resolved) do value
+        converted = Makie.to_color(value)
+        result = converted isa AbstractVector ? converted : fill(converted, length(data))
+        length(result) == length(data) ||
+            throw(ArgumentError("Flame colors must resolve to one color per recorded frame"))
+        result
+    end
+    for (index, item) in pairs(data)
+        rectangle = rectangles[][index]
+        center = (minimum(rectangle) + maximum(rectangle)) / 2
+        visible = Observable(false)
+        color = lift(bars, colors, axis.backgroundcolor,
+            figure.scene.backgroundcolor) do fills, axis_color, figure_color
+            front, back = RGBAf(Makie.to_color(axis_color)),
+            RGBAf(Makie.to_color(figure_color))
+            alpha = front.alpha + back.alpha * (1 - front.alpha)
+            background = alpha == 0 ? RGBAf(0, 0, 0, 0) :
+                         RGBAf(
+                (front.r * front.alpha + back.r * back.alpha * (1 - front.alpha)) / alpha,
+                (front.g * front.alpha + back.g * back.alpha * (1 - front.alpha)) / alpha,
+                (front.b * front.alpha + back.b * back.alpha * (1 - front.alpha)) / alpha, alpha)
+            _flame_label_color(fills[index], background)
+        end
+        label = text!(axis, center; text = String(item["label"]),
+            align = (:center, :center), fontsize = 11, color, visible, inspectable = false)
+        bounds = Makie.full_boundingbox_obs(label, :pixel)
+        onany(axis.scene, bounds, axis.scene.camera.projectionview,
+            axis.scene.viewport, rectangles; update = true) do text_bounds, _, viewport,
+        boxes
+            box = boxes[index]
+            first_corner = Makie.project(axis.scene, :data, :pixel, minimum(box))
+            last_corner = Makie.project(axis.scene, :data, :pixel, maximum(box))
+            lower, upper = min.(first_corner, last_corner), max.(first_corner, last_corner)
+            lower = max.(lower, Point3f(0, 0, -Inf))
+            upper = min.(upper, Point3f(Makie.widths(viewport)..., Inf))
+            text_lower, text_upper = minimum(text_bounds), maximum(text_bounds)
+            visible[] = all(isfinite, text_lower) && all(isfinite, text_upper) &&
+                        all(
+                            d -> text_lower[d] >= lower[d] + 2 &&
+                                text_upper[d] <= upper[d] - 2,
+                            1:2)
+        end
+    end
+    return figure
+end
+
 function _flame_tooltip(item, plot)
     value_label = String(plot.options["value_label"])
     lines = String[
         "Frame: $(item["label"])",
         "Path: $(join(item["path"], " → "))",
-        "Share: $(round(Float64(item["percentage"]); digits = 3))%",
-        "Weight: $(round(Float64(item["value"]); sigdigits = 6)) $value_label"]
+        "Share: $(item["percentage"])%",
+        "Weight: $(item["value"]) $value_label"]
     dispatch_value = Float64(get(item, "runtime_dispatch_value", 0.0))
     dispatch_percentage = Float64(get(item, "runtime_dispatch_percentage", 0.0))
     dispatch_value > 0 && push!(lines,
-        "Runtime dispatch: $(round(dispatch_percentage; digits = 2))% ($(round(dispatch_value; sigdigits = 6)) $value_label)")
+        "Runtime dispatch: $dispatch_percentage% ($dispatch_value $value_label)")
     gc_value = Float64(get(item, "gc_event_value", 0.0))
     gc_percentage = Float64(get(item, "gc_event_percentage", 0.0))
     gc_value > 0 && push!(lines,
-        "Garbage collection: $(round(gc_percentage; digits = 2))% ($(round(gc_value; sigdigits = 6)) $value_label)")
+        "Garbage collection: $gc_percentage% ($gc_value $value_label)")
     inference_status = String.(get(item, "inference_status", String[]))
     return_types = String.(get(item, "inferred_return_type", String[]))
     isempty(inference_status) || push!(lines,
@@ -315,7 +492,7 @@ end
 function _flame_legend!(figure, allocation_only; custom_colors = false)
     if custom_colors
         Label(figure[1, 2],
-            "Custom frame colors.\nColors do not encode diagnostics.\nHover any frame for full diagnostics.";
+            "Custom frame colors.\nColors do not encode diagnostics.\nComplete paths and values:\ninteractive inspection.";
             tellwidth = false, justification = :left, halign = :left,
             color = RGBf(0.30, 0.35, 0.42), fontsize = 12)
         return figure
@@ -324,7 +501,7 @@ function _flame_legend!(figure, allocation_only; custom_colors = false)
     if allocation_only
         elements = [PolyElement(color = normal_color)]
         labels = ["sampled allocation frame"]
-        note = "Width = share of allocated bytes.\nHover any frame for its full path."
+        note = "Colors distinguish labels,\nnot performance gains.\nWidth = share of allocated bytes.\nComplete paths and values:\ninteractive inspection."
     else
         statuses = ("normal", "runtime_dispatch", "inference_warning", "gc_event")
         colors = [normal_color;
@@ -333,7 +510,7 @@ function _flame_legend!(figure, allocation_only; custom_colors = false)
         labels = [
             "sampled Julia frame", "runtime dispatch", "non-concrete inferred return",
             "garbage collection"]
-        note = "Red = observed dynamic dispatch.\nPurple = non-concrete inferred return.\nOrange = garbage collection.\nHover any frame for full diagnostics."
+        note = "Colors distinguish labels,\nnot performance gains.\nRed = observed dynamic dispatch.\nPurple = non-concrete inferred return.\nOrange = garbage collection.\nComplete paths and values:\ninteractive inspection."
     end
     legend_grid = figure[1, 2] = GridLayout()
     Legend(legend_grid[1, 1], elements, labels;
@@ -349,29 +526,18 @@ function _flamegraph_figure(plot; figure_kwargs = (;), plot_kwargs = (;))
     maximum_depth = maximum(item -> Int(item["depth"]), plot.data)
     figure, axis = _performance_figure(
         "$(plot.title) · $(plot.options["selected_version"])";
-        figure_kwargs, size = (1400, 620))
-    labels = sort!(unique!(String[String(item["label"]) for item in plot.data]))
-    palette = make_colors(length(labels))
-    label_colors = Dict(label => palette[index] for (index, label) in pairs(labels))
+        figure_kwargs, size = (1400, max(620, 24maximum_depth + 180)))
     allocation_only = plot.kind === :allocation_flamegraph
     depths = Float64[Int(item["depth"]) for item in plot.data]
     starts = Float64[100 * Float64(item["x0"]) for item in plot.data]
     stops = Float64[100 * Float64(item["x1"]) for item in plot.data]
-    rectangle_colors = [get(_FLAME_STATUS_COLORS, String(get(item, "status", "normal")),
-                            label_colors[String(item["label"])])
-                        for item in plot.data]
-    _recipe!(barplot!, axis, depths, stops; plot_kwargs, fillto = starts, direction = :x,
+    rectangle_colors = _flame_colors(plot)
+    bars = _recipe!(
+        barplot!, axis, depths, stops; plot_kwargs, fillto = starts, direction = :x,
         width = 0.84, gap = 0, color = rectangle_colors, strokecolor = :white,
         strokewidth = 0.8, inspectable = true,
         inspector_label = (self, index, position) -> _flame_tooltip(plot.data[index], plot))
-    for item in plot.data
-        x0 = 100 * Float64(item["x0"])
-        width = 100 * (Float64(item["x1"]) - Float64(item["x0"]))
-        width >= 7 || continue
-        text!(axis, x0 + width / 2, Int(item["depth"]);
-            text = String(item["label"]), align = (:center, :center), fontsize = 11,
-            color = RGBf(0.04, 0.08, 0.13))
-    end
+    _flame_labels!(figure, axis, bars, plot.data)
     xlims!(axis, 0, 100)
     ylims!(axis, 0.4, maximum_depth + 0.6)
     axis.xlabel = "share of captured $(lowercase(String(plot.options["value_label"]))) (%)"
@@ -387,19 +553,30 @@ function _tradeoff_figure(plot; figure_kwargs = (;), plot_kwargs = (;))
     figure, axis = _performance_figure(plot.title; figure_kwargs)
     xs = Float64[item["bytes"] for item in plot.data]
     ys = Float64[item["time"] for item in plot.data]
+    time_unit, allocation_unit = PerfChecker._tradeoff_plot_units(plot.options)
     colors = 1:length(plot.data)
     _recipe!(scatterlines!, axis, xs, ys; plot_kwargs, color = colors, colormap = :viridis,
         markersize = 16, linewidth = 2,
         inspector_label = (self, index, position) -> begin
             item = plot.data[index]
-            "$(item["version"])\n$(round(Float64(item["bytes"]); sigdigits = 6)) bytes\n$(round(Float64(item["time"]); sigdigits = 6)) seconds"
+            "$(item["version"])\n$(round(Float64(item["bytes"]); sigdigits = 6)) $allocation_unit\n$(round(Float64(item["time"]); sigdigits = 6)) $time_unit"
         end)
+    annotations = Dict{Tuple{Float64, Float64}, Vector{String}}()
     for (index, item) in pairs(plot.data)
-        text!(axis, xs[index], ys[index]; text = String(item["version"]),
-            align = (:left, :bottom), offset = (7, 5), fontsize = 12)
+        push!(get!(annotations, (xs[index], ys[index]), String[]), String(item["version"]))
     end
-    axis.xlabel = "allocated bytes"
-    axis.ylabel = "wall time (s)"
+    positions = unique(collect(zip(xs, ys)))
+    labels = map(positions) do position
+        distinct_versions = unique(annotations[position])
+        return length(distinct_versions) == 1 ?
+               _version_tick_label(only(distinct_versions)) :
+               "$(length(distinct_versions)) versions"
+    end
+    annotation!(axis, first.(positions), last.(positions); text = labels,
+        fontsize = 12, style = Makie.Ann.Styles.Line(), color = (:gray, 0.65),
+        textcolor = :black, linewidth = 0.8)
+    axis.xlabel = "allocation ($allocation_unit)"
+    axis.ylabel = "wall time ($time_unit)"
     _has_positive_range(xs) && (axis.xscale = Makie.pseudolog10)
     _has_positive_range(ys) && (axis.yscale = Makie.pseudolog10)
     return _add_inspector(figure)
@@ -414,10 +591,12 @@ axis attributes customize the completed Axis, and plot attributes override the
 primary recipe (lines, scatterlines, boxplot, barplot, pie or heatmap).
 Inspection overlays and reference lines keep their own settings. Attributes
 are presentation only; no workload is run or measurement changed. Unknown
-Makie attributes raise Makie's normal error. Tags appear in the subtitle and
-the collector in the title; pass tool explicitly for manually built models
+Makie attributes raise Makie's normal error. Collector and tags appear in the
+subtitle; pass tool explicitly for manually built models
 whose collector identity is absent. Collector names and tag lists are appended
-to customized titles/subtitles. Empty evidence returns a labeled figure.
+to customized subtitles while titles are preserved. Empty evidence returns a labeled figure.
+Allocation pies draw strictly positive weights; an all-zero recorded model returns
+a "No positive allocation weight" figure without dividing by a zero total.
 """
 function PerfChecker.performance_figure(plot::PerfChecker.PerformancePlot;
         figure_kwargs = (;), axis_kwargs = (;), plot_kwargs = (;), tags = get(
@@ -434,7 +613,9 @@ function PerfChecker.performance_figure(plot::PerfChecker.PerformancePlot;
         throw(ArgumentError("Makie does not support performance plot kind $(plot.kind)"))
     _attributes(axis_kwargs)
     _attributes(plot_kwargs)
-    figure = renderers[plot.kind](_finite_plot(plot); figure_kwargs, plot_kwargs)
+    figure = renderers[plot.kind](
+        _finite_plot(plot; include_zero_pie = plot.kind === :allocation_pie);
+        figure_kwargs, plot_kwargs)
     label = isnothing(tool) ? _model_collector(plot) : String(tool)
     return _decorate!(figure; tool = label, tags, axis_kwargs)
 end

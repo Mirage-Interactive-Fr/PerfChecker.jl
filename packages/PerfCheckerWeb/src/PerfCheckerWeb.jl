@@ -22,6 +22,15 @@ include("advisor_setup.jl")
 include("investigations.jl")
 include("testitems.jl")
 
+"""
+    register_oxygen_routes!(provider::Function; prefix="/perfchecker/v1")
+
+Register read-only capabilities, suite and run-list routes on Oxygen's current
+router and return the router. Each request to `/suite` or `/runs` calls `provider()`
+and serializes its suite result. Registration does not call the provider or start
+an HTTP listener; any effects of the provider are the caller's responsibility.
+Load `PerfCheckerWeb` before calling this method.
+"""
 function PerfChecker.register_oxygen_routes!(provider::Function;
         prefix::AbstractString = "/perfchecker/v1")
     api = Oxygen.router(String(prefix); tags = ["PerfChecker"])
@@ -40,11 +49,26 @@ function PerfChecker.register_oxygen_routes!(provider::Function;
     return api
 end
 
+"""
+    register_oxygen_routes!(result::SoftwareSuiteResult; prefix="/perfchecker/v1")
+
+Register a fixed suite result through the provider overload and return its Oxygen
+router. Requests serialize the saved result without rerunning its measurements.
+This method does not start a server.
+"""
 function PerfChecker.register_oxygen_routes!(result::PerfChecker.SoftwareSuiteResult;
         kwargs...)
     return PerfChecker.register_oxygen_routes!(() -> result; kwargs...)
 end
 
+"""
+    register_oxygen_routes!(bundle::RunBundle; prefix="/perfchecker/v1")
+
+Register read-only routes for a saved bundle and return the Oxygen router.
+Routes expose its manifest, measurement definitions, observations, diagnostics,
+artifacts and derived advice, comparisons, plots and queries. They do not rerun
+the measured workload. Registration does not start an HTTP listener.
+"""
 function PerfChecker.register_oxygen_routes!(bundle::PerfChecker.RunBundle;
         prefix::AbstractString = "/perfchecker/v1")
     api = Oxygen.router(String(prefix); tags = ["PerfChecker bundles"])
@@ -276,6 +300,20 @@ function _register_result_routes!(api, store::String)
         end)
 end
 
+"""
+    register_oxygen_routes!(root::AbstractString; prefix="/perfchecker/v1",
+                            allow_ingest=false, max_ingest_bytes=10*1024*1024)
+
+Register a saved-bundle browser and evidence routes, and return the Oxygen router.
+`root` is resolved from the working directory and must exist unless
+`allow_ingest=true`, which creates it. Reading saved results does not rerun them.
+
+With ingestion enabled, `POST /ingest` writes a supplied bundle under `root` and
+returns HTTP 201. Invalid input returns 400; a body larger than the positive
+`max_ingest_bytes` limit returns 413. These routes do not add authentication.
+Registration starts no listener and cannot enforce its bind address; use the
+loopback restriction in `serve_suite(root; allow_ingest=true)` when hosting them.
+"""
 function PerfChecker.register_oxygen_routes!(root::AbstractString;
         prefix::AbstractString = "/perfchecker/v1", allow_ingest::Bool = false,
         max_ingest_bytes::Integer = 10 * 1024 * 1024)
@@ -323,6 +361,27 @@ function PerfChecker.register_oxygen_routes!(root::AbstractString;
     return api
 end
 
+"""
+    register_oxygen_routes!(suite::SoftwareSuite; profile=:quick,
+        prefix="/perfchecker/v1", version_provider=get_pkg_versions,
+        overrides=Dict{Symbol,Any}(), executor=PerfChecker._default_suite_executor,
+        reports_root=joinpath(pwd(), "perfchecker-results"), max_concurrent=1,
+        authenticator=nothing, authorizer=PerfCheckerWeb._default_studio_authorizer,
+        lease_seconds=300, max_agent_attempts=3, session_hours=8, secure_cookies=false)
+
+Register the interactive Studio, suite planning, job, saved-result and agent
+routes, and return the Oxygen router. `reports_root` is made absolute and created;
+persisted sessions, agents and compatible jobs are restored. Restored local jobs
+can resume immediately, even though this function starts no HTTP listener.
+
+`version_provider`, `overrides` and `executor` configure planning and execution;
+`max_concurrent` limits active local jobs. `authenticator` maps a bearer token to
+an identity or `nothing`; `authorizer` checks that identity's requested action.
+`lease_seconds`, `max_agent_attempts`, `session_hours` and `secure_cookies` control
+agent leases and browser sessions. These options belong to this suite overload,
+not to the read-only bundle/provider routes. Use `serve_suite(suite; ...)` to
+apply the hosted Studio's remote-control guard and start a listener.
+"""
 function PerfChecker.register_oxygen_routes!(suite::PerfChecker.SoftwareSuite;
         profile::Symbol = :quick, prefix::AbstractString = "/perfchecker/v1",
         version_provider = PerfChecker.get_pkg_versions,
@@ -341,6 +400,17 @@ function PerfChecker.register_oxygen_routes!(suite::PerfChecker.SoftwareSuite;
         secure_cookies)
 end
 
+"""
+    serve_suite(provider::Function; host="127.0.0.1", port=8080, async=false,
+                prefix="/perfchecker/v1", kwargs...)
+
+Register a result provider's read-only routes, then return `Oxygen.serve`'s result.
+`prefix` configures the routes; additional keywords go only to `Oxygen.serve`.
+The default call serves on loopback and blocks according to Oxygen's server
+lifetime; `async=true` requests Oxygen's asynchronous mode. This overload adds
+neither authentication nor a remote-host restriction. Provider requests can have
+the effects described by `register_oxygen_routes!(provider)`.
+"""
 function PerfChecker.serve_suite(provider::Function; host::AbstractString = "127.0.0.1",
         port::Integer = 8080, async::Bool = false,
         prefix::AbstractString = "/perfchecker/v1", kwargs...)
@@ -348,10 +418,28 @@ function PerfChecker.serve_suite(provider::Function; host::AbstractString = "127
     return Oxygen.serve(; host = String(host), port = Int(port), async, kwargs...)
 end
 
+"""
+    serve_suite(result::SoftwareSuiteResult; host="127.0.0.1", port=8080,
+                async=false, prefix="/perfchecker/v1", kwargs...)
+
+Serve a fixed suite result through the provider overload and return Oxygen's
+server result. Keywords follow that overload; serving does not remeasure the
+result. Load `PerfCheckerWeb` to enable this method.
+"""
 function PerfChecker.serve_suite(result::PerfChecker.SoftwareSuiteResult; kwargs...)
     return PerfChecker.serve_suite(() -> result; kwargs...)
 end
 
+"""
+    serve_suite(bundle::RunBundle; host="127.0.0.1", port=8080, async=false,
+                prefix="/perfchecker/v1", kwargs...)
+
+Register a saved bundle's read-only evidence routes, start Oxygen and return its
+server result. `prefix` goes to route registration; other keywords go only to
+`Oxygen.serve`. The default listener is loopback and `async=false`; this overload
+does not enforce loopback or install authentication. It does not rerun the
+bundle's measured workload.
+"""
 function PerfChecker.serve_suite(bundle::PerfChecker.RunBundle;
         host::AbstractString = "127.0.0.1", port::Integer = 8080,
         async::Bool = false, prefix::AbstractString = "/perfchecker/v1", kwargs...)
@@ -359,6 +447,25 @@ function PerfChecker.serve_suite(bundle::PerfChecker.RunBundle;
     return Oxygen.serve(; host = String(host), port = Int(port), async, kwargs...)
 end
 
+"""
+    serve_suite(root::AbstractString; host="127.0.0.1", port=8080, async=false,
+                prefix="/perfchecker/v1", allow_ingest=false, kwargs...)
+
+Serve a saved-bundle directory and return Oxygen's server result. Ingestion is
+off by default. `allow_ingest=true` permits writes and requires `host` to be
+`127.0.0.1`, `localhost` or `::1`; a remote host raises `ArgumentError` before
+registration. Read-only hosting adds no remote-host or authentication guard.
+
+Additional keywords are forwarded to **both** directory route registration and
+`Oxygen.serve`, so they must be accepted by both APIs. To configure route-only
+or server-only options separately, call `register_oxygen_routes!(root; ...)`
+followed by `Oxygen.serve(; ...)`, with an appropriate bind address.
+
+```julia
+using PerfChecker, PerfCheckerWeb
+serve_suite("perf/results"; port=8080, async=true) # existing bundle directory
+```
+"""
 function PerfChecker.serve_suite(root::AbstractString;
         host::AbstractString = "127.0.0.1", port::Integer = 8080,
         async::Bool = false, prefix::AbstractString = "/perfchecker/v1",
@@ -372,6 +479,22 @@ function PerfChecker.serve_suite(root::AbstractString;
     return Oxygen.serve(; host = String(host), port = Int(port), async, kwargs...)
 end
 
+"""
+    serve_suite(suite::SoftwareSuite; host="127.0.0.1", port=8080, async=false,
+                prefix="/perfchecker/v1", allow_remote_control=false,
+                authenticator=nothing, kwargs...)
+
+Register the interactive Studio and start Oxygen, returning its server result.
+A non-loopback host requires **both** `allow_remote_control=true` and a supplied
+`authenticator`; otherwise throw `ArgumentError` before registration. The caller
+must also arrange suitable network exposure and transport security.
+
+Additional keywords go only to `register_oxygen_routes!(suite; ...)`, including
+its job, authorization and session options. Oxygen receives only `host`, `port`
+and `async`. Registration creates/restores the workspace and can resume persisted
+local jobs before the listener starts. The remote-control guard applies to this
+overload, not to every form of `serve_suite`.
+"""
 function PerfChecker.serve_suite(suite::PerfChecker.SoftwareSuite;
         host::AbstractString = "127.0.0.1", port::Integer = 8080,
         async::Bool = false, prefix::AbstractString = "/perfchecker/v1",

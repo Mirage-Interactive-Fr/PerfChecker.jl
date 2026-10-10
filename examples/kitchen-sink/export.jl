@@ -1,7 +1,15 @@
 using PerfChecker, PerfCheckerMakie, CairoMakie, JSON, SHA
 include(joinpath(@__DIR__, "replay.jl"))
-length(ARGS) in (2, 3) ||
-    error("Pass a report directory, an export directory and optionally --primary")
+length(ARGS) in (2, 3, 4) ||
+    error("Pass a report directory, an export directory and optionally --primary/--interactive")
+options = ARGS[3:end]
+all(option -> option in ("--primary", "--interactive"), options) &&
+    length(unique(options)) == length(options) || error("Unknown or repeated export option")
+interactive = "--interactive" in options
+if interactive
+    using WGLMakie
+    CairoMakie.activate!()
+end
 reports, output = abspath.(ARGS[1:2])
 bundle = example_bundle(reports)
 result = JSON.parsefile(joinpath(reports, "suite-result.json"))
@@ -17,8 +25,7 @@ all(run["status"] == "pass" for run in result["runs"]) ||
 mkpath(output)
 runtime = bundle.manifest["runtime"]
 catalog = plot_catalog(bundle)
-if length(ARGS) == 3
-    ARGS[3] == "--primary" || error("The optional export mode is --primary")
+if "--primary" in options
     catalog = filter(entry -> entry["kind"] == "normalized_metrics", catalog)
 end
 views = Dict{String, Any}[]
@@ -55,6 +62,10 @@ for entry in catalog
         end
     end
     save(joinpath(output, name * ".svg"), figure)
+    if interactive && model.kind in (:normalized_metrics, :cpu_flamegraph,
+        :wall_flamegraph, :allocation_flamegraph)
+        write(joinpath(output, name * ".html"), performance_plot_html(model))
+    end
     terminal = sprint(
         show, MIME"text/plain"(), terminal_plot(model); context = :color => false)
     write(joinpath(output, name * ".txt"), replace(terminal, r"[ \t]+(?=\r?$)"m => ""))
@@ -65,6 +76,10 @@ for entry in catalog
             joinpath(output, "normalized.json"); force = true)
         cp(joinpath(output, name * ".svg"),
             joinpath(output, "normalized.svg"); force = true)
+        if interactive
+            cp(joinpath(output, name * ".html"),
+                joinpath(output, "normalized.html"); force = true)
+        end
     end
     windows = Any[]
     if model.kind == :normalized_metrics && package_name == "Oxygen"
@@ -90,12 +105,21 @@ for entry in catalog
             push!(windows,
                 Dict("label" => "$(minor[1]).$(minor[2]) patches",
                     "svg" => window_name * ".svg", "json" => window_name * ".json"))
+            if interactive
+                write(joinpath(output, window_name * ".html"),
+                    performance_plot_html(projection))
+                windows[end]["html"] = window_name * ".html"
+            end
         end
     end
     push!(views,
         merge(Dict(entry),
             Dict("json" => name * ".json", "svg" => name * ".svg",
                 "terminal" => name * ".txt", "patch_windows" => windows)))
+    if interactive && model.kind in (:normalized_metrics, :cpu_flamegraph,
+        :wall_flamegraph, :allocation_flamegraph)
+        views[end]["html"] = name * ".html"
+    end
     if length(views) % 10 == 0
         println("Rendered ", length(views), "/", length(catalog), " catalogue views")
         flush(stdout)
