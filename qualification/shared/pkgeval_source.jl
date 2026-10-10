@@ -6,6 +6,41 @@ const PACKAGE_NAME = "PerfChecker"
 const PACKAGE_UUID = "6309bf6b-a531-4b08-891e-8ee981e5c424"
 const PACKAGE_REPOSITORY = "https://github.com/Mirage-Interactive-Fr/PerfChecker.jl.git"
 
+"""
+Record an explicit package-image policy, Julia arguments and sandbox budget.
+
+`upstream` passes no override to the pinned controller. `yes` permits native
+package-image generation during precompilation and testing; it does not enable
+PkgEval's shared result or compilation cache. The budget defaults to 45 minutes;
+90 minutes is a separate explicit configuration of the complete evaluation.
+"""
+function evaluation_options(package_images; time_limit_minutes = "45")
+    package_images isa AbstractString && package_images in ("upstream", "yes") ||
+        throw(ArgumentError("Package images must be upstream or yes"))
+    time_limit_minutes isa AbstractString && time_limit_minutes in ("45", "90") ||
+        throw(ArgumentError("Evaluation budget must be 45 or 90 minutes"))
+    minutes = parse(Int, time_limit_minutes)
+    arguments = package_images == "yes" ? ["--pkgimages=yes"] : String[]
+    return Dict{String, Any}("package_images" => String(package_images),
+        "julia_args" => arguments, "time_limit_minutes" => minutes,
+        "time_limit_seconds" => 60 * minutes)
+end
+
+"""Validate saved compilation and budget settings before passing them to PkgEval."""
+function evaluation_arguments(request)
+    minutes, seconds = request["time_limit_minutes"], request["time_limit_seconds"]
+    minutes isa Integer && !(minutes isa Bool) &&
+        seconds isa Integer && !(seconds isa Bool) ||
+        throw(ArgumentError("Recorded evaluation budgets must be integer counts"))
+    options = evaluation_options(
+        request["package_images"]; time_limit_minutes = string(minutes))
+    all(request[key] == options[key]
+    for key in ("julia_args", "time_limit_minutes", "time_limit_seconds")) ||
+        throw(ArgumentError("Recorded evaluation settings do not match the selected policy"))
+    return (;
+        julia_args = options["julia_args"], time_limit = options["time_limit_seconds"])
+end
+
 function checked_sha(value, label)
     value isa AbstractString && occursin(r"^[0-9a-f]{40}$", value) ||
         throw(ArgumentError("$label must be an exact lowercase 40-character Git SHA"))

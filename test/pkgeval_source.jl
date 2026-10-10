@@ -60,4 +60,48 @@
         merge(candidate, Dict("source_kind" => "unknown")))
     @test_throws ArgumentError source.package_arguments(
         merge(candidate, Dict("uuid" => "00000000-0000-0000-0000-000000000000")))
+
+    upstream = source.evaluation_options("upstream")
+    @test upstream["package_images"] == "upstream"
+    @test upstream["julia_args"] == String[]
+    @test upstream["time_limit_minutes"] == 45
+    @test upstream["time_limit_seconds"] == 2700
+    native_images = source.evaluation_options("yes")
+    @test native_images["package_images"] == "yes"
+    @test native_images["julia_args"] == ["--pkgimages=yes"]
+    for invalid in ("", "existing", "no", "--pkgimages=yes", true, nothing)
+        @test_throws ArgumentError source.evaluation_options(invalid)
+    end
+    request = merge(candidate, native_images)
+    restored = TOML.parse(sprint(io -> TOML.print(io, request; sorted = true)))
+    @test restored["package_images"] == "yes"
+    @test restored["julia_args"] == ["--pkgimages=yes"]
+    @test source.package_arguments(restored) == source.package_arguments(candidate)
+    @test source.evaluation_options(restored["package_images"]) == native_images
+    @test source.evaluation_arguments(restored) ==
+          (; julia_args = ["--pkgimages=yes"], time_limit = 2700)
+    @test source.evaluation_arguments(upstream) ==
+          (; julia_args = String[], time_limit = 2700)
+    @test_throws ArgumentError source.evaluation_arguments(
+        merge(restored, Dict("julia_args" => ["--compile=min"])))
+    @test_throws ArgumentError source.evaluation_arguments(
+        merge(restored, Dict("package_images" => "upstream")))
+    extended = source.evaluation_options("yes"; time_limit_minutes = "90")
+    @test extended["time_limit_minutes"] == 90
+    @test extended["time_limit_seconds"] == 5400
+    @test source.evaluation_arguments(
+        TOML.parse(sprint(io -> TOML.print(io, extended; sorted = true)))) ==
+          (; julia_args = ["--pkgimages=yes"], time_limit = 5400)
+    for invalid in ("", "30", "75", "120", "90.0", 90, true, nothing)
+        @test_throws ArgumentError source.evaluation_options(
+            "yes"; time_limit_minutes = invalid)
+    end
+    @test_throws ArgumentError source.evaluation_arguments(
+        merge(extended, Dict("time_limit_seconds" => 2700)))
+    @test_throws ArgumentError source.evaluation_arguments(
+        merge(extended, Dict("time_limit_minutes" => 120)))
+    @test_throws ArgumentError source.evaluation_arguments(
+        merge(extended, Dict("time_limit_minutes" => 90.0)))
+    @test_throws ArgumentError source.evaluation_arguments(
+        merge(extended, Dict("time_limit_seconds" => 5400.0)))
 end

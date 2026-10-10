@@ -33,6 +33,20 @@ on:
         description: Optional expected registered package tree SHA-1
         type: string
         default: ''
+      package_images:
+        description: Keep upstream compilation defaults or explicitly allow native package images
+        type: choice
+        options:
+          - upstream
+          - 'yes'
+        default: upstream
+      time_limit_minutes:
+        description: Explicit sandbox budget including installation, precompilation and all tests
+        type: choice
+        options:
+          - '45'
+          - '90'
+        default: '45'
 
 permissions:
   contents: read
@@ -109,6 +123,8 @@ jobs:
           CANDIDATE_TREE: ${{ steps.candidate.outputs.tree }}
           REQUESTED_VERSION: ${{ inputs.package_version || (github.event_name == 'pull_request' && '1.0.1') || '' }}
           EXPECTED_TREE: ${{ inputs.expected_tree || (github.event_name == 'pull_request' && '00c133336911b8600d63a8d6c59ce1befc5ce690') || '' }}
+          PACKAGE_IMAGES: ${{ inputs.package_images || 'upstream' }}
+          TIME_LIMIT_MINUTES: ${{ inputs.time_limit_minutes || '45' }}
         run: |
           using Downloads, TOML
           include(joinpath(ENV["GITHUB_WORKSPACE"], "qualification", "shared", "pkgeval_source.jl"))
@@ -135,7 +151,9 @@ jobs:
           else
               error("Unknown PkgEval source kind")
           end
-          request = merge(selected, Dict(
+          options = PkgEvalSource.evaluation_options(ENV["PACKAGE_IMAGES"];
+              time_limit_minutes=ENV["TIME_LIMIT_MINUTES"])
+          request = merge(selected, options, Dict(
               "general_revision" => registry_revision,
               "pkgeval_revision" => ENV["PKGEVAL_REVISION"],
               "workflow_revision" => ENV["GITHUB_SHA"],
@@ -159,7 +177,7 @@ jobs:
     needs: select
     if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
-    timeout-minutes: 75
+    timeout-minutes: ${{ inputs.time_limit_minutes == '90' && 120 || 75 }}
     env:
       TARGET_JULIA: stable
     steps: &evaluate
@@ -197,8 +215,7 @@ jobs:
               "controller_julia" => string(VERSION),
               "status" => "controller_error",
               "use_cache" => false,
-              "test_profile" => "full",
-              "time_limit_seconds" => 45 * 60))
+              "test_profile" => "full"))
           function save_report()
               open(".pkgeval/result.toml", "w") do io
                   TOML.print(io, report; sorted=true)
@@ -207,11 +224,13 @@ jobs:
           save_report()
           try
               @eval using PkgEval
+              arguments = PkgEvalSource.evaluation_arguments(request)
               config = PkgEval.Configuration(
                   name=request["source_kind"] * "-" * ENV["TARGET_JULIA"],
                   julia=ENV["TARGET_JULIA"],
                   registry="JuliaRegistries/General#" * request["general_revision"],
-                  cpus=[0, 1], threads=1, time_limit=45 * 60)
+                  cpus=[0, 1], threads=1, time_limit=arguments.time_limit,
+                  julia_args=arguments.julia_args)
               package = PkgEval.Package(; PkgEvalSource.package_arguments(request)...)
               report["configuration"] = repr(config)
               registry = PkgEval.get_registry(config)
@@ -264,7 +283,7 @@ jobs:
     needs: [select, stable]
     if: ${{ always() && !cancelled() && github.event_name != 'pull_request' && needs.select.result == 'success' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 75
+    timeout-minutes: ${{ inputs.time_limit_minutes == '90' && 120 || 75 }}
     env:
       TARGET_JULIA: nightly
     steps: *evaluate
