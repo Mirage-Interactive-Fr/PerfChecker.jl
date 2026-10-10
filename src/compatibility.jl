@@ -30,7 +30,7 @@ end
 
 function _default_preflight_resolver(planned::PlannedFeatureRun,
         overrides::AbstractDict)
-    config = _run_config(planned, overrides)
+    config = _run_config(planned, overrides; resolve_preferences = true)
     root, _ = _prepare_check_environment(config)
     rm(root; recursive = true, force = true)
     return nothing
@@ -38,7 +38,7 @@ end
 
 function _default_preflight_probe_runner(planned::PlannedFeatureRun,
         overrides::AbstractDict)
-    config = _run_config(planned, overrides)
+    config = _run_config(planned, overrides; resolve_preferences = true)
     root, environment = _prepare_check_environment(config)
     worker = nothing
     try

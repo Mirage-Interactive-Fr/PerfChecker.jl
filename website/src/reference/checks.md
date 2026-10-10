@@ -11,6 +11,81 @@ A **check type** selects how a workload is measured. Each runs in an isolated wo
 - Use a profile to find **where** the cost moved.
 - Use network collectors for traffic, with attention to attribution.
 
+## Persistent controller defaults
+
+::: info Development API
+This integration is a development addition after PerfChecker 1.0.1. It is not
+part of the registered 1.0.1 release.
+:::
+
+Use Preferences.jl to retain three defaults in the active Julia project:
+
+```julia
+using PerfChecker
+set_check_preferences!(threads=2, repeat=false, quiet=true)
+check_preferences()
+```
+
+| Setting | Meaning | Accepted values |
+| --- | --- | --- |
+| `threads` | Julia threads in each measurement worker | Positive integer representable as `Int`, excluding `Bool` |
+| `repeat` | Optional warmup in allocation, profile and network collectors | `Bool` |
+| `quiet` | Suppress PerfChecker package-management logs | `Bool` |
+
+BenchmarkTools and Chairmarks manage their own sampling and do not use `repeat`.
+Use their `samples`, `evals` and other collector options explicitly. `quiet`
+does not silence output printed by the workload.
+
+The default write target is `LocalPreferences.toml` next to the **controller's
+active Julia project**. It is unrelated to `PerfConfig.path`, which chooses the
+workload environment. A normal check only reads preferences; it does not create
+or modify a preference file. No path, command, package selection or credential
+can be saved through these three APIs.
+
+The order is collector defaults, inherited preferences, then explicit options.
+Julia's normal environment-stack inheritance applies; local preferences override
+exported project preferences. Feature and variant options and suite run overrides
+remain explicit. The suite's internal `quiet=true` default is below preferences.
+
+```julia
+config = PerfConfig(:profile; path=pwd(), threads=1)
+# This check uses one thread even when the persistent default is two.
+```
+
+For a shared project, opt in to storing defaults in `Project.toml`:
+
+```julia
+set_check_preferences!(threads=2, export_prefs=true)
+reset_check_preferences!(:threads) # remove the local override; inherit again
+reset_check_preferences!(:threads; export_prefs=true) # remove the shared value
+reset_check_preferences!(block_inheritance=true) # block all three inherited defaults
+```
+
+Resetting without keys selects all three settings. It removes settings only at
+the selected storage level and preserves other packages' preferences. A normal
+reset allows inherited values to return; `block_inheritance=true` uses
+Preferences.jl's clear markers instead. Invalid values and unknown keys are
+rejected before an API write.
+
+Changes take effect for future checks without restarting Julia. Each suite
+freezes its defaults before preparing workers; changing a preference during that
+suite does not change later runs in the same plan. Workers receive those resolved
+values and do not reread controller preferences from their own environment.
+
+Each result's qualification contains `check_configuration`, with `values`,
+`origins` (`default`, `preferences` or `explicit`) and `config_hash`. Saved suite
+bundles retain this evidence. On a cache hit, this snapshot describes the current
+request's resolved configuration, not the historical origin of the cached
+calculation. The cache hash includes effective values, not their
+origins: supplying the same value explicitly or persistently shares an identity;
+changing an overridden preference does not invalidate that identity. Keep the
+saved configuration evidence when sharing results; a bare workload checkout does
+not describe controller defaults inherited from another environment.
+
+See the [Public API](public-api.md) for the full setter, reader and reset contracts
+and the [Preferences.jl reference](https://juliapackaging.github.io/Preferences.jl/stable/reference/)
+for environment-stack and clear-marker semantics.
+
 ## Benchmarks
 
 ```@raw html

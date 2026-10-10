@@ -1,4 +1,116 @@
 const VERSION_SELECTORS = (:patches, :breaking, :major, :minor, :custom)
+const CHECK_PREFERENCE_KEYS = (:threads, :repeat, :quiet)
+
+"Validate the shared scalar settings identically for explicit options and preferences."
+function _validate_check_settings(options)
+    if haskey(options, :threads)
+        threads = options[:threads]
+        threads isa Integer && !(threads isa Bool) && 0 < threads <= typemax(Int) ||
+            throw(ArgumentError(":threads must be a positive integer representable as Int"))
+    end
+    for key in (:repeat, :quiet)
+        haskey(options, key) && !(options[key] isa Bool) &&
+            throw(ArgumentError("$key must be Bool"))
+    end
+    return options
+end
+
+"""
+    check_preferences() -> Dict{Symbol,Any}
+
+Read PerfChecker's persistent `threads`, `repeat` and `quiet` defaults through
+Preferences.jl in the current Julia environment stack. Return only settings
+that have a preference, as an independent dictionary; this does not write files
+or start workers. Malformed settings raise `ArgumentError`.
+
+Checks read these settings at runtime, below explicit `Dict`/`PerfConfig` options
+and suite feature, variant and run overrides. A suite freezes them before its
+first worker is prepared. They are not compile-time switches, so changing them
+does not require restarting Julia. Preferences belong to the controller's active
+environment stack, not the workload directory in `PerfConfig.path`.
+
+`repeat` controls the optional warmup used by allocation, profile and network
+collectors; BenchmarkTools and Chairmarks use their own sampling controls and
+do not use `repeat`. `quiet` suppresses PerfChecker's package-management logs,
+not arbitrary output printed by the workload.
+"""
+function check_preferences()
+    options = Dict{Symbol, Any}()
+    for key in CHECK_PREFERENCE_KEYS
+        value = Preferences.load_preference(@__MODULE__, "check_" * String(key),
+            nothing; force_compiletime_default = true)
+        value === nothing || (options[key] = value)
+    end
+    return _validate_check_settings(options)
+end
+
+"""
+    set_check_preferences!(; export_prefs=false, kwargs...)
+
+Persist any supplied check defaults in the active Julia project using
+Preferences.jl and return [`check_preferences`](@ref). `threads` must be a
+positive `Int`-representable integer other than `Bool`; `repeat` and `quiet`
+must be `Bool`. Unknown keys and invalid values are rejected before writing.
+Unspecified settings are preserved. No workload path, command or credential is
+accepted by this API.
+
+The default writes `LocalPreferences.toml`; `export_prefs=true` explicitly writes
+shareable preferences into `Project.toml`. Julia's environment-stack inheritance
+still applies, and local preferences override exported preferences. Existing
+explicit check options win over these defaults. Changes affect future checks,
+not a running suite's frozen settings. No restart is required.
+
+```julia
+set_check_preferences!(threads=2, quiet=true)
+config = PerfConfig(:profile; path=pwd(), threads=1) # explicit value wins
+```
+
+Use [`reset_check_preferences!`](@ref) to remove selected settings or block their
+inheritance. Other packages' preferences are not changed.
+"""
+function set_check_preferences!(; export_prefs::Bool = false, kwargs...)
+    options = Dict{Symbol, Any}(kwargs)
+    all(key -> key in CHECK_PREFERENCE_KEYS, keys(options)) ||
+        throw(ArgumentError("check preferences accept only threads, repeat and quiet"))
+    _validate_check_settings(options)
+    isempty(options) || Preferences.set_preferences!(@__MODULE__,
+        ("check_" * String(key) => value for (key, value) in options)...;
+        export_prefs, force = true)
+    return check_preferences()
+end
+
+"""
+    reset_check_preferences!(keys::Symbol...; block_inheritance=false,
+                             export_prefs=false)
+
+Delete selected persistent check defaults from the active project and return
+[`check_preferences`](@ref). With no keys, reset `threads`, `repeat` and `quiet`.
+Unknown keys raise `ArgumentError` before writing. Other preference keys and
+other packages' settings are preserved.
+
+By default, delete local settings and allow defaults inherited from other Julia
+environments or `Project.toml` to become visible. `block_inheritance=true` instead
+uses Preferences.jl's clear markers to block inherited values at the selected
+storage level. `export_prefs=true` selects `Project.toml`; otherwise select
+`LocalPreferences.toml`. Resetting one level does not delete values at the other.
+
+```julia
+reset_check_preferences!(:threads) # inherit a shared value, if any
+reset_check_preferences!(block_inheritance=true) # use collector defaults
+```
+
+This changes future checks only and does not require restarting Julia.
+"""
+function reset_check_preferences!(keys::Symbol...; block_inheritance::Bool = false,
+        export_prefs::Bool = false)
+    selected = isempty(keys) ? CHECK_PREFERENCE_KEYS : keys
+    all(key -> key in CHECK_PREFERENCE_KEYS, selected) ||
+        throw(ArgumentError("check preferences accept only threads, repeat and quiet"))
+    Preferences.delete_preferences!(@__MODULE__,
+        ("check_" * String(key) for key in selected)...;
+        block_inheritance, export_prefs, force = true)
+    return check_preferences()
+end
 
 """
     PerfConfig(backend::Symbol; path=pwd(), kwargs...)
@@ -9,7 +121,8 @@ Julia-native public configuration object for `@check`.
 `PerfConfig` keeps the existing dictionary-based API available while giving
 REPL, scripts, and Pluto notebooks a clearer object to pass around. Keyword
 arguments are stored with symbolic keys and validated by `normalize_config`
-just before a check runs.
+just before a check runs. Explicit options override [`check_preferences`](@ref).
+Construction does not read or write preferences or start a worker.
 
 Example:
 
@@ -116,6 +229,9 @@ defaults with the public `Dict` passed to `@check`.
 
 Users can keep passing dictionaries; `CheckConfig` exists to make required
 fields and cache identity explicit before workers are launched.
+`check_configuration` records the resolved shared defaults, their origins and
+the effective configuration hash. It is copied into result qualification; the
+origins themselves do not participate in cache identity.
 """
 struct CheckConfig
     backend::Symbol
@@ -131,6 +247,7 @@ struct CheckConfig
     repeat::Bool
     include_current::Bool
     config_hash::String
+    check_configuration::Dict{String, Any}
 end
 
 function PackageVersionSpec(pkgconf::Tuple)
@@ -179,8 +296,10 @@ end
 """
     normalize_config(backend::Symbol, config::Dict) -> CheckConfig
 
-Merge backend defaults with a user configuration dictionary, validate shared
-PerfChecker options, and return a `CheckConfig`.
+Merge backend defaults, runtime [`check_preferences`](@ref) and explicit user
+options, validate shared PerfChecker options, and return a frozen `CheckConfig`.
+Explicit options take precedence. Shared `threads`, `repeat` and `quiet` use the
+same validation whether supplied explicitly or by Preferences.jl.
 
 Required shared option:
 
@@ -189,8 +308,19 @@ Required shared option:
 Common optional options include `:tags`, `:threads`, `:track`, `:pkgs`,
 `:devops`, `:extra_pkgs`, `:targets`, and `:repeat`.
 """
-function normalize_config(backend::Symbol, config::Dict)
-    options = default_options(config, backend)
+function normalize_config(backend::Symbol, config::Dict;
+        preferences = check_preferences(), defaults = Dict{Symbol, Any}())
+    _validate_check_settings(preferences)
+    options = merge(Dict{Symbol, Any}(:threads => 1, :repeat => true, :quiet => false),
+        default_options(Val(backend)), defaults, preferences, config)
+    _validate_check_settings(options)
+    options[:threads] = Int(options[:threads])
+    check_configuration = Dict{String, Any}(
+        "values" => Dict(String(key) => options[key] for key in CHECK_PREFERENCE_KEYS),
+        "origins" => Dict(String(key) => haskey(config, key) ? "explicit" :
+                                         haskey(preferences, key) ? "preferences" :
+                                         "default"
+        for key in CHECK_PREFERENCE_KEYS))
 
     haskey(options, :path) ||
         throw(ArgumentError("missing required :path option for @check $backend"))
@@ -200,8 +330,6 @@ function normalize_config(backend::Symbol, config::Dict)
 
     tags = normalize_symbols(get(options, :tags, Symbol[:none]), :tags)
     threads = get(options, :threads, 1)
-    threads isa Integer && threads > 0 ||
-        throw(ArgumentError(":threads must be a positive integer"))
     track = String(get(options, :track, "none"))
 
     packages = haskey(options, :pkgs) ? PackageVersionSpec(options[:pkgs]) : nothing
@@ -224,19 +352,30 @@ function normalize_config(backend::Symbol, config::Dict)
         (option_fingerprint *= "|profile-source-contract=exact-containment-v1")
     config_hash = stable_uuid_string(
         join(string.([backend, path, tags, threads, track, option_fingerprint]), "|"))
+    check_configuration["config_hash"] = config_hash
 
     return CheckConfig(
         backend, options, path, tags, Int(threads), track, packages, devops,
-        extra_pkgs, targets, repeat, include_current, config_hash)
+        extra_pkgs, targets, repeat, include_current, config_hash, check_configuration)
 end
 
-normalize_config(config::PerfConfig) = normalize_config(config.backend, to_dict(config))
+function normalize_config(config::PerfConfig; kwargs...)
+    normalize_config(config.backend, to_dict(config); kwargs...)
+end
 
-function normalize_config(backend::Symbol, config::PerfConfig)
+normalize_config(config::CheckConfig) = config
+
+function normalize_config(backend::Symbol, config::CheckConfig)
+    backend == config.backend || throw(ArgumentError(
+        "backend mismatch: requested $backend but CheckConfig uses $(config.backend)"))
+    return config
+end
+
+function normalize_config(backend::Symbol, config::PerfConfig; kwargs...)
     backend == config.backend ||
         throw(ArgumentError(
             "backend mismatch: macro requested $backend but PerfConfig uses $(config.backend)"))
-    return normalize_config(config)
+    return normalize_config(config; kwargs...)
 end
 
 function legacy_options(config::CheckConfig)

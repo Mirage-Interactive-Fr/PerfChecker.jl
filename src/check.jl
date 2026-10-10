@@ -449,8 +449,8 @@ function _copy_check_environment(source, destination; exclude = String[])
 end
 
 "Prepare one immutable package target environment for reuse by fresh workers."
-function _prepare_check_environment(config::PerfConfig)
-    normalized = normalize_config(config)
+function _prepare_check_environment(config::Union{PerfConfig, CheckConfig})
+    normalized = config isa CheckConfig ? config : normalize_config(config)
     targets = run_targets(normalized)
     length(targets) == 1 || throw(ArgumentError(
         "suite environment preparation requires exactly one package target"))
@@ -483,7 +483,13 @@ function _prepare_check_environment(config::PerfConfig)
 end
 
 function check_function(x::Symbol, d::Dict, block1, block2; qualification = nothing)
-    config = normalize_config(x, d)
+    return check_function(x, normalize_config(x, d), block1, block2; qualification)
+end
+
+function check_function(x::Symbol, config::CheckConfig, block1, block2;
+        qualification = nothing)
+    x == config.backend || throw(ArgumentError(
+        "backend mismatch: requested $x but CheckConfig uses $(config.backend)"))
     di = legacy_options(config)
     g = prep(di, block1, x)
     h = check(di, block2, x)
@@ -628,6 +634,7 @@ function check_function(x::Symbol, d::Dict, block1, block2; qualification = noth
                         "qualification block must return a dictionary"))
                     qualification_evidence = Dict{String, Any}(
                         string(key) => value for (key, value) in pairs(raw_evidence))
+                    qualification_evidence["check_configuration"] = deepcopy(config.check_configuration)
                     _finalize_qualification!(qualification_evidence)
                     failure = _qualification_failure_kind(qualification_evidence)
                     failure === nothing ||
@@ -666,6 +673,7 @@ function check_function(x::Symbol, d::Dict, block1, block2; qualification = noth
 
             qualification_evidence["measurement_state_policy"] = get(
                 run_options, :fresh_feature, false) ? "fresh" : "reuse"
+            qualification_evidence["check_configuration"] = deepcopy(config.check_configuration)
             push!(results.tables, res)
             push!(results.pkgs, target.spec)
             push!(results.qualifications, qualification_evidence)
@@ -734,11 +742,7 @@ function check_function(x::Symbol, d::Dict, block1, block2; qualification = noth
     return results
 end
 
-function check_function(x::Symbol, config::CheckConfig, block1, block2; kwargs...)
-    return check_function(x, legacy_options(config), block1, block2; kwargs...)
-end
-
-function check_function(config::PerfConfig, block1, block2; kwargs...)
+function check_function(config::Union{PerfConfig, CheckConfig}, block1, block2; kwargs...)
     return check_function(config.backend, config, block1, block2; kwargs...)
 end
 
@@ -763,14 +767,15 @@ function check_function(backends::AbstractVector,
     # Resolve every collector and validate every configuration before starting
     # the first worker. Preserve repeated requests and their original order.
     fallback = which(check, Tuple{Any, Any, Any})
+    preferences = check_preferences()
     configs = map(requested) do backend
         which(check, Tuple{Dict{Symbol, Any}, Expr, typeof(Val(backend))}) == fallback &&
             throw(ArgumentError("check backend $backend is unavailable; load its collector package"))
-        config = normalize_config(backend, options)
+        config = normalize_config(backend, options; preferences)
         run_targets(config)
         config
     end
-    return [check_function(backend, copy(config.options), block1, block2; kwargs...)
+    return [check_function(backend, config, block1, block2; kwargs...)
             for (backend, config) in zip(requested, configs)]
 end
 
