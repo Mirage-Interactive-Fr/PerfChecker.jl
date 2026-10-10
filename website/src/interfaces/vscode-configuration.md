@@ -30,8 +30,9 @@ package's other test dependencies deliberately if its items import them.
 
 ### Guided setup from Studio
 
-This guided setup belongs to the **1.0.1 candidate** and is awaiting publication.
-For public extension 1.0.0, use the manual controller recipe above.
+Guided setup is available in extension **1.0.1**. Install it from the
+[Marketplace or release VSIX](vscode.md#Install-and-prepare). If you still use
+extension 1.0.0, use the manual controller recipe above or upgrade.
 
 With PerfChecker for VS Code 1.0.1 or newer, choose **Set up workspace and create
 suite** in an unconfigured Studio, or **PerfChecker: Create feature suite**.
@@ -66,8 +67,8 @@ or newer within the 1.x series**, separately from the controller. An existing
 Pluto project using companion 1.0.0 requires an explicit upgrade confirmation;
 the compatibility check does not update it silently. Declining keeps that
 environment unchanged. Core 1.0.1 is registered in General and the root
-`v1.0.1` tag is available. Wait for the corrected extension before using this
-guided setup; the Pluto companion's separate General registration is pending.
+`v1.0.1` tag is available. The guided setup installs the companion from that
+public tag while its separate General registration is pending.
 See the
 [separate Pluto installation recipe](../guide/installation.md#Prepare-the-integrated-Pluto-candidate)
 and [existing notebook migration](vscode-workflows.md#Use-the-corrected-suite-plot-renderer).
@@ -117,7 +118,7 @@ All setting names below have the prefix `perfchecker.`.
 | `uiConfiguration` | `perf/perfchecker-ui.json` | Shared visual suite selection |
 | `gitTargets` | `[]` | Named branches, tags or commits measured alongside other targets |
 | `comparisonPolicies` | `[]` | Exact or grouped baseline policies |
-| `plutoProject` | `perf/pluto` | Separate Pluto project for the 1.0.1 candidate notebook integration |
+| `plutoProject` | `perf/pluto` | Separate Pluto project for the notebook integration |
 
 The visual suite editor manages the richer selection. See [comparison configuration](../reference/comparisons.md) for policy fields and aggregation semantics.
 
@@ -151,7 +152,7 @@ Unavailable is separate from passing or failing. Remove a tool you do not need, 
 
 Use **PerfChecker: Configure MCP connection and models**, or **Configure MCP connection** in chat. For a saved HTTP provider, choose **Advisor provided by an MCP HTTP tool**, enter its address and explicit revision, then **Test connection / discover**. Inspect **Required arguments and tool schema**, select **Use**, check the prompt and other arguments, then **Save configuration**. Chat requires `mcp_http` and `text` response mode. MCP defines no standard advice-tool name. Discovery sends no saved evidence and does not test answer generation.
 
-The extension **1.0.1 development candidate** also provides **Connect local MCP server** in chat and **PerfChecker: Connect local MCP server (stdio)**. This opens **Local MCP server · stdio** with an absolute native executable, a JSON argument array and an absolute working directory. Discover its paginated inventory, choose advice with **Use** and optionally a separate tool with **Use for implementation**, then **Connect for this editor session**. Follow the [complete stdio recipe](../mcp-advisor.md#Connect-a-local-stdio-server); this connector is not included in public extension 1.0.0.
+Extension **1.0.1** also provides **Connect local MCP server** in chat and **PerfChecker: Connect local MCP server (stdio)**. This opens **Local MCP server · stdio** with an absolute native executable, a JSON argument array and an absolute working directory. Discover its paginated inventory, choose advice with **Use** and optionally a separate tool with **Use for implementation**, then **Connect for this editor session**. Follow the [complete stdio recipe](../mcp-advisor.md#Connect-a-local-stdio-server) and [platform qualification](vscode.md#Qualification-and-reporting-a-problem); extension 1.0.0 did not include this connector.
 
 MCP is the tool protocol; a server is not necessarily an agent or model. The chosen tool must accept the prompt and return advice. Both connection types require `HTTP` in the selected Julia controller: the stdio connector adapts a temporary HTTP endpoint. **Local** means the extension host, including a Remote SSH host or container; executable paths and checkout access must work there. Interactive OAuth login is unavailable. An authenticated Codex CLI remains an [optional connector example](../mcp-advisor.md#Connect-an-authenticated-Codex-CLI), with its own executable requirements.
 
@@ -210,7 +211,7 @@ A configured implementation tool must access and honor the supplied isolated che
 | Local MCP executable or checkout is missing | Check absolute paths on the extension host, including Remote SSH/container paths |
 | Local MCP server exited or timed out | Wait for cleanup, inspect its prerequisites, then explicitly reconnect |
 | Pluto setup cannot resolve HTTP | Use the separate `plutoProject`; qualified Pluto 1.0.4 uses HTTP 1.x, while the MCP controller uses HTTP 2.x |
-| Existing Pluto/controller project has Core 1.0.0 or the Pluto project has companion 1.0.0 | Confirm the selected environment's explicit upgrade after Core 1.0.1 and companion tag `v1.0.1` are available; existing suite notebook source also needs the migration above |
-| Notebook session unavailable | Inspect **PerfChecker Pluto** output and [session controls](vscode-workflows.md#Manage-the-session-and-saved-source); public 1.0.0 needs an installed Julia kernel |
+| Existing Pluto/controller project has Core 1.0.0 or the Pluto project has companion 1.0.0 | Confirm the selected environment's explicit upgrade to Core 1.0.1 and companion tag `v1.0.1`; existing suite notebook source also needs the migration above |
+| Notebook session unavailable | Inspect **PerfChecker Pluto** output and [session controls](vscode-workflows.md#Manage-the-session-and-saved-source); extension 1.0.0 needs an installed Julia kernel |
 
 Worker logs are available through **PerfChecker: Show worker output**. Keep tokens out of configuration files and troubleshooting reports.
