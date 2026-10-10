@@ -86,6 +86,12 @@ See the [Public API](public-api.md) for the full setter, reader and reset contra
 and the [Preferences.jl reference](https://juliapackaging.github.io/Preferences.jl/stable/reference/)
 for environment-stack and clear-marker semantics.
 
+For a reproducible CI experiment and an honest assessment of warmup, thread
+settings and cache reuse, follow
+[persistent defaults in CI](../tutorials/ci.md#Persistent-defaults-in-CI).
+Preferences configure future checks; they are not measurements of the cost of
+loading Preferences.jl or a claim that a changed default makes a package faster.
+
 ## Benchmarks
 
 ```@raw html
