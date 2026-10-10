@@ -323,11 +323,14 @@ function _local_repository_path(path)
         (isabspath(path) || !occursin(r"^[^/\\]+:", path))
 end
 
+"Materialize linked metadata and make only the private regular file writable."
 function _privatize_metadata!(path, original)
-    islink(path) || return
-    contents = read(original)
-    rm(path)
-    write(path, contents)
+    if islink(path)
+        contents = read(original)
+        rm(path)
+        write(path, contents)
+    end
+    chmod(path, filemode(path) | 0o600)
     nothing
 end
 
@@ -438,6 +441,11 @@ function _copy_check_environment(source, destination; exclude = String[])
         for name in readdir(source)
             name in excluded && continue
             cp(joinpath(source, name), joinpath(destination, name))
+        end
+        # Pkg and metadata relocation write into this private copy. Never follow
+        # a copied directory link: its target may still belong to the seed.
+        for (directory, _, _) in walkdir(destination; follow_symlinks = false)
+            chmod(directory, filemode(directory) | 0o700)
         end
         _relocate_check_metadata!(source, destination)
     catch
