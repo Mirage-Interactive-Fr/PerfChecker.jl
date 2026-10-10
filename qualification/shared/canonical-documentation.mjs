@@ -301,7 +301,7 @@ for (const channel of channels) {
         const link = page.locator(`.vp-doc a[href$="/${entry.report}"]`);
         assert.equal(await link.innerText(), 'Original JSON');
         const url = new URL(entry.report, local).href;
-        assert.equal(new URL(await link.getAttribute('href'), local).href, url);
+        assert.equal(new URL(await link.getAttribute('href'), workflow).href, url);
         const [response] = await Promise.all([
           page.waitForResponse(response => response.url() === url), link.click(),
         ]);
