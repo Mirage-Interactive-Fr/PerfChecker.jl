@@ -140,7 +140,7 @@ jobs:
           julia --startup-file=no --project="$pkgeval_project" -e 'using Pkg; Pkg.instantiate()'
           cp "$pkgeval_project/Manifest.toml" .pkgeval/PkgEval-Manifest.toml
       - name: Evaluate the registered package in the PkgEval sandbox
-        shell: julia --startup-file=no --project=${{ env.PKGEVAL_PROJECT }} {0}
+        shell: julia --startup-file=no --project=/home/runner/.julia/dev/PkgEval {0}
         run: |
           using Dates, TOML, UUIDs
           request = TOML.parsefile(".pkgeval/request.toml")
