@@ -85,7 +85,8 @@ jobs:
   test:
     name: Julia ${{ matrix.version }} - ${{ matrix.os }} - ${{ matrix.arch }} - ${{ github.event_name }}
     runs-on: ${{ matrix.runner || matrix.os }}
-    timeout-minutes: 90
+    # Preserve the complete macOS suite after its measured cold-worker overrun.
+    timeout-minutes: ${{ matrix.os == 'macOS-latest' && 180 || 90 }}
     strategy:
       fail-fast: false
       matrix:

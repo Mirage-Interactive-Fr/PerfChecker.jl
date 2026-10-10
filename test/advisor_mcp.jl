@@ -101,10 +101,12 @@ end
         "recommendations" => [
             Dict("id" => "e1", "rule_id" => "allocation", "hypothesis" => "Observed bytes",
             "action" => "Inspect temporaries", "validation" => "Repeat measurements")])
+    # Allow cold isolated-client compilation in functional protocol fixtures;
+    # advisor_chat.jl retains the explicit product-deadline assertions.
     config(version = "2026-07-28"; kwargs...) = AdvisorConfig(protocol = :mcp_http,
         endpoint = "http://127.0.0.1:$port/mcp", mcp_tool = "advise", mcp_prompt_argument = "question",
         mcp_arguments = Dict("locale" => "English ✓"), mcp_version = version, mcp_response = :structured,
-        instructions = "Prioritize improvements to shared code.", timeout = 60; kwargs...)
+        instructions = "Prioritize improvements to shared code.", timeout = 120; kwargs...)
     try
         HTTP.get("http://127.0.0.1:$port/ready")
         # Real worker transport, not just a parser test.
@@ -150,7 +152,7 @@ end
         mode[] = :structured
         text_config = AdvisorConfig(protocol = :mcp_http, endpoint = config().endpoint,
             mcp_tool = "advise", mcp_prompt_argument = "question",
-            mcp_arguments = Dict("locale" => "en"), timeout = 60)
+            mcp_arguments = Dict("locale" => "en"), timeout = 120)
         mode[] = :plain
         text_result = narrate_advice(advice; config = text_config)
         @test text_result["status"] == "complete"
@@ -168,7 +170,7 @@ end
             experiments = [Dict("id" => "run", "purpose" => "measure")])
         mode[] = :structured
         missing = AdvisorConfig(protocol = :mcp_http, endpoint = config().endpoint,
-            mcp_tool = "absent", timeout = 60)
+            mcp_tool = "absent", timeout = 120)
         empty!(requests)
         @test narrate_advice(advice; config = missing)["status"] == "error"
         @test !any(r -> r.body["method"] == "tools/call", requests)
