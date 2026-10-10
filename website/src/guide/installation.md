@@ -3,7 +3,7 @@
 ## Core package
 
 The Julia API, command line and text REPL are in PerfChecker itself. **PerfChecker
-1.0.0 is registered in Julia General** and requires Julia 1.10 or newer:
+1.0.1 is registered in Julia General** and requires Julia 1.10 or newer:
 
 ```julia
 import Pkg
@@ -55,10 +55,12 @@ Neither companion is separately registered in General yet.
 
 The immutable `v1.0.0` tag above does **not** include the corrected agent
 interruption and cleanup-failure behavior described in the
-[hosted guide](../operations/hosted.md#Cancel-and-stop-safely). Until the new
-root release is registered and tagged, use the reviewed source revision below
-for both Core and Web. PerfCheckerWeb's package version remains **1.0.0**;
-the repository revision identifies this corrected source.
+[hosted guide](../operations/hosted.md#Cancel-and-stop-safely). The root
+`v1.0.1` tag includes these corrections, and Core 1.0.1 is registered in General.
+PerfCheckerWeb's separate General registration is pending; its package version
+remains **1.0.0**. The recipe below keeps the reviewed source revision for both
+Core and Web. Companion versions and package-prefixed tags are managed
+separately from the root tag.
 
 Choose a new controller environment, separate from the measured packages and
 from Pluto:
@@ -188,15 +190,17 @@ HTTP/UI qualification remains pending.
 
 The VS Code Pluto integration is being qualified for extension **1.0.1** and
 requires corrected **PerfChecker core 1.0.1** and **PerfCheckerPluto 1.0.1**.
-Wait for the corrected extension, Core 1.0.1 in General and TagBot's `v1.0.1`
-repository tag before following its installation steps. Public extension 1.0.0 retains its earlier
+Core 1.0.1 is registered in General and the root `v1.0.1` tag is available.
+Wait for the corrected extension before using its guided setup. The Pluto
+companion is available from the tagged repository subdirectory while its own
+General registration is pending. Public extension 1.0.0 retains its earlier
 notebook workflow; the standalone Pluto interface above is already available.
 
 The candidate's explicit **Install Pluto environment** action prepares
 `perf/pluto`. Review the listed packages and selected folder before confirming.
-For a disposable setup check, run this after the registration and tag above are
-available. It creates a new project and does not modify an existing controller
-or notebook environment:
+For a disposable setup check with the published Core and tagged Pluto source,
+use the recipe below. It creates a new project and does not modify an existing
+controller or notebook environment:
 
 ```julia
 import Pkg

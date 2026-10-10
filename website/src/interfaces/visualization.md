@@ -6,10 +6,10 @@
 
 PerfCheckerMakie turns saved measurements into figures. Views come from saved run bundles or previously exported plot models; rendering does not re-measure.
 
-The offline controls and exports described here use the **1.0.1 source candidate**
-of Core and PerfCheckerMakie. Install both from the same reviewed revision using
-the [candidate recipe below](#Customize-and-export-Makie-figures); registered Core
-1.0.0 alone does not provide these additions.
+The offline controls and exports described here require **PerfChecker 1.0.1**
+and **PerfCheckerMakie 1.0.1**. Core is registered in General; the Makie companion
+is currently installed from source while its registration is pending. Install
+both from the same reviewed revision using the [source recipe below](#Customize-and-export-Makie-figures).
 
 ## Build a plot from a saved run
 
@@ -146,20 +146,20 @@ actual static SVG instead.
 
 ## Customize and export Makie figures
 
-This section uses the **PerfCheckerMakie 1.0.1 development candidate**:
+This section uses **PerfCheckerMakie 1.0.1**, currently available from source:
 `figure_kwargs`, `axis_kwargs`, `plot_kwargs`, `saveplot`, `checkres_figures`
 and the export behavior below are additions to that companion. The public
 1.0.0 companion still provides `performance_figure` and saved-model rendering;
 installing registered PerfChecker 1.0.0 does not supply these newer methods.
-For the candidate, use the [repository-subdirectory installation](../guide/installation.md#Optional-packages)
+Use the [repository-subdirectory installation](../guide/installation.md#Optional-packages)
 with `subdir = "packages/PerfCheckerMakie"` and the reviewed source revision
 `8864d3a0fec4e58390090324955eb8dbcebd5e07`, whose
 [companion source](https://github.com/Mirage-Interactive-Fr/PerfChecker.jl/tree/8864d3a0fec4e58390090324955eb8dbcebd5e07/packages/PerfCheckerMakie)
-declares version 1.0.1. These candidate instructions do not assume a published
-`v1.0.1` tag or a General registration.
+declares version 1.0.1. This companion is also present in the published root
+`v1.0.1` tag; its separate General registration is pending.
 
 Install Core and the companion from the same source revision in a dedicated
-environment. The candidate companion requires Core 1.0.1 or later; leaving a
+environment. The companion requires Core 1.0.1 or later; leaving a
 registered Core 1.0.0 beside it does not satisfy that contract:
 
 ```julia

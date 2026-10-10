@@ -65,8 +65,10 @@ The corrected 1.0.1 notebook setup installs and checks **PerfCheckerPluto 1.0.1
 or newer within the 1.x series**, separately from the controller. An existing
 Pluto project using companion 1.0.0 requires an explicit upgrade confirmation;
 the compatibility check does not update it silently. Declining keeps that
-environment unchanged. Wait for the corrected extension, Core 1.0.1 in General
-and the `v1.0.1` repository tag before using this setup. See the
+environment unchanged. Core 1.0.1 is registered in General and the root
+`v1.0.1` tag is available. Wait for the corrected extension before using this
+guided setup; the Pluto companion's separate General registration is pending.
+See the
 [separate Pluto installation recipe](../guide/installation.md#Prepare-the-integrated-Pluto-candidate)
 and [existing notebook migration](vscode-workflows.md#Use-the-corrected-suite-plot-renderer).
 
