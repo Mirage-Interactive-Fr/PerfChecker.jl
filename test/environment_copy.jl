@@ -180,9 +180,11 @@ end
             "name = \"ReadonlyDependency\"\nuuid = \"fa635044-6c9b-4c82-94a4-9aa6ef3a1a43\"\nversion = \"1.0.0\"\n")
         write(joinpath(dependency, "src", "ReadonlyDependency.jl"),
             "module ReadonlyDependency\nvalue() = 42\nend\n")
-        project, manifest = joinpath(source, "Project.toml"), joinpath(metadata, "locked.toml")
+        project, manifest = joinpath(source, "Project.toml"),
+        joinpath(metadata, "locked.toml")
         write(project, "manifest = \"metadata/locked.toml\"\n[deps]\n")
-        write(manifest, "manifest_format = \"2.0\"\njulia_version = $(repr(string(VERSION)))\n[deps]\n")
+        write(manifest,
+            "manifest_format = \"2.0\"\njulia_version = $(repr(string(VERSION)))\n[deps]\n")
         chmod(project, 0o444)
         chmod(manifest, 0o444)
         chmod(metadata, 0o555)
@@ -207,7 +209,8 @@ end
                 external_directory = mkpath(joinpath(root, "external"))
                 chmod(external_directory, 0o555)
                 symlink("../external", joinpath(source, "linked-directory"))
-                private = PerfChecker._copy_check_environment(source, joinpath(root, "linked"))
+                private = PerfChecker._copy_check_environment(
+                    source, joinpath(root, "linked"))
                 @test !islink(joinpath(private, "Manifest.toml"))
                 @test filemode(joinpath(private, "Manifest.toml")) & 0o200 != 0
                 @test islink(joinpath(private, "linked-directory"))

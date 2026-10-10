@@ -47,7 +47,8 @@
             source_directory = mkpath(joinpath(directory, "published"))
             source_states = Dict{String, Any}()
             try
-                for filename in [basename(path), "catalog.json", collect(values(sources))...]
+                for filename in [
+                    basename(path), "catalog.json", collect(values(sources))...]
                     source = joinpath(source_directory, filename)
                     write(source, read(joinpath(dirname(path), filename)))
                     chmod(source, 0o444)
