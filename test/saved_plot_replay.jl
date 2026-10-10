@@ -44,19 +44,39 @@
     rewrite(path::AbstractString, change::Function) = rewrite(change, path)
     function negative_case(change; reason = nothing)
         mktempdir() do directory
-            for filename in [basename(path), "catalog.json", collect(values(sources))...]
-                cp(joinpath(dirname(path), filename), joinpath(directory, filename))
+            source_directory = mkpath(joinpath(directory, "published"))
+            source_states = Dict{String, Any}()
+            try
+                for filename in [basename(path), "catalog.json", collect(values(sources))...]
+                    source = joinpath(source_directory, filename)
+                    write(source, read(joinpath(dirname(path), filename)))
+                    chmod(source, 0o444)
+                    source_states[source] = (; mode = filemode(source),
+                        hash = sha256(read(source)))
+                    @test filemode(source) & 0o222 == 0
+                    # Pkg installs read-only sources; cp would retain those permissions.
+                    write(joinpath(directory, filename), read(source))
+                end
+                change(directory)
+                local_path = joinpath(directory, basename(path))
+                before = read(local_path)
+                model = saved_plot(local_path)
+                @test !haskey(model.options, "time_unit")
+                @test !haskey(model.options, "allocation_unit")
+                @test PerfChecker._tradeoff_plot_units(model.options) ==
+                      ("unit unspecified", "unit unspecified")
+                reason === nothing || @test model.options["unit_resolution"] == reason
+                @test read(local_path) == before
+                for (source, state) in source_states
+                    @test filemode(source) == state.mode
+                    @test sha256(read(source)) == state.hash
+                end
+            finally
+                # Windows needs the read-only attribute cleared for temporary cleanup.
+                for source in keys(source_states)
+                    chmod(source, 0o600)
+                end
             end
-            change(directory)
-            local_path = joinpath(directory, basename(path))
-            before = read(local_path)
-            model = saved_plot(local_path)
-            @test !haskey(model.options, "time_unit")
-            @test !haskey(model.options, "allocation_unit")
-            @test PerfChecker._tradeoff_plot_units(model.options) ==
-                  ("unit unspecified", "unit unspecified")
-            reason === nothing || @test model.options["unit_resolution"] == reason
-            @test read(local_path) == before
         end
     end
     negative_case(directory -> rm(joinpath(directory, "catalog.json")))
