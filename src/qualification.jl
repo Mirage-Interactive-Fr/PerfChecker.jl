@@ -331,7 +331,8 @@ end
         run(Cmd(Cmd(["git", "add", "sample.txt"]); dir))
         run(Cmd(Cmd(["git", "commit", "--quiet", "-m", "fixture"]); dir))
         # A cacheinfo entry has the committed blob but no refreshed stat data.
-        blob = strip(read(Cmd(Cmd(["git", "rev-parse", "HEAD:sample.txt"]); dir), String))
+        blob = String(strip(read(
+            Cmd(Cmd(["git", "rev-parse", "HEAD:sample.txt"]); dir), String)))
         run(Cmd(
             Cmd(["git", "update-index", "--cacheinfo", "100644", blob, "sample.txt"]); dir))
         index_path = joinpath(dir, ".git", "index")
