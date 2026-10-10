@@ -47,6 +47,13 @@ Julia's normal environment-stack inheritance applies; local preferences override
 exported project preferences. Feature and variant options and suite run overrides
 remain explicit. The suite's internal `quiet=true` default is below preferences.
 
+Defaults apply only when the caller leaves an option unset. VS Code feature
+suites can inherit these controller defaults; an explicit feature setting still
+wins. Investigations use their own scenario thread setting (one by default),
+and the TestItems CLI explicitly defaults to one thread. These paths do not
+automatically inherit the persistent thread default. Preferences and PkgEval do
+not require a new editor extension; they are package and qualification features.
+
 ```julia
 config = PerfConfig(:profile; path=pwd(), threads=1)
 # This check uses one thread even when the persistent default is two.
@@ -85,6 +92,12 @@ not describe controller defaults inherited from another environment.
 See the [Public API](public-api.md) for the full setter, reader and reset contracts
 and the [Preferences.jl reference](https://juliapackaging.github.io/Preferences.jl/stable/reference/)
 for environment-stack and clear-marker semantics.
+
+For a reproducible CI experiment and an honest assessment of warmup, thread
+settings and cache reuse, follow
+[persistent defaults in CI](../tutorials/ci.md#Persistent-defaults-in-CI).
+Preferences configure future checks; they are not measurements of the cost of
+loading Preferences.jl or a claim that a changed default makes a package faster.
 
 ## Benchmarks
 
