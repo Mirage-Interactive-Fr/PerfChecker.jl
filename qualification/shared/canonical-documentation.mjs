@@ -16,6 +16,14 @@ const optionalOwners = [['linuxperf', 'PerfCheckerLinuxPerf'], ['likwid', 'PerfC
   ['tachikoma', 'PerfCheckerTachikoma']];
 const illustratedGuides = new Set(['interfaces/vscode.html', 'interfaces/vscode-configuration.html',
   'interfaces/vscode-workflows.html', 'interfaces/vscode-videos.html', 'mcp-advisor.html']);
+const savedDiagnostics = ['latency', 'memory'].flatMap(kind => ['1.10.2', '1.11.0'].map(version => ({
+  tab: `${kind === 'latency' ? 'Latency' : 'Memory'} · Oxygen ${version}`,
+  image: `assets/screenshots/vscode/v101/${kind}-oxygen-${version}-fac983.png`,
+  report: `examples/real-packages/oxygen-saved-diagnostics/${kind}-${version}.json`,
+})));
+const replImage = 'assets/screenshots/oxygen-repl-unicodeplots-20261010.png';
+const savedDiagnosticAssets = [...savedDiagnostics.flatMap(entry => [entry.image, entry.report]), replImage];
+const sha256 = bytes => createHash('sha256').update(bytes).digest('hex');
 function htmlIds(html) {
   return new Set([...html.matchAll(/\bid="([^"]+)"/g)].map(match => match[1].replaceAll('&amp;', '&')));
 }
@@ -57,6 +65,19 @@ for (const channel of channels) {
   assert.equal(info.channel, channel); assert.equal(info.url, origin + info.base);
   const exportArtifact = await readExport(site, info.channel, info.revision);
   console.log(`${channel}: SFTP export preflight passed (${exportArtifact.files.length} files)`);
+  // The original 1.0.1 archive predates this gallery, as does 1.0.0. Detect its
+  // actual assets; a partial gallery must fail instead of silently skipping.
+  const hasSavedDiagnostics = exportArtifact.files.some(file => savedDiagnosticAssets.includes(file.path));
+  const savedDiagnosticBytes = new Map();
+  if (hasSavedDiagnostics) {
+    for (const asset of savedDiagnosticAssets) {
+      const source = await readFile(join('website/src/public', asset));
+      const built = await readFile(join(site, asset));
+      assert.deepEqual(built, source, `${channel}/${asset}: exact original bytes`);
+      assert.equal(sha256(built), sha256(source), `${channel}/${asset}: original SHA-256`);
+      savedDiagnosticBytes.set(asset, source);
+    }
+  }
   const pages = await enumerate(site);
   const pageIds = new Map();
   for (const file of pages) pageIds.set(file, htmlIds(await readFile(file, 'utf8')));
@@ -232,6 +253,65 @@ for (const channel of channels) {
       await page.reload({ waitUntil: 'networkidle' });
       assert.ok(await page.locator('h1').isVisible());
       await page.setViewportSize({ width: 1440, height: 900 });
+    }
+    if (hasSavedDiagnostics) {
+      const workflow = new URL('interfaces/vscode-workflows.html', local).href;
+      const measurements = new URL('guide/understanding-measurements.html', local).href;
+      const screenshots = [
+        ...savedDiagnostics.map(entry => ({ ...entry, route: workflow, dimensions: [1800, 1400] })),
+        { tab: 'REPL / CLI', image: replImage, route: measurements, dimensions: [1750, 630] },
+      ];
+      for (const width of [1440, 390, 360]) {
+        await page.setViewportSize({ width, height: 900 });
+        for (const entry of screenshots) {
+          await page.goto(entry.route, { waitUntil: 'networkidle' });
+          const tab = page.getByRole('tab', { name: entry.tab, exact: true });
+          await tab.click();
+          assert.equal(await tab.getAttribute('aria-selected'), 'true', `${entry.tab}: selected tab`);
+          const image = page.locator(`.vp-doc img[src$="/${entry.image}"]`);
+          await image.scrollIntoViewIfNeeded();
+          assert.ok(await image.isVisible(), `${entry.tab}: visible at ${width}px`);
+          await image.evaluate(image => image.decode());
+          assert.deepEqual(await image.evaluate(image => [image.naturalWidth, image.naturalHeight]), entry.dimensions);
+          assert.ok((await image.getAttribute('alt'))?.length > 40);
+          assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1),
+            `${entry.tab}: page overflows at ${width}px`);
+          const imageUrl = new URL(entry.image, local).href;
+          assert.equal(new URL(await image.getAttribute('src'), local).href, imageUrl);
+          const fullSize = image.locator('..');
+          assert.equal(new URL(await fullSize.getAttribute('href'), local).href, imageUrl);
+          if (width === 1440) {
+            const [response] = await Promise.all([
+              page.waitForResponse(response => response.url() === imageUrl), fullSize.click(),
+            ]);
+            await page.waitForURL(imageUrl);
+            assert.equal(response.status(), 200);
+            const bytes = await response.body();
+            assert.deepEqual(bytes, savedDiagnosticBytes.get(entry.image), `${entry.tab}: full-size original bytes`);
+            assert.equal(sha256(bytes), sha256(savedDiagnosticBytes.get(entry.image)));
+            const original = page.locator('body > img');
+            await original.evaluate(image => image.decode());
+            assert.deepEqual(await original.evaluate(image => [image.naturalWidth, image.naturalHeight]), entry.dimensions);
+          }
+        }
+      }
+      await page.setViewportSize({ width: 1440, height: 900 });
+      for (const entry of savedDiagnostics) {
+        await page.goto(workflow, { waitUntil: 'networkidle' });
+        const link = page.locator(`.vp-doc a[href$="/${entry.report}"]`);
+        assert.equal(await link.innerText(), 'Original JSON');
+        const url = new URL(entry.report, local).href;
+        assert.equal(new URL(await link.getAttribute('href'), local).href, url);
+        const [response] = await Promise.all([
+          page.waitForResponse(response => response.url() === url), link.click(),
+        ]);
+        await page.waitForURL(url);
+        assert.equal(response.status(), 200);
+        const bytes = await response.body();
+        assert.deepEqual(bytes, savedDiagnosticBytes.get(entry.report), `${entry.tab}: downloaded original JSON`);
+        assert.equal(sha256(bytes), sha256(savedDiagnosticBytes.get(entry.report)));
+      }
+      console.log(`${channel}: saved latency/memory tabs, native PNG/full-size sources, four original JSON downloads and REPL/mobile gallery passed`);
     }
     await page.goto(new URL('reference/extensions.html', local).href, { waitUntil: 'networkidle' });
     const text = await page.locator('.vp-doc').innerText();

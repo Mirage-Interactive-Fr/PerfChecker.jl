@@ -239,6 +239,12 @@ The seven reports use 2,048 events, matching the timing history. The scenario sc
 - RSS is resident memory for the whole process, including native libraries. A larger result or intentional cache is not automatically a leak.
 - Aqua reported that a zero-argument call to `recursive_merge` is ambiguous between the dictionary and vector overloads. The routes above do not make that call.
 
+To inspect separate, later diagnostics for Oxygen 1.10.2 and 1.11.0 in VS Code,
+download the [original latency and reachable-memory reports](../interfaces/vscode-workflows.md#Try-the-recorded-Oxygen-reports).
+The guide shows the actual imported files, three latency phases and all five
+memory samples. Those reports retain `performance = not_compared`; they are
+not the seven-report campaign above or a paired timing benchmark.
+
 ```@raw html
 <DiagnosticReports source="/examples/real-packages/oxygen-diagnostics/additional.json" />
 <DocMedia src="/examples/real-packages/oxygen-diagnostics/heap-types.svg" alt="Shallow GC-object sizes in the Oxygen diagnostic worker" />

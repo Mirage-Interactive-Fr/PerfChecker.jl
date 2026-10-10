@@ -141,7 +141,7 @@ The server inherits the extension host environment except private PerfChecker co
 
 The live executable choice, tool selections, loopback endpoint and generated credential are session-only. They are not written to settings or `perf/advisor.json`. Optional `advisorMcpStdioCommand`, `advisorMcpStdioArguments` and `advisorMcpStdioDirectory` settings only prefill the form; opening the panel or restarting the editor does not start a server. A connected local provider takes precedence over saved provider configuration, including a saved disabled state. Disconnect to resume that saved configuration.
 
-Choose **Cancel operation** during setup to stop the owned process. Closing an unconnected discovery panel also stops its discovery server; closing the configuration panel after connecting keeps the session available to chat. Closing Chat stops its stdio server even when idle; explicitly reconnect to use that connection again. Finish or cancel an active request before choosing **Disconnect local MCP server** in chat or the panel, or running **PerfChecker: Disconnect local MCP server**. Cancellation, timeout, EOF or server exit closes the local connection and requires an explicit reconnect. Wait for cleanup; a cleanup failure is reported and can be retried with Disconnect. PerfChecker does not adopt unrelated server processes.
+Choose **Cancel operation** during setup to stop the owned process. Closing an unconnected discovery panel also stops its discovery server; closing the configuration panel after connecting keeps the session available to chat. Closing Chat stops its stdio server even when idle; explicitly reconnect to use that connection again. Finish or cancel an active request before choosing **Disconnect local MCP server** in chat or the panel, or running **PerfChecker: Disconnect local MCP server**. Cancellation, timeout, EOF or server exit closes the local connection and requires an explicit reconnect. The request waits for connector disconnection and owned-process cleanup before becoming idle. If cleanup fails, follow the **Retry Disconnect** message by choosing **Disconnect local MCP server** again; new requests remain blocked. PerfChecker does not adopt unrelated server processes.
 
 Implementation remains a separate reviewed request. [Save your files, create the Git checkpoint, inspect the collected diff, Apply and Restore](#Switch-from-advice-to-implementation) exactly as for an HTTP tool. Stopping a server cannot undo edits it already made; an interrupted request is not evidence that its checkout is unchanged.
 
@@ -286,7 +286,25 @@ git diff <checkpoint-ref> <proposal-ref>
 
 Use the extension's restore action for the reviewed applied proposal. Apply and restore conservatively refuse when the repository's checkpointed tree has changed, even in a file outside the proposal. Inspect that drift and recover individual content deliberately. The checkpoint contains the on-disk tree; it does not encode an unsaved editor buffer or recreate every historical staging boundary.
 
-Cancellation stops the local client worker. The server may already have changed its isolated checkout or may continue work until it handles the disconnect. Failure/cancellation is not proof that an agent performed no edits. The extension retains the checkpoint but cleans up its temporary checkout after failure/cancellation; it does not necessarily retain a partial proposal for review. No partial change is automatically applied to the original project. A caller of the low-level API owns its workspace lifetime and must inspect it after an interrupted request.
+Cancellation or failure stops the local client worker. For a local stdio or
+optional Codex connection, the extension also waits for connector disconnection
+and owned-process cleanup. After successful cleanup, use **Connect local MCP
+server** or **Connect Codex CLI** explicitly to reconnect. An external HTTP
+server may continue work until it handles the disconnect; stopping the local
+client cannot establish that it stopped.
+
+If local connector cleanup fails, the extension retains the isolated copy,
+checkpoint and recovery state. **Send question** and new implementation
+preparation remain blocked. Follow the **Retry Disconnect** message with
+**Disconnect local MCP server** or **Disconnect Codex**, as appropriate. Do not
+delete the retained copy while its owner may still be running. After confirmed
+cleanup, temporary workspaces can be released; checkpoint refs remain available
+for recovery.
+
+Failure or cancellation is not proof that an agent made no edits. A partial
+proposal is not automatically applied or guaranteed to be available for review.
+A caller of the low-level API owns its workspace lifetime and must inspect it
+after an interrupted request.
 
 ## Low-level implementation API
 
@@ -461,7 +479,8 @@ measurement boundaries when interpreting the result for your own package.
 | Unsupported interaction | Choose a tool that finishes without sampling/elicitation/roots |
 | Reply rejected | Nonempty text at most 16,000 characters; valid structured IDs if structured |
 | Timeout | Increase explicit deadline if needed; it includes Julia startup |
-| Cancellation | Local worker stopped; server interruption depends on the server |
+| Cancellation | Wait for local connector cleanup, then reconnect; remote HTTP interruption depends on the server |
+| Retry Disconnect | Retry the displayed disconnect action; retained implementation copy/checkpoint are not removed while local cleanup is incomplete |
 | Apply/restore refused | Repository drifted; inspect before recovering content |
 | Git transformation unsupported | Check attributes for filters/LFS, working-tree encoding or ident expansion |
 | Codex executable unsupported | Native binary with the required flags; versions exercised are 0.159.2 and 0.162.0-alpha.2 |
