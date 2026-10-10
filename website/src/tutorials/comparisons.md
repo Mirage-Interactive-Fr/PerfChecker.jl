@@ -81,9 +81,22 @@ Limits are relative fractions; `check` fails when a limit fails. `compare` write
 
 ## Recorded examples
 
-```@raw html
-<DocMedia src="/examples/bibliography/figures/streaming-comparison.svg" alt="Before and after a Bibliography streaming export change: bytes 3904 to 2976, allocations 27 to 23, median time 7.6 to 6.8 microseconds" caption="100 samples per revision, with fixed dependency versions. The timing distributions overlap." />
-```
+This saved two-commit comparison records summary statistics for 100 samples per
+revision. The comparison recipe pins the dependency revisions.
+
+| Measurement | Parent `6a4cc90` | Streaming `575ec81` |
+| --- | ---: | ---: |
+| Median elapsed time | 7.6 µs | 6.8 µs |
+| Recorded elapsed-time range | 5.9–12.7 µs | 5.3–12.6 µs |
+| Median allocated bytes | 3,904 B | 2,976 B |
+| Median allocation count | 27 | 23 |
+| Median GC time | 0 ns | 0 ns |
+
+The recorded timing ranges overlap. A lower median alone does not establish a
+reliable speedup; this recorded comparison is `inconclusive`, and correctness
+was not checked. The download contains summaries, not the individual samples.
+The [nine-release interactive history](bibliography.md#Compare-the-package-history) is a
+separate campaign, with dependency revisions that follow each tag.
 
 ```@raw html
 <p><a href="../examples/bibliography/streaming-comparison.json" download>Download the comparison measurements</a></p>
