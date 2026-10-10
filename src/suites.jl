@@ -1784,6 +1784,10 @@ under the caller's control. Use `once=true` for a bounded polling iteration or
 `max_jobs` to bound attempted leases, including failed attempts. Empty claims
 can keep polling indefinitely when `once=false`; `max_jobs` is not an idle-time
 limit. Heartbeat tasks are signalled to finish but are not awaited on return.
+Interruption and incomplete worker/trace cleanup always stop the agent, even
+with `once=false`. Controller-side cancellation of a remote lease does not
+interrupt its measurement; stop the agent cooperatively and allow cleanup to
+finish. An expired lease can be retried, so workloads must tolerate replay.
 """
 function run_studio_agent end
 """

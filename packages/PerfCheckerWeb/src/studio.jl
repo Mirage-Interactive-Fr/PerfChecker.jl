@@ -391,9 +391,13 @@ function _finish_job!(workspace::StudioWorkspace, entry::StudioJobEntry)
         entry.message = PerfChecker.suite_passed(result) ? "" :
                         "one or more feature runs failed"
     catch error
-        if entry.state !== :cancelled
+        # Cancellation is a request, not evidence that worker/trace cleanup
+        # succeeded. Preserve the retained inventories when cleanup fails.
+        if error isa PerfChecker.CheckCleanupFailure || entry.state !== :cancelled
             entry.state = :failed
-            entry.message = first(sprint(showerror, error), 1_000)
+            message = sprint(showerror, error)
+            entry.message = error isa PerfChecker.CheckCleanupFailure ? message :
+                            first(message, 1_000)
         end
     finally
         entry.finished_at = string(Dates.now(Dates.UTC))
@@ -986,6 +990,19 @@ rethrow an execution/reporting error. Otherwise, empty claims keep polling;
 propagate. `poll_seconds` must be nonnegative; `heartbeat_seconds` and `max_jobs`
 must be positive.
 
+An `InterruptException` or `CheckCleanupFailure` always propagates, including
+with `once=false`: the agent stops before claiming another job. A cooperative
+interrupt lets the suite unwind its worker and allocation-trace cleanup; a
+cleanup failure retains its private inventories and must be investigated before
+restarting. These fatal exits do not upload a completed bundle or report the
+lease as safely finished. The controller can retry an expired lease on a later
+claim, subject to its attempt limit. Workloads must tolerate that replay.
+
+Cancelling a remote job on the controller invalidates its lease/result but does
+not interrupt this agent's synchronous measurement. To stop that work, interrupt
+the agent itself once and let cleanup finish. Force-killing its process can
+bypass cleanup and leave workers or allocation traces behind.
+
 Heartbeats report progress asynchronously. Each attempt signals its heartbeat
 task to finish but does not wait for that task before returning or polling again.
 Load `PerfCheckerWeb` to enable this method; it does not start a local HTTP server.
@@ -1053,12 +1070,18 @@ function PerfChecker.run_studio_agent(suite::PerfChecker.SoftwareSuite;
                     "job_id" => claim["job_id"], "lease_token" => lease_token,
                     "bundle" => PerfChecker.bundle_dict(bundle)))
         catch error
+            # Never turn an operator stop or incomplete cleanup into another
+            # lease. The suite has already unwound before reaching this catch.
+            (error isa InterruptException || error isa PerfChecker.CheckCleanupFailure) &&
+                rethrow()
             try
                 _agent_request(String(server), "agents/fail", String(token);
                     method = "POST", payload = Dict("agent_id" => String(agent_id),
                         "job_id" => claim["job_id"], "lease_token" => lease_token,
                         "message" => first(sprint(showerror, error), 1_000)))
             catch report_error
+                (report_error isa InterruptException ||
+                 report_error isa PerfChecker.CheckCleanupFailure) && rethrow()
                 @warn "PerfChecker agent could not report failure" exception=(
                     report_error, catch_backtrace())
             end
