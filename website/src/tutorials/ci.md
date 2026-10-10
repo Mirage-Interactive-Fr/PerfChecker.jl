@@ -204,6 +204,8 @@ the workflow. Supply:
 | `package_version` | An already registered version; empty selects the latest non-yanked version at the chosen General revision |
 | `general_revision` | A General commit or ref, resolved and recorded as an exact commit before evaluation |
 | `expected_tree` | Optional registered tree SHA-1; a mismatch stops selection before evaluation |
+| `package_images` | Keep `upstream` for the pinned PkgEval defaults; `yes` explicitly allows native package-image generation |
+| `time_limit_minutes` | Keep the default `45`, or explicitly select `90` for the complete sandbox evaluation |
 
 To assess a fix, wait for the release containing it to be registered and select
 that release and its tree. Re-running 1.0.1 will still test 1.0.1. The weekly
@@ -235,6 +237,42 @@ record `candidate_package_url` and `candidate_package_revision`, with
 `sandbox_registry_tree_verified=false`. The evaluated version must match the
 commit's declared version. These fields identify the requested candidate;
 they do not claim a separate hash verification of PkgEval's installed source.
-The 2,700-second sandbox budget, disabled result cache and separate verdicts
+The default 2,700-second sandbox budget, disabled result cache and separate verdicts
 remain unchanged. A candidate pass can qualify that candidate's tests, but
 cannot repair or qualify the immutable registered 1.0.1 archive.
+
+### Distinguish compilation configurations
+
+Leave `package_images=upstream` for an evaluation using the pinned controller's
+defaults. On Julia 1.13, that controller passes `--pkgimages=existing`: it can
+reuse native package images but does not generate new ones. Its source explains
+that this avoids the cost of generating images for ordinary PkgEval jobs.
+
+An explicit `package_images=yes` dispatch instead passes `--pkgimages=yes`
+through the official `Configuration.julia_args` option. The pinned controller
+uses these arguments for both precompilation and `Pkg.test`; PerfChecker's
+isolated Julia workers inherit the package-image policy through `Base.julia_cmd()`.
+This configuration may change how much compilation is repeated across workers.
+It does not change the tests, one Julia thread or disabled PkgEval shared cache.
+Record and report its verdict separately from an
+upstream-default evaluation; a configured pass is not a pass under the defaults.
+
+Both `request.toml` and `result.toml` retain `package_images` and the exact
+`julia_args`, together with `time_limit_minutes` and `time_limit_seconds`;
+the result's `configuration` records the PkgEval configuration.
+The single sandbox timer includes setup, installation, precompilation and testing.
+A separate precompilation phase does not give testing another 2,700 seconds.
+Native package-image generation can itself consume more of this budget; selecting
+`yes` does not establish that the full suite will finish within it.
+
+The default sandbox budget remains 45 minutes. An explicit `time_limit_minutes=90`
+dispatch gives the same complete evaluation 5,400 seconds, with a separate
+120-minute GitHub job limit; the default 45-minute evaluation retains its
+75-minute job limit. Tests, thread count and shared-cache policy remain unchanged.
+A `yes`/90-minute result is a configured qualification, not a pass under upstream
+defaults. Since it changes both compilation policy and budget, its completion
+alone cannot establish a compilation speedup or repair an earlier timeout.
+
+See the pinned controller's
+[package-image selection and argument forwarding](https://github.com/JuliaCI/PkgEval.jl/blob/268f1d3d83df9abafb30c372a9755358fab7aa21/scripts/evaluate.jl#L78-L113)
+and [matching precompilation arguments](https://github.com/JuliaCI/PkgEval.jl/blob/268f1d3d83df9abafb30c372a9755358fab7aa21/scripts/evaluate.jl#L201-L224).
