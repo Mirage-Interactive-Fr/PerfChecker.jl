@@ -8,7 +8,11 @@ Connect PerfChecker to an advice tool on your MCP server. PerfChecker is the **M
 
 [MCP](https://modelcontextprotocol.io/specification/2026-07-28/server/tools) is a standard protocol for exposing tools. A tool server does not necessarily contain a language model or an agent. For this workflow, choose a tool that accepts the supplied prompt and returns advice. Use an independently managed **Streamable HTTP** server, or explicitly launch a native **stdio** server from VS Code. The optional local Codex connector is one example, not a requirement for chat or implementation.
 
-The local stdio connector and connection-panel labels below belong to the extension **1.0.1 development candidate**. They are not part of the public 1.0.0 extension. The Julia client still uses HTTP; the extension adapts its session-local HTTP connection to the selected stdio server.
+The local stdio connector and connection panel are available in extension **1.0.1**.
+See the [release and download](https://github.com/Mirage-Interactive-Fr/PerfCheckerVSCode/releases/tag/v1.0.1)
+and [platform limits](interfaces/vscode.md#Qualification-and-reporting-a-problem).
+The Julia client uses HTTP; the extension adapts its session-local HTTP connection
+to the selected stdio server. Extension 1.0.0 did not include this connector.
 
 ## Choose a connection
 
@@ -51,7 +55,7 @@ select a completed saved report in chat and check the displayed attachment
 before asking about its measurements; a conversation without an attachment
 cannot explain that report's results.
 
-For interactive experiments, the [integrated Pluto candidate](interfaces/vscode-workflows.md#Pluto-notebooks-in-VS-Code)
+For interactive experiments, the [integrated Pluto workflow](interfaces/vscode-workflows.md#Pluto-notebooks-in-VS-Code)
 keeps notebook execution in its separate project. Launch the chosen checks,
 inspect their correctness and save completed reports before selecting that saved
 evidence in Advisor chat. Follow-up questions and implementation review remain
@@ -177,9 +181,9 @@ Open **PerfChecker: Chat with performance advisor**. Select saved deterministic 
 The advice tool receives an instruction to answer in the user's language, distinguish measurements from hypotheses, and provide advice without modifying code or running experiments. This instruction does not enforce the absence of side effects; the selected service must honor the advice-only contract. When no evidence is selected, the tool is told no saved measurements were attached. You can still ask how to configure or use PerfChecker.
 
 For a completed report, the attached advice can include measurement summaries
-even when it has no recommendations. This context requires the development
-1.0.1 candidate; regenerating advice with registered 1.0.0 does not add it.
-Use the [development controller setup](interfaces/vscode-configuration.md#Prepare-a-controller).
+even when it has no recommendations. This context requires extension and Core
+1.0.1; regenerating advice with registered Core 1.0.0 does not add it.
+Use the [controller setup](interfaces/vscode-configuration.md#Prepare-a-controller).
 Each summary identifies the case and
 target, collector, quantity and unit, with the recorded minimum, median and
 maximum. Execution status and correctness status remain separate. Correctness
@@ -407,7 +411,7 @@ PerfChecker can connect an installed, authenticated Codex CLI through a local MC
 4. Ask for advice, optionally attaching saved evidence. Review the answer, then use the [explicit implementation workflow](#Switch-from-advice-to-implementation) if you want the agent to prepare a change.
 5. Choose **Disconnect Codex**, or run **PerfChecker: Disconnect local Codex**, to return to your saved advisor configuration. After an editor reload, connect again when needed.
 
-Qualification used **Codex 0.159.2** for the executable contract and connector
+Earlier authenticated connector qualification used **Codex 0.159.2** for the executable contract and connector
 lifecycle, and **Codex 0.162.0-alpha.2** for authenticated multi-turn advice and
 reviewed source implementation. Two separate source fixtures were exercised:
 
@@ -427,8 +431,11 @@ These authenticated connector tests are separate from native VS Code footage
 using a controlled MCP response fixture. That footage exercises real editor
 controls and Julia workers; its scripted responses are identified in the
 captions. Consult the release qualification report for the final native
-platform matrix. These are the CLI versions actually exercised; intermediate
-releases have not been qualified by inference.
+platform matrix in the
+[1.0.1 release notes](https://github.com/Mirage-Interactive-Fr/PerfCheckerVSCode/releases/tag/v1.0.1).
+The earlier authenticated proofs above do not qualify every later VSIX or every
+MCP client, model or remote service. These are the CLI versions actually
+exercised; intermediate releases have not been qualified by inference.
 
 The connector requires `--no-daemon`, `--ignore-user-config` and `--ignore-rules`,
 plus the `exec` ephemeral, sandbox and output flags. Its probe checks the selected

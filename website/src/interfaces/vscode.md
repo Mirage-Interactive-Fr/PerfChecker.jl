@@ -11,9 +11,11 @@ Each caption identifies its source and whether it shows demonstration data or
 measured package results. Select an image to inspect it at full resolution.
 The editor's theme and layout can differ on your machine.
 
-The **1.0.1 candidate** adds integrated Pluto notebooks, guided workspace setup
-and additional plot controls. Its qualification and publication are still in
-progress. The native suite-designer captures below use extension commit
+Extension **1.0.1** adds integrated Pluto notebooks, guided workspace setup,
+generic HTTP/stdio MCP connections and additional plot controls. See the
+[release notes and download](https://github.com/Mirage-Interactive-Fr/PerfCheckerVSCode/releases/tag/v1.0.1)
+and the [platform qualification](#Qualification-and-reporting-a-problem).
+The earlier native suite-designer captures below use extension commit
 [`4fab779`](https://github.com/Mirage-Interactive-Fr/PerfCheckerVSCode/commit/4fab779eae49968b3233fab6ed1d48e4acfbd1b3)
 in VS Code 1.141.0 on Linux, with a controlled test package. The
 [profile walkthrough](vscode-workflows.md#Follow-a-recorded-profile) shows
@@ -22,13 +24,13 @@ separately recorded, measured DataStructures results.
 ## Install and prepare
 
 1. Install VS Code **1.96 or newer** and Julia **1.10 or newer**.
-2. Install [PerfChecker from the Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=mirage-interactive-fr.perfchecker-vscode), or search the Extensions view for `@id:mirage-interactive-fr.perfchecker-vscode`. You can also download the [qualified V1 VSIX](https://github.com/Mirage-Interactive-Fr/PerfCheckerVSCode/releases/download/v1.0.0/perfchecker-vscode-1.0.0.vsix) and use **Extensions → … → Install from VSIX…**. Reload VS Code if prompted. See [VS Code's installation instructions](https://code.visualstudio.com/docs/configure/extensions/extension-marketplace) for either route.
+2. Install [PerfChecker from the Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=mirage-interactive-fr.perfchecker-vscode), or search the Extensions view for `@id:mirage-interactive-fr.perfchecker-vscode`. You can also download the [1.0.1 VSIX](https://github.com/Mirage-Interactive-Fr/PerfCheckerVSCode/releases/download/v1.0.1/perfchecker-vscode-1.0.1.vsix) and use **Extensions → … → Install from VSIX…**. Reload VS Code if prompted. See [VS Code's installation instructions](https://code.visualstudio.com/docs/configure/extensions/extension-marketplace) for either route.
 3. Open the package folder. Trust the workspace when you are prepared to execute its Julia code.
 4. Prepare a Julia controller environment containing the matching PerfChecker build and the collectors you intend to use. Existing TestItems also require TestItemRunner and the package's test dependencies.
 5. Set **PerfChecker: Runner Project** (`perfchecker.runnerProject`) to the controller environment. For shared scenarios, set **Scenario Project** (`perfchecker.scenarioProject`) to the environment containing the measured code and its dependencies.
 6. Run **PerfChecker: Open Studio** from the command palette. In a workspace with several folders, select the package to inspect.
 
-The [extension release notes](https://github.com/Mirage-Interactive-Fr/PerfCheckerVSCode/releases/tag/v1.0.0)
+The [extension release notes](https://github.com/Mirage-Interactive-Fr/PerfCheckerVSCode/releases/tag/v1.0.1)
 identify the qualified artifact. PerfChecker's Julia registry release and its VS Code
 extension are distributed separately; installing the Julia package does not
 install the extension.
@@ -41,7 +43,7 @@ Opening Studio reads configuration and presents actions. It does not install pac
 
 If this is your first setup, follow [Prepare a controller](vscode-configuration.md#Prepare-a-controller) before running an item. Use the dedicated controller so adding a profiler or MCP client does not change your package's normal dependency environment.
 
-The candidate's [guided setup](vscode-configuration.md#Guided-setup-from-Studio)
+The [guided setup](vscode-configuration.md#Guided-setup-from-Studio)
 offers an explicit controller installation or an existing project. It requires
 registered Core 1.0.1 before the new notebook/discovery workflow can run.
 
@@ -103,7 +105,7 @@ For a suite, use **PerfChecker: Create feature suite** if you need a starter, or
 | Visual output | Inspect saved distributions, allocations, flame graphs and version comparisons |
 | Investigations | Discover scenarios, measure, diagnose and read deterministic advice |
 | Advisor chat | Discuss saved evidence; explicitly request implementation and review its diff |
-| Pluto notebook (1.0.1 candidate) | Edit reactive Julia cells and explicitly launch suite checks or investigations |
+| Pluto notebook | Edit reactive Julia cells and explicitly launch suite checks or investigations |
 | PerfChecker terminal | Use a dedicated Julia session in the controller project |
 
 These are VS Code editor tabs and native surfaces. Arrange them with VS Code's editor groups; the activity bar is an entry point, not the available working area.
@@ -115,7 +117,7 @@ These are VS Code editor tabs and native surfaces. Arrange them with VS Code's e
 | Existing TestItems | Runner, TestItems/TestItemRunner 1.3.2 or newer, package test dependencies | [First result](#Get-a-first-result) |
 | Suite selection and comparison | Suite factory, collectors, declared target environments | [Design and compare](#Design-a-suite-and-compare-targets) |
 | Visual output | Completed suite reports containing the requested observations | [Saved plots](vscode-workflows.md#Plot-saved-results) |
-| Integrated Pluto candidate | Corrected extension/core 1.0.1 and a separate Pluto project | [Notebook workflow](vscode-workflows.md#Pluto-notebooks-in-VS-Code) |
+| Integrated Pluto | Extension/core 1.0.1 or newer and a separate Pluto project | [Notebook workflow](vscode-workflows.md#Pluto-notebooks-in-VS-Code) |
 | Julia terminal or debugger | Julia/controller; Julia extension and saved source for debugging | [Julia tools](vscode-workflows.md#Dedicated-Julia-terminal) |
 | Advice conversation | Authenticated supported CLI or configured MCP advice tool | [MCP connection](../mcp-advisor.md#Choose-a-connection) |
 | Reviewed implementation | Saved files, Git HEAD and a separate implementation tool | [Review and apply](../mcp-advisor.md#Switch-from-advice-to-implementation) |
@@ -149,9 +151,9 @@ the recorded version-series data.
 
 Save the selection with **Save configuration** in the suite editor. The default
 is `perf/perfchecker-ui.json`; compatible web and documentation interfaces can
-read the same configuration. In extension 1.0.0, the separate command-palette
-action **PerfChecker: Save shared UI configuration** has a confirmed defect; use
-the editor button while its correction is being prepared. Running the selection
+read the same configuration. Extension 1.0.1 also fixes the separate command-palette
+action **PerfChecker: Save shared UI configuration**. If you still use 1.0.0,
+save with the editor button or upgrade. Running the selection
 shows progress and leaves saved evidence for later review.
 
 The editor separates filtering from selection. Search, package/target filters and release bounds change what is visible without deselecting hidden runs. **Select visible** and **Clear visible** act on the current filter; **Clear selection** affects the entire selection. The counter reports selected runs, visible runs and selected runs outside the filter. **Run N selected** includes those hidden selections, so review the exact identifier preview before execution. **Show more** pages workload groups without restricting bulk selection.
@@ -237,7 +239,7 @@ Measure declared cases, diagnose with available analyzers, and choose **Advise f
 
 **Run bounded investigation** can select declared experiments within count and time budgets. Optional model selection requires structured MCP replies and `advisorInvestigates = true`; it remains separate from implementation chat.
 
-The **1.0.1 extension candidate** also provides **PerfChecker: Open saved
+Extension **1.0.1** also provides **PerfChecker: Open saved
 diagnostic report**. It displays an existing diagnostic JSON file without
 running Julia or adding a history entry. The imported report keeps its reported
 statuses; its SHA-256 identifies the loaded bytes and does not verify their
@@ -279,7 +281,7 @@ agent made no edits.
 
 ## Advice and explicit implementation
 
-Studio → **Talk to your agent** opens **PerfChecker: Chat with performance advisor**. Choose **Configure MCP connection** for a [saved HTTP advice tool](../mcp-advisor.md#Configure-the-advice-tool), or **Connect local MCP server** for an [explicit stdio connection](../mcp-advisor.md#Connect-a-local-stdio-server). The stdio connector and these connection labels belong to the extension **1.0.1 development candidate**, not public extension 1.0.0. Discover the tool's schema and select its actual prompt and required arguments. MCP connects PerfChecker to that tool; a server is not necessarily an agent and must provide an advice service to answer questions.
+Studio → **Talk to your agent** opens **PerfChecker: Chat with performance advisor**. Choose **Configure MCP connection** for a [saved HTTP advice tool](../mcp-advisor.md#Configure-the-advice-tool), or **Connect local MCP server** for an [explicit stdio connection](../mcp-advisor.md#Connect-a-local-stdio-server). Both routes are available in extension **1.0.1**; extension 1.0.0 did not include the stdio connector. Discover the tool's schema and select its actual prompt and required arguments. MCP connects PerfChecker to that tool; a server is not necessarily an agent and must provide an advice service to answer questions.
 
 Both routes require `HTTP` in the Julia controller. A local stdio executable runs on the extension host, which may be a Remote SSH host or container. Choose **Connect for this editor session** after checking its advice and optional implementation tools; no advice is requested by connection alone. Choose saved evidence if useful, then ask a question. Chat also works without evidence for configuration and usage questions; the tool is told no measurements were attached. **Disconnect local MCP server** resumes saved provider configuration, and restarting the editor requires an explicit reconnect. The [local Codex connector](../mcp-advisor.md#Connect-an-authenticated-Codex-CLI) remains under **Optional Codex CLI connector**.
 
@@ -294,11 +296,11 @@ Read the [MCP guide](../mcp-advisor.md) for configuration, what is transmitted, 
 **PerfChecker: Open Julia terminal** creates a terminal named for the package and
 starts the selected Julia executable with the controller project.
 
-The **1.0.1 candidate** uses **New Pluto notebook** and **Open Pluto notebook**
+Extension **1.0.1** uses **New Pluto notebook** and **Open Pluto notebook**
 for editable `.jl` notebooks in an interactive editor tab. Follow the
 [Pluto workflow](vscode-workflows.md#Pluto-notebooks-in-VS-Code) for generation,
 Launch/Cancel, reactive edits, saved source/reports and Stop/Restart controls.
-Public extension **1.0.0** uses **New investigation notebook**, an untitled
+Extension **1.0.0** used **New investigation notebook**, an untitled
 notebook with discovery, measurement and diagnosis cells; select an installed
 Julia kernel for that earlier workflow.
 
@@ -328,22 +330,31 @@ Use **PerfChecker: Show worker output** for execution diagnostics. See [configur
 
 ### Qualification and reporting a problem
 
-Core CI includes Linux 32-bit, Linux/Windows 64-bit, Julia LTS and macOS
-Intel x64 (`macos-26-intel`). That core matrix is separate from native extension
-qualification. The 1.0.1 native editor campaign is still running; physical Mac
-testing and Apple Silicon arm64 coverage have not been established here.
-The completed report will record editor, Julia/core versions and CPU architecture
-for each tested platform.
+The [1.0.1 release report](https://github.com/Mirage-Interactive-Fr/PerfCheckerVSCode/releases/tag/v1.0.1)
+links the native checks for the published VSIX, with Julia **1.13.1** and
+registered Core **1.0.1**. Its checksum and original packaging provenance are
+attached to the release. Earlier screenshots keep their original source labels;
+they are not evidence that every later build passed.
 
-A focused native check used VSIX `b899ea751d7b` with Core `59578c840d94`,
-Julia **1.13.1** and VS Code **1.141.0** on Linux. It established the notebook's
-Shutdown confirmation, saved-cell/session controls, and Julia/HTML exports and
-new-context navigation through the default browser with an isolated XDG
-handler. The default-browser interactions have not been established on the
-other hosts by this check. Its plot response diagnosed missing optional
-PerfCheckerMakie/WGLMakie dependencies; it did not qualify an integrated plot
-renderer. Full platform and registered-installation qualification remain
-separate from this focused result.
+| Platform | Verified scope for extension 1.0.1 |
+| --- | --- |
+| Linux and Windows, VS Code 1.96 and stable 1.141.0 | Full native workflow suite, editor controls, HTTP MCP, stdio MCP, reload and saved evidence; interactive Pluto figures passed on all four combinations |
+| Intel macOS, stable VS Code 1.141.0 | Normal installation, fresh workspace setup, HTTP MCP, editor controls, reload and narrative workflows passed; Pluto figures and their keyboard interactions rendered successfully |
+| Intel macOS limits | The Pluto figure check failed while inspecting a disappearing process after **Close notebook view**, so physical cleanup after Close remains unqualified. Its final **Stop session** verified the owned processes and listener had gone. Native stdio remains unqualified because a separate controller preparation with automatic precompilation disabled timed out importing HTTP before stdio started |
+
+Use the documented installation with normal Julia package precompilation on
+macOS; the first installation can spend several minutes compiling dependencies.
+The stdio result does not establish a stdio defect or imply that macOS is
+unsupported. Apple Silicon and testing on a physical Mac have not been
+established here. The native color-picker gesture is qualified on Linux only;
+Windows/macOS picker gestures and the Landscape companion's native rendering
+controls remain unqualified. Software rendering does not qualify a physical GPU.
+
+Controlled MCP providers exercise discovery, advice, reviewed changes, Apply,
+Restore and cancellation in the editor. They do not establish compatibility
+with every authenticated model or remote service. The complete authenticated
+Bibliography demonstration is separate and remains unqualified. Core CI has
+its own platform matrix; it does not substitute for native extension checks.
 
 Report editor/UI issues in
 [PerfCheckerVSCode](https://github.com/Mirage-Interactive-Fr/PerfCheckerVSCode/issues/new)
