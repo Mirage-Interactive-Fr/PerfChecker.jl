@@ -83,12 +83,13 @@ interactive exports, see [Plots](visualization.md).
 
 ## Pluto
 
-For the **1.0.1 candidate** integrated into VS Code, follow
+For Pluto integrated into the published VS Code extension **1.0.1**, follow
 [Pluto notebooks in VS Code](vscode-workflows.md#Pluto-notebooks-in-VS-Code).
 It covers creating and reopening `.jl` notebooks, separate environments,
-Launch/Cancel, reactive cell edits, saved reports and session controls. Its
-release and native qualification are still in progress. The standalone Pluto
-workflow below remains available with the public core and companion.
+Launch/Cancel, reactive cell edits, saved reports and session controls. Read the
+[platform qualification and macOS limits](vscode.md#Qualification-and-reporting-a-problem).
+The standalone Pluto workflow below remains available with the public core and
+tagged companion source; the companion's separate General registration is pending.
 
 Download the runnable notebook:
 
