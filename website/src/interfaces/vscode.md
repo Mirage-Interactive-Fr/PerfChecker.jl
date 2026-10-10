@@ -237,6 +237,13 @@ Measure declared cases, diagnose with available analyzers, and choose **Advise f
 
 **Run bounded investigation** can select declared experiments within count and time budgets. Optional model selection requires structured MCP replies and `advisorInvestigates = true`; it remains separate from implementation chat.
 
+The **1.0.1 extension candidate** also provides **PerfChecker: Open saved
+diagnostic report**. It displays an existing diagnostic JSON file without
+running Julia or adding a history entry. The imported report keeps its reported
+statuses; its SHA-256 identifies the loaded bytes and does not verify their
+origin or conclusions. See [saved diagnostic reports](vscode-workflows.md#Open-a-saved-diagnostic-report)
+for the file limit, latency cards and reachable-memory table.
+
 ## Cancel a run and wait for cleanup
 
 
@@ -259,10 +266,16 @@ Closing VS Code forcibly, an operating-system shutdown or repeated interruption
 can also prevent cleanup; restarting the extension does not delete old `.mem`
 files indiscriminately.
 
-Cancelling advisor chat or an MCP request stops the local conversation. A remote
-server or agent may continue working after the local request closes. Review the
-isolated implementation checkout and checkpoint before applying changes; local
-cancellation does not prove the remote tool stopped.
+Cancelling a request through a local stdio or optional Codex connector waits for
+that connector to disconnect and its owned processes to stop. Reconnect
+explicitly before asking another question. If cleanup fails, PerfChecker keeps
+the isolated implementation copy and checkpoint, blocks new requests and asks
+you to retry the relevant **Disconnect** action. It does not silently delete
+those recovery materials. See [checkpoints and recovery](../mcp-advisor.md#Checkpoints-and-recovery).
+
+A remote HTTP server or agent may continue working after the local request
+closes. Local cancellation does not prove that remote work stopped or that an
+agent made no edits.
 
 ## Advice and explicit implementation
 

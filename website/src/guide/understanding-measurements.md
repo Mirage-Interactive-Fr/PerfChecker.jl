@@ -195,6 +195,20 @@ not accepted by `read_run_bundle`. See the [REPL guide](../interfaces/repl-pluto
 for selection and report saving, or [Plots](../interfaces/visualization.md)
 for a Makie figure and standalone interactive HTML.
 
+```@raw html
+<DocMedia src="/assets/screenshots/oxygen-repl-unicodeplots-20261010.png" alt="Native Julia REPL displaying PerfChecker's UnicodePlots chart for Oxygen 1.10.2 and 1.11.0, with wall time, GC time, allocated bytes and allocation-count ratios against 1.10.2" caption="Faithful crop of a native Julia 1.13.1 REPL with UnicodePlots 3.9.0 in a dedicated VS Code profile with extensions disabled. This reads the historical Oxygen bundle; it is not a new measurement or an extension installation check." />
+```
+
+This capture uses `performance_plot(bundle; reference_version = "1.10.2",
+statistic = :median)` and `terminal_plot(model; width = 85, height = 14)`.
+Each metric has its own reference line at one. When both the value and its
+reference are zero, the model displays one by convention to mean unchanged;
+this includes the zero GC values here and is not a mathematical quotient.
+A nonzero value with a zero reference is unavailable. The measurement campaign
+used Core `52a0d0c`; the later REPL viewer used Core `ffbf33f`. The bundle is the same
+two-release Oxygen campaign shown in the VS Code tab, and is separate from the
+Bibliography examples in the other tabs.
+
 :::
 
 

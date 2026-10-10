@@ -199,6 +199,87 @@ sample or an unpaired run remains limited evidence, even when the provider
 returns a confident answer. Compare compatible recorded results and verify
 correctness before accepting a performance claim.
 
+## Open a saved diagnostic report
+
+The **1.0.1 extension candidate** can display a saved `perfchecker-diagnosis/1`
+JSON report in Investigations. Importing reads existing evidence; it does not
+run a workload or independently verify the file's claims.
+
+1. Run **PerfChecker: Open saved diagnostic report**, or choose **Open saved
+   diagnostic report** in Investigations. Select a diagnostic JSON file on the
+   extension host. With Remote SSH, select a file on that remote host.
+2. Read the **Imported saved report — not measured or independently verified in
+   this editor session** notice. Review the source path, read time, reported
+   statuses, measurement scope and limitations. A filename is not proof of a
+   package release or commit.
+3. Choose **Open imported JSON snapshot** to inspect the exact text that was
+   loaded. This opens an unsaved editor document; it does not reread or change
+   the original file. **Snapshot SHA-256** identifies the original bytes, not
+   their author or the correctness of their results.
+
+Files must be regular UTF-8 JSON files no larger than **32 MiB**. Unsupported
+schemas, malformed completed records, non-finite values and invalid byte counts
+are refused. Cancelling the file picker or selecting an invalid file keeps the
+previous view. Wait for an active investigation to finish before importing.
+
+For a completed **latency** record, the cards show **Source loading**, **First
+lifecycle** and **Warm lifecycle**, in seconds. Source loading excludes the
+Julia process startup. The lifecycle includes preparation, the operation,
+correctness verification and cleanup. These diagnostic observations from a
+fresh process are not three independent warm benchmark distributions.
+
+For a completed **memory** record, the table shows every recorded sample's
+**State before**, **State after** and **State + result**, in bytes. These are
+reachable Julia object sizes, not total allocated bytes or process RSS. State
+and result are traversed together to avoid counting shared objects twice.
+Growth can be an intended result or cache; it does not establish a leak.
+Unavailable and failed records keep their reported status without invented
+values.
+
+### Try the recorded Oxygen reports
+
+Download a report and open it with **PerfChecker: Open saved diagnostic report**:
+
+```@raw html
+<table>
+<thead><tr><th>Oxygen checkout</th><th>Latency report</th><th>Reachable-memory report</th></tr></thead>
+<tbody>
+<tr><td>1.10.2</td><td><a href="../examples/real-packages/oxygen-saved-diagnostics/latency-1.10.2.json">Original JSON</a></td><td><a href="../examples/real-packages/oxygen-saved-diagnostics/memory-1.10.2.json">Original JSON</a></td></tr>
+<tr><td>1.11.0</td><td><a href="../examples/real-packages/oxygen-saved-diagnostics/latency-1.11.0.json">Original JSON</a></td><td><a href="../examples/real-packages/oxygen-saved-diagnostics/memory-1.11.0.json">Original JSON</a></td></tr>
+</tbody>
+</table>
+```
+
+These four diagnostic reports were collected on 10 October 2026 with
+[PerfChecker source ffbf33f](https://github.com/Mirage-Interactive-Fr/PerfChecker.jl/commit/ffbf33f0bda61dfc84adfb8e8e6dfd8a404d0642),
+whose package tree matches the registered 1.0.1 release. The two Oxygen
+checkouts have separate dependency environments. The reports retain
+**Performance: not_compared**: these observations do not establish a performance
+regression or improvement between the releases.
+
+The native captures below show those original files in VS Code 1.141.0 with
+[extension 48b3821](https://github.com/Mirage-Interactive-Fr/PerfCheckerVSCode/commit/48b382160f9cd3a5befa18c11c425b87793e9750)
+(packaged VSIX SHA-256 beginning `fac983a008df`). The selected controller contains
+registered PerfChecker 1.0.1; importing starts no Julia process. These captures
+are separate from the earlier timing and profile campaigns in this guide.
+
+```@raw html
+<PluginTabs>
+<PluginTabsTab label="Latency · Oxygen 1.10.2"><DocMedia src="/assets/screenshots/vscode/v101/latency-oxygen-1.10.2-fac983.png" alt="Native PerfChecker Investigations view displaying the original Oxygen 1.10.2 diagnostic JSON, its import notice, SHA-256 and three latency phases in seconds" caption="Source loading, first lifecycle and warm lifecycle remain separate quantities. The import notice and reported not_compared status stay visible." /></PluginTabsTab>
+<PluginTabsTab label="Latency · Oxygen 1.11.0"><DocMedia src="/assets/screenshots/vscode/v101/latency-oxygen-1.11.0-fac983.png" alt="Native PerfChecker Investigations view displaying the original Oxygen 1.11.0 diagnostic JSON, its import notice, SHA-256 and three latency phases in seconds" caption="The viewer reads the saved report without rerunning it. A reported correctness pass does not establish a performance comparison." /></PluginTabsTab>
+</PluginTabs>
+<PluginTabs>
+<PluginTabsTab label="Memory · Oxygen 1.10.2"><DocMedia src="/assets/screenshots/vscode/v101/memory-oxygen-1.10.2-fac983.png" alt="Native PerfChecker Investigations view displaying all five recorded Oxygen 1.10.2 reachable-memory rows, with state before, state after and state plus result in bytes" caption="Five fresh-state evaluations retain their exact recorded byte counts. Reachable state growth can be an intended result or cache." /></PluginTabsTab>
+<PluginTabsTab label="Memory · Oxygen 1.11.0"><DocMedia src="/assets/screenshots/vscode/v101/memory-oxygen-1.11.0-fac983.png" alt="Native PerfChecker Investigations view displaying all five recorded Oxygen 1.11.0 reachable-memory rows and the original report limitations" caption="These counts cover reachable Julia objects. Native and device memory need their own provider; this table does not measure allocation traffic or process RSS." /></PluginTabsTab>
+</PluginTabs>
+```
+
+Importing adds no saved-run history and executes no paths from the report.
+**Advise from saved evidence** and **Explain with configured model** are disabled
+for imports, and imported artifacts and source links are not opened. To request
+advice, run an investigation or open evidence measured by the selected
+workspace through its normal history workflow.
+
 ## Notebook versions
 
 The integrated Pluto workflow below is a **1.0.1 candidate**. Its native editor
@@ -268,9 +349,10 @@ workers. A missing analyzer is unavailable rather than a passing diagnosis.
 
 The candidate integration targets Pluto **1.0.4**, the corrected PerfChecker
 core, PlutoUI, BenchmarkTools, Chairmarks and **PerfCheckerPluto 1.0.1** from
-repository tag `v1.0.1`. The core registration and tag must be available before
-installation. Set the folder configuration explicitly when you use several
-environments:
+the root repository tag `v1.0.1`. Core 1.0.1 is registered in General and this
+tag is available; the Pluto companion's separate General registration is
+pending. Wait for the corrected extension before using its guided setup.
+Set the folder configuration explicitly when you use several environments:
 
 ```json
 {
