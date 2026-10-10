@@ -24,7 +24,9 @@ to the selected stdio server. Extension 1.0.0 did not include this connector.
 | No advice service or server | Deterministic findings and manual changes | Measure and diagnose, then inspect the saved advice |
 | An authenticated native Codex CLI | Optional temporary local connector | Use the **Codex CLI (optional)** example below |
 
-For each supported MCP connection, the controller must contain PerfChecker V1 and `HTTP`.
+For each supported MCP connection, the controller must contain PerfChecker
+1.0.1 or newer within the 1.x series and `HTTP`. When preparing a controller through guided setup, use the Core
+version in the [setup compatibility table](interfaces/vscode.md#Version-compatibility).
 [Prepare the controller](interfaces/vscode-configuration.md#Prepare-a-controller)
 first. Advice and implementation are separate actions: receiving an answer never
 approves a source edit.

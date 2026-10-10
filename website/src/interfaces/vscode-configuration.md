@@ -11,12 +11,14 @@ The controller needs PerfChecker and the interface/provider packages used by the
 ### Prepare a controller
 
 Run these Julia commands **from the measured package's root**, where its
-`Project.toml` is located:
+`Project.toml` is located. Choose `core_version` from the
+[extension compatibility table](vscode.md#Version-compatibility):
 
 ```julia
 import Pkg
+core_version = "1.0.1" # Use "1.1.0" with extension 1.0.2.
 Pkg.activate("perf/controller")
-Pkg.add(Pkg.PackageSpec(name = "PerfChecker", version = "1"))
+Pkg.add(Pkg.PackageSpec(name = "PerfChecker", version = core_version))
 Pkg.add(["BenchmarkTools", "TestItems", "TestItemRunner", "HTTP"])
 Pkg.develop(path = ".")
 Pkg.status()
@@ -40,8 +42,8 @@ The extension first checks the selected controller and then offers:
 
 | Choice | Action |
 | --- | --- |
-| **Create controller environment** | After **Install controller** confirmation, install registered PerfChecker 1.0.1, BenchmarkTools, Chairmarks and TestItemRunner into `perf/controller` |
-| **Use an existing controller** | Choose a folder containing `Project.toml`; verify PerfChecker 1.0.1 or newer within the 1.x series without installing packages |
+| **Create controller environment** | Review the required Core version, then confirm **Install controller** to install it with BenchmarkTools, Chairmarks and TestItemRunner into `perf/controller` |
+| **Use an existing controller** | Choose a folder containing `Project.toml`; verify that Core meets the installed extension's requirement without installing packages |
 | **Read the setup guide** | Open this documentation for manual preparation |
 
 Successful verification sets `runnerProject` for that workspace folder.
@@ -62,13 +64,14 @@ then follow [MCP configuration](../mcp-advisor.md). The setup installs the liste
 measurement packages. The separate Pluto environment uses the qualified Pluto
 release's own HTTP dependency range.
 
-The corrected 1.0.1 notebook setup installs and checks **PerfCheckerPluto 1.0.1
+The notebook setup installs and checks **PerfCheckerPluto 1.0.1
 or newer within the 1.x series**, separately from the controller. An existing
 Pluto project using companion 1.0.0 requires an explicit upgrade confirmation;
 the compatibility check does not update it silently. Declining keeps that
-environment unchanged. Core 1.0.1 is registered in General and the root
-`v1.0.1` tag is available. The guided setup installs the companion from that
-public tag while its separate General registration is pending.
+environment unchanged. Its Core version must meet the
+[extension compatibility table](vscode.md#Version-compatibility). The guided
+setup installs the companion from the independent root `v1.0.1` tag while its
+separate General registration is pending.
 See the
 [separate Pluto installation recipe](../guide/installation.md#Prepare-the-integrated-Pluto-candidate)
 and [existing notebook migration](vscode-workflows.md#Use-the-corrected-suite-plot-renderer).
@@ -211,7 +214,7 @@ A configured implementation tool must access and honor the supplied isolated che
 | Local MCP executable or checkout is missing | Check absolute paths on the extension host, including Remote SSH/container paths |
 | Local MCP server exited or timed out | Wait for cleanup, inspect its prerequisites, then explicitly reconnect |
 | Pluto setup cannot resolve HTTP | Use the separate `plutoProject`; qualified Pluto 1.0.4 uses HTTP 1.x, while the MCP controller uses HTTP 2.x |
-| Existing Pluto/controller project has Core 1.0.0 or the Pluto project has companion 1.0.0 | Confirm the selected environment's explicit upgrade to Core 1.0.1 and companion tag `v1.0.1`; existing suite notebook source also needs the migration above |
+| Existing Pluto/controller project has an incompatible Core or Pluto companion | Explicitly upgrade Core to the version required by the installed extension, and the companion to tag `v1.0.1`; existing suite notebook source also needs the migration above |
 | Notebook session unavailable | Inspect **PerfChecker Pluto** output and [session controls](vscode-workflows.md#Manage-the-session-and-saved-source); extension 1.0.0 needs an installed Julia kernel |
 
 Worker logs are available through **PerfChecker: Show worker output**. Keep tokens out of configuration files and troubleshooting reports.

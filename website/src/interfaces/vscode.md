@@ -21,13 +21,29 @@ in VS Code 1.141.0 on Linux, with a controlled test package. The
 [profile walkthrough](vscode-workflows.md#Follow-a-recorded-profile) shows
 separately recorded, measured DataStructures results.
 
+## Version compatibility
+
+Choose a released extension from the Marketplace. Guided controller setup and
+integrated Pluto check these versions:
+
+| Extension | Core accepted by guided setup and integrated Pluto | Pluto companion |
+| --- | --- | --- |
+| 1.0.1 | 1.0.1 or newer within the 1.x series | PerfCheckerPluto 1.0.1 or newer within the 1.x series |
+| 1.0.2 | 1.1.0 or newer within the 1.x series | PerfCheckerPluto 1.0.1 or newer within the 1.x series |
+
+Both notebook integrations use Pluto 1.0.4 and the companion source at the root
+`v1.0.1` tag while its separate General registration is pending. The companion
+tag is independent of the Core version. Guided setup shows the required version
+before installation; an existing controller or Pluto environment needs an
+explicit upgrade when it does not meet those setup checks.
+
 ## Install and prepare
 
 1. Install VS Code **1.96 or newer** and Julia **1.10 or newer**.
 2. Install [PerfChecker from the Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=mirage-interactive-fr.perfchecker-vscode), or search the Extensions view for `@id:mirage-interactive-fr.perfchecker-vscode`. You can also download the [1.0.1 VSIX](https://github.com/Mirage-Interactive-Fr/PerfCheckerVSCode/releases/download/v1.0.1/perfchecker-vscode-1.0.1.vsix) and use **Extensions → … → Install from VSIX…**. Reload VS Code if prompted. See [VS Code's installation instructions](https://code.visualstudio.com/docs/configure/extensions/extension-marketplace) for either route.
 3. Open the package folder. Trust the workspace when you are prepared to execute its Julia code.
 4. Run **PerfChecker: Open Studio** from the command palette. In a workspace with several folders, select the package to inspect.
-5. Choose **Set up workspace and create suite**, then **Create controller environment**. Confirm **Install controller**. Extension 1.0.1 installs registered Core 1.0.1, BenchmarkTools, Chairmarks and TestItemRunner in `perf/controller`, and selects it as this folder's runner project. This step downloads Julia packages; opening Studio alone does not.
+5. Choose **Set up workspace and create suite**, then **Create controller environment**. Review the required Core version and packages, then confirm **Install controller**. Setup installs that Core version, BenchmarkTools, Chairmarks and TestItemRunner in `perf/controller`, and selects it as this folder's runner project. This step downloads Julia packages; opening Studio alone does not.
 6. When setup finishes, open **Feature suite** in Studio. Inspect the generated starter or your existing suite before selecting a run. Continue with [Get a first result](#Get-a-first-result) below.
 
 If a suitable controller already exists, choose **Use an existing controller**
@@ -127,7 +143,7 @@ These are VS Code editor tabs and native surfaces. Arrange them with VS Code's e
 | Existing TestItems | Runner, TestItems/TestItemRunner 1.3.2 or newer, package test dependencies | [First result](#Get-a-first-result) |
 | Suite selection and comparison | Suite factory, collectors, declared target environments | [Design and compare](#Design-a-suite-and-compare-targets) |
 | Visual output | Completed suite reports containing the requested observations | [Saved plots](vscode-workflows.md#Plot-saved-results) |
-| Integrated Pluto | Extension/core 1.0.1 or newer and a separate Pluto project | [Notebook workflow](vscode-workflows.md#Pluto-notebooks-in-VS-Code) |
+| Integrated Pluto | Compatible extension/Core versions from the table above and a separate Pluto project | [Notebook workflow](vscode-workflows.md#Pluto-notebooks-in-VS-Code) |
 | Julia terminal or debugger | Julia/controller; Julia extension and saved source for debugging | [Julia tools](vscode-workflows.md#Dedicated-Julia-terminal) |
 | Advice conversation | Authenticated supported CLI or configured MCP advice tool | [MCP connection](../mcp-advisor.md#Choose-a-connection) |
 | Reviewed implementation | Saved files, Git HEAD and a separate implementation tool | [Review and apply](../mcp-advisor.md#Switch-from-advice-to-implementation) |

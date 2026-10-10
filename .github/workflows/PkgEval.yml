@@ -71,7 +71,7 @@ jobs:
           macro testitem(name, body)
               return esc(:(@testset $name $body))
           end
-          include("test/pkgeval_source.jl")
+          include(joinpath(ENV["GITHUB_WORKSPACE"], "test", "pkgeval_source.jl"))
       # Keep the original 1.0.1 qualification reproducible when reviewing this workflow.
       # Scheduled runs select a fresh General commit and its latest registered version.
       - id: registry
@@ -111,7 +111,7 @@ jobs:
           EXPECTED_TREE: ${{ inputs.expected_tree || (github.event_name == 'pull_request' && '00c133336911b8600d63a8d6c59ce1befc5ce690') || '' }}
         run: |
           using Downloads, TOML
-          include("qualification/shared/pkgeval_source.jl")
+          include(joinpath(ENV["GITHUB_WORKSPACE"], "qualification", "shared", "pkgeval_source.jl"))
           mkpath(".pkgeval")
           registry_revision = ENV["GENERAL_REVISION"]
           source_kind = ENV["SOURCE_KIND"]
@@ -189,7 +189,7 @@ jobs:
         shell: julia --startup-file=no --project=/home/runner/.julia/dev/PkgEval {0}
         run: |
           using Dates, TOML, UUIDs
-          include("qualification/shared/pkgeval_source.jl")
+          include(joinpath(ENV["GITHUB_WORKSPACE"], "qualification", "shared", "pkgeval_source.jl"))
           request = TOML.parsefile(".pkgeval/request.toml")
           report = merge(request, Dict(
               "requested_julia" => ENV["TARGET_JULIA"],

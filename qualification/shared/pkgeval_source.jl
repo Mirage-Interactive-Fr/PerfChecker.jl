@@ -14,15 +14,19 @@ end
 
 """Select an immutable, non-yanked General entry; never substitute a Git checkout."""
 function registered_source(versions; package_version = "", expected_tree = "")
-    available = [VersionNumber(key) for (key, info) in versions
+    available = [VersionNumber(key)
+                 for (key, info) in versions
                  if !get(info, "yanked", false)]
-    isempty(available) && throw(ArgumentError("No non-yanked PerfChecker version is registered"))
+    isempty(available) &&
+        throw(ArgumentError("No non-yanked PerfChecker version is registered"))
     version = isempty(package_version) ? maximum(available) : VersionNumber(package_version)
     info = get(versions, string(version), nothing)
-    info === nothing && throw(ArgumentError("PerfChecker $version is not registered at this General commit"))
+    info === nothing &&
+        throw(ArgumentError("PerfChecker $version is not registered at this General commit"))
     get(info, "yanked", false) && throw(ArgumentError("PerfChecker $version is yanked"))
     tree = checked_sha(info["git-tree-sha1"], "Registered tree")
-    isempty(expected_tree) || tree == checked_sha(expected_tree, "Expected registered tree") ||
+    isempty(expected_tree) ||
+        tree == checked_sha(expected_tree, "Expected registered tree") ||
         throw(ArgumentError("Registered tree does not match the requested tree"))
     return Dict("source_kind" => "registered", "package" => PACKAGE_NAME,
         "uuid" => PACKAGE_UUID, "version" => string(version), "registered_tree" => tree)
@@ -43,7 +47,8 @@ function candidate_source(revision, commit, project;
         throw(ArgumentError("Resolved candidate commit does not match the requested revision"))
     tree = checked_sha(commit["tree"], "Candidate tree")
     project["name"] == PACKAGE_NAME || throw(ArgumentError("Candidate is not PerfChecker"))
-    project["uuid"] == PACKAGE_UUID || throw(ArgumentError("Candidate UUID is not PerfChecker's UUID"))
+    project["uuid"] == PACKAGE_UUID ||
+        throw(ArgumentError("Candidate UUID is not PerfChecker's UUID"))
     version = VersionNumber(project["version"])
     return Dict("source_kind" => "git_candidate", "package" => PACKAGE_NAME,
         "uuid" => PACKAGE_UUID, "version" => string(version),

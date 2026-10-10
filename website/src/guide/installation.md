@@ -178,9 +178,11 @@ HTTP/UI qualification remains pending.
 
 ### Prepare integrated Pluto for VS Code
 
-The published VS Code extension **1.0.1** integrates Pluto and requires
-**PerfChecker core 1.0.1** and **PerfCheckerPluto 1.0.1**.
-Core 1.0.1 is registered in General and the root `v1.0.1` tag is available.
+Integrated Pluto is available from extension **1.0.1**. Choose Core from the
+[extension compatibility table](../interfaces/vscode.md#Version-compatibility):
+extension 1.0.1 requires Core 1.0.1 or newer, while extension 1.0.2 requires
+Core 1.1.0 or newer, both within the 1.x series. The companion remains
+**PerfCheckerPluto 1.0.1**, from the independent root `v1.0.1` tag.
 The Pluto companion is available from the tagged repository subdirectory while
 its own General registration is pending. See the
 [extension download and platform limits](../interfaces/vscode.md#Qualification-and-reporting-a-problem).
@@ -189,15 +191,16 @@ interface above is also available.
 
 The extension's explicit **Install Pluto environment** action prepares
 `perf/pluto`. Review the listed packages and selected folder before confirming.
-For a disposable setup check with the published Core and tagged Pluto source,
-use the recipe below. It creates a new project and does not modify an existing
-controller or notebook environment:
+For a disposable setup check, select the Core version for your installed
+extension explicitly. The recipe creates a new project and does not modify an
+existing controller or notebook environment:
 
 ```julia
 import Pkg
+core_version = "1.0.1" # Use "1.1.0" with extension 1.0.2.
 pluto_project = mktempdir()
 Pkg.activate(pluto_project)
-Pkg.add(Pkg.PackageSpec(name = "PerfChecker", version = "1.0.1"))
+Pkg.add(Pkg.PackageSpec(name = "PerfChecker", version = core_version))
 Pkg.add(Pkg.PackageSpec(name = "Pluto", version = "1.0.4"))
 Pkg.add(["PlutoUI", "BenchmarkTools", "Chairmarks"])
 Pkg.add(Pkg.PackageSpec(
