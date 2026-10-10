@@ -54,10 +54,12 @@ increase the workload size or profiling window to collect more samples.
 
 These are the recorded profiles of the DataStructures heap and Oxygen heap
 request. Open the catalogue to switch between allocation and sampling views.
-The three flame-graph views embed the public HTML renderer: hover or focus a
-frame for its recorded call path and weight, or use its zoom and fit controls.
-The allocation pies, file and line summaries, heatmaps and totals use static SVG
-exports, with the saved JSON available alongside each figure.
+Catalogue entries with an HTML export use the public interactive renderer.
+For flame graphs, inspect a frame's recorded call path and weight, then use
+zoom, pan and Fit to explore it. Other selected views include allocation pies,
+file and line summaries, heatmaps and totals. Entries without an HTML export
+show their static SVG instead. The saved JSON is available alongside each view;
+changing the presentation does not collect new measurements.
 
 ```@raw html
 <PackageGallery package-name="DataStructures profiles" directory="/examples/real-packages/datastructures-profiles" />

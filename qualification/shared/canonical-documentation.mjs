@@ -200,8 +200,12 @@ for (const channel of channels) {
       await page.locator('.VPLocalSearchBox .result[href*="optional-api/"]').first().waitFor();
       await page.keyboard.press('Escape');
     }
+    // Stable 1.0.0 refreshes retain their original image; newer guides use the native Suite crop.
+    const [suiteScreenshot, suiteDimensions] = info.version === '1.0.0'
+      ? ['vscode-suite-designer.png', [1440, 2609]]
+      : ['suite-designer-linux-4fab779.png', [1083, 502]];
     const illustrated = [
-      ['interfaces/vscode.html', ['vscode-studio.png', 'vscode-suite-designer.png']],
+      ['interfaces/vscode.html', ['vscode-studio.png', suiteScreenshot]],
       ['interfaces/vscode-workflows.html', ['vscode-results.png']],
       ['mcp-advisor.html', ['vscode-mcp-settings.png', 'vscode-advice-chat.png', 'vscode-implementation.png']],
     ];
@@ -211,7 +215,11 @@ for (const channel of channels) {
         const image = page.locator(`.vp-doc img[src$="/${screenshot}"]`);
         await image.scrollIntoViewIfNeeded();
         await image.evaluate(image => image.decode());
-        assert.ok(await image.evaluate(image => image.naturalWidth >= 1200 && image.naturalHeight > 500));
+        if (screenshot === suiteScreenshot) {
+          assert.deepEqual(await image.evaluate(image => [image.naturalWidth, image.naturalHeight]), suiteDimensions);
+        } else {
+          assert.ok(await image.evaluate(image => image.naturalWidth >= 1200 && image.naturalHeight > 500));
+        }
         assert.ok((await image.getAttribute('alt'))?.length > 40);
         const imageUrl = new URL(await image.getAttribute('src'), local);
         assert.ok(imageUrl.pathname.startsWith(info.base));

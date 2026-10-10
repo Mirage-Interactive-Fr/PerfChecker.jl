@@ -8,6 +8,11 @@ Operate a shared service with remote workers. A local test or CI job does not ne
 
 Here an **agent** is a worker service on another machine, not an AI assistant. The controller and agent need compatible installed packages and the intended suite revision before accepting jobs.
 
+Install the [corrected Web source](../guide/installation.md#Web-controller-with-corrected-shutdown)
+on both hosts before relying on the shutdown and cleanup behavior below.
+The older root tag `v1.0.0` does not supply that correction. Remote job
+cancellation remains a logical lease change, separate from stopping its agent.
+
 ## Start the controller
 
 Prepare the [Web controller](../interfaces/web-studio.md) locally first. Install

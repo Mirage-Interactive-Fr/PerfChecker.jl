@@ -6,6 +6,11 @@
 
 Select workloads and versions, start measurements and browse finished runs in a browser.
 
+The interruption and cleanup behavior on this page requires the
+[corrected Web source](../guide/installation.md#Web-controller-with-corrected-shutdown).
+The older root tag `v1.0.0` does not contain that correction, even though the
+Web companion's own package version is still 1.0.0.
+
 ```@raw html
 <a id="Start-with-one-Bibliography-check"></a>
 ```

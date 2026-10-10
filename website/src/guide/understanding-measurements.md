@@ -110,6 +110,9 @@ Compare two numbers only when their measurement definitions and comparison keys 
 Keep the report directory printed by the run, including its `suite-result.json`
 and `bundles/` directory. Replace the paths below with that real directory.
 These routes read saved evidence; they do not collect new samples.
+The screenshots illustrate different recorded runs: Oxygen timing distributions
+in VS Code and Bibliography checks in Pluto and the Web interface. They show the controls
+to use, rather than claiming that each interface displays the same campaign.
 
 ::: tabs
 
@@ -126,6 +129,10 @@ Select the recorded versions and a compatible metric before comparing their
 distributions. Read the units and the full-distribution summary alongside the
 visible samples. The [VS Code walkthrough](../interfaces/vscode-workflows.md)
 explains the available controls and their version requirements.
+
+```@raw html
+<DocMedia src="/assets/screenshots/vscode/v101/oxygen-distributions-central-db8b51b.png" alt="Native VS Code displaying saved Oxygen 1.10.2 and 1.11.0 timing distributions on a common zoomed scale, with their different medians and visible sample counts" caption="Saved Oxygen comparison, Linux, Julia 1.13.1, extension source db8b51b. The viewport shows 26/30 and 28/30 samples; summaries still use all 30 per release. The VS Code distribution guide gives its provenance and full-range view." />
+```
 
 == Pluto
 
@@ -146,6 +153,10 @@ launch are separate calls; opening it evaluates its Julia cells but does not
 schedule a benchmark. Keep the report files in place when reopening the notebook.
 Choose a new notebook filename if `saved-results.jl` already exists.
 
+```@raw html
+<DocMedia src="/examples/bibliography/pluto/completed.png" alt="Recorded Bibliography Pluto notebook with one completed export_bibtex benchmark, the Save completed reports action and the result table" caption="Earlier Bibliography notebook example: the selected benchmark completed and its report was saved explicitly. This controller notebook includes launch controls; the report-only notebook above omits them when no suite_path is supplied." />
+```
+
 == Web (Oxygen)
 
 In the prepared [Web environment](../interfaces/web-studio.md):
@@ -159,6 +170,10 @@ While this local server runs, open `http://127.0.0.1:8080/perfchecker/v1/` on
 the same machine. Select the saved run and its available plots. This directory
 overload is a report viewer; a measurement controller requires a suite.
 See [server configuration](../interfaces/web-studio.md#Safety) for remote access.
+
+```@raw html
+<DocMedia src="/examples/bibliography/history-web/history-time.png" alt="Oxygen Results page showing the Bibliography historical campaign, export_bibtex version-series filters and measured timing across nine tags" caption="Earlier Bibliography historical campaign: the result selector, feature, metric and view identify the evidence displayed. These nine-tag timings are separate from the Oxygen package comparison in the VS Code tab." />
+```
 
 == REPL / CLI
 

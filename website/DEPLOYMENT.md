@@ -322,15 +322,21 @@ node website/preview.mjs
 
 Building locally never publishes. Keep recordings outside Git;
 `website/media.json` can reference external videos independently of site builds.
-For the twenty guide extracts, manifest entries with `embed_local: true` fetch
-their approved release asset into the generated public tree before rendering.
-The build verifies exact bytes and SHA256, bounds each download to 120 seconds,
-and refuses a changed local copy. These compressed extracts use the normal SFTP
-publication and archive rules. Keep the long tutorial master outside exports:
-after its public asset has passed bytes/SHA verification, use a manifest entry
-without `embed_local` and a `DocMedia` player with `external`. The player reads
-that entry's HTTPS URL directly; its small poster and English VTT stay local.
-Use `walkthrough` and `chapter` on the extracts to link to the full recording.
+The earlier tutorial master and its twenty extracts are historical recordings,
+not the active walkthrough series. Their exact URLs, sizes and SHA256 values
+remain in the manifest, without `embed_local`; a clean build does not download
+them into the public tree. Do not add them back as current tutorials.
+
+Publish the new playlist and Shorts on YouTube after owner review. Set only
+verified video IDs, and keep their MP4s outside Git and the SFTP export. Use
+`DocMedia` with a readable poster and English captions; its YouTube player loads
+only after a reader chooses to watch. The written guide must remain usable
+without the video. Small technical recordings may remain where their captions
+identify the demonstrated action and recording scope.
+
+If a separately approved technical clip requires `embed_local`, the build
+checks its exact size and SHA256, bounds its download to 120 seconds and refuses
+a changed copy. That option is not the publication route for the new playlist.
 See the [recording authoring guide](src/contributing/documentation.md#recordings)
 for posters, captions and playback checks.
 For a check matching SFTP hosting, set `PERFCHECKER_PREVIEW_CLEAN_URLS=false` when

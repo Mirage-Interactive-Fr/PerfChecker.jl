@@ -184,8 +184,11 @@ number follows the content; there is no fixed clip quota. Compose portrait
 shots separately, with readable controls and plots.
 
 Start with the result readers want to understand, then explain one action before
-showing it. Use natural English narration, quiet music and enough silence to
-read a reply, plot or completed action. Keep axes, units and qualification
+showing it. Use natural English narration with clear sentences and brief pauses
+between explanations. Explain what a reply or plot shows; do not leave a long
+silent interval for viewers to read it. They can pause to inspect the details.
+Keep the approved background music quiet and continuous from the opening logo,
+including brief pauses in speech. Keep axes, units and qualification
 visible. Identify candidate builds, controlled replies and actual measurements
 accurately. A recorded control test is not a real-package agent conversation.
 
