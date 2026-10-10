@@ -242,7 +242,9 @@ function _environment_provenance(path::AbstractString)
 end
 
 function _git_output(root::String, arguments::AbstractVector{<:AbstractString})
-    command = Cmd(Cmd(vcat(["git"], String.(arguments))); dir = root)
+    # Provenance reads must not refresh the index's stat cache.
+    command = addenv(Cmd(Cmd(vcat(["git"], String.(arguments))); dir = root),
+        "GIT_OPTIONAL_LOCKS" => "0")
     return strip(read(command, String))
 end
 
@@ -328,9 +330,36 @@ end
         write(joinpath(dir, "sample.txt"), "stable")
         run(Cmd(Cmd(["git", "add", "sample.txt"]); dir))
         run(Cmd(Cmd(["git", "commit", "--quiet", "-m", "fixture"]); dir))
-        clean = PerfChecker._git_provenance(dir)
+        # A cacheinfo entry has the committed blob but no refreshed stat data.
+        blob = strip(read(Cmd(Cmd(["git", "rev-parse", "HEAD:sample.txt"]); dir), String))
+        run(Cmd(
+            Cmd(["git", "update-index", "--cacheinfo", "100644", blob, "sample.txt"]); dir))
+        index_path = joinpath(dir, ".git", "index")
+        index_before = read(index_path)
+        clean = withenv("GIT_OPTIONAL_LOCKS" => "1") do
+            PerfChecker._git_provenance(dir)
+        end
         @test clean["captured"]
         @test !clean["dirty"]
+        @test read(index_path) == index_before
+
+        # Preserve Git's selected alternate index while disabling optional writes.
+        alternate_index = joinpath(dir, ".git", "alternate-index")
+        cp(index_path, alternate_index)
+        write(joinpath(dir, "sample.txt"), "changed")
+        withenv("GIT_INDEX_FILE" => alternate_index) do
+            run(Cmd(Cmd(["git", "add", "sample.txt"]); dir))
+        end
+        write(joinpath(dir, "sample.txt"), "stable")
+        alternate_before = read(alternate_index)
+        inherited = withenv("GIT_INDEX_FILE" => alternate_index,
+            "GIT_OPTIONAL_LOCKS" => "1") do
+            PerfChecker._git_provenance(dir)
+        end
+        @test inherited["captured"]
+        @test inherited["dirty"]
+        @test read(alternate_index) == alternate_before
+        @test read(index_path) == index_before
         write(joinpath(dir, "sample.txt"), "changed")
         @test PerfChecker._git_provenance(dir)["dirty"]
     end
