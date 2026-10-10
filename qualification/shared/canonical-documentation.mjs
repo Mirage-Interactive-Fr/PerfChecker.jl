@@ -201,7 +201,7 @@ for (const channel of channels) {
       await page.keyboard.press('Escape');
     }
     const illustrated = [
-      ['interfaces/vscode.html', ['vscode-studio.png', 'vscode-suite-designer.png']],
+      ['interfaces/vscode.html', ['vscode-studio.png', 'suite-designer-linux-4fab779.png']],
       ['interfaces/vscode-workflows.html', ['vscode-results.png']],
       ['mcp-advisor.html', ['vscode-mcp-settings.png', 'vscode-advice-chat.png', 'vscode-implementation.png']],
     ];
@@ -211,7 +211,12 @@ for (const channel of channels) {
         const image = page.locator(`.vp-doc img[src$="/${screenshot}"]`);
         await image.scrollIntoViewIfNeeded();
         await image.evaluate(image => image.decode());
-        assert.ok(await image.evaluate(image => image.naturalWidth >= 1200 && image.naturalHeight > 500));
+        if (screenshot === 'suite-designer-linux-4fab779.png') {
+          // This native source is intentionally cropped to the approved Suite editor area.
+          assert.deepEqual(await image.evaluate(image => [image.naturalWidth, image.naturalHeight]), [1083, 502]);
+        } else {
+          assert.ok(await image.evaluate(image => image.naturalWidth >= 1200 && image.naturalHeight > 500));
+        }
         assert.ok((await image.getAttribute('alt'))?.length > 40);
         const imageUrl = new URL(await image.getAttribute('src'), local);
         assert.ok(imageUrl.pathname.startsWith(info.base));
