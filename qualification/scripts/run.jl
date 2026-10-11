@@ -223,6 +223,53 @@ try
             Pkg.instantiate()
         end
         capture_environment(joinpath(root, "website"), "documentation")
+        include(joinpath(root, "website/optional-api/assemble.jl"))
+        # Match the canonical documentation workflow: incompatible optional
+        # dependencies must resolve in separate projects and private depots.
+        mktempdir() do optional
+            for (slug, owner) in OptionalAPIAssembly.OWNERS
+                project = mkpath(joinpath(optional, "$slug-project"))
+                cp(joinpath(root, "website/optional-api", slug, "Project.toml"),
+                    joinpath(project, "Project.toml"))
+                depot = joinpath(get(ENV, "RUNNER_TEMP", optional), "optional-api", "$slug-depot")
+                isolated = ("JULIA_DEPOT_PATH" => depot,
+                    "JULIA_LOAD_PATH" => "@" * (Sys.iswindows() ? ";" : ":") * "@stdlib",
+                    "PERFCHECKER_SOURCE" => root, "PERFCHECKER_API_OWNER" => owner)
+                preparation = raw"""
+                    using Pkg
+                    root = ENV["PERFCHECKER_SOURCE"]
+                    owner = ENV["PERFCHECKER_API_OWNER"]
+                    specs = [Pkg.PackageSpec(path = root),
+                        Pkg.PackageSpec(path = joinpath(root, "packages", owner))]
+                    owner == "PerfCheckerTachikoma" && push!(specs,
+                        Pkg.PackageSpec(path = joinpath(root, "packages", "PerfCheckerMakie")))
+                    Pkg.develop(specs)
+                    Pkg.instantiate()
+                    """
+                try
+                    run(addenv(`$julia --startup-file=no --project=$project -e $preparation`,
+                        isolated...))
+                finally
+                    capture_environment(project, "documentation-api-$slug")
+                end
+                run(addenv(
+                    `$julia --startup-file=no --project=$project $(joinpath(root, "website/optional-api/make.jl")) $slug`,
+                    isolated...))
+                exports = joinpath(root, "website/optional-api/build", revision, slug)
+                provenance = TOML.parsefile(joinpath(exports, "api-provenance.toml"))
+                records = Dict{String, Any}("label" => "documentation-api-$slug-export")
+                for relative in ["api-provenance.toml";
+                                 [entry["path"] for entry in provenance["outputs"]]]
+                    source = OptionalAPIAssembly.checked_file(exports, relative)
+                    target = "documentation-api-$slug-" * replace(relative, '/' => '-')
+                    cp(source, joinpath(output, target))
+                    records[relative] = Dict("file" => target,
+                        "sha256" => file_digest(source))
+                end
+                push!(receipt["environments"], records)
+            end
+        end
+        run(`$julia --startup-file=no --project=$(joinpath(root, "website")) $(joinpath(root, "website/optional-api/test_assembly.jl"))`)
         run(`$julia --startup-file=no --project=$(joinpath(root, "website")) $(joinpath(root, "website/make.jl"))`)
         capture_environment(joinpath(root, "website"), "documentation-built")
         site = joinpath(root, "website/build/site")

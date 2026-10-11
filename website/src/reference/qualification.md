@@ -85,5 +85,5 @@ that eventually contains it.
   Published Supposition releases fail to load on 32-bit Julia; their optional
   backend is qualified separately on 64-bit Julia. See
   [property-based workloads](extensions.md#Property-based-workloads).
-- Up to four jobs run on separate GitHub-hosted virtual machines. Each job keeps sequential workers, one Julia compute thread, single-thread BLAS and a four-thread computation budget.
+- Full campaigns run up to eight jobs concurrently; routine campaigns run up to four. Each job uses a separate GitHub-hosted virtual machine and keeps sequential workers, one Julia compute thread, single-thread BLAS and a four-thread computation budget.
 - No measurement is validated merely because a tool executable was found.
