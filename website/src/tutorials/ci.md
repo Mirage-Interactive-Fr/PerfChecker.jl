@@ -256,10 +256,14 @@ that this avoids the cost of generating images for ordinary PkgEval jobs.
 
 An explicit `package_images=yes` dispatch instead passes `--pkgimages=yes`
 through the official `Configuration.julia_args` option. The pinned controller
-uses these arguments for both precompilation and `Pkg.test`; PerfChecker's
-isolated Julia workers inherit the package-image policy through `Base.julia_cmd()`.
+uses these arguments for both precompilation and `Pkg.test`. Scenario and advisor
+workers use the full `Base.julia_cmd()` and inherit that policy. Malt check workers
+and allocation-test baseline processes use the executable and their own flags;
+they do not explicitly forward the controller's package-image option. The recorded
+configuration does not guarantee identical compilation options in every subprocess.
 This configuration may change how much compilation is repeated across workers.
-It does not change the tests, one Julia thread or disabled PkgEval shared cache.
+It keeps the test suite, the controller's single Julia thread and the disabled
+PkgEval shared cache unchanged.
 Record and report its verdict separately from an
 upstream-default evaluation; a configured pass is not a pass under the defaults.
 
