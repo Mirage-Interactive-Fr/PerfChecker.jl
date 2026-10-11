@@ -435,7 +435,7 @@ jobs:
               VERSION == v"1.13.1" || error("Unexpected Julia version")
               registry == "436bbe0a3c9a7492e49077a7343032bf5424da97" || error("Use the reviewed General pin")
               strip(read(`git -C $root rev-parse HEAD`, String)) == candidate || error("Candidate changed")
-              strip(read(`git -C $root rev-parse $baseline^{tree}`, String)) ==
+              strip(read(`git -C $root rev-parse $(baseline * "^{tree}")`, String)) ==
                   "e188d7283e01637cc4e0e6176eace84bd2ca33be" || error("Baseline tree changed")
               changes = split(strip(read(`git -C $root diff --name-only $baseline $candidate`, String)), '\n')
               Set(changes) == Set(["test/allocation_cleanup.jl", ".github/workflows/PkgEval.yml"]) ||
@@ -445,7 +445,7 @@ jobs:
               environment = joinpath(work, "testenv")
               mkpath(environment)
               project = TOML.parsefile(joinpath(root, "Project.toml"))
-              report["candidate_tree"] = strip(read(`git -C $root rev-parse $candidate^{tree}`, String))
+              report["candidate_tree"] = strip(read(`git -C $root rev-parse $(candidate * "^{tree}")`, String))
               report["core_uuid"] = project["uuid"]
               report["core_version"] = project["version"]
               report["core_path"] = realpath(root)
