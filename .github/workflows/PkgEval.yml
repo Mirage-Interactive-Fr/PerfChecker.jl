@@ -364,8 +364,12 @@ jobs:
               usage = joinpath(work, label * ".usage")
               before = time_ns()
               report["active_phase"] = label
+              # Retain all Cmd attributes; interpolating a Cmd with env after
+              # the time executable is rejected by Julia's command parser.
+              timed = deepcopy(command)
+              prepend!(timed.exec, ["/usr/bin/time", "-f", "%U %S", "-o", usage])
               open(log, "w") do io
-                  process = run(pipeline(`/usr/bin/time -f "%U %S" -o $usage $command`; stdout=io, stderr=io); wait=false)
+                  process = run(pipeline(timed; stdout=io, stderr=io); wait=false)
                   # getpid(Process) ceases to work once libuv closes its handle.
                   # Retain the identity at spawn, never ask for it after wait.
                   process_pid = getpid(process)
