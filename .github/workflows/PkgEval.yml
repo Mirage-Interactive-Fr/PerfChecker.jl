@@ -10,6 +10,10 @@ on:
     - cron: '41 4 * * 1'
   workflow_dispatch:
     inputs:
+      fixture_ab:
+        description: Measure the allocation cleanup fixture only; not a PkgEval or release qualification
+        type: boolean
+        default: false
       source_kind:
         description: Registered archive or an explicit Git candidate from the PerfChecker repository
         type: choice
@@ -66,6 +70,7 @@ env:
 jobs:
   select:
     name: Select package source
+    if: inputs.fixture_ab != true
     runs-on: ubuntu-latest
     timeout-minutes: 10
     outputs:
@@ -171,6 +176,447 @@ jobs:
           path: .pkgeval/
           include-hidden-files: true
           if-no-files-found: error
+
+  fixture-ab:
+    name: Allocation cleanup fixture A/B
+    if: github.event_name == 'workflow_dispatch' && inputs.fixture_ab == true
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      FIXTURE_BASELINE: '2c89fe9f3339baecf62cff7c759e97c54ed67544'
+      FIXTURE_GENERAL: ${{ inputs.general_revision }}
+      JULIA_NUM_THREADS: '1'
+      JULIA_CPU_THREADS: '2'
+      JULIA_NUM_GC_THREADS: '1'
+      JULIA_NUM_PRECOMPILE_TASKS: '2'
+      JULIA_PKG_PRECOMPILE_AUTO: '0'
+      OPENBLAS_NUM_THREADS: '2'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+      JULIA_LOAD_PATH: '@:@stdlib'
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: julia-actions/setup-julia@v3
+        with:
+          version: '1.13.1'
+          arch: x64
+      # Deliberately no cache action: both variants start from one normally
+      # prepared private depot, never from the writes made by the other variant.
+      - name: Compare both fixtures at the same source and depot paths
+        shell: bash
+        run: |
+          set -euo pipefail
+          fixture_work="$RUNNER_TEMP/fixture-ab-work"
+          fixture_results="$RUNNER_TEMP/fixture-ab-results"
+          test ! -e "$fixture_work"
+          mkdir -p "$fixture_work/active-depot" "$fixture_results"
+          export FIXTURE_WORK="$fixture_work" FIXTURE_RESULTS="$fixture_results"
+          # The final empty entry keeps Julia's bundled stdlib caches, but not
+          # the runner's home depot. Package/test writes stay in active-depot.
+          export JULIA_DEPOT_PATH="$fixture_work/active-depot:"
+          fixture_cpus=$(perl -ne 'if (/^Cpus_allowed_list:\s*(.*)/) { @c=(); for (split /,/, $1) { if (/(\d+)-(\d+)/) { push @c, $1..$2 } else { push @c, 0+$_ } } die "Two CPUs required\n" if @c<2; print join(",", @c[0,1]); exit }' /proc/self/status)
+          test -n "$fixture_cpus"
+          export FIXTURE_CPUS="$fixture_cpus"
+          export FIXTURE_STARTED_AT="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          # The supervisor stops work after 38 minutes, then has two minutes
+          # for process extinction. GitHub's 45-minute cap is the last resort.
+          timeout --signal=INT --kill-after=20s 40m taskset -c "$fixture_cpus" \
+            perl -MDigest::SHA=sha256_hex -e '
+              my $filter = pack("SCCL" x 8, 0x20,0,0,4, 0x15,1,0,0xc000003e,
+                0x06,0,0,0x80000000, 0x20,0,0,0, 0x15,1,0,203,
+                0x15,0,1,0x400000cb, 0x06,0,0,0x50001, 0x06,0,0,0x7fff0000);
+              sha256_hex($filter) eq "d17a0070c7786d444b866aef326e5f44ebc5ece0cfba7d55718199c5ed354ef6" or die "Filter mismatch\n";
+              my $program = pack("Sx6P", 8, $filter);
+              syscall(157,38,1,0,0,0) == 0 or die "No-new-privileges failed\n";
+              syscall(317,1,0,$program) == 0 or die "Affinity filter failed\n";
+              for my $number (203,1073742027) {
+                $! = 0; my $result = syscall($number,0,0,0);
+                $result == -1 && 0+$! == 1 or die "Affinity probe failed\n";
+              }
+              exec @ARGV or die "Supervisor launch failed\n";
+            ' julia --startup-file=no --check-bounds=yes --pkgimages=existing - <<'JULIA' &
+          # Start before imports: import/preparation failures have the same
+          # deadline, safe diagnostic receipt and cleanup as measurement failures.
+          started = time_ns()
+          Base.exit_on_sigint(false)
+          root = ENV["GITHUB_WORKSPACE"]
+          work = ENV["FIXTURE_WORK"]
+          output = ENV["FIXTURE_RESULTS"]
+          baseline = ENV["FIXTURE_BASELINE"]
+          candidate = ENV["GITHUB_SHA"]
+          registry = ENV["FIXTURE_GENERAL"]
+          target = joinpath(root, "test", "allocation_cleanup.jl")
+          candidate_bytes = nothing
+          deadline = started + UInt64(38 * 60 * 1_000_000_000)
+          phase_deadline = Ref(min(deadline, started + UInt64(15 * 60 * 1_000_000_000)))
+          observed = Dict{Int, String}()
+          direct_processes = Set{Int}()
+          report = Dict{String, Any}("kind" => "targeted-fixture-ab", "status" => "failed",
+              "baseline_revision" => baseline, "candidate_revision" => candidate,
+              "julia" => string(VERSION), "cpus" => ENV["FIXTURE_CPUS"],
+              "started_at_utc" => ENV["FIXTURE_STARTED_AT"],
+              "test_tags" => "allocation_cleanup", "release_qualified" => false,
+              "pkgeval_qualified" => false, "cleanup_passed" => false)
+          function save()
+              if isdefined(Main, :TOML)
+                  open(io -> TOML.print(io, report; sorted=true), joinpath(output, "result.toml"), "w")
+              else
+                  # Base-only fallback also covers a failed stdlib import.
+                  write(joinpath(output, "bootstrap-failure.txt"),
+                      "exception_class=" * get(report, "exception_class", "unknown") *
+                      "\ncleanup_passed=" * string(report["cleanup_passed"]) * "\n")
+              end
+          end
+          function process_record(pid)
+              try
+                  fields = split(last(split(read("/proc/$pid/stat", String), ')')))
+                  return (state=fields[1], parent=parse(Int, fields[2]), birth=fields[20])
+              catch
+                  return nothing
+              end
+          end
+          function observe!()
+              records = Dict(pid => record for entry in readdir("/proc")
+                  for pid in (tryparse(Int, entry),) if pid !== nothing
+                  for record in (process_record(pid),) if record !== nothing)
+              parents = Set([getpid()])
+              while true
+                  children = Set(pid for (pid, record) in records if record.parent in parents)
+                  fresh = setdiff(children, parents)
+                  isempty(fresh) && break
+                  union!(parents, fresh)
+              end
+              for pid in setdiff(parents, Set([getpid()]))
+                  observed[pid] = records[pid].birth
+              end
+          end
+          alive(pid, birth) = (record=process_record(pid); record !== nothing && record.birth == birth)
+          function reap_orphans!()
+              for (pid, birth) in observed
+                  record = process_record(pid)
+                  if record !== nothing && record.birth == birth && record.parent == getpid() &&
+                          record.state == "Z" && !(pid in direct_processes)
+                      ccall(:waitpid, Cint, (Cint, Ptr{Cint}, Cint), pid, C_NULL, 1)
+                  end
+              end
+          end
+          function require_extinction(label)
+              observe!()
+              reap_orphans!()
+              survivors = [pid for (pid, birth) in observed if alive(pid, birth)]
+              report[label * "_surviving_processes"] = survivors
+              isempty(survivors) || error("A phase left live descendants")
+          end
+          function stop_owned!()
+              observe!()
+              for signal in (Base.SIGINT, Base.SIGTERM, Base.SIGKILL)
+                  for (pid, birth) in observed
+                      alive(pid, birth) && ccall(:kill, Cint, (Cint, Cint), pid, signal)
+                  end
+                  until = time_ns() + UInt64(5_000_000_000)
+                  while any(alive(pid, birth) for (pid, birth) in observed) && time_ns() < until
+                      observe!()
+                      reap_orphans!()
+                      sleep(0.05)
+                  end
+              end
+              observe!()
+              reap_orphans!()
+              survivors = [pid for (pid, birth) in observed if alive(pid, birth)]
+              report["observed_processes"] = length(observed)
+              report["observed_incarnations"] = sort!([string(pid) * ":" * birth for (pid, birth) in observed])
+              report["surviving_processes"] = survivors
+              isempty(survivors) || error("Owned fixture processes survived cleanup")
+          end
+          function diagnostics(log, label)
+              text = replace(read(log, String), r"\e\[[0-9;]*[A-Za-z]" => "")
+              classes = String[]
+              frames = String[]
+              for line in split(text, '\n')
+                  class = match(r"^(?:ERROR:\s+)?(?:LoadError:\s+)?([A-Z][A-Za-z0-9_.]*(?:Error|Exception|Failure))\b", strip(line))
+                  class === nothing || push!(classes, class.captures[1])
+                  occursin("Test Failed at ", line) && push!(classes, "Test.Fail")
+                  occursin("Error During Test at ", line) && push!(classes, "Test.Error")
+                  # Keep source locations only, never expressions or arbitrary
+                  # output (which can contain prompts, environments or secrets).
+                  for location in eachmatch(r"(?:^|[\s@])([^\s:]+\.jl):(\d+)", line)
+                      file = location.captures[1]
+                      relative = isabspath(file) ? relpath(file, root) : file
+                      occursin(r"^(?:src|ext|test)/[A-Za-z0-9_./-]+\.jl$", relative) &&
+                          push!(frames, relative * ":" * location.captures[2])
+                  end
+              end
+              report[label * "_exception_classes"] = unique(classes)
+              report[label * "_source_locations"] = unique(frames)
+              lines = filter(line -> occursin(r"^(BEGIN |END |Test Summary:|PerfChecker\s+\|)", line), split(text, '\n'))
+              write(joinpath(output, label * "-summary.log"), join(lines, '\n'))
+              return text
+          end
+          function phase(command, label; seconds=600, depot=nothing)
+              limit = min(phase_deadline[], time_ns() + UInt64(seconds * 1_000_000_000))
+              time_ns() < limit || error("Phase has no remaining allowance: " * label)
+              command = depot === nothing ? command : addenv(command, "JULIA_DEPOT_PATH" => depot * ":")
+              log = joinpath(work, label * ".log")
+              usage = joinpath(work, label * ".usage")
+              before = time_ns()
+              report["active_phase"] = label
+              open(log, "w") do io
+                  process = run(pipeline(`/usr/bin/time -f "%U %S" -o $usage $command`; stdout=io, stderr=io); wait=false)
+                  # getpid(Process) ceases to work once libuv closes its handle.
+                  # Retain the identity at spawn, never ask for it after wait.
+                  process_pid = getpid(process)
+                  push!(direct_processes, process_pid)
+                  try
+                      while process_running(process)
+                          observe!()
+                          time_ns() < limit || error("Phase exceeded its bounded allowance: " * label)
+                          sleep(0.05)
+                      end
+                      wait(process)
+                      success(process) || error("Phase failed: " * label)
+                  finally
+                      process_running(process) && stop_owned!()
+                      wait(process)
+                      delete!(direct_processes, process_pid)
+                      reap_orphans!()
+                      report[label * "_wall_seconds"] = (time_ns() - before) / 1e9
+                      report[label * "_exitcode"] = process.exitcode
+                      diagnostics(log, label)
+                      if isfile(usage)
+                          values = split(strip(read(usage, String)))
+                          if length(values) >= 2
+                              numbers = tryparse.(Float64, values[(end - 1):end])
+                              if all(!isnothing, numbers)
+                                  report[label * "_user_cpu_seconds"] = numbers[1]
+                                  report[label * "_system_cpu_seconds"] = numbers[2]
+                              end
+                          end
+                      end
+                      save()
+                  end
+              end
+              elapsed = (time_ns() - before) / 1e9
+              # A surviving child is a failed phase, never silently killed and
+              # treated as success before its depot path is reused by B.
+              require_extinction(label)
+              return read(log, String), elapsed
+          end
+          function inventory(directory)
+              records = Dict{String, String}()
+              for (parent, directories, files) in walkdir(directory; follow_symlinks=false)
+                  for file in vcat(directories, files)
+                      time_ns() < phase_deadline[] || error("Inventory exceeded its bounded allowance")
+                      path = joinpath(parent, file)
+                      records[relpath(path, directory)] = islink(path) ? "link:" * readlink(path) :
+                          isfile(path) ? bytes2hex(open(sha256, path)) : "directory"
+                  end
+              end
+              return records
+          end
+          failure = nothing
+          try
+              # Reparent orphaned descendants here, so a short-lived parent
+              # cannot make a worker escape the bounded extinction pass.
+              ccall(:prctl, Cint, (Cint, Culong, Culong, Culong, Culong), 36, 1, 0, 0, 0) == 0 ||
+                  error("Cannot supervise orphaned descendants")
+              @eval using Dates, Downloads, SHA, TOML
+              report["supervisor_depots"] = copy(DEPOT_PATH)
+              any(path -> normpath(path) == normpath(joinpath(homedir(), ".julia")), DEPOT_PATH) &&
+                  error("Ambient home depot is not allowed")
+              global candidate_bytes = read(target)
+              baseline_bytes = read(`git -C $root show $baseline:test/allocation_cleanup.jl`)
+              report["baseline_sha256"] = bytes2hex(sha256(baseline_bytes))
+              report["candidate_sha256"] = bytes2hex(sha256(candidate_bytes))
+              save()
+              VERSION == v"1.13.1" || error("Unexpected Julia version")
+              registry == "436bbe0a3c9a7492e49077a7343032bf5424da97" || error("Use the reviewed General pin")
+              strip(read(`git -C $root rev-parse HEAD`, String)) == candidate || error("Candidate changed")
+              strip(read(`git -C $root rev-parse $baseline^{tree}`, String)) ==
+                  "e188d7283e01637cc4e0e6176eace84bd2ca33be" || error("Baseline tree changed")
+              changes = split(strip(read(`git -C $root diff --name-only $baseline $candidate`, String)), '\n')
+              Set(changes) == Set(["test/allocation_cleanup.jl", ".github/workflows/PkgEval.yml"]) ||
+                  error("A/B requires only the reviewed test and workflow changes")
+              isempty(strip(read(`git -C $root status --porcelain`, String))) || error("Dirty candidate")
+              active = joinpath(work, "active-depot")
+              environment = joinpath(work, "testenv")
+              mkpath(environment)
+              project = TOML.parsefile(joinpath(root, "Project.toml"))
+              report["candidate_tree"] = strip(read(`git -C $root rev-parse $candidate^{tree}`, String))
+              report["core_uuid"] = project["uuid"]
+              report["core_version"] = project["version"]
+              report["core_path"] = realpath(root)
+              report["controller_arguments"] = collect(Base.julia_cmd())
+              report["julia_commit"] = Base.GIT_VERSION_INFO.commit
+              deps = copy(project["deps"])
+              for name in project["targets"]["test"]
+                  deps[name] = project["extras"][name]
+              end
+              deps["PerfChecker"] = project["uuid"]
+              compat = Dict(key => value for (key, value) in project["compat"] if key == "julia" || haskey(deps, key))
+              open(io -> TOML.print(io, Dict("deps" => deps, "compat" => compat)), joinpath(environment, "Project.toml"), "w")
+              archive = joinpath(work, "General.tar.gz")
+              Downloads.download("https://codeload.github.com/JuliaRegistries/General/tar.gz/" * registry, archive; timeout=120)
+              bytes2hex(open(sha256, archive)) == "0925afb91a82cf8f32cc5035f68e736fdb15a4ca72aa17fbb04db436785ce6ae" ||
+                  error("General archive checksum differs")
+              registry_path = joinpath(active, "registries", "General")
+              mkpath(registry_path)
+              phase(`tar -xzf $archive --strip-components=1 -C $registry_path`, "registry"; seconds=60)
+              write(target, baseline_bytes)
+              preparation = "using Pkg; Pkg.activate(ARGS[1]); Pkg.UPDATED_REGISTRY_THIS_SESSION[]=true; " *
+                  "Pkg.develop(path=ARGS[2]); Pkg.instantiate(); Pkg.precompile()"
+              julia = Base.julia_cmd()
+              phase(`$julia --startup-file=no --project=$environment -e $preparation $environment $root`,
+                  "prepare"; seconds=900, depot=active)
+              manifest = TOML.parsefile(joinpath(environment, "Manifest.toml"))
+              length(deps) == 38 || error("Incomplete test dependency recipe")
+              all(haskey(manifest["deps"], name) for name in keys(deps)) || error("Missing test dependencies")
+              local_entries = [(name, entry) for (name, entries) in manifest["deps"] for entry in entries if haskey(entry, "path")]
+              length(local_entries) == 1 || error("Unexpected path dependency")
+              name, entry = only(local_entries)
+              name == "PerfChecker" && realpath(joinpath(environment, entry["path"])) == realpath(root) || error("Wrong Core source")
+              hashes = Dict(file => bytes2hex(sha256(read(joinpath(environment, file)))) for file in ("Project.toml", "Manifest.toml"))
+              for file in keys(hashes)
+                  cp(joinpath(environment, file), joinpath(output, file))
+              end
+              report["environment_sha256"] = hashes
+              report["resolved_packages"] = length(manifest["deps"])
+              report["general_revision"] = registry
+              original = inventory(active)
+              report["initial_depot_sha256"] = bytes2hex(sha256(join(
+                  [path * "\0" * original[path] for path in sort!(collect(keys(original)))], '\n')))
+              report["initial_depot_entries"] = length(original)
+              compiled = inventory(joinpath(active, "compiled"))
+              report["initial_compiled_sha256"] = bytes2hex(sha256(join(
+                  [path * "\0" * compiled[path] for path in sort!(collect(keys(compiled)))], '\n')))
+              initial = Dict{String, Dict{String, String}}()
+              for side in ("A", "B")
+                  destination = joinpath(work, "depot-" * side)
+                  phase(`cp -a --reflink=auto $active $destination`, "copy-" * side; seconds=120)
+                  inventory(destination) == original || error("Initial depot clone differs: " * side)
+                  for (path, hash) in original
+                      hash == "directory" || startswith(hash, "link:") ||
+                          stat(joinpath(active, path)).inode != stat(joinpath(destination, path)).inode ||
+                          error("Depot copy shares a writable file inode: " * side)
+                  end
+              end
+              mv(active, joinpath(work, "depot-seed"))
+              # Copying equal bytes is insufficient: load both copies strictly,
+              # each at the ORIGINAL source/depot paths, before either test runs.
+              # Loading may write private usage/scratch data, but must not build
+              # or change any compiled cache. Neither side can see the other.
+              loading = "using TOML; project=TOML.parsefile(ARGS[1]); " *
+                  "any(p->normpath(p)==normpath(joinpath(homedir(),\".julia\")),DEPOT_PATH) && error(\"Ambient depot\"); " *
+                  "for name in sort!(collect(keys(project[\"deps\"]))); Base.require(Main,Symbol(name)); end"
+              for side in ("A", "B")
+                  destination = joinpath(work, "depot-" * side)
+                  mv(destination, active)
+                  phase(`$julia --startup-file=no --compiled-modules=strict --project=$environment -e $loading $(joinpath(environment, "Project.toml"))`,
+                      "cache-load-" * side; seconds=120, depot=active)
+                  inventory(joinpath(active, "compiled")) == compiled || error("Strict cache loading changed compiled files")
+                  initial[side] = inventory(active)
+                  mv(active, destination)
+                  report[side * "_strict_cache_load_passed"] = true
+              end
+              report["preparation_wall_seconds"] = (time_ns() - started) / 1e9
+              report["initial_caches_equal"] = true
+              write(joinpath(output, "prepared.ready"), "strict caches A/B verified\n")
+              phase_deadline[] = deadline
+              for (side, bytes) in (("A", baseline_bytes), ("B", candidate_bytes))
+                  destination = joinpath(work, "depot-" * side)
+                  inventory(destination) == initial[side] || error("Unused depot was modified: " * side)
+                  mv(destination, active)
+                  write(target, bytes)
+                  all(bytes2hex(sha256(read(joinpath(environment, file)))) == hash for (file, hash) in hashes) || error("Test environment changed")
+                  command = addenv(`$julia --startup-file=no --project=$environment $(joinpath(root, "test", "runtests.jl"))`,
+                      "PERFCHECKER_TEST_PROFILE" => "full", "PERFCHECKER_TEST_TAGS" => "allocation_cleanup")
+                  text, elapsed = phase(command, side; seconds=660, depot=active)
+                  ends = [match.captures[1] for match in eachmatch(
+                      r"^END .*\"PerfChecker / test / allocation_cleanup\.jl / ([^\"]+)\" elapsed="m, text)]
+                  length(ends) == length(unique(ends)) == 6 || error("Missing allocation cleanup testitems")
+                  occursin(r"Test Summary:\s*\|\s*Pass\s+Total\s+Time", text) || error("Missing all-pass test summary")
+                  report[side * "_testitems"] = ends
+                  if side == "B"
+                      Set(ends) == Set(report["A_testitems"]) || error("The tested contracts differ")
+                  end
+                  report[side * "_source_sha256"] = bytes2hex(sha256(read(target)))
+                  inventory(joinpath(work, "depot-seed")) == original || error("Prepared seed was modified")
+                  all(bytes2hex(sha256(read(joinpath(environment, file)))) == hash for (file, hash) in hashes) || error("Test environment changed")
+                  rm(active; recursive=true)
+                  save()
+              end
+              gain = report["A_wall_seconds"] - report["B_wall_seconds"]
+              report["gain_seconds"] = gain
+              report["gain_fraction"] = gain / report["A_wall_seconds"]
+              report["gain_threshold_met"] = gain >= 30 && report["gain_fraction"] >= 0.10
+              report["status"] = report["gain_threshold_met"] ? "measured_gain" : "insufficient_gain"
+              report["gain_threshold_met"] || error("Fixture gain did not meet both thresholds")
+          catch exception
+              report["exception_class"] = string(typeof(exception))
+              global failure = exception
+          finally
+              try
+                  stop_owned!()
+                  report["cleanup_passed"] = true
+              catch cleanup_error
+                  report["cleanup_exception_class"] = string(typeof(cleanup_error))
+                  global failure = cleanup_error
+              finally
+                  candidate_bytes === nothing || write(target, candidate_bytes)
+                  # Never erase evidence under a surviving process. Such a
+                  # failure remains a failed cleanup, not a successful receipt.
+                  report["cleanup_passed"] && rm(work; recursive=true, force=true)
+                  report["work_directory_removed"] = !ispath(work)
+                  report["elapsed_seconds"] = (time_ns() - started) / 1e9
+                  isdefined(Main, :Dates) && (report["finished_at_utc"] = string(now(UTC)))
+                  save()
+              end
+          end
+          # The detailed class and whitelisted source locations are in the
+          # receipt; do not print a raw child/supervisor exception afterwards.
+          failure === nothing || error("Fixture A/B failed; inspect the sanitized receipt")
+          println("Fixture A/B gain: ", report["gain_seconds"], " seconds; ",
+              100 * report["gain_fraction"], " percent. This does not qualify PkgEval or a release.")
+          JULIA
+          fixture_supervisor=$!
+          # This external deadline also covers an import stuck before Julia's
+          # own supervisor can inspect phase_deadline. Readiness disarms it.
+          (
+            sleep 900 &
+            fixture_sleep=$!
+            trap 'kill "$fixture_sleep" 2>/dev/null || true; wait "$fixture_sleep" 2>/dev/null || true' EXIT
+            trap 'exit 0' INT TERM
+            wait "$fixture_sleep"
+            if test ! -e "$fixture_results/prepared.ready"; then
+              kill -INT "$fixture_supervisor" 2>/dev/null || true
+            fi
+          ) &
+          fixture_watchdog=$!
+          trap 'kill "$fixture_watchdog" 2>/dev/null || true; wait "$fixture_watchdog" 2>/dev/null || true' EXIT
+          if wait "$fixture_supervisor"; then fixture_status=0; else fixture_status=$?; fi
+          kill "$fixture_watchdog" 2>/dev/null || true
+          wait "$fixture_watchdog" 2>/dev/null || true
+          trap - EXIT
+          exit "$fixture_status"
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: allocation-cleanup-fixture-ab
+          path: ${{ runner.temp }}/fixture-ab-results
+          if-no-files-found: error
+          retention-days: 14
+      - name: Remove the disposable A/B directories
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          # The supervisor must prove extinction before removing work. Do not
+          # hide a failed cleanup by deleting its files from an always step.
+          test ! -e "$RUNNER_TEMP/fixture-ab-work"
+          rm -rf -- "$RUNNER_TEMP/fixture-ab-results"
 
   stable:
     name: PkgEval on Julia stable
