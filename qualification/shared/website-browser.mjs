@@ -153,7 +153,7 @@ try {
     new URL('../dev/',publishedBase).href);
   await publishedPage.goto(new URL('interfaces/vscode',stableBase).href,{waitUntil:'networkidle'});
   assert(await publishedPage.getByRole('heading',{name:/^PerfChecker Studio in VS Code/}).isVisible());
-  await publishedPage.locator('.vp-doc').getByRole('link',{name:'VS Code configuration',exact:true}).click();
+  await publishedPage.locator('.vp-doc').getByRole('link',{name:'VS Code configuration',exact:true}).first().click();
   await publishedPage.waitForURL('**/interfaces/vscode-configuration');
   await publishedPage.getByRole('heading',{name:/^VS Code configuration/}).waitFor({state:'visible'});
   assert.deepEqual(publishedErrors,[]);
