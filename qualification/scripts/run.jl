@@ -231,7 +231,8 @@ try
                 project = mkpath(joinpath(optional, "$slug-project"))
                 cp(joinpath(root, "website/optional-api", slug, "Project.toml"),
                     joinpath(project, "Project.toml"))
-                depot = joinpath(get(ENV, "RUNNER_TEMP", optional), "optional-api", "$slug-depot")
+                depot = joinpath(
+                    get(ENV, "RUNNER_TEMP", optional), "optional-api", "$slug-depot")
                 isolated = ("JULIA_DEPOT_PATH" => depot,
                     "JULIA_LOAD_PATH" => "@" * (Sys.iswindows() ? ";" : ":") * "@stdlib",
                     "PERFCHECKER_SOURCE" => root, "PERFCHECKER_API_OWNER" => owner)
@@ -247,7 +248,8 @@ try
                     Pkg.instantiate()
                     """
                 try
-                    run(addenv(`$julia --startup-file=no --project=$project -e $preparation`,
+                    run(addenv(
+                        `$julia --startup-file=no --project=$project -e $preparation`,
                         isolated...))
                 finally
                     capture_environment(project, "documentation-api-$slug")
