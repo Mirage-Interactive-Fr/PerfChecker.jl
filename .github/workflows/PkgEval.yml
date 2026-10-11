@@ -539,7 +539,7 @@ jobs:
                       "PERFCHECKER_TEST_PROFILE" => "full", "PERFCHECKER_TEST_TAGS" => "allocation_cleanup")
                   text, elapsed = phase(command, side; seconds=660, depot=active)
                   ends = [match.captures[1] for match in eachmatch(
-                      r"^END .*\"PerfChecker / test / allocation_cleanup\.jl / ([^\"]+)\" elapsed="m, text)]
+                      r"^END .*\"PerfChecker / test/allocation_cleanup\.jl / ([^\"]+)\" elapsed="m, text)]
                   length(ends) == length(unique(ends)) == 6 || error("Missing allocation cleanup testitems")
                   occursin(r"Test Summary:\s*\|\s*Pass\s+Total\s+Time", text) || error("Missing all-pass test summary")
                   report[side * "_testitems"] = ends
