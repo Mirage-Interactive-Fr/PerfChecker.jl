@@ -43,6 +43,12 @@ Put a plot beside each measured comparison, explain its axes, and discuss the va
 
 ## Local build
 
+Before running `website/make.jl`, prepare and render all six companion API exports
+using the [isolated API rendering procedure](https://github.com/Mirage-Interactive-Fr/PerfChecker.jl/blob/1aa026f46b7b57e96b0157b8e7515b7291b0a044/website/optional-api/README.md#prepare-and-render-sequentially).
+Use this checkout's exact `HEAD` revision, with a separate project and depot for
+each companion. Missing exports or exports from another revision are rejected.
+Then build the main documentation in its own project:
+
 ```sh
 julia --project=website -e 'using Pkg; cd("website") do; Pkg.develop(path=".."); Pkg.instantiate(); end'
 julia --project=website website/make.jl
@@ -68,7 +74,7 @@ These packages have independent versions:
 
 | Package | Version | Registrator subdirectory |
 | --- | --- | --- |
-| PerfChecker | 1.0.1 | Repository root |
+| PerfChecker | 1.1.0 | Repository root |
 | PerfCheckerLinuxPerf | 1.0.1 | `packages/PerfCheckerLinuxPerf` |
 | PerfCheckerLIKWID | 1.0.1 | `packages/PerfCheckerLIKWID` |
 | PerfCheckerMakie | 1.0.1 | `packages/PerfCheckerMakie` |
@@ -77,7 +83,7 @@ These packages have independent versions:
 | PerfCheckerWeb | 1.0.0 | `packages/PerfCheckerWeb` |
 
 First, the maintainer comments `@JuliaRegistrator register` on that final
-commit and waits for Core 1.0.1 to appear in General. Then the maintainer requests
+commit and waits for Core 1.1.0 to appear in General. Then the maintainer requests
 each companion separately on its reviewed source commit, using
 `@JuliaRegistrator register subdir=packages/PerfCheckerMakie`, for example,
 and the corresponding path from the table. Register Makie before Tachikoma's
@@ -86,7 +92,7 @@ installation checks; new-package registration is distinct from a Core update.
 Each package subtree includes its own copy of the repository's MIT license.
 
 The existing TagBot workflow handles the root and each subdirectory separately.
-It creates `v1.0.1` for Core and namespaced tags such as
+It creates `v1.1.0` for Core and namespaced tags such as
 `PerfCheckerMakie-v1.0.1` and `PerfCheckerWeb-v1.0.0` for the companions. Do not
 replace an existing tag. DrWatson and DocumenterVitepress integrations are Core
 extensions of separately maintained dependencies, not additional PerfChecker

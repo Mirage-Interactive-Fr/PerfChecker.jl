@@ -13,9 +13,9 @@ A **check type** selects how a workload is measured. Each runs in an isolated wo
 
 ## Persistent controller defaults
 
-::: info Development API
-This integration is a development addition after PerfChecker 1.0.1. It is not
-part of the registered 1.0.1 release.
+::: info Introduced in 1.1.0
+The Preferences.jl API below requires PerfChecker 1.1.0 or newer.
+Registered PerfChecker 1.0.1 does not include it.
 :::
 
 Use Preferences.jl to retain three defaults in the active Julia project:
@@ -292,7 +292,11 @@ The entrypoint is ordinary Julia and must return the same result for every targe
 ## Recorded examples
 
 ```@raw html
-<DocMedia src="/examples/bibliography/figures/history-samples.svg" alt="Nine groups containing all 900 export timings, with median markers and visible slow samples" caption="Each dot is one sample; the dark marks are medians. Horizontal displacement only separates dots. Overlap and slow observations remain visible." />
+<figure class="doc-screenshot">
+<iframe class="doc-interactive" src="../examples/bibliography/history/export-samples.html" title="Distribution of 900 recorded Bibliography export timings across nine tagged versions" loading="lazy" sandbox="allow-scripts allow-same-origin allow-downloads"></iframe>
+<figcaption>Native interactive distribution of 900 recorded timings: 100 samples per tag. Boxplots summarize each group; recorded points and slow observations remain available. Points can overlap. This shows variation, not execution order.</figcaption>
+</figure>
+<p><a href="../examples/bibliography/history/export-samples.html">Open the interactive export</a> · <a href="../examples/bibliography/history/export-samples.json" download>Download the serialized plot and source revisions</a></p>
 ```
 
 ```@raw html

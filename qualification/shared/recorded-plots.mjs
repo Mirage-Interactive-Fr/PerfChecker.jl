@@ -3,6 +3,18 @@ import path from 'node:path';
 
 export async function checkRecordedInteractions(page,base,output){
  const checks=[];
+ async function checkFrameHeight(container,label){
+  const iframe=container.locator('iframe');
+  await iframe.scrollIntoViewIfNeeded();
+  await page.waitForFunction(frame=>{
+   const body=frame.contentDocument?.body;
+   const readout=frame.contentDocument?.querySelector('#readout');
+   return body&&readout&&body.scrollHeight<=frame.clientHeight+2&&
+    readout.getBoundingClientRect().bottom<=frame.clientHeight+2;
+  },await iframe.elementHandle(),{timeout:10000});
+  const fits=await iframe.evaluate(frame=>frame.contentDocument.body.scrollHeight<=frame.clientHeight+2);
+  assert(fits,`${label}: the native export fits without a second vertical scrollbar`);
+ }
  await page.goto(base+'real-packages/datastructures.html',{waitUntil:'networkidle'});
  const atlas=page.locator('.workload-atlas').first();
  await atlas.locator('#case-Accumulator .normalized-measurements img').evaluate(image=>image.decode());
@@ -44,6 +56,7 @@ export async function checkRecordedInteractions(page,base,output){
  assert((await containerFrame.locator('circle').count())<visiblePoints);
  await toggle.check();assert(await toggle.isChecked());
  assert.equal(await containerFrame.locator('circle').count(),visiblePoints);
+ await checkFrameHeight(selectedContainer,'SortedSet desktop');
  await selectedContainer.screenshot({path:path.join(output,'sortedset-interactive.png')});
  checks.push('all 70 container operations retain their matching public SVG/data; guided SortedSet points and curve toggles work; operation tabs support the keyboard');
 
@@ -132,5 +145,14 @@ export async function checkRecordedInteractions(page,base,output){
  await page.setViewportSize({width:390,height:844});
  assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
  checks.push('interactive figures stay within the mobile page width');
+ await page.goto(base+'real-packages/datastructures.html',{waitUntil:'networkidle'});
+ const mobileContainer=page.locator('#case-SortedSet');
+ await mobileContainer.getByRole('tab',{name:'Lookup',exact:true}).click();
+ await mobileContainer.locator('iframe').scrollIntoViewIfNeeded();
+ await mobileContainer.frameLocator('iframe').locator('svg circle').first().waitFor();
+ await checkFrameHeight(mobileContainer,'SortedSet mobile');
+ assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
+ await mobileContainer.screenshot({path:path.join(output,'sortedset-mobile.png')});
+ checks.push('SortedSet native plot axis and point readout fit at desktop and 390px widths without a second vertical scrollbar');
  return checks;
 }

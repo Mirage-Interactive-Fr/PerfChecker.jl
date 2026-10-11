@@ -18,6 +18,12 @@ PerfChecker V1 is available in General; the extension is published separately.
 
 Build from the repository root, with Julia and Node.js 22.12 or newer:
 
+First follow the [isolated API rendering procedure](optional-api/README.md#prepare-and-render-sequentially)
+to prepare and render all six companion API exports from this checkout's exact
+`HEAD` revision, with a separate project and depot for each companion. The main
+build rejects missing exports and exports from another revision. After preparing
+them, build the main documentation in its own project:
+
 ```sh
 julia --startup-file=no --project=website -e 'using Pkg; cd("website") do; Pkg.develop(path=".."); Pkg.instantiate(); end'
 PERFCHECKER_DOCS_URL=https://perfchecker.mirageinteractive.fr/ PERFCHECKER_DOCS_BASE=/ julia --startup-file=no --project=website website/make.jl

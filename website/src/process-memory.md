@@ -97,5 +97,9 @@ This turns a vague claim such as "memory is fine" into three independent asserti
 ## Recorded examples
 
 ```@raw html
-<DocMedia src="/examples/bibliography/figures/history-memory.svg" alt="Allocated bytes per Bibliography export across nine tags, from 4480 bytes at 0.1.0 to 8352 at 0.4.0" caption="Julia allocation activity per operation. These values are neither retained heap size nor resident process memory. All nine points come from recorded measurements." />
+<figure class="doc-screenshot">
+<iframe class="doc-interactive" src="./examples/bibliography/history/export-memory.html" title="Julia allocated bytes per Bibliography export across nine tagged versions" loading="lazy" sandbox="allow-scripts allow-same-origin allow-downloads"></iframe>
+<figcaption>Native interactive export of Julia allocated bytes per export across nine tags, from 4,480 to 8,352 bytes. These values measure allocation activity, not retained heap size or resident process memory.</figcaption>
+</figure>
+<p><a href="./examples/bibliography/history/export-memory.html">Open the interactive export</a> · <a href="./examples/bibliography/history/export-memory.json" download>Download the serialized plot and source revisions</a></p>
 ```

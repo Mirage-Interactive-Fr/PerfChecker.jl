@@ -45,8 +45,9 @@ owner_root = joinpath(root, "packages", owner_name)
 realpath(pkgdir(PerfChecker)) == root || error("PerfChecker must load from this checkout")
 realpath(pkgdir(owner)) == realpath(owner_root) ||
     error("The companion must load from this checkout")
-pkgversion(PerfChecker) == v"1.0.1" ||
-    error("This builder requires Core 1.0.1 source, not Core 1.0.0")
+core_version = VersionNumber(TOML.parsefile(joinpath(root, "Project.toml"))["version"])
+v"1.0.1" <= core_version < v"2.0.0" && pkgversion(PerfChecker) == core_version ||
+    error("This builder requires matching Core 1.x source at version 1.0.1 or later")
 owner_version = VersionNumber(TOML.parsefile(joinpath(owner_root, "Project.toml"))["version"])
 pkgversion(owner) == owner_version ||
     error("The loaded companion version differs from its source")

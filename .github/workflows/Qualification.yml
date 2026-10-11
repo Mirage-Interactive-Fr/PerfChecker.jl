@@ -75,7 +75,7 @@ jobs:
       PERFCHECKER_DOCS_BASE: ${{ needs.plan.outputs.docs_base }}
     strategy:
       fail-fast: false
-      max-parallel: 4
+      max-parallel: ${{ needs.plan.outputs.full == 'true' && 8 || 4 }}
       matrix: ${{ fromJSON(needs.plan.outputs.matrix) }}
     steps:
       - uses: actions/checkout@v7
@@ -90,6 +90,7 @@ jobs:
           path: .qualification/vscode
           persist-credentials: false
       - uses: julia-actions/setup-julia@v3
+        id: suite-julia
         with:
           version: ${{ matrix.julia }}
       - uses: actions/setup-node@v7
@@ -97,6 +98,48 @@ jobs:
         with:
           node-version: '22'
       - uses: julia-actions/cache@v3
+      - name: Cache isolated PerfCheckerLinuxPerf dependencies
+        if: matrix.suite == 'docs'
+        uses: julia-actions/cache@v3
+        with:
+          depot: ${{ runner.temp }}/optional-api/linuxperf-depot
+          cache-name: optional-api-v1-linuxperf-${{ runner.arch }}-${{ steps.suite-julia.outputs.julia-version }}-${{ hashFiles('Project.toml', 'stable-doc-source/Project.toml', '**/website/optional-api/linuxperf/Project.toml', '**/packages/PerfCheckerLinuxPerf/Project.toml') }}
+          save-always: true
+      - name: Cache isolated PerfCheckerLIKWID dependencies
+        if: matrix.suite == 'docs'
+        uses: julia-actions/cache@v3
+        with:
+          depot: ${{ runner.temp }}/optional-api/likwid-depot
+          cache-name: optional-api-v1-likwid-${{ runner.arch }}-${{ steps.suite-julia.outputs.julia-version }}-${{ hashFiles('Project.toml', 'stable-doc-source/Project.toml', '**/website/optional-api/likwid/Project.toml', '**/packages/PerfCheckerLIKWID/Project.toml') }}
+          save-always: true
+      - name: Cache isolated PerfCheckerMakie dependencies
+        if: matrix.suite == 'docs'
+        uses: julia-actions/cache@v3
+        with:
+          depot: ${{ runner.temp }}/optional-api/makie-depot
+          cache-name: optional-api-v1-makie-${{ runner.arch }}-${{ steps.suite-julia.outputs.julia-version }}-${{ hashFiles('Project.toml', 'stable-doc-source/Project.toml', '**/website/optional-api/makie/Project.toml', '**/packages/PerfCheckerMakie/Project.toml') }}
+          save-always: true
+      - name: Cache isolated PerfCheckerWeb dependencies
+        if: matrix.suite == 'docs'
+        uses: julia-actions/cache@v3
+        with:
+          depot: ${{ runner.temp }}/optional-api/web-depot
+          cache-name: optional-api-v1-web-${{ runner.arch }}-${{ steps.suite-julia.outputs.julia-version }}-${{ hashFiles('Project.toml', 'stable-doc-source/Project.toml', '**/website/optional-api/web/Project.toml', '**/packages/PerfCheckerWeb/Project.toml') }}
+          save-always: true
+      - name: Cache isolated PerfCheckerPluto dependencies
+        if: matrix.suite == 'docs'
+        uses: julia-actions/cache@v3
+        with:
+          depot: ${{ runner.temp }}/optional-api/pluto-depot
+          cache-name: optional-api-v1-pluto-${{ runner.arch }}-${{ steps.suite-julia.outputs.julia-version }}-${{ hashFiles('Project.toml', 'stable-doc-source/Project.toml', '**/website/optional-api/pluto/Project.toml', '**/packages/PerfCheckerPluto/Project.toml') }}
+          save-always: true
+      - name: Cache isolated PerfCheckerTachikoma dependencies
+        if: matrix.suite == 'docs'
+        uses: julia-actions/cache@v3
+        with:
+          depot: ${{ runner.temp }}/optional-api/tachikoma-depot
+          cache-name: optional-api-v1-tachikoma-${{ runner.arch }}-${{ steps.suite-julia.outputs.julia-version }}-${{ hashFiles('Project.toml', 'stable-doc-source/Project.toml', '**/website/optional-api/tachikoma/Project.toml', '**/packages/PerfCheckerTachikoma/Project.toml', '**/packages/PerfCheckerMakie/Project.toml') }}
+          save-always: true
       - uses: actions/download-artifact@v8
         with:
           name: qualification-plan

@@ -3,7 +3,7 @@
 ## Core package
 
 The Julia API, command line and text REPL are in PerfChecker itself. **PerfChecker
-1.0.1 is registered in Julia General** and requires Julia 1.10 or newer:
+1.x is available in Julia General** and requires Julia 1.10 or newer:
 
 ```julia
 import Pkg
@@ -31,36 +31,22 @@ Install only what you need.
 - Existing TestItems — `Pkg.add("TestItemRunner")`
 - BenchmarkTools — `Pkg.add("BenchmarkTools")`
 - Chairmarks — `Pkg.add("Chairmarks")`
-- Oxygen web interface — `PerfCheckerWeb`, installed from the subdirectory below
-- Pluto notebooks — `PerfCheckerPluto`, using `packages/PerfCheckerPluto`
-- Makie figures — `PerfCheckerMakie`, using `packages/PerfCheckerMakie`
+- Oxygen web interface — [PerfCheckerWeb controller](#Web-controller-with-corrected-shutdown)
+- Pluto notebooks — [PerfCheckerPluto installation](#Prepare-integrated-Pluto-for-VS-Code)
+- Makie figures — [PerfCheckerMakie installation](../interfaces/visualization.md#Customize-and-export-Makie-figures)
 
-The three interface packages have separate identities. This source recipe
-installs the older Web companion from the root `v1.0.0` tag:
-
-```julia
-Pkg.add(Pkg.PackageSpec(
-    url = "https://github.com/Mirage-Interactive-Fr/PerfChecker.jl",
-    rev = "v1.0.0",
-    subdir = "packages/PerfCheckerWeb"))
-```
-
-The stable Web recipe works with registered Core 1.0.0. The current Pluto and
-Makie 1.0.1 companions require Core 1.0.1 or later; follow the
-[Pluto installation steps](#Prepare-integrated-Pluto-for-VS-Code) or the
-[Makie source recipe](../interfaces/visualization.md#Customize-and-export-Makie-figures).
-Neither companion is separately registered in General yet.
+These interface packages have separate identities and are not yet registered in
+General. Use their versioned source recipes. Pluto and Makie 1.0.1 require Core
+1.0.1 or later; the Web companion's package version remains 1.0.0.
 
 ### Web controller with corrected shutdown
 
-The immutable `v1.0.0` tag above does **not** include the corrected agent
-interruption and cleanup-failure behavior described in the
-[hosted guide](../operations/hosted.md#Cancel-and-stop-safely). The root
-`v1.0.1` tag includes these corrections, and Core 1.0.1 is registered in General.
-PerfCheckerWeb's separate General registration is pending; its package version
-remains **1.0.0**. The recipe below keeps the reviewed source revision for both
-Core and Web. Companion versions and package-prefixed tags are managed
-separately from the root tag.
+Use the published root `v1.0.1` tag for both Core and Web. It includes the
+corrected agent interruption and cleanup-failure behavior described in the
+[hosted guide](../operations/hosted.md#Cancel-and-stop-safely). The older root
+`v1.0.0` tag lacks those corrections and is not the recommended Web setup.
+PerfCheckerWeb's package version remains **1.0.0**; companion versions and
+package-prefixed tags are managed separately from the root tag.
 
 Choose a new controller environment, separate from the measured packages and
 from Pluto:
@@ -70,7 +56,7 @@ import Pkg
 controller = joinpath(homedir(), ".julia", "environments", "perfchecker-web-101")
 Pkg.activate(controller)
 repository = "https://github.com/Mirage-Interactive-Fr/PerfChecker.jl"
-revision = "ffbf33f0bda61dfc84adfb8e8e6dfd8a404d0642"
+revision = "v1.0.1"
 Pkg.add([
     Pkg.PackageSpec(url = repository, rev = revision),
     Pkg.PackageSpec(url = repository, rev = revision,
@@ -192,9 +178,11 @@ HTTP/UI qualification remains pending.
 
 ### Prepare integrated Pluto for VS Code
 
-The published VS Code extension **1.0.1** integrates Pluto and requires
-**PerfChecker core 1.0.1** and **PerfCheckerPluto 1.0.1**.
-Core 1.0.1 is registered in General and the root `v1.0.1` tag is available.
+Integrated Pluto is available from extension **1.0.1**. Choose Core from the
+[extension compatibility table](../interfaces/vscode.md#Version-compatibility):
+extension 1.0.1 requires Core 1.0.1 or newer, while extension 1.0.2 requires
+Core 1.1.0 or newer, both within the 1.x series. The companion remains
+**PerfCheckerPluto 1.0.1**, from the independent root `v1.0.1` tag.
 The Pluto companion is available from the tagged repository subdirectory while
 its own General registration is pending. See the
 [extension download and platform limits](../interfaces/vscode.md#Qualification-and-reporting-a-problem).
@@ -203,15 +191,16 @@ interface above is also available.
 
 The extension's explicit **Install Pluto environment** action prepares
 `perf/pluto`. Review the listed packages and selected folder before confirming.
-For a disposable setup check with the published Core and tagged Pluto source,
-use the recipe below. It creates a new project and does not modify an existing
-controller or notebook environment:
+For a disposable setup check, select the Core version for your installed
+extension explicitly. The recipe creates a new project and does not modify an
+existing controller or notebook environment:
 
 ```julia
 import Pkg
+core_version = "1.0.1" # Use "1.1.0" with extension 1.0.2.
 pluto_project = mktempdir()
 Pkg.activate(pluto_project)
-Pkg.add(Pkg.PackageSpec(name = "PerfChecker", version = "1.0.1"))
+Pkg.add(Pkg.PackageSpec(name = "PerfChecker", version = core_version))
 Pkg.add(Pkg.PackageSpec(name = "Pluto", version = "1.0.4"))
 Pkg.add(["PlutoUI", "BenchmarkTools", "Chairmarks"])
 Pkg.add(Pkg.PackageSpec(

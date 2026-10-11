@@ -18,7 +18,7 @@ Complete experiments with scripts, saved measurements and notebooks. Each page e
 ## Get the code
 
 ```sh
-git clone --branch v1.0.0 https://github.com/Mirage-Interactive-Fr/PerfChecker.jl.git
+git clone --branch v1.0.1 https://github.com/Mirage-Interactive-Fr/PerfChecker.jl.git
 cd PerfChecker.jl/examples/kitchen-sink
 julia setup.jl core
 ```
@@ -26,6 +26,11 @@ julia setup.jl core
 - The examples run Julia 1.12 or newer.
 - `setup.jl core` links the checkout and installs example dependencies.
 - Optional interfaces get their own `.controller/NAME` environment.
+
+This recipe uses the published **1.0.1** tag, including its matching interface
+companions. Setup develops that checkout into the example controller; it does
+not install the latest registered Core automatically. Persistent preferences
+and the read-only worker-seed correction require Core 1.1.0 or newer.
 
 ## Run one session at a time
 

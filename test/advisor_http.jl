@@ -37,6 +37,9 @@
             ["Content-Type" => "application/json"], "{}";
             readtimeout = 120, connect_timeout = 120, retry = false)
         @test warmup.status == 200
+        # Functional fixtures include cold isolated-client compilation. On Intel
+        # macOS, response_write reached 44.4s under the old 45s fixture deadline.
+        # The explicit product-deadline contract remains in advisor_chat.jl.
         for (protocol, path) in (
             (:chat_completions, "/v1/chat/completions"), (
                 :chat_completions_schema, "/v1/chat/completions"), (:ollama, "/api/chat"))
@@ -45,7 +48,7 @@
             case_started[] = time_ns()
             result = narrate_advice(advice;
                 config = AdvisorConfig(;
-                    protocol, endpoint = "http://127.0.0.1:$port$path", timeout = 45))
+                    protocol, endpoint = "http://127.0.0.1:$port$path", timeout = 120))
             received_post = !isempty(receipts) &&
                             all(first(receipt) == "POST" for receipt in receipts)
             result["status"] == "complete" && received_post ||
@@ -72,7 +75,7 @@
         case_started[] = time_ns()
         result = narrate_advice(advice;
             config = AdvisorConfig(
-                endpoint = "http://127.0.0.1:$port/v1/chat/completions", timeout = 45))
+                endpoint = "http://127.0.0.1:$port/v1/chat/completions", timeout = 120))
         received_post = !isempty(receipts) &&
                         all(first(receipt) == "POST" for receipt in receipts)
         reached_validation = get(result, "worker_phase", "unknown") == "response_validation"

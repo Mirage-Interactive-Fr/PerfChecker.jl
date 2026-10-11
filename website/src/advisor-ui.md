@@ -6,7 +6,7 @@ advice tool. It opens without contacting the provider or downloading weights.
 
 ## VS Code
 
-Run **PerfChecker: Configure advisor and manage models**, use the settings icon
+Run **PerfChecker: Configure MCP connection and models**, use the settings icon
 in **Scenarios & advice**, or choose **Model settings** in an investigation.
 
 1. Select a provider and enter its endpoint. Remote connections require an

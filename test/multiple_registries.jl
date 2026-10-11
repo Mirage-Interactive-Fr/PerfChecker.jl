@@ -78,6 +78,18 @@
                 @test PerfChecker.get_pkg_versions(package_name, ["Compressed"]) ==
                       [v"0.3.0", v"0.5.0"]
             end
+            # Other Pkg operations may have already parsed package metadata and
+            # released the original tarball strings. Lookups must still agree.
+            for registry in registries, package in values(registry.pkgs)
+                if applicable(Pkg.Registry.registry_info, registry, package)
+                    Pkg.Registry.registry_info(registry, package)
+                else
+                    Pkg.Registry.registry_info(package)
+                end
+            end
+            @test PerfChecker.get_pkg_versions(package_name) == expected
+            @test PerfChecker.get_pkg_versions(package_name, ["General", "Custom"]) ==
+                  [v"0.1.0", v"0.2.0", v"0.3.0", v"0.4.0"]
         finally
             empty!(DEPOT_PATH)
             append!(DEPOT_PATH, previous_depots)

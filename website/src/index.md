@@ -121,6 +121,11 @@ contributors, and the Julia community for making these workflows possible.
   supplies isolated workers, [DrWatson](https://github.com/JuliaDynamics/DrWatson.jl)
   supports experiment storage, and [FlameGraphs](https://github.com/timholy/FlameGraphs.jl)
   and [PProf](https://github.com/JuliaPerf/PProf.jl) support profile export.
+- **Configure and qualify:** [Preferences.jl](https://github.com/JuliaPackaging/Preferences.jl)
+  supports project-local defaults in PerfChecker 1.1.0 and later.
+  [PkgEval.jl](https://github.com/JuliaCI/PkgEval.jl) and the
+  [JuliaCI community](https://github.com/JuliaCI) support package qualification
+  in isolated test environments; PkgEval is not a performance-measurement backend.
 - **Explore optional workloads and counters:** [LinuxPerf](https://github.com/JuliaPerf/LinuxPerf.jl)
   and [LIKWID](https://github.com/JuliaPerf/LIKWID.jl) support hardware-counter companions.
   Julia Threads and Distributed, [Dagger](https://github.com/JuliaParallel/Dagger.jl),

@@ -59,8 +59,9 @@ require a GitHub App or repository-scoped credentials; manual PRs work without i
 
 PRs run impacted consumers plus shared contracts. Main and release branches run
 the routine collection; full manual runs and the weekly dependency refresh run
-the complete Windows/Linux collection. Up to four lanes run concurrently on separate
-GitHub-hosted virtual machines; each keeps one Julia thread, single-thread BLAS,
+the complete Windows/Linux collection. Full campaigns run up to eight lanes
+concurrently; routine campaigns run up to four. Each lane uses a separate
+GitHub-hosted virtual machine with one Julia thread, single-thread BLAS,
 a four-thread computation budget and a 90-minute timeout. Each VM has its own
 checkout, environments and evidence files. The collection
 workflow supplements the protected core compatibility CI. The separate

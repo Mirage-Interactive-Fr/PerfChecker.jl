@@ -89,9 +89,11 @@
         end
         HTTP.Response(200, ["Content-Type" => "application/json"], encode(body))
     end
+    # Functional setup and active-request cancellation include cold client
+    # compilation; readiness below uses this same bounded fixture allowance.
     local_config = AdvisorConfig(
         protocol = :ollama, endpoint = "http://127.0.0.1:$port/api/chat",
-        model = "tiny:latest", timeout = 60)
+        model = "tiny:latest", timeout = 120)
     try
         HTTP.get("http://127.0.0.1:$port/ready")
         @test advisor_setup(local_config; action = :validate)["config"]["protocol"] ==
@@ -122,7 +124,7 @@
         @test !haskey(calls[end].input, "prompt")
         @test calls[end - 1].method == "DELETE"
         draft = Dict("protocol" => "mcp_http",
-            "endpoint" => "http://127.0.0.1:$port/mcp", "timeout" => 60)
+            "endpoint" => "http://127.0.0.1:$port/mcp", "timeout" => 120)
         mcp = advisor_setup(draft)
         @test mcp["status"] == "complete"
         @test only(mcp["tools"])["name"] == "ask"

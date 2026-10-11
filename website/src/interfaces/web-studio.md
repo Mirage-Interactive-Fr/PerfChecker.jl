@@ -37,7 +37,7 @@ then launch.
 ## Reopen saved runs
 
 ```julia
-using PerfChecker, PerfCheckerWeb, PerfCheckerMakie, Oxygen, WGLMakie
+using PerfChecker, PerfCheckerWeb, PerfCheckerMakie, WGLMakie
 
 serve_suite("perf/results"; host = "127.0.0.1", port = 8080)
 ```
