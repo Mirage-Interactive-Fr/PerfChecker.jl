@@ -120,19 +120,17 @@ try {
     assert.equal(await picker.getByRole('link').count(),1);
   }
   checks.push('version picker identifies the local version path on mobile and desktop');
-  // Exercise Documenter's publication metadata on a simulated host. These
-  // versions are test fixtures only and never become part of the public site.
+  // Exercise publication metadata on a simulated host, retaining the HTML's
+  // actual build base. This fixture checks catalogue URLs, not a stable alias.
+  // canonical-documentation.mjs checks the real dev/version/stable exports;
+  // static-website-browser.mjs separately checks the canonical root export.
   const published=await browser.newContext({viewport:{width:1440,height:1080}});
   const publishedBase=new URL(new URL(base).pathname,'http://docs.perfchecker.test');
   const stableBase=new URL('../stable/',publishedBase);
   await published.route('**/*',async route=>{
     const url=new URL(route.request().url());
     if(url.origin!=='http://docs.perfchecker.test') return route.abort();
-    // Documenter publishes stable as an alias of the immutable version folder.
-    const pathname=url.pathname.startsWith(stableBase.pathname)
-      ? publishedBase.pathname+url.pathname.slice(stableBase.pathname.length)
-      : url.pathname;
-    const response=await published.request.get(new URL(pathname+url.search,base).href);
+    const response=await published.request.get(new URL(url.pathname+url.search,base).href);
     await route.fulfill({response});
   });
   await published.addInitScript(()=>{
@@ -151,14 +149,14 @@ try {
     stableBase.href);
   assert.equal(await publishedPicker.getByRole('link',{name:'dev',exact:true}).getAttribute('href'),
     new URL('../dev/',publishedBase).href);
-  await publishedPage.goto(new URL('interfaces/vscode',stableBase).href,{waitUntil:'networkidle'});
+  await publishedPage.goto(new URL('interfaces/vscode',publishedBase).href,{waitUntil:'networkidle'});
   assert(await publishedPage.getByRole('heading',{name:/^PerfChecker Studio in VS Code/}).isVisible());
   await publishedPage.locator('.vp-doc').getByRole('link',{name:'VS Code configuration',exact:true}).first().click();
   await publishedPage.waitForURL('**/interfaces/vscode-configuration');
   await publishedPage.getByRole('heading',{name:/^VS Code configuration/}).waitFor({state:'visible'});
   assert.deepEqual(publishedErrors,[]);
   await published.close();
-  checks.push('published version picker reads Documenter metadata without a hard-coded release list');
+  checks.push('publication metadata supplies channel URLs; guide navigation retains the compiled base');
   await page.setViewportSize({width:1440,height:1080});
   for(const route of ['','contributing/documentation','model-specialization']){
     await page.goto(base+route,{waitUntil:'networkidle'});
@@ -207,9 +205,16 @@ try {
   checks.push('format versions are explained in reference rather than listed in the overview');
   await page.goto(base+'guide/installation',{waitUntil:'networkidle'});
   const installation=await page.locator('.vp-doc').innerText();
-  assert(installation.includes('Pkg.add(Pkg.PackageSpec(name = "PerfChecker", version = "1"))'));
-  assert(!/Pkg.activate|Pkg.develop|Generate the suite skeleton|Local PerfChecker development/.test(installation));
-  checks.push('installation contains package choices without development or suite scaffolding');
+  const coreInstallation=await page.locator('.vp-doc h2').filter({hasText:'Core package'}).evaluate(heading=>{
+    const text=[];
+    for(let element=heading.nextElementSibling;element&&element.tagName!=='H2';element=element.nextElementSibling)
+      text.push(element.textContent);
+    return text.join('\n');
+  });
+  assert(coreInstallation.includes('Pkg.add(Pkg.PackageSpec(name = "PerfChecker", version = "1"))'));
+  assert(!/Pkg.activate|Pkg.develop/.test(coreInstallation));
+  assert(!/Generate the suite skeleton|Local PerfChecker development/.test(installation));
+  checks.push('core installation uses the released package without development or suite scaffolding; companion recipes keep separate environments');
   await page.goto(base+'suites-and-comparisons',{waitUntil:'networkidle'});
   const suiteIntro=await page.locator('.vp-doc').innerText();
   assert(suiteIntro.includes('workload')&&suiteIntro.includes('plan')&&suiteIntro.includes('comparison'));
@@ -386,8 +391,13 @@ try {
   checks.push('measurement guides inspect native recorded figures; the two-commit summary matches its downloadable measurements and preserves its inconclusive verdict');
   for(const route of ['interfaces/repl-pluto','tutorials/bibliography']){
     await page.goto(base+route,{waitUntil:'networkidle'});
+    if(route==='tutorials/bibliography'){
+      const pluto=page.getByRole('tab',{name:'Pluto',exact:true});
+      await pluto.click();
+      assert.equal(await pluto.getAttribute('aria-selected'),'true');
+    }
     const download=page.locator('a[download="notebook.jl"]');
-    assert.equal(await download.count(),2);
+    assert.equal(await download.count(),2,`${route}: both notebook downloads must be mounted`);
     const notebookLinks=await download.evaluateAll(links=>links.map(link=>link.href));
     assert.equal(new Set(notebookLinks).size,1);
     const response=await page.request.get(notebookLinks[0]);

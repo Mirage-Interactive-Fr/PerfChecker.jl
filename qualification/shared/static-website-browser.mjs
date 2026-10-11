@@ -116,7 +116,7 @@ try{
   await page.locator('.VPNavBar').getByRole('button',{name:'Interfaces',exact:true}).hover();
   await page.locator('.VPNavBar').getByRole('link',{name:'VS Code',exact:true}).click();
   await page.waitForURL('**/interfaces/vscode.html');
-  await page.locator('.vp-doc').getByRole('link',{name:'VS Code configuration',exact:true}).click();
+  await page.locator('.vp-doc').getByRole('link',{name:'VS Code configuration',exact:true}).first().click();
   await page.waitForURL('**/interfaces/vscode-configuration.html');
   await page.reload({waitUntil:'networkidle'});
   checks.push('navigation and guide links use actual .html files on the static server');
