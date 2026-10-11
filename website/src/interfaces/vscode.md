@@ -29,7 +29,7 @@ integrated Pluto check these versions:
 | Extension | Core accepted by guided setup and integrated Pluto | Pluto companion |
 | --- | --- | --- |
 | 1.0.1 | 1.0.1 or newer within the 1.x series | PerfCheckerPluto 1.0.1 or newer within the 1.x series |
-| 1.0.2 | 1.1.0 or newer within the 1.x series | PerfCheckerPluto 1.0.1 or newer within the 1.x series |
+| 1.0.2 (upcoming; not yet published) | 1.1.0 or newer within the 1.x series | PerfCheckerPluto 1.0.1 or newer within the 1.x series |
 
 Both notebook integrations use Pluto 1.0.4 and the companion source at the root
 `v1.0.1` tag while its separate General registration is pending. The companion
