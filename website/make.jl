@@ -27,7 +27,7 @@ ENV["PERFCHECKER_DOCS_HOSTING"] = docs_sftp ? "sftp" : "github"
 
 source_root = normpath(joinpath(@__DIR__, ".."))
 source_revision = strip(read(`git -C $source_root rev-parse HEAD`, String))
-optional_api = docs_version == "1.0.1"
+optional_api = v"1.0.1" <= VersionNumber(docs_version) < v"2.0.0"
 if optional_api
     include("optional-api/assemble.jl")
     # Reject missing/mixed exports before starting the main Documenter build.

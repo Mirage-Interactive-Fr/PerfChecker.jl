@@ -87,9 +87,9 @@ julia --startup-file=no --project=. -e 'using PerfChecker; exit(perfchecker_main
 
 ## Persistent defaults in CI
 
-::: info Development after 1.0.1
-The Preferences.jl integration below is not included in registered PerfChecker
-1.0.1. Use a reviewed development revision until a release includes it.
+::: info Introduced in 1.1.0
+The Preferences.jl integration below requires PerfChecker 1.1.0 or newer.
+Registered PerfChecker 1.0.1 does not include it.
 :::
 
 [Persistent controller defaults](../reference/checks.md#Persistent-controller-defaults)
@@ -125,8 +125,9 @@ distributions. It does not qualify every companion, editor interface or physical
 counter. Local PkgEval has Linux/kernel and container requirements; see its
 [setup documentation](https://github.com/JuliaCI/PkgEval.jl#quick-start).
 
-PerfChecker's **Registered PkgEval** workflow is a development addition after
-1.0.1. It resolves a General revision to an exact commit, selects a non-yanked
+PerfChecker's **Registered PkgEval** workflow is introduced in 1.1.0.
+In its registered-release mode, it resolves
+a General revision to an exact commit, selects a non-yanked
 registered version, and verifies its registered source tree inside the sandbox.
 It records the PkgEval controller revision, Julia environment and selected
 package identity. It tests that registered archive, **not the workflow branch's
@@ -139,12 +140,14 @@ Open the workflow run and download its artifacts:
 
 | Artifact | What to inspect |
 | --- | --- |
-| `pkgeval-request` | `request.toml`: version, registered tree, General and controller revisions, workflow revision and run URL |
+| `pkgeval-request` | `request.toml`: source kind, package identity, selected tree, General and controller revisions, workflow revision and run URL |
 | `pkgeval-stable` | `result.toml`, `evaluation.log` and `PkgEval-Manifest.toml` for Julia stable |
 | `pkgeval-nightly` | The corresponding files for Julia nightly, evaluated separately |
 
-First match `version`, `registered_tree` and `general_revision` to the release
-you intend to assess. Then read `status`, `reason`, `exception` when present,
+First inspect `source_kind`. For a registered release, match `version`,
+`registered_tree` and `general_revision` to the release you intend to assess.
+For a Git candidate, check its revision, tree and repository instead. Then read
+`status`, `reason`, `exception` when present,
 the installation/precompilation/testing completion fields, and the full log.
 A successful package-test result has `status="test"`. A controller failure,
 failed assertion and timeout are different outcomes; a cancelled job alone does
@@ -157,8 +160,8 @@ describe this attempt, not a performance regression against another release.
 
 The [initial 1.0.1 evaluation](https://github.com/Mirage-Interactive-Fr/PerfChecker.jl/actions/runs/38044386943)
 tests registered tree `00c133336911b8600d63a8d6c59ce1befc5ce690`.
-On Julia stable it reached 2,013 passing assertions, one error and one broken
-assertion. The error came from a replay test that copied an installed read-only
+On Julia stable it reached 2,013 passing assertions, one error and one result in
+Julia's **Broken** category. The error came from a replay test that copied an installed read-only
 JSON fixture and then tried to edit its copy. The development
 [fixture correction](https://github.com/Mirage-Interactive-Fr/PerfChecker.jl/pull/167)
 creates a writable private copy and checks that the original bytes and mode stay
@@ -192,18 +195,91 @@ does not close
 
 ### Evaluate a future registered release
 
-After the workflow is integrated, open **Actions → Registered PkgEval → Run
-workflow**. Supply:
+Open **Actions → Registered PkgEval → Run workflow** on a branch containing
+the workflow. Supply:
 
 | Input | Meaning |
 | --- | --- |
+| `source_kind` | Keep `registered` for an archive selected from General |
 | `package_version` | An already registered version; empty selects the latest non-yanked version at the chosen General revision |
 | `general_revision` | A General commit or ref, resolved and recorded as an exact commit before evaluation |
 | `expected_tree` | Optional registered tree SHA-1; a mismatch stops selection before evaluation |
+| `package_images` | Keep `upstream` for the pinned PkgEval defaults; `yes` explicitly allows native package-image generation |
+| `time_limit_minutes` | Keep the default `45`, or explicitly select `90` for the complete sandbox evaluation |
 
 To assess a fix, wait for the release containing it to be registered and select
 that release and its tree. Re-running 1.0.1 will still test 1.0.1. The weekly
 Monday 04:41 UTC schedule selects the latest non-yanked version at a newly
-resolved General commit. Pull-request runs of this workflow deliberately pin
-the original 1.0.1 evaluation; they are not evidence for development changes.
+resolved General commit. Scheduled evaluations use `package_images=yes` and
+`time_limit_minutes=90`: a 5,400-second complete sandbox budget and a separate
+120-minute GitHub job limit. The recorded inputs and Julia arguments identify
+this configured qualification; it is not an upstream-default result.
+Manual dispatch defaults remain `package_images=upstream` and
+`time_limit_minutes=45`. Pull-request checks retain those defaults, test the
+source selector and record the original 1.0.1 selection; they do not launch
+stable or nightly sandboxes.
+That selection receipt is not a new package evaluation.
 Keep the stable and nightly artifacts and report each verdict separately.
+
+### Evaluate an explicit Git candidate
+
+To assess an unpublished fix, manually dispatch the same workflow with
+`source_kind=git_candidate`. Set `candidate_revision` to the exact lowercase
+40-character commit SHA from the
+[PerfChecker repository](https://github.com/Mirage-Interactive-Fr/PerfChecker.jl),
+choose `general_revision` for dependency resolution, and leave `package_version`
+and `expected_tree` empty. Branch names and tags are not accepted as candidate
+revisions. Scheduled evaluations use registered mode; pull-request checks only
+validate selection.
+
+The selector reads the commit's `Project.toml` and records its declared version,
+name and UUID, `candidate_revision`, `candidate_tree` and the fixed
+`source_repository`. PkgEval receives that repository URL and commit revision.
+General supplies its dependencies; it does not supply a registered PerfChecker
+archive for this run.
+
+Inspect the same request, stable and nightly artifacts. Candidate results also
+record `candidate_package_url` and `candidate_package_revision`, with
+`sandbox_registry_tree_verified=false`. The evaluated version must match the
+commit's declared version. These fields identify the requested candidate;
+they do not claim a separate hash verification of PkgEval's installed source.
+The default 2,700-second sandbox budget, disabled result cache and separate verdicts
+remain unchanged. A candidate pass can qualify that candidate's tests, but
+cannot repair or qualify the immutable registered 1.0.1 archive.
+
+### Distinguish compilation configurations
+
+Leave `package_images=upstream` for an evaluation using the pinned controller's
+defaults. On Julia 1.13, that controller passes `--pkgimages=existing`: it can
+reuse native package images but does not generate new ones. Its source explains
+that this avoids the cost of generating images for ordinary PkgEval jobs.
+
+An explicit `package_images=yes` dispatch instead passes `--pkgimages=yes`
+through the official `Configuration.julia_args` option. The pinned controller
+uses these arguments for both precompilation and `Pkg.test`; PerfChecker's
+isolated Julia workers inherit the package-image policy through `Base.julia_cmd()`.
+This configuration may change how much compilation is repeated across workers.
+It does not change the tests, one Julia thread or disabled PkgEval shared cache.
+Record and report its verdict separately from an
+upstream-default evaluation; a configured pass is not a pass under the defaults.
+
+Both `request.toml` and `result.toml` retain `package_images` and the exact
+`julia_args`, together with `time_limit_minutes` and `time_limit_seconds`;
+the result's `configuration` records the PkgEval configuration.
+The single sandbox timer includes setup, installation, precompilation and testing.
+A separate precompilation phase does not give testing another 2,700 seconds.
+Native package-image generation can itself consume more of this budget; selecting
+`yes` does not establish that the full suite will finish within it.
+
+The manual dispatch default sandbox budget remains 45 minutes. An explicit
+`time_limit_minutes=90` dispatch gives the same complete evaluation 5,400 seconds,
+with a separate 120-minute GitHub job limit; the default 45-minute evaluation
+retains its 75-minute job limit. Tests, thread count and shared-cache policy remain
+unchanged.
+A `yes`/90-minute result is a configured qualification, not a pass under upstream
+defaults. Since it changes both compilation policy and budget, its completion
+alone cannot establish a compilation speedup or repair an earlier timeout.
+
+See the pinned controller's
+[package-image selection and argument forwarding](https://github.com/JuliaCI/PkgEval.jl/blob/268f1d3d83df9abafb30c372a9755358fab7aa21/scripts/evaluate.jl#L78-L113)
+and [matching precompilation arguments](https://github.com/JuliaCI/PkgEval.jl/blob/268f1d3d83df9abafb30c372a9755358fab7aa21/scripts/evaluate.jl#L201-L224).

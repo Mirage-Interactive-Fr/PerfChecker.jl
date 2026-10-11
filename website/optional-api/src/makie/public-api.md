@@ -1,7 +1,9 @@
 # PerfCheckerMakie public API
 
 This reference renders the actual Julia docstrings of PerfCheckerMakie
-1.0.1 with Core 1.0.1. The WGLMakie/Bonito extension is loaded to document its real HTML method. Documentation generation does not render a figure or start a server.
+1.0.1 with Core from the selected source revision. The WGLMakie/Bonito extension
+is loaded to document its real HTML method. Documentation generation does not
+render a figure or start a server.
 
 The [full API](full-api.md) is the canonical reference. Full API also includes documented internal bindings.
 

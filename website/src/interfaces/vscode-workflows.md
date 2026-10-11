@@ -283,16 +283,19 @@ workspace through its normal history workflow.
 
 ## Notebook versions
 
-The integrated Pluto workflow below is available in extension **1.0.1** with
-Core **1.0.1**. Check the [platform scope and macOS limits](vscode.md#Qualification-and-reporting-a-problem).
+The integrated Pluto workflow was introduced in extension **1.0.1** with
+Core **1.0.1**. Match your installed extension to the
+[Core compatibility table](vscode.md#Version-compatibility), and check the
+[platform scope and macOS limits](vscode.md#Qualification-and-reporting-a-problem).
 Extension **1.0.0** used the earlier notebook workflow described at the end of
 this section.
 
 ## Pluto notebooks in VS Code
 
 The integrated Pluto workflow requires **PerfChecker for VS Code 1.0.1 or newer**
-and **PerfChecker core 1.0.1 or newer**. Its separate notebook environment also
-requires **PerfCheckerPluto 1.0.1 or newer within the 1.x series**.
+and the Core version required by that extension, in both the controller and
+separate notebook environment. The notebook environment also requires
+**PerfCheckerPluto 1.0.1 or newer within the 1.x series**.
 Use **PerfChecker: New Pluto notebook** to create a native `.jl` notebook, or
 **PerfChecker: Open Pluto notebook** to reopen one in an interactive editor tab.
 The extension starts a Julia-backed Pluto session and displays its actual
@@ -350,9 +353,9 @@ workers. A missing analyzer is unavailable rather than a passing diagnosis.
 
 The integration targets Pluto **1.0.4**, PerfChecker
 core, PlutoUI, BenchmarkTools, Chairmarks and **PerfCheckerPluto 1.0.1** from
-the root repository tag `v1.0.1`. Core 1.0.1 is registered in General and this
-tag is available; the Pluto companion's separate General registration is
-pending. The extension's guided setup uses that public tag.
+the root repository tag `v1.0.1`. The extension's guided setup selects its
+required Core version separately; the companion stays on that public tag while
+its separate General registration is pending.
 Set the folder configuration explicitly when you use several environments:
 
 ```json

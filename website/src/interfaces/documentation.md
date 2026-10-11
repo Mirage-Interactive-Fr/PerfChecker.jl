@@ -12,7 +12,8 @@ Generate a documentation page from a saved run. The build reads the results; it 
 
 ## One page
 
-Load a saved bundle first:
+Run from your package root, with PerfChecker and Documenter installed in the
+active project. Set `bundle_directory` to an existing saved bundle:
 
 ```julia
 using PerfChecker, Documenter
@@ -33,7 +34,7 @@ block = PerformanceDocumentBlock(
     "export-latency",
     "Bibliography export latency",
     query;
-    views = [:summary, :comparison, :plots],
+    views = [:observations, :comparison, :plots],
 )
 
 documenter_page(bundle, "docs/src/generated/performance.md"; blocks = [block])
@@ -43,7 +44,31 @@ documenter_page(bundle, "docs/src/generated/performance.md"; blocks = [block])
 <a id="Shared-declarative-configuration"></a>
 ```
 
-Add the generated page to your Documenter `pages` list. Use `documenter_makedocs` or `documenter_vitepress_makedocs` to materialize blocks during the normal build.
+Build the generated page with Documenter, preserving the blocks selected above:
+
+```julia
+Documenter.makedocs(;
+    root = abspath("docs"),
+    sitename = "Performance",
+    pages = ["Performance" => "generated/performance.md"],
+)
+```
+
+In an existing documentation build, add `"generated/performance.md"` to its
+`pages` list instead. Generate the page before calling `Documenter.makedocs`.
+To read blocks from a shared UI configuration, replace `blocks = [block]` in
+`documenter_page` with `config = "perf/perfchecker-ui.json"`; the configuration
+must contain `documentation.blocks`. See [Report queries](../report-queries.md).
+
+The page includes observation and comparison tables. Its **Interactive plots**
+section lists matching saved plot IDs; it does not embed the figures. Export a
+view with [Makie](visualization.md) and supply its published URL as the block's
+`interactive_url` to add a link.
+
+For the default version-comparison summary, `documenter_makedocs` generates a
+page and builds it in one call; `documenter_vitepress_makedocs` selects the
+VitePress formatter. These wrappers do not accept custom `blocks` or `config`.
+Use the explicit page-generation and build steps above for customized reports.
 
 ## Publication rules
 

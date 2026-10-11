@@ -28,7 +28,8 @@ function validate_optional_exports(root, revision;
     run(Cmd(["git", "-C", root, "diff", "--exit-code", "HEAD",
         "--", "Project.toml", "src", "packages"]))
     version = TOML.parsefile(joinpath(root, "Project.toml"))["version"]
-    version == "1.0.1" || error("Optional API exports require Core 1.0.1 source")
+    v"1.0.1" <= VersionNumber(version) < v"2.0.0" ||
+        error("Optional API exports require Core 1.x source at version 1.0.1 or later")
     tree = strip(read(Cmd(["git", "-C", root, "rev-parse", "$revision^{tree}"]), String))
     receipts = Dict{String, Any}()
     for (slug, owner) in OWNERS

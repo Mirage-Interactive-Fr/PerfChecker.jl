@@ -103,6 +103,9 @@ jobs:
           fi
           echo "PERFCHECKER_DOCS_VERSION=$version" >> "$GITHUB_ENV"
           echo "stable-version=v$version" >> "$GITHUB_OUTPUT"
+          SELECTED_DOCS_VERSION="$version" julia --startup-file=no -e '
+            version = VersionNumber(ENV["SELECTED_DOCS_VERSION"])
+            println("companion-apis=", v"1.0.1" <= version < v"2.0.0")' >> "$GITHUB_OUTPUT"
       - name: Check out the explicit immutable documentation source
         if: steps.version.outputs.explicit-source == 'true'
         uses: actions/checkout@v7
@@ -148,49 +151,49 @@ jobs:
             exit 1
           fi
       - name: Cache isolated PerfCheckerLinuxPerf dependencies
-        if: env.PERFCHECKER_DOCS_VERSION == '1.0.1'
+        if: steps.version.outputs.companion-apis == 'true'
         uses: julia-actions/cache@v3
         with:
           depot: ${{ runner.temp }}/optional-api/linuxperf-depot
           cache-name: optional-api-v1-linuxperf-${{ runner.arch }}-${{ steps.docs-julia.outputs.julia-version }}-${{ hashFiles('Project.toml', 'stable-doc-source/Project.toml', '**/website/optional-api/linuxperf/Project.toml', '**/packages/PerfCheckerLinuxPerf/Project.toml') }}
           save-always: true
       - name: Cache isolated PerfCheckerLIKWID dependencies
-        if: env.PERFCHECKER_DOCS_VERSION == '1.0.1'
+        if: steps.version.outputs.companion-apis == 'true'
         uses: julia-actions/cache@v3
         with:
           depot: ${{ runner.temp }}/optional-api/likwid-depot
           cache-name: optional-api-v1-likwid-${{ runner.arch }}-${{ steps.docs-julia.outputs.julia-version }}-${{ hashFiles('Project.toml', 'stable-doc-source/Project.toml', '**/website/optional-api/likwid/Project.toml', '**/packages/PerfCheckerLIKWID/Project.toml') }}
           save-always: true
       - name: Cache isolated PerfCheckerMakie dependencies
-        if: env.PERFCHECKER_DOCS_VERSION == '1.0.1'
+        if: steps.version.outputs.companion-apis == 'true'
         uses: julia-actions/cache@v3
         with:
           depot: ${{ runner.temp }}/optional-api/makie-depot
           cache-name: optional-api-v1-makie-${{ runner.arch }}-${{ steps.docs-julia.outputs.julia-version }}-${{ hashFiles('Project.toml', 'stable-doc-source/Project.toml', '**/website/optional-api/makie/Project.toml', '**/packages/PerfCheckerMakie/Project.toml') }}
           save-always: true
       - name: Cache isolated PerfCheckerWeb dependencies
-        if: env.PERFCHECKER_DOCS_VERSION == '1.0.1'
+        if: steps.version.outputs.companion-apis == 'true'
         uses: julia-actions/cache@v3
         with:
           depot: ${{ runner.temp }}/optional-api/web-depot
           cache-name: optional-api-v1-web-${{ runner.arch }}-${{ steps.docs-julia.outputs.julia-version }}-${{ hashFiles('Project.toml', 'stable-doc-source/Project.toml', '**/website/optional-api/web/Project.toml', '**/packages/PerfCheckerWeb/Project.toml') }}
           save-always: true
       - name: Cache isolated PerfCheckerPluto dependencies
-        if: env.PERFCHECKER_DOCS_VERSION == '1.0.1'
+        if: steps.version.outputs.companion-apis == 'true'
         uses: julia-actions/cache@v3
         with:
           depot: ${{ runner.temp }}/optional-api/pluto-depot
           cache-name: optional-api-v1-pluto-${{ runner.arch }}-${{ steps.docs-julia.outputs.julia-version }}-${{ hashFiles('Project.toml', 'stable-doc-source/Project.toml', '**/website/optional-api/pluto/Project.toml', '**/packages/PerfCheckerPluto/Project.toml') }}
           save-always: true
       - name: Cache isolated PerfCheckerTachikoma dependencies
-        if: env.PERFCHECKER_DOCS_VERSION == '1.0.1'
+        if: steps.version.outputs.companion-apis == 'true'
         uses: julia-actions/cache@v3
         with:
           depot: ${{ runner.temp }}/optional-api/tachikoma-depot
           cache-name: optional-api-v1-tachikoma-${{ runner.arch }}-${{ steps.docs-julia.outputs.julia-version }}-${{ hashFiles('Project.toml', 'stable-doc-source/Project.toml', '**/website/optional-api/tachikoma/Project.toml', '**/packages/PerfCheckerTachikoma/Project.toml', '**/packages/PerfCheckerMakie/Project.toml') }}
           save-always: true
       - name: Render companion APIs in isolated projects, once per source revision
-        if: env.PERFCHECKER_DOCS_VERSION == '1.0.1'
+        if: steps.version.outputs.companion-apis == 'true'
         working-directory: ${{ steps.version.outputs.explicit-source == 'true' && 'stable-doc-source' || '.' }}
         shell: bash
         run: |
@@ -216,11 +219,11 @@ jobs:
             julia --startup-file=no --project="$project" website/optional-api/make.jl "$companion"
           done
       - name: Test canonical assembly against the six real exports
-        if: env.PERFCHECKER_DOCS_VERSION == '1.0.1'
+        if: steps.version.outputs.companion-apis == 'true'
         working-directory: ${{ steps.version.outputs.explicit-source == 'true' && 'stable-doc-source' || '.' }}
         run: julia --startup-file=no --project=website website/optional-api/test_assembly.jl
       - name: Preserve companion API provenance and isolated environment pairs
-        if: always() && env.PERFCHECKER_DOCS_VERSION == '1.0.1'
+        if: always() && steps.version.outputs.companion-apis == 'true'
         uses: actions/upload-artifact@v7
         with:
           name: documentation-optional-api-exports

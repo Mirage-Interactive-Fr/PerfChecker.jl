@@ -62,6 +62,7 @@ const interactionChannel = channels.includes('dev') ? 'dev' : channels.includes(
 for (const channel of channels) {
   const site = join(root, channel, 'site');
   const info = JSON.parse(await readFile(join(site, 'build-info.json'), 'utf8'));
+  const hasCompanionAPIs = /^1\./.test(info.version) && info.version !== '1.0.0';
   assert.equal(info.channel, channel); assert.equal(info.url, origin + info.base);
   const exportArtifact = await readExport(site, info.channel, info.revision);
   console.log(`${channel}: SFTP export preflight passed (${exportArtifact.files.length} files)`);
@@ -81,7 +82,7 @@ for (const channel of channels) {
   const pages = await enumerate(site);
   const pageIds = new Map();
   for (const file of pages) pageIds.set(file, htmlIds(await readFile(file, 'utf8')));
-  if (info.version === '1.0.1') {
+  if (hasCompanionAPIs) {
     for (const [slug, owner] of optionalOwners) {
       const provenance = await readFile(join(site, 'optional-api', `${slug}.toml`), 'utf8');
       assert.ok(provenance.includes(`source_revision = "${info.revision}"`), `${owner}: source revision`);
@@ -192,7 +193,7 @@ for (const channel of channels) {
     const href = await result.getAttribute('href');
     assert.ok(new URL(href, local).pathname.startsWith(info.base) && new URL(href, local).pathname.endsWith('.html'));
     await result.click(); await page.waitForLoadState('networkidle');
-    if (info.version === '1.0.1') {
+    if (hasCompanionAPIs) {
       for (const [slug, owner] of optionalOwners) {
         for (const api of ['public-api', 'full-api']) {
           await page.goto(new URL('reference/optional-api.html', local).href,
@@ -323,21 +324,26 @@ for (const channel of channels) {
     if (channel === interactionChannel) {
       const catalog = JSON.parse(await readFile(join(site, 'examples/real-packages/containers/catalog.json'), 'utf8'));
       const marker = catalog.interactive_export;
-      if (info.version === '1.0.1') assert.ok(marker, 'Core 1.0.1 requires the published native interactive exports');
+      if (hasCompanionAPIs) assert.ok(marker, 'Core 1.0.1 and later require the published native interactive exports');
       if (marker) {
         assert.equal(marker.renderer, 'PerfChecker.performance_plot_html');
         assert.equal(marker.input_kind, 'published_serialized_plot');
         const digest = bytes => createHash('sha256').update(bytes).digest('hex');
         const guided = marker.selection === 'guided_examples', kinds = new Set();
-        if (info.version === '1.0.1') assert.ok(guided, 'Guided native examples must be selected deliberately');
+        if (hasCompanionAPIs) assert.ok(guided, 'Guided native examples must be selected deliberately');
+        // Core and its companions have independent package versions.
+        const companionProject = await readFile('packages/PerfCheckerMakie/Project.toml', 'utf8');
+        const companionVersion = /^version\s*=\s*"([^"]+)"/m.exec(companionProject)?.[1];
+        assert.ok(companionVersion, 'The real Makie companion declares its own version');
+        const expectedCompanionVersion = hasCompanionAPIs ? companionVersion : info.version;
         let nativeExports = 0;
         for (const packageName of ['datastructures', 'containers', 'oxygen', 'oxygen-features',
           'datastructures-profiles', 'oxygen-profiles']) {
           const directory = join(site, 'examples/real-packages', packageName);
           const recorded = JSON.parse(await readFile(join(directory, 'catalog.json'), 'utf8'));
           assert.equal(recorded.interactive_export?.renderer, marker.renderer);
-          assert.equal(recorded.interactive_export?.companion_version, info.version,
-            `${packageName}: public renderer must match the documented package version`);
+          assert.equal(recorded.interactive_export?.companion_version, expectedCompanionVersion,
+            `${packageName}: public renderer must match the documented companion version`);
           let selected = 0;
           for (const view of recorded.views) {
             for (const entry of [view, ...(view.patch_windows ?? [])]) {

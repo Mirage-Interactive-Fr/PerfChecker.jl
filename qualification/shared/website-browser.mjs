@@ -55,6 +55,14 @@ try {
     }
   }
   await page.setViewportSize({width:1440,height:1080});
+  const overview=await (await page.request.get(base+'examples/bibliography/history/overview.json')).json();
+  assert.equal(overview.versions.length,9);
+  assert.equal(overview.metrics.length,4);
+  assert(overview.metrics.every(m=>m.rows.length===9&&m.rows.every(r=>r.samples===100)));
+  const medians=overview.versions.map(version=>[version,...['time','memory','allocations'].map(id=>{
+    const value=overview.metrics.find(metric=>metric.id===id).rows.find(row=>row.version===version).median;
+    return id==='time'?value/1000:value;
+  })]);
   for(const width of [390,1280,1440,1920]){
     await page.setViewportSize({width,height:1080});
     await page.goto(base,{waitUntil:'networkidle'});
@@ -74,24 +82,20 @@ try {
     await timeToggle.check();
     assert.equal(await overlayFrame.locator('svg circle').count(),36);
     await page.locator('.absolute-measurements summary').click();
-    const plots=page.locator('.measurement-grid img');
-    assert.equal(await plots.count(),4);
-    for(const img of await plots.all()) await img.evaluate(el=>el.decode());
-    const boxes=await plots.evaluateAll(images=>images.map(el=>{
-      const r=el.getBoundingClientRect();return {x:r.x,y:r.y,right:r.right};
-    }));
+    const table=page.locator('.measurement-table');
+    const rows=await table.locator('tbody tr').evaluateAll(rows=>rows.map(row=>
+      [...row.children].map((cell,index)=>index?Number(cell.textContent):cell.textContent.trim())));
+    assert.deepEqual(rows,medians,'Absolute medians must match the saved history, in their stated units');
     if(width>=1280){
       const bounds=await card.boundingBox();
-      assert(boxes.every(b=>b.right<bounds.x),'Maintainer card covers plots');
-      assert.equal(boxes[0].y,boxes[1].y);
-    }else assert(boxes[1].y>boxes[0].y);
+      for(const content of [overlay,table]){
+        const box=await content.boundingBox();
+        assert(box.x+box.width<bounds.x,'Maintainer card covers measurements');
+      }
+    }
     await page.locator('.absolute-measurements summary').click();
     await page.screenshot({path:path.join(output,`home-measurements-${width}.png`),fullPage:true});
   }
-  const overview=await (await page.request.get(base+'examples/bibliography/history/overview.json')).json();
-  assert.equal(overview.versions.length,9);
-  assert.equal(overview.metrics.length,4);
-  assert(overview.metrics.every(m=>m.rows.length===9&&m.rows.every(r=>r.samples===100)));
   checks.push('home shows four measured histories and a discrete responsive maintainer link');
   await page.setViewportSize({width:1440,height:1080});
   await page.goto(base+'guide/overview',{waitUntil:'networkidle'});
@@ -177,9 +181,17 @@ try {
   assert.equal(await firstList.locator(':scope > li').count(),5);
   assert.equal(await firstList.evaluate(list=>list.start),1);
   const firstSteps=await firstList.locator(':scope > li').allTextContents();
-  for(const [index,fragment] of ['Discover existing test items','Testing','Select one item',
-    'collector','saved visual output'].entries())
+  for(const [index,fragment] of ['Feature suite','select one check and target','Run 1 selected',
+    'Open visual output','report directory'].entries())
     assert(firstSteps[index].includes(fragment),`Missing first-result step ${index+1}`);
+  const itemList=page.locator('.vp-doc h3').filter({hasText:'Run existing TestItems'})
+    .locator('xpath=following-sibling::ol[1]');
+  assert.equal(await itemList.locator(':scope > li').count(),5);
+  assert.equal(await itemList.evaluate(list=>list.start),1);
+  const itemSteps=await itemList.locator(':scope > li').allTextContents();
+  for(const [index,fragment] of ['Discover existing test items','Testing','Select one item',
+    'Testing output','PerfChecker test items'].entries())
+    assert(itemSteps[index].includes(fragment),`Missing TestItem step ${index+1}`);
   await page.goto(base+'contributing/documentation',{waitUntil:'networkidle'});
   const screenshotPolicy=page.locator('.vp-doc ol').first();
   assert.equal(await screenshotPolicy.locator(':scope > li').count(),7);
@@ -240,7 +252,7 @@ try {
       for(const name of ['PerfCheckerWeb','PerfCheckerPluto','PerfCheckerMakie','VS Code'])
         assert(entryText.includes(name));
     }else if(route==='reference/index'){
-      for(const name of ['Measurement model','Collectors','Run bundles','Command line','Julia API'])
+      for(const name of ['Measurement model','Collectors','Run bundles','Command line','Public API','Full API'])
         assert(entryText.includes(name));
     }else assert(await page.locator('.vp-doc table').count()>=1);
   }
@@ -287,31 +299,91 @@ try {
     }
   }
   checks.push(`all ${markdown.length} documentation pages have reachable internal page and section links`);
+  async function inspectLastPoint(frame,record){
+    const input=frame.getByRole('spinbutton',{name:'Recorded point index',exact:true});
+    assert.equal(Number(await input.getAttribute('max')),record.plot.data.length);
+    await input.fill(String(record.plot.data.length));
+    await frame.locator(`#point-index[data-applied-index="${record.plot.data.length}"]`).waitFor();
+    const readout=frame.locator('#point-readout[aria-busy="false"]');
+    await readout.waitFor();
+    assert.equal(await readout.getAttribute('data-error'),null);
+    assert.equal(await input.getAttribute('data-applied-index'),String(record.plot.data.length));
+    const last=record.plot.data.at(-1),prefix=`Point ${record.plot.data.length}: ${last.version} · `;
+    const text=await readout.innerText();
+    assert(text.startsWith(prefix)&&text.endsWith(' '+record.plot.options.unit));
+    assert.equal(Number(text.slice(prefix.length,-record.plot.options.unit.length).trim()),last.value);
+  }
+  async function checkNativeFigure(figure){
+    const iframe=figure.locator('iframe.doc-interactive');
+    assert.equal(await iframe.count(),1);
+    assert((await iframe.getAttribute('title')).length>30);
+    await iframe.scrollIntoViewIfNeeded();
+    const source=new URL(await iframe.getAttribute('src'),page.url());
+    const response=await page.request.get(source.href.replace(/\.html$/,'.json'));
+    assert.equal(response.status(),200);
+    const record=await response.json();
+    assert.equal(new Set(record.plot.data.map(row=>row.version)).size,9);
+    const frame=figure.frameLocator('iframe.doc-interactive');
+    await frame.locator('canvas').first().waitFor();
+    await inspectLastPoint(frame,record);
+    return record;
+  }
   for(const width of [390,1440]){
     await page.setViewportSize({width,height:1080});
     await page.goto(base+'tutorials/quick-tour',{waitUntil:'networkidle'});
     assert(await page.getByRole('heading',{name:/^Measure an operation/}).isVisible());
     for(const section of ['Swap the collector, keep the workload','Compare versions','Read a result'])
       assert(await page.getByRole('heading',{name:new RegExp(`^${section}`)}).isVisible());
-    assert.equal(await page.locator('.doc-screenshot img').count(),2);
-    for(const img of await page.locator('.doc-screenshot img').all()){
-      await img.scrollIntoViewIfNeeded();await img.evaluate(image=>image.decode());
-      assert(await img.evaluate(image=>image.naturalWidth>=700));
-      assert((await img.getAttribute('alt')).length>30);
+    const figures=page.locator('.doc-screenshot');
+    assert.equal(await figures.count(),2);
+    for(const [index,figure] of (await figures.all()).entries()){
+      const record=await checkNativeFigure(figure);
+      assert.equal(record.plot.kind,index===0?'version_series':'distribution');
+      assert.equal(record.plot.data.length,index===0?9:900);
+      assert((await figure.locator('figcaption').innerText()).length>30);
     }
     assert(await page.evaluate(()=>document.documentElement.scrollWidth<=document.documentElement.clientWidth+1));
     await page.screenshot({path:path.join(output,`quick-tour-${width}.png`),fullPage:true});
   }
   checks.push('short tutorial has readable measured plots on mobile and desktop');
-  for(const route of ['tutorials/comparisons','reference/checks','process-memory']){
+  for(const route of ['reference/checks','process-memory']){
     await page.goto(base+route,{waitUntil:'networkidle'});
-    const figures=page.locator('.doc-screenshot img');assert(await figures.count()>=1);
-    for(const img of await figures.all()){
-      await img.scrollIntoViewIfNeeded();await img.evaluate(image=>image.decode());
-      assert(await img.evaluate(image=>image.naturalWidth>0));
+    const figures=page.locator('.doc-screenshot');assert(await figures.count()>=1);
+    for(const figure of await figures.all()){
+      if(await figure.locator('iframe.doc-interactive').count()){
+        const record=await checkNativeFigure(figure);
+        assert.equal(record.plot.kind,route==='reference/checks'?'distribution':'version_series');
+        assert.equal(record.plot.options.metric,route==='reference/checks'?'julia.wall.time':'julia.alloc.bytes');
+      }else{
+        const img=figure.locator('img');
+        await img.scrollIntoViewIfNeeded();await img.evaluate(image=>image.decode());
+        assert(await img.evaluate(image=>image.naturalWidth>0));
+      }
     }
   }
-  checks.push('comparison and measurement guides load their recorded figures');
+  await page.goto(base+'tutorials/comparisons',{waitUntil:'networkidle'});
+  const comparisonLink=page.locator('a[download][href$="/streaming-comparison.json"]');
+  assert.equal(await comparisonLink.count(),1);
+  const comparison=await (await page.request.get(new URL(await comparisonLink.getAttribute('href'),page.url()).href)).json();
+  assert.equal(comparison.sources.length,2);
+  assert.equal(comparison.series.length,4);
+  assert.equal(comparison.performance,'inconclusive');
+  assert.equal(comparison.correctness,'not_checked');
+  const comparisonTable=page.locator('.vp-doc table');
+  const header=await comparisonTable.locator('thead').innerText();
+  for(const source of comparison.sources) assert(header.includes(source.requested_target_revision.slice(0,7)));
+  for(const [metric,label,scale] of [
+    ['julia.wall.time','Median elapsed time',1000],['julia.alloc.bytes','Median allocated bytes',1],
+    ['julia.alloc.count','Median allocation count',1],['julia.gc.time','Median GC time',1]]){
+    const series=comparison.series.find(series=>series.metric===metric);
+    assert.equal(series.points.length,2);
+    assert(series.points.every(point=>point.samples===100));
+    const row=comparisonTable.locator('tbody tr').filter({has:page.getByRole('cell',{name:label,exact:true})});
+    const values=(await row.locator('td').allTextContents()).slice(1).map(text=>Number(text.replace(/[^\d.-]/g,'')));
+    assert.deepEqual(values,['before-streaming','after-streaming'].map(version=>
+      series.points.find(point=>point.version===version).median/scale));
+  }
+  checks.push('measurement guides inspect native recorded figures; the two-commit summary matches its downloadable measurements and preserves its inconclusive verdict');
   for(const route of ['interfaces/repl-pluto','tutorials/bibliography']){
     await page.goto(base+route,{waitUntil:'networkidle'});
     const download=page.locator('a[download="notebook.jl"]');
@@ -361,13 +433,11 @@ try {
       await frame.getByRole('checkbox').first().check();
     }else if(view.kind!=='version_delta'){
       assert.equal(new Set(data.plot.data.map(row=>row.version)).size,9);
-      const slider=frame.getByRole('slider',{name:'Inspect measured point'});
-      await slider.waitFor();await frame.locator('canvas').first().waitFor();
+      await frame.locator('#point-readout[aria-busy="false"]').waitFor();
+      await frame.locator('canvas').first().waitFor();
       await page.waitForTimeout(700);
       const before=await frame.locator('canvas').first().screenshot();
-      await slider.focus();await page.keyboard.press('End');await page.waitForTimeout(700);
-      const last=data.plot.data.at(-1);
-      assert.equal(await frame.locator('#point-readout').innerText(),`Point ${data.plot.data.length}: ${last.value} ${data.plot.options.unit} · ${last.version}`);
+      await inspectLastPoint(frame,data);await page.waitForTimeout(700);
       const after=await frame.locator('canvas').first().screenshot();
       assert(!before.equals(after),'The plotted point must move, not just its text label');
       const fit=await frame.locator('#offline-figure').evaluate(element=>{
@@ -441,7 +511,11 @@ try {
   }
   checks.push('Bibliography interface screenshots load with descriptive alternatives');
   const recordings=JSON.parse(await readFile(path.join(root,'website/media.json'),'utf8'));
-  for(const [recordingId,recordingSpec] of Object.entries(recordings)){
+  const recordingIds=await page.locator('[data-recording]').evaluateAll(figures=>
+    figures.map(figure=>figure.dataset.recording));
+  assert.deepEqual(recordingIds.toSorted(),['bibliography-history','bibliography-web']);
+  for(const recordingId of recordingIds){
+  const recordingSpec=recordings[recordingId];assert(recordingSpec);
   const mediaState=recordingSpec.youtube_id ? 'youtube' : existsSync(path.join(root,'website/src/public',recordingSpec.file)) ? 'local' : 'pending';
   const mediaFigure=page.locator(`[data-recording="${recordingId}"]`);
   assert.equal(await mediaFigure.getAttribute('data-media-state'),mediaState);
@@ -470,7 +544,7 @@ try {
     checks.push('YouTube opt-in control; external playback is not qualified by this check');
   }else{
     assert.equal(await mediaFigure.locator('video,iframe').count(),0);
-    assert((await mediaFigure.innerText()).includes('Follow the written walkthrough'));
+    assert((await mediaFigure.innerText()).toLowerCase().includes('follow the written walkthrough'));
     checks.push('recording without an embedded player has an explicit written-walkthrough fallback');
   }
   if(recordingSpec.download_url){
