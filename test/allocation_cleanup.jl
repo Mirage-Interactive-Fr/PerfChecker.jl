@@ -153,9 +153,10 @@ end
 
         source_snapshot = Dict(path => read(path)
         for path in (joinpath(source, "Project.toml"), module_file, operation_file))
-        environment_snapshot(path) = Dict(relpath(joinpath(root, file), path) =>
-                                         read(joinpath(root, file))
-        for (root, _, files) in walkdir(path) for file in files)
+        function environment_snapshot(path)
+            Dict(relpath(joinpath(root, file), path) => read(joinpath(root, file))
+            for (root, _, files) in walkdir(path) for file in files)
+        end
         prepared_root = nothing
         prepared_environment = nothing
         prepared_snapshot = nothing
@@ -163,28 +164,33 @@ end
         worker_projects = String[]
 
         try
-            for outcome in (:success, :identical_trace, :preparation_error, :measurement_error,
+            for outcome in (
+                :success, :identical_trace, :preparation_error, :measurement_error,
                 :preparation_interrupt, :interrupt)
                 # Keep the first ordinary cold path. Only package resolution is shared;
                 # each following check still copies the seed and starts a fresh worker.
                 selected_config = config
                 if outcome !== :success
                     if prepared_root === nothing
-                        prepared_root, prepared_environment =
-                            PerfChecker._prepare_check_environment(config)
+                        prepared_root, prepared_environment = PerfChecker._prepare_check_environment(config)
                         prepared_snapshot = environment_snapshot(prepared_environment)
-                        project = TOML.parsefile(joinpath(prepared_environment, "Project.toml"))
-                        manifest = TOML.parsefile(joinpath(prepared_environment, "Manifest.toml"))
+                        project = TOML.parsefile(joinpath(
+                            prepared_environment, "Project.toml"))
+                        manifest = TOML.parsefile(joinpath(
+                            prepared_environment, "Manifest.toml"))
                         @test project["deps"]["PerfCheckerAllocationFixture"] ==
                               "ce59c047-c922-4f2c-814b-1a4dc48c4c30"
                         dependency = only(manifest["deps"]["PerfCheckerAllocationFixture"])
-                        @test dependency["uuid"] == project["deps"]["PerfCheckerAllocationFixture"]
+                        @test dependency["uuid"] ==
+                              project["deps"]["PerfCheckerAllocationFixture"]
                         @test dependency["version"] == "0.1.0"
-                        @test realpath(joinpath(prepared_environment, dependency["path"])) ==
+                        @test realpath(joinpath(
+                            prepared_environment, dependency["path"])) ==
                               realpath(source)
                     end
                     selected_config = PerfConfig(:alloc,
-                        merge(config.options, Dict(:prepared_environment => prepared_environment)))
+                        merge(config.options,
+                            Dict(:prepared_environment => prepared_environment)))
                 end
                 previous = outcome === :identical_trace ? baseline : original
                 marker = joinpath(directory, "worker-$(outcome)")
@@ -195,7 +201,8 @@ end
                     using PerfCheckerAllocationFixture
                     import Pkg, TOML
                     dependency = Pkg.dependencies()[Base.PkgId(PerfCheckerAllocationFixture).uuid]
-                    identity = Dict("pid" => getpid(), "project" => realpath(Base.active_project()),
+                    identity = Dict(
+                        "pid" => getpid(), "project" => realpath(Base.active_project()),
                         "uuid" => string(Base.PkgId(PerfCheckerAllocationFixture).uuid),
                         "version" => string(pkgversion(PerfCheckerAllocationFixture)),
                         "source" => realpath(pkgdir(PerfCheckerAllocationFixture)),
@@ -205,14 +212,16 @@ end
                     open(io -> TOML.print(io, identity), $identity_file, "w")
                     write($marker, string(getpid()))
                     $(outcome === :preparation_interrupt ? :(sleep(120)) : :(nothing))
-                    $(outcome === :preparation_error ? :(error("preparation fixture failure")) :
+                    $(outcome === :preparation_error ?
+                      :(error("preparation fixture failure")) :
                       :(nothing))
                 end
                 workload = quote
                     PerfCheckerAllocationFixture.allocate()
                     write($marker, string(getpid()))
                     write($(marker * "-measuring"), string(getpid()))
-                    $(outcome === :measurement_error ? :(error("measurement fixture failure")) :
+                    $(outcome === :measurement_error ?
+                      :(error("measurement fixture failure")) :
                       outcome === :interrupt ? :(sleep(120)) : :(nothing))
                 end
                 if outcome in (:success, :identical_trace)
@@ -220,7 +229,8 @@ end
                     @test length(result.tables) == 1
                     @test !isempty(only(result.tables))
                     @test all(bytes -> bytes < 999999999, only(result.tables).bytes)
-                    @test any(file -> occursin("operation", file), only(result.tables).filename)
+                    @test any(
+                        file -> occursin("operation", file), only(result.tables).filename)
                 elseif outcome in (:preparation_interrupt, :interrupt)
                     captured = Ref{Any}(nothing)
                     task = @async try
@@ -229,27 +239,32 @@ end
                         captured[] = error
                     end
                     try
-                        waiting_marker = outcome === :interrupt ? marker * "-measuring" : marker
+                        waiting_marker = outcome === :interrupt ? marker * "-measuring" :
+                                         marker
                         @test timedwait(
                             () -> isfile(waiting_marker) || istaskdone(task), 180) ==
                               :ok
                         @test isfile(waiting_marker)
-                        istaskdone(task) || schedule(task, InterruptException(); error = true)
+                        istaskdone(task) ||
+                            schedule(task, InterruptException(); error = true)
                         @test timedwait(() -> istaskdone(task), 45) == :ok
                         @test captured[] isa InterruptException
                     finally
-                        istaskdone(task) || schedule(task, InterruptException(); error = true)
+                        istaskdone(task) ||
+                            schedule(task, InterruptException(); error = true)
                         wait(task)
                     end
                 else
-                    @test_throws Exception PerfChecker.check_function(selected_config, setup, workload)
+                    @test_throws Exception PerfChecker.check_function(
+                        selected_config, setup, workload)
                 end
                 preserved = filter(
                     file -> startswith(file, basename(operation_file) * ".") &&
                                 endswith(file, ".mem") && file != basename(foreign),
                     readdir(dirname(operation_file)))
                 @test length(preserved) == 1
-                @test read(joinpath(dirname(module_file), only(preserved)), String) == previous
+                @test read(joinpath(dirname(module_file), only(preserved)), String) ==
+                      previous
                 @test read(foreign, String) == "999999999 allocate() = nothing\n"
                 @test read(unrelated, String) == "user allocation notes\n"
                 @test only(PerfChecker.find_malloc_files([source]) ∩ [foreign]) == foreign
@@ -266,7 +281,8 @@ end
                 push!(worker_projects, identity["project"])
                 @test all(read(path) == bytes for (path, bytes) in source_snapshot)
                 if prepared_environment !== nothing
-                    @test identity["project"] != joinpath(prepared_environment, "Project.toml")
+                    @test identity["project"] !=
+                          joinpath(prepared_environment, "Project.toml")
                     @test environment_snapshot(prepared_environment) == prepared_snapshot
                 end
             end
