@@ -391,7 +391,7 @@ jobs:
       github.event_name != 'pull_request' &&
       (github.ref == 'refs/heads/main' || github.ref_type == 'tag')
     runs-on: ubuntu-latest
-    timeout-minutes: ${{ github.ref_type == 'tag' && 90 || 45 }}
+    timeout-minutes: 120
     environment: documentation-sftp
     # All refs share one publisher; the server-side lock also protects manual clients.
     concurrency:
