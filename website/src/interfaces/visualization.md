@@ -7,8 +7,9 @@
 PerfCheckerMakie turns saved measurements into figures. Views come from saved run bundles or previously exported plot models; rendering does not re-measure.
 
 Saved-bundle figures and offline controls require **PerfChecker 1.0.1 or later**
-and **PerfCheckerMakie 1.0.1 or later**. The diagnostic observation views on this
-site additionally require **PerfCheckerMakie 1.0.2**. Core and the companion have
+and **PerfCheckerMakie 1.0.1 or later**. Diagnostic observation views require
+**PerfCheckerMakie 1.0.2 or later**; this site uses **1.0.3**, which preserves
+flame-frame inspection during keyboard focus and iframe resizing. Core and the companion have
 independent versions; use the [installation recipe below](#Customize-and-export-Makie-figures)
 while the companion is not available in General.
 
@@ -181,15 +182,15 @@ bytes or packets. A larger payload is a different input, not a later release.
 The [Oxygen guide](../real-packages/oxygen.md#Compare-socket-measurements-across-releases)
 explains the workload, counter scope and loopback accounting.
 
-This observation renderer belongs to **PerfCheckerMakie 1.0.2**, independently
-of **PerfChecker 1.1.0**. In a separate plotting environment, install that
+This site uses **PerfCheckerMakie 1.0.3**, independently of **PerfChecker 1.1.0**.
+In a separate plotting environment, install that
 companion's own published source tag when it is not yet available in General:
 
 ```julia
 import Pkg
 Pkg.add(Pkg.PackageSpec(
     url = "https://github.com/Mirage-Interactive-Fr/PerfChecker.jl",
-    subdir = "packages/PerfCheckerMakie", rev = "PerfCheckerMakie-v1.0.2"))
+    subdir = "packages/PerfCheckerMakie", rev = "PerfCheckerMakie-v1.0.3"))
 ```
 
 The site's `build-info.json` records the renderer version and source tree.
@@ -199,7 +200,7 @@ subtree against its public tag; it leaves the Core release archive unchanged.
 ## Customize and export Makie figures
 
 The customization methods below were introduced in **PerfCheckerMakie 1.0.1**
-and are retained in 1.0.2. Install the independently versioned companion in a
+and are retained in 1.0.3. Install the independently versioned companion in a
 dedicated environment. Core 1.0.0 does not satisfy its compatibility contract.
 For Core 1.1.0 and the renderer used on this site:
 
@@ -208,10 +209,10 @@ using Pkg
 Pkg.add(name = "PerfChecker", version = "1.1.0")
 Pkg.add(Pkg.PackageSpec(
     url = "https://github.com/Mirage-Interactive-Fr/PerfChecker.jl",
-    subdir = "packages/PerfCheckerMakie", rev = "PerfCheckerMakie-v1.0.2"))
+    subdir = "packages/PerfCheckerMakie", rev = "PerfCheckerMakie-v1.0.3"))
 ```
 
-This source-tag recipe does not require Makie 1.0.2 to have reached General.
+This source-tag recipe does not require Makie 1.0.3 to have reached General.
 The [optional-package guide](../guide/installation.md#Optional-packages)
 explains repository subdirectories and separate worker environments.
 

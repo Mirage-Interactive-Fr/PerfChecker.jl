@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.3
+
+- Keep the exact flame-frame tooltip visible while its frame retains keyboard
+  focus, including iframe resizing and pointer movement.
+- Reposition the tooltip after layout or scrolling, and hide it when the focused
+  frame leaves the visible viewport or loses focus.
+
 ## 1.0.2
 
 - Add `observation_plot` for saved measurements with explicit axes, units,

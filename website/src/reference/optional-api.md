@@ -15,7 +15,7 @@ helper.
 <tbody>
 <tr><td>PerfCheckerLinuxPerf 1.0.1</td><td><a href="../optional-api/linuxperf/public-api.html">Public</a></td><td><a href="../optional-api/linuxperf/full-api.html">Full</a></td><td><a href="../optional-api/linuxperf.inv">Inventory</a></td></tr>
 <tr><td>PerfCheckerLIKWID 1.0.1</td><td><a href="../optional-api/likwid/public-api.html">Public</a></td><td><a href="../optional-api/likwid/full-api.html">Full</a></td><td><a href="../optional-api/likwid.inv">Inventory</a></td></tr>
-<tr><td>PerfCheckerMakie 1.0.2</td><td><a href="../optional-api/makie/public-api.html">Public</a></td><td><a href="../optional-api/makie/full-api.html">Full</a></td><td><a href="../optional-api/makie.inv">Inventory</a></td></tr>
+<tr><td>PerfCheckerMakie 1.0.3</td><td><a href="../optional-api/makie/public-api.html">Public</a></td><td><a href="../optional-api/makie/full-api.html">Full</a></td><td><a href="../optional-api/makie.inv">Inventory</a></td></tr>
 <tr><td>PerfCheckerWeb 1.0.0</td><td><a href="../optional-api/web/public-api.html">Public</a></td><td><a href="../optional-api/web/full-api.html">Full</a></td><td><a href="../optional-api/web.inv">Inventory</a></td></tr>
 <tr><td>PerfCheckerPluto 1.0.1</td><td><a href="../optional-api/pluto/public-api.html">Public</a></td><td><a href="../optional-api/pluto/full-api.html">Full</a></td><td><a href="../optional-api/pluto.inv">Inventory</a></td></tr>
 <tr><td>PerfCheckerTachikoma 1.0.1</td><td><a href="../optional-api/tachikoma/public-api.html">Public</a></td><td><a href="../optional-api/tachikoma/full-api.html">Full</a></td><td><a href="../optional-api/tachikoma.inv">Inventory</a></td></tr>
