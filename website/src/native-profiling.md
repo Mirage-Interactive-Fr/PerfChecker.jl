@@ -338,6 +338,26 @@ plan = native_tool_plan(:memcheck, "native_case.jl";
     suppressions = "contrib/valgrind-julia.supp")
 ```
 
+**An availability result is a useful result too.** These selected fields are
+from the recorded Oxygen probes on Linux, Julia 1.13.0, 13 September 2026:
+
+```json
+[
+  {"tool": "perf", "availability": "not_installed", "executed": false, "correctness": "not_checked"},
+  {"tool": "vtune", "availability": "not_installed", "executed": false, "correctness": "not_checked"}
+]
+```
+
+No profiler ran in these two cases, so there is no cost or correctness result
+to interpret. Install the intended tool before requesting its measurement;
+do not read missing counters as zero. The
+complete saved report also records the tools that did execute and their
+individual completion states:
+
+```@raw html
+<p><a href="examples/real-packages/oxygen-native/summary.json" download="oxygen-native-report.json">Download the recorded native report</a></p>
+```
+
 Valgrind needs `--smc-check=all-non-file` for Julia's JIT. Some investigations need Julia built with memory pools disabled. A zero exit is not enough without the workload oracle and reviewed diagnostics.
 
 - **Memcheck** — invalid reads/writes, uninitialized values, leaks. Correctness diagnostics, not speed.
