@@ -356,5 +356,32 @@
     "version": "1.13.1"
   },
   "schema_version": "perfchecker-jet-tutorial/1",
-  "source_sha256": "c6d0568700487bb9553912666f0b65d513ed3071724738c6de683653ecd313c3"
+  "source_sha256": "c6d0568700487bb9553912666f0b65d513ed3071724738c6de683653ecd313c3",
+  "recorded_source_revision": "5b3ab2ef5c02a89736f089e2eeba72338c508042",
+  "recorded_source_urls": {
+    "cases.jl": "https://github.com/Mirage-Interactive-Fr/PerfChecker.jl/blob/5b3ab2ef5c02a89736f089e2eeba72338c508042/website/src/public/examples/jet-dispatch/cases.jl",
+    "run.jl": "https://github.com/Mirage-Interactive-Fr/PerfChecker.jl/blob/5b3ab2ef5c02a89736f089e2eeba72338c508042/website/src/public/examples/jet-dispatch/run.jl",
+    "Project.toml": "https://github.com/Mirage-Interactive-Fr/PerfChecker.jl/blob/5b3ab2ef5c02a89736f089e2eeba72338c508042/website/src/public/examples/jet-dispatch/Project.toml",
+    "Manifest.toml": "https://github.com/Mirage-Interactive-Fr/PerfChecker.jl/blob/5b3ab2ef5c02a89736f089e2eeba72338c508042/website/src/public/examples/jet-dispatch/Manifest.toml"
+  },
+  "reproduction_source_sha256": {
+    "cases.jl": "5fa164e34f2a284e285a9ecd9a613bc6bad4b4288e179a5666634436ddda5d10",
+    "run.jl": "1c6cf4533d0c115695ef5684f5a0e6e775282973709b8fffd0df0b96e1412280",
+    "render.jl": "81f62ac84afeee430c3b705392daf7c2aaaf006fb908198c306cc812471b7607"
+  },
+  "source_equivalence": {
+    "method": "Julia 1.13.1 parsed AST equality after recursive removal of LineNumberNode values",
+    "files": [
+      "cases.jl",
+      "run.jl"
+    ]
+  },
+  "diagnostic_source_mapping": [
+    {
+      "file": "cases.jl",
+      "recorded_line": 14,
+      "reproduction_line": 14,
+      "recorded_url": "https://github.com/Mirage-Interactive-Fr/PerfChecker.jl/blob/5b3ab2ef5c02a89736f089e2eeba72338c508042/website/src/public/examples/jet-dispatch/cases.jl#L14"
+    }
+  ]
 }

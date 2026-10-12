@@ -28,7 +28,7 @@ function dynamic(parameters)
     return (
         prepare = () -> Any[records(n)...],
         operation = net_revenue,
-        verify = (rows, result) -> length(rows) == n && result == 253.0 * (n ÷ 8),
+        verify = (rows, result) -> length(rows) == n && result == 253.0 * (n ÷ 8)
     )
 end
 
@@ -38,7 +38,7 @@ function typed(parameters)
     return (
         prepare = () -> records(n),
         operation = net_revenue,
-        verify = (rows, result) -> length(rows) == n && result == 253.0 * (n ÷ 8),
+        verify = (rows, result) -> length(rows) == n && result == 253.0 * (n ÷ 8)
     )
 end
 

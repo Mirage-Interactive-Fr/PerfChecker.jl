@@ -208,6 +208,13 @@ julia --project=render-environment render.jl results/summary.json exported-figur
 ```
 
 The recorded run used Linux x86-64, two available CPU cores and one Julia thread.
+The measured [operation](https://github.com/Mirage-Interactive-Fr/PerfChecker.jl/blob/5b3ab2ef5c02a89736f089e2eeba72338c508042/website/src/public/examples/jet-dispatch/cases.jl#L14)
+and [runner](https://github.com/Mirage-Interactive-Fr/PerfChecker.jl/blob/5b3ab2ef5c02a89736f089e2eeba72338c508042/website/src/public/examples/jet-dispatch/run.jl)
+are archived at commit `5b3ab2e`. The downloads have since been formatted;
+their parsed Julia code is unchanged, and the diagnostic still points to line 14.
+`summary.json` keeps the original measured SHA-256 values and lists the formatted
+reproduction hashes separately. Formatting did not trigger a new measurement.
+
 Keep source and tool identities with any new result. See
 [shared scenarios](shared-scenarios.md) for the same lifecycle in the other
 interfaces, and [Oxygen](real-packages/oxygen.md) for a larger application where
