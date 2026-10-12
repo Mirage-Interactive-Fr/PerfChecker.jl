@@ -125,6 +125,8 @@ for (const channel of channels) {
     const route = relative(site, file).replaceAll('\\', '/');
     const url = new URL(route === 'index.html' ? '' : route, info.url);
     const html = await readFile(file, 'utf8');
+    assert.ok(!/<interactiverecordedplot(?:\s|>)/i.test(html),
+      `${route}: InteractiveRecordedPlot must render its native output, not an unresolved custom element`);
     if (!html.includes('rel="canonical"')) {
       // Exported plots are public HTML assets, not VitePress documentation pages.
       await access(join('website/src/public', route)); continue;
@@ -234,7 +236,7 @@ for (const channel of channels) {
       : ['suite-designer-linux-4fab779.png', [1083, 502]];
     const illustrated = [
       ['interfaces/vscode.html', ['vscode-studio.png', suiteScreenshot]],
-      ['interfaces/vscode-workflows.html', ['vscode-results.png']],
+      ['interfaces/vscode-workflows.html', info.version === '1.0.0' ? ['vscode-results.png'] : []],
       ['mcp-advisor.html', ['vscode-mcp-settings.png', 'vscode-advice-chat.png', 'vscode-implementation.png']],
     ];
     for (const [route, screenshots] of illustrated) {
@@ -260,6 +262,50 @@ for (const channel of channels) {
       await page.reload({ waitUntil: 'networkidle' });
       assert.ok(await page.locator('h1').isVisible());
       await page.setViewportSize({ width: 1440, height: 900 });
+    }
+    if (info.version !== '1.0.0') {
+      const workflowPlots = [
+        [undefined, 'oxygen-features/distribution-17e1925ed491af0f', 'distribution'],
+        ['CPU samples', 'datastructures-profiles/cpu-flamegraph-054b5e59c351c558', 'cpu_flamegraph'],
+        ['Wall-time samples', 'datastructures-profiles/wall-flamegraph-1a28318cdf1f7700', 'wall_flamegraph'],
+        ['Allocated bytes', 'datastructures-profiles/allocation-flamegraph-6d6354c132248fdf', 'allocation_flamegraph'],
+      ];
+      for (const width of [1440, 390]) {
+        await page.setViewportSize({ width, height: 900 });
+        await page.goto(new URL('interfaces/vscode-workflows.html', local).href, { waitUntil: 'networkidle' });
+        for (const [tabName, asset, kind] of workflowPlots) {
+          if (tabName) await page.getByRole('tab', { name: tabName, exact: true }).click();
+          const iframe = page.locator(`.vp-doc iframe[src$="/${asset}.html"]`);
+          await iframe.scrollIntoViewIfNeeded();
+          const download = iframe.locator('..').getByRole('link', { name: 'Download the serialized plot', exact: true });
+          const source = new URL(await download.getAttribute('href'), local);
+          assert.equal(source.href, new URL(`examples/real-packages/${asset}.json`, local).href);
+          const response = await page.request.get(source.href);
+          assert.equal(response.status(), 200);
+          const record = await response.json();
+          assert.equal(record.plot.kind, kind);
+          const frame = iframe.contentFrame();
+          if (kind === 'distribution') {
+            await frame.locator('canvas').waitFor();
+            const index = frame.getByRole('spinbutton', { name: 'Recorded point index', exact: true });
+            const expectedIndex = await index.getAttribute('max');
+            await index.fill(expectedIndex);
+            await frame.locator(`#point-index[data-applied-index="${expectedIndex}"]`).waitFor();
+            await frame.locator('#point-readout[aria-busy="false"]').waitFor();
+            assert((await frame.locator('#point-readout').innerText()).startsWith(`Point ${await index.inputValue()}:`));
+          } else {
+            const mark = frame.locator('.flame-frame').first();
+            await mark.focus();
+            const tooltip = frame.getByRole('tooltip');
+            await tooltip.waitFor({ state: 'visible' });
+            assert((await tooltip.innerText()).includes(record.plot.data[0].label));
+          }
+          assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1),
+            `${asset}: workflow page overflows at ${width}px`);
+        }
+      }
+      await page.setViewportSize({ width: 1440, height: 900 });
+      console.log(`${channel}: workflow distribution and three profile tabs inspect their saved native models at desktop and mobile widths`);
     }
     if (hasSavedDiagnostics) {
       const workflow = new URL('interfaces/vscode-workflows.html', local).href;
@@ -419,7 +465,7 @@ for (const channel of channels) {
       }
     }
     assert.deepEqual(errors, []);
-    console.log(`${channel}: mobile navigation, search, version picker, six full-size VS Code screenshots and Supposition guide passed in Chromium`);
+    console.log(`${channel}: mobile navigation, search, version picker, original VS Code interface captures and Supposition guide passed in Chromium`);
   } catch (error) {
     if (page) {
       try {
