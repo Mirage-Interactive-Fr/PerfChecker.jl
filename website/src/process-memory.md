@@ -18,6 +18,33 @@ PerfChecker keeps three questions separate:
 
 No counter is a proxy for another.
 
+## Inspect a recorded memory diagnostic
+
+```@raw html
+<InteractiveRecordedPlot source="/examples/real-packages/oxygen-diagnostics/memory.plot.json" html="/examples/real-packages/oxygen-diagnostics/memory.html" title="Oxygen reachable-object sizes and resident process memory" kind="observation_series" />
+```
+
+Select a panel to keep its scale and unit visible. The first observation in
+the [saved memory diagnostic](examples/real-packages/oxygen-diagnostics/diagnosis.json)
+contains these actual byte counts:
+
+| Quantity | Before | After |
+| --- | --- | --- |
+| Reachable scenario state | 27,856 B | 28,264 B |
+| Process RSS (`windows-psapi`) | 536,616,960 B | 532,635,648 B |
+| Process private memory | 612,425,728 B | 606,199,808 B |
+| Lifetime peak RSS | 550,666,240 B | 550,666,240 B |
+
+Reachable state grows by **408 B** while RSS decreases. Neither change is an
+allocation count or proof of a leak. State plus its result occupies **55,852 B**;
+that reachable-object size does not include all resident process memory.
+
+This completed diagnostic passed its oracle on Windows, Julia 1.13.0 and one
+thread. Its older record omits the exact Oxygen revision and dependency
+manifest, so it cannot identify a release regression. Its snapshots surround
+individual diagnostic operations. The feature envelope below instead
+surrounds a complete backend collection; these are different boundaries.
+
 ## Process envelope
 
 Enable `:process_resources` on a feature to snapshot the isolated worker immediately before and after its backend collection.
@@ -82,6 +109,10 @@ end
 - With `:external_memory_required => false` (default), a missing callback becomes informational. With `true`, it fails the feature.
 
 `resource_upper_limits` turns selected envelope metrics into absolute per-run gates. `require_external_balance` also requires monotonic allocated/freed deltas to match and forbids growth in live external bytes. A violation marks the feature `invalid` while keeping the envelope for diagnosis.
+
+The callback above is an integration contract to implement in your package.
+No native-ledger recording is published in this example; the process RSS and
+reachable-state observations above do not supply that missing measurement.
 
 ## Bundle metrics
 

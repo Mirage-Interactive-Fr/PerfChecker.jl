@@ -15,8 +15,8 @@ from the timing benchmarks because their instrumentation changes execution costs
 | JET, AllocCheck, SnoopCompile | Executed operation diagnostics with findings and scope | Diagnostic records on both pages |
 | Latency, GC, memory and locks | Executed diagnostics, separately plotted | Both package pages |
 | Aqua and heap snapshots | Quality findings and redacted whole-worker GC snapshots | Quality reports and heap-category figures |
-| DrWatson | A measured, cached heap experiment for each package | `drwatson.jl run PACKAGE` |
-| PropCheck and Supposition | Frozen seeded input corpora and correctness replay | `corpus.jl` |
+| DrWatson | Runnable configuration and result-cache recipes; no cache artifact is published here | `drwatson.jl run PACKAGE` |
+| PropCheck and Supposition | Runnable corpus freezing and replay; no recorded corpus is published here | `corpus.jl` |
 | Documenter and DocumenterVitepress | Rendering a saved bundle; no campaign during the doc build | `documenter.jl` |
 | Network counters and isolation | Real loopback requests plus an executed namespace capture | Oxygen's network section |
 | Valgrind and heaptrack | Executed native captures with individual completion/timeout statuses | Native reports on both pages |
@@ -115,6 +115,9 @@ To investigate one case instead of the whole catalogue, append its ID:
 
 ## DrWatson: keep experiment parameters with the result
 
+This is a recipe to execute in your checkout. The documentation does not
+publish a DrWatson cache or claim a cache hit from a particular recorded run.
+
 ```sh
 julia setup.jl extras
 julia --project=.controller/extras drwatson.jl
@@ -125,6 +128,11 @@ the suite plan, then uses `drwatson_produce_or_load` to save or reload an experi
 configuration. Reusing that file is deliberately labelled as configuration reuse,
 not a new performance observation.
 
+The script's configuration-only branch explicitly saves
+`"measurement_executed" => false` and checks that value after loading.
+Inspect the printed cache filename and saved parameters before continuing to
+the separate measured branch below.
+
 To execute and cache one heap benchmark on the latest selected release:
 
 ```sh
@@ -134,6 +142,9 @@ julia --project=.controller/extras drwatson.jl run oxygen
 
 Repeating the command reuses its saved result. Set `PERFCHECKER_FORCE=true`
 when you deliberately want a fresh measurement instead.
+The measured branch checks `result["passed"]` before printing
+`Cached measurement: <filename>`; inspect that file's bundle and source identity,
+not just the presence of a cache file.
 
 To cache a real, deliberately small suite, use:
 
@@ -152,6 +163,9 @@ profile rules and does not necessarily mean one workload. Use a smaller
 in the experiment identity; pass `force=true` when you intend to remeasure.
 
 ## Property-generated inputs
+
+This section is a runnable recipe; it does not present a previously executed
+property search or a downloadable recorded corpus.
 
 PropCheck and Supposition can discover inputs that your handwritten examples
 miss. Freeze those generated cases with `freeze_propcheck_corpus` or
@@ -173,6 +187,10 @@ julia --project=.controller/extras corpus.jl replay
 
 The first command refuses to overwrite an existing corpus. The second replays
 40 saved input cases through the heap oracle without generating new inputs.
+Inspect `results/corpora/propcheck.json` and `supposition.json` after freezing:
+each must contain 20 cases. The replay's **Frozen property inputs** testset
+checks each saved case against the heap oracle. Preserve those exact files
+when comparing versions rather than generating a new corpus for each target.
 
 ## Native tools and external memory
 
