@@ -89,5 +89,5 @@ Saved bundles retain the metric definition, runtime, source identity, environmen
 ## Platform limits
 
 - Windows and Linux are recorded separately.
-- macOS is not currently qualified.
+- Core package tests have Intel macOS CI coverage, and the documented Intel macOS extension workflows passed within their stated scope. This does not qualify Apple Silicon, physical Mac sessions, or additional native and GPU backends.
 - The cross-machine estimator is an experimental planning aid; predictions never replace measurements or qualify a blocking CI decision.
