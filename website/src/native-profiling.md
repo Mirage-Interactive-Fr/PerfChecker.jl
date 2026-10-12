@@ -192,7 +192,9 @@ environment once:
 ```julia
 using Pkg
 Pkg.add(name = "PerfChecker", version = "1.1.0")
-Pkg.add(name = "PerfCheckerMakie", version = "1.0.2")
+Pkg.add(Pkg.PackageSpec(
+    url = "https://github.com/Mirage-Interactive-Fr/PerfChecker.jl",
+    subdir = "packages/PerfCheckerMakie", rev = "PerfCheckerMakie-v1.0.2"))
 Pkg.add(name = "WGLMakie", version = "0.13")
 Pkg.add(name = "JSON", version = "1")
 ```
