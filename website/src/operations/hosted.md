@@ -13,6 +13,9 @@ on both hosts before relying on the shutdown and cleanup behavior below.
 The older root tag `v1.0.0` does not supply that correction. Remote job
 cancellation remains a logical lease change, separate from stopping its agent.
 
+The responses below are **expected output** for your deployment, not a recorded
+cloud run. IDs, selected rows and timings come from your own service.
+
 ## Start the controller
 
 Prepare the [Web controller](../interfaces/web-studio.md) locally first. Install
@@ -29,6 +32,15 @@ serve_suite(suite; host = "0.0.0.0", port = 8080,
     allow_remote_control = true, authenticator = auth,
     secure_cookies = true)
 ```
+
+Expected service state:
+
+| Setting | Result |
+| --- | --- |
+| Controller process | Keeps serving until stopped; may resume persisted jobs |
+| API prefix | `/perfchecker/v1/` |
+| Default profile | `quick` |
+| Remote actions | Require authentication and an authorized role |
 
 For a cloud host, terminate HTTPS at a reverse proxy and forward the complete
 `/perfchecker/v1/` prefix to this service. For a LAN host, use its reachable
@@ -59,6 +71,17 @@ run_studio_agent(
     token = ENV["PERFCHECKER_AGENT_TOKEN"],
 )
 ```
+
+Expected job progression for a compatible agent:
+
+| Controller state | Meaning |
+| --- | --- |
+| `waiting_agent` | The job is waiting for an eligible worker |
+| `leased` | One agent has claimed the bounded lease |
+| `complete` | The result was accepted and its reports were written |
+
+These are job states, not console messages. A mismatch or failed measurement
+must be inspected rather than treated as a completed result.
 
 Run this on the worker, in its prepared controller environment. Its suite plan
 must match the controller's immutable revision and selected rows. Remote HTTP
@@ -96,6 +119,13 @@ in Julia from a token supplied privately through the environment:
 ```julia
 using SHA
 digest = bytes2hex(SHA.sha256(ENV["PERFCHECKER_STUDIO_TOKEN"]))
+println("Digest length: ", length(digest))
+```
+
+Expected output:
+
+```text
+Digest length: 64
 ```
 
 Put that digest in the user store and keep the token outside the repository.
@@ -137,9 +167,30 @@ plan = JSON.parse(String(HTTP.get(base * "/suite-plan?profile=quick", headers).b
 
 # Inspect package, feature, backend, version and status before choosing a row.
 rows = plan["runs"]
-[(row["id"], row["package"], row["feature"], row["backend"], row["status"])
- for row in rows]
+println(capabilities["schema_version"])
+println("Read only: ", capabilities["read_only"])
+println(identity["schema_version"])
+println("Plan revision present: ", !isempty(plan["plan_revision"]))
+println("id | package | feature | backend | status")
+foreach(rows) do row
+    println(join([row["id"], row["package"], row["feature"],
+        row["backend"], row["status"]], " | "))
+end
 ```
+
+Expected output format:
+
+```text
+perfchecker-capabilities/1
+Read only: false
+perfchecker-identity/1
+Plan revision present: true
+id | package | feature | backend | status
+<run-id> | <package> | <feature> | <backend> | <status>
+```
+
+The last line represents an actual plan row; a suite can return several rows or
+none. Copy its exact ID only after reviewing the workload and backend.
 
 `capabilities` reports `perfchecker-capabilities/1`, whether the controller is
 read-only, supported profiles and concurrency. `/me` returns the authenticated
@@ -158,11 +209,35 @@ response = HTTP.post(base * "/jobs",
     [headers; "Content-Type" => "application/json"], JSON.json(payload))
 job = JSON.parse(String(response.body))
 job_id = job["job_id"]
+println("HTTP ", response.status)
+println(job["schema_version"])
+println("Destination: ", job["execution_target"])
+```
 
+Expected output for an accepted local launch:
+
+```text
+HTTP 202
+perfchecker-studio-job/1
+Destination: local
+```
+
+This proves acceptance, not completion. Inspect the same job ID:
+
+```julia
 status = JSON.parse(String(HTTP.get(base * "/jobs?id=" * job_id, headers).body))
+println("State: ", status["state"])
+println("Reports ready: ", status["reports_ready"])
 # To cancel this job explicitly:
 # HTTP.post(base * "/jobs/cancel", [headers; "Content-Type" => "application/json"],
 #     JSON.json(Dict("job_id" => job_id)))
+```
+
+Expected output once this job completes successfully:
+
+```text
+State: complete
+Reports ready: true
 ```
 
 A launch returns HTTP 202 with the job ID, state and progress. Query the same ID
@@ -184,6 +259,16 @@ happens to the measurement depends on its destination:
   It does **not** interrupt the agent's current synchronous measurement.
   Heartbeats carry progress, not stop commands. Interrupt the agent process
   once on its own host and allow its worker and trace cleanup to finish.
+
+For example, this response means cancellation is still being processed:
+
+```json
+{"state":"cancelled","worker_state":"cancelling"}
+```
+
+Wait for the local worker's terminal state before stopping the controller. A
+remote response can have `worker_state: null`; it cannot prove remote process
+extinction.
 
 The agent exits on `InterruptException` or `CheckCleanupFailure`, including
 with `once=false`; it does not claim another job after either event. Ordinary
@@ -224,6 +309,13 @@ const response = await fetch(`${base}/session`, {
   headers: { "X-CSRF-Token": session.csrf_token },
 });
 if (!response.ok) throw new Error(`Session revocation failed: ${response.status}`);
+console.log(await response.json());
+```
+
+Expected response:
+
+```json
+{"signed_out":true}
 ```
 
 This removes the server-side session and expires its cookie. It does not revoke
