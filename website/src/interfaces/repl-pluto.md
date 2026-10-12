@@ -19,6 +19,8 @@ julia --startup-file=no setup.jl core
 julia --startup-file=no --project=.controller/core repl.jl
 ```
 
+Expected result: the terminal configurator lists packages, workloads, collectors and targets, then prompts for a selection. Entering filters changes the plan; confirmation is separate from measurement.
+
 Or drive the API yourself:
 
 ```julia
@@ -46,6 +48,8 @@ paths = write_suite_reports(result, "results/repl-example")
 foreach(println, paths)
 ```
 
+Expected output after a completed run: a summary table, its execution verdict, and saved paths ending in `suite-report.md`, `suite-result.json`, `suite-junit.xml` and the bundle directory. A one-target run without a comparison policy has no regression verdict. The exact paths depend on the selected run.
+
 Choose a fresh report directory for each experiment: ordinary report files are
 replaced on export. The returned paths include a portable bundle directory under
 `bundles/run-…`. Keep that directory to reopen evidence in another interface.
@@ -68,6 +72,14 @@ catalog = plot_catalog(bundle)
 isempty(catalog) && error("This bundle has no supported plots")
 display(terminal_plot(bundle; plot_id = first(catalog)["id"], width = 70, height = 18))
 ```
+
+Expected output: a UnicodePlots chart with the saved view's title, version labels and unit. The genuine [published terminal export](../examples/real-packages/oxygen-features/normalized-metrics-24034c4be099f2e2.txt) is available as text; the native interactive rendering below reads those exact serialized observations:
+```@raw html
+<NormalizedMeasurements source="/examples/real-packages/oxygen-features/normalized-metrics-24034c4be099f2e2.json" html="/examples/real-packages/oxygen-features/normalized-metrics-24034c4be099f2e2.html" package-name="Saved Oxygen plain HTTP measurements" />
+```
+
+This native view reads the published fourteen-release Oxygen model, not your local path. Each metric is relative to its own minimum; inspect a point to recover its original value and unit. No measurement starts when rendering it.
+
 
 Replace `<run-directory>` with the bundle directory printed above. Select an ID
 from the displayed catalogue to change the view; read the title and unit before

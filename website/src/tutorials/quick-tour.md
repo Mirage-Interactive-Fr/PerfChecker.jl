@@ -28,13 +28,73 @@ Keep that directory: it holds the measurements and the source revisions they des
 
 ## Swap the collector, keep the workload
 
-The operation stays the same; only what is recorded changes.
+The operation stays the same; only what is recorded changes. Choose a backend; each tab shows its command and its own saved result.
+
+::: tabs
+
+== BenchmarkTools
+
+```sh
+julia --startup-file=no --project=.controller/core run.jl benchmark Bibliography export_bibtex
+```
+
+```@raw html
+<InteractiveRecordedPlot source="/examples/bibliography/timing-evidence.json" html="/examples/bibliography/export-timing.html" title="Recorded BibTeX export timing — fifty samples" kind="distribution" />
+```
+Recorded result: fifty samples at source `575ec81`, Julia 1.13.0, one worker thread. Select a point for its nanoseconds. Correctness is `not_checked`; performance is `not_compared`.
+
+== Chairmarks
+
+```sh
+julia --startup-file=no --project=.controller/core run.jl chairmark Bibliography export_bibtex
+```
+
+Recorded collector output from [suite-runs.json](../examples/bibliography/suite-runs.json):
+
+| Field | Saved result |
+| --- | --- |
+| Workload | export_bibtex |
+| Leaf | export_bibtex_chairmark |
+| Target | dev@0.4.0 |
+| Collector execution | executed (pass) |
+| State policy | fresh |
+
+The published receipt proves execution; it does not retain Chairmarks' numerical samples. In a local report, read elapsed time in **seconds**, bytes and allocation count; GC is a **fraction**, not BenchmarkTools' GC nanoseconds. No missing value is replaced with zero.
+
+== CPU profile
+
+```sh
+julia --startup-file=no --project=.controller/core run.jl profile Bibliography export_bibtex
+```
+
+```@raw html
+<InteractiveRecordedPlot source="/examples/bibliography/profiles/cpu.json" html="/examples/bibliography/profiles/cpu.html" title="Recorded CPU samples during BibTeX export" kind="cpu_flamegraph" />
+```
+Recorded result: sampled call stacks from this workload. Inspect a frame for its sample weight and path. Width attributes sampled work; it is not a per-call duration.
+
+== Allocation profile
 
 ```sh
 julia --startup-file=no --project=.controller/core run.jl profile_alloc Bibliography export_bibtex
 ```
 
-Other collectors: `benchmark`, `chairmark`, `profile`, `wall_profile` (Julia 1.12+).
+```@raw html
+<InteractiveRecordedPlot source="/examples/bibliography/profiles/allocations.json" html="/examples/bibliography/profiles/allocations.html" title="Recorded allocation samples during BibTeX export" kind="allocation_flamegraph" />
+```
+Recorded result: allocation-weighted stacks. Inspect a frame to identify an allocation site; the recorded weight does not measure resident memory.
+
+== Wall-time profile
+
+```sh
+julia --startup-file=no --project=.controller/core run.jl wall_profile Bibliography export_bibtex
+```
+
+```@raw html
+<InteractiveRecordedPlot source="/examples/bibliography/profiles/wall.json" html="/examples/bibliography/profiles/wall.html" title="Recorded wall-time task samples during BibTeX export" kind="wall_flamegraph" />
+```
+Recorded result: sampled task stacks, including waiting. Requires Julia 1.12 or later. Read the task-sample weight separately from CPU samples.
+
+:::
 
 ```@raw html
 <a id="3.-Compare-versions-and-inspect-the-variation"></a>
@@ -50,6 +110,12 @@ julia --startup-file=no --project=.controller/core history.jl run
 This runs nine Bibliography versions and four workloads. Earlier versions do not define every workload, so those combinations are `unavailable` — not slow, failed or zero.
 
 ```@raw html
+<InteractiveRecordedPlot source="/examples/bibliography/history/export-time.json" html="/examples/bibliography/history/export-time.html" title="Recorded export medians across nine Bibliography tags" kind="version_series" />
+```
+
+This saved Windows campaign used Julia 1.13.0, one worker thread and 100 samples per tag. Inspect a point for its version and median in nanoseconds. Dependency revisions follow each tag, so the curve describes each released stack together.
+
+```@raw html
 <a id="1.-Read-a-measured-result"></a>
 ```
 
@@ -63,13 +129,6 @@ This runs nine Bibliography versions and four workloads. Earlier versions do not
 
 
 ## Recorded examples
-
-```@raw html
-<figure class="doc-screenshot">
-<InteractiveRecordedPlot source="/examples/bibliography/history/export-time.json" html="/examples/bibliography/history/export-time.html" title="Bibliography export medians across nine tagged versions" kind="version_series" />
-<figcaption>Native interactive export of medians from 100 samples per tag. Windows · Julia 1.13.0 · one worker thread. Inputs match; dependency revisions follow each tag. Values are in nanoseconds (1,000 ns = 1 µs).</figcaption>
-</figure>
-```
 
 ```@raw html
 <figure class="doc-screenshot">

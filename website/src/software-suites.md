@@ -27,6 +27,8 @@ plan = plan_suite(suite; profile = :quick)
 print_suite_plan(plan)
 ```
 
+Expected plan for this example: **35 leaves**, from seven workloads and five collectors. Each row identifies its package, workload, collector and target; it is a plan, not a measurement result.
+
 Planning lists checks. It does not measure anything.
 
 ```@raw html
@@ -46,6 +48,16 @@ report_directory = mktempdir(abspath("results"); prefix = "export-", cleanup = f
 result = run_suite_repl(selected; reports = report_directory, strict = false,
     overrides = Dict{Symbol,Any}(:threads => 1, :samples => 50, :evals => 1, :seconds => 0.5))
 ```
+
+Expected selection: **one leaf**, `Bibliography → export_bibtex → benchmark`. A successful execution writes `suite-report.md`, `suite-result.json` and the corresponding bundle under the new report directory.
+
+Here is the recorded result of that same operation and collector at source `575ec81`: fifty samples, Julia 1.13.0, one worker thread. Correctness was `not_checked`; performance was `not_compared`. This saved example is independent of the run you execute above.
+
+```@raw html
+<InteractiveRecordedPlot source="/examples/bibliography/timing-evidence.json" html="/examples/bibliography/export-timing.html" title="Recorded Bibliography export timing — fifty samples" kind="distribution" />
+```
+
+Select a point to read its nanoseconds. The spread is part of the result; it is not a regression verdict.
 
 A new directory preserves earlier measurements. Read `suite-report.md` first.
 

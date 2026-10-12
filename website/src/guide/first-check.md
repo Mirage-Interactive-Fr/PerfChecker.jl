@@ -10,6 +10,8 @@ Pkg.add(Pkg.PackageSpec(name = "PerfChecker", version = "1"))
 Pkg.add(["Bibliography", "TestItems", "TestItemRunner"])
 ```
 
+Expected effect: the active project's dependencies include all four packages. Pkg prints the resolved versions; installation does not run a check.
+
 ## Create a test
 
 This writes one item to a temporary directory.
@@ -34,6 +36,8 @@ using TestItems
 end
 """)
 ```
+
+Expected file: `roundtrip_test.jl` under the temporary `root`, containing one item named **Bibliography BibTeX round trip**. Writing it does not execute it.
 
 In your own package, keep the declaration in `test/`.
 
@@ -76,12 +80,24 @@ sample = only(only(result["runs"])["samples"])
 (seconds = sample["seconds"], bytes = sample["bytes"])
 ```
 
+Expected output shape (local values, not a recorded timing):
+
+```text
+(seconds = <elapsed seconds>, bytes = <Julia allocation bytes>)
+```
+
 Your numbers will differ. The measurement covers the **whole test** in a fresh worker: imports, compilation, setup, assertions and cleanup — not a warm BibTeX export.
 
 The run is saved:
 
 ```julia
 isfile(joinpath(reports, "testitems.json"))
+```
+
+Expected result after a successful save:
+
+```text
+true
 ```
 
 ```@raw html
@@ -96,10 +112,14 @@ listing = discover_testitems(root)
 [(item["name"], item["tags"]) for item in listing["items"]]
 ```
 
+Expected result: one `(name, tags)` pair per discovered declaration. The temporary example above has the name **Bibliography BibTeX round trip** and tags `:bibliography`, `:small`; your package lists its own declarations.
+
 ```julia
 item = only(filter(i -> i["name"] == "Bibliography BibTeX round trip", listing["items"]))
 result = run_testitems(root; ids = [item["id"]], samples = 30, threads = 1)
 ```
+
+Expected result after success: one selected run with 30 samples, `passed = true`, and `performance = "not_compared"`. This selection is a recipe to execute locally; no fixed timing is promised.
 
 The active environment must contain the package's test dependencies.
 

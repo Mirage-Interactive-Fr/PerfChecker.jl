@@ -46,7 +46,7 @@ jobs:
     if: github.event.deleted != true
     name: Build documentation exports and test SFTP publication
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    timeout-minutes: 180
     outputs:
       stable-version: ${{ steps.version.outputs.stable-version }}
       source-revision: ${{ steps.version.outputs.source-revision }}
@@ -243,6 +243,30 @@ jobs:
         if: steps.version.outputs.companion-apis == 'true'
         working-directory: ${{ steps.version.outputs.explicit-source == 'true' && 'stable-doc-source' || '.' }}
         run: julia --startup-file=no --project=website website/optional-api/test_assembly.jl
+      - name: Render every published plot from its saved native model
+        if: steps.version.outputs.companion-apis == 'true'
+        working-directory: ${{ steps.version.outputs.explicit-source == 'true' && 'stable-doc-source' || '.' }}
+        shell: bash
+        run: |
+          export PERFCHECKER_SOURCE="$PWD"
+          project="$RUNNER_TEMP/native-plot-project"
+          mkdir -p "$project"
+          cp website/optional-api/makie/Project.toml "$project/Project.toml"
+          export JULIA_DEPOT_PATH="$RUNNER_TEMP/optional-api/makie-depot"
+          julia --startup-file=no --project="$project" -e '
+            using Pkg
+            root = ENV["PERFCHECKER_SOURCE"]
+            Pkg.develop([Pkg.PackageSpec(path=root),
+              Pkg.PackageSpec(path=joinpath(root,"packages","PerfCheckerMakie"))])
+            Pkg.add(["CairoMakie", "UnicodePlots", "JSON", "Statistics"])
+            Pkg.instantiate()'
+          julia --startup-file=no --project="$project" examples/kitchen-sink/publish-evidence.jl --interactive
+          if [[ -f website/src/public/examples/jet-dispatch/render.jl ]]; then
+            jet_output="$RUNNER_TEMP/jet-native-plot"
+            julia --startup-file=no --project="$project" website/src/public/examples/jet-dispatch/render.jl \
+              website/src/public/examples/jet-dispatch/summary.json "$jet_output"
+            cp "$jet_output/measurements.json" "$jet_output/measurements.html" website/src/public/examples/jet-dispatch/
+          fi
       - name: Preserve companion API provenance and isolated environment pairs
         if: always() && steps.version.outputs.companion-apis == 'true'
         uses: actions/upload-artifact@v7
@@ -253,6 +277,8 @@ jobs:
             ${{ steps.version.outputs.explicit-source == 'true' && 'stable-doc-source/' || '' }}website/optional-api/build
             ${{ runner.temp }}/optional-api/*-project/Project.toml
             ${{ runner.temp }}/optional-api/*-project/Manifest.toml
+            ${{ runner.temp }}/native-plot-project/Project.toml
+            ${{ runner.temp }}/native-plot-project/Manifest.toml
           if-no-files-found: error
           retention-days: 14
       - name: Build the GitHub mirror

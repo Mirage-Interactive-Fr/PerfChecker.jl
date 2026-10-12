@@ -1,0 +1,458 @@
+{
+  "plot": {
+    "data": [
+      {
+        "label": "dynamic · sample 1 · 8db593bb-6298-47e8-9bae-3b31ee0d2961",
+        "panel": "time",
+        "series": "Timing samples",
+        "style": "scatter",
+        "value": 0.00085224,
+        "x": "dynamic"
+      },
+      {
+        "label": "dynamic · sample 2 · 8db593bb-6298-47e8-9bae-3b31ee0d2961",
+        "panel": "time",
+        "series": "Timing samples",
+        "style": "scatter",
+        "value": 0.000865686,
+        "x": "dynamic"
+      },
+      {
+        "label": "dynamic · sample 3 · 8db593bb-6298-47e8-9bae-3b31ee0d2961",
+        "panel": "time",
+        "series": "Timing samples",
+        "style": "scatter",
+        "value": 0.001080847,
+        "x": "dynamic"
+      },
+      {
+        "label": "dynamic · sample 4 · 8db593bb-6298-47e8-9bae-3b31ee0d2961",
+        "panel": "time",
+        "series": "Timing samples",
+        "style": "scatter",
+        "value": 0.000916298,
+        "x": "dynamic"
+      },
+      {
+        "label": "dynamic · sample 5 · 8db593bb-6298-47e8-9bae-3b31ee0d2961",
+        "panel": "time",
+        "series": "Timing samples",
+        "style": "scatter",
+        "value": 0.000873236,
+        "x": "dynamic"
+      },
+      {
+        "label": "dynamic · sample 6 · 8db593bb-6298-47e8-9bae-3b31ee0d2961",
+        "panel": "time",
+        "series": "Timing samples",
+        "style": "scatter",
+        "value": 0.000869426,
+        "x": "dynamic"
+      },
+      {
+        "label": "dynamic · sample 7 · 8db593bb-6298-47e8-9bae-3b31ee0d2961",
+        "panel": "time",
+        "series": "Timing samples",
+        "style": "scatter",
+        "value": 0.00087225,
+        "x": "dynamic"
+      },
+      {
+        "label": "dynamic · sample 8 · 8db593bb-6298-47e8-9bae-3b31ee0d2961",
+        "panel": "time",
+        "series": "Timing samples",
+        "style": "scatter",
+        "value": 0.000882711,
+        "x": "dynamic"
+      },
+      {
+        "label": "dynamic · sample 9 · 8db593bb-6298-47e8-9bae-3b31ee0d2961",
+        "panel": "time",
+        "series": "Timing samples",
+        "style": "scatter",
+        "value": 0.000864742,
+        "x": "dynamic"
+      },
+      {
+        "label": "dynamic · sample 10 · 8db593bb-6298-47e8-9bae-3b31ee0d2961",
+        "panel": "time",
+        "series": "Timing samples",
+        "style": "scatter",
+        "value": 0.00086812,
+        "x": "dynamic"
+      },
+      {
+        "label": "dynamic · sample 11 · 8db593bb-6298-47e8-9bae-3b31ee0d2961",
+        "panel": "time",
+        "series": "Timing samples",
+        "style": "scatter",
+        "value": 0.000976694,
+        "x": "dynamic"
+      },
+      {
+        "label": "dynamic · sample 12 · 8db593bb-6298-47e8-9bae-3b31ee0d2961",
+        "panel": "time",
+        "series": "Timing samples",
+        "style": "scatter",
+        "value": 0.000863732,
+        "x": "dynamic"
+      },
+      {
+        "label": "dynamic · sample 13 · 8db593bb-6298-47e8-9bae-3b31ee0d2961",
+        "panel": "time",
+        "series": "Timing samples",
+        "style": "scatter",
+        "value": 0.000861146,
+        "x": "dynamic"
+      },
+      {
+        "label": "dynamic · sample 14 · 8db593bb-6298-47e8-9bae-3b31ee0d2961",
+        "panel": "time",
+        "series": "Timing samples",
+        "style": "scatter",
+        "value": 0.000873198,
+        "x": "dynamic"
+      },
+      {
+        "label": "dynamic · sample 15 · 8db593bb-6298-47e8-9bae-3b31ee0d2961",
+        "panel": "time",
+        "series": "Timing samples",
+        "style": "scatter",
+        "value": 0.00087781,
+        "x": "dynamic"
+      },
+      {
+        "label": "dynamic · sample 16 · 8db593bb-6298-47e8-9bae-3b31ee0d2961",
+        "panel": "time",
+        "series": "Timing samples",
+        "style": "scatter",
+        "value": 0.000874196,
+        "x": "dynamic"
+      },
+      {
+        "label": "dynamic · sample 17 · 8db593bb-6298-47e8-9bae-3b31ee0d2961",
+        "panel": "time",
+        "series": "Timing samples",
+        "style": "scatter",
+        "value": 0.000887468,
+        "x": "dynamic"
+      },
+      {
+        "label": "dynamic · sample 18 · 8db593bb-6298-47e8-9bae-3b31ee0d2961",
+        "panel": "time",
+        "series": "Timing samples",
+        "style": "scatter",
+        "value": 0.000856561,
+        "x": "dynamic"
+      },
+      {
+        "label": "dynamic · sample 19 · 8db593bb-6298-47e8-9bae-3b31ee0d2961",
+        "panel": "time",
+        "series": "Timing samples",
+        "style": "scatter",
+        "value": 0.00083209,
+        "x": "dynamic"
+      },
+      {
+        "label": "dynamic · sample 20 · 8db593bb-6298-47e8-9bae-3b31ee0d2961",
+        "panel": "time",
+        "series": "Timing samples",
+        "style": "scatter",
+        "value": 0.000850255,
+        "x": "dynamic"
+      },
+      {
+        "label": "dynamic · median of 20 samples",
+        "panel": "time",
+        "series": "Median",
+        "style": "scatter",
+        "value": 0.000870838,
+        "x": "dynamic"
+      },
+      {
+        "label": "dynamic · median of 20 samples",
+        "panel": "bytes",
+        "series": "Median",
+        "style": "bar",
+        "value": 720896.0,
+        "x": "dynamic"
+      },
+      {
+        "label": "dynamic · median of 20 samples",
+        "panel": "allocs",
+        "series": "Median",
+        "style": "bar",
+        "value": 32768.0,
+        "x": "dynamic"
+      },
+      {
+        "label": "typed · sample 1 · ee47d473-d955-4bf8-bc82-c2446eecc154",
+        "panel": "time",
+        "series": "Timing samples",
+        "style": "scatter",
+        "value": 4.757e-6,
+        "x": "typed"
+      },
+      {
+        "label": "typed · sample 2 · ee47d473-d955-4bf8-bc82-c2446eecc154",
+        "panel": "time",
+        "series": "Timing samples",
+        "style": "scatter",
+        "value": 4.537e-6,
+        "x": "typed"
+      },
+      {
+        "label": "typed · sample 3 · ee47d473-d955-4bf8-bc82-c2446eecc154",
+        "panel": "time",
+        "series": "Timing samples",
+        "style": "scatter",
+        "value": 3.844e-6,
+        "x": "typed"
+      },
+      {
+        "label": "typed · sample 4 · ee47d473-d955-4bf8-bc82-c2446eecc154",
+        "panel": "time",
+        "series": "Timing samples",
+        "style": "scatter",
+        "value": 3.787e-6,
+        "x": "typed"
+      },
+      {
+        "label": "typed · sample 5 · ee47d473-d955-4bf8-bc82-c2446eecc154",
+        "panel": "time",
+        "series": "Timing samples",
+        "style": "scatter",
+        "value": 3.824e-6,
+        "x": "typed"
+      },
+      {
+        "label": "typed · sample 6 · ee47d473-d955-4bf8-bc82-c2446eecc154",
+        "panel": "time",
+        "series": "Timing samples",
+        "style": "scatter",
+        "value": 3.753e-6,
+        "x": "typed"
+      },
+      {
+        "label": "typed · sample 7 · ee47d473-d955-4bf8-bc82-c2446eecc154",
+        "panel": "time",
+        "series": "Timing samples",
+        "style": "scatter",
+        "value": 3.802e-6,
+        "x": "typed"
+      },
+      {
+        "label": "typed · sample 8 · ee47d473-d955-4bf8-bc82-c2446eecc154",
+        "panel": "time",
+        "series": "Timing samples",
+        "style": "scatter",
+        "value": 3.794e-6,
+        "x": "typed"
+      },
+      {
+        "label": "typed · sample 9 · ee47d473-d955-4bf8-bc82-c2446eecc154",
+        "panel": "time",
+        "series": "Timing samples",
+        "style": "scatter",
+        "value": 3.773e-6,
+        "x": "typed"
+      },
+      {
+        "label": "typed · sample 10 · ee47d473-d955-4bf8-bc82-c2446eecc154",
+        "panel": "time",
+        "series": "Timing samples",
+        "style": "scatter",
+        "value": 3.757e-6,
+        "x": "typed"
+      },
+      {
+        "label": "typed · sample 11 · ee47d473-d955-4bf8-bc82-c2446eecc154",
+        "panel": "time",
+        "series": "Timing samples",
+        "style": "scatter",
+        "value": 3.725e-6,
+        "x": "typed"
+      },
+      {
+        "label": "typed · sample 12 · ee47d473-d955-4bf8-bc82-c2446eecc154",
+        "panel": "time",
+        "series": "Timing samples",
+        "style": "scatter",
+        "value": 3.821e-6,
+        "x": "typed"
+      },
+      {
+        "label": "typed · sample 13 · ee47d473-d955-4bf8-bc82-c2446eecc154",
+        "panel": "time",
+        "series": "Timing samples",
+        "style": "scatter",
+        "value": 3.754e-6,
+        "x": "typed"
+      },
+      {
+        "label": "typed · sample 14 · ee47d473-d955-4bf8-bc82-c2446eecc154",
+        "panel": "time",
+        "series": "Timing samples",
+        "style": "scatter",
+        "value": 3.91e-6,
+        "x": "typed"
+      },
+      {
+        "label": "typed · sample 15 · ee47d473-d955-4bf8-bc82-c2446eecc154",
+        "panel": "time",
+        "series": "Timing samples",
+        "style": "scatter",
+        "value": 3.82e-6,
+        "x": "typed"
+      },
+      {
+        "label": "typed · sample 16 · ee47d473-d955-4bf8-bc82-c2446eecc154",
+        "panel": "time",
+        "series": "Timing samples",
+        "style": "scatter",
+        "value": 3.728e-6,
+        "x": "typed"
+      },
+      {
+        "label": "typed · sample 17 · ee47d473-d955-4bf8-bc82-c2446eecc154",
+        "panel": "time",
+        "series": "Timing samples",
+        "style": "scatter",
+        "value": 3.92e-6,
+        "x": "typed"
+      },
+      {
+        "label": "typed · sample 18 · ee47d473-d955-4bf8-bc82-c2446eecc154",
+        "panel": "time",
+        "series": "Timing samples",
+        "style": "scatter",
+        "value": 3.747e-6,
+        "x": "typed"
+      },
+      {
+        "label": "typed · sample 19 · ee47d473-d955-4bf8-bc82-c2446eecc154",
+        "panel": "time",
+        "series": "Timing samples",
+        "style": "scatter",
+        "value": 3.809e-6,
+        "x": "typed"
+      },
+      {
+        "label": "typed · sample 20 · ee47d473-d955-4bf8-bc82-c2446eecc154",
+        "panel": "time",
+        "series": "Timing samples",
+        "style": "scatter",
+        "value": 3.737e-6,
+        "x": "typed"
+      },
+      {
+        "label": "typed · median of 20 samples",
+        "panel": "time",
+        "series": "Median",
+        "style": "scatter",
+        "value": 3.798e-6,
+        "x": "typed"
+      },
+      {
+        "label": "typed · median of 20 samples",
+        "panel": "bytes",
+        "series": "Median",
+        "style": "bar",
+        "value": 0.0,
+        "x": "typed"
+      },
+      {
+        "label": "typed · median of 20 samples",
+        "panel": "allocs",
+        "series": "Median",
+        "style": "bar",
+        "value": 0.0,
+        "x": "typed"
+      }
+    ],
+    "description": "JET findings are shown separately; this plot contains only measured timing and allocation evidence.",
+    "encoding": {
+      "color": "series",
+      "panel": "panel",
+      "x": "x",
+      "y": "value"
+    },
+    "id": "jet-dispatch-measurements",
+    "kind": "observation_series",
+    "options": {
+      "collector_label": "BenchmarkTools (through PerfChecker run_scenarios)",
+      "metadata": {
+        "collector_versions": [
+          "1.7.0",
+          "1.7.0"
+        ],
+        "evidence_file": "summary.json",
+        "expected_result": 129536.0,
+        "manifest_sha256": "143e43074e9da1fefd48ec10d2e8ebbd7c0f012946f428b6fd8c39caeb170c07",
+        "perfchecker_version": "1.1.0",
+        "project_sha256": "fdc5dbd143c6f0657210c4f982ef88cf5d60485f119e18c876977da40d338153",
+        "rows": 4096,
+        "run_ids": [
+          "8db593bb-6298-47e8-9bae-3b31ee0d2961",
+          "ee47d473-d955-4bf8-bc82-c2446eecc154"
+        ],
+        "runner_sha256": "cfaae63925efb2e53dca315ef3bbfe486a4c745a09e1fd6bbaa19738f78aca19",
+        "runtime": {
+          "arch": "x86_64",
+          "language": "julia",
+          "os": "Linux",
+          "threads": 1,
+          "version": "1.13.1"
+        },
+        "source_sha256": "c6d0568700487bb9553912666f0b65d513ed3071724738c6de683653ecd313c3"
+      },
+      "panels": [
+        {
+          "categories": [
+            "dynamic",
+            "typed"
+          ],
+          "id": "time",
+          "title": "Warm reduction: every timing sample",
+          "unit": "s",
+          "xkind": "categorical",
+          "xlabel": "Implementation",
+          "xunit": "",
+          "ylabel": "Wall time",
+          "yscale": "log10"
+        },
+        {
+          "categories": [
+            "dynamic",
+            "typed"
+          ],
+          "id": "bytes",
+          "title": "Allocated bytes per reduction",
+          "unit": "By",
+          "xkind": "categorical",
+          "xlabel": "Implementation",
+          "xunit": "",
+          "ylabel": "Allocated bytes",
+          "yscale": "linear"
+        },
+        {
+          "categories": [
+            "dynamic",
+            "typed"
+          ],
+          "id": "allocs",
+          "title": "Allocations per reduction",
+          "unit": "1",
+          "xkind": "categorical",
+          "xlabel": "Implementation",
+          "xunit": "",
+          "ylabel": "Allocation count",
+          "yscale": "linear"
+        }
+      ],
+      "scope": "one warm operation on fresh prepared state; preparation and correctness verification excluded; two implementations on one local machine; not released package versions or a portable speed guarantee"
+    },
+    "schema_version": "perfchecker-plot/1",
+    "title": "Same revenue calculation, different element types"
+  }
+}

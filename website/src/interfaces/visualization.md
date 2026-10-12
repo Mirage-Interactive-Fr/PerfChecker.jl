@@ -31,6 +31,14 @@ display(figure)
 html = performance_plot_html(model)
 ```
 
+Expected results: a catalogue of supported views, a Makie figure, and HTML text in `html`. This published multi-version example shows the native result of rendering a saved model:
+```@raw html
+<NormalizedMeasurements source="/examples/real-packages/oxygen-features/normalized-metrics-24034c4be099f2e2.json" html="/examples/real-packages/oxygen-features/normalized-metrics-24034c4be099f2e2.html" package-name="Saved Oxygen plain HTTP measurements" />
+```
+
+This native view reads the published fourteen-release Oxygen model, not your local path. Each metric is relative to its own minimum; inspect a point to recover its original value and unit. No measurement starts when rendering it.
+
+
 - `plot_catalog` lists views that the bundle actually supports. Missing collectors produce no empty chart.
 - `performance_plot` returns a presentation-neutral model.
 - `performance_figure` renders it with Makie; `performance_plot_html` exports standalone HTML.
@@ -53,6 +61,8 @@ html_path = "saved-performance.html"
 (ispath(html_path) || islink(html_path)) && error("Choose a new export filename")
 write(html_path, html)
 ```
+
+Expected artifact: `saved-performance.html`. `write` returns the number of bytes written; its size depends on the selected view.
 
 Open that file in a browser. Normalized views retain metric toggles, a measured
 version range, exact point inspection, zoom and pan. Their SVG and CSV export
@@ -89,6 +99,8 @@ html = performance_plot_html(model;
 write(joinpath(html_directory, "result.html"), html)
 ```
 
+Expected layout: `published-plots/result.html` and any referenced files under `published-plots/assets/`. Keep both together; the HTML is not a new measurement.
+
 Pass both directory options together. The function writes assets and returns
 HTML; the caller saves the page. Deploy or move the pages and assets together,
 preserving their relative layout. Normalized and flame views remain compact
@@ -115,6 +127,12 @@ model = saved_plot(source)
 destination = "datastructures-saved-view.html"
 (ispath(destination) || islink(destination)) && error("Choose a new export filename")
 write(destination, performance_plot_html(model))
+```
+
+Expected artifact: `datastructures-saved-view.html`. Here is the same published serialized model rendered by the native API:
+
+```@raw html
+<NormalizedMeasurements source="/examples/real-packages/datastructures/normalized.json" html="/examples/real-packages/datastructures/normalized.html" package-name="Recorded DataStructures container measurements" />
 ```
 
 This is a new HTML rendering of the same serialized values. A plot JSON is not
@@ -222,6 +240,8 @@ saveplot("comparison.svg", figure) # parent directory must exist
 saveplot("comparison.png", figure; px_per_unit = 2)
 ```
 
+Expected artifacts: `comparison.svg` and `comparison.png` with the selected view and labels. These downloads are static snapshots; use the native HTML route above for point inspection.
+
 Use a fresh output filename, inspect the exported labels and units, then adjust
 one attribute group at a time. These calls write the figure, not the suite,
 controller settings or measurement bundle. Preserve the Julia customization
@@ -256,6 +276,8 @@ figures = checkres_figures(result, Val(:chairmark);
     kinds = [:distribution], metrics = [:times, :bytes, :allocs])
 paths = saveplot("visuals", figures; format = :png)
 ```
+
+Expected result: `paths` lists the newly written PNG files in `visuals/`, one for each selected metric and view. It is not a bundle or a new collector run.
 
 Collection exports create the explicit directory, normalize labels into
 portable filenames, and reject colliding names before writing. Existing

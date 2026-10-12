@@ -114,110 +114,26 @@ The examples use saved Oxygen and Bibliography campaigns. Interactive native
 exports let you inspect their values; the interface captures show where to
 find the corresponding controls. Each example identifies its own evidence.
 
-::: tabs
-
-== VS Code
-
-Open the workspace containing the original suite. Configure its actual suite
-file, factory and profile, and set `perfchecker.reports` to the saved report directory.
-Refresh the suite plan, then open **Output** for the matching workload or run.
-The plan identifies the workload; the reports supply its recorded values.
-Do not launch the plan again merely to reopen the result. An arbitrary plot
-JSON or an exported `plan.json` is not an importable replacement for this pair.
-
-Select the recorded versions and a compatible metric before comparing their
-distributions. Read the units and the full-distribution summary alongside the
-visible samples. The [VS Code walkthrough](../interfaces/vscode-workflows.md)
-explains the available controls and their version requirements. The native
-Makie export below reads the fourteen-release Oxygen history: Windows, Julia
-1.13.0, one worker thread, 30 samples per release. It illustrates the evidence
-type; it is not a capture of the VS Code viewer.
-
-```@raw html
-<InteractiveRecordedPlot source="/examples/real-packages/oxygen-features/distribution-17e1925ed491af0f.json" html="/examples/real-packages/oxygen-features/distribution-17e1925ed491af0f.html" title="Explore the saved Oxygen plain HTTP timing distributions" kind="distribution" />
-```
-
-== Pluto
-
-In the prepared [Pluto environment](../interfaces/repl-pluto.md#Pluto), generate
-a notebook that reads the saved report:
+In a prepared plotting environment, read a bundle and export one of its saved distributions:
 
 ```julia
-using PerfChecker, PerfCheckerPluto
-reportdir = abspath("results/<run>")
-notebook = prepare_pluto_dashboard("saved-results.jl";
-    project = dirname(Base.active_project()),
-    result_path = joinpath(reportdir, "suite-result.json"))
-launch_pluto_dashboard(notebook)
-```
-
-Without `suite_path`, this notebook reads reports only. Notebook generation and
-launch are separate calls; opening it evaluates its Julia cells but does not
-schedule a benchmark. Keep the report files in place when reopening the notebook.
-Choose a new notebook filename if `saved-results.jl` already exists.
-
-```@raw html
-<DocMedia src="/examples/bibliography/pluto/completed.png" alt="Recorded Bibliography Pluto notebook with one completed export_bibtex benchmark, the Save completed reports action and the result table" caption="Earlier Bibliography notebook example: the selected benchmark completed and its report was saved explicitly. This controller notebook includes launch controls; the report-only notebook above omits them when no suite_path is supplied." />
-```
-
-== Web (Oxygen)
-
-In the prepared [Web environment](../interfaces/web-studio.md):
-
-```julia
-using PerfChecker, PerfCheckerWeb, PerfCheckerMakie, WGLMakie
-serve_suite("results/<run>"; host = "127.0.0.1", port = 8080)
-```
-
-While this local server runs, open `http://127.0.0.1:8080/perfchecker/v1/` on
-the same machine. Select the saved run and its available plots. This directory
-overload is a report viewer; a measurement controller requires a suite.
-See [server configuration](../interfaces/web-studio.md#Safety) for remote access.
-
-```@raw html
-<InteractiveRecordedPlot source="/examples/bibliography/history/export-time.json" html="/examples/bibliography/history/export-time.html" title="Bibliography export medians from the saved nine-release campaign" kind="version_series" />
-<details><summary>See the same history in Web Studio</summary>
-<DocMedia src="/examples/bibliography/history-web/history-time.png" alt="Oxygen Results page showing the Bibliography historical campaign, export_bibtex version-series filters and measured timing across nine tags" caption="Earlier Bibliography historical campaign: the result selector, feature, metric and view identify the evidence displayed. These nine-tag timings are separate from the Oxygen package comparison in the VS Code tab." />
-</details>
-```
-
-== REPL / CLI
-
-In a controller with PerfChecker and UnicodePlots installed:
-
-```julia
-using PerfChecker, UnicodePlots
+using PerfChecker, PerfCheckerMakie, WGLMakie
 bundle = read_run_bundle("results/<run>/bundles/<bundle>")
-catalog = plot_catalog(bundle)
-[(entry["id"], entry["title"]) for entry in catalog]
-isempty(catalog) && error("This bundle has no supported plots")
-display(terminal_plot(bundle; plot_id = first(catalog)["id"]))
+views = filter(v -> v["kind"] == "distribution", plot_catalog(bundle))
+isempty(views) && error("This bundle has no distribution view")
+model = performance_plot(bundle, first(views)["id"])
+write("saved-distribution.html", performance_plot_html(model))
 ```
 
-Use the actual bundle directory and choose a plot ID from its catalogue.
-Terminal plots show saved values; they do not provide the browser's pointer
-controls. A native-item `testitems.json` is a different report format and is
-not accepted by `read_run_bundle`. See the [REPL guide](../interfaces/repl-pluto.md#REPL)
-for selection and report saving, or [Plots](../interfaces/visualization.md)
-for a Makie figure and standalone interactive HTML.
+Expected artifact: `saved-distribution.html`, containing the selected bundle's values. The command reads evidence; it does not rerun the workload. Use a real bundle directory, not a standalone plot JSON or `testitems.json`.
 
-The published Oxygen history also includes a genuine
-[UnicodePlots terminal export](../examples/real-packages/oxygen-features/normalized-metrics-24034c4be099f2e2.txt).
-The interactive view below reads the same native model. Hover a release and
-metric to inspect both the ratio and its original value and unit.
+Here is a real native distribution from the fourteen-release Oxygen plain-HTTP campaign: Windows, Julia 1.13.0, one worker thread, 30 samples per release. It is saved evidence, independent of the path you supply above.
 
 ```@raw html
-<NormalizedMeasurements source="/examples/real-packages/oxygen-features/normalized-metrics-24034c4be099f2e2.json" html="/examples/real-packages/oxygen-features/normalized-metrics-24034c4be099f2e2.html" package-name="Oxygen plain HTTP metrics relative to each metric's minimum" />
+<InteractiveRecordedPlot source="/examples/real-packages/oxygen-features/distribution-17e1925ed491af0f.json" html="/examples/real-packages/oxygen-features/distribution-17e1925ed491af0f.html" title="Recorded Oxygen plain HTTP timing distributions" kind="distribution" />
 ```
 
-This model uses the minimum observation for each release and a separate
-minimum reference for each metric. A ratio of one for time and one for bytes
-therefore describe different quantities. Equal zero values use one by
-convention; nonzero values against a zero reference are unavailable.
-These are the same fourteen-release history and runtime as the distribution
-in the VS Code tab, not a recollection of the older two-release example.
-
-:::
+Select a version and a sample to read its time and unit. The summary describes the full distribution; visible points can overlap. A completed collection alone does not establish a regression.
 
 
 ```@raw html
