@@ -26,6 +26,8 @@ set_check_preferences!(threads=2, repeat=false, quiet=true)
 check_preferences()
 ```
 
+Expected effective values in this controller project: `threads = 2`, `repeat = false`, `quiet = true`. These are configuration values, not measured performance.
+
 | Setting | Meaning | Accepted values |
 | --- | --- | --- |
 | `threads` | Julia threads in each measurement worker | Positive integer representable as `Int`, excluding `Bool` |
@@ -283,6 +285,8 @@ checks = [
 ]
 ```
 
+Expected configuration: two leaves grouped as `import_bibtex`, one timing collector and one allocation-profile collector. Constructing the definitions starts no worker.
+
 The entrypoint is ordinary Julia and must return the same result for every target. Keep fixture construction outside the measured expression when setup is not part of the contract.
 
 ## Choosing evidence
@@ -291,26 +295,73 @@ The entrypoint is ordinary Julia and must return the same result for every targe
 
 ## Recorded examples
 
-```@raw html
-<figure class="doc-screenshot">
-<InteractiveRecordedPlot source="/examples/bibliography/history/export-samples.json" html="/examples/bibliography/history/export-samples.html" title="Distribution of 900 recorded Bibliography export timings across nine tagged versions" kind="distribution" />
-<figcaption>Native interactive distribution of 900 recorded timings: 100 samples per tag. Boxplots summarize each group; recorded points and slow observations remain available. Points can overlap. This shows variation, not execution order.</figcaption>
-</figure>
+::: tabs
+
+== BenchmarkTools
+
+```sh
+julia --startup-file=no --project=.controller/core run.jl benchmark Bibliography export_bibtex
 ```
 
 ```@raw html
-<PluginTabs>
-<PluginTabsTab label="CPU samples">
-<InteractiveRecordedPlot source="/examples/bibliography/profiles/cpu.json" html="/examples/bibliography/profiles/cpu.html" title="Bibliography export: recorded CPU samples" kind="cpu_flamegraph" />
-</PluginTabsTab>
-<PluginTabsTab label="Wall-time samples">
-<InteractiveRecordedPlot source="/examples/bibliography/profiles/wall.json" html="/examples/bibliography/profiles/wall.html" title="Bibliography export: recorded wall-time task samples" kind="wall_flamegraph" />
-</PluginTabsTab>
-<PluginTabsTab label="Allocation samples">
-<InteractiveRecordedPlot source="/examples/bibliography/profiles/allocations.json" html="/examples/bibliography/profiles/allocations.html" title="Bibliography export: recorded allocation profile" kind="allocation_flamegraph" />
-</PluginTabsTab>
-</PluginTabs>
+<InteractiveRecordedPlot source="/examples/bibliography/timing-evidence.json" html="/examples/bibliography/export-timing.html" title="Recorded BibTeX export timing — fifty samples" kind="distribution" />
 ```
+Recorded result: fifty samples at source `575ec81`, Julia 1.13.0, one worker thread. Select a point for its nanoseconds. Correctness is `not_checked`; performance is `not_compared`.
+
+== Chairmarks
+
+```sh
+julia --startup-file=no --project=.controller/core run.jl chairmark Bibliography export_bibtex
+```
+
+Recorded collector output from [suite-runs.json](../examples/bibliography/suite-runs.json):
+
+| Field | Saved result |
+| --- | --- |
+| Workload | export_bibtex |
+| Leaf | export_bibtex_chairmark |
+| Target | dev@0.4.0 |
+| Collector execution | executed (pass) |
+| State policy | fresh |
+
+The published receipt proves execution; it does not retain Chairmarks' numerical samples. In a local report, read elapsed time in **seconds**, bytes and allocation count; GC is a **fraction**, not BenchmarkTools' GC nanoseconds. No missing value is replaced with zero.
+
+== CPU profile
+
+```sh
+julia --startup-file=no --project=.controller/core run.jl profile Bibliography export_bibtex
+```
+
+```@raw html
+<InteractiveRecordedPlot source="/examples/bibliography/profiles/cpu.json" html="/examples/bibliography/profiles/cpu.html" title="Recorded CPU samples during BibTeX export" kind="cpu_flamegraph" />
+```
+Recorded result: sampled call stacks from this workload. Inspect a frame for its sample weight and path. Width attributes sampled work; it is not a per-call duration.
+
+== Allocation profile
+
+```sh
+julia --startup-file=no --project=.controller/core run.jl profile_alloc Bibliography export_bibtex
+```
+
+```@raw html
+<InteractiveRecordedPlot source="/examples/bibliography/profiles/allocations.json" html="/examples/bibliography/profiles/allocations.html" title="Recorded allocation samples during BibTeX export" kind="allocation_flamegraph" />
+```
+Recorded result: allocation-weighted stacks. Inspect a frame to identify an allocation site; the recorded weight does not measure resident memory.
+
+== Wall-time profile
+
+```sh
+julia --startup-file=no --project=.controller/core run.jl wall_profile Bibliography export_bibtex
+```
+
+```@raw html
+<InteractiveRecordedPlot source="/examples/bibliography/profiles/wall.json" html="/examples/bibliography/profiles/wall.html" title="Recorded wall-time task samples during BibTeX export" kind="wall_flamegraph" />
+```
+Recorded result: sampled task stacks, including waiting. Requires Julia 1.12 or later. Read the task-sample weight separately from CPU samples.
+
+:::
+
+
 
 These profiles were recorded at revision `575ec81`. Width includes descendants
 and represents the selected weight: CPU samples, task samples or sampled

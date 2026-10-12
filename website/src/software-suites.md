@@ -38,26 +38,43 @@ Planning lists checks. It does not measure anything.
 
 ## Select and run
 
+::: tabs
+
+== BenchmarkTools
+
 ```julia
 selected = filter_suite_plan(plan;
     packages = "Bibliography", features = :export_bibtex, backends = [:benchmark])
 print_suite_plan(selected)
-
 mkpath("results")
 report_directory = mktempdir(abspath("results"); prefix = "export-", cleanup = false)
 result = run_suite_repl(selected; reports = report_directory, strict = false,
     overrides = Dict{Symbol,Any}(:threads => 1, :samples => 50, :evals => 1, :seconds => 0.5))
 ```
 
-Expected selection: **one leaf**, `Bibliography → export_bibtex → benchmark`. A successful execution writes `suite-report.md`, `suite-result.json` and the corresponding bundle under the new report directory.
-
-Here is the recorded result of that same operation and collector at source `575ec81`: fifty samples, Julia 1.13.0, one worker thread. Correctness was `not_checked`; performance was `not_compared`. This saved example is independent of the run you execute above.
+Expected selection: one `Bibliography → export_bibtex → benchmark` leaf. A successful run writes its report and bundle. Recorded result: fifty samples at source `575ec81`, Julia 1.13.0, one worker thread. Correctness is `not_checked`; performance is `not_compared`.
 
 ```@raw html
-<InteractiveRecordedPlot source="/examples/bibliography/timing-evidence.json" html="/examples/bibliography/export-timing.html" title="Recorded Bibliography export timing — fifty samples" kind="distribution" />
+<InteractiveRecordedPlot source="/examples/bibliography/timing-evidence.json" html="/examples/bibliography/export-timing.html" title="Recorded BibTeX export timing — fifty samples" kind="distribution" />
 ```
 
-Select a point to read its nanoseconds. The spread is part of the result; it is not a regression verdict.
+Select a point for its nanoseconds; the spread is part of the result.
+
+== Chairmarks
+
+```julia
+selected = filter_suite_plan(plan;
+    packages = "Bibliography", features = :export_bibtex, backends = [:chairmark])
+print_suite_plan(selected)
+mkpath("results")
+report_directory = mktempdir(abspath("results"); prefix = "export-", cleanup = false)
+result = run_suite_repl(selected; reports = report_directory, strict = false,
+    overrides = Dict{Symbol,Any}(:threads => 1, :samples => 50, :evals => 1, :seconds => 0.5))
+```
+
+Expected selection: one `Bibliography → export_bibtex → chairmark` leaf. The saved [collector receipt](examples/bibliography/suite-runs.json) records this leaf as `pass`, with `verdict = executed`, `state_policy = fresh`, and target `dev@0.4.0`. It does not publish numerical Chairmarks samples. A local report retains time in seconds, bytes, allocation count and a GC fraction; these units differ from BenchmarkTools.
+
+:::
 
 A new directory preserves earlier measurements. Read `suite-report.md` first.
 
