@@ -62,9 +62,11 @@ for entry in catalog
         end
     end
     save(joinpath(output, name * ".svg"), figure)
-    if interactive && model.kind in (:normalized_metrics, :cpu_flamegraph,
-        :wall_flamegraph, :allocation_flamegraph)
-        write(joinpath(output, name * ".html"), performance_plot_html(model))
+    if interactive
+        write(joinpath(output, name * ".html"),
+            performance_plot_html(model;
+                asset_directory = joinpath(output, "plot-assets"),
+                html_directory = output))
     end
     terminal = sprint(
         show, MIME"text/plain"(), terminal_plot(model); context = :color => false)
@@ -107,7 +109,9 @@ for entry in catalog
                     "svg" => window_name * ".svg", "json" => window_name * ".json"))
             if interactive
                 write(joinpath(output, window_name * ".html"),
-                    performance_plot_html(projection))
+                    performance_plot_html(projection;
+                        asset_directory = joinpath(output, "plot-assets"),
+                        html_directory = output))
                 windows[end]["html"] = window_name * ".html"
             end
         end
@@ -116,8 +120,7 @@ for entry in catalog
         merge(Dict(entry),
             Dict("json" => name * ".json", "svg" => name * ".svg",
                 "terminal" => name * ".txt", "patch_windows" => windows)))
-    if interactive && model.kind in (:normalized_metrics, :cpu_flamegraph,
-        :wall_flamegraph, :allocation_flamegraph)
+    if interactive
         views[end]["html"] = name * ".html"
     end
     if length(views) % 10 == 0

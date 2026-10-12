@@ -26,6 +26,33 @@ High throughput does not imply low latency per request. Always read sent and rec
 
 The default unprivileged namespace is loopback-only. It suits a service, database fixture, protocol implementation or client/server stack launched together. `external_connectivity = true` attaches an unprivileged `slirp4netns` TAP device for outbound IPv4 and DNS; the user-mode stack adds measurable overhead, which the capability manifest reports.
 
+## Read an actual isolated capture
+
+```@raw html
+<p>The <a href="examples/real-packages/oxygen-network/isolation.json" download="isolation.json">saved Oxygen capture</a> completed <strong>120 verified requests</strong> with Oxygen 1.10.2 and HTTP.jl 1.11.0. Its recorded result includes:</p>
+```
+
+```text
+provider: linux_netns
+counter_provider: linux-netns-nftables
+measurement_phase: process_lifecycle
+executed: true
+correctness: passed
+exit_code: 0
+```
+
+| Counter | Sent | Received |
+| --- | --- | --- |
+| Interface bytes | 69,465,109 B | 69,466,045 B |
+| Packets | 2,057 | 2,075 |
+| Discarded packets | 0 | 0 |
+
+These counters cover the **whole isolated process tree**, including startup
+and warmup, on loopback. They are not per-request costs; do not add the two
+directions to estimate payload. This is a Linux recording, not evidence of
+a WSL run. The [interactive network example](real-packages/oxygen.md#Compare-socket-measurements-across-releases)
+separately plots latency and interface counters for recorded payload sizes.
+
 ## WSL2 process-tree capture
 
 On Windows, PerfChecker can launch the same Linux namespace collector through WSL2. `nftables` counts packets; `sysfs` is a fallback.

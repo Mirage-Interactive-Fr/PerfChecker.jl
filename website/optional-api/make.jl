@@ -11,7 +11,7 @@ configurations = Dict(
     "makie" => (:PerfCheckerMakie,
         [:performance_figure, :suite_dashboard, :checkres_to_boxplots,
             :checkres_to_scatterlines, :checkres_to_pie, :table_to_pie,
-            :checkres_figures, :saveplot]),
+            :checkres_figures, :saveplot, :observation_plot]),
     "web" => (:PerfCheckerWeb,
         [:serve_suite, :register_oxygen_routes!, :register_testitem_routes!,
             :studio_token_authenticator, :run_studio_agent]),

@@ -1,8 +1,11 @@
 # Companion APIs
 
 These Public and Full references render the real Julia docstrings of the optional
-packages from the same source revision as the Core package documented on this
-site. Each owner is loaded in a separate documentation project. Full API includes
+packages from this site's documented source revision. Core remains at the
+registered package source; companions have their own versions. A newer renderer
+is identified separately in `build-info.json` and verified against its own
+published tag for a stable documentation refresh. Each owner is loaded in a
+separate documentation project. Full API includes
 documented internal bindings; it does not promise documentation for every private
 helper.
 
@@ -12,7 +15,7 @@ helper.
 <tbody>
 <tr><td>PerfCheckerLinuxPerf 1.0.1</td><td><a href="../optional-api/linuxperf/public-api.html">Public</a></td><td><a href="../optional-api/linuxperf/full-api.html">Full</a></td><td><a href="../optional-api/linuxperf.inv">Inventory</a></td></tr>
 <tr><td>PerfCheckerLIKWID 1.0.1</td><td><a href="../optional-api/likwid/public-api.html">Public</a></td><td><a href="../optional-api/likwid/full-api.html">Full</a></td><td><a href="../optional-api/likwid.inv">Inventory</a></td></tr>
-<tr><td>PerfCheckerMakie 1.0.1</td><td><a href="../optional-api/makie/public-api.html">Public</a></td><td><a href="../optional-api/makie/full-api.html">Full</a></td><td><a href="../optional-api/makie.inv">Inventory</a></td></tr>
+<tr><td>PerfCheckerMakie 1.0.2</td><td><a href="../optional-api/makie/public-api.html">Public</a></td><td><a href="../optional-api/makie/full-api.html">Full</a></td><td><a href="../optional-api/makie.inv">Inventory</a></td></tr>
 <tr><td>PerfCheckerWeb 1.0.0</td><td><a href="../optional-api/web/public-api.html">Public</a></td><td><a href="../optional-api/web/full-api.html">Full</a></td><td><a href="../optional-api/web.inv">Inventory</a></td></tr>
 <tr><td>PerfCheckerPluto 1.0.1</td><td><a href="../optional-api/pluto/public-api.html">Public</a></td><td><a href="../optional-api/pluto/full-api.html">Full</a></td><td><a href="../optional-api/pluto.inv">Inventory</a></td></tr>
 <tr><td>PerfCheckerTachikoma 1.0.1</td><td><a href="../optional-api/tachikoma/public-api.html">Public</a></td><td><a href="../optional-api/tachikoma/full-api.html">Full</a></td><td><a href="../optional-api/tachikoma.inv">Inventory</a></td></tr>

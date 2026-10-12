@@ -46,7 +46,7 @@ jobs:
     if: github.event.deleted != true
     name: Build documentation exports and test SFTP publication
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    timeout-minutes: 180
     outputs:
       stable-version: ${{ steps.version.outputs.stable-version }}
       source-revision: ${{ steps.version.outputs.source-revision }}
@@ -121,7 +121,18 @@ jobs:
         run: |
           git -C stable-doc-source fetch --no-tags --depth=1 origin "refs/tags/$STABLE_VERSION:refs/tags/$STABLE_VERSION"
           julia --startup-file=no -e 'using TOML; @assert "v" * TOML.parsefile("stable-doc-source/Project.toml")["version"] == ENV["STABLE_VERSION"]'
-          node --input-type=module -e 'import {validateStableDocumentationSource} from "./website/deploy-sftp.mjs"; await validateStableDocumentationSource("stable-doc-source", process.env.STABLE_VERSION, process.env.SOURCE_REVISION);'
+          node --input-type=module <<'NODE'
+          import {appendFileSync} from 'node:fs';
+          import {fetchStableDocumentationCompanions, validateStableDocumentationSource} from './website/deploy-sftp.mjs';
+          await fetchStableDocumentationCompanions('stable-doc-source', process.env.STABLE_VERSION, process.env.SOURCE_REVISION);
+          await validateStableDocumentationSource('stable-doc-source', process.env.STABLE_VERSION, process.env.SOURCE_REVISION, {
+            onCompanionSource: source => {
+              console.log('Documentation companion source: ' + JSON.stringify(source));
+              for (const [key, value] of Object.entries(source))
+                appendFileSync(process.env.GITHUB_ENV, `PERFCHECKER_DOCS_RENDERER_${key.toUpperCase()}=${value}\n`);
+            }
+          });
+          NODE
       - name: Install documentation dependencies
         if: steps.version.outputs.explicit-source != 'true'
         run: julia --startup-file=no --project=website -e 'using Pkg; Pkg.develop(path="."); Pkg.instantiate()'
@@ -133,10 +144,20 @@ jobs:
           npm ci --prefix website --ignore-scripts --no-audit --no-fund
       - name: Verify stable documentation has the released package source
         if: github.event_name == 'workflow_dispatch' && inputs.publication == 'stable' && steps.version.outputs.explicit-source != 'true'
-        run: >-
-          node --input-type=module -e
-          'import {validateStableDocumentationSource} from "./website/deploy-sftp.mjs";
-          await validateStableDocumentationSource(process.cwd(), "v" + process.env.PERFCHECKER_DOCS_VERSION, process.env.GITHUB_SHA);'
+        run: |
+          node --input-type=module <<'NODE'
+          import {appendFileSync} from 'node:fs';
+          import {fetchStableDocumentationCompanions, validateStableDocumentationSource} from './website/deploy-sftp.mjs';
+          const version = 'v' + process.env.PERFCHECKER_DOCS_VERSION;
+          await fetchStableDocumentationCompanions(process.cwd(), version, process.env.GITHUB_SHA);
+          await validateStableDocumentationSource(process.cwd(), version, process.env.GITHUB_SHA, {
+            onCompanionSource: source => {
+              console.log('Documentation companion source: ' + JSON.stringify(source));
+              for (const [key, value] of Object.entries(source))
+                appendFileSync(process.env.GITHUB_ENV, `PERFCHECKER_DOCS_RENDERER_${key.toUpperCase()}=${value}\n`);
+            }
+          });
+          NODE
       - name: Test documentation writer compatibility before rendering
         working-directory: ${{ steps.version.outputs.explicit-source == 'true' && 'stable-doc-source' || '.' }}
         env:
@@ -222,6 +243,30 @@ jobs:
         if: steps.version.outputs.companion-apis == 'true'
         working-directory: ${{ steps.version.outputs.explicit-source == 'true' && 'stable-doc-source' || '.' }}
         run: julia --startup-file=no --project=website website/optional-api/test_assembly.jl
+      - name: Render every published plot from its saved native model
+        if: steps.version.outputs.companion-apis == 'true'
+        working-directory: ${{ steps.version.outputs.explicit-source == 'true' && 'stable-doc-source' || '.' }}
+        shell: bash
+        run: |
+          export PERFCHECKER_SOURCE="$PWD"
+          project="$RUNNER_TEMP/native-plot-project"
+          mkdir -p "$project"
+          cp website/optional-api/makie/Project.toml "$project/Project.toml"
+          export JULIA_DEPOT_PATH="$RUNNER_TEMP/optional-api/makie-depot"
+          julia --startup-file=no --project="$project" -e '
+            using Pkg
+            root = ENV["PERFCHECKER_SOURCE"]
+            Pkg.develop([Pkg.PackageSpec(path=root),
+              Pkg.PackageSpec(path=joinpath(root,"packages","PerfCheckerMakie"))])
+            Pkg.add(["CairoMakie", "UnicodePlots", "JSON", "Statistics"])
+            Pkg.instantiate()'
+          julia --startup-file=no --project="$project" examples/kitchen-sink/publish-evidence.jl --interactive
+          if [[ -f website/src/public/examples/jet-dispatch/render.jl ]]; then
+            jet_output="$RUNNER_TEMP/jet-native-plot"
+            julia --startup-file=no --project="$project" website/src/public/examples/jet-dispatch/render.jl \
+              website/src/public/examples/jet-dispatch/summary.json "$jet_output"
+            cp "$jet_output/measurements.json" "$jet_output/measurements.html" website/src/public/examples/jet-dispatch/
+          fi
       - name: Preserve companion API provenance and isolated environment pairs
         if: always() && steps.version.outputs.companion-apis == 'true'
         uses: actions/upload-artifact@v7
@@ -232,6 +277,8 @@ jobs:
             ${{ steps.version.outputs.explicit-source == 'true' && 'stable-doc-source/' || '' }}website/optional-api/build
             ${{ runner.temp }}/optional-api/*-project/Project.toml
             ${{ runner.temp }}/optional-api/*-project/Manifest.toml
+            ${{ runner.temp }}/native-plot-project/Project.toml
+            ${{ runner.temp }}/native-plot-project/Manifest.toml
           if-no-files-found: error
           retention-days: 14
       - name: Build the GitHub mirror
@@ -365,12 +412,6 @@ jobs:
           ref: ${{ needs.documentation.outputs.source-revision }}
           path: stable-doc-source
           persist-credentials: false
-      - name: Read the immutable stable tag for an explicit documentation refresh
-        if: github.event_name == 'workflow_dispatch' && inputs.publication == 'stable'
-        env:
-          STABLE_VERSION: ${{ needs.documentation.outputs.stable-version }}
-          SOURCE_REPOSITORY: ${{ needs.documentation.outputs.explicit-source == 'true' && 'stable-doc-source' || '.' }}
-        run: git -C "$SOURCE_REPOSITORY" fetch --no-tags --depth=1 origin "refs/tags/$STABLE_VERSION:refs/tags/$STABLE_VERSION"
       - uses: actions/download-artifact@v8
         with:
           name: documentation-sftp-exports
@@ -378,6 +419,15 @@ jobs:
       - name: Install the pinned SFTP transport
         working-directory: website
         run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Fetch the immutable Core and renderer tags for a stable refresh
+        if: github.event_name == 'workflow_dispatch' && inputs.publication == 'stable'
+        env:
+          STABLE_VERSION: ${{ needs.documentation.outputs.stable-version }}
+          SOURCE_REVISION: ${{ needs.documentation.outputs.source-revision }}
+          SOURCE_REPOSITORY: ${{ needs.documentation.outputs.explicit-source == 'true' && 'stable-doc-source' || '.' }}
+        run: |
+          git -C "$SOURCE_REPOSITORY" fetch --no-tags --depth=1 origin "refs/tags/$STABLE_VERSION:refs/tags/$STABLE_VERSION"
+          node --input-type=module -e 'import {fetchStableDocumentationCompanions} from "./website/deploy-sftp.mjs"; await fetchStableDocumentationCompanions(process.env.SOURCE_REPOSITORY, process.env.STABLE_VERSION, process.env.SOURCE_REVISION);'
       - name: Publish the completed exports
         env:
           PERFCHECKER_DOCS_STABLE_REFRESH: ${{ github.event_name == 'workflow_dispatch' && inputs.publication == 'stable' }}

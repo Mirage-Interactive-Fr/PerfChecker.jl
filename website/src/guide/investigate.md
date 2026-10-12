@@ -10,66 +10,57 @@ Find which calls account for a cost change.
 
 From `examples/bibliography/`, with the controller prepared:
 
+::: tabs
+
+== CPU samples
+
 ```sh
-julia --startup-file=no --project=.controller/core run.jl profile_alloc Bibliography export_bibtex
-julia --startup-file=no --project=.controller/core run.jl profile       Bibliography export_bibtex
-julia --startup-file=no --project=.controller/core run.jl wall_profile  Bibliography export_bibtex
+julia --startup-file=no --project=.controller/core run.jl profile Bibliography export_bibtex
 ```
 
-Keep the printed report directory. Each command collects a separate profile of the same operation.
+Recorded result at Bibliography source `575ec81`:
+
+```@raw html
+<InteractiveRecordedPlot source="/examples/bibliography/profiles/cpu.json" html="/examples/bibliography/profiles/cpu.html" title="BibTeX export — cpu samples" kind="cpu_flamegraph" />
+```
+
+Sampled running call stacks; width is CPU-sample weight. Inspect a frame for its full path and weight.
+
+== Allocation samples
+
+```sh
+julia --startup-file=no --project=.controller/core run.jl profile_alloc Bibliography export_bibtex
+```
+
+Recorded result at Bibliography source `575ec81`:
+
+```@raw html
+<InteractiveRecordedPlot source="/examples/bibliography/profiles/allocations.json" html="/examples/bibliography/profiles/allocations.html" title="BibTeX export — allocation samples" kind="allocation_flamegraph" />
+```
+
+Sampled allocation stacks; width is allocation weight, not resident memory. Inspect a frame for its full path and weight.
+
+== Wall-time samples
+
+```sh
+julia --startup-file=no --project=.controller/core run.jl wall_profile Bibliography export_bibtex
+```
+
+Recorded result at Bibliography source `575ec81`:
+
+```@raw html
+<InteractiveRecordedPlot source="/examples/bibliography/profiles/wall.json" html="/examples/bibliography/profiles/wall.html" title="BibTeX export — wall-time samples" kind="wall_flamegraph" />
+```
+
+Task stacks including waiting; requires Julia 1.12 or later. Inspect a frame for its full path and weight.
+
+:::
+
+Keep the printed report directory. Each command collects a separate profile of the same operation. The saved figures above are evidence from the published capture.
 
 ## Use the same investigation in your interface
 
-Use **Bibliography → export_bibtex → profile_alloc** in every tab. Keep the same pinned source and input, inspect the selected plan, then deliberately launch the allocation profile. Open the completed allocation report to inspect its sampled call paths.
-
-::: tabs
-
-== VS Code
-
-1. Open `examples/bibliography/` and select `.controller/core` as **Runner Project**.
-2. In Studio, choose `suite.jl`, package **Bibliography**, workload **export_bibtex** and check **profile_alloc**.
-3. Inspect the one-row plan, launch, and wait for the saved run.
-4. Open that run's allocation artifacts and check their sampling/attribution status before reading stacks.
-
-See [suite controls](../interfaces/vscode-workflows.md) and [controller setup](../interfaces/vscode-configuration.md). A shared-scenario catalog must declare its collector; changing the interface cannot add a measurement.
-
-== Pluto
-
-From `examples/bibliography/`, prepare and open the supplied notebook:
-
-```sh
-julia --startup-file=no setup.jl pluto
-julia --startup-file=no --project=.controller/pluto pluto.jl
-```
-
-Select **Bibliography**, **export_bibtex** and **profile_alloc**. Inspect the one-row plan, press **Launch selected checks**, refresh status and explicitly save the completed reports. Selector edits do not launch a measurement. Open the saved allocation-profile artifact to inspect allocation sites and stacks.
-
-```@raw html
-<p><a href="../examples/bibliography/pluto/notebook.jl" download="notebook.jl">Download the actual Bibliography notebook (.jl)</a></p>
-```
-
-See [notebook setup and shutdown](../interfaces/repl-pluto.md).
-
-== REPL / CLI
-
-```sh
-julia --startup-file=no --project=.controller/core run.jl profile_alloc Bibliography export_bibtex
-```
-
-Keep the printed report directory. The command collects only this workload's allocation profile. Open its saved artifacts without rerunning the workload. Use `repl.jl` in the same controller for interactive selection of the identical package, workload and collector.
-
-== Web (Oxygen)
-
-```sh
-julia --startup-file=no setup.jl web
-julia --startup-file=no --project=.controller/web web.jl
-```
-
-Open the example's local `http://127.0.0.1:8871/perfchecker/v1/` while the server runs. Select **Bibliography**, **export_bibtex** and **profile_alloc**, add only that check to the plan, inspect it and launch. Open the completed run and its allocation artifacts. The browser displays results; the controller or explicitly selected remote worker executes the experiment.
-
-See [Web controller setup](../interfaces/web-studio.md) for binding, remote access and authentication.
-
-:::
+Select **Bibliography → export_bibtex → profile_alloc** in the prepared controller, inspect the plan, and launch explicitly. The completed report contains the same kind of allocation evidence shown above. Interface-specific launch, cancellation and report controls are documented in their own guides. Changing the interface cannot add an undeclared collector.
 
 If the allocation site table is empty, read its allocation-profile status before
 changing code. `zero_allocations`, `no_samples`, `outside_target_scope` and
@@ -115,9 +106,7 @@ Profiling adds overhead, so confirm the change with BenchmarkTools or Chairmarks
 
 ## Recorded examples
 
-```@raw html
-<MeasuredProfiles />
-```
+The three native views beside the collection commands preserve their original source, runtime and sampling metadata in the downloadable JSON. Profiles attribute one revision; they do not establish an improvement between revisions.
 
 ## Next
 

@@ -26,6 +26,18 @@ julia --startup-file=no --project=. -e 'using PerfChecker; exit(perfchecker_main
 - `capabilities` — emit controller/network capabilities as JSON.
 - `version` — print PerfChecker's version.
 
+Check the installed Core version before choosing a controller environment:
+
+```sh
+julia --startup-file=no --project=. -e 'using PerfChecker; exit(perfchecker_main(ARGS))' -- version
+```
+
+Expected output for this release:
+
+```text
+1.1.0
+```
+
 ## Interruption and cleanup errors
 
 When the entry point handles an `InterruptException`, it returns **130** after
@@ -83,6 +95,15 @@ without rerunning a workload. Keep the suite/workload sources separately from
 these outputs. To inspect the same bundle visually, use the
 [REPL](../interfaces/repl-pluto.md#REPL), [terminal UI](../interfaces/packages.md#Optional-terminal-UI)
 or [plots](../interfaces/visualization.md).
+
+Successful verification includes these fields in its JSON output:
+
+```json
+{"status":"verified","verified":true}
+```
+
+The exported report contains `bundle.json` and `bundle.md`. Verification checks
+the saved bundle's integrity; it does not establish a performance improvement.
 
 ```@raw html
 <a id="Git-targets-and-comparisons"></a>

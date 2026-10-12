@@ -8,6 +8,19 @@ Construction and use of a container can cost very differently. A deque may be ch
 
 This example measures **35 containers** across **DataStructures 0.19.0–0.19.6**, then follows five workloads back to 0.11.0.
 
+## Read one measured change
+
+```@raw html
+<NormalizedMeasurements source="/examples/real-packages/containers/normalized-metrics-2c8d15cd8058155f.json" figure="/examples/real-packages/containers/normalized-metrics-2c8d15cd8058155f.svg" html="/examples/real-packages/containers/normalized-metrics-2c8d15cd8058155f.html" package-name="DataStructures · SortedSet lookup" />
+```
+
+Select **Wall time** and inspect **0.19.2** and **0.19.3**: their minimum
+observations are **3.7 µs** and **7.4 µs** for the same lookup workload.
+Then enable allocation metrics to see whether they move with time. Each curve
+uses its own minimum as 1; the tooltip retains the original unit. These are
+minima of 30 warmed samples, so investigate the distributions and remeasure
+the pair before calling the difference a regression.
+
 ```@raw html
 <a id="1.-Open-the-example-and-check-one-answer"></a>
 ```
@@ -70,7 +83,7 @@ The same cases exist as TestItems tagged `:perf_only`, `:containers` and the str
 Choose the item for whole-test cost, the suite for the container operation alone.
 
 ```@raw html
-<p>Choose an operation in each container's tabs. Guided views with a public HTML export provide point inspection and metric checkboxes; the other operations retain their matching static SVG and downloadable measurements.</p>
+<p>Choose an operation in each container's tabs. Every plot is an interactive PerfChecker export: inspect recorded values, toggle metrics in the normalized view, and zoom into the release history. The downloadable measurements retain the same values and provenance.</p>
 <WorkloadAtlas directory="/examples/real-packages/containers" containers />
 ```
 
@@ -83,10 +96,10 @@ Choose the item for whole-test cost, the suite for the container operation alone
 
 Each container has a tab for construction and a tab for use. The overlay divides each release's minimum sample by that metric's minimum across releases; `1` is the lowest observed value. A zero GC minimum means a short sample had no collection, not that collection is free.
 
-The selected SortedSet lookup examples include interactive normalized curves,
-version curves, distributions, deltas and tradeoffs. Other catalogue entries
-show their static SVG. Open a full-size figure or download its JSON to inspect
-the recorded observations.
+Every operation includes interactive normalized curves, version curves,
+distributions, deltas and tradeoffs. Select a plotted observation or use its
+point index to inspect an exact value and version. Open the same export on its
+own for more space, or download its JSON to inspect the recorded observations.
 
 ```@raw html
 <PackageGallery package-name="DataStructures container catalogue" directory="/examples/real-packages/containers" />
@@ -126,10 +139,9 @@ Before 0.15 the min-heap constructor was `binary_minheap(input)`. The example se
 
 Compare 0.17.20 with 0.18.0 for the heap ordering transition, and 0.18.22 with 0.19.0 for the next series.
 
-The figures below are PerfChecker exports of the recorded measurements. The
-gallery embeds the public HTML export when one is published, with its own metric
-controls, and otherwise shows the static SVG. Its workload navigation belongs to
-this documentation. To open the same plot outside the site or render its saved
+The figures below are interactive PerfChecker exports of the recorded measurements.
+The gallery embeds the public HTML export with its own controls. Its workload
+navigation belongs to this documentation. To open the same plot outside the site or render its saved
 JSON again, follow [Render a published serialized view again](../interfaces/visualization.md#Render-a-published-serialized-view-again).
 Rendering the JSON preserves its recorded values; it does not recreate a complete
 run bundle or perform a new benchmark.
@@ -181,18 +193,41 @@ julia --project=.controller/analyzers scenarios.jl diagnose datastructures event
 ```
 
 ```@raw html
-<DiagnosticReports source="/examples/real-packages/datastructures-diagnostics/diagnosis.json" />
-<DocMedia src="/examples/real-packages/datastructures-diagnostics/latency.svg" alt="Loading, first-operation and warm-operation latency for the DataStructures heap" />
-<DocMedia src="/examples/real-packages/datastructures-diagnostics/gc.svg" alt="Allocated bytes and garbage-collection time for five heap operations" />
 <PluginTabs>
-<PluginTabsTab label="Memory"><DocMedia src="/examples/real-packages/datastructures-diagnostics/memory.svg" alt="Reachable state and result sizes beside resident process memory" /></PluginTabsTab>
-<PluginTabsTab label="Locks"><DocMedia src="/examples/real-packages/datastructures-diagnostics/locks.svg" alt="Observed lock-conflict counts for five heap operations" /></PluginTabsTab>
+<PluginTabsTab label="JET · inference"><DiagnosticReports source="/examples/real-packages/datastructures-diagnostics/diagnosis.json" tools="jet" /></PluginTabsTab>
+<PluginTabsTab label="AllocCheck · allocations"><DiagnosticReports source="/examples/real-packages/datastructures-diagnostics/diagnosis.json" tools="alloccheck" /></PluginTabsTab>
+<PluginTabsTab label="SnoopCompile · compilation"><DiagnosticReports source="/examples/real-packages/datastructures-diagnostics/diagnosis.json" tools="snoopcompile" /></PluginTabsTab>
+</PluginTabs>
+```
+
+For this specialization, **JET 0.12.1 reports no findings**, while
+**AllocCheck 0.2.6 reports six potential allocation sites**. Neither result
+measures execution speed or proves that every possible input is allocation
+free. **SnoopCompile 3.2.9 records 4.71 µs of inference** in this diagnostic
+lifecycle. The reports completed with passing correctness oracles on Julia
+1.13.0 with one thread; these older records do not retain the exact
+DataStructures source revision or resolved manifest.
+
+```@raw html
+<PluginTabs>
+<PluginTabsTab label="Loading and first operation">
+<InteractiveRecordedPlot source="/examples/real-packages/datastructures-diagnostics/latency.plot.json" html="/examples/real-packages/datastructures-diagnostics/latency.html" title="Loading, first-operation and warm-operation latency for the DataStructures heap" kind="observation_series" />
+</PluginTabsTab>
+<PluginTabsTab label="Allocation activity and GC">
+<InteractiveRecordedPlot source="/examples/real-packages/datastructures-diagnostics/gc.plot.json" html="/examples/real-packages/datastructures-diagnostics/gc.html" title="Allocated bytes and garbage-collection time for five heap operations" kind="observation_series" />
+</PluginTabsTab>
+<PluginTabsTab label="Memory"><InteractiveRecordedPlot source="/examples/real-packages/datastructures-diagnostics/memory.plot.json" html="/examples/real-packages/datastructures-diagnostics/memory.html" title="Reachable state and result sizes beside resident process memory" kind="observation_series" /></PluginTabsTab>
+<PluginTabsTab label="Locks"><InteractiveRecordedPlot source="/examples/real-packages/datastructures-diagnostics/locks.plot.json" html="/examples/real-packages/datastructures-diagnostics/locks.html" title="Observed lock-conflict counts for five heap operations" kind="observation_series" /></PluginTabsTab>
 </PluginTabs>
 <p><a href="../examples/real-packages/datastructures-diagnostics/diagnosis.json" download>Download the complete diagnostic records</a></p>
 ```
 
 
-The lock diagnostic counts conflicts; this example runs on one thread. RSS is memory resident for the whole process, including Julia and native libraries. Growth can reflect intended output or a cache, not necessarily a leak.
+Inspect a point to distinguish the recorded **649 ms loading**, **171 ms first
+lifecycle** and **201 µs warm lifecycle**. The lock diagnostic counts conflicts;
+this example runs on one thread. RSS is memory resident for the whole process,
+including Julia and native libraries. Growth can reflect intended output or a
+cache, not necessarily a leak.
 
 ```@raw html
 <a id="Native-tools-and-non-Julia-dependencies"></a>
@@ -216,7 +251,7 @@ Each tool gets a bounded 512-event, three-operation workload and a 180-second bu
 
 ```@raw html
 <DiagnosticReports source="/examples/real-packages/datastructures-native/summary.json" />
-<DocMedia src="/examples/real-packages/datastructures-native/massif-1.svg" alt="Massif native heap, allocator overhead and tracked stacks through one Julia process" />
+<InteractiveRecordedPlot source="/examples/real-packages/datastructures-native/massif-1.plot.json" html="/examples/real-packages/datastructures-native/massif-1.html" title="Massif native heap, allocator overhead and tracked stacks through one Julia process" kind="observation_series" />
 <DiagnosticReports source="/examples/real-packages/datastructures-callgrind/summary.json" />
 ```
 
@@ -238,8 +273,8 @@ Aqua found three methods with unbound type parameters in the default-dictionary 
 The heap snapshot groups GC-managed objects by **shallow size**; it does not compute what removing a reference would reclaim. The raw snapshot stays local; the exported summary is shareable.
 
 ```@raw html
-<DiagnosticReports source="/examples/real-packages/datastructures-diagnostics/additional.json" />
-<DocMedia src="/examples/real-packages/datastructures-diagnostics/heap-types.svg" alt="Shallow sizes of GC-managed object categories in the DataStructures diagnostic worker" />
+<DiagnosticReports source="/examples/real-packages/datastructures-diagnostics/additional.json" tools="aqua" />
+<InteractiveRecordedPlot source="/examples/real-packages/datastructures-diagnostics/heap-types.plot.json" html="/examples/real-packages/datastructures-diagnostics/heap-types.html" title="Shallow sizes of GC-managed object categories in the DataStructures diagnostic worker" kind="observation_series" />
 ```
 
 

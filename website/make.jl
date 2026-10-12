@@ -162,6 +162,23 @@ if docs_sftp
     info = ["schema" => "perfchecker-doc-export/1", "version" => docs_version,
         "channel" => docs_channel, "base" => docs_base, "url" => docs_url,
         "revision" => revision]
+    renderer_directory = "packages/PerfCheckerMakie"
+    renderer_version = TOML.parsefile(joinpath(source_root,
+        renderer_directory, "Project.toml"))["version"]
+    renderer_tree = strip(read(
+        `git -C $source_root rev-parse $(revision * ":" * renderer_directory)`, String))
+    renderer_tag = get(ENV, "PERFCHECKER_DOCS_RENDERER_TAG", "")
+    renderer_revision = get(ENV, "PERFCHECKER_DOCS_RENDERER_REVISION", revision)
+    if !isempty(renderer_tag)
+        renderer_tag == "PerfCheckerMakie-v" * renderer_version ||
+            error("Documentation renderer tag differs from its package version")
+        get(ENV, "PERFCHECKER_DOCS_RENDERER_TREE", "") == renderer_tree ||
+            error("Documentation renderer tree differs from its validated companion tag")
+    end
+    append!(info,
+        ["renderer_name" => "PerfCheckerMakie", "renderer_version" => renderer_version,
+            "renderer_revision" => renderer_revision, "renderer_tree" => renderer_tree])
+    isempty(renderer_tag) || push!(info, "renderer_tag" => renderer_tag)
     write(joinpath(site, "build-info.json"),
         "{\n" * join([repr(key) * ": " * repr(value) for (key, value) in info], ",\n") *
         "\n}\n")

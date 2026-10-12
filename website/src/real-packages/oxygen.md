@@ -8,6 +8,19 @@ An HTTP request involves several operations: matching a route, parsing parameter
 
 It compares **seven HTTP features across 14 Oxygen releases (1.0.0–1.11.0)**, three application routes that process JSON events, and network measurements from 1.7.0 to 1.11.0.
 
+## See what changed
+
+```@raw html
+<NormalizedMeasurements source="/examples/real-packages/oxygen-features/normalized-metrics-24034c4be099f2e2.json" figure="/examples/real-packages/oxygen-features/normalized-metrics-24034c4be099f2e2.svg" html="/examples/real-packages/oxygen-features/normalized-metrics-24034c4be099f2e2.html" package-name="Oxygen · plain HTTP request" />
+```
+
+Start with **Wall time** and **Allocated bytes**. In this saved campaign, the
+minimum request time changes from **7.2 µs at 1.10.2 to 3.8 µs at 1.11.0**;
+allocated bytes change from **4,352 to 2,512**. Inspect those points to see the
+raw values. These are minima of 30 warmed samples, not medians or a CI verdict.
+The resolved dependency stacks also change, so the chart does not isolate the
+cause. The steps below reproduce the workload and explain the other views.
+
 ```@raw html
 <a id="1.-Start-with-a-request-whose-answer-is-known"></a>
 ```
@@ -77,7 +90,7 @@ Only Oxygen's version is fixed explicitly. Pkg resolves HTTP, DataStructures and
 ```
 
 ```@raw html
-<p>Each feature has tabs for the complete history and the 1.10 patches. Views with a published HTML export are interactive: normalized views provide metric checkboxes and point inspection; sample, series, delta and tradeoff views provide a recorded-point index and zoom controls. Other views display their matching static SVG and retain the downloadable data.</p>
+<p>Each feature has tabs for the complete history and the 1.10 patches. Every plot is an interactive PerfChecker export. Toggle metrics in the normalized view, inspect recorded points and use the zoom controls to examine distributions, version curves, deltas and tradeoffs. Open the same export on its own for more space, or download its measured data.</p>
 <WorkloadAtlas directory="/examples/real-packages/oxygen-features" />
 <PackageGallery package-name="Oxygen feature catalogue" directory="/examples/real-packages/oxygen-features" />
 ```
@@ -108,9 +121,9 @@ Three `/events/` routes decode the same 2,048 events, process them and encode th
 
 Compare the heap route with the plain-text case. If only the heap route changes, look at JSON handling and event processing; if both change, inspect routing and shared dependencies.
 
-These figures use PerfChecker's exported SVG or its public HTML
-renderer. A published HTML view has the same controls here and when opened
-separately; the gallery's workload navigation belongs to this documentation.
+These interactive figures use PerfChecker's public HTML renderer. Each plot
+has the same controls here and when opened separately; the gallery's workload
+navigation belongs to this documentation.
 The [serialized-view recipe](../interfaces/visualization.md#Render-a-published-serialized-view-again)
 renders the published plot JSON again without changing its values or making new
 measurements. That plot JSON is not a complete run bundle.
@@ -159,7 +172,7 @@ The packet experiment selects `lo`, echoes four sizes (64 B, 4 KiB, 64 KiB, 1 Mi
 - On loopback a transfer appears in both transmit and receive counters — do not sum them.
 
 ```@raw html
-<DocMedia src="/examples/real-packages/oxygen-network/network.svg" alt="Actual loopback latency, throughput, transmitted bytes and packets for four Oxygen payload sizes" />
+<InteractiveRecordedPlot source="/examples/real-packages/oxygen-network/network.plot.json" html="/examples/real-packages/oxygen-network/network.html" title="Actual loopback latency, throughput, transmitted bytes and packets for four Oxygen payload sizes" kind="observation_series" />
 <p><a href="../examples/real-packages/oxygen-network/latest.json" download>Download the network observations</a></p>
 ```
 
@@ -175,10 +188,10 @@ The capability probe checks namespace and nftables support first. The recorded i
 ```@raw html
 <p><a href="../examples/real-packages/oxygen-network/isolation.json" download>Download the isolated process-tree capture</a></p>
 <PluginTabs>
-<PluginTabsTab label="64 bytes"><DocMedia src="/examples/real-packages/oxygen-network/history-64.svg" alt="Oxygen patch history for a 64-byte network echo" /></PluginTabsTab>
-<PluginTabsTab label="4 KiB"><DocMedia src="/examples/real-packages/oxygen-network/history-4096.svg" alt="Oxygen patch history for a 4 KiB network echo" /></PluginTabsTab>
-<PluginTabsTab label="64 KiB"><DocMedia src="/examples/real-packages/oxygen-network/history-65536.svg" alt="Oxygen patch history for a 64 KiB network echo" /></PluginTabsTab>
-<PluginTabsTab label="1 MiB"><DocMedia src="/examples/real-packages/oxygen-network/history-1048576.svg" alt="Oxygen patch history for a 1 MiB network echo" /></PluginTabsTab>
+<PluginTabsTab label="64 bytes"><InteractiveRecordedPlot source="/examples/real-packages/oxygen-network/history-64.plot.json" html="/examples/real-packages/oxygen-network/history-64.html" title="Oxygen patch history for a 64-byte network echo" kind="observation_series" /></PluginTabsTab>
+<PluginTabsTab label="4 KiB"><InteractiveRecordedPlot source="/examples/real-packages/oxygen-network/history-4096.plot.json" html="/examples/real-packages/oxygen-network/history-4096.html" title="Oxygen patch history for a 4 KiB network echo" kind="observation_series" /></PluginTabsTab>
+<PluginTabsTab label="64 KiB"><InteractiveRecordedPlot source="/examples/real-packages/oxygen-network/history-65536.plot.json" html="/examples/real-packages/oxygen-network/history-65536.html" title="Oxygen patch history for a 64 KiB network echo" kind="observation_series" /></PluginTabsTab>
+<PluginTabsTab label="1 MiB"><InteractiveRecordedPlot source="/examples/real-packages/oxygen-network/history-1048576.plot.json" html="/examples/real-packages/oxygen-network/history-1048576.html" title="Oxygen patch history for a 1 MiB network echo" kind="observation_series" /></PluginTabsTab>
 </PluginTabs>
 ```
 
@@ -224,12 +237,40 @@ julia --project=.controller/analyzers additional-diagnostics.jl oxygen
 The seven reports use 2,048 events, matching the timing history. The scenario script defaults to 64 events because full allocation stacks on the larger input are much bigger.
 
 ```@raw html
-<DiagnosticReports source="/examples/real-packages/oxygen-diagnostics/diagnosis.json" />
-<DocMedia src="/examples/real-packages/oxygen-diagnostics/latency.svg" alt="Oxygen source loading, first-request and warm-request latency" />
-<DocMedia src="/examples/real-packages/oxygen-diagnostics/gc.svg" alt="Oxygen allocation activity and garbage-collection time" />
 <PluginTabs>
-<PluginTabsTab label="Memory"><DocMedia src="/examples/real-packages/oxygen-diagnostics/memory.svg" alt="Reachable HTTP objects and resident process memory" /></PluginTabsTab>
-<PluginTabsTab label="Locks"><DocMedia src="/examples/real-packages/oxygen-diagnostics/locks.svg" alt="Observed lock conflicts during Oxygen diagnostic requests" /></PluginTabsTab>
+<PluginTabsTab label="JET · inference"><DiagnosticReports source="/examples/real-packages/oxygen-diagnostics/diagnosis.json" tools="jet" /></PluginTabsTab>
+<PluginTabsTab label="AllocCheck · allocations"><DiagnosticReports source="/examples/real-packages/oxygen-diagnostics/diagnosis.json" tools="alloccheck" /></PluginTabsTab>
+<PluginTabsTab label="SnoopCompile · compilation"><DiagnosticReports source="/examples/real-packages/oxygen-diagnostics/diagnosis.json" tools="snoopcompile" /></PluginTabsTab>
+</PluginTabs>
+```
+
+The recorded **JET 0.12.1** report contains 54 findings; one is
+`Base.axes1(A::AbstractVector)::Any` at `abstractarray.jl:396`. This points to a
+runtime-dispatch path, not a measured slowdown. **AllocCheck 0.2.6** reports
+65 potential allocation sites, including `Vector{Any}` creation reached from
+`internalrequest`; expand a finding to read its recorded call path.
+**SnoopCompile 3.2.9** records **1.055 s of inference** for the first complete
+scenario lifecycle. All three report completion and a passing correctness
+oracle on Julia 1.13.0 with one thread.
+
+These older records omit the exact Oxygen revision and dependency manifest.
+Use them to read the diagnostics; rerun with your own saved source identity
+before attributing a result to a release. No corrected Oxygen implementation
+or before/after diagnostic is claimed here. For a small, reproducible JET
+finding and correction, see [the JET walkthrough](../native-profiling.md).
+
+### First request, allocation activity and retained memory
+
+```@raw html
+<PluginTabs>
+<PluginTabsTab label="Loading and first request">
+<InteractiveRecordedPlot source="/examples/real-packages/oxygen-diagnostics/latency.plot.json" html="/examples/real-packages/oxygen-diagnostics/latency.html" title="Oxygen source loading, first-request and warm-request latency" kind="observation_series" />
+</PluginTabsTab>
+<PluginTabsTab label="Allocation activity and GC">
+<InteractiveRecordedPlot source="/examples/real-packages/oxygen-diagnostics/gc.plot.json" html="/examples/real-packages/oxygen-diagnostics/gc.html" title="Oxygen allocation activity and garbage-collection time" kind="observation_series" />
+</PluginTabsTab>
+<PluginTabsTab label="Memory"><InteractiveRecordedPlot source="/examples/real-packages/oxygen-diagnostics/memory.plot.json" html="/examples/real-packages/oxygen-diagnostics/memory.html" title="Reachable HTTP objects and resident process memory" kind="observation_series" /></PluginTabsTab>
+<PluginTabsTab label="Locks"><InteractiveRecordedPlot source="/examples/real-packages/oxygen-diagnostics/locks.plot.json" html="/examples/real-packages/oxygen-diagnostics/locks.html" title="Observed lock conflicts during Oxygen diagnostic requests" kind="observation_series" /></PluginTabsTab>
 </PluginTabs>
 ```
 
@@ -237,7 +278,13 @@ The seven reports use 2,048 events, matching the timing history. The scenario sc
 - Source loading and first compilation can dominate a first request even when steady-state dispatch is fast.
 - Bytes can be allocated without triggering a collection in a short window.
 - RSS is resident memory for the whole process, including native libraries. A larger result or intentional cache is not automatically a leak.
-- Aqua reported that a zero-argument call to `recursive_merge` is ambiguous between the dictionary and vector overloads. The routes above do not make that call.
+
+Select a panel or series, then inspect a point for its value and unit. The
+latency record separates **7.385 s loading**, **1.039 s first lifecycle** and
+**4.13 ms warm lifecycle**. The five GC observations allocate about **1.60 MB
+each** with **zero recorded GC time**; this does not make those allocations
+free. The lock observations report zero conflicts, rather than a waiting-time
+measurement.
 
 To inspect separate, later diagnostics for Oxygen 1.10.2 and 1.11.0 in VS Code,
 download the [original latency and reachable-memory reports](../interfaces/vscode-workflows.md#Try-the-recorded-Oxygen-reports).
@@ -246,9 +293,28 @@ memory samples. Those reports retain `performance = not_compared`; they are
 not the seven-report campaign above or a paired timing benchmark.
 
 ```@raw html
-<DiagnosticReports source="/examples/real-packages/oxygen-diagnostics/additional.json" />
-<DocMedia src="/examples/real-packages/oxygen-diagnostics/heap-types.svg" alt="Shallow GC-object sizes in the Oxygen diagnostic worker" />
+<DiagnosticReports source="/examples/real-packages/oxygen-diagnostics/additional.json" tools="aqua" />
 ```
+
+**Aqua 0.8.16 completed with a failed quality check**. Its actual output is:
+
+```text
+1 ambiguities found.
+recursive_merge(x::AbstractDict...) @ Oxygen.Core.Util
+recursive_merge(x::AbstractVector...) @ Oxygen.Core.Util
+Possible fix, define recursive_merge()
+```
+
+This is a package-quality finding. The displayed suggestion is Aqua's output,
+not an applied change or a benchmark result.
+
+```@raw html
+<InteractiveRecordedPlot source="/examples/real-packages/oxygen-diagnostics/heap-types.plot.json" html="/examples/real-packages/oxygen-diagnostics/heap-types.html" title="Shallow GC-object sizes in the Oxygen diagnostic worker" kind="observation_series" />
+```
+
+Inspect an object category for its **shallow bytes**. These totals describe the
+GC-managed objects present in the diagnostic worker; they do not predict how
+much memory would be reclaimed by deleting a reference.
 
 
 ```@raw html
@@ -266,7 +332,7 @@ julia --startup-file=no --project=.controller/linux native-run.jl oxygen
 
 ```@raw html
 <DiagnosticReports source="/examples/real-packages/oxygen-native/summary.json" />
-<DocMedia src="/examples/real-packages/oxygen-native/massif-1.svg" alt="Oxygen native heap, allocator overhead and tracked stacks recorded by Massif" />
+<InteractiveRecordedPlot source="/examples/real-packages/oxygen-native/massif-1.plot.json" html="/examples/real-packages/oxygen-native/massif-1.html" title="Oxygen native heap, allocator overhead and tracked stacks recorded by Massif" kind="observation_series" />
 ```
 
 

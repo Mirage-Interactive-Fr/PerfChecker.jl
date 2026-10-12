@@ -18,6 +18,33 @@ PerfChecker keeps three questions separate:
 
 No counter is a proxy for another.
 
+## Inspect a recorded memory diagnostic
+
+```@raw html
+<InteractiveRecordedPlot source="/examples/real-packages/oxygen-diagnostics/memory.plot.json" html="/examples/real-packages/oxygen-diagnostics/memory.html" title="Oxygen reachable-object sizes and resident process memory" kind="observation_series" />
+```
+
+```@raw html
+<p>Select a panel to keep its scale and unit visible. The first observation in the <a href="examples/real-packages/oxygen-diagnostics/diagnosis.json" download="diagnosis.json">saved memory diagnostic</a> contains these actual byte counts:</p>
+```
+
+| Quantity | Before | After |
+| --- | --- | --- |
+| Reachable scenario state | 27,856 B | 28,264 B |
+| Process RSS (`windows-psapi`) | 536,616,960 B | 532,635,648 B |
+| Process private memory | 612,425,728 B | 606,199,808 B |
+| Lifetime peak RSS | 550,666,240 B | 550,666,240 B |
+
+Reachable state grows by **408 B** while RSS decreases. Neither change is an
+allocation count or proof of a leak. State plus its result occupies **55,852 B**;
+that reachable-object size does not include all resident process memory.
+
+This completed diagnostic passed its oracle on Windows, Julia 1.13.0 and one
+thread. Its older record omits the exact Oxygen revision and dependency
+manifest, so it cannot identify a release regression. Its snapshots surround
+individual diagnostic operations. The feature envelope below instead
+surrounds a complete backend collection; these are different boundaries.
+
 ## Process envelope
 
 Enable `:process_resources` on a feature to snapshot the isolated worker immediately before and after its backend collection.
@@ -83,6 +110,10 @@ end
 
 `resource_upper_limits` turns selected envelope metrics into absolute per-run gates. `require_external_balance` also requires monotonic allocated/freed deltas to match and forbids growth in live external bytes. A violation marks the feature `invalid` while keeping the envelope for diagnosis.
 
+The callback above is an integration contract to implement in your package.
+No native-ledger recording is published in this example; the process RSS and
+reachable-state observations above do not supply that missing measurement.
+
 ## Bundle metrics
 
 - `process.rss.before/v1`, `after/v1`, `delta/v1` — resident memory around the collection.
@@ -98,8 +129,7 @@ This turns a vague claim such as "memory is fine" into three independent asserti
 
 ```@raw html
 <figure class="doc-screenshot">
-<iframe class="doc-interactive" src="./examples/bibliography/history/export-memory.html" title="Julia allocated bytes per Bibliography export across nine tagged versions" loading="lazy" sandbox="allow-scripts allow-same-origin allow-downloads"></iframe>
+<InteractiveRecordedPlot source="/examples/bibliography/history/export-memory.json" html="/examples/bibliography/history/export-memory.html" title="Julia allocated bytes per Bibliography export across nine tagged versions" kind="version_series" />
 <figcaption>Native interactive export of Julia allocated bytes per export across nine tags, from 4,480 to 8,352 bytes. These values measure allocation activity, not retained heap size or resident process memory.</figcaption>
 </figure>
-<p><a href="./examples/bibliography/history/export-memory.html">Open the interactive export</a> · <a href="./examples/bibliography/history/export-memory.json" download>Download the serialized plot and source revisions</a></p>
 ```

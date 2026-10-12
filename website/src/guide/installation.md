@@ -9,7 +9,16 @@ The Julia API, command line and text REPL are in PerfChecker itself. **PerfCheck
 import Pkg
 Pkg.add(Pkg.PackageSpec(name = "PerfChecker", version = "1"))
 using PerfChecker
+Base.pkgversion(PerfChecker)
 ```
+
+For the 1.1.0 release, the version check returns:
+
+```text
+v"1.1.0"
+```
+
+This confirms which Core package the active Julia project imported.
 
 If an existing environment still resolves the 0.2 series, refresh its registries
 and request V1 explicitly. Dependency constraints can prevent an upgrade; keep

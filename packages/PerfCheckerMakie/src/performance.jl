@@ -608,7 +608,8 @@ function PerfChecker.performance_figure(plot::PerfChecker.PerformancePlot;
         :allocation_files => _allocation_files_figure, :allocation_lines => _allocation_lines_figure,
         :allocation_heatmap => _allocation_heatmap_figure,
         :allocation_flamegraph => _flamegraph_figure, :cpu_flamegraph => _flamegraph_figure,
-        :wall_flamegraph => _flamegraph_figure, :time_allocation_tradeoff => _tradeoff_figure)
+        :wall_flamegraph => _flamegraph_figure, :time_allocation_tradeoff => _tradeoff_figure,
+        :observation_series => _observation_series_figure)
     haskey(renderers, plot.kind) ||
         throw(ArgumentError("Makie does not support performance plot kind $(plot.kind)"))
     _attributes(axis_kwargs)

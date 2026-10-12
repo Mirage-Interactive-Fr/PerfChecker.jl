@@ -11,15 +11,11 @@ the package, feature and check filters to narrow the evidence. Hover a point or
 focus its accessible button to inspect the value and unit. **JSON** and
 **Series JSON** open the underlying saved data when you need its provenance.
 
-```@raw html
-<DocMedia src="/assets/screenshots/vscode-results.png" alt="PerfChecker V1 output webview rendered in Chromium, displaying version filters, a normalized overlay and timing points with nanosecond units" caption="Read units and raw values before comparing: the overlay sets each metric's minimum to 1, while the version series retains the recorded unit. These are demonstration results in the real extension UI, not measurements of a published package." />
-```
-
 The normalized overlay makes different metrics readable together; a ratio of
 two for bytes and a ratio of two for time do not describe the same quantity.
 Select the corresponding raw series and compatible collector before drawing a
-conclusion. The screenshot's version labels belong to the demonstration package,
-not to PerfChecker's release version.
+conclusion. The recorded examples below retain their actual package, source
+revision and measurement scope.
 
 | Visual | Evidence needed | Interpretation |
 | --- | --- | --- |
@@ -61,33 +57,22 @@ The displayed statistics always use the complete recorded distribution.
 Large distributions plot at most 512 sampled points while keeping the extremes
 and full-set sorted ranks. A notice states the plotted and total counts; all samples
 remain available in JSON. These controls are available in extension 1.0.1.
-The native example below shows an earlier recorded source build; see the
-[current release qualification](vscode.md#Qualification-and-reporting-a-problem).
-
-::: tabs
-
-== Inspect the central range
+See the [current release qualification](vscode.md#Qualification-and-reporting-a-problem)
+for the tested extension builds. The interactive example below is a native
+PerfCheckerMakie export of the published Oxygen history, not a screenshot of
+VS Code or a newly collected campaign.
 
 ```@raw html
-<DocMedia src="/assets/screenshots/vscode/v101/oxygen-distributions-central-db8b51b.png" alt="Native VS Code comparing Oxygen 1.10.2 and 1.11.0 plain_http timing distributions on the same zoomed scale, with 26 of 30 and 28 of 30 samples visible" caption="The shared viewport is 8,393–22,000 ns. It shows 26/30 samples for 1.10.2 and 28/30 for 1.11.0; the summaries still use all 30 samples per release. Their recorded medians are 16.39 µs and 9.00 µs." />
+<InteractiveRecordedPlot source="/examples/real-packages/oxygen-features/distribution-17e1925ed491af0f.json" html="/examples/real-packages/oxygen-features/distribution-17e1925ed491af0f.html" title="Oxygen plain HTTP timing samples across fourteen releases" kind="distribution" />
 ```
 
-== Keep the full distribution
-
-```@raw html
-<DocMedia src="/assets/screenshots/vscode/v101/oxygen-distributions-full-db8b51b.png" alt="The same native Oxygen comparison restored to its full common timing range, with all 30 samples and slow extremes visible for each release" caption="Fit restores the full common range, approximately 8.393–98.204 µs. Both cards show 30/30 observations, including the slow extremes omitted from the zoomed viewport. No samples were discarded or recollected." />
-```
-
-:::
-
-This is a real `plain_http` campaign on Linux x86_64, Julia 1.13.1, two worker
-threads, measured on 9 October 2026 (UTC), in bundle
-`32d4d39f-6754-47d3-a79f-ef8005cb9f46`. The native capture uses extension source
-[`db8b51b`](https://github.com/Mirage-Interactive-Fr/PerfCheckerVSCode/commit/db8b51bced8c04bcf3a667f70aa3bb4239f50fb4)
-and Core source
-[`52a0d0c`](https://github.com/Mirage-Interactive-Fr/PerfChecker.jl/commit/52a0d0cd12472606632645700781d02d650f6694).
-The two releases have different dependency stacks: this observation alone
-does not attribute the difference to HTTP or establish a CI regression verdict.
+Hover or select a sample to read its release and time in nanoseconds. Compare
+the spread as well as the central values; the slow samples remain part of
+each release's evidence. This history contains 30 samples per release on
+Windows with Julia 1.13.0 and one worker thread, in run
+`4f58f22e-2f75-44ee-b56a-ddf7f42d81e4`. Dependency stacks evolve across the
+fourteen releases, so a difference alone does not isolate a source change
+or establish a CI regression verdict.
 
 
 ### Read normalized overlays
@@ -116,53 +101,52 @@ a conclusion. The example below preserves the actual saved version series.
    to choose the next experiment, then run correctness checks and ordinary
    timing measurements before claiming an improvement.
 
-The tabs show real **DataStructures 0.19.6**, **heap_2048** profiles recorded on
-Linux with Julia **1.13.1**. The same campaign also collected DataStructures
-0.18.13; each screenshot below shows the **0.19.6 card only**. These profiles
-attribute activity within a capture. They do not establish a before/after
-speedup or provide per-operation benchmark timings.
+The tabs contain native interactive exports of the same recorded
+**DataStructures 0.19.6** campaign, using the **32,768-element heap** workloads.
+Select a frame to read its weight, unit and complete call path. The three
+collectors answer different questions; their weights are not interchangeable.
 
 ::: tabs
 
 == CPU samples
 
 ```@raw html
-<DocMedia src="/assets/screenshots/vscode/v101/datastructures-cpu-0196-ad57106.png" alt="Native VS Code CPU flame graph for DataStructures 0.19.6 heap_2048, with Inspect frame 3, zoom and pan controls, the heap-pop branch and its complete recorded call path" caption="Frame 3 attributes 312 retained CPU samples to the selected branch, including child calls. Its 76.66% share is a fraction of this capture's CPU sample weight, not a measured percentage slowdown." />
+<InteractiveRecordedPlot source="/examples/real-packages/datastructures-profiles/cpu-flamegraph-054b5e59c351c558.json" html="/examples/real-packages/datastructures-profiles/cpu-flamegraph-054b5e59c351c558.html" title="DataStructures heap — CPU samples" kind="cpu_flamegraph" />
 ```
 
-The selected path passes through `pop!`, `heappop!` and `percolate_down!`.
-Inspect the matching release's heap implementation before choosing a change.
+This capture contains 115 CPU samples. Select the `percolate_down!` branch:
+its inclusive weight is 90 samples, including child calls. This locates
+sampled activity; it does not measure a percentage slowdown.
 
 == Wall-time samples
 
 ```@raw html
-<DocMedia src="/assets/screenshots/vscode/v101/datastructures-wall-0196-ad57106.png" alt="Native VS Code wall-time flame graph for DataStructures 0.19.6 heap_2048, with frame 3 selected, 56 available frames and the inclusive sample weight below the graph" caption="Frame 3 carries 82 wall-time samples, or 71.30% of this capture's weight. Wall-time sampling can include waiting; these values are neither seconds nor interchangeable with the CPU sample count." />
+<InteractiveRecordedPlot source="/examples/real-packages/datastructures-profiles/wall-flamegraph-1a28318cdf1f7700.json" html="/examples/real-packages/datastructures-profiles/wall-flamegraph-1a28318cdf1f7700.html" title="DataStructures heap — wall-time task samples" kind="wall_flamegraph" />
 ```
 
-The similar call path does not make the two collectors equivalent. Read the
-metric on the card and use its own captured total.
+The wall-time collector retained 61 task samples. Waiting can contribute to
+this view. Read the selected frame's own unit and weight instead of treating
+its width as seconds or comparing its count directly with the CPU capture.
 
 == Allocated bytes
 
 ```@raw html
-<DocMedia src="/assets/screenshots/vscode/v101/datastructures-alloc-0196-ad57106.png" alt="Native VS Code allocation flame graph for DataStructures 0.19.6 heap_2048, with frame 6 selected along BinaryHeap, heapify, similar and Array and the inclusive byte-weight readout" caption="Frame 6 has a weighted allocation estimate of approximately 98,384 bytes. This sampled attribution includes child calls; it is not retained heap size, resident memory or a direct per-operation allocation total." />
+<InteractiveRecordedPlot source="/examples/real-packages/datastructures-profiles/allocation-flamegraph-6d6354c132248fdf.json" html="/examples/real-packages/datastructures-profiles/allocation-flamegraph-6d6354c132248fdf.html" title="DataStructures heap — sampled allocated bytes" kind="allocation_flamegraph" />
 ```
 
-Follow the allocation path to distinguish heap construction from heap removal.
-An allocation count and a byte estimate answer different questions; choose
-the metric explicitly before comparing them.
+Inspect construction and removal paths separately. The capture's total
+weighted estimate is about 1.57 MB of allocated bytes. This sampled attribution
+is neither retained heap size nor a per-operation allocation benchmark.
 
 :::
 
-These native images were captured on 9 October 2026 (UTC) with extension candidate
-[`ad57106`](https://github.com/Mirage-Interactive-Fr/PerfCheckerVSCode/commit/ad57106765f741a36e4be00e6ea78ab6c5eff472)
-and Core source
-[`63f5cc4`](https://github.com/Mirage-Interactive-Fr/PerfChecker.jl/commit/63f5cc4bfc2c55de521487f68b0df143107762f3),
-from bundle `8f2ffde5-55b9-43de-b35a-08503f9b6639`. They are separate from the
-historical profile campaign in the [DataStructures example](../real-packages/datastructures.md).
-The saved data was not recollected to take the screenshots. The
-[video walkthrough index](vscode-videos.md) links the written chapters while
-the new videos await publication.
+These exports read run `11480c99-82a0-44bf-8432-f9b4e39702f5`, recorded on
+Windows with Julia 1.13.0 and one worker thread. Their JSON downloads retain
+project and manifest hashes. They attribute activity within one release;
+no before/after speedup was measured. The [DataStructures example](../real-packages/datastructures.md)
+provides separate version comparisons. These native Makie exports illustrate
+the same measurement types available in VS Code; they do not claim to be
+captures of its viewer.
 
 For custom Julia figures, load [PerfCheckerMakie](visualization.md) with your chosen Makie backend. The core notebook's `display(bundle)` presents a bundle; it does not automatically create every optional graphical backend. Save reports or create figures explicitly when you need reusable plots.
 
@@ -266,14 +250,22 @@ are separate from the earlier timing and profile campaigns in this guide.
 
 ```@raw html
 <PluginTabs>
+<PluginTabsTab label="Explore the latency observations"><InteractiveRecordedPlot source="/examples/real-packages/oxygen-saved-diagnostics/latency.plot.json" html="/examples/real-packages/oxygen-saved-diagnostics/latency.html" title="Saved Oxygen source-loading, first-lifecycle and warm-lifecycle observations" kind="observation_series" /></PluginTabsTab>
 <PluginTabsTab label="Latency · Oxygen 1.10.2"><DocMedia src="/assets/screenshots/vscode/v101/latency-oxygen-1.10.2-fac983.png" alt="Native PerfChecker Investigations view displaying the original Oxygen 1.10.2 diagnostic JSON, its import notice, SHA-256 and three latency phases in seconds" caption="Source loading, first lifecycle and warm lifecycle remain separate quantities. The import notice and reported not_compared status stay visible." /></PluginTabsTab>
 <PluginTabsTab label="Latency · Oxygen 1.11.0"><DocMedia src="/assets/screenshots/vscode/v101/latency-oxygen-1.11.0-fac983.png" alt="Native PerfChecker Investigations view displaying the original Oxygen 1.11.0 diagnostic JSON, its import notice, SHA-256 and three latency phases in seconds" caption="The viewer reads the saved report without rerunning it. A reported correctness pass does not establish a performance comparison." /></PluginTabsTab>
 </PluginTabs>
 <PluginTabs>
+<PluginTabsTab label="Explore the memory observations"><InteractiveRecordedPlot source="/examples/real-packages/oxygen-saved-diagnostics/memory.plot.json" html="/examples/real-packages/oxygen-saved-diagnostics/memory.html" title="Five reachable-memory observations from each saved Oxygen report" kind="observation_series" /></PluginTabsTab>
 <PluginTabsTab label="Memory · Oxygen 1.10.2"><DocMedia src="/assets/screenshots/vscode/v101/memory-oxygen-1.10.2-fac983.png" alt="Native PerfChecker Investigations view displaying all five recorded Oxygen 1.10.2 reachable-memory rows, with state before, state after and state plus result in bytes" caption="Five fresh-state evaluations retain their exact recorded byte counts. Reachable state growth can be an intended result or cache." /></PluginTabsTab>
 <PluginTabsTab label="Memory · Oxygen 1.11.0"><DocMedia src="/assets/screenshots/vscode/v101/memory-oxygen-1.11.0-fac983.png" alt="Native PerfChecker Investigations view displaying all five recorded Oxygen 1.11.0 reachable-memory rows and the original report limitations" caption="These counts cover reachable Julia objects. Native and device memory need their own provider; this table does not measure allocation traffic or process RSS." /></PluginTabsTab>
 </PluginTabs>
 ```
+
+The interactive tabs read those same saved files. Inspect a point for its
+phase or sample, release label, unit and exact value. Use the series controls
+to separate source loading from execution, or reachable state from state plus
+result. These reports still declare **performance = not_compared**: displaying
+two release labels does not turn them into a qualified performance comparison.
 
 Importing adds no saved-run history and executes no paths from the report.
 **Advise from saved evidence** and **Explain with configured model** are disabled

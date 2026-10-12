@@ -40,7 +40,19 @@ After preparing that companion and your suite's controller:
 ```julia
 using PerfChecker, PerfCheckerTachikoma
 suite = load_software_suite("perf/suite.jl")
-tui(tui_model(plan_suite(suite; profile = :quick)))
+model = tui_model(plan_suite(suite; profile = :quick))
+println(model.message)
+println("All rows selected: ", all(model.selected))
+println("Worker started: ", model.job !== nothing)
+tui(model)
+```
+
+Expected output before the terminal interface opens:
+
+```text
+Space selects; R runs the selection
+All rows selected: true
+Worker started: false
 ```
 
 Opening the interface starts no measurement. **Space** selects runs, **R** launches
@@ -57,7 +69,15 @@ In the prepared companion environment, replace the path with an existing bundle:
 ```julia
 using PerfChecker, PerfCheckerTachikoma
 bundle = read_run_bundle("perf/results/bundles/<run-directory>")
-tui(bundle)
+model = tui_model(bundle)
+println(model.message)
+tui(model)
+```
+
+Expected output before the saved-result view opens:
+
+```text
+Saved evidence; no measurement launched
 ```
 
 This opens a read-only result model. Press **P** to prepare a plot, then
@@ -90,6 +110,22 @@ if model.result !== nothing
 end
 ```
 
+Expected files after a completed run is exported:
+
+```text
+perf/results/terminal-example/
+  suite-result.json
+  suite-report.md
+  suite-junit.xml
+  bundles/run-<run-id>/
+  version-series.json
+  version-comparison.json
+  version-comparison.md
+```
+
+The printed paths may be absolute; `<run-id>` comes from the completed result.
+If no result was produced, this block writes nothing.
+
 **Q**, **Escape** and **Ctrl+C** request exit and wait for owned worker cleanup.
 The interface does not save reports automatically. Choose a fresh export
 directory; exporting a completed result preserves its failed or unavailable
@@ -98,17 +134,37 @@ keyboard selection.
 
 ### Text and optional raster plots
 
-UnicodePlots supplies the text view. If a label exceeds the visible area,
-**Up/Down** and **h/l** pan the plot; **0** resets it. To request raster rendering,
-prepare the [Makie companion](../guide/installation.md#Source-companions-for-1.0.1)
-and CairoMakie in the same controller, then load them before opening the bundle:
+Choose the rendering backend in the same prepared controller environment.
+
+::: tabs
+
+== UnicodePlots
+
+```julia
+using PerfChecker, PerfCheckerTachikoma
+tui(read_run_bundle("perf/results/bundles/<run-directory>"))
+```
+
+Expected view after pressing **P**: a text plot with its metric and unit in the
+footer. **Up/Down** and **h/l** pan a clipped plot; **0** resets it.
+
+== Makie / CairoMakie
+
+Prepare the [Makie companion](../guide/installation.md#Source-companions-for-1.0.1)
+and CairoMakie, then load them before opening the bundle:
 
 ```julia
 using PerfChecker, PerfCheckerTachikoma, PerfCheckerMakie, CairoMakie
 tui(read_run_bundle("perf/results/bundles/<run-directory>"))
 ```
 
-Raster output uses terminal graphics support detected by Tachikoma; an ordinary
-terminal retains the text fallback. The [Pluto walkthrough](repl-pluto.md#Pluto)
+Expected view after pressing **P**: a raster plot when Tachikoma detects supported
+terminal graphics; otherwise the same text fallback remains available.
+
+:::
+
+Both backends display the saved observations, not a new measurement. A bundle
+without the required samples or stacks cannot supply that plot. The
+[Pluto walkthrough](repl-pluto.md#Pluto)
 provides downloadable notebooks when an editable graphical document fits the
 experiment better.

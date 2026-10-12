@@ -25,6 +25,8 @@ end
 end
 ```
 
+Expected lifecycle for this case: preparation returns `[3, 1, 2]`; the operation returns the same vector sorted as `[1, 2, 3]`; verification returns `true`. These are the example's correctness expectations, not recorded timings.
+
 - `prepare`, `operation`, `verify` are required.
 - `synchronize(state, result)` waits for async completion, **inside** the measurement.
 - `cleanup(state)` releases resources when Julia unwinds the operation normally, including success, oracle failure or an exception. Cancelling an isolated scenario stops its worker process; forced termination cannot run arbitrary user cleanup callbacks. Keep externally owned temporary resources recoverable independently.
@@ -53,6 +55,8 @@ implementation = "cpu"
 collectors = ["benchmark", "profile_alloc"]
 ```
 
+Expected catalogue: one scenario, `sort-values`, with two collector selections. Loading the declaration prepares no input and starts no measurement.
+
 ## Run, diagnose and advise
 
 ```sh
@@ -61,10 +65,22 @@ julia --startup-file=no --project=. -e 'using PerfChecker; exit(perfchecker_main
 julia --startup-file=no --project=. -e 'using PerfChecker; exit(perfchecker_main(ARGS))' -- advise --source=reports/diagnosis/diagnosis.json --reports=reports/advice
 ```
 
+Expected artifacts after successful local execution:
+
+| Command | Result to inspect |
+| --- | --- |
+| `run` | Saved measurement reports and bundles under `reports/run` |
+| `diagnose` | `reports/diagnosis/diagnosis.json`, with an execution status and findings per requested tool |
+| `advise` | Advice reports under `reports/advice`; suggestions do not edit the package |
+
+The sorting recipe is not a recorded campaign. Missing analyzers remain `unavailable`; no timing or finding is fabricated here.
+
 - The controller environment holds PerfChecker.
 - A measurement environment needs only the target, its dependencies and the chosen collector. Workers never import PerfChecker.
 - A diagnostic environment adds the selected analyzers. A missing tool is `unavailable`; nothing is installed.
 - `diagnose` runs one isolated process per analyzer and scenario, and Aqua once per package.
+
+For a completed example, follow the [JET before/after investigation](native-profiling.md#JET:-possible-inference-and-dispatch-problems): inspect six recorded dispatch findings, the typed implementation with no findings, and the separate benchmark of the same calculation. The diagnostic explains the inferred types; the benchmark measures the cost.
 
 ```@raw html
 <a id="Discover-without-executing"></a>
@@ -77,6 +93,8 @@ julia --startup-file=no --project=. -e 'using PerfChecker; exit(perfchecker_main
 ```
 
 Discovery inspects `Test`/`TestItems` assertions and literal CI matrices. It does not evaluate code or expand macros. Test-derived cases are **proposals** with source locations; you adopt them by writing explicit declarations. Discovery never rewrites test code.
+
+Expected output: discovery reports under `reports/discovery`, containing candidate declarations and their source locations. An empty candidate list means nothing was proposed, not that the package has no performance cost.
 
 ```@raw html
 <a id="CI-and-comparisons"></a>

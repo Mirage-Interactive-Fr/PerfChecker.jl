@@ -6,10 +6,11 @@
 
 PerfCheckerMakie turns saved measurements into figures. Views come from saved run bundles or previously exported plot models; rendering does not re-measure.
 
-The offline controls and exports described here require **PerfChecker 1.0.1**
-and **PerfCheckerMakie 1.0.1**. Core is registered in General; the Makie companion
-is currently installed from source while its registration is pending. Install
-both from the same reviewed revision using the [source recipe below](#Customize-and-export-Makie-figures).
+Saved-bundle figures and offline controls require **PerfChecker 1.0.1 or later**
+and **PerfCheckerMakie 1.0.1 or later**. The diagnostic observation views on this
+site additionally require **PerfCheckerMakie 1.0.2**. Core and the companion have
+independent versions; use the [installation recipe below](#Customize-and-export-Makie-figures)
+while the companion is not available in General.
 
 ## Build a plot from a saved run
 
@@ -29,6 +30,14 @@ figure = performance_figure(bundle, plot_id)
 display(figure)
 html = performance_plot_html(model)
 ```
+
+Expected results: a catalogue of supported views, a Makie figure, and HTML text in `html`. This published multi-version example shows the native result of rendering a saved model:
+```@raw html
+<NormalizedMeasurements source="/examples/real-packages/oxygen-features/normalized-metrics-24034c4be099f2e2.json" html="/examples/real-packages/oxygen-features/normalized-metrics-24034c4be099f2e2.html" package-name="Saved Oxygen plain HTTP measurements" />
+```
+
+This native view reads the published fourteen-release Oxygen model, not your local path. Each metric is relative to its own minimum; inspect a point to recover its original value and unit. No measurement starts when rendering it.
+
 
 - `plot_catalog` lists views that the bundle actually supports. Missing collectors produce no empty chart.
 - `performance_plot` returns a presentation-neutral model.
@@ -52,6 +61,8 @@ html_path = "saved-performance.html"
 (ispath(html_path) || islink(html_path)) && error("Choose a new export filename")
 write(html_path, html)
 ```
+
+Expected artifact: `saved-performance.html`. `write` returns the number of bytes written; its size depends on the selected view.
 
 Open that file in a browser. Normalized views retain metric toggles, a measured
 version range, exact point inspection, zoom and pan. Their SVG and CSV export
@@ -88,6 +99,8 @@ html = performance_plot_html(model;
 write(joinpath(html_directory, "result.html"), html)
 ```
 
+Expected layout: `published-plots/result.html` and any referenced files under `published-plots/assets/`. Keep both together; the HTML is not a new measurement.
+
 Pass both directory options together. The function writes assets and returns
 HTML; the caller saves the page. Deploy or move the pages and assets together,
 preserving their relative layout. Normalized and flame views remain compact
@@ -95,7 +108,8 @@ standalone documents.
 
 ### Render a published serialized view again
 
-The real-package galleries also publish plot JSON alongside their SVG exports.
+The real-package galleries publish interactive HTML and its serialized plot
+JSON for every view. Optional SVG downloads preserve a static snapshot.
 The shipped `examples/kitchen-sink/replay.jl` recipe restores those presentation
 models with `saved_plot`. From `examples/kitchen-sink/`, prepare the optional
 plot environment and start Julia:
@@ -115,22 +129,28 @@ destination = "datastructures-saved-view.html"
 write(destination, performance_plot_html(model))
 ```
 
+Expected artifact: `datastructures-saved-view.html`. Here is the same published serialized model rendered by the native API:
+
+```@raw html
+<NormalizedMeasurements source="/examples/real-packages/datastructures/normalized.json" html="/examples/real-packages/datastructures/normalized.html" package-name="Recorded DataStructures container measurements" />
+```
+
 This is a new HTML rendering of the same serialized values. A plot JSON is not
 a complete run bundle: it cannot establish the integrity of the original bundle
 or recover omitted measurements. The recipe is shipped example code; the HTML
 renderer is the public `performance_plot_html` API.
 
-To refresh the documentation's selected native examples, use the prepared plot
+To refresh the documentation's native examples, use the prepared plot
 environment:
 
 ```sh
 julia --startup-file=no --project=.controller/plots publish-evidence.jl --interactive
 ```
 
-The flag renders 34 guided real-package views across all twelve plot families,
-plus six measured Bibliography views. Comparison examples use distinct recorded
-versions; the single-version profiles show attribution. Other catalogue entries,
-including patch windows, retain their SVG and JSON. WGL views share local assets
+The flag renders every published catalogue view, including the patch windows,
+plus the measured Bibliography and diagnostic views. Comparison examples use
+distinct recorded versions; single-version profiles show attribution.
+WGL views share local assets
 in `examples/plot-assets` to avoid repeating large JavaScript modules. Keep that
 directory and the pages in the same relative layout when copying these published
 exports. To create one self-contained file instead, call `performance_plot_html`
@@ -141,36 +161,59 @@ recipe to be committed in the same checkout and prints that commit and tree befo
 rendering. It preserves the catalogues, other HTML exports and shared assets.
 With neither flag, the command only refreshes the aliases and downloadable
 notebooks and does not load WGLMakie. The documentation embeds the same HTML file
-that can be opened separately. Views without a published HTML export show their
-actual static SVG instead.
+that can be opened separately. Missing HTML is a publication error; it does not
+silently replace an interactive chart with an image.
+
+### Read diagnostics on their own axes
+
+Network payload sizes, successive memory observations and Massif instruction
+counts are not software versions. These figures use PerfCheckerMakie's public
+`observation_plot` model and `performance_plot_html` renderer. The horizontal
+axis keeps the recorded category or quantity, and each panel states its unit.
+Select a panel or series, then inspect a point to read its exact value and source.
+
+```@raw html
+<InteractiveRecordedPlot source="/examples/real-packages/oxygen-network/network.plot.json" html="/examples/real-packages/oxygen-network/network.html" title="Oxygen loopback observations by request payload size" kind="observation_series" />
+```
+
+Use the latency panel for round-trip time and the counter panels for interface
+bytes or packets. A larger payload is a different input, not a later release.
+The [Oxygen guide](../real-packages/oxygen.md#Compare-socket-measurements-across-releases)
+explains the workload, counter scope and loopback accounting.
+
+This observation renderer belongs to **PerfCheckerMakie 1.0.2**, independently
+of **PerfChecker 1.1.0**. In a separate plotting environment, install that
+companion's own published source tag when it is not yet available in General:
+
+```julia
+import Pkg
+Pkg.add(Pkg.PackageSpec(
+    url = "https://github.com/Mirage-Interactive-Fr/PerfChecker.jl",
+    subdir = "packages/PerfCheckerMakie", rev = "PerfCheckerMakie-v1.0.2"))
+```
+
+The site's `build-info.json` records the renderer version and source tree.
+A stable documentation refresh additionally verifies that entire companion
+subtree against its public tag; it leaves the Core release archive unchanged.
 
 ## Customize and export Makie figures
 
-This section uses **PerfCheckerMakie 1.0.1**, currently available from source:
-`figure_kwargs`, `axis_kwargs`, `plot_kwargs`, `saveplot`, `checkres_figures`
-and the export behavior below are additions to that companion. The public
-1.0.0 companion still provides `performance_figure` and saved-model rendering;
-installing registered PerfChecker 1.0.0 does not supply these newer methods.
-Use the [repository-subdirectory installation](../guide/installation.md#Optional-packages)
-with `subdir = "packages/PerfCheckerMakie"` and the reviewed source revision
-`8864d3a0fec4e58390090324955eb8dbcebd5e07`, whose
-[companion source](https://github.com/Mirage-Interactive-Fr/PerfChecker.jl/tree/8864d3a0fec4e58390090324955eb8dbcebd5e07/packages/PerfCheckerMakie)
-declares version 1.0.1. This companion is also present in the published root
-`v1.0.1` tag; its separate General registration is pending.
-
-Install Core and the companion from the same source revision in a dedicated
-environment. The companion requires Core 1.0.1 or later; leaving a
-registered Core 1.0.0 beside it does not satisfy that contract:
+The customization methods below were introduced in **PerfCheckerMakie 1.0.1**
+and are retained in 1.0.2. Install the independently versioned companion in a
+dedicated environment. Core 1.0.0 does not satisfy its compatibility contract.
+For Core 1.1.0 and the renderer used on this site:
 
 ```julia
 using Pkg
-repository = "https://github.com/Mirage-Interactive-Fr/PerfChecker.jl"
-revision = "8864d3a0fec4e58390090324955eb8dbcebd5e07"
-Pkg.add([
-    PackageSpec(url = repository, rev = revision),
-    PackageSpec(url = repository, rev = revision, subdir = "packages/PerfCheckerMakie"),
-])
+Pkg.add(name = "PerfChecker", version = "1.1.0")
+Pkg.add(Pkg.PackageSpec(
+    url = "https://github.com/Mirage-Interactive-Fr/PerfChecker.jl",
+    subdir = "packages/PerfCheckerMakie", rev = "PerfCheckerMakie-v1.0.2"))
 ```
+
+This source-tag recipe does not require Makie 1.0.2 to have reached General.
+The [optional-package guide](../guide/installation.md#Optional-packages)
+explains repository subdirectories and separate worker environments.
 
 Load `PerfCheckerMakie` and a display or export backend. Makie settings have
 three explicit namespaces, so a plot's color cannot collide with an axis or
@@ -196,6 +239,8 @@ figure = performance_figure(bundle, plot_id;
 saveplot("comparison.svg", figure) # parent directory must exist
 saveplot("comparison.png", figure; px_per_unit = 2)
 ```
+
+Expected artifacts: `comparison.svg` and `comparison.png` with the selected view and labels. These downloads are static snapshots; use the native HTML route above for point inspection.
 
 Use a fresh output filename, inspect the exported labels and units, then adjust
 one attribute group at a time. These calls write the figure, not the suite,
@@ -231,6 +276,8 @@ figures = checkres_figures(result, Val(:chairmark);
     kinds = [:distribution], metrics = [:times, :bytes, :allocs])
 paths = saveplot("visuals", figures; format = :png)
 ```
+
+Expected result: `paths` lists the newly written PNG files in `visuals/`, one for each selected metric and view. It is not a bundle or a new collector run.
 
 Collection exports create the explicit directory, normalize labels into
 portable filenames, and reject colliding names before writing. Existing
@@ -314,8 +361,12 @@ Makie, WGLMakie and Pluto run in the controller. A worker receives the target pa
 ```
 
 ```@raw html
-<DocMedia src="/examples/bibliography/history/export-memory.png" alt="Measured Bibliography export allocation curve across nine tags from 0.1.0 to 0.4.0" caption="The recorded export allocations across nine tagged versions. This static capture preserves the same values as the interactive allocated-bytes view above; a profile is needed to locate the code responsible for the differences." />
+<InteractiveRecordedPlot source="/examples/bibliography/history/export-memory.json" html="/examples/bibliography/history/export-memory.html" title="Bibliography export allocations across nine tagged versions" kind="version_series" />
 ```
+
+Inspect the allocated-byte curve to read an exact version and value. These are
+the same saved observations as the **Allocated bytes** history view above;
+use an allocation profile to locate the code responsible for a difference.
 
 ## Next
 

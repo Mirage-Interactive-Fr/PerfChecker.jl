@@ -26,20 +26,33 @@ model = performance_plot(bundle, entry["id"])
 terminal_plot(model)
 ```
 
+```@raw html
+<p>Expected output: a UnicodePlots rendering of the selected model. The published Oxygen export reads fourteen releases; its original <a href="../examples/real-packages/oxygen-features/normalized-metrics-24034c4be099f2e2.txt" download="normalized-metrics-24034c4be099f2e2.txt">terminal text</a> preserves the terminal view. The same saved values are inspectable here:</p>
+<NormalizedMeasurements source="/examples/real-packages/oxygen-features/normalized-metrics-24034c4be099f2e2.json" html="/examples/real-packages/oxygen-features/normalized-metrics-24034c4be099f2e2.html" package-name="Saved Oxygen plain HTTP measurements" />
+```
+
+This native view reads the published fourteen-release Oxygen model, not your local path. Each metric is relative to its own minimum; inspect a point to recover its original value and unit. No measurement starts when rendering it.
+
+
 The same helper can open a plot JSON downloaded from the documentation:
 `terminal_plot(saved_plot("downloaded-plot.json"))`. A published plot is a
 projection of observations for visualization, not a complete qualification bundle.
 
-## Makie: static figures and interactive HTML
+## Makie: interactive figures and downloadable models
 
 ```sh
 julia setup.jl plots
 julia --project=.controller/plots export.jl results/ACTUAL-RUN exports/history
 ```
 
-The export writes an SVG, a JSON plot model and a Unicode text plot for each
-catalogue entry. The documentation uses this exporter rather than recreating
-different calculations for its illustrations.
+Expected artifacts: `exports/history/catalog.json` and the selected catalogue's HTML, plot JSON and terminal-text files. Missing evidence produces no invented observations.
+
+The export writes interactive HTML, a JSON plot model and a Unicode text plot
+for every catalogue entry, alongside optional static SVG downloads. The
+documentation embeds the native HTML rather than recreating its calculations.
+Use panel and series selectors, inspect an observation for its exact value,
+and zoom where the selected view supports it. Every patch window has its own
+interactive export too.
 
 For standalone interactive HTML, open Julia with `--project=.controller/plots`:
 
@@ -51,6 +64,8 @@ entry = first(filter(v -> v["kind"] == "normalized_metrics", plot_catalog(bundle
 model = performance_plot(bundle, entry["id"])
 write("exports/interactive-history.html", performance_plot_html(model))
 ```
+
+Expected artifact: `exports/interactive-history.html`. Its point and series controls operate on the same model displayed in the native example above.
 
 Open the saved HTML in a browser. Inspect a point to read its value and version.
 The [visualization guide](../interfaces/visualization.md) describes which
@@ -77,6 +92,8 @@ julia +1.12 setup.jl pluto
 julia +1.12 --project=.controller/pluto -e 'using Pluto; Pluto.run(notebook="notebook.jl", threads=1)'
 ```
 
+Expected result: a Pluto session displaying the supplied notebook and its saved-history selectors. It reads the published models; no benchmark starts on opening. The native figure above shows the evidence the notebook can render.
+
 The notebook opens the published measurements included in the checkout, so you
 can explore the full version history **without running a benchmark first**.
 It also lists completed local runs, lets you select any catalogue view,
@@ -95,6 +112,8 @@ To get a notebook that can also launch selected suite checks:
 julia +1.12 --project=.controller/pluto controller-notebook.jl datastructures
 julia +1.12 --project=.controller/pluto controller-notebook.jl oxygen
 ```
+
+Expected artifact: a controller notebook under `exports/`. Its plan selectors and explicit launch/save controls are separate from the read-only notebook.
 
 Open the generated file under `exports/` with Pluto. Package, workload,
 collector and target selectors filter the plan; **Launch selected checks**
@@ -128,12 +147,17 @@ completed command-line campaign directly, pass its report directory instead:
 julia --project=.controller/web web.jl results/ACTUAL-RUN
 ```
 
+Expected result: the Web result explorer lists that directory's saved runs and plot catalogue. Opening it launches no measurement. The native rendering below shows the recorded plain-HTTP campaign.
+
 This opens the result explorer without launching a measurement or scanning
 unrelated diagnostic artifacts. Stop the Julia command when you finish using
 the studio.
 
 ```@raw html
-<DocMedia src="/examples/real-packages/oxygen-web-studio.png" alt="Web interface (Oxygen) displaying the Oxygen heap request across twelve releases, with feature and view filters and four measurement toggles" caption="The recorded Oxygen campaign reopened in Web interface (Oxygen): twelve releases from 1.0.0 to 1.11.0. The feature and view selectors filter saved observations; the checkboxes isolate individual curves." />
+<NormalizedMeasurements source="/examples/real-packages/oxygen-features/normalized-metrics-24034c4be099f2e2.json" figure="/examples/real-packages/oxygen-features/normalized-metrics-24034c4be099f2e2.svg" html="/examples/real-packages/oxygen-features/normalized-metrics-24034c4be099f2e2.html" package-name="Oxygen · plain HTTP request" />
+<details><summary>See the same measurements in the Web Studio</summary>
+<DocMedia src="/examples/real-packages/oxygen-web-studio.png" alt="Web interface displaying Oxygen plain_benchmark across fourteen releases, with feature and view filters and four measurement toggles" caption="The saved plain HTTP campaign reopened in Web Studio: fourteen releases from 1.0.0 to 1.11.0. The feature and view selectors filter saved observations; the checkboxes isolate individual curves." />
+</details>
 ```
 
 Here, Oxygen hosts the interface that controls measurements of Oxygen in
@@ -153,7 +177,8 @@ you want the Makie and web renderers available as well. Filter workloads,
 collectors and versions before execution. These are the same suite files used
 by the command line, not a second editor-only definition.
 
-The [VS Code guide](../interfaces/vscode.md) covers installation of the preview
-VSIX, result panels and saved selections. The executable scripts and saved plots
+Expected result in Testing: the selected item receives an execution status and measured duration; unselected items remain unrun. Suite output opens the saved native plots rather than starting another check.
+
+The [VS Code guide](../interfaces/vscode.md) covers Marketplace installation, result panels and saved selections. The executable scripts and saved plots
 here are distinct from a claim that every possible editor interaction has been
 tested on every operating system.

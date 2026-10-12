@@ -27,6 +27,8 @@ plan = plan_suite(suite; profile = :quick)
 print_suite_plan(plan)
 ```
 
+Expected plan for this example: **35 leaves**, from seven workloads and five collectors. Each row identifies its package, workload, collector and target; it is a plan, not a measurement result.
+
 Planning lists checks. It does not measure anything.
 
 ```@raw html
@@ -36,16 +38,45 @@ Planning lists checks. It does not measure anything.
 
 ## Select and run
 
+::: tabs
+
+== BenchmarkTools
+
 ```julia
 selected = filter_suite_plan(plan;
     packages = "Bibliography", features = :export_bibtex, backends = [:benchmark])
 print_suite_plan(selected)
-
 mkpath("results")
 report_directory = mktempdir(abspath("results"); prefix = "export-", cleanup = false)
 result = run_suite_repl(selected; reports = report_directory, strict = false,
     overrides = Dict{Symbol,Any}(:threads => 1, :samples => 50, :evals => 1, :seconds => 0.5))
 ```
+
+Expected selection: one `Bibliography → export_bibtex → benchmark` leaf. A successful run writes its report and bundle. Recorded result: fifty samples at source `575ec81`, Julia 1.13.0, one worker thread. Correctness is `not_checked`; performance is `not_compared`.
+
+```@raw html
+<InteractiveRecordedPlot source="/examples/bibliography/timing-evidence.json" html="/examples/bibliography/export-timing.html" title="Recorded BibTeX export timing — fifty samples" kind="distribution" />
+```
+
+Select a point for its nanoseconds; the spread is part of the result.
+
+== Chairmarks
+
+```julia
+selected = filter_suite_plan(plan;
+    packages = "Bibliography", features = :export_bibtex, backends = [:chairmark])
+print_suite_plan(selected)
+mkpath("results")
+report_directory = mktempdir(abspath("results"); prefix = "export-", cleanup = false)
+result = run_suite_repl(selected; reports = report_directory, strict = false,
+    overrides = Dict{Symbol,Any}(:threads => 1, :samples => 50, :evals => 1, :seconds => 0.5))
+```
+
+```@raw html
+<p>Expected selection: one <code>Bibliography → export_bibtex → chairmark</code> leaf. The saved <a href="examples/bibliography/suite-runs.json" download="suite-runs.json">collector receipt</a> records this leaf as <code>pass</code>, with <code>verdict = executed</code>, <code>state_policy = fresh</code>, and target <code>dev@0.4.0</code>. It does not publish numerical Chairmarks samples. A local report retains time in seconds, bytes, allocation count and a GC fraction; these units differ from BenchmarkTools.</p>
+```
+
+:::
 
 A new directory preserves earlier measurements. Read `suite-report.md` first.
 
@@ -96,10 +127,9 @@ Add candidates with `SuiteCandidate` and references with `ComparisonPolicy`. See
 
 ```@raw html
 <figure class="doc-screenshot">
-<iframe class="doc-interactive" src="./examples/bibliography/history/export-samples.html" title="Distribution of 900 recorded Bibliography export timings across nine tagged versions" loading="lazy" sandbox="allow-scripts allow-same-origin allow-downloads"></iframe>
+<InteractiveRecordedPlot source="/examples/bibliography/history/export-samples.json" html="/examples/bibliography/history/export-samples.html" title="Distribution of 900 recorded Bibliography export timings across nine tagged versions" kind="distribution" />
 <figcaption>Native interactive distribution of 900 recorded timings: 100 samples per tag. Boxplots summarize each group; recorded points and slow observations remain available. Points can overlap. This shows variation, not execution order. The quick selection above measures only the pinned development revision; it does not produce this nine-version history.</figcaption>
 </figure>
-<p><a href="./examples/bibliography/history/export-samples.html">Open the interactive export</a> · <a href="./examples/bibliography/history/export-samples.json" download>Download the serialized plot and source revisions</a></p>
 ```
 
 ```@raw html

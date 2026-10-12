@@ -1,0 +1,387 @@
+{
+  "comparison_scope": "two implementations on one local machine; not released package versions or a portable speed guarantee",
+  "diagnosis": [
+    {
+      "analysis_scope": "operation specialized for prepared state type; synchronization excluded",
+      "correctness": "passed",
+      "findings": [
+        {
+          "evidence": {
+            "analysis": "JET.report_opt",
+            "report_type": "JET.RuntimeDispatchReport"
+          },
+          "location": {
+            "file": "cases.jl",
+            "line": 14
+          },
+          "message": "RuntimeDispatchReport(runtime dispatch detected: (%36::Any).quantity::Any)",
+          "rule_id": "inference.runtime_dispatch",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "JET.report_opt",
+            "report_type": "JET.RuntimeDispatchReport"
+          },
+          "location": {
+            "file": "cases.jl",
+            "line": 14
+          },
+          "message": "RuntimeDispatchReport(runtime dispatch detected: (%36::Any).unit_price::Any)",
+          "rule_id": "inference.runtime_dispatch",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "JET.report_opt",
+            "report_type": "JET.RuntimeDispatchReport"
+          },
+          "location": {
+            "file": "cases.jl",
+            "line": 14
+          },
+          "message": "RuntimeDispatchReport(runtime dispatch detected: (%36::Any).discount::Any)",
+          "rule_id": "inference.runtime_dispatch",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "JET.report_opt",
+            "report_type": "JET.RuntimeDispatchReport"
+          },
+          "location": {
+            "file": "cases.jl",
+            "line": 14
+          },
+          "message": "RuntimeDispatchReport(runtime dispatch detected: (1.0 Main.var\"##SharedCase#142\".SalesCases.:- %41::Any)::Any)",
+          "rule_id": "inference.runtime_dispatch",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "JET.report_opt",
+            "report_type": "JET.RuntimeDispatchReport"
+          },
+          "location": {
+            "file": "cases.jl",
+            "line": 14
+          },
+          "message": "RuntimeDispatchReport(runtime dispatch detected: Main.var\"##SharedCase#142\".SalesCases.:*(%39::Any, %40::Any, %42::Any)::Any)",
+          "rule_id": "inference.runtime_dispatch",
+          "severity": "warning"
+        },
+        {
+          "evidence": {
+            "analysis": "JET.report_opt",
+            "report_type": "JET.RuntimeDispatchReport"
+          },
+          "location": {
+            "file": "cases.jl",
+            "line": 14
+          },
+          "message": "RuntimeDispatchReport(runtime dispatch detected: (%38::Any Main.var\"##SharedCase#142\".SalesCases.:+ %43::Any)::Any)",
+          "rule_id": "inference.runtime_dispatch",
+          "severity": "warning"
+        }
+      ],
+      "implementation": "dynamic",
+      "runtime": {
+        "language": "julia",
+        "threads": 1,
+        "version": "1.13.1"
+      },
+      "status": "complete",
+      "tool": "jet",
+      "tool_version": "0.12.3"
+    },
+    {
+      "analysis_scope": "operation specialized for prepared state type; synchronization excluded",
+      "correctness": "passed",
+      "findings": [],
+      "implementation": "typed",
+      "runtime": {
+        "language": "julia",
+        "threads": 1,
+        "version": "1.13.1"
+      },
+      "status": "complete",
+      "tool": "jet",
+      "tool_version": "0.12.3"
+    }
+  ],
+  "expected_result": 129536.0,
+  "manifest_sha256": "143e43074e9da1fefd48ec10d2e8ebbd7c0f012946f428b6fd8c39caeb170c07",
+  "measurement_scope": "one warm operation on fresh prepared state; preparation and correctness verification excluded",
+  "measurements": [
+    {
+      "collector": "benchmark",
+      "collector_version": "1.7.0",
+      "correctness": "passed",
+      "implementation": "dynamic",
+      "medians": {
+        "allocs": 32768.0,
+        "bytes": 720896.0,
+        "time": 0.000870838
+      },
+      "run_id": "8db593bb-6298-47e8-9bae-3b31ee0d2961",
+      "samples": [
+        {
+          "allocs": 32768,
+          "bytes": 720896,
+          "time": 0.00085224
+        },
+        {
+          "allocs": 32768,
+          "bytes": 720896,
+          "time": 0.000865686
+        },
+        {
+          "allocs": 32768,
+          "bytes": 720896,
+          "time": 0.001080847
+        },
+        {
+          "allocs": 32768,
+          "bytes": 720896,
+          "time": 0.000916298
+        },
+        {
+          "allocs": 32768,
+          "bytes": 720896,
+          "time": 0.000873236
+        },
+        {
+          "allocs": 32768,
+          "bytes": 720896,
+          "time": 0.000869426
+        },
+        {
+          "allocs": 32768,
+          "bytes": 720896,
+          "time": 0.00087225
+        },
+        {
+          "allocs": 32768,
+          "bytes": 720896,
+          "time": 0.000882711
+        },
+        {
+          "allocs": 32768,
+          "bytes": 720896,
+          "time": 0.000864742
+        },
+        {
+          "allocs": 32768,
+          "bytes": 720896,
+          "time": 0.00086812
+        },
+        {
+          "allocs": 32768,
+          "bytes": 720896,
+          "time": 0.000976694
+        },
+        {
+          "allocs": 32768,
+          "bytes": 720896,
+          "time": 0.000863732
+        },
+        {
+          "allocs": 32768,
+          "bytes": 720896,
+          "time": 0.000861146
+        },
+        {
+          "allocs": 32768,
+          "bytes": 720896,
+          "time": 0.000873198
+        },
+        {
+          "allocs": 32768,
+          "bytes": 720896,
+          "time": 0.00087781
+        },
+        {
+          "allocs": 32768,
+          "bytes": 720896,
+          "time": 0.000874196
+        },
+        {
+          "allocs": 32768,
+          "bytes": 720896,
+          "time": 0.000887468
+        },
+        {
+          "allocs": 32768,
+          "bytes": 720896,
+          "time": 0.000856561
+        },
+        {
+          "allocs": 32768,
+          "bytes": 720896,
+          "time": 0.00083209
+        },
+        {
+          "allocs": 32768,
+          "bytes": 720896,
+          "time": 0.000850255
+        }
+      ],
+      "status": "complete"
+    },
+    {
+      "collector": "benchmark",
+      "collector_version": "1.7.0",
+      "correctness": "passed",
+      "implementation": "typed",
+      "medians": {
+        "allocs": 0.0,
+        "bytes": 0.0,
+        "time": 3.798e-6
+      },
+      "run_id": "ee47d473-d955-4bf8-bc82-c2446eecc154",
+      "samples": [
+        {
+          "allocs": 0,
+          "bytes": 0,
+          "time": 4.757e-6
+        },
+        {
+          "allocs": 0,
+          "bytes": 0,
+          "time": 4.537e-6
+        },
+        {
+          "allocs": 0,
+          "bytes": 0,
+          "time": 3.844e-6
+        },
+        {
+          "allocs": 0,
+          "bytes": 0,
+          "time": 3.787e-6
+        },
+        {
+          "allocs": 0,
+          "bytes": 0,
+          "time": 3.824e-6
+        },
+        {
+          "allocs": 0,
+          "bytes": 0,
+          "time": 3.753e-6
+        },
+        {
+          "allocs": 0,
+          "bytes": 0,
+          "time": 3.802e-6
+        },
+        {
+          "allocs": 0,
+          "bytes": 0,
+          "time": 3.794e-6
+        },
+        {
+          "allocs": 0,
+          "bytes": 0,
+          "time": 3.773e-6
+        },
+        {
+          "allocs": 0,
+          "bytes": 0,
+          "time": 3.757e-6
+        },
+        {
+          "allocs": 0,
+          "bytes": 0,
+          "time": 3.725e-6
+        },
+        {
+          "allocs": 0,
+          "bytes": 0,
+          "time": 3.821e-6
+        },
+        {
+          "allocs": 0,
+          "bytes": 0,
+          "time": 3.754e-6
+        },
+        {
+          "allocs": 0,
+          "bytes": 0,
+          "time": 3.91e-6
+        },
+        {
+          "allocs": 0,
+          "bytes": 0,
+          "time": 3.82e-6
+        },
+        {
+          "allocs": 0,
+          "bytes": 0,
+          "time": 3.728e-6
+        },
+        {
+          "allocs": 0,
+          "bytes": 0,
+          "time": 3.92e-6
+        },
+        {
+          "allocs": 0,
+          "bytes": 0,
+          "time": 3.747e-6
+        },
+        {
+          "allocs": 0,
+          "bytes": 0,
+          "time": 3.809e-6
+        },
+        {
+          "allocs": 0,
+          "bytes": 0,
+          "time": 3.737e-6
+        }
+      ],
+      "status": "complete"
+    }
+  ],
+  "perfchecker_version": "1.1.0",
+  "project_sha256": "fdc5dbd143c6f0657210c4f982ef88cf5d60485f119e18c876977da40d338153",
+  "rows": 4096,
+  "runner_sha256": "cfaae63925efb2e53dca315ef3bbfe486a4c745a09e1fd6bbaa19738f78aca19",
+  "runtime": {
+    "arch": "x86_64",
+    "language": "julia",
+    "os": "Linux",
+    "threads": 1,
+    "version": "1.13.1"
+  },
+  "schema_version": "perfchecker-jet-tutorial/1",
+  "source_sha256": "c6d0568700487bb9553912666f0b65d513ed3071724738c6de683653ecd313c3",
+  "recorded_source_revision": "5b3ab2ef5c02a89736f089e2eeba72338c508042",
+  "recorded_source_urls": {
+    "cases.jl": "https://github.com/Mirage-Interactive-Fr/PerfChecker.jl/blob/5b3ab2ef5c02a89736f089e2eeba72338c508042/website/src/public/examples/jet-dispatch/cases.jl",
+    "run.jl": "https://github.com/Mirage-Interactive-Fr/PerfChecker.jl/blob/5b3ab2ef5c02a89736f089e2eeba72338c508042/website/src/public/examples/jet-dispatch/run.jl",
+    "Project.toml": "https://github.com/Mirage-Interactive-Fr/PerfChecker.jl/blob/5b3ab2ef5c02a89736f089e2eeba72338c508042/website/src/public/examples/jet-dispatch/Project.toml",
+    "Manifest.toml": "https://github.com/Mirage-Interactive-Fr/PerfChecker.jl/blob/5b3ab2ef5c02a89736f089e2eeba72338c508042/website/src/public/examples/jet-dispatch/Manifest.toml"
+  },
+  "reproduction_source_sha256": {
+    "cases.jl": "5fa164e34f2a284e285a9ecd9a613bc6bad4b4288e179a5666634436ddda5d10",
+    "run.jl": "1c6cf4533d0c115695ef5684f5a0e6e775282973709b8fffd0df0b96e1412280",
+    "render.jl": "81f62ac84afeee430c3b705392daf7c2aaaf006fb908198c306cc812471b7607"
+  },
+  "source_equivalence": {
+    "method": "Julia 1.13.1 parsed AST equality after recursive removal of LineNumberNode values",
+    "files": [
+      "cases.jl",
+      "run.jl"
+    ]
+  },
+  "diagnostic_source_mapping": [
+    {
+      "file": "cases.jl",
+      "recorded_line": 14,
+      "reproduction_line": 14,
+      "recorded_url": "https://github.com/Mirage-Interactive-Fr/PerfChecker.jl/blob/5b3ab2ef5c02a89736f089e2eeba72338c508042/website/src/public/examples/jet-dispatch/cases.jl#L14"
+    }
+  ]
+}

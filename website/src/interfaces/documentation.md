@@ -37,8 +37,25 @@ block = PerformanceDocumentBlock(
     views = [:observations, :comparison, :plots],
 )
 
-documenter_page(bundle, "docs/src/generated/performance.md"; blocks = [block])
+destination = documenter_page(bundle, "docs/src/generated/performance.md";
+    blocks = [block])
+println(relpath(destination, pwd()))
+println(join(first(split(read(destination, String), '\n'), 3), '\n'))
 ```
+
+Expected output:
+
+```text
+docs/src/generated/performance.md
+# Performance
+
+## Bibliography export latency
+```
+
+Below this heading, the generated page shows the bundle's run ID and runtime,
+then **Comparisons**, **Observations** and **Interactive plots**. Each table
+contains only matching saved evidence. A selection with no observations prints
+`_No matching evidence._`; it does not become a zero-time measurement.
 
 ```@raw html
 <a id="Shared-declarative-configuration"></a>
@@ -50,9 +67,21 @@ Build the generated page with Documenter, preserving the blocks selected above:
 Documenter.makedocs(;
     root = abspath("docs"),
     sitename = "Performance",
+    format = Documenter.HTML(prettyurls = false),
     pages = ["Performance" => "generated/performance.md"],
 )
+println(isfile("docs/build/generated/performance.html"))
 ```
+
+Expected output after a successful HTML build:
+
+```text
+true
+```
+
+Open `docs/build/generated/performance.html` to read the generated tables.
+`prettyurls = false` keeps that file directly openable from disk. This build
+creates local documentation; it does not publish the site.
 
 In an existing documentation build, add `"generated/performance.md"` to its
 `pages` list instead. Generate the page before calling `Documenter.makedocs`.
@@ -74,7 +103,7 @@ Use the explicit page-generation and build steps above for customized reports.
 
 - Publish immutable or explicitly refreshed bundles, never an unlabelled local "latest".
 - Show runtime and source/dependency provenance near the chart.
-- Keep a static Markdown/SVG fallback beside any interactive link.
+- Keep the observation table and provenance beside each interactive view.
 - Redact logs, local paths, tokens and private endpoints.
 - Documentation generation stays read-only with respect to the measured project.
 
