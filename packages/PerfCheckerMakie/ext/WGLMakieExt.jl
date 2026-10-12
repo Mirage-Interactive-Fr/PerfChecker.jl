@@ -265,8 +265,10 @@ directory where Bonito writes assets) and `html_directory` (the directory where
 the returned HTML will be saved). Links are relative to `html_directory`; deploy
 or move the HTML and asset directories together, preserving their relative layout.
 This function returns HTML without writing an HTML file or creating its directory.
-Shared-asset exports bypass the standalone HTML cache. Normalized plots and flame
-graphs already use compact standalone HTML and do not write shared assets.
+Shared-asset exports bypass the standalone HTML cache. Normalized plots, flame
+graphs and observation series already use compact standalone HTML and do not
+write shared assets. Observation series retain their explicit axes, units and
+provenance, with panel/series/version filters and exact recorded-point inspection.
 
 Normalized measurements provide metric
 visibility, selection of recorded versions, viewport zoom and pan, exact point
@@ -303,6 +305,21 @@ function PerfChecker.performance_plot_html(plot::PerfChecker.PerformancePlot;
     return lock(RENDER_LOCK) do
         key = PerfChecker._content_digest(PerfChecker.performance_plot_dict(plot))
         !shared_assets && haskey(HTML_CACHE, key) && return HTML_CACHE[key]
+        if plot.kind === :observation_series
+            template = read(joinpath(@__DIR__, "../src/assets/observations.html"), String)
+            data = replace(
+                PerfChecker._canonical_json(Dict(
+                    "model" => PerfChecker.performance_plot_dict(plot),
+                    "colors" => PerfCheckerMakie._PLOT_PALETTE)),
+                "</" => "<\\/")
+            html = replace(template, "__PERFCHECKER_OBSERVATIONS__" => data)
+            if !shared_assets
+                length(HTML_CACHE) >= MAX_CACHE_ENTRIES &&
+                    delete!(HTML_CACHE, first(keys(HTML_CACHE)))
+                HTML_CACHE[key] = html
+            end
+            return html
+        end
         if plot.kind === :normalized_metrics
             template = read(joinpath(@__DIR__, "../src/assets/normalized.html"), String)
             data = replace(

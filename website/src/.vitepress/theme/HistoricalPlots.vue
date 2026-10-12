@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {computed,onMounted,ref,watch} from 'vue'
 import {withBase} from 'vitepress'
+import InteractiveRecordedPlot from './InteractiveRecordedPlot.vue'
 const root='/examples/bibliography/history/'
 const catalog=ref<any>(null), selected=ref(''), evidence=ref<any>(null), failure=ref('')
 const view=computed(()=>catalog.value?.views.find((item:any)=>item.id===selected.value))
@@ -47,7 +48,7 @@ watch(view,async(current,_,onCleanup)=>{
       </div>
       <p class="history-reading-guide">{{ readingGuide[selected] }}</p>
       <figure v-if="view" class="doc-screenshot">
-        <iframe :key="view.id" class="doc-interactive history-plot" :src="withBase(root+view.html)" :title="`Measured Bibliography history: ${view.label}`" sandbox="allow-scripts allow-same-origin allow-downloads" />
+        <InteractiveRecordedPlot :key="view.id" :source="root+view.evidence" :html="root+view.html" :kind="view.kind" :title="`Measured Bibliography history: ${view.label}`" />
         <figcaption>Same BibTeX input across the tagged versions. Julia {{ catalog.runtime.version }} · Windows · {{ catalog.runtime.threads }} worker thread. Source and dependency revisions are retained with the measurements.</figcaption>
       </figure>
       <p v-if="view?.kind==='normalized_metrics'">Toggle a measurement to isolate its curve; hover or focus a point to inspect its raw value and ratio. Each curve has its own minimum at 1.</p>

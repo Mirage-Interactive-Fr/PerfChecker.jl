@@ -1,5 +1,6 @@
-using PerfChecker, CairoMakie, JSON, UnicodePlots
+using PerfChecker, JSON, UnicodePlots
 include(joinpath(@__DIR__, "replay.jl"))
+include(joinpath(@__DIR__, "observation-export.jl"))
 length(ARGS) == 3 ||
     error("Pass BenchmarkTools reports, Chairmarks reports and an export directory")
 sources = abspath.(ARGS[1:2])
@@ -72,9 +73,6 @@ views = Dict{String, Any}[]
 for family in families
     rows = filter(row -> startswith(row["workload"], family * "_"), records)
     operations = sort!(unique(row["workload"] for row in rows))
-    figure = Figure(size = (1100, 760))
-    Label(
-        figure[0, 1:2], "$family · two collectors · DataStructures $version"; fontsize = 22)
     terminal = IOBuffer()
     for (index, (metric, label, scale)) in enumerate(metrics)
         values = [only(filter(
@@ -82,12 +80,6 @@ for family in families
                                  row["collector"] == collector && row["metric"] == metric,
                       rows))["value"] * scale
                   for operation in operations for collector in collectors]
-        axis = Axis(figure[cld(index, 2), mod1(index, 2)]; ylabel = label,
-            xticks = (1:2, [last(split(operation, '_')) for operation in operations]))
-        CairoMakie.barplot!(axis, [1, 1, 2, 2], values; dodge = [1, 2, 1, 2],
-            color = [:steelblue, :darkorange, :steelblue, :darkorange])
-        axis.limits = (
-            nothing, (0, maximum(values; init = 0) > 0 ? maximum(values) * 1.15 : 1))
         labels = [last(split(operation, '_')) * " · " * collector
                   for operation in operations for collector in collectors]
         println(terminal, label)
@@ -95,14 +87,7 @@ for family in families
             UnicodePlots.barplot(labels, values; title = family, width = 60))
         println(terminal)
     end
-    Legend(
-        figure[3, 1:2], [PolyElement(color = :steelblue), PolyElement(color = :darkorange)],
-        collect(collectors); orientation = :horizontal)
-    Label(figure[4, 1:2],
-        "Minimum of 30 samples · fresh state · one evaluation · separate collector semantics";
-        fontsize = 13)
     name = lowercase(family)
-    save(joinpath(output, name * ".svg"), figure)
     open(
         io -> JSON.print(io,
             Dict("version" => version, "family" => family, "records" => rows,
@@ -124,5 +109,6 @@ open(
         2),
     joinpath(output, "catalog.json"),
     "w")
+export_collector_observations(output)
 println(
     "Exported ", length(views), " collector comparison figures with all four measurements")

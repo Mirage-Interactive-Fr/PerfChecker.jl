@@ -1,4 +1,5 @@
-using JSON, CairoMakie
+using JSON
+include(joinpath(@__DIR__, "observation-export.jl"))
 length(ARGS) == 2 || error("Pass a native result directory and an export directory")
 source, output = abspath.(ARGS)
 mkpath(output)
@@ -49,17 +50,6 @@ for record in summary["records"]
             time_unit = match(r"time_unit:\s*(\S+)", content)
             unit = time_unit === nothing ? "tool time units" :
                    time_unit[1] == "i" ? "instrumented instructions" : time_unit[1]
-            fig = Figure(size = (1000, 480))
-            axis = Axis(fig[1, 1]; title = "Massif native heap — process $(index)",
-                xlabel = unit, ylabel = "MiB")
-            for (key, label) in (("heap_bytes", "native heap"),
-                ("allocator_overhead_bytes", "allocator overhead"),
-                ("stack_bytes", "tracked stacks"))
-                lines!(
-                    axis, [r["time"] for r in rows], [r[key] / 2^20 for r in rows]; label)
-            end
-            axislegend(axis; position = :lt)
-            save(joinpath(output, "massif-$(index).svg"), fig)
             open(
                 io -> JSON.print(io,
                     Dict("observations" => rows, "time_unit" => unit,
@@ -71,4 +61,5 @@ for record in summary["records"]
     end
 end
 open(io -> JSON.print(io, summary, 2), joinpath(output, "summary.json"), "w")
+export_massif_observations(output)
 println("Published native statuses and completed Massif timelines")

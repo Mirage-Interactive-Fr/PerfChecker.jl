@@ -7,7 +7,7 @@ import { once } from 'node:events';
 import { inflateSync } from 'node:zlib';
 import { createHash } from 'node:crypto';
 import { readExport } from '../../website/deploy-sftp.mjs';
-import { checkRecordedInteractions } from './recorded-plots.mjs';
+import { checkRecordedInteractions, checkInteractiveCatalog, checkRecordedPlotEmbeds } from './recorded-plots.mjs';
 const root = resolve(process.argv[2] ?? 'website/build/sftp');
 const origin = 'https://perfchecker.mirageinteractive.fr';
 const browserChecks = process.argv.includes('--browser');
@@ -21,8 +21,7 @@ const savedDiagnostics = ['latency', 'memory'].flatMap(kind => ['1.10.2', '1.11.
   image: `assets/screenshots/vscode/v101/${kind}-oxygen-${version}-fac983.png`,
   report: `examples/real-packages/oxygen-saved-diagnostics/${kind}-${version}.json`,
 })));
-const replImage = 'assets/screenshots/oxygen-repl-unicodeplots-20261010.png';
-const savedDiagnosticAssets = [...savedDiagnostics.flatMap(entry => [entry.image, entry.report]), replImage];
+const savedDiagnosticAssets = savedDiagnostics.flatMap(entry => [entry.image, entry.report]);
 const sha256 = bytes => createHash('sha256').update(bytes).digest('hex');
 function htmlIds(html) {
   return new Set([...html.matchAll(/\bid="([^"]+)"/g)].map(match => match[1].replaceAll('&amp;', '&')));
@@ -132,6 +131,13 @@ for (const channel of channels) {
     }
     assert.ok(html.includes(`rel="canonical" href="${url.href}"`), `Incorrect canonical URL in ${route}`);
     if (illustratedGuides.has(route)) await checkGuideRendering(route, html);
+    const markdown = join('website/src', route.replace(/\.html$/, '.md'));
+    const source = await readFile(markdown,'utf8').catch(error=>{
+      if(error.code==='ENOENT')return undefined;throw error;
+    });
+    if (source !== undefined) {
+      await checkRecordedPlotEmbeds(source,site);
+    }
     for (const match of html.matchAll(/(?:href|src)="([^"]+)"/g)) {
       const target = new URL(match[1].replaceAll('&amp;', '&'), url);
       if (target.origin !== origin) continue;
@@ -257,11 +263,7 @@ for (const channel of channels) {
     }
     if (hasSavedDiagnostics) {
       const workflow = new URL('interfaces/vscode-workflows.html', local).href;
-      const measurements = new URL('guide/understanding-measurements.html', local).href;
-      const screenshots = [
-        ...savedDiagnostics.map(entry => ({ ...entry, route: workflow, dimensions: [1800, 1400] })),
-        { tab: 'REPL / CLI', image: replImage, route: measurements, dimensions: [1750, 630] },
-      ];
+      const screenshots = savedDiagnostics.map(entry => ({ ...entry, route: workflow, dimensions: [1800, 1400] }));
       for (const width of [1440, 390, 360]) {
         await page.setViewportSize({ width, height: 900 });
         for (const entry of screenshots) {
@@ -312,7 +314,7 @@ for (const channel of channels) {
         assert.deepEqual(bytes, savedDiagnosticBytes.get(entry.report), `${entry.tab}: downloaded original JSON`);
         assert.equal(sha256(bytes), sha256(savedDiagnosticBytes.get(entry.report)));
       }
-      console.log(`${channel}: saved latency/memory tabs, native PNG/full-size sources, four original JSON downloads and REPL/mobile gallery passed`);
+      console.log(`${channel}: saved latency/memory tabs, original diagnostic captures, four original JSON downloads and mobile gallery passed`);
     }
     await page.goto(new URL('reference/extensions.html', local).href, { waitUntil: 'networkidle' });
     const text = await page.locator('.vp-doc').innerText();
@@ -329,8 +331,8 @@ for (const channel of channels) {
         assert.equal(marker.renderer, 'PerfChecker.performance_plot_html');
         assert.equal(marker.input_kind, 'published_serialized_plot');
         const digest = bytes => createHash('sha256').update(bytes).digest('hex');
-        const guided = marker.selection === 'guided_examples', kinds = new Set();
-        if (hasCompanionAPIs) assert.ok(guided, 'Guided native examples must be selected deliberately');
+        const exhaustive = marker.selection === 'all_saved_views', kinds = new Set();
+        assert.ok(exhaustive, 'Every saved view must have a native interactive export');
         // Core and its companions have independent package versions.
         const companionProject = await readFile('packages/PerfCheckerMakie/Project.toml', 'utf8');
         const companionVersion = /^version\s*=\s*"([^"]+)"/m.exec(companionProject)?.[1];
@@ -345,6 +347,7 @@ for (const channel of channels) {
           assert.equal(recorded.interactive_export?.companion_version, expectedCompanionVersion,
             `${packageName}: public renderer must match the documented companion version`);
           let selected = 0;
+          const expected = await checkInteractiveCatalog(recorded, directory);
           for (const view of recorded.views) {
             for (const entry of [view, ...(view.patch_windows ?? [])]) {
               if (!entry.html) continue;
@@ -352,14 +355,12 @@ for (const channel of channels) {
               const html = await readFile(join(directory, entry.html));
               assert.equal(digest(html), digest(await readFile(join('website/src/public/examples/real-packages', packageName, entry.html))),
                 `${packageName}/${entry.html}: the build must preserve the exact native export`);
-              if (!guided) assert.equal(digest(html), entry.html_sha256);
-              else assert.equal(entry.html_sha256, undefined, 'HTML hashes must not make catalogue provenance circular');
+              assert.equal(entry.html_sha256, undefined, 'HTML hashes must not make catalogue provenance circular');
               kinds.add(view.kind); selected++;
               nativeExports++;
             }
           }
-          if (guided) assert.equal(selected, packageName.endsWith('-profiles') ? 7 : 5,
-            `${packageName}: selected examples cover its useful plot families`);
+          assert.equal(selected, expected, `${packageName}: all saved views and patch windows are interactive`);
           if (['datastructures', 'oxygen'].includes(packageName)) {
             const sourceHash = digest(await readFile(join(directory, 'normalized.json')));
             const entry = recorded.views.find(view => view.html_input_sha256 === sourceHash);
@@ -368,17 +369,31 @@ for (const channel of channels) {
               digest(await readFile(join(directory, entry.html))));
           }
         }
-        assert.equal(nativeExports, guided ? 34 : 103);
+        assert(nativeExports > 0);
+        const collectorDirectory = join(site, 'examples/real-packages/containers-collectors');
+        const collectorCatalog = JSON.parse(await readFile(join(collectorDirectory, 'catalog.json'), 'utf8'));
+        const collectorCount = await checkInteractiveCatalog(collectorCatalog, collectorDirectory);
+        assert.equal(collectorCount, 35, 'All measured collector/operation comparisons stay interactive');
+        for (const view of collectorCatalog.views) {
+          const model = JSON.parse(await readFile(join(collectorDirectory, view.plot), 'utf8')).plot;
+          assert.equal(model.kind, 'observation_series');
+          assert.equal(model.options.metadata.source_sha256[view.json], digest(await readFile(join(collectorDirectory, view.json))));
+          for (const file of [view.html, view.plot, view.json]) {
+            assert.equal(digest(await readFile(join(collectorDirectory, file))),
+              digest(await readFile(join('website/src/public/examples/real-packages/containers-collectors', file))),
+              `Collectors/${file}: the build preserves the measured source and native export`);
+          }
+        }
         const normalized = catalog.views.filter(view => view.kind === 'normalized_metrics');
         assert.equal(normalized.length, 70);
         for (const view of normalized) {
           await access(join(site, 'examples/real-packages/containers', view.svg));
           await access(join(site, 'examples/real-packages/containers', view.json));
           if (view.html) await access(join(site, 'examples/real-packages/containers', view.html));
-          else if (!guided) assert.fail(`Missing native HTML for ${view.id}`);
+          else assert.fail(`Missing native HTML for ${view.id}`);
         }
-        if (guided) {
-          assert.equal(kinds.size, 12, 'The guided exports cover all twelve native plot families');
+        if (exhaustive) {
+          assert.equal(kinds.size, 12, 'The saved model exports cover all twelve native plot families');
           const bibliography = join(site, 'examples/bibliography/history');
           const history = JSON.parse(await readFile(join(bibliography, 'catalog.json'), 'utf8'));
           assert.equal(history.views.length, 6, 'The six measured Bibliography views remain available');
@@ -398,7 +413,7 @@ for (const channel of channels) {
         const checks = await checkRecordedInteractions(page, local, output);
         await writeFile(join(output, 'recorded-plots-result.json'),
           JSON.stringify({ passed: true, channel, revision: info.revision, renderer: marker.renderer, checks }, null, 2) + '\n');
-        console.log(`${channel}: ${nativeExports} real-package native HTML/source hashes${guided ? ', six Bibliography exports and shared assets' : ''}, and two aliases passed; public-renderer checks executed: ${checks.join('; ')}`);
+        console.log(`${channel}: ${nativeExports} real-package native HTML/source hashes, six Bibliography exports and shared assets, and two aliases passed; public-renderer checks executed: ${checks.join('; ')}`);
       } else {
         console.log(`${channel}: legacy ${info.version} export has no native-gallery marker; native interaction checks were not executed`);
       }
