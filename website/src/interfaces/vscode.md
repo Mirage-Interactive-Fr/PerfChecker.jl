@@ -260,47 +260,31 @@ following a call path.
   saved weights. Frame widths include child calls, so parent and child weights
   must not be added together.
 
-These complementary views show one **DataStructures 0.18.13**, **heap_2048**
-CPU capture, not a comparison between versions. It contains 425 retained
-samples. Frame 3 attributes 299 of them, about 70.35%, to the inclusive
-`pop! → heappop! → percolate_down!` path. This share is neither elapsed time
-nor a percentage slowdown.
-
-::: tabs
-
-== Controls
+Try the native interactive CPU export below. It reads the published
+DataStructures 0.19.6 `heap_32768_profile` capture: 115 CPU samples,
+Windows, Julia 1.13.0, one worker thread. Select a frame to inspect its full
+path and sample weight. A frame's share describes this capture, not elapsed
+time or a percentage slowdown.
 
 ```@raw html
-<DocMedia src="/assets/screenshots/vscode/v101/datastructures-cpu-01813-controls-e68a.png" alt="Native VS Code event_lab output for DataStructures 0.18.13 heap_2048, showing Color by Function, Labels Function name and the function-color legend" caption="Choose the presentation mode explicitly. This native viewport shows the controls; the graph and inspector are shown in the next tabs." />
+<InteractiveRecordedPlot source="/examples/real-packages/datastructures-profiles/cpu-flamegraph-054b5e59c351c558.json" html="/examples/real-packages/datastructures-profiles/cpu-flamegraph-054b5e59c351c558.html" title="Explore a recorded DataStructures CPU profile" kind="cpu_flamegraph" />
 ```
 
-== Zoomed call path
+This is a native PerfCheckerMakie export of the saved model. The
+[profile walkthrough](vscode-workflows.md#Follow-a-recorded-profile)
+explains how to use the VS Code viewer and includes the corresponding
+wall-time and allocation exports from the same recorded campaign.
+
+::: details Locate the presentation controls in VS Code
 
 ```@raw html
-<DocMedia src="/assets/screenshots/vscode/v101/datastructures-cpu-01813-zoom-e68a.png" alt="Native VS Code CPU flame graph zoomed to the real pop!, heappop! and percolate_down! branch, with complete function names and varied function colors" caption="Zoom reveals function names in the selected branch. Narrow frames remain in the saved model even when their labels do not fit." />
+<DocMedia src="/assets/screenshots/vscode/v101/datastructures-cpu-01813-controls-e68a.png" alt="Native VS Code controls for Color by Function, Labels Function name and Inspect frame" caption="Controls in the published 1.0.1 viewer. This historical UI capture is from a different DataStructures heap_2048 run; it does not display the interactive dataset above." />
 ```
 
-== Complete inspector
-
-```@raw html
-<DocMedia src="/assets/screenshots/vscode/v101/datastructures-cpu-01813-inspector-e68a.png" alt="Native VS Code inspector showing Frame 3 of 94, inclusive weight 299, metric julia.cpu.samples, the full heap-pop source path and Julia inference unknown" caption="The inspector preserves the full source path and the recorded unknown inference status. Its 70.352941% value is a share of this capture's 425 samples." />
-```
-
-:::
-
-The [profile walkthrough](vscode-workflows.md#Follow-a-recorded-profile)
-includes separate CPU, wall-time and allocation views for DataStructures 0.19.6.
-
-::: details Capture provenance
-
-The images are unchanged native viewports captured on 10 October 2026 (UTC)
-with the published 1.0.1 viewer, archive `e68a9264…`, built from extension
-source [`53d22da`](https://github.com/Mirage-Interactive-Fr/PerfCheckerVSCode/commit/53d22da767664e1072bdfa576dd13bbfa05b7dc5).
-They read historical bundle `8f2ffde5-55b9-43de-b35a-08503f9b6639`, measured on
-Linux with Julia 1.13.1 using Core development source
-[`63f5cc4`](https://github.com/Mirage-Interactive-Fr/PerfChecker.jl/commit/63f5cc4bfc2c55de521487f68b0df143107762f3).
-The data was not recollected with General 1.0.1. Each tab shows a different
-scroll position, rather than all controls and details at once.
+This unchanged controls-only capture was taken on 10 October 2026 with
+extension source [53d22da](https://github.com/Mirage-Interactive-Fr/PerfCheckerVSCode/commit/53d22da767664e1072bdfa576dd13bbfa05b7dc5).
+It illustrates the viewer controls, not a new measurement or a comparison
+with the 32,768-element workload.
 
 :::
 

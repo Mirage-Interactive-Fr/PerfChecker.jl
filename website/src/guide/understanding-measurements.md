@@ -110,9 +110,9 @@ Compare two numbers only when their measurement definitions and comparison keys 
 Keep the report directory printed by the run, including its `suite-result.json`
 and `bundles/` directory. Replace the paths below with that real directory.
 These routes read saved evidence; they do not collect new samples.
-The screenshots illustrate different recorded runs: Oxygen timing distributions
-in VS Code and Bibliography checks in Pluto and the Web interface. They show the controls
-to use, rather than claiming that each interface displays the same campaign.
+The examples use saved Oxygen and Bibliography campaigns. Interactive native
+exports let you inspect their values; the interface captures show where to
+find the corresponding controls. Each example identifies its own evidence.
 
 ::: tabs
 
@@ -128,10 +128,13 @@ JSON or an exported `plan.json` is not an importable replacement for this pair.
 Select the recorded versions and a compatible metric before comparing their
 distributions. Read the units and the full-distribution summary alongside the
 visible samples. The [VS Code walkthrough](../interfaces/vscode-workflows.md)
-explains the available controls and their version requirements.
+explains the available controls and their version requirements. The native
+Makie export below reads the fourteen-release Oxygen history: Windows, Julia
+1.13.0, one worker thread, 30 samples per release. It illustrates the evidence
+type; it is not a capture of the VS Code viewer.
 
 ```@raw html
-<DocMedia src="/assets/screenshots/vscode/v101/oxygen-distributions-central-db8b51b.png" alt="Native VS Code displaying saved Oxygen 1.10.2 and 1.11.0 timing distributions on a common zoomed scale, with their different medians and visible sample counts" caption="Saved Oxygen comparison, Linux, Julia 1.13.1, extension source db8b51b. The viewport shows 26/30 and 28/30 samples; summaries still use all 30 per release. The VS Code distribution guide gives its provenance and full-range view." />
+<InteractiveRecordedPlot source="/examples/real-packages/oxygen-features/distribution-17e1925ed491af0f.json" html="/examples/real-packages/oxygen-features/distribution-17e1925ed491af0f.html" title="Explore the saved Oxygen plain HTTP timing distributions" kind="distribution" />
 ```
 
 == Pluto
@@ -172,7 +175,10 @@ overload is a report viewer; a measurement controller requires a suite.
 See [server configuration](../interfaces/web-studio.md#Safety) for remote access.
 
 ```@raw html
+<InteractiveRecordedPlot source="/examples/bibliography/history/export-time.json" html="/examples/bibliography/history/export-time.html" title="Bibliography export medians from the saved nine-release campaign" kind="version_series" />
+<details><summary>See the same history in Web Studio</summary>
 <DocMedia src="/examples/bibliography/history-web/history-time.png" alt="Oxygen Results page showing the Bibliography historical campaign, export_bibtex version-series filters and measured timing across nine tags" caption="Earlier Bibliography historical campaign: the result selector, feature, metric and view identify the evidence displayed. These nine-tag timings are separate from the Oxygen package comparison in the VS Code tab." />
+</details>
 ```
 
 == REPL / CLI
@@ -195,19 +201,21 @@ not accepted by `read_run_bundle`. See the [REPL guide](../interfaces/repl-pluto
 for selection and report saving, or [Plots](../interfaces/visualization.md)
 for a Makie figure and standalone interactive HTML.
 
+The published Oxygen history also includes a genuine
+[UnicodePlots terminal export](../examples/real-packages/oxygen-features/normalized-metrics-24034c4be099f2e2.txt).
+The interactive view below reads the same native model. Hover a release and
+metric to inspect both the ratio and its original value and unit.
+
 ```@raw html
-<DocMedia src="/assets/screenshots/oxygen-repl-unicodeplots-20261010.png" alt="Native Julia REPL displaying PerfChecker's UnicodePlots chart for Oxygen 1.10.2 and 1.11.0, with wall time, GC time, allocated bytes and allocation-count ratios against 1.10.2" caption="Faithful crop of a native Julia 1.13.1 REPL with UnicodePlots 3.9.0 in a dedicated VS Code profile with extensions disabled. This reads the historical Oxygen bundle; it is not a new measurement or an extension installation check." />
+<NormalizedMeasurements source="/examples/real-packages/oxygen-features/normalized-metrics-24034c4be099f2e2.json" html="/examples/real-packages/oxygen-features/normalized-metrics-24034c4be099f2e2.html" package-name="Oxygen plain HTTP metrics relative to each metric's minimum" />
 ```
 
-This capture uses `performance_plot(bundle; reference_version = "1.10.2",
-statistic = :median)` and `terminal_plot(model; width = 85, height = 14)`.
-Each metric has its own reference line at one. When both the value and its
-reference are zero, the model displays one by convention to mean unchanged;
-this includes the zero GC values here and is not a mathematical quotient.
-A nonzero value with a zero reference is unavailable. The measurement campaign
-used Core `52a0d0c`; the later REPL viewer used Core `ffbf33f`. The bundle is the same
-two-release Oxygen campaign shown in the VS Code tab, and is separate from the
-Bibliography examples in the other tabs.
+This model uses the minimum observation for each release and a separate
+minimum reference for each metric. A ratio of one for time and one for bytes
+therefore describe different quantities. Equal zero values use one by
+convention; nonzero values against a zero reference are unavailable.
+These are the same fourteen-release history and runtime as the distribution
+in the VS Code tab, not a recollection of the older two-release example.
 
 :::
 
@@ -220,26 +228,23 @@ Bibliography examples in the other tabs.
 
 ```@raw html
 <figure class="doc-screenshot">
-<iframe class="doc-interactive" src="../examples/bibliography/history/export-time.html" title="Bibliography export medians across nine tagged versions" loading="lazy" sandbox="allow-scripts allow-same-origin allow-downloads"></iframe>
+<InteractiveRecordedPlot source="/examples/bibliography/history/export-time.json" html="/examples/bibliography/history/export-time.html" title="Bibliography export medians across nine tagged versions" kind="version_series" />
 <figcaption>Native interactive export of medians from 100 samples per tag. Windows · Julia 1.13.0 · one worker thread. Inputs match; dependency revisions follow each tag. Values are in nanoseconds (1,000 ns = 1 µs).</figcaption>
 </figure>
-<p><a href="../examples/bibliography/history/export-time.html">Open the interactive export</a> · <a href="../examples/bibliography/history/export-time.json" download>Download the serialized plot and source revisions</a></p>
 ```
 
 ```@raw html
 <figure class="doc-screenshot">
-<iframe class="doc-interactive" src="../examples/bibliography/history/export-samples.html" title="Distribution of 900 recorded Bibliography export timings across nine tagged versions" loading="lazy" sandbox="allow-scripts allow-same-origin allow-downloads"></iframe>
+<InteractiveRecordedPlot source="/examples/bibliography/history/export-samples.json" html="/examples/bibliography/history/export-samples.html" title="Distribution of 900 recorded Bibliography export timings across nine tagged versions" kind="distribution" />
 <figcaption>Native interactive distribution of 900 recorded timings: 100 samples per tag. Boxplots summarize each group; recorded points and slow observations remain available. Points can overlap. This shows variation, not execution order.</figcaption>
 </figure>
-<p><a href="../examples/bibliography/history/export-samples.html">Open the interactive export</a> · <a href="../examples/bibliography/history/export-samples.json" download>Download the serialized plot and source revisions</a></p>
 ```
 
 ```@raw html
 <figure class="doc-screenshot">
-<iframe class="doc-interactive" src="../examples/bibliography/history/export-memory.html" title="Julia allocated bytes per Bibliography export across nine tagged versions" loading="lazy" sandbox="allow-scripts allow-same-origin allow-downloads"></iframe>
+<InteractiveRecordedPlot source="/examples/bibliography/history/export-memory.json" html="/examples/bibliography/history/export-memory.html" title="Julia allocated bytes per Bibliography export across nine tagged versions" kind="version_series" />
 <figcaption>Native interactive export of Julia allocated bytes per export across nine tags, from 4,480 to 8,352 bytes. These values measure allocation activity, not retained heap size or resident process memory.</figcaption>
 </figure>
-<p><a href="../examples/bibliography/history/export-memory.html">Open the interactive export</a> · <a href="../examples/bibliography/history/export-memory.json" download>Download the serialized plot and source revisions</a></p>
 ```
 
 ## Next

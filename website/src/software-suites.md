@@ -96,10 +96,9 @@ Add candidates with `SuiteCandidate` and references with `ComparisonPolicy`. See
 
 ```@raw html
 <figure class="doc-screenshot">
-<iframe class="doc-interactive" src="./examples/bibliography/history/export-samples.html" title="Distribution of 900 recorded Bibliography export timings across nine tagged versions" loading="lazy" sandbox="allow-scripts allow-same-origin allow-downloads"></iframe>
+<InteractiveRecordedPlot source="/examples/bibliography/history/export-samples.json" html="/examples/bibliography/history/export-samples.html" title="Distribution of 900 recorded Bibliography export timings across nine tagged versions" kind="distribution" />
 <figcaption>Native interactive distribution of 900 recorded timings: 100 samples per tag. Boxplots summarize each group; recorded points and slow observations remain available. Points can overlap. This shows variation, not execution order. The quick selection above measures only the pinned development revision; it does not produce this nine-version history.</figcaption>
 </figure>
-<p><a href="./examples/bibliography/history/export-samples.html">Open the interactive export</a> · <a href="./examples/bibliography/history/export-samples.json" download>Download the serialized plot and source revisions</a></p>
 ```
 
 ```@raw html

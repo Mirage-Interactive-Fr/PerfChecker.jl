@@ -30,16 +30,19 @@ The same helper can open a plot JSON downloaded from the documentation:
 `terminal_plot(saved_plot("downloaded-plot.json"))`. A published plot is a
 projection of observations for visualization, not a complete qualification bundle.
 
-## Makie: static figures and interactive HTML
+## Makie: interactive figures and downloadable models
 
 ```sh
 julia setup.jl plots
 julia --project=.controller/plots export.jl results/ACTUAL-RUN exports/history
 ```
 
-The export writes an SVG, a JSON plot model and a Unicode text plot for each
-catalogue entry. The documentation uses this exporter rather than recreating
-different calculations for its illustrations.
+The export writes interactive HTML, a JSON plot model and a Unicode text plot
+for every catalogue entry, alongside optional static SVG downloads. The
+documentation embeds the native HTML rather than recreating its calculations.
+Use panel and series selectors, inspect an observation for its exact value,
+and zoom where the selected view supports it. Every patch window has its own
+interactive export too.
 
 For standalone interactive HTML, open Julia with `--project=.controller/plots`:
 
@@ -133,7 +136,10 @@ unrelated diagnostic artifacts. Stop the Julia command when you finish using
 the studio.
 
 ```@raw html
-<DocMedia src="/examples/real-packages/oxygen-web-studio.png" alt="Web interface (Oxygen) displaying the Oxygen heap request across twelve releases, with feature and view filters and four measurement toggles" caption="The recorded Oxygen campaign reopened in Web interface (Oxygen): twelve releases from 1.0.0 to 1.11.0. The feature and view selectors filter saved observations; the checkboxes isolate individual curves." />
+<NormalizedMeasurements source="/examples/real-packages/oxygen-features/normalized-metrics-24034c4be099f2e2.json" figure="/examples/real-packages/oxygen-features/normalized-metrics-24034c4be099f2e2.svg" html="/examples/real-packages/oxygen-features/normalized-metrics-24034c4be099f2e2.html" package-name="Oxygen · plain HTTP request" />
+<details><summary>See the same measurements in the Web Studio</summary>
+<DocMedia src="/examples/real-packages/oxygen-web-studio.png" alt="Web interface displaying Oxygen plain_benchmark across fourteen releases, with feature and view filters and four measurement toggles" caption="The saved plain HTTP campaign reopened in Web Studio: fourteen releases from 1.0.0 to 1.11.0. The feature and view selectors filter saved observations; the checkboxes isolate individual curves." />
+</details>
 ```
 
 Here, Oxygen hosts the interface that controls measurements of Oxygen in

@@ -9,7 +9,8 @@ import ssh2 from 'ssh2';
 const { Server, utils } = ssh2;
 import { hostVerifier, validateRoot, readExport, publishDocumentation, connectSftp,
   deploymentConfiguration, documentationSourceConfiguration, validateDocumentationExports,
-  validateStableDocumentationSource, failureClass } from './deploy-sftp.mjs';
+  validateStableDocumentationSource, fetchStableDocumentationCompanions, validateDocumentationRenderer,
+  failureClass } from './deploy-sftp.mjs';
 const revision = 'a'.repeat(40), nextRevision = 'b'.repeat(40);
 class MemorySftp {
   constructor() { this.files = new Map(); this.dirs = new Map([['/www', 0o755]]); this.operations = []; this.fail = null; }
@@ -84,6 +85,103 @@ test('stable source validation accepts only documentation differences from an ex
     assert.equal(await validateStableDocumentationSource(root, 'v1.0.0', git('rev-parse', 'HEAD')), tagRevision);
   }
 });
+test('stable source permits only the named documentation plot generators', async t => {
+  const root = await mkdtemp(join(tmpdir(), 'perfchecker-doc-generators-'));
+  t.after(() => rm(root, { recursive: true, force: true }));
+  const git = (...args) => execFileSync('git', ['-C', root, '-c', 'user.name=Documentation test',
+    '-c', 'user.email=docs@example.invalid', '-c', 'commit.gpgsign=false', '-c', 'core.hooksPath=/dev/null', ...args],
+  { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }).trim();
+  git('init'); await writeFile(join(root, 'Project.toml'), 'version = "1.1.0"\n');
+  await mkdir(join(root, 'src')); await writeFile(join(root, 'src/Core.jl'), 'immutable package source');
+  git('add', '.'); git('commit', '-m', 'release'); const release = git('rev-parse', 'HEAD'); git('tag', 'v1.1.0');
+  for (const name of ['export', 'publish-evidence', 'network-export', 'diagnostic-export',
+    'native-export', 'extra-export', 'collector-export', 'observation-export']) {
+    const path = `examples/kitchen-sink/${name}.jl`;
+    await mkdir(join(root, posix.dirname(path)), { recursive: true }); await writeFile(join(root, path), 'render recorded data');
+  }
+  await mkdir(join(root, 'qualification/shared'), { recursive: true });
+  await writeFile(join(root, 'qualification/shared/recorded-plots.mjs'), 'check recorded documentation views');
+  await mkdir(join(root, 'qualification/scripts'), { recursive: true });
+  await writeFile(join(root, 'qualification/scripts/run.jl'), 'run maintained documentation plot tests');
+  git('add', '.'); git('commit', '-m', 'recorded plot exporters');
+  assert.equal(await validateStableDocumentationSource(root, 'v1.1.0', git('rev-parse', 'HEAD')), release);
+  await mkdir(join(root, 'website'));
+  await writeFile(join(root, 'website/new-page.md'), 'untracked documentation');
+  assert.equal(await validateStableDocumentationSource(root, 'v1.1.0', git('rev-parse', 'HEAD')), release);
+  await rm(join(root, 'website/new-page.md'));
+  for (const path of ['src/new.jl', 'packages/PerfCheckerWeb/src/untracked.jl']) {
+    await mkdir(join(root, posix.dirname(path)), { recursive: true }); await writeFile(join(root, path), 'untracked code');
+    await assert.rejects(validateStableDocumentationSource(root, 'v1.1.0', git('rev-parse', 'HEAD')), /outside documentation/);
+    await rm(join(root, path));
+  }
+  git('mv', 'src/Core.jl', 'website/Core.jl'); git('commit', '-m', 'disguised Core rename');
+  await assert.rejects(validateStableDocumentationSource(root, 'v1.1.0', git('rev-parse', 'HEAD')), /outside documentation/);
+  git('revert', '--no-edit', 'HEAD');
+  git('rm', 'src/Core.jl'); git('commit', '-m', 'Core deletion');
+  await assert.rejects(validateStableDocumentationSource(root, 'v1.1.0', git('rev-parse', 'HEAD')), /outside documentation/);
+  git('revert', '--no-edit', 'HEAD');
+  for (const path of ['examples/kitchen-sink/oxygen/measure.jl', 'examples/kitchen-sink/another-export.jl',
+    'examples/other/export.jl', 'test/plot.jl', 'packages/PerfCheckerWeb/src/changed.jl',
+    'qualification/shared/another-check.mjs', 'qualification/scripts/another-runner.jl']) {
+    await mkdir(join(root, posix.dirname(path)), { recursive: true }); await writeFile(join(root, path), 'changed');
+    git('add', '.'); git('commit', '-m', 'outside named exporters');
+    await assert.rejects(validateStableDocumentationSource(root, 'v1.1.0', git('rev-parse', 'HEAD')), /outside documentation/);
+    git('revert', '--no-edit', 'HEAD');
+  }
+});
+test('a documentation renderer must exactly match its fetched independent stable tag', async t => {
+  const root = await mkdtemp(join(tmpdir(), 'perfchecker-doc-renderer-'));
+  t.after(() => rm(root, { recursive: true, force: true }));
+  const git = (...args) => execFileSync('git', ['-C', root, '-c', 'user.name=Documentation test',
+    '-c', 'user.email=docs@example.invalid', '-c', 'commit.gpgsign=false', '-c', 'core.hooksPath=/dev/null', ...args],
+  { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }).trim();
+  const directory = 'packages/PerfCheckerMakie', projectPath = join(root, directory, 'Project.toml');
+  const sourcePath = join(root, directory, 'src/PerfCheckerMakie.jl');
+  const coreProject = await readFile(new URL('../Project.toml', import.meta.url), 'utf8');
+  const makieProject = await readFile(new URL('../packages/PerfCheckerMakie/Project.toml', import.meta.url), 'utf8');
+  const coreVersion = /^version = "([^"]+)"/m.exec(coreProject)[1];
+  git('init'); await mkdir(join(root, directory, 'src'), { recursive: true });
+  await writeFile(join(root, 'Project.toml'), coreProject); await writeFile(projectPath, makieProject);
+  await writeFile(sourcePath, 'module PerfCheckerMakie\nend\n');
+  git('add', '.'); git('commit', '-m', 'Core release'); const release = git('rev-parse', 'HEAD'); git('tag', `v${coreVersion}`);
+  assert.equal(await validateStableDocumentationSource(root, `v${coreVersion}`, release), release,
+    'The real Core Project.toml is parsed before its compat sections');
+  const untracked = join(root, directory, 'untracked.jl'); await writeFile(untracked, 'untracked');
+  await assert.rejects(validateStableDocumentationSource(root, `v${coreVersion}`, release), /uncommitted or untracked/);
+  await rm(untracked);
+  const rendererProject = makieProject.replace(/^version = ".*"/m, 'version = "1.0.2"');
+  await writeFile(projectPath, rendererProject); await writeFile(sourcePath, 'module PerfCheckerMakie\n# new renderer\nend\n');
+  git('add', '.'); git('commit', '-m', 'independent renderer'); const renderer = git('rev-parse', 'HEAD');
+  await assert.rejects(validateStableDocumentationSource(root, `v${coreVersion}`, renderer));
+  const tag = 'PerfCheckerMakie-v1.0.2'; git('tag', tag);
+  const sources = [];
+  assert.equal(await validateStableDocumentationSource(root, `v${coreVersion}`, renderer,
+    { onCompanionSource: source => sources.push(source) }), release);
+  assert.deepEqual(sources, [{ name: 'PerfCheckerMakie', version: '1.0.2', tag, revision: renderer,
+    tree: git('rev-parse', `${renderer}:${directory}`) }]);
+  const remoteRoot = await mkdtemp(join(tmpdir(), 'perfchecker-doc-origin-'));
+  t.after(() => rm(remoteRoot, { recursive: true, force: true }));
+  const remote = join(remoteRoot, 'public-origin.git'); git('clone', '--bare', root, remote); git('remote', 'add', 'origin', remote);
+  git('tag', '-d', tag);
+  assert.equal(await fetchStableDocumentationCompanions(root, `v${coreVersion}`, renderer), tag);
+  assert.equal(git('rev-parse', `${tag}^{commit}`), renderer, 'Fetch uses the exact companion tag from origin');
+  const original = await readFile(sourcePath, 'utf8');
+  await writeFile(sourcePath, original + '# dirty worktree\n');
+  await assert.rejects(validateStableDocumentationSource(root, `v${coreVersion}`, renderer), /uncommitted or untracked/);
+  git('add', sourcePath); await writeFile(sourcePath, original);
+  await assert.rejects(validateStableDocumentationSource(root, `v${coreVersion}`, renderer), /uncommitted or untracked/,
+    'An index-only change is rejected even if the worktree matches HEAD');
+  git('restore', '--source=HEAD', '--staged', '--worktree', sourcePath);
+  await writeFile(sourcePath, original + '# not in the published tag\n'); git('add', sourcePath); git('commit', '-m', 'unreleased renderer change');
+  await assert.rejects(validateStableDocumentationSource(root, `v${coreVersion}`, git('rev-parse', 'HEAD')), /differs from its published/);
+  git('revert', '--no-edit', 'HEAD');
+  for (const change of [rendererProject.replace('version = "1.0.2"', 'version = "1.0.2-rc1"'),
+    rendererProject.replace('name = "PerfCheckerMakie"', 'name = "OtherRenderer"')]) {
+    await writeFile(projectPath, change); git('add', projectPath); git('commit', '-m', 'invalid renderer identity');
+    await assert.rejects(validateStableDocumentationSource(root, `v${coreVersion}`, git('rev-parse', 'HEAD')), /stable PerfCheckerMakie/);
+    git('revert', '--no-edit', 'HEAD');
+  }
+});
 test('explicit source inputs require a complete immutable pair on a stable main dispatch', () => {
   const env = { GITHUB_ACTIONS: 'true', GITHUB_EVENT_NAME: 'workflow_dispatch', GITHUB_REF: 'refs/heads/main',
     GITHUB_SHA: revision, PERFCHECKER_DOCS_STABLE_REFRESH: 'true',
@@ -103,6 +201,17 @@ test('explicit source inputs require a complete immutable pair on a stable main 
   for (const event of ['push', 'pull_request', 'workflow_dispatch'])
     assert.deepEqual(documentationSourceConfiguration({ GITHUB_SHA: revision, GITHUB_EVENT_NAME: event }),
       { explicit: false, version: undefined, revision }, 'Ordinary sources retain the Actions revision');
+});
+test('published renderer provenance must match the exact independently validated source', () => {
+  const source = { name: 'PerfCheckerMakie', version: '1.0.2', tag: 'PerfCheckerMakie-v1.0.2',
+    revision, tree: nextRevision };
+  const info = Object.fromEntries(Object.entries(source).map(([key, value]) => [`renderer_${key}`, value]));
+  validateDocumentationRenderer(info, source);
+  for (const key of Object.keys(source)) {
+    const missing = { ...info }; delete missing[`renderer_${key}`];
+    assert.throws(() => validateDocumentationRenderer(missing, source), /renderer differs/);
+    assert.throws(() => validateDocumentationRenderer({ ...info, [`renderer_${key}`]: 'different' }, source), /renderer differs/);
+  }
 });
 test('explicit stable exports bind the documentation SHA rather than the Actions SHA', async t => {
   const source = documentationSourceConfiguration({ GITHUB_ACTIONS: 'true', GITHUB_EVENT_NAME: 'workflow_dispatch',

@@ -81,9 +81,13 @@ domain root only; `/dev/` is updated by the normal main-push workflow.
 
 This action requires `main` to retain the registered version and the same package
 source as its existing stable tag. Every differing path must be documentation,
-the Documentation workflow or one of its explicitly allowed documentation
-checkers. Package metadata, source, extensions, CLI files, optional packages,
-providers and schemas are checked rather than guessed from a partial source list.
+the Documentation workflow, its explicitly allowed documentation checkers or
+one of the eight recorded-evidence exporters listed in `deploy-sftp.mjs`.
+The maintained plot-test entry in `qualification/scripts/run.jl` is also
+allowed; other qualification scripts are not. Untracked files are checked
+against the same path policy as committed, staged and working-tree changes.
+Package metadata, source, extensions, CLI files, providers and schemas are
+checked rather than guessed from a partial source list.
 The publisher verifies the checkout SHA and tag again before connecting. Missing
 tags or changed package source refuse the refresh.
 
@@ -94,7 +98,7 @@ documentation-only commit). Leave both empty for the ordinary refresh described
 above. Explicit inputs are accepted only with `publication=stable` on `main`;
 an incomplete pair, branch name, prerelease or another event/ref is rejected.
 
-The explicit source must retain the selected tag's exact `Project.toml`, package
+The explicit source must retain the selected tag's exact `Project.toml`, Core
 source, optional providers and every other non-documentation file. Its TOML
 version must equal the selected stable tag. Only the same documentation paths
 listed above may differ. Build and publication use separate checkouts of that
@@ -102,6 +106,16 @@ same immutable source; the publisher and workflow remain from the Actions
 revision on `main`. `GITHUB_SHA` is not overridden. The generated
 `build-info.json` and source links identify the documentation source SHA, and
 the publisher rejects exports or checkouts carrying another SHA.
+
+The sole companion exception is `packages/PerfCheckerMakie/`, the documentation
+renderer. If it differs from the Core tag, its complete committed subtree must
+match its own stable public `PerfCheckerMakie-vX.Y.Z` tag and Project version.
+The workflow fetches that exact tag from the repository's origin before both
+build and publication validation. Uncommitted, staged or untracked renderer
+changes refuse the refresh. Other companions remain unchanged. `build-info.json`
+records the renderer name, version, commit, tree and validated tag; publication
+checks this provenance against the selected source. This permits a separately
+released plotting improvement without claiming that the old Core tag contains it.
 
 This explicit route builds and checks only the stable root export. It neither
 builds nor publishes `/dev/`, the GitHub mirror or a version archive. The

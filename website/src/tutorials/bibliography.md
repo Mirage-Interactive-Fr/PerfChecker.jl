@@ -258,17 +258,32 @@ To locate the calls responsible for a cost, continue with [Investigating a chang
 
 ```@raw html
 <DocMedia video recording="bibliography-history" src="/examples/bibliography/history-web/bibliography-history.webm" poster="/examples/bibliography/history-web/history-time.png" subtitles="/examples/bibliography/history-web/walkthrough.vtt" alt="Oxygen walkthrough comparing nine Bibliography tags through time, allocation, distribution and delta views" caption="Actual exploration of the recorded historical campaign. The first wait is plot rendering; this video launches no measurement job. Captions explain the selected measures. No audio." />
+<InteractiveRecordedPlot source="/examples/bibliography/history/export-memory.json" html="/examples/bibliography/history/export-memory.html" title="Allocated Julia bytes per export across the same nine Bibliography releases" kind="version_series" />
+<details><summary>See the allocated-byte view in Web Studio</summary>
 <DocMedia src="/examples/bibliography/history-web/history-memory.png" alt="Oxygen allocated-byte curve showing all nine Bibliography tags, from 4480 to 8352 bytes" caption="The same saved campaign viewed as Julia allocation bytes. The metric changes while the selected workload and source revisions remain the same." />
+</details>
 ```
 
-```@raw html
-<DocMedia video recording="bibliography-web" src="/examples/bibliography/web/bibliography-web.webm" poster="/examples/bibliography/web/selection.png" subtitles="/examples/bibliography/web/walkthrough.vtt" alt="Recorded Bibliography export check in the Oxygen studio" caption="Windows, Julia 1.13.0, 12 September 2026. One export_bibtex check, from selection to its saved sample distribution. No audio." />
-```
+### Inspect a saved single-revision distribution
 
 ```@raw html
-<DocMedia src="/examples/bibliography/web/collectors.png" alt="Five collectors available for the Bibliography export_bibtex workload" caption="The workload filter groups the five collectors under the same export_bibtex name." />
-<DocMedia src="/examples/bibliography/web/results.png" alt="Saved export timing distribution with sample 50 highlighted at 6200 nanoseconds" caption="A saved result reopened after the run. The executed verdict and inconclusive comparison remain visible above the distribution." />
+<InteractiveRecordedPlot source="/examples/bibliography/timing-evidence.json" html="/examples/bibliography/export-timing.html" title="Bibliography export_bibtex — fifty saved timing samples" kind="distribution" />
 ```
+
+Select a sample to read its time in nanoseconds. This real native export reads
+run `7f142c4b-7c47-417e-9c50-3a3c1e74c6dc`, with Bibliography source
+[575ec81](https://github.com/JuliaBibliographies/Bibliography.jl/commit/575ec810042cc791fd47a2c025a80246ccf039b5),
+Julia 1.13.0 and one worker thread. The source JSON records fifty samples;
+correctness is `not_checked` and performance is `not_compared`. It is a
+single-revision timing example, separate from the nine-tag history above.
+
+::: details Locate the workload collectors in Web Studio
+
+```@raw html
+<DocMedia src="/examples/bibliography/web/collectors.png" alt="Five collectors available for the Bibliography export_bibtex workload" caption="An earlier Web Studio controls capture: the workload filter groups five collectors under export_bibtex. It does not identify or reproduce the distribution above." />
+```
+
+:::
 
 ```@raw html
 <p><a href="../examples/bibliography/pluto/notebook.jl" download="notebook.jl"><strong>Download the Bibliography Pluto notebook (.jl)</strong></a></p>
@@ -284,8 +299,7 @@ To locate the calls responsible for a cost, continue with [Investigating a chang
 
 ```@raw html
 <figure class="doc-screenshot">
-<iframe class="doc-interactive" src="../examples/bibliography/history/export-time.html" title="Bibliography export medians across nine tagged versions" loading="lazy" sandbox="allow-scripts allow-same-origin allow-downloads"></iframe>
+<InteractiveRecordedPlot source="/examples/bibliography/history/export-time.json" html="/examples/bibliography/history/export-time.html" title="Bibliography export medians across nine tagged versions" kind="version_series" />
 <figcaption>Native interactive export of medians from 100 samples per tag. Windows · Julia 1.13.0 · one worker thread. Inputs match; dependency revisions follow each tag. Values are in nanoseconds (1,000 ns = 1 µs).</figcaption>
 </figure>
-<p><a href="../examples/bibliography/history/export-time.html">Open the interactive export</a> · <a href="../examples/bibliography/history/export-time.json" download>Download the serialized plot and source revisions</a></p>
 ```

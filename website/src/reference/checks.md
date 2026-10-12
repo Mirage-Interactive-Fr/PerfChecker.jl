@@ -293,20 +293,27 @@ The entrypoint is ordinary Julia and must return the same result for every targe
 
 ```@raw html
 <figure class="doc-screenshot">
-<iframe class="doc-interactive" src="../examples/bibliography/history/export-samples.html" title="Distribution of 900 recorded Bibliography export timings across nine tagged versions" loading="lazy" sandbox="allow-scripts allow-same-origin allow-downloads"></iframe>
+<InteractiveRecordedPlot source="/examples/bibliography/history/export-samples.json" html="/examples/bibliography/history/export-samples.html" title="Distribution of 900 recorded Bibliography export timings across nine tagged versions" kind="distribution" />
 <figcaption>Native interactive distribution of 900 recorded timings: 100 samples per tag. Boxplots summarize each group; recorded points and slow observations remain available. Points can overlap. This shows variation, not execution order.</figcaption>
 </figure>
-<p><a href="../examples/bibliography/history/export-samples.html">Open the interactive export</a> · <a href="../examples/bibliography/history/export-samples.json" download>Download the serialized plot and source revisions</a></p>
 ```
 
 ```@raw html
-<DocMedia src="/examples/bibliography/figures/profile-cpu.png" alt="Recorded Bibliography export flame graph weighted by CPU samples" caption="A real capture at revision 575ec81, weighted by CPU samples. Width includes descendants; the 40 highest-weight stacks are retained. Open the interactive profiles to zoom and inspect full call paths." />
+<PluginTabs>
+<PluginTabsTab label="CPU samples">
+<InteractiveRecordedPlot source="/examples/bibliography/profiles/cpu.json" html="/examples/bibliography/profiles/cpu.html" title="Bibliography export: recorded CPU samples" kind="cpu_flamegraph" />
+</PluginTabsTab>
+<PluginTabsTab label="Wall-time samples">
+<InteractiveRecordedPlot source="/examples/bibliography/profiles/wall.json" html="/examples/bibliography/profiles/wall.html" title="Bibliography export: recorded wall-time task samples" kind="wall_flamegraph" />
+</PluginTabsTab>
+<PluginTabsTab label="Allocation samples">
+<InteractiveRecordedPlot source="/examples/bibliography/profiles/allocations.json" html="/examples/bibliography/profiles/allocations.html" title="Bibliography export: recorded allocation profile" kind="allocation_flamegraph" />
+</PluginTabsTab>
+</PluginTabs>
 ```
 
-```@raw html
-<DocMedia src="/examples/bibliography/figures/profile-wall.png" alt="Recorded Bibliography export flame graph weighted by task stack samples" caption="A real capture at revision 575ec81, weighted by task stack samples. Width includes descendants; the 40 highest-weight stacks are retained. Open the interactive profiles to zoom and inspect full call paths." />
-```
-
-```@raw html
-<DocMedia src="/examples/bibliography/figures/profile-allocations.png" alt="Recorded Bibliography export flame graph weighted by sampled allocation bytes" caption="A real capture at revision 575ec81, weighted by sampled allocation bytes. Width includes descendants; the 40 highest-weight stacks are retained. Open the interactive profiles to zoom and inspect full call paths." />
-```
+These profiles were recorded at revision `575ec81`. Width includes descendants
+and represents the selected weight: CPU samples, task samples or sampled
+allocation bytes. Inspect a frame for its full call path and weight; use zoom
+and Fit to explore the same saved capture. A profile does not by itself compare
+the performance of two revisions.

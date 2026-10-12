@@ -18,6 +18,33 @@ const intentName = '.perfchecker-promotion.json';
 const stableName = '.perfchecker-stable.json';
 const refreshName = '.perfchecker-stable-refresh.json';
 const assert = (condition, message) => { if (!condition) throw new Error(message); };
+const documentationGenerators = new Set(['export', 'publish-evidence', 'network-export',
+  'diagnostic-export', 'native-export', 'extra-export', 'collector-export', 'observation-export']
+  .map(name => `examples/kitchen-sink/${name}.jl`));
+const makieDirectory = 'packages/PerfCheckerMakie';
+const documentationGit = repository => async args => (await promisify(execFile)('git', ['-C', repository, ...args],
+  { encoding: 'utf8', maxBuffer: 4 * 1024 * 1024 })).stdout;
+const projectField = (project, field) => new RegExp(`^${field}\\s*=\\s*"([^"]+)"\\s*(?:#.*)?$`, 'm')
+  .exec(project.split(/^\s*\[/m)[0])?.[1];
+async function documentationMakieTag(git, releaseRevision, revision) {
+  if (!(await git(['diff', '--no-renames', '--name-only', releaseRevision, revision, '--', makieDirectory])).trim()) return null;
+  const project = await git(['show', `${revision}:${makieDirectory}/Project.toml`]);
+  const version = projectField(project, 'version');
+  assert(projectField(project, 'name') === 'PerfCheckerMakie' && versionPattern.test(`v${version}`),
+    'Documentation renderer must identify a stable PerfCheckerMakie version');
+  // TagBot's subdir convention is PACKAGE-vVERSION; it is independent of the Core tag.
+  return `PerfCheckerMakie-v${version}`;
+}
+// The workflow fetches only the companion tag required by its selected source,
+// from the same public origin as the Core release, before source validation.
+export async function fetchStableDocumentationCompanions(repository, version, revision) {
+  assert(versionPattern.test(version) && revisionPattern.test(revision), 'Invalid stable documentation identity');
+  const git = documentationGit(repository);
+  const releaseRevision = (await git(['rev-parse', '--verify', `${version}^{commit}`])).trim();
+  const tag = await documentationMakieTag(git, releaseRevision, revision);
+  if (tag) await git(['fetch', '--no-tags', '--depth=1', 'origin', `refs/tags/${tag}:refs/tags/${tag}`]);
+  return tag;
+}
 // A dispatch can document an older stable package without changing the Actions
 // revision or trusting that main still contains that package's source.
 export function documentationSourceConfiguration(env) {
@@ -34,25 +61,49 @@ export function documentationSourceConfiguration(env) {
   }
   return { explicit, version: explicit ? version : undefined, revision: explicit ? revision : env.GITHUB_SHA };
 }
-// Permit documentation changes while checking every other path against the
-// immutable release tree, including package metadata and optional providers.
-export async function validateStableDocumentationSource(repository, version, revision) {
+// Keep Core and other providers at the immutable release. A newer documentation
+// renderer is permitted only when its complete subtree matches its own fetched tag.
+export async function validateStableDocumentationSource(repository, version, revision, { onCompanionSource } = {}) {
   assert(versionPattern.test(version) && revisionPattern.test(revision), 'Invalid stable documentation identity');
-  const git = async args => (await promisify(execFile)('git', ['-C', repository, ...args],
-    { encoding: 'utf8', maxBuffer: 4 * 1024 * 1024 })).stdout;
+  const git = documentationGit(repository);
   assert((await git(['rev-parse', 'HEAD'])).trim() === revision, 'Documentation checkout differs from the selected source');
   const releaseRevision = (await git(['rev-parse', '--verify', `${version}^{commit}`])).trim();
-  const changes = ((await git(['diff', '--name-only', '-z', releaseRevision, revision])) +
-    (await git(['diff', '--name-only', '-z', revision]))).split('\0').filter(Boolean);
+  // Report both ends of a rename as a deletion/addition: moving Core into
+  // website must never disguise a package-source change as documentation.
+  const changes = ((await git(['diff', '--no-renames', '--name-only', '-z', releaseRevision, revision])) +
+    (await git(['diff', '--no-renames', '--name-only', '-z', revision])) +
+    (await git(['diff', '--cached', '--no-renames', '--name-only', '-z', revision])) +
+    (await git(['ls-files', '--others', '--exclude-standard', '-z']))).split('\0').filter(Boolean);
   const allowed = path => path.startsWith('website/') || path === 'README.md' ||
     path === '.github/workflows/Documentation.yml' || path === 'qualification/shared/canonical-documentation.mjs' ||
-    path === 'qualification/shared/static-website-browser.mjs';
+    path === 'qualification/shared/static-website-browser.mjs' || path === 'qualification/shared/recorded-plots.mjs' ||
+    path === 'qualification/scripts/run.jl' ||
+    documentationGenerators.has(path) ||
+    path.startsWith(makieDirectory + '/');
   assert(changes.every(allowed), 'Stable documentation source changes files outside documentation and its checks');
+  const dirty = (await git(['diff', '--no-renames', '--name-only', '-z', revision, '--', makieDirectory])) +
+    (await git(['diff', '--cached', '--no-renames', '--name-only', '-z', revision, '--', makieDirectory])) +
+    (await git(['ls-files', '--others', '--exclude-standard', '-z', '--', makieDirectory]));
+  assert(!dirty, 'Documentation renderer has uncommitted or untracked changes');
+  if (changes.some(path => path.startsWith(makieDirectory + '/'))) {
+    const tag = await documentationMakieTag(git, releaseRevision, revision);
+    assert(tag, 'Documentation renderer differs without a companion release');
+    const companionRevision = (await git(['rev-parse', '--verify', `${tag}^{commit}`])).trim();
+    const tree = (await git(['rev-parse', `${revision}:${makieDirectory}`])).trim();
+    assert(tree === (await git(['rev-parse', `${companionRevision}:${makieDirectory}`])).trim(),
+      'Documentation renderer differs from its published companion tag');
+    onCompanionSource?.({ name: 'PerfCheckerMakie', version: tag.slice('PerfCheckerMakie-v'.length),
+      tag, revision: companionRevision, tree });
+  }
   // Project.toml is already required to match the immutable release exactly.
   const project = await readFile(join(repository, 'Project.toml'), 'utf8');
-  const packageVersion = /^version\s*=\s*"([^"]+)"\s*(?:#.*)?$/m.exec(project.split(/^\s*\[/m)[0])?.[1];
+  const packageVersion = projectField(project, 'version');
   assert(`v${packageVersion}` === version, 'Documentation package version differs from the selected stable tag');
   return releaseRevision;
+}
+export function validateDocumentationRenderer(info, source) {
+  assert(Object.entries(source).every(([key, value]) => info[`renderer_${key}`] === value),
+    'Documentation export renderer differs from its validated companion tag');
 }
 export function compareVersions(a, b) {
   assert(versionPattern.test(a) && versionPattern.test(b), 'Invalid stable version');
@@ -386,7 +437,11 @@ async function main() {
     options.validatedExports = await validateDocumentationExports(options);
     if (options.channel === 'stable-refresh') {
       phase = 'source-validation';
-      options.releaseRevision = await validateStableDocumentationSource(options.sourceRepository ?? process.cwd(), options.version, options.revision);
+      options.releaseRevision = await validateStableDocumentationSource(options.sourceRepository ?? process.cwd(), options.version, options.revision,
+        { onCompanionSource: source => {
+          validateDocumentationRenderer(options.validatedExports.primary.info, source);
+          console.log('Documentation companion source: ' + JSON.stringify(source));
+        } });
     }
     phase = 'connection';
     console.log('Connecting to the pinned SFTP host');

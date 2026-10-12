@@ -91,8 +91,7 @@ For larger configurations, prefer the shared UI JSON file over shell-escaped JSO
 
 ```@raw html
 <figure class="doc-screenshot">
-<iframe class="doc-interactive" src="../examples/bibliography/history/export-delta.html" title="Diagnostic changes in median Bibliography export time relative to tag 0.1.0" loading="lazy" sandbox="allow-scripts allow-same-origin allow-downloads"></iframe>
+<InteractiveRecordedPlot source="/examples/bibliography/history/export-delta.json" html="/examples/bibliography/history/export-delta.html" title="Diagnostic changes in median Bibliography export time relative to tag 0.1.0" kind="version_delta" />
 <figcaption>Native interactive comparison with the 0.1.0 median. Negative means less elapsed time; positive means more. No CI acceptance budget or correctness oracle was configured, so these are diagnostic changes, not pass or fail labels.</figcaption>
 </figure>
-<p><a href="../examples/bibliography/history/export-delta.html">Open the interactive export</a> · <a href="../examples/bibliography/history/export-delta.json" download>Download the serialized plot and source revisions</a></p>
 ```

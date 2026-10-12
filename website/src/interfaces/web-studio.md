@@ -124,5 +124,12 @@ requests and responses, remote-worker setup and recovery.
 ```
 
 ```@raw html
+<InteractiveRecordedPlot source="/examples/bibliography/history/export-time.json" html="/examples/bibliography/history/export-time.html" title="Bibliography export time across nine recorded releases" kind="version_series" />
+<details><summary>See this same history in the Web Studio</summary>
 <DocMedia src="/examples/bibliography/history-web/history-time.png" alt="Oxygen showing the Bibliography export timing curve across nine tagged versions" caption="Nine actual measured versions, selected from the saved historical campaign. Inspect a point to read its exact version and value." />
+</details>
 ```
+
+Inspect a point above to read the release and nanosecond value. The interactive
+export and Studio capture use the same saved history, run `a1d731d2`; changing
+the presentation does not collect new measurements.
