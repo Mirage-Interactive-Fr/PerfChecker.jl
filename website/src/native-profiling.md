@@ -182,7 +182,7 @@ julia --project=. run.jl results
 
 The pinned tools require Julia 1.12 or newer; use Julia 1.13.1 with the recorded
 Manifest. Analysis and measurement need only the downloaded environment. The
-optional interactive export additionally needs **PerfCheckerMakie 1.0.2** and
+optional interactive export uses **PerfCheckerMakie 1.0.3** and
 WGLMakie in a rendering environment; it reads the saved evidence without rerunning
 JET or the workload:
 
@@ -194,7 +194,7 @@ using Pkg
 Pkg.add(name = "PerfChecker", version = "1.1.0")
 Pkg.add(Pkg.PackageSpec(
     url = "https://github.com/Mirage-Interactive-Fr/PerfChecker.jl",
-    subdir = "packages/PerfCheckerMakie", rev = "PerfCheckerMakie-v1.0.2"))
+    subdir = "packages/PerfCheckerMakie", rev = "PerfCheckerMakie-v1.0.3"))
 Pkg.add(name = "WGLMakie", version = "0.13")
 Pkg.add(name = "JSON", version = "1")
 ```

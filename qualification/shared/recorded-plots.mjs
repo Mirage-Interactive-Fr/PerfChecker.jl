@@ -65,6 +65,71 @@ async function inspectNormalizedRecordedPlot(page,panel,record,label){
   expectedModel:record.plot.id,expected,...context})}`);
 }
 
+export async function inspectRecordedFlamePlot(page,graph,record,label){
+ const iframe=graph.locator('iframe');
+ const href=await graph.getByRole('link',{name:'Open the same interactive export'}).getAttribute('href');
+ const expectedURL=new URL(href,page.url()).href;
+ const frame=await (await iframe.elementHandle()).contentFrame();
+ const rectangles=frame.locator('.flame-frame'),tooltip=frame.getByRole('tooltip');
+ const inspection=row=>{
+  const lines=['Frame: '+row.label,'Version: '+record.plot.options.selected_version,
+   'Path: '+(row.path??[]).join(' → '),'Share: '+row.percentage+'%',
+   'Weight: '+row.value+' '+record.plot.options.value_label];
+  for(const [key,name]of [['runtime_dispatch','Runtime dispatch'],['gc_event','Garbage collection']])
+   if(Number(row[key+'_value'])>0)lines.push(name+': '+row[key+'_percentage']+'% ('+row[key+'_value']+' '+record.plot.options.value_label+')');
+  if(row.inference_status?.length)lines.push('Julia inference: '+row.inference_status.join(', '));
+  if(row.inferred_return_type?.length)lines.push('Inferred return: '+row.inferred_return_type.join(' | '));
+  if((row.inference_status??[]).some(value=>['any','union','abstract'].includes(value)))lines.push('Inspect with @code_warntype or Cthulhu');
+  return lines.join('\n');
+ };
+ const context=()=>frame.evaluate(()=>({url:location.href,
+  focused:document.activeElement?.getAttribute('data-index'),
+  hovered:document.querySelector('.flame-frame:hover')?.getAttribute('data-index'),
+  tooltip:getComputedStyle(document.querySelector('#tooltip')).display,
+  readout:document.querySelector('#readout').textContent,viewport:[innerWidth,innerHeight]}));
+ const layout=()=>frame.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+ const first=inspection(record.plot.data[0]);
+ const hoverIndex=record.plot.data.slice(1).reduce((best,row,index)=>
+  row.x1-row.x0>record.plot.data[best].x1-record.plot.data[best].x0?index+1:best,
+  Math.min(1,record.plot.data.length-1));
+ async function assertKeyboardInspection(stage){
+  const diagnostic=`${label} / ${stage} ${JSON.stringify(await context())}`;
+  assert.equal(await rectangles.first().evaluate(node=>node===document.activeElement),true,diagnostic);
+  assert.equal(await tooltip.isVisible(),true,diagnostic);
+  assert.equal(await tooltip.innerText(),first,diagnostic);
+  assert.equal(await frame.locator('#readout').innerText(),`Frame 1 of ${record.plot.data.length}\n${first}`,diagnostic);
+ }
+ try{
+  await frame.waitForURL(expectedURL);
+  await rectangles.first().waitFor();
+  assert.equal(await rectangles.count(),record.plot.data.length);
+  assert.equal(await rectangles.first().getAttribute('aria-label'),first);
+  await rectangles.first().focus();
+  await tooltip.waitFor({state:'visible'});
+  await layout();
+  await assertKeyboardInspection('initial focus and iframe layout');
+  await rectangles.first().hover();
+  await page.mouse.move(0,0);
+  await assertKeyboardInspection('pointer leaves the focused frame');
+  const previousHeight=await iframe.evaluate(node=>node.style.height);
+  try{
+   const resized=frame.evaluate(()=>new Promise(resolve=>addEventListener('resize',()=>requestAnimationFrame(resolve),{once:true})));
+   await iframe.evaluate(node=>{node.style.height=(node.clientHeight+10)+'px'});
+   await resized;
+   await assertKeyboardInspection('incidental iframe resize');
+  }finally{await iframe.evaluate((node,height)=>{node.style.height=height},previousHeight)}
+  await frame.getByRole('button',{name:'Zoom in',exact:true}).focus();
+  assert.equal(await tooltip.isVisible(),false,`${label}: blur clears the keyboard tooltip`);
+  await rectangles.nth(hoverIndex).hover();
+  assert.equal(await tooltip.innerText(),inspection(record.plot.data[hoverIndex]),`${label}: pointer inspection is exact`);
+  await page.mouse.move(0,0);
+  assert.equal(await tooltip.isVisible(),false,`${label}: pointer-only inspection clears on leave`);
+ }catch(error){
+  error.message=`${label}: ${error.message}\nNative flame context: ${JSON.stringify({expectedURL,model:record.plot.id,...await context()})}`;
+  throw error;
+ }
+}
+
 export async function checkRecordedGalleryInteractions(page,base){
  const checks=[];
  const gallery=page.locator('section[aria-label="DataStructures container catalogue recorded plots"]');
@@ -294,10 +359,7 @@ export async function checkRecordedInteractions(page,base,output){
    const source=await graph.getByRole('link',{name:'Download the serialized plot'}).getAttribute('href');
    const record=await (await page.request.get(new URL(source,base).href)).json();
    assert.equal(await rectangles.count(),record.plot.data.length);
-   await rectangles.first().focus();
-   const tooltip=frame.getByRole('tooltip');
-   await tooltip.waitFor({state:'visible'});
-   assert((await tooltip.innerText()).includes(record.plot.data[0].label));
+   await inspectRecordedFlamePlot(page,graph,record,label);
    const fitted=await frame.locator('#flame').boundingBox();
    await frame.getByRole('button',{name:'Zoom in',exact:true}).click();
    assert((await frame.locator('#flame').boundingBox()).width>fitted.width*1.4);

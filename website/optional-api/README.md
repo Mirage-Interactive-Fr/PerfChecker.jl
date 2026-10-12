@@ -15,7 +15,7 @@ Julia 1.10 must not rely on a `[sources]` table.
 | --- | --- | ---: | --- |
 | `linuxperf` | PerfCheckerLinuxPerf 1.0.1 | 7 | Explicit Julia counter executor |
 | `likwid` | PerfCheckerLIKWID 1.0.1 | 7 | Explicit Julia counter executor |
-| `makie` | PerfCheckerMakie 1.0.2 | 9 | Native observation models and the real WGLMakie/Bonito HTML extension |
+| `makie` | PerfCheckerMakie 1.0.3 | 9 | Native observation models and the real WGLMakie/Bonito HTML extension |
 | `web` | PerfCheckerWeb 1.0.0 | 5 | Web methods of Core bindings |
 | `pluto` | PerfCheckerPluto 1.0.1 | 4 | Pluto methods of Core bindings |
 | `tachikoma` | PerfCheckerTachikoma 1.0.1 | 6 | Real optional Makie pixel method |

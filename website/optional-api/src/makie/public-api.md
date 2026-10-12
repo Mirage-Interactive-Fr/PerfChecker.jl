@@ -1,7 +1,7 @@
 # PerfCheckerMakie public API
 
 This reference renders the actual Julia docstrings of PerfCheckerMakie
-1.0.2 with Core from the selected source revision, including the exported
+1.0.3 with Core from the selected source revision, including the exported
 `observation_plot` model for diagnostic axes. The WGLMakie/Bonito extension
 is loaded to document its real HTML method. Documentation generation does not
 render a figure or start a server.
