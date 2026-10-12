@@ -11,7 +11,21 @@ If both runs use one machine, use an [ordinary comparison](tutorials/comparisons
 ## Machine profiles
 
 ```julia
+using PerfChecker
 profile = machine_profile(label = "runner-a")
+println(profile["schema_version"])
+println("Label: ", profile["label"])
+println("Fingerprint length: ", length(profile["spec_id"]))
+println("Limits verified: ", profile["limits_verified"])
+```
+
+Expected output:
+
+```text
+perfchecker-machine-profile/1
+Label: runner-a
+Fingerprint length: 64
+Limits verified: false
 ```
 
 Records CPU, architecture, OS, core counts, SIMD width, installed memory and Julia threads.
@@ -31,14 +45,31 @@ Records CPU, architecture, OS, core counts, SIMD width, installed memory and Jul
 `estimate_performance(target, references, workload)` is an experimental nearest-neighbour transfer model. Each input record has this shape (the numbers are format examples, not measurements):
 
 ```julia
-Dict(
+example_record = Dict(
     "machine" => machine_profile(label = "runner-a"),
     "context" => Dict("suite_revision" => "...", "environment" => "...",
         "measurement" => "warm median latency", "unit" => "seconds",
         "resource_policy" => "one pinned core; declared memory limit"),
     "calibration" => Dict("small_compute" => 0.01, "memory" => 0.02, "dispatch" => 0.03),
     "measurements" => Dict("heldout_workload" => 0.5))
+result = estimate_performance(example_record, Dict{String, Any}[], "heldout_workload")
+println(result["status"])
+println("Estimate: ", result["estimate"])
+println("CI gate eligible: ", result["ci_gate_eligible"])
+println("External validation: ", result["external_validation"])
 ```
+
+Expected output with no reference machines:
+
+```text
+insufficient_evidence
+Estimate: nothing
+CI gate eligible: false
+External validation: not_performed
+```
+
+An empty reference set cannot support a prediction. `nothing` means no estimate,
+not zero seconds. This example exercises the refusal path with illustrative data.
 
 - Use a small battery that represents the workloads: computation, memory, dispatch, native calls and I/O need different coverage.
 - Calibration names must refer to the same frozen workload definitions, with positive times in the same unit.

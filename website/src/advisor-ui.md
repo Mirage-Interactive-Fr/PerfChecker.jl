@@ -90,18 +90,37 @@ existing configuration. Refresh displays the returned models/tool schemas;
 copy the selected identifier into the configuration before saving. The advisor
 file is then used by the existing narration/investigation controls.
 
-The REPL and CLI consume the same backend, for example:
-
 After saving `perf/advisor.json` through the panel, the equivalent Julia calls are:
 
 ```julia
 using PerfChecker
 config = load_advisor_config("perf/advisor.json")
 result = advisor_setup(config) # inventory only; no generation/evidence
+(result["schema_version"], result["evidence_sent"], result["generation_tested"])
+```
+
+The returned discovery result contains this contract-defined tuple:
+
+```text
+("perfchecker-advisor-setup/1", false, false)
+```
+
+`evidence_sent=false` means the probe sent no project evidence.
+`generation_tested=false` means it did not ask a model or tool to generate a
+response. Read `result["status"]` separately: `complete` means discovery
+completed; `unavailable` or `error` explains why it did not. A reported model
+name, tool schema or `selected_available=true` does not prove generation works.
+
+For cancellable background discovery:
+
+```julia
 job = launch_advisor_setup(config; action=:models)
 investigation_status(job)
 cancel!(job)
 ```
+
+`investigation_status(job)` reports the job's current state. Cancellation is a
+request; inspect its final status before treating the worker as stopped.
 
 The `advisor-setup` CLI takes `--source=request.json` containing `config`,
 `action`, optional `model`, and `confirmed` for mutations. Its JSON output has

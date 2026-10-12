@@ -9,6 +9,50 @@ PerfChecker's deterministic advice works with no model and no network. An option
 - Generated prose is unverified. Correctness, quality, performance and availability keep independent verdicts.
 - The deterministic advisor remains the fallback for any provider failure.
 
+## Start with saved evidence
+
+Download the JET walkthrough's [recorded summary](/examples/jet-dispatch/summary.json)
+as `summary.json`. The [recording code](/examples/jet-dispatch/run.jl) names its
+scenario `net-revenue`; the portable summary retains its two implementations
+but omits that scenario field and the diagnosis envelope. Restore only those
+fields, then derive advice through the public API:
+
+```julia
+using PerfChecker, JSON
+summary = JSON.parsefile("summary.json")
+diagnosis = Dict(
+    "schema_version" => "perfchecker-diagnosis/1",
+    "records" => [merge(record, Dict("scenario" => "net-revenue"))
+                  for record in summary["diagnosis"]])
+advice = advise(diagnosis)
+println("Recommendations: ", length(advice["recommendations"]))
+println("Dynamic: ", count(r -> r["implementation"] == "dynamic", advice["recommendations"]))
+println("Typed: ", count(r -> r["implementation"] == "typed", advice["recommendations"]))
+item = first(advice["recommendations"])
+for key in ("rule_id", "hypothesis", "action", "validation", "predicted_gain")
+    println(key, ": ", item[key])
+end
+```
+
+Actual output from this saved evidence with Core 1.1.0:
+
+```text
+Recommendations: 6
+Dynamic: 6
+Typed: 0
+rule_id: inference.runtime_dispatch
+hypothesis: JET reports an inference issue for this specialization.
+action: Benchmark and profile this scenario to find out whether the diagnostic affects an expensive call path.
+validation: Rerun JET, correctness checks and measurements for each affected implementation.
+predicted_gain: not_measured
+```
+
+This reads the six existing JET findings; it runs no workload and contacts no
+model. The typed implementation has no JET finding to explain. The advice asks
+for measurements rather than claiming a speedup: the walkthrough's
+[separate before/after measurements](native-profiling.md#JET:-possible-inference-and-dispatch-problems) answer
+that different question.
+
 ```@raw html
 <a id="Local-default-and-interchangeable-providers"></a>
 ```
@@ -40,6 +84,11 @@ advice = read_advice("results/advice.json")
 narrative = narrate_advice(advice; config)
 display(investigation_view(narrative))
 ```
+
+This optional step does contact the configured provider. Inspect
+`narrative["status"]`, `narrative["cards"]` and `narrative["fallback"]`: a complete
+reply remains unverified prose, while the fallback retains the deterministic
+recommendations above. No model reply is presented as a recorded result here.
 
 For another protocol, extend the public transport function:
 
@@ -80,6 +129,21 @@ result = investigate(catalog; project = "perf", advisor = config,
     tools = [:jet, :alloccheck], samples = 10, max_experiments = 4,
     budget_seconds = 300, timeout = 120, reports = "results/investigation")
 ```
+
+Inspect the result immediately:
+
+```julia
+result["status"]
+[(experiment["id"], experiment["status"]) for experiment in result["experiments"]]
+length(result["unexecuted"])
+```
+
+The output contains an overall state (`complete`, `budget_exhausted`,
+`advisor_stopped` or `cancelled`), the attempted experiment IDs and their own
+statuses, and the number left unexecuted. These are the recipe's output fields,
+not a recorded model-driven campaign. Read the per-run correctness and
+availability alongside them; an experiment's `complete` status does not mean
+its performance passed a comparison.
 
 - Omit `advisor` for deterministic ordering.
 - A failed model decision falls back to that ordering; a valid `stop` is respected.

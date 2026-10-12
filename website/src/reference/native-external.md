@@ -22,7 +22,31 @@ after = dependency_evidence(
 )
 
 payload = dependency_evidence_dict(after)
+println(payload["schema_version"])
+println("Phase: ", payload["phase"])
+for key in ("declared_packages", "declared_artifact_bindings",
+    "loaded_current_process", "child_process_tree", "services", "native_heap")
+    println(key, ": ", payload["coverage"][key])
+end
 ```
+
+Expected coverage output:
+
+```text
+perfchecker-dependency-evidence/1
+Phase: after_import
+declared_packages: true
+declared_artifact_bindings: true
+loaded_current_process: true
+child_process_tree: false
+services: false
+native_heap: false
+```
+
+`true` identifies the capture's scope, not a measured cost. The resolved package
+inventory can already contain Bibliography before `using Bibliography`; an import
+does not resolve a new dependency closure. Inspect `payload["loaded_libraries"]`
+for images observed in this process and `payload["warnings"]` for capture failures.
 
 The current implementation records:
 
@@ -71,10 +95,21 @@ spec = ExternalCommandSpec(
 )
 
 bundle = run_external_command(spec; bundle_root = "perf/provider-runs")
+println(bundle.manifest["schema_version"])
+```
+
+Expected output after a provider result is normalized:
+
+```text
+perfchecker-run-bundle/1
 ```
 
 The provider result is validated and normalized into the common run-bundle
-grammar. Declaring a command does not make a setup supported: a provider should
+grammar. The schema alone does not establish success: inspect
+`bundle_passed(bundle)`, its observations and diagnostics. Timeouts, nonzero
+exits and a missing result file produce failed evidence; malformed results can
+raise an error. This Rust fragment is a provider contract, not an executed Rust
+benchmark. Declaring a command does not make a setup supported: a provider should
 also publish a capability manifest, fixtures, conformance tests, version
 provenance, and known measurement limits. New language/tool integrations are
 therefore added one at a time and qualified on real workloads.

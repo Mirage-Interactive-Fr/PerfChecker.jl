@@ -23,6 +23,15 @@ cd PerfChecker.jl/examples/kitchen-sink
 julia setup.jl core
 ```
 
+Setup ends with a line in this form, where `/path/to` is your clone location:
+
+```text
+Prepared core: /path/to/PerfChecker.jl/examples/kitchen-sink/Project.toml
+```
+
+This identifies the environment to use for the commands on the DataStructures
+and Oxygen pages. Setup installs dependencies; it does not measure a workload.
+
 - The examples run Julia 1.12 or newer.
 - `setup.jl core` links the checkout and installs example dependencies.
 - Optional interfaces get their own `.controller/NAME` environment.
@@ -48,7 +57,13 @@ $env:OPENBLAS_NUM_THREADS = '1'
 
 ## Read the output
 
-A run prints a new directory under `results/`, holding the report, a machine-readable result and a bundle every interface can reopen. A successful run means the selected measurements completed and their correctness checks passed — no performance budget was applied.
+Planning only lists the selected cases and creates no measurement report. After
+an explicit measurement command, the script prints `Reports: <directory>` under
+`results/`. Open that directory's report and `suite-result.json`; its saved
+bundles can be reopened from the supported interfaces. A successful run means
+the selected measurements completed and their correctness checks passed — no
+performance budget was applied. The linked package guides show the actual
+recorded outputs and explain their measurement scope.
 
 ## Next
 
