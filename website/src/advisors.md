@@ -11,11 +11,9 @@ PerfChecker's deterministic advice works with no model and no network. An option
 
 ## Start with saved evidence
 
-Download the JET walkthrough's [recorded summary](/examples/jet-dispatch/summary.json)
-as `summary.json`. The [recording code](/examples/jet-dispatch/run.jl) names its
-scenario `net-revenue`; the portable summary retains its two implementations
-but omits that scenario field and the diagnosis envelope. Restore only those
-fields, then derive advice through the public API:
+```@raw html
+<p>Download the JET walkthrough's <a href="examples/jet-dispatch/summary.json" download="summary.json">recorded summary</a> as <code>summary.json</code>. The <a href="examples/jet-dispatch/run.jl" download="run.jl">recording code</a> names its scenario <code>net-revenue</code>; the portable summary retains its two implementations but omits that scenario field and the diagnosis envelope. Restore only those fields, then derive advice through the public API:</p>
+```
 
 ```julia
 using PerfChecker, JSON

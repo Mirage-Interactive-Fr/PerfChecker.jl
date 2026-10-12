@@ -28,9 +28,9 @@ The default unprivileged namespace is loopback-only. It suits a service, databas
 
 ## Read an actual isolated capture
 
-The [saved Oxygen capture](examples/real-packages/oxygen-network/isolation.json)
-completed **120 verified requests** with Oxygen 1.10.2 and HTTP.jl 1.11.0.
-Its recorded result includes:
+```@raw html
+<p>The <a href="examples/real-packages/oxygen-network/isolation.json" download="isolation.json">saved Oxygen capture</a> completed <strong>120 verified requests</strong> with Oxygen 1.10.2 and HTTP.jl 1.11.0. Its recorded result includes:</p>
+```
 
 ```text
 provider: linux_netns

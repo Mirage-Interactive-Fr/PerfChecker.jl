@@ -26,8 +26,8 @@ model = performance_plot(bundle, entry["id"])
 terminal_plot(model)
 ```
 
-Expected output: a UnicodePlots rendering of the selected model. The published Oxygen export reads fourteen releases; its original [terminal text](../examples/real-packages/oxygen-features/normalized-metrics-24034c4be099f2e2.txt) preserves the terminal view. The same saved values are inspectable here:
 ```@raw html
+<p>Expected output: a UnicodePlots rendering of the selected model. The published Oxygen export reads fourteen releases; its original <a href="../examples/real-packages/oxygen-features/normalized-metrics-24034c4be099f2e2.txt" download="normalized-metrics-24034c4be099f2e2.txt">terminal text</a> preserves the terminal view. The same saved values are inspectable here:</p>
 <NormalizedMeasurements source="/examples/real-packages/oxygen-features/normalized-metrics-24034c4be099f2e2.json" html="/examples/real-packages/oxygen-features/normalized-metrics-24034c4be099f2e2.html" package-name="Saved Oxygen plain HTTP measurements" />
 ```
 

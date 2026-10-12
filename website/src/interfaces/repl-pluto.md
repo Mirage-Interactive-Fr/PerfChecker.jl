@@ -73,8 +73,8 @@ isempty(catalog) && error("This bundle has no supported plots")
 display(terminal_plot(bundle; plot_id = first(catalog)["id"], width = 70, height = 18))
 ```
 
-Expected output: a UnicodePlots chart with the saved view's title, version labels and unit. The genuine [published terminal export](../examples/real-packages/oxygen-features/normalized-metrics-24034c4be099f2e2.txt) is available as text; the native interactive rendering below reads those exact serialized observations:
 ```@raw html
+<p>Expected output: a UnicodePlots chart with the saved view's title, version labels and unit. The genuine <a href="../examples/real-packages/oxygen-features/normalized-metrics-24034c4be099f2e2.txt" download="normalized-metrics-24034c4be099f2e2.txt">published terminal export</a> is available as text; the native interactive rendering below reads those exact serialized observations:</p>
 <NormalizedMeasurements source="/examples/real-packages/oxygen-features/normalized-metrics-24034c4be099f2e2.json" html="/examples/real-packages/oxygen-features/normalized-metrics-24034c4be099f2e2.html" package-name="Saved Oxygen plain HTTP measurements" />
 ```
 

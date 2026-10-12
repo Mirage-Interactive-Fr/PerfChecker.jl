@@ -49,7 +49,9 @@ Recorded result: fifty samples at source `575ec81`, Julia 1.13.0, one worker thr
 julia --startup-file=no --project=.controller/core run.jl chairmark Bibliography export_bibtex
 ```
 
-Recorded collector output from [suite-runs.json](../examples/bibliography/suite-runs.json):
+```@raw html
+<p>Recorded collector output from <a href="../examples/bibliography/suite-runs.json" download="suite-runs.json">suite-runs.json</a>:</p>
+```
 
 | Field | Saved result |
 | --- | --- |

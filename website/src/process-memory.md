@@ -24,9 +24,9 @@ No counter is a proxy for another.
 <InteractiveRecordedPlot source="/examples/real-packages/oxygen-diagnostics/memory.plot.json" html="/examples/real-packages/oxygen-diagnostics/memory.html" title="Oxygen reachable-object sizes and resident process memory" kind="observation_series" />
 ```
 
-Select a panel to keep its scale and unit visible. The first observation in
-the [saved memory diagnostic](examples/real-packages/oxygen-diagnostics/diagnosis.json)
-contains these actual byte counts:
+```@raw html
+<p>Select a panel to keep its scale and unit visible. The first observation in the <a href="examples/real-packages/oxygen-diagnostics/diagnosis.json" download="diagnosis.json">saved memory diagnostic</a> contains these actual byte counts:</p>
+```
 
 | Quantity | Before | After |
 | --- | --- | --- |

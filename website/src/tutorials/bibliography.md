@@ -170,7 +170,9 @@ Recorded result: fifty samples at source `575ec81`, Julia 1.13.0, one worker thr
 julia --startup-file=no --project=.controller/core run.jl chairmark Bibliography export_bibtex
 ```
 
-Recorded collector output from [suite-runs.json](../examples/bibliography/suite-runs.json):
+```@raw html
+<p>Recorded collector output from <a href="../examples/bibliography/suite-runs.json" download="suite-runs.json">suite-runs.json</a>:</p>
+```
 
 | Field | Saved result |
 | --- | --- |
@@ -244,7 +246,9 @@ Recorded native-item result, from the VS Code TestItems handler (Julia item scop
 | Bibliography export workload | Passed | 1,993.05 ms |
 | Bibliography format API | Unrun | Not measured |
 
-The [saved native receipt](../examples/bibliography/vscode/capture.json) records the real activation, discovery and profile-handler execution. The editor elapsed time includes orchestration; the item timer includes imports, setup and assertions.
+```@raw html
+<p>The <a href="../examples/bibliography/vscode/capture.json" download="capture.json">saved native receipt</a> records the real activation, discovery and profile-handler execution. The editor elapsed time includes orchestration; the item timer includes imports, setup and assertions.</p>
+```
 
 - The listing runs nothing.
 - `performance` measures only the named item; without a name it measures both declarations.
@@ -293,7 +297,9 @@ To locate the calls responsible for a cost, continue with [Investigating a chang
 
 ## Recorded examples
 
-The [recorded run summary](../examples/bibliography/suite-runs.json) preserves the collector, state policy, outcome and source report digest. It records seven completed leaves per collector; `pass` here means the collector executed, not that a correctness oracle or regression budget passed.
+```@raw html
+<p>The <a href="../examples/bibliography/suite-runs.json" download="suite-runs.json">recorded run summary</a> preserves the collector, state policy, outcome and source report digest. It records seven completed leaves per collector; <code>pass</code> here means the collector executed, not that a correctness oracle or regression budget passed.</p>
+```
 
 ```@raw html
 <InteractiveRecordedPlot source="/examples/bibliography/history/export-memory.json" html="/examples/bibliography/history/export-memory.html" title="Allocated Julia bytes per export across the same nine Bibliography releases" kind="version_series" />

@@ -72,7 +72,9 @@ result = run_suite_repl(selected; reports = report_directory, strict = false,
     overrides = Dict{Symbol,Any}(:threads => 1, :samples => 50, :evals => 1, :seconds => 0.5))
 ```
 
-Expected selection: one `Bibliography → export_bibtex → chairmark` leaf. The saved [collector receipt](examples/bibliography/suite-runs.json) records this leaf as `pass`, with `verdict = executed`, `state_policy = fresh`, and target `dev@0.4.0`. It does not publish numerical Chairmarks samples. A local report retains time in seconds, bytes, allocation count and a GC fraction; these units differ from BenchmarkTools.
+```@raw html
+<p>Expected selection: one <code>Bibliography → export_bibtex → chairmark</code> leaf. The saved <a href="examples/bibliography/suite-runs.json" download="suite-runs.json">collector receipt</a> records this leaf as <code>pass</code>, with <code>verdict = executed</code>, <code>state_policy = fresh</code>, and target <code>dev@0.4.0</code>. It does not publish numerical Chairmarks samples. A local report retains time in seconds, bytes, allocation count and a GC fraction; these units differ from BenchmarkTools.</p>
+```
 
 :::
 
