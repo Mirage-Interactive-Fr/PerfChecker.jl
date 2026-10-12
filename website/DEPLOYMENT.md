@@ -83,8 +83,9 @@ This action requires `main` to retain the registered version and the same packag
 source as its existing stable tag. Every differing path must be documentation,
 the Documentation workflow, its explicitly allowed documentation checkers or
 one of the eight recorded-evidence exporters listed in `deploy-sftp.mjs`.
-The maintained plot-test entry in `qualification/scripts/run.jl` is also
-allowed; other qualification scripts are not. Untracked files are checked
+The maintained plot-test entry in `qualification/scripts/run.jl` and the
+checker's `qualification/shared/recorded-plots.test.mjs` are also allowed;
+other qualification scripts are not. Untracked files are checked
 against the same path policy as committed, staged and working-tree changes.
 Package metadata, source, extensions, CLI files, providers and schemas are
 checked rather than guessed from a partial source list.

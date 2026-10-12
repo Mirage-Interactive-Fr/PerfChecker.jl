@@ -101,6 +101,7 @@ test('stable source permits only the named documentation plot generators', async
   }
   await mkdir(join(root, 'qualification/shared'), { recursive: true });
   await writeFile(join(root, 'qualification/shared/recorded-plots.mjs'), 'check recorded documentation views');
+  await writeFile(join(root, 'qualification/shared/recorded-plots.test.mjs'), 'test recorded documentation inventory');
   await mkdir(join(root, 'qualification/scripts'), { recursive: true });
   await writeFile(join(root, 'qualification/scripts/run.jl'), 'run maintained documentation plot tests');
   git('add', '.'); git('commit', '-m', 'recorded plot exporters');
@@ -122,7 +123,8 @@ test('stable source permits only the named documentation plot generators', async
   git('revert', '--no-edit', 'HEAD');
   for (const path of ['examples/kitchen-sink/oxygen/measure.jl', 'examples/kitchen-sink/another-export.jl',
     'examples/other/export.jl', 'test/plot.jl', 'packages/PerfCheckerWeb/src/changed.jl',
-    'qualification/shared/another-check.mjs', 'qualification/scripts/another-runner.jl']) {
+    'qualification/shared/another-check.mjs', 'qualification/shared/another-check.test.mjs',
+    'qualification/scripts/another-runner.jl']) {
     await mkdir(join(root, posix.dirname(path)), { recursive: true }); await writeFile(join(root, path), 'changed');
     git('add', '.'); git('commit', '-m', 'outside named exporters');
     await assert.rejects(validateStableDocumentationSource(root, 'v1.1.0', git('rev-parse', 'HEAD')), /outside documentation/);

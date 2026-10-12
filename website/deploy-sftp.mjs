@@ -77,6 +77,7 @@ export async function validateStableDocumentationSource(repository, version, rev
   const allowed = path => path.startsWith('website/') || path === 'README.md' ||
     path === '.github/workflows/Documentation.yml' || path === 'qualification/shared/canonical-documentation.mjs' ||
     path === 'qualification/shared/static-website-browser.mjs' || path === 'qualification/shared/recorded-plots.mjs' ||
+    path === 'qualification/shared/recorded-plots.test.mjs' ||
     path === 'qualification/scripts/run.jl' ||
     documentationGenerators.has(path) ||
     path.startsWith(makieDirectory + '/');
