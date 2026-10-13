@@ -1,1 +1,13 @@
 style = "sciml"
+
+# Generated autonomous Pluto notebooks embed exact saved evidence. JuliaFormatter
+# 1.0.50 uses excessive memory on their large string literals; preserve their
+# bytes and check Julia/Pluto structure and source/download identity separately.
+ignore = [
+    "examples/bibliography/notebook.jl",
+    "examples/kitchen-sink/datastructures-notebook.jl",
+    "examples/kitchen-sink/oxygen-notebook.jl",
+    "website/src/public/examples/bibliography/pluto/notebook.jl",
+    "website/src/public/examples/real-packages/datastructures-notebook.jl",
+    "website/src/public/examples/real-packages/oxygen-notebook.jl",
+]

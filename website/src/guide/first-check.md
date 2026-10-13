@@ -1,136 +1,29 @@
+```@raw html
+---
+search: false
+---
+```
+
 # Quickstart: measure a test
-
-Measure one existing `@testitem`. No checkout or suite file is needed.
-
-## Install
-
-```julia
-import Pkg
-Pkg.add(Pkg.PackageSpec(name = "PerfChecker", version = "1"))
-Pkg.add(["Bibliography", "TestItems", "TestItemRunner"])
-```
-
-Expected effect: the active project's dependencies include all four packages. Pkg prints the resolved versions; installation does not run a check.
-
-## Create a test
-
-This writes one item to a temporary directory.
-
-```julia
-using PerfChecker, TestItemRunner
-
-root = mktempdir()
-write(joinpath(root, "roundtrip_test.jl"), raw"""
-using TestItems
-
-@testitem "Bibliography BibTeX round trip" tags=[:bibliography, :small] begin
-    using Bibliography
-    mktempdir() do directory
-        input = joinpath(directory, "article.bib")
-        write(input, "@article{example, title={A small example}, year={2026}}")
-        entries = Bibliography.import_bibtex(input)
-        exported = Bibliography.export_bibtex(entries)
-        @test occursin("example", exported)
-        @test occursin("A small example", exported)
-    end
-end
-""")
-```
-
-Expected file: `roundtrip_test.jl` under the temporary `root`, containing one item named **Bibliography BibTeX round trip**. Writing it does not execute it.
-
-In your own package, keep the declaration in `test/`.
-
-## Find and run it
-
-Discovery reads declarations without running them.
-
-```julia
-listing = discover_testitems(root)
-item = only(listing["items"])
-item["name"]
-```
-
-```text
-"Bibliography BibTeX round trip"
-```
-
-Measure it:
-
-```julia
-reports = mktempdir()
-result = run_testitems(root; ids = [item["id"]], samples = 1, threads = 1, reports)
-(passed = result["passed"], performance = result["performance"])
-```
-
-```text
-(passed = true, performance = "not_compared")
-```
-
-`not_compared` means the item ran and was measured, but was not compared with a baseline or budget.
 
 ```@raw html
 <a id="Read-the-measurements"></a>
-```
-
-## Read the measurement
-
-```julia
-sample = only(only(result["runs"])["samples"])
-(seconds = sample["seconds"], bytes = sample["bytes"])
-```
-
-Expected output shape (local values, not a recorded timing):
-
-```text
-(seconds = <elapsed seconds>, bytes = <Julia allocation bytes>)
-```
-
-Your numbers will differ. The measurement covers the **whole test** in a fresh worker: imports, compilation, setup, assertions and cleanup — not a warm BibTeX export.
-
-The run is saved:
-
-```julia
-isfile(joinpath(reports, "testitems.json"))
-```
-
-Expected result after a successful save:
-
-```text
-true
-```
-
-```@raw html
 <a id="Use-your-existing-tests"></a>
+<a id="Quickstart:-measure-a-test"></a>
+<a id="quickstart:-measure-a-test"></a>
+<a id="Install"></a>
+<a id="install"></a>
+<a id="Create-a-test"></a>
+<a id="create-a-test"></a>
+<a id="Find-and-run-it"></a>
+<a id="find-and-run-it"></a>
+<a id="Read-the-measurement"></a>
+<a id="read-the-measurement"></a>
+<a id="Select-from-your-own-package"></a>
+<a id="select-from-your-own-package"></a>
+<a id="Recorded-examples"></a>
+<a id="recorded-examples"></a>
+<a id="Next"></a>
+<a id="next"></a>
+<DocumentationRedirect target="/guide/overview.html" :fragments='{"Read-the-measurements":"/test-items.html#Read-the-measurements","Use-your-existing-tests":"/test-items.html#Use-your-existing-tests","Quickstart:-measure-a-test":"/test-items.html#Complete-round-trip-example","quickstart:-measure-a-test":"/test-items.html#quickstart:-measure-a-test","Install":"/test-items.html#Install","install":"/test-items.html#install","Create-a-test":"/test-items.html#Create-a-test","create-a-test":"/test-items.html#create-a-test","Find-and-run-it":"/test-items.html#Find-and-run-it","find-and-run-it":"/test-items.html#find-and-run-it","Read-the-measurement":"/test-items.html#Read-the-measurement","read-the-measurement":"/test-items.html#read-the-measurement","Select-from-your-own-package":"/test-items.html#Select-from-your-own-package","select-from-your-own-package":"/test-items.html#select-from-your-own-package","Recorded-examples":"/test-items.html#Recorded-examples","recorded-examples":"/test-items.html#recorded-examples","Next":"/test-items.html#Next","next":"/test-items.html#next"}' />
 ```
-
-## Select from your own package
-
-```julia
-root = pwd()
-listing = discover_testitems(root)
-[(item["name"], item["tags"]) for item in listing["items"]]
-```
-
-Expected result: one `(name, tags)` pair per discovered declaration. The temporary example above has the name **Bibliography BibTeX round trip** and tags `:bibliography`, `:small`; your package lists its own declarations.
-
-```julia
-item = only(filter(i -> i["name"] == "Bibliography BibTeX round trip", listing["items"]))
-result = run_testitems(root; ids = [item["id"]], samples = 30, threads = 1)
-```
-
-Expected result after success: one selected run with 30 samples, `passed = true`, and `performance = "not_compared"`. This selection is a recipe to execute locally; no fixed timing is promised.
-
-The active environment must contain the package's test dependencies.
-
-
-## Recorded examples
-
-```@raw html
-<p><a href="../examples/bibliography/bibliography-testitems.jl" download="bibliography-testitems.jl">Download a complete Bibliography test item to adapt</a></p>
-```
-
-## Next
-
-- To time export alone, with input preparation outside the timer, read [Measure an operation](../tutorials/quick-tour.md).
-- To interpret time, allocations and GC, read [Understand the result](understanding-measurements.md).

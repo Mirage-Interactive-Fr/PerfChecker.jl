@@ -1,123 +1,17 @@
+```@raw html
+---
+search: false
+---
+```
+
 # Native and external dependencies
 
-Julia packages frequently load JLL artifacts, DLLs, shared objects, C/Rust
-wrappers, embedded databases, command-line tools, or remote services. A useful
-report must distinguish those layers instead of assigning every cost to Julia.
+Capture [native dependency context](../tools/results.md#Native-dependency-context), use a bounded [external command provider](../tools/scenarios.md#External-commands-and-custom-collectors), or inspect [native memory with Massif](../tools/massif.md).
 
-## Capture the visible dependency closure
-
-Use this reference when a package calls code outside Julia or starts another
-process. For tool selection and interpretation, start with
-[native profiling](../native-profiling.md). The snapshot example below runs in
-an environment with Bibliography installed, before importing it:
-
-```julia
-using PerfChecker
-
-before = dependency_evidence(phase = "before_import")
-using Bibliography
-after = dependency_evidence(
-    phase = "after_import",
-    hash_libraries = false,
-)
-
-payload = dependency_evidence_dict(after)
-println(payload["schema_version"])
-println("Phase: ", payload["phase"])
-for key in ("declared_packages", "declared_artifact_bindings",
-    "loaded_current_process", "child_process_tree", "services", "native_heap")
-    println(key, ": ", payload["coverage"][key])
-end
+```@raw html
+<a id="Native-and-external-dependencies"></a>
+<a id="Capture-the-visible-dependency-closure"></a>
+<a id="Measure-native-work-by-lifecycle-phase"></a>
+<a id="External-command-provider"></a>
+<a id="Databases-and-services"></a>
 ```
-
-Expected coverage output:
-
-```text
-perfchecker-dependency-evidence/1
-Phase: after_import
-declared_packages: true
-declared_artifact_bindings: true
-loaded_current_process: true
-child_process_tree: false
-services: false
-native_heap: false
-```
-
-`true` identifies the capture's scope, not a measured cost. The resolved package
-inventory can already contain Bibliography before `using Bibliography`; an import
-does not resolve a new dependency closure. Inspect `payload["loaded_libraries"]`
-for images observed in this process and `payload["warnings"]` for capture failures.
-
-The current implementation records:
-
-- resolved Julia packages and whether they are direct, path, repository, or JLL
-  dependencies;
-- reachable `Artifacts.toml` files, their SHA-256 digest, and binding names;
-- shared libraries loaded in the current Julia process, including size and
-  architecture;
-- optional binary SHA-256 digests when `hash_libraries=true`.
-
-This is evidence, not complete tracing. It does not yet see libraries loaded
-only by child processes, remote services, native heap allocations, ABI details,
-or compiler/linker flags. The generated payload marks those gaps explicitly.
-
-## Measure native work by lifecycle phase
-
-Keep these phases separate:
-
-1. artifact download, verification, and extraction;
-2. package/JLL import and dynamic loader activity;
-3. first FFI call and native initialization;
-4. steady-state wrapper overhead and native execution;
-5. shutdown, flushing, and child-process cleanup.
-
-Pair Julia measurements with provider-specific artifacts when required: native
-profiles, sanitizer reports, database query plans, service metrics, or operating
-system counters. Instrumented diagnostics should run in a separate lane because
-profilers and sanitizers perturb timing.
-
-## External command provider
-
-`ExternalCommandSpec` is the language-neutral escape hatch. PerfChecker launches
-a bounded command that emits one `perfchecker-provider-result/1` JSON document.
-
-This provider fragment assumes an existing Rust program at `/path/to/provider`
-that implements PerfChecker's result contract. An arbitrary Cargo application
-does not emit that contract automatically.
-
-```julia
-spec = ExternalCommandSpec(
-    :rust_parser,
-    "rust",
-    ["cargo", "run", "--release", "--", "perfchecker-result.json"];
-    directory = "/path/to/provider",
-    timeout_seconds = 600,
-)
-
-bundle = run_external_command(spec; bundle_root = "perf/provider-runs")
-println(bundle.manifest["schema_version"])
-```
-
-Expected output after a provider result is normalized:
-
-```text
-perfchecker-run-bundle/1
-```
-
-The provider result is validated and normalized into the common run-bundle
-grammar. The schema alone does not establish success: inspect
-`bundle_passed(bundle)`, its observations and diagnostics. Timeouts, nonzero
-exits and a missing result file produce failed evidence; malformed results can
-raise an error. This Rust fragment is a provider contract, not an executed Rust
-benchmark. Declaring a command does not make a setup supported: a provider should
-also publish a capability manifest, fixtures, conformance tests, version
-provenance, and known measurement limits. New language/tool integrations are
-therefore added one at a time and qualified on real workloads.
-
-## Databases and services
-
-For SQL or network services, record server version, configuration, schema/data
-fingerprint, locality, connection/TLS setup, cache state, and client pool state.
-Separate client latency from server execution and transport waiting. When
-possible, launch the complete fixture inside an isolated network namespace so
-packet and byte budgets cover the same process tree.

@@ -2,21 +2,87 @@ import assert from 'node:assert/strict';
 import path from 'node:path';
 import {readFile} from 'node:fs/promises';
 import {createHash} from 'node:crypto';
+import {isVersionComparison,isLatestDiagnostic} from '../../website/src/.vitepress/theme/recorded-view-policy.mjs';
 
 export async function checkInteractiveCatalog(catalog,directory){
- const entries=catalog.views.flatMap(view=>[view,...(view.patch_windows??[])]);
+ const entries=catalog.views.flatMap(view=>view.normalized_views?.length?
+  view.normalized_views:[view,...(view.patch_windows??[])]);
  for(const entry of entries){
   assert(entry.html,`${entry.id??entry.label}: every recorded view needs a native HTML export`);
   const html=await readFile(path.join(directory,entry.html));
   assert(html.length>0,`${entry.html}: empty native export`);
   const source=await readFile(path.join(directory,entry.json));
   if(entry.html_input_sha256)assert.equal(createHash('sha256').update(source).digest('hex'),entry.html_input_sha256);
+  if(entry.kind==='normalized_metrics'){
+   const record=JSON.parse(await readFile(path.join(directory,entry.plot??entry.json),'utf8'));
+   checkNormalizedTimingModel(record.plot);
+  }
  }
  return entries.length;
 }
 
+export function checkNormalizedTimingModel(model,{sourceRows,collector,xlabel}={}){
+ assert.equal(model.kind,'normalized_metrics','Timing collectors use the canonical normalized renderer');
+ const metrics=[...new Set(model.data.map(row=>row.metric))];
+ assert.equal(metrics.length,4,'Four recorded metrics share one normalized axis');
+ for(const metric of ['julia.wall.time','julia.alloc.bytes','julia.alloc.count'])assert(metrics.includes(metric));
+ const gc=metrics.filter(metric=>['julia.gc.time','julia.gc.fraction'].includes(metric));
+ assert.equal(gc.length,1,'GC is measured, with its original time/fraction semantics');
+ if(collector)assert.equal(model.options.collector,collector);
+ if(xlabel)assert.equal(model.options.xlabel,xlabel);
+ for(const metric of metrics){
+  const rows=model.data.filter(row=>row.metric===metric);
+  assert.equal(new Set(rows.map(row=>row.version)).size,model.options.versions.length);
+  assert.equal(rows.length,model.options.versions.length);
+  const reference=model.options.reference_version??'minimum';
+  const minimum=reference==='minimum'?rows[0].reference_value:
+   rows.find(row=>row.version===reference)?.value;
+  assert(Number.isFinite(minimum),'The reference is an actual recorded minimum');
+  if(reference==='minimum')assert(minimum<=Math.min(...rows.map(row=>row.value)),
+   'A selected window retains its full-history minimum instead of renormalizing');
+  for(const row of rows){
+   assert(Number.isFinite(row.value)&&row.value>=0,'Every value comes from an available recorded metric');
+   assert.equal(row.reference_value,minimum);
+   const ratio=minimum===0?(row.value===0?1:null):row.value/minimum;
+   assert.equal(row.ratio,ratio);
+   assert.equal(row.normalization_status,minimum===0?(row.value===0?'both_zero':'zero_reference'):'ratio',
+    'Zero-reference conventions remain explicit rather than inventing observations');
+   if(sourceRows){
+    const originals=sourceRows.filter(source=>source.metric===row.metric&&source.version===row.version);
+    assert.equal(originals.length,1,'A normalized row identifies exactly one original recorded minimum');
+    assert.equal(row.value,originals[0].value,'Rendering preserves the source measurement');
+    assert.equal(row.unit,originals[0].unit,'Rendering preserves the source unit');
+    if(reference==='minimum')assert.equal(minimum,Math.min(...sourceRows.filter(source=>source.metric===metric).map(source=>source.value)));
+   }
+  }
+ }
+ if(/chairmarks/i.test(model.options.collector)){
+  assert.equal(gc[0],'julia.gc.fraction','Chairmarks measures GC fraction, not GC time');
+  assert(model.data.filter(row=>row.metric===gc[0]).every(row=>['1','%'].includes(row.unit)));
+ }
+ return model.data.length;
+}
+
+export async function checkNormalizedObservationSource(record,directory){
+ const declaration=record.sample_observations;
+ assert(declaration?.file&&declaration.sha256,'Recorded numeric samples are published with their fingerprint');
+ const bytes=await readFile(path.join(directory,declaration.file));
+ assert.equal(createHash('sha256').update(bytes).digest('hex'),declaration.sha256);
+ const observations=bytes.toString('utf8').trim().split('\n').map(line=>JSON.parse(line));
+ assert.equal(observations.length,declaration.records);
+ const originals=record.plot.data.map(row=>{
+  const raw=observations.filter(sample=>sample.run_id===record.run_id&&sample.metric===row.metric&&
+   sample.attributes?.version===row.version&&sample.attributes?.feature===record.plot.options.feature);
+  assert.equal(raw.length,row.samples,'Every normalized minimum has its actual recorded sample population');
+  assert(raw.every(sample=>sample.unit===row.unit&&sample.measurement_definition.endsWith('/'+record.plot.options.collector)),
+   'The original metric, unit and collector identity agree');
+  return {metric:row.metric,version:row.version,unit:row.unit,value:Math.min(...raw.map(sample=>sample.value))};
+ });
+ return checkNormalizedTimingModel(record.plot,{sourceRows:originals});
+}
+
 export async function checkRecordedPlotEmbeds(source,publicDirectory){
- const embeds=[...source.matchAll(/<InteractiveRecordedPlot\b[^>]*\/?\s*>/g)];
+ const embeds=[...source.matchAll(/<(?:InteractiveRecordedPlot|NormalizedMeasurements)\b[^>]*\/?\s*>/g)];
  for(const [tag]of embeds){
   const html=/\bhtml="([^"]+)"/.exec(tag)?.[1];
   const model=/\bsource="([^"]+)"/.exec(tag)?.[1];
@@ -26,11 +92,24 @@ export async function checkRecordedPlotEmbeds(source,publicDirectory){
    assert(target.startsWith(path.resolve(publicDirectory)+path.sep),'Recorded plot assets remain in the public documentation directory');
    assert((await readFile(target)).length>0,`${asset}: missing or empty recorded plot asset`);
   }
+  if(tag.startsWith('<NormalizedMeasurements')){
+   const record=JSON.parse(await readFile(path.resolve(publicDirectory,'.'+model),'utf8'));
+   checkNormalizedTimingModel(record.plot);
+   assert(isVersionComparison(record.plot),`${model}: a displayed comparison needs at least two recorded targets`);
+   const native=await readFile(path.resolve(publicDirectory,'.'+html),'utf8');
+   const encoded=/const plot=(.*);\n/.exec(native);
+   assert(encoded,`${html}: the normalized export contains its actual saved model`);
+   const displayed=JSON.parse(encoded[1]);
+   assert.deepEqual(displayed.data,record.plot.data,`${html}: displayed values match the source model`);
+   assert.deepEqual(displayed.options,record.plot.options,`${html}: displayed units, targets and ratios match the source model`);
+  }
  }
  return embeds.length;
 }
 
 async function inspectNormalizedRecordedPlot(page,panel,record,label){
+ checkNormalizedTimingModel(record.plot);
+ assert(isVersionComparison(record.plot),`${label}: History needs at least two actual recorded targets`);
  const iframe=panel.locator('iframe');
  const href=await panel.getByRole('link',{name:'Open the same interactive export'}).getAttribute('href');
  const expectedURL=new URL(href,page.url()).href;
@@ -42,6 +121,8 @@ async function inspectNormalizedRecordedPlot(page,panel,record,label){
   {url:expectedURL,data,options},{timeout:10000});
  const points=frame.locator('svg circle');
  await points.first().waitFor();
+ assert.equal(await frame.locator('#controls input').count(),4,`${label}: four superposed metrics`);
+ assert.equal(await frame.locator('svg path').count(),4,`${label}: one shared plot contains all four curves`);
  assert.equal(await points.count(),record.plot.data.filter(row=>row.ratio!==null).length,label);
  const pointLabel=row=>row.version+' · '+row.metric+': '+row.value+' '+row.unit+
   ' · ratio '+(row.ratio??'unavailable')+' · '+row.normalization_status;
@@ -132,149 +213,123 @@ export async function inspectRecordedFlamePlot(page,graph,record,label){
 
 export async function checkRecordedGalleryInteractions(page,base){
  const checks=[];
- const gallery=page.locator('section[aria-label="DataStructures container catalogue recorded plots"]');
- const catalogSource=await (await page.request.get(base+'examples/real-packages/containers/catalog.json')).body();
- const catalog=JSON.parse(catalogSource.toString('utf8'));
- const selection=gallery.getByRole('combobox',{name:/^Explore the recorded measurements/});
- const family=gallery.getByRole('combobox',{name:/^Plot family/});
- const sources=new Map();
- async function readView(view){
-  const response=await page.request.get(base+'examples/real-packages/containers/'+view.json);
-  assert.equal(response.status(),200,`${view.id}: serialized source is available`);
-  const source=await response.body();sources.set(view.id,source);
-  return JSON.parse(source.toString('utf8'));
- }
- async function selectView(view){
-  await selection.selectOption(view.id);
-  const graph=gallery.locator('.recorded-export');
-  const iframe=graph.locator('iframe');
-  await iframe.scrollIntoViewIfNeeded();
-  const frame=await (await iframe.elementHandle()).contentFrame();
-  await frame.waitForURL(base+'examples/real-packages/containers/'+view.html);
-  await frame.locator('canvas').waitFor();
-  assert.equal(await graph.locator('img').count(),0);
-  return {graph,frame};
- }
- async function inspectView(view){
-  const record=await readView(view),{frame}=await selectView(view);
-  assert.equal(record.plot.kind,view.kind);
-  const fields=view.kind==='version_delta'?['relative_delta']:
-   view.kind==='time_allocation_tradeoff'?['bytes','time']:['value'];
-  const rows=record.plot.data.filter(row=>fields.every(field=>Number.isFinite(row[field])));
-  assert(rows.length>0,`${view.id}: inspection uses actual finite saved rows`);
-  const input=frame.getByRole('spinbutton',{name:'Recorded point index',exact:true});
-  assert.equal(Number(await input.getAttribute('max')),rows.length);
-  await frame.locator('#point-index[data-applied-index="1"]').waitFor();
-  await frame.locator('#point-readout[aria-busy="false"]').waitFor();
-  await input.fill(String(rows.length));
-  await frame.locator(`#point-index[data-applied-index="${rows.length}"]`).waitFor();
-  const readout=frame.locator('#point-readout[aria-busy="false"]');
-  await readout.waitFor();
-  assert.equal(await readout.getAttribute('data-error'),null,`${view.id}: native point inspection succeeds`);
-  assert.equal(await input.getAttribute('data-applied-index'),String(rows.length),`${view.id}: native highlight follows the selected row`);
-  const text=await readout.innerText(),row=rows.at(-1),prefix=`Point ${rows.length}: `;
-  if(view.kind==='version_delta'){
-   const start=prefix+`${row.baseline_version} → ${row.candidate_version} · change: `;
-   const end=`% · ${row.status??'unknown'}`;
-   assert(text.startsWith(start)&&text.endsWith(end),`${view.id}: exact comparison and status`);
-   assert.equal(Number(text.slice(start.length,-end.length)),100*row.relative_delta);
-  }else if(view.kind==='time_allocation_tradeoff'){
-   const response=await page.request.get(base+'examples/real-packages/containers/'+view.html);
-   assert.equal(response.status(),200);
-   const model=/const model = (\{[^\n]+\});/.exec(await response.text());
-   assert(model,`${view.id}: the native export retains its serialized model`);
-   const exported=JSON.parse(model[1]),units=exported.options;
-   assert.equal(exported.id,record.plot.id);assert.equal(exported.kind,record.plot.kind);
-   assert.deepEqual(exported.data,record.plot.data,`${view.id}: native time/allocation values are unchanged`);
-   if(units.time_unit!==record.plot.options.time_unit||units.allocation_unit!==record.plot.options.allocation_unit){
-    const provenance=units.unit_provenance;
-    assert.equal(provenance?.saved_model_sha256,
-     createHash('sha256').update(sources.get(view.id)).digest('hex'),
-     `${view.id}: explicit native units retain provenance to the exact saved source`);
-    assert.equal(provenance.catalog_sha256,createHash('sha256').update(catalogSource).digest('hex'));
-    assert.equal(provenance.sources.length,2);
-    for(const [metric,field,unit]of [['julia.wall.time','time',units.time_unit],['julia.alloc.bytes','bytes',units.allocation_unit]]){
-     const source=provenance.sources.find(item=>item.metric===metric);
-     assert(source,`${view.id}: ${metric} has a published source`);
-     const response=await page.request.get(base+'examples/real-packages/containers/'+source.json);
-     assert.equal(response.status(),200);const bytes=await response.body();
-     assert.equal(createHash('sha256').update(bytes).digest('hex'),source.sha256);
-     const published=JSON.parse(bytes.toString('utf8')).plot;
-     assert.equal(published.options.metric,metric);assert.equal(published.options.unit,unit);
-     assert.equal(source.unit,unit);assert.equal(published.options.series_id,source.series_id);
-     for(const row of exported.data){
-      const matches=published.data.filter(item=>item.version===row.version&&item.target_kind===row.target_kind);
-      assert.equal(matches.length,1);assert.equal(matches[0].value,row[field]);
-     }
+ // The container atlas was exercised above. Cover every remaining operation,
+ // collector and patch window instead of resurrecting duplicate galleries.
+ for(const [route,first]of [['datastructures',1],['oxygen',0]]){
+  await page.goto(base+'real-packages/'+route+'.html',{waitUntil:'networkidle'});
+  assert.equal(await page.locator('.package-gallery .normalized-measurements').count(),0);
+  const atlases=page.locator('.workload-atlas');
+  for(let index=first;index<await atlases.count();index++){
+   for(const group of await atlases.nth(index).locator('.workload-group').all()){
+    const tabs=group.locator('.operation-tabs').getByRole('tab');
+    for(let choice=0;choice<Math.max(1,await tabs.count());choice++){
+     if(await tabs.count())await tabs.nth(choice).click();
+     await group.getByRole('tab',{name:'History',exact:true}).click();
+     const graph=group.locator('.normalized-measurements');
+     const href=await graph.getByRole('link',{name:'Download the serialized plot'}).getAttribute('href');
+     const record=await(await page.request.get(new URL(href,base).href)).json();
+     await inspectNormalizedRecordedPlot(page,graph,record,route+' / '+record.plot.id);
     }
    }
-   const start=prefix+row.version+' · ',middle=` ${units.allocation_unit??'unit unspecified'} · `;
-   const end=` ${units.time_unit??'unit unspecified'}`;
-   assert(text.startsWith(start)&&text.endsWith(end),`${view.id}: exact version and units`);
-   const values=text.slice(start.length,-end.length).split(middle);
-   assert.equal(values.length,2);assert.equal(Number(values[0]),row.bytes);assert.equal(Number(values[1]),row.time);
-  }else{
-   const start=prefix+row.version+' · ',end=' '+record.plot.options.unit;
-   assert(text.startsWith(start)&&text.endsWith(end),`${view.id}: exact version and unit`);
-   assert.equal(Number(text.slice(start.length,-end.length)),row.value);
   }
  }
- const unavailable=catalog.views.find(view=>view.kind==='version_delta'&&view.html);
- const emptyRecord=await readView(unavailable);
- assert.equal(emptyRecord.plot.data.length,6,'The recorded zero-baseline comparison remains covered');
- assert(emptyRecord.plot.data.every(row=>row.relative_delta===null&&row.baseline_value===0&&
-  row.candidate_value===0&&row.absolute_delta===0));
- const {graph,frame}=await selectView(unavailable);
- const notice=graph.locator('.unavailable-delta');
- await notice.waitFor();
- assert((await notice.innerText()).includes('Relative change unavailable for 6 recorded comparisons.'));
- assert((await notice.innerText()).includes('Every baseline is zero, so a percentage would divide by zero.'));
- const tableRows=notice.locator('tbody tr');
- assert.equal(await tableRows.count(),emptyRecord.plot.data.length);
- for(const [index,row]of emptyRecord.plot.data.entries()){
-  assert.deepEqual(await tableRows.nth(index).locator('td').allTextContents(),[
-   `${row.baseline_version} → ${row.candidate_version}`,`${row.baseline_value} ${row.unit}`,
-   `${row.candidate_value} ${row.unit}`,`${row.absolute_delta} ${row.unit}`]);
- }
- assert.equal(await frame.getByRole('spinbutton',{name:'Recorded point index',exact:true}).count(),0,
-  'A delta with no finite ratios does not invent inspectable points');
- for(const kind of ['version_series','distribution','version_delta','time_allocation_tradeoff']){
-  let view=catalog.views.find(v=>v.kind===kind&&v.html);
-  if(kind==='version_delta'){
-   await family.selectOption('version_delta');
-   await page.waitForFunction(({select,family,ids})=>!family.disabled&&ids.includes(select.value),
-    {select:await selection.elementHandle(),family:await family.elementHandle(),
-     ids:catalog.views.filter(v=>v.kind===kind&&v.metric==='julia.wall.time').map(v=>v.id)});
-   const selected=await selection.inputValue();
-   view=catalog.views.find(v=>v.id===selected);
-   assert(view&&view.id!==unavailable.id&&view.kind===kind&&view.metric==='julia.wall.time',
-    'The delta shortcut selects a recorded time comparison with a finite relative change');
+ await page.goto(base+'real-packages/datastructures.html',{waitUntil:'networkidle'});
+ const atlas=page.locator('.workload-atlas').first();
+ const catalog=await(await page.request.get(base+'examples/real-packages/containers-collectors/catalog.json')).json();
+ let visited=0;
+ for(const view of catalog.views){
+  const group=atlas.locator('#case-'+view.title);
+  for(const operation of new Set(view.normalized_views.map(child=>child.operation))){
+   const label=operation.endsWith('_build')?'Construction':operation.endsWith('_lookup')?'Lookup':operation.endsWith('_drain')?'Drain':operation.endsWith('_traverse')?'Traversal':operation.endsWith('_connectivity')?'Connectivity':'Prefix sums';
+   await group.locator('.operation-tabs').getByRole('tab',{name:label,exact:true}).click();
+   await group.getByRole('tab',{name:'Latest version',exact:true}).click();
+   const latest=group.locator('.latest-evidence');
+   assert.equal(await latest.locator('.normalized-measurements,iframe').count(),0,
+    'A single-release collector capture is a value table, not a version comparison');
+   for(const child of view.normalized_views.filter(child=>child.operation===operation)){
+    const record=await(await page.request.get(base+'examples/real-packages/containers-collectors/'+child.plot)).json();
+    for(const row of record.plot.data){
+     const tableRow=latest.locator('tbody tr').filter({has:page.locator('td').filter({hasText:child.collector})})
+      .filter({hasText:row.metric==='julia.wall.time'?'Wall time':row.metric==='julia.gc.fraction'?'GC fraction':row.metric==='julia.alloc.bytes'?'Allocated bytes':'Allocations'});
+     assert.equal(await tableRow.count(),1,child.id+' / '+row.metric);
+     assert.equal(await tableRow.locator('td').nth(2).innerText(),row.value+' '+row.unit);
+    }
+    visited++;
+   }
+   await group.getByRole('tab',{name:'History',exact:true}).click();
   }
-  await inspectView(view);
-  const other=catalog.views.find(v=>v.kind===kind&&v.id!==view.id&&v.html&&v.id!==unavailable.id);
-  assert(other,'Non-default catalogue entries are interactive too');
-  await inspectView(other);
  }
- checks.push('series, samples, deltas and trade-offs inspect exact saved rows, including non-default entries; zero-baseline deltas preserve six absolute comparisons and finite delta selection');
- const chair=page.locator('#case-heap_2048');
- await chair.getByRole('tab',{name:'Chairmarks',exact:true}).click();
- await chair.frameLocator('iframe').locator('circle').first().waitFor();
- const href=await chair.getByRole('link',{name:'Download the serialized plot'}).getAttribute('href');
- const chairData=await (await page.request.get(new URL(href,base).href)).json();
- assert.equal(new Set(chairData.plot.data.map(row=>row.metric)).size,4);
- assert(chairData.plot.data.some(row=>row.metric==='julia.gc.fraction'));
- const timeRows=chairData.plot.data.filter(r=>r.metric==='julia.wall.time');
- assert(timeRows.every(r=>r.unit==='s'));
- const minimum=Math.min(...timeRows.map(r=>r.value))*1e6;
- assert((await chair.locator('.observation').innerText()).includes(minimum.toFixed(2)+' µs'));
- await inspectNormalizedRecordedPlot(page,chair,chairData,'Chairmarks heap_2048');
- checks.push('Chairmarks retains four interactive measurements including GC share and correct seconds-to-microseconds captions');
+ assert.equal(visited,140,'Every operation/collector selection is exercised');
+ checks.push('All multi-release atlas selections expose four overlaid curves; all140 single-release collector records remain exact values beside the70 histories');
  return checks;
 }
 
-export async function checkRecordedInteractions(page,base,output){
- const checks=[];
- async function checkFrameHeight(container,label){
+async function checkNativeProfileMenus(page,base){
+ let inspected=0;
+ async function inspect(graph,label){
+  const href=await graph.getByRole('link',{name:'Download the serialized plot',exact:true}).getAttribute('href');
+  const record=await(await page.request.get(new URL(href,base).href)).json();
+  assert(isLatestDiagnostic(record.plot),`${label}: only actual single-release diagnostics appear`);
+  await graph.locator('iframe').scrollIntoViewIfNeeded();
+  if(record.plot.kind.endsWith('flamegraph')){
+   await inspectRecordedFlamePlot(page,graph,record,label);
+  }else{
+   const frame=graph.frameLocator('iframe');
+   await frame.locator('canvas').waitFor();
+   const input=frame.getByRole('spinbutton',{name:'Recorded point index',exact:true});
+   assert.equal(Number(await input.getAttribute('max')),record.plot.data.length,`${label}: every saved row remains inspectable`);
+   await input.fill(String(record.plot.data.length));
+   await frame.locator('#point-readout[aria-busy="false"]').waitFor();
+   assert((await frame.locator('#point-readout').innerText()).startsWith(`Point ${record.plot.data.length}:`),label);
+   const before=await frame.locator('#offline-figure').boundingBox();
+   await frame.getByRole('button',{name:'Zoom in',exact:true}).click();
+   assert((await frame.locator('#offline-figure').boundingBox()).width>before.width*1.4,`${label}: native viewport zoom`);
+   await frame.getByRole('button',{name:'Fit plot',exact:true}).click();
+  }
+  inspected++;
+ }
+ for(const [route,workloads]of [['datastructures',['heap_2048','counter_2048']],['oxygen',['heap_request']]]){
+  await page.goto(base+'real-packages/'+route+'.html',{waitUntil:'networkidle'});
+  for(const workload of workloads){
+   const group=page.locator('#case-'+workload);
+   await group.getByRole('tab',{name:'Latest version',exact:true}).click();
+   const profiles=group.locator('.recorded-figures');
+   const tabs=profiles.getByRole('tab');
+   await tabs.first().waitFor({state:'visible'});
+   assert((await tabs.count())>=3,`${route}/${workload}: the profile tabs have actually loaded`);
+   for(let index=0;index<await tabs.count();index++){
+    await tabs.nth(index).click();
+    for(const graph of await profiles.locator('.recorded-export:visible').all())
+     await inspect(graph,route+' / '+workload+' / '+await tabs.nth(index).innerText());
+   }
+  }
+ }
+ await page.goto(base+'real-packages/extensions.html',{waitUntil:'networkidle'});
+ await page.locator('details').evaluateAll(nodes=>nodes.forEach(node=>{node.open=true}));
+ for(const name of ['DataStructures profiles','Oxygen profiles']){
+  const gallery=page.getByRole('region',{name:name+' recorded plots',exact:true});
+  const select=gallery.getByRole('combobox',{name:'Explore the recorded measurements',exact:true});
+  await select.waitFor();
+  const options=await select.locator('option').evaluateAll(nodes=>nodes.map(node=>node.value));
+  for(const option of options){
+   await select.selectOption(option);
+   await inspect(gallery.locator('.recorded-export'),name+' / '+option);
+  }
+  const family=gallery.getByRole('combobox',{name:'Plot family',exact:true});
+  const families=await family.locator('option').evaluateAll(nodes=>nodes.map(node=>node.value));
+  for(const kind of families){
+   await family.selectOption(kind);
+   const graph=gallery.locator('.recorded-export');
+   const source=await graph.getByRole('link',{name:'Download the serialized plot',exact:true}).getAttribute('href');
+   assert.equal((await(await page.request.get(new URL(source,base).href)).json()).plot.kind,kind,
+    `${name}: selecting a family opens a real model of that family`);
+   await inspect(graph,name+' / family '+kind);
+  }
+ }
+ return `${inspected} native profile selections across both DataStructures workloads, Oxygen and both Tool recipe choosers preserve their saved models and working controls`;
+}
+
+async function checkFrameHeight(page,container,label){
   const iframe=container.locator('iframe');
   await iframe.scrollIntoViewIfNeeded();
   await page.waitForFunction(frame=>{
@@ -299,15 +354,18 @@ export async function checkRecordedInteractions(page,base,output){
    await body.evaluate(node=>{node.style.minHeight='100vh'});
    await stableHeight();
   }finally{await body.evaluate((node,value)=>{node.style.minHeight=value},previous)}
- }
+}
+
+export async function checkRecordedInteractions(page,base,output){
+ const checks=[];
  await page.goto(base+'real-packages/datastructures.html',{waitUntil:'networkidle'});
  const atlas=page.locator('.workload-atlas').first();
  await atlas.locator('#case-Accumulator .normalized-measurements iframe').scrollIntoViewIfNeeded();
  assert.equal(await atlas.locator('.workload-group').count(),35);
  const groups=atlas.locator('.workload-group');
  for(const group of await groups.all()){
-  assert.equal(await group.getByRole('tab').count(),2);
-  for(const tab of await group.getByRole('tab').all()){
+  assert.equal(await group.locator('.operation-tabs').getByRole('tab').count(),2);
+  for(const tab of await group.locator('.operation-tabs').getByRole('tab').all()){
    await tab.click();
    const plot=group.locator('.normalized-measurements');
    const href=await plot.getByRole('link',{name:'Download the serialized plot'}).getAttribute('href');
@@ -321,7 +379,8 @@ export async function checkRecordedInteractions(page,base,output){
  await accumulator.getByRole('tab',{name:'Construction',exact:true}).click();
  await page.keyboard.press('ArrowRight');
  assert.equal(await accumulator.getByRole('tab',{name:'Traversal',exact:true}).getAttribute('aria-selected'),'true');
- assert((await accumulator.getByRole('tabpanel').innerText()).includes('Construction is excluded'));
+ const operationPanel=await accumulator.getByRole('tab',{name:'Traversal',exact:true}).getAttribute('aria-controls');
+ assert((await accumulator.locator('[id="'+operationPanel+'"]').innerText()).includes('Construction is excluded'));
  const selectedContainer=atlas.locator('#case-SortedSet');
  await selectedContainer.getByRole('tab',{name:'Lookup',exact:true}).click();
  const containerFrame=selectedContainer.frameLocator('iframe');
@@ -332,11 +391,18 @@ export async function checkRecordedInteractions(page,base,output){
  assert((await containerFrame.locator('circle').count())<visiblePoints);
  await toggle.check();assert(await toggle.isChecked());
  assert.equal(await containerFrame.locator('circle').count(),visiblePoints);
- await checkFrameHeight(selectedContainer,'SortedSet desktop');
+ await checkFrameHeight(page,selectedContainer,'SortedSet desktop');
  await selectedContainer.screenshot({path:path.join(output,'sortedset-interactive.png')});
  checks.push('all 70 container operations use their native interactive export; exact SortedSet points and curve toggles work; operation tabs support the keyboard');
 
  checks.push(...await checkRecordedGalleryInteractions(page,base));
+ checks.push(...await checkRecordedDiagnosticInteractions(page,base,output));
+ return checks;
+}
+
+export async function checkRecordedDiagnosticInteractions(page,base,output){
+ const checks=[];
+ checks.push(await checkNativeProfileMenus(page,base));
 
  await page.goto(base+'real-packages/oxygen.html',{waitUntil:'networkidle'});
  const binary=page.locator('.workload-atlas').first().locator('#case-binary');
@@ -345,13 +411,17 @@ export async function checkRecordedInteractions(page,base,output){
  const binaryHref=await binary.getByRole('link',{name:'Download the serialized plot'}).getAttribute('href');
  const binaryData=await (await page.request.get(new URL(binaryHref,base).href)).json();
  assert.equal(binaryData.plot.data.filter(row=>row.ratio!==null).length,12);
- assert((await binary.getByRole('tabpanel').innerText()).includes('reference minimum from the complete history'));
+ assert((await binary.locator('.history-evidence').innerText()).includes('reference minimum from the complete history'));
  assert(binaryData.plot.data.some(row=>row.version==='1.10.0'));
  await binary.screenshot({path:path.join(output,'oxygen-patch-interactive.png')});
- const profiles=page.locator('.recorded-figures').first();
- for(const label of ['Allocation share','By file','By line','Heatmap','Allocation stacks','CPU stacks','Wall-time stacks','Totals']){
+ await page.locator('#case-heap_request').getByRole('tab',{name:'Latest version',exact:true}).click();
+ const profiles=page.locator('#case-heap_request .recorded-figures');
+ for(const label of ['Allocation share','By line','Allocation stacks','CPU stacks','Wall-time stacks']){
   await profiles.getByRole('tab',{name:label,exact:true}).click();
   const graph=profiles.locator('.recorded-export:visible').first();
+  const profileSource=await graph.getByRole('link',{name:'Download the serialized plot'}).getAttribute('href');
+  const profileRecord=await(await page.request.get(new URL(profileSource,base).href)).json();
+  assert(isLatestDiagnostic(profileRecord.plot),`${label}: latest diagnostics use one actual release and no versioned plot family`);
   if(label.endsWith('stacks')){
    const frame=graph.frameLocator('iframe');
    const rectangles=frame.locator('.flame-frame');
@@ -378,8 +448,14 @@ export async function checkRecordedInteractions(page,base,output){
    await graph.screenshot({path:path.join(output,'oxygen-allocation-interactive.png')});
   }
  }
- checks.push('Oxygen patch plots preserve full-history normalization; all profile families and totals inspect their original recorded observations interactively');
+ assert.equal(await profiles.getByRole('tab',{name:/^(By file|Allocation history|Totals)$/}).count(),0);
+ checks.push('Oxygen patch plots preserve full-history normalization; latest profiles contain only single-release stacks, allocation pie and by-line diagnostics');
+ checks.push(...await checkRecordedObservationInteractions(page,base,output));
+ return checks;
+}
 
+export async function checkRecordedObservationInteractions(page,base,output){
+ const checks=[];
  for(const [route,name]of [['real-packages/oxygen.html','Oxygen network'],['interfaces/vscode-workflows.html','saved diagnostics']]){
   await page.goto(base+route,{waitUntil:'networkidle'});
   const frames=page.locator('iframe[src*="oxygen-network/"],iframe[src*="oxygen-saved-diagnostics/"]');
@@ -393,7 +469,7 @@ export async function checkRecordedInteractions(page,base,output){
   const toggle=frame.getByRole('checkbox').first();await toggle.uncheck();
   assert((await frame.locator('.point').count())<before,'Series filters change the actual marks');
   await toggle.check();assert.equal(await frame.locator('.point').count(),before);
-  await checkFrameHeight(element.locator('..'),name);
+  await checkFrameHeight(page,element.locator('..'),name);
  }
  checks.push('network and saved diagnostic exports inspect exact units/values and hide/show actual native series');
  await page.setViewportSize({width:390,height:844});
@@ -404,7 +480,7 @@ export async function checkRecordedInteractions(page,base,output){
  await mobileContainer.getByRole('tab',{name:'Lookup',exact:true}).click();
  await mobileContainer.locator('iframe').scrollIntoViewIfNeeded();
  await mobileContainer.frameLocator('iframe').locator('svg circle').first().waitFor();
- await checkFrameHeight(mobileContainer,'SortedSet mobile');
+ await checkFrameHeight(page,mobileContainer,'SortedSet mobile');
  assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
  await mobileContainer.screenshot({path:path.join(output,'sortedset-mobile.png')});
  checks.push('SortedSet native plot axis and point readout fit at desktop and 390px widths without a second vertical scrollbar');

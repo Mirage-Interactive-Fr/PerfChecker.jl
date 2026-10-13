@@ -2,8 +2,12 @@
 import { computed, onMounted, ref } from 'vue'
 import { withBase } from 'vitepress'
 import WorkloadGroup from './WorkloadGroup.vue'
-const props = defineProps<{ directory: string; containers?: boolean }>()
+import {recordedVersions} from './recorded-view-policy.mjs'
+const props = defineProps<{ directory: string; containers?: boolean; latestDirectory?: string;
+  profilesDirectory?: string; profileWorkload?: string; profileNote?: string;
+  profileFeaturePrefix?:string; profileLinks?:Record<string,{featurePrefix:string;note:string}> }>()
 const catalog = ref<any>(null), records = ref<Record<string, any>>({}), error = ref('')
+const latest = ref<Record<string, {rows:any[];source:string}>>({})
 const purposes: Record<string, string> = {
   heap_2048: 'Insert 2,048 events into a heap and remove them in priority order. Compare the two collectors separately; they use distinct sampling machinery.',
   vector_2048: 'Sort the same events with a Base Julia vector. This control helps reveal timing changes that are not specific to DataStructures.',
@@ -91,6 +95,20 @@ onMounted(async () => {
       return [v.id, await response.json()]
     }))
     records.value = Object.fromEntries(entries)
+    for (const view of views.value) view.recorded_versions = recordedVersions(records.value[view.id]?.plot)
+    if (props.latestDirectory) {
+      const response = await fetch(withBase(props.latestDirectory+'/catalog.json'))
+      if (!response.ok) throw Error('The latest collector catalogue could not be loaded.')
+      const latestCatalog = await response.json()
+      const sessions = await Promise.all(latestCatalog.views.map(async (view:any) => {
+        const source = props.latestDirectory+'/'+view.json
+        const response = await fetch(withBase(source))
+        if (!response.ok) throw Error('The latest collector observations could not be loaded.')
+        const record = await response.json()
+        return [view.title, {rows:record.records, source}]
+      }))
+      latest.value = Object.fromEntries(sessions)
+    }
   } catch (e) { error.value = String(e) }
 })
 </script>
@@ -98,13 +116,17 @@ onMounted(async () => {
   <section class="workload-atlas" aria-label="Separate workload histories">
     <p v-if="error" role="alert">{{ error }}</p>
     <template v-if="catalog">
-      <p><strong>{{ views.length }} separate workload figures · {{ catalog.versions.length }} releases.</strong>
+      <p><strong>{{ views.length }} recorded workload histories · {{ catalog.versions.length }} releases.</strong>
         Each curve uses 30 samples after warmup. The four metrics are divided by their own minimum across the selected versions.</p>
       <nav aria-label="Workloads"><a v-for="group in groups" :key="group.name" :href="'#case-'+group.name">{{ group.name }}</a></nav>
       <section v-for="group in groups" :key="group.name" :id="'case-'+group.name">
         <h3>{{ group.name }}</h3>
         <p>{{ purposes[group.name] }}</p>
-        <WorkloadGroup :directory="directory" :group="group" :observations="observations" />
+        <WorkloadGroup :directory="directory" :group="group" :observations="observations"
+          :records="records" :latest="latest[group.name]"
+          :profiles-directory="group.name===profileWorkload||profileLinks?.[group.name] ? profilesDirectory : undefined"
+          :profile-note="profileLinks?.[group.name]?.note??profileNote"
+          :profile-feature-prefix="profileLinks?.[group.name]?.featurePrefix??profileFeaturePrefix" />
       </section>
     </template>
   </section>

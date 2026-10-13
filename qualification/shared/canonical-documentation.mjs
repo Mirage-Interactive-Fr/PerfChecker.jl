@@ -1,15 +1,19 @@
 // Check the same plain-file routes used by the canonical SFTP host.
 import assert from 'node:assert/strict';
-import { readdir, readFile, access, mkdir, writeFile } from 'node:fs/promises';
+import { readdir, readFile, access, mkdir, writeFile, mkdtemp, rm } from 'node:fs/promises';
 import { resolve, join, relative, posix } from 'node:path';
 import { spawn } from 'node:child_process';
 import { once } from 'node:events';
 import { inflateSync } from 'node:zlib';
 import { createHash } from 'node:crypto';
+import { createRequire } from 'node:module';
+import { tmpdir } from 'node:os';
 import { readExport } from '../../website/deploy-sftp.mjs';
-import { checkRecordedInteractions, checkInteractiveCatalog, checkRecordedPlotEmbeds } from './recorded-plots.mjs';
+import { checkRecordedInteractions, checkInteractiveCatalog, checkRecordedPlotEmbeds, checkNormalizedTimingModel, checkNormalizedObservationSource } from './recorded-plots.mjs';
 const root = resolve(process.argv[2] ?? 'website/build/sftp');
-const origin = 'https://perfchecker.mirageinteractive.fr';
+const localChecks = process.argv.includes('--local');
+const canonicalOrigin = 'https://perfchecker.mirageinteractive.fr';
+const localArtifacts = localChecks ? await mkdtemp(join(tmpdir(),'perfchecker-local-doc-check-')) : undefined;
 const browserChecks = process.argv.includes('--browser');
 const optionalOwners = [['linuxperf', 'PerfCheckerLinuxPerf'], ['likwid', 'PerfCheckerLIKWID'],
   ['makie', 'PerfCheckerMakie'], ['web', 'PerfCheckerWeb'], ['pluto', 'PerfCheckerPluto'],
@@ -48,23 +52,29 @@ async function checkGuideRendering(route, html) {
     assert.ok(track && html.includes(track[1].slice(1)), `Missing caption track in ${route}`);
   }
 }
-async function enumerate(directory) {
+async function enumerate(directory, extension='.html') {
   const paths = [];
   for (const item of await readdir(directory, { withFileTypes: true })) {
-    if (item.isDirectory()) paths.push(...await enumerate(join(directory, item.name)));
-    else if (item.name.endsWith('.html')) paths.push(join(directory, item.name));
+    if (item.isDirectory()) paths.push(...await enumerate(join(directory, item.name),extension));
+    else if (extension===null || item.name.endsWith(extension)) paths.push(join(directory, item.name));
   }
   return paths;
 }
-const channels = await readdir(root);
+const channels = localChecks ? [JSON.parse(await readFile(join(root,'build-info.json'),'utf8')).channel] : await readdir(root);
 const interactionChannel = channels.includes('dev') ? 'dev' : channels.includes('stable') ? 'stable' : channels[0];
+try {
 for (const channel of channels) {
-  const site = join(root, channel, 'site');
+  const site = localChecks ? root : join(root, channel, 'site');
   const info = JSON.parse(await readFile(join(site, 'build-info.json'), 'utf8'));
+  if(localChecks){
+    assert.equal(info.source_state,'local-working-tree');
+    assert(['127.0.0.1','localhost'].includes(new URL(info.url).hostname),'Local checks require a loopback preview');
+  }
+  const origin = localChecks ? new URL(info.url).origin : canonicalOrigin;
   const hasCompanionAPIs = /^1\./.test(info.version) && info.version !== '1.0.0';
   assert.equal(info.channel, channel); assert.equal(info.url, origin + info.base);
-  const exportArtifact = await readExport(site, info.channel, info.revision);
-  console.log(`${channel}: SFTP export preflight passed (${exportArtifact.files.length} files)`);
+  const exportArtifact = localChecks ? {files:(await enumerate(site,null)).map(absolute=>({absolute,path:relative(site,absolute).replaceAll('\\','/')}))} : await readExport(site, info.channel, info.revision);
+  console.log(`${channel}: ${localChecks?'completed local artifact inventory':'SFTP export preflight'} passed (${exportArtifact.files.length} files)`);
   // The original 1.0.1 archive predates this gallery, as does 1.0.0. Detect its
   // actual assets; a partial gallery must fail instead of silently skipping.
   const hasSavedDiagnostics = exportArtifact.files.some(file => savedDiagnosticAssets.includes(file.path));
@@ -125,8 +135,8 @@ for (const channel of channels) {
     const route = relative(site, file).replaceAll('\\', '/');
     const url = new URL(route === 'index.html' ? '' : route, info.url);
     const html = await readFile(file, 'utf8');
-    assert.ok(!/<interactiverecordedplot(?:\s|>)/i.test(html),
-      `${route}: InteractiveRecordedPlot must render its native output, not an unresolved custom element`);
+    assert.ok(!/<(?:interactiverecordedplot|normalizedmeasurements)(?:\s|>)/i.test(html),
+      `${route}: recorded plots must render their native output, not an unresolved custom element`);
     if (!html.includes('rel="canonical"')) {
       // Exported plots are public HTML assets, not VitePress documentation pages.
       await access(join('website/src/public', route)); continue;
@@ -166,7 +176,8 @@ for (const channel of channels) {
   assert.ok((await readdir(join(site, 'assets/chunks'))).some(name => /hashmap|search|localSearch/i.test(name)), 'Missing local search index');
   console.log(`${channel}: ${pages.length} pages, canonical .html routes, internal fragments, guide headings, recordings, assets and sitemap passed`);
   if (!browserChecks) continue;
-  const { chromium } = await import('playwright');
+  const tooling=process.env.PERFCHECKER_PLOT_BROWSER_TOOLING;
+  const { chromium } = createRequire(tooling?resolve(tooling,'package.json'):import.meta.url)('playwright');
   const server = spawn(process.execPath, ['website/preview.mjs'], { env: { ...process.env, PORT: '0',
     PERFCHECKER_PREVIEW_SOURCE: site, PERFCHECKER_DOCS_BASE: info.base, PERFCHECKER_PREVIEW_CLEAN_URLS: 'false' },
     stdio: ['ignore', 'pipe', 'pipe'] });
@@ -195,12 +206,29 @@ for (const channel of channels) {
     await page.locator('.VPNavBar').getByRole('link', { name: 'Manual', exact: true }).click();
     await page.waitForURL('**/guide/overview.html');
     await page.reload({ waitUntil: 'networkidle' });
+    const examplesMenu=page.locator('.VPNavBar .VPFlyout').filter({has:page.getByRole('button',{name:'Examples',exact:true})});
+    await examplesMenu.getByRole('button',{name:'Examples',exact:true}).click();
+    await examplesMenu.getByRole('link',{name:'Bibliography',exact:true}).waitFor({state:'visible'});
+    assert.deepEqual((await examplesMenu.getByRole('link').allTextContents()).map(text=>text.trim()),
+      ['Bibliography','DataStructures','Oxygen'],'Examples contains exactly the three package investigations');
+    const sidebarGroups=page.locator('.VPSidebarItem.level-0');
+    assert.deepEqual((await sidebarGroups.locator(':scope > .item').allTextContents()).map(text=>text.trim()),
+      ['Manual','Examples','Interfaces','Tools','Agentic workflows','API']);
+    const manual=sidebarGroups.first().locator(':scope > .items > .VPSidebarItem.level-1');
+    assert.deepEqual((await manual.locator(':scope > .item').allTextContents()).map(text=>text.trim()),
+      ['1. Your first comparison','2. Investigate a change','3. Suites and CI','Architecture','Contributing']);
+    await examplesMenu.getByRole('button',{name:'Examples',exact:true}).click();
     await page.locator('.VPNavBar').getByRole('button', { name: /Search/ }).click();
     await page.locator('.VPLocalSearchBox input').fill('implementation');
     const result = page.locator('.VPLocalSearchBox .result').first(); await result.waitFor();
     const href = await result.getAttribute('href');
     assert.ok(new URL(href, local).pathname.startsWith(info.base) && new URL(href, local).pathname.endsWith('.html'));
-    await result.click(); await page.waitForLoadState('networkidle');
+    await result.click();
+    const searchTarget=new URL(href,local);
+    await page.waitForURL(searchTarget.href,{waitUntil:'domcontentloaded'});
+    await page.locator('.vp-doc h1').waitFor({state:'visible'});
+    if(searchTarget.hash)assert(await page.evaluate(id=>!!document.getElementById(id),
+      decodeURIComponent(searchTarget.hash.slice(1))),'Search navigates to its actual visible document and existing fragment');
     if (hasCompanionAPIs) {
       for (const [slug, owner] of optionalOwners) {
         for (const api of ['public-api', 'full-api']) {
@@ -265,7 +293,6 @@ for (const channel of channels) {
     }
     if (info.version !== '1.0.0') {
       const workflowPlots = [
-        [undefined, 'oxygen-features/distribution-17e1925ed491af0f', 'distribution'],
         ['CPU samples', 'datastructures-profiles/cpu-flamegraph-054b5e59c351c558', 'cpu_flamegraph'],
         ['Wall-time samples', 'datastructures-profiles/wall-flamegraph-1a28318cdf1f7700', 'wall_flamegraph'],
         ['Allocated bytes', 'datastructures-profiles/allocation-flamegraph-6d6354c132248fdf', 'allocation_flamegraph'],
@@ -285,27 +312,17 @@ for (const channel of channels) {
           const record = await response.json();
           assert.equal(record.plot.kind, kind);
           const frame = iframe.contentFrame();
-          if (kind === 'distribution') {
-            await frame.locator('canvas').waitFor();
-            const index = frame.getByRole('spinbutton', { name: 'Recorded point index', exact: true });
-            const expectedIndex = await index.getAttribute('max');
-            await index.fill(expectedIndex);
-            await frame.locator(`#point-index[data-applied-index="${expectedIndex}"]`).waitFor();
-            await frame.locator('#point-readout[aria-busy="false"]').waitFor();
-            assert((await frame.locator('#point-readout').innerText()).startsWith(`Point ${await index.inputValue()}:`));
-          } else {
-            const mark = frame.locator('.flame-frame').first();
-            await mark.focus();
-            const tooltip = frame.getByRole('tooltip');
-            await tooltip.waitFor({ state: 'visible' });
-            assert((await tooltip.innerText()).includes(record.plot.data[0].label));
-          }
+          const mark = frame.locator('.flame-frame').first();
+          await mark.focus();
+          const tooltip = frame.getByRole('tooltip');
+          await tooltip.waitFor({ state: 'visible' });
+          assert((await tooltip.innerText()).includes(record.plot.data[0].label));
           assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1),
             `${asset}: workflow page overflows at ${width}px`);
         }
       }
       await page.setViewportSize({ width: 1440, height: 900 });
-      console.log(`${channel}: workflow distribution and three profile tabs inspect their saved native models at desktop and mobile widths`);
+      console.log(`${channel}: three workflow profile tabs inspect their saved native models at desktop and mobile widths`);
     }
     if (hasSavedDiagnostics) {
       const workflow = new URL('interfaces/vscode-workflows.html', local).href;
@@ -377,8 +394,10 @@ for (const channel of channels) {
         assert.equal(marker.renderer, 'PerfChecker.performance_plot_html');
         assert.equal(marker.input_kind, 'published_serialized_plot');
         const digest = bytes => createHash('sha256').update(bytes).digest('hex');
+        const documentationReplay = catalog.documentation_interactive_export;
         const exhaustive = marker.selection === 'all_saved_views', kinds = new Set();
-        assert.ok(exhaustive, 'Every saved view must have a native interactive export');
+        assert.ok(documentationReplay || exhaustive,
+          'Every navigable timing view, patch window and profile must have a native export');
         // Core and its companions have independent package versions.
         const companionProject = await readFile('packages/PerfCheckerMakie/Project.toml', 'utf8');
         const companionVersion = /^version\s*=\s*"([^"]+)"/m.exec(companionProject)?.[1];
@@ -390,11 +409,27 @@ for (const channel of channels) {
           const directory = join(site, 'examples/real-packages', packageName);
           const recorded = JSON.parse(await readFile(join(directory, 'catalog.json'), 'utf8'));
           assert.equal(recorded.interactive_export?.renderer, marker.renderer);
-          assert.equal(recorded.interactive_export?.companion_version, expectedCompanionVersion,
-            `${packageName}: public renderer must match the documented companion version`);
+          const timing = !packageName.endsWith('-profiles');
+          const replay = recorded.documentation_interactive_export;
+          const selectedViews = documentationReplay && timing
+            ? recorded.views.filter(view => view.kind === 'normalized_metrics') : recorded.views;
+          if (documentationReplay) {
+            assert.equal(replay?.renderer, marker.renderer);
+            assert.equal(replay.companion_version, expectedCompanionVersion,
+              `${packageName}: replay renderer matches its actual package version`);
+            assert.equal(replay.selection, timing ? 'all_normalized_views_and_patch_windows' : 'all_profile_views');
+            assert.equal(replay.selected_views, selectedViews.reduce((sum, view) => sum + 1 + (view.patch_windows?.length ?? 0), 0));
+            assert(Object.keys(replay.working_tree_source_sha256).length >= 6);
+            for (const [file, hash] of Object.entries(replay.working_tree_source_sha256)) {
+              assert.equal(digest(await readFile(file)), hash, `${packageName}: actual replay source ${file}`);
+            }
+          } else {
+            assert.equal(recorded.interactive_export?.companion_version, expectedCompanionVersion,
+              `${packageName}: public renderer must match the documented companion version`);
+          }
           let selected = 0;
-          const expected = await checkInteractiveCatalog(recorded, directory);
-          for (const view of recorded.views) {
+          const expected = await checkInteractiveCatalog({...recorded, views: selectedViews}, directory);
+          for (const view of selectedViews) {
             for (const entry of [view, ...(view.patch_windows ?? [])]) {
               if (!entry.html) continue;
               assert.equal(digest(await readFile(join(directory, entry.json))), entry.html_input_sha256);
@@ -417,17 +452,78 @@ for (const channel of channels) {
         }
         assert(nativeExports > 0);
         const collectorDirectory = join(site, 'examples/real-packages/containers-collectors');
+        const bibliographyRoot=join(site,'examples/bibliography');
+        const quick=JSON.parse(await readFile(join(bibliographyRoot,'export-normalized.json'),'utf8'));
+        const quickBytes=await readFile(join(bibliographyRoot,'timing-evidence.json'));
+        assert.equal(quick.source_projection_sha256,digest(quickBytes));
+        const quickRaw=JSON.parse(quickBytes.toString('utf8')).series.filter(series=>
+          series.package===quick.plot.options.package&&series.feature===quick.plot.options.feature&&
+          series.measurement_definition.endsWith('/'+quick.plot.options.collector));
+        checkNormalizedTimingModel(quick.plot,{sourceRows:quickRaw.flatMap(series=>series.points.map(point=>
+          ({metric:series.metric,unit:series.unit,version:point.version,value:point.statistics.minimum})))});
+        for(const campaign of ['chairmarks-history','chairmarks-quick']){
+          const directory=join(bibliographyRoot,campaign);
+          await checkNormalizedObservationSource(JSON.parse(await readFile(join(directory,'normalized.json'),'utf8')),directory);
+        }
+        const entryDirectory=join(bibliographyRoot,'first-comparison');
+        const entryBytes=await readFile(join(entryDirectory,'source.json'));
+        const entry=JSON.parse(entryBytes.toString('utf8'));
+        assert.equal(entry.schema_version,'perfchecker-legacy-first-comparison/1');
+        assert.deepEqual(entry.units,{times:'ns',gctimes:'ns',memory:'By',allocs:'1'});
+        const entryModel=JSON.parse(await readFile(join(entryDirectory,'normalized.json'),'utf8')).plot;
+        assert.equal(entryModel.options.metadata.source_sha256['source.json'],digest(entryBytes));
+        const entryOriginals=[];
+        for(const capture of entry.measurements){
+          assert.equal(capture.samples.length,50);
+          for(const [field,metric,unit]of [['times','julia.wall.time','ns'],['gctimes','julia.gc.time','ns'],['memory','julia.alloc.bytes','By'],['allocs','julia.alloc.count','1']]){
+            entryOriginals.push({metric,unit,version:capture.version,value:Math.min(...capture.samples.map(sample=>sample[field]))});
+          }
+        }
+        checkNormalizedTimingModel(entryModel,{sourceRows:entryOriginals});
+        const allocation=JSON.parse(await readFile(join(bibliographyRoot,'profiles/allocation-pie.json'),'utf8'));
+        assert.equal(allocation.plot.kind,'allocation_pie');
+        assert.equal(allocation.allocation_profile.weight_semantics,'independent whole-operation totals apportioned over retained stacks; estimates, not exact target totals');
+        assert(Math.abs(allocation.plot.data.reduce((sum,row)=>sum+row.bytes,0)-allocation.allocation_profile.total_bytes)<1e-8);
+        assert(Math.abs(allocation.plot.data.reduce((sum,row)=>sum+row.percentage,0)-100)<1e-8);
+        const jetDirectory=join(site,'examples/jet-dispatch');
+        const jetSource=await readFile(join(jetDirectory,'normalized-source.json'));
+        const jetRaw=JSON.parse(jetSource.toString('utf8'));
+        assert.equal(jetRaw.original_summary_sha256,digest(await readFile(join(jetDirectory,'summary.json'))));
+        const jet=JSON.parse(await readFile(join(jetDirectory,'measurements.json'),'utf8')).plot;
+        assert.equal(jet.options.reference_version,'dynamic');
+        assert.equal(jet.options.metadata.source_sha256['normalized-source.json'],digest(jetSource));
+        const jetOriginals=[];
+        for(const capture of jetRaw.measurements){
+          assert.equal(capture.samples.length,20);
+          for(const [index,sample]of capture.samples.entries()){
+            assert.equal(sample.time,capture.raw_trial.times_ns[index]/1e9);
+            assert.equal(sample.gctime,capture.raw_trial.gctimes_ns[index]/1e9);
+            assert.equal(sample.bytes,capture.raw_trial.memory_bytes);
+            assert.equal(sample.allocs,capture.raw_trial.allocations);
+          }
+          for(const [field,metric,unit]of [['time','julia.wall.time','s'],['gctime','julia.gc.time','s'],
+            ['bytes','julia.alloc.bytes','By'],['allocs','julia.alloc.count','1']]){
+            jetOriginals.push({metric,unit,version:capture.implementation,value:Math.min(...capture.samples.map(sample=>sample[field]))});
+          }
+        }
+        checkNormalizedTimingModel(jet,{sourceRows:jetOriginals,xlabel:'Implementation'});
         const collectorCatalog = JSON.parse(await readFile(join(collectorDirectory, 'catalog.json'), 'utf8'));
         const collectorCount = await checkInteractiveCatalog(collectorCatalog, collectorDirectory);
-        assert.equal(collectorCount, 35, 'All measured collector/operation comparisons stay interactive');
+        assert.equal(collectorCount, 140, 'All 70 operations retain separate normalized exports for both collectors');
         for (const view of collectorCatalog.views) {
-          const model = JSON.parse(await readFile(join(collectorDirectory, view.plot), 'utf8')).plot;
-          assert.equal(model.kind, 'observation_series');
-          assert.equal(model.options.metadata.source_sha256[view.json], digest(await readFile(join(collectorDirectory, view.json))));
-          for (const file of [view.html, view.plot, view.json]) {
-            assert.equal(digest(await readFile(join(collectorDirectory, file))),
-              digest(await readFile(join('website/src/public/examples/real-packages/containers-collectors', file))),
-              `Collectors/${file}: the build preserves the measured source and native export`);
+          const raw=JSON.parse(await readFile(join(collectorDirectory,view.json),'utf8'));
+          assert.equal(view.normalized_views.length,new Set(raw.records.map(row=>row.workload)).size*2);
+          for(const child of view.normalized_views){
+            const model = JSON.parse(await readFile(join(collectorDirectory, child.plot), 'utf8')).plot;
+            const originals=raw.records.filter(row=>row.workload===child.operation&&row.collector===child.collector);
+            checkNormalizedTimingModel(model,{sourceRows:originals,collector:child.collector});
+            assert.equal(model.options.versions.length,1,'This collector campaign measured one actual version');
+            assert.equal(model.options.metadata.source_sha256[view.json], digest(await readFile(join(collectorDirectory, view.json))));
+            for (const file of [child.html, child.plot, view.json]) {
+              assert.equal(digest(await readFile(join(collectorDirectory, file))),
+                digest(await readFile(join('website/src/public/examples/real-packages/containers-collectors', file))),
+                `Collectors/${file}: the build preserves the measured source and native export`);
+            }
           }
         }
         const normalized = catalog.views.filter(view => view.kind === 'normalized_metrics');
@@ -438,12 +534,15 @@ for (const channel of channels) {
           if (view.html) await access(join(site, 'examples/real-packages/containers', view.html));
           else assert.fail(`Missing native HTML for ${view.id}`);
         }
-        if (exhaustive) {
-          assert.equal(kinds.size, 12, 'The saved model exports cover all twelve native plot families');
+        if (exhaustive || documentationReplay) {
+          assert.equal(kinds.size, documentationReplay ? 9 : 12,
+            'All normalized timing and eight native profile families remain available');
           const bibliography = join(site, 'examples/bibliography/history');
           const history = JSON.parse(await readFile(join(bibliography, 'catalog.json'), 'utf8'));
           assert.equal(history.views.length, 6, 'The six measured Bibliography views remain available');
-          for (const view of history.views) for (const file of [view.html, view.evidence])
+          const historyViews = documentationReplay ? history.views.filter(view => view.kind === 'normalized_metrics') : history.views;
+          assert(historyViews.length > 0, 'The Bibliography history retains its normalized graph');
+          for (const view of historyViews) for (const file of [view.html, view.evidence])
             assert.equal(digest(await readFile(join(bibliography, file))),
               digest(await readFile(join('website/src/public/examples/bibliography/history', file))),
               `Bibliography/${file}: the build preserves the measured source and native export`);
@@ -453,13 +552,13 @@ for (const channel of channels) {
           for (const file of assets) assert.equal(digest(await readFile(file.absolute)),
             digest(await readFile(join('website/src/public', file.path))), `Shared asset changed: ${file.path}`);
         }
-        const output = join(root, channel, 'browser-recorded');
+        const output = localArtifacts ?? join(root, channel, 'browser-recorded');
         await mkdir(output, { recursive: true });
         await page.setViewportSize({ width: 1440, height: 1000 });
         const checks = await checkRecordedInteractions(page, local, output);
         await writeFile(join(output, 'recorded-plots-result.json'),
           JSON.stringify({ passed: true, channel, revision: info.revision, renderer: marker.renderer, checks }, null, 2) + '\n');
-        console.log(`${channel}: ${nativeExports} real-package native HTML/source hashes, six Bibliography exports and shared assets, and two aliases passed; public-renderer checks executed: ${checks.join('; ')}`);
+        console.log(`${channel}: ${nativeExports} selected real-package native HTML/source hashes, Bibliography normalized history and shared assets, and two aliases passed; public-renderer checks executed: ${checks.join('; ')}`);
       } else {
         console.log(`${channel}: legacy ${info.version} export has no native-gallery marker; native interaction checks were not executed`);
       }
@@ -469,7 +568,7 @@ for (const channel of channels) {
   } catch (error) {
     if (page) {
       try {
-        const diagnostics = resolve(root, '..', 'browser-diagnostics', channel);
+        const diagnostics = localArtifacts ?? resolve(root, '..', 'browser-diagnostics', channel);
         await mkdir(diagnostics, { recursive: true });
         await writeFile(join(diagnostics, 'url.txt'), page.url() + '\n');
         await writeFile(join(diagnostics, 'page.html'), await page.content());
@@ -482,4 +581,7 @@ for (const channel of channels) {
   } finally {
     await browser?.close(); const closed = once(server, 'exit'); server.kill('SIGTERM'); await closed;
   }
+}
+} finally {
+  if(localArtifacts)await rm(localArtifacts,{recursive:true,force:true});
 }

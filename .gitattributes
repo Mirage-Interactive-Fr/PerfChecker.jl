@@ -18,6 +18,9 @@
 *.svg text eol=lf
 # Plot exporters split SVG path data across lines with trailing separators.
 *.svg whitespace=-blank-at-eol
+# Preserve exact third-party runtime bundles and native Markdown hard breaks.
+website/src/public/examples/plot-assets/bonito/js/*.js whitespace=-blank-at-eof
+website/src/public/examples/tool-recipes/recorded-performance.md whitespace=-blank-at-eol
 
 *.png binary
 *.jpg binary

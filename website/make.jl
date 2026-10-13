@@ -1,11 +1,15 @@
-using Documenter, DocumenterVitepress, TOML
+using Documenter, DocumenterVitepress, TOML, SHA
 
 using PerfChecker
 
 include("compat.jl")
+local_preview = get(ENV, "PERFCHECKER_DOCS_LOCAL_PREVIEW", "false") == "true"
 
 docs_url = get(ENV, "PERFCHECKER_DOCS_URL", "https://perfchecker.mirageinteractive.fr/")
-occursin(r"^https://[A-Za-z0-9.-]+(?::[0-9]+)?/(?:[A-Za-z0-9._-]+/)*$", docs_url) ||
+preview_url = local_preview && occursin(
+    r"^http://(?:127\.0\.0\.1|localhost)(?::[0-9]+)?/(?:[A-Za-z0-9._-]+/)*$", docs_url)
+(preview_url ||
+ occursin(r"^https://[A-Za-z0-9.-]+(?::[0-9]+)?/(?:[A-Za-z0-9._-]+/)*$", docs_url)) ||
     error("PERFCHECKER_DOCS_URL must be an HTTPS deployment URL ending in /")
 docs_base = get(ENV, "PERFCHECKER_DOCS_BASE", "/")
 occursin(r"^/(?:[A-Za-z0-9._-]+/)*$", docs_base) ||
@@ -53,82 +57,86 @@ makedocs(;
     ),
     checkdocs = :all,
     pages = [
-        "Home" => "index.md",
         "Manual" => [
-            "Introduction" => "guide/overview.md",
-            "Installation" => "guide/installation.md",
-            "Quickstart: measure a test" => "guide/first-check.md",
-            "Measure an operation" => "tutorials/quick-tour.md",
-            "Understand the result" => "guide/understanding-measurements.md",
-            "Group workloads in a suite" => "suites-and-comparisons.md",
-            "Define a suite" => "software-suites.md",
-            "Compare two versions" => "tutorials/comparisons.md",
-            "Investigate a change" => "guide/investigate.md",
-            "Run checks in CI" => "tutorials/ci.md"
+            "1. Your first comparison" => "guide/overview.md",
+            "2. Investigate a change" => "tutorials/comparisons.md",
+            "3. Suites and CI" => "software-suites.md",
+            "Architecture" => "architecture-roadmap.md",
+            "Contributing" => "contributing/index.md"
         ],
         "Examples" => [
-            "Choose an example" => "real-packages/index.md",
             "Bibliography" => "tutorials/bibliography.md",
             "DataStructures" => "real-packages/datastructures.md",
-            "Oxygen" => "real-packages/oxygen.md",
-            "Interface recipes" => "real-packages/interfaces.md",
-            "Tool recipes" => "real-packages/extensions.md"
+            "Oxygen" => "real-packages/oxygen.md"
         ],
         "Interfaces" => [
-            "Choose an interface" => "interfaces/packages.md",
             "VS Code" => "interfaces/vscode.md",
-            "VS Code configuration" => "interfaces/vscode-configuration.md",
-            "Plots, notebooks and Julia tools" => "interfaces/vscode-workflows.md",
-            "VS Code video walkthroughs" => "interfaces/vscode-videos.md",
-            "Web interface (Oxygen)" => "interfaces/web-studio.md",
-            "REPL and Pluto" => "interfaces/repl-pluto.md",
-            "Plots with Makie" => "interfaces/visualization.md",
-            "Documenter" => "interfaces/documentation.md"
+            "Web (Oxygen)" => "interfaces/web-studio.md",
+            "Pluto" => "interfaces/pluto.md",
+            "REPL" => "interfaces/repl.md",
+            "Makie" => "interfaces/visualization.md",
+            "Documenter" => "interfaces/documentation.md",
+            "Tachikoma" => "interfaces/tachikoma.md"
         ],
-        "Further topics" => [
-            "Additional measurements" => [
-                "Julia and native profiling" => "native-profiling.md",
-                "Process memory" => "process-memory.md",
-                "Network traffic" => "network-measurement.md"
+        "Tools" => [
+            "Timing" => [
+                "BenchmarkTools" => "tools/benchmarktools.md",
+                "Chairmarks" => "tools/chairmarks.md",
+                "TestItemRunner" => "tools/testitemrunner.md"
             ],
-            "Larger experiments" => [
-                "Choose an experiment" => "experiments.md",
-                "Shared scenarios" => "shared-scenarios.md",
-                "Julia runtimes" => "tutorials/julia-runtimes.md",
-                "Machine calibration" => "machine-transfer.md"
+            "Profiles" => [
+                "CPU profile" => "tools/cpu-profile.md",
+                "Wall profile" => "tools/wall-profile.md",
+                "Allocation profile" => "tools/allocation-profile.md",
+                "Line allocations" => "tools/line-allocations.md",
+                "PProf" => "tools/pprof.md",
+                "FlameGraphs" => "tools/flamegraphs.md"
             ],
-            "Remote execution" => [
-                "Automation workflows" => "operations/overview.md",
-                "Controllers and workers" => "operations/hosted.md"
+            "Diagnostics" => [
+                "JET" => "tools/jet.md",
+                "AllocCheck" => "tools/alloccheck.md",
+                "SnoopCompile" => "tools/snoopcompile.md",
+                "Latency" => "tools/latency.md",
+                "GC" => "tools/gc.md",
+                "Memory" => "tools/memory.md",
+                "Locks" => "tools/locks.md",
+                "Aqua" => "tools/aqua.md",
+                "Heap snapshot" => "tools/heap-snapshot.md"
             ],
-            "Optional advisors" => [
-                "How advisors work" => "advisors.md",
-                "Provider setup" => "advisor-ui.md",
-                "MCP advice and implementation" => "mcp-advisor.md",
-                "Specialized models" => "model-specialization.md"
+            "Workloads and results" => [
+                "DrWatson" => "tools/drwatson.md",
+                "PropCheck" => "tools/propcheck.md",
+                "Supposition" => "tools/supposition.md",
+                "Scenarios" => "tools/scenarios.md",
+                "Saved results" => "tools/results.md",
+                "Command line" => "tools/cli.md",
+                "Network" => "tools/network.md",
+                "Machine profiles" => "tools/machine.md",
+                "Preferences" => "tools/preferences.md",
+                "PkgEval" => "tools/pkgeval.md",
+                "Julia runtimes" => "tools/julia-runtimes.md"
+            ],
+            "Native tools" => [
+                "Memcheck" => "tools/memcheck.md",
+                "Callgrind" => "tools/callgrind.md",
+                "Massif" => "tools/massif.md",
+                "Cachegrind" => "tools/cachegrind.md",
+                "heaptrack" => "tools/heaptrack.md",
+                "Linux perf" => "tools/linux-perf.md",
+                "VTune" => "tools/vtune.md",
+                "LinuxPerf companion" => "tools/linuxperf.md",
+                "LIKWID" => "tools/likwid.md"
             ]
         ],
-        "Reference" => [
-            "Reference index" => "reference/index.md",
+        "Agentic workflows" => [
+            "Connect an MCP tool" => "agentic/mcp.md",
+            "Advice → implementation" => "agentic/advice.md",
+            "Providers" => "agentic/providers.md"
+        ],
+        "API" => [
             "Public API" => "reference/public-api.md",
             "Full API" => "reference/api.md",
-            "Companion APIs" => "reference/optional-api.md",
-            "TestItems and tags" => "test-items.md",
-            "Collectors" => "reference/checks.md",
-            "Tool catalogue" => "tool-catalog.md",
-            "Comparison configuration" => "reference/comparisons.md",
-            "Measurement definitions" => "measurement-model.md",
-            "Native dependencies" => "reference/native-external.md",
-            "Run bundles" => "reference/run-bundles.md",
-            "Report queries" => "report-queries.md",
-            "Command line" => "reference/cli.md",
-            "Extensions and providers" => "reference/extensions.md"
-        ],
-        "Contributing" => [
-            "Architecture" => "architecture-roadmap.md",
-            "Collection qualification" => "reference/qualification.md",
-            "Documentation" => "contributing/documentation.md",
-            "Contribute an example" => "real-packages/contributing.md"
+            "Companion APIs" => "reference/optional-api.md"
         ]
     ],
     warnonly = false
@@ -168,6 +176,8 @@ if docs_sftp
     renderer_tree = strip(read(
         `git -C $source_root rev-parse $(revision * ":" * renderer_directory)`, String))
     renderer_tag = get(ENV, "PERFCHECKER_DOCS_RENDERER_TAG", "")
+    local_preview && !isempty(renderer_tag) &&
+        error("A local working-tree preview cannot claim a published renderer tag")
     renderer_revision = get(ENV, "PERFCHECKER_DOCS_RENDERER_REVISION", revision)
     if !isempty(renderer_tag)
         renderer_tag == "PerfCheckerMakie-v" * renderer_version ||
@@ -179,6 +189,11 @@ if docs_sftp
         ["renderer_name" => "PerfCheckerMakie", "renderer_version" => renderer_version,
             "renderer_revision" => renderer_revision, "renderer_tree" => renderer_tree])
     isempty(renderer_tag) || push!(info, "renderer_tag" => renderer_tag)
+    local_preview && append!(info,
+        ["source_state" => "local-working-tree",
+            "source_semantics" => "Revision and tree identify the base commit; preview uses current local sources",
+            "working_tree_diff_sha256" => bytes2hex(sha256(read(
+                `git -C $source_root diff HEAD -- Project.toml src packages`)))])
     write(joinpath(site, "build-info.json"),
         "{\n" * join([repr(key) * ": " * repr(value) for (key, value) in info], ",\n") *
         "\n}\n")

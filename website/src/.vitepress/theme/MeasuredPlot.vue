@@ -1,15 +1,14 @@
 <script setup lang="ts">
 import { withBase } from 'vitepress'
-import InteractiveRecordedPlot from './InteractiveRecordedPlot.vue'
+import NormalizedMeasurements from './NormalizedMeasurements.vue'
 </script>
 
 <template>
   <figure class="doc-screenshot">
-    <InteractiveRecordedPlot source="/examples/bibliography/timing-evidence.json"
-      html="/examples/bibliography/export-timing.html" kind="distribution"
-      title="Interactive WGLMakie distribution of measured Bibliography export timings" />
-    <figcaption>Bibliography 575ec81 · Julia 1.13.0 · Windows · 1 worker thread · 12 September 2026. Fifty measured samples exported with PerfCheckerMakie and WGLMakie.</figcaption>
+    <NormalizedMeasurements source="/examples/bibliography/export-normalized.json"
+      html="/examples/bibliography/export-normalized.html" package-name="Bibliography · one source revision" />
+    <figcaption>Bibliography 575ec81 · Julia 1.13.0 · Windows · one worker thread · fifty samples. Four minima share one ratio axis; this single revision cannot establish a version comparison.</figcaption>
   </figure>
-  <p><a :href="withBase('/examples/bibliography/export-timing.html')">Open the plot on its own</a> or
+  <p><a :href="withBase('/examples/bibliography/export-normalized.html')">Open the plot on its own</a> or
     <a :href="withBase('/examples/bibliography/timing-evidence.json')" download>download the measured data and source revisions</a>.</p>
 </template>

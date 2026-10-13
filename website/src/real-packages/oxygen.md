@@ -90,9 +90,8 @@ Only Oxygen's version is fixed explicitly. Pkg resolves HTTP, DataStructures and
 ```
 
 ```@raw html
-<p>Each feature has tabs for the complete history and the 1.10 patches. Every plot is an interactive PerfChecker export. Toggle metrics in the normalized view, inspect recorded points and use the zoom controls to examine distributions, version curves, deltas and tradeoffs. Open the same export on its own for more space, or download its measured data.</p>
+<p>Each feature has tabs for the complete history and the 1.10 patches. Every plot is an interactive PerfChecker export. Inspect the four overlaid normalized metrics, their original minima and reference values. Open the same export on its own for more space, or download its measured data.</p>
 <WorkloadAtlas directory="/examples/real-packages/oxygen-features" />
-<PackageGallery package-name="Oxygen feature catalogue" directory="/examples/real-packages/oxygen-features" />
 ```
 
 
@@ -129,9 +128,7 @@ renders the published plot JSON again without changing its values or making new
 measurements. That plot JSON is not a complete run bundle.
 
 ```@raw html
-<NormalizedMeasurements source="/examples/real-packages/oxygen/normalized.json" figure="/examples/real-packages/oxygen/normalized.svg" html="/examples/real-packages/oxygen/normalized.html" package-name="Oxygen event service" />
-<PackageGallery package-name="Oxygen application history" directory="/examples/real-packages/oxygen" />
-<WorkloadAtlas directory="/examples/real-packages/oxygen" />
+<WorkloadAtlas directory="/examples/real-packages/oxygen" profiles-directory="/examples/real-packages/oxygen-profiles" profile-workload="heap_request" profile-feature-prefix="heap_" profile-note="These latest-release profiles use the same 2,048-event heap request as its history. They describe Oxygen 1.11.0 only: CPU and wall-time samples, allocation stacks, a six-sector allocation pie and 31 recorded allocation sites." />
 ```
 
 
@@ -172,8 +169,20 @@ The packet experiment selects `lo`, echoes four sizes (64 B, 4 KiB, 64 KiB, 1 Mi
 - On loopback a transfer appears in both transmit and receive counters — do not sum them.
 
 ```@raw html
+<PluginTabs>
+<PluginTabsTab label="History">
+<PluginTabs>
+<PluginTabsTab label="64 bytes"><InteractiveRecordedPlot source="/examples/real-packages/oxygen-network/history-64.plot.json" html="/examples/real-packages/oxygen-network/history-64.html" title="Oxygen patch history for a 64-byte network echo" kind="observation_series" /></PluginTabsTab>
+<PluginTabsTab label="4 KiB"><InteractiveRecordedPlot source="/examples/real-packages/oxygen-network/history-4096.plot.json" html="/examples/real-packages/oxygen-network/history-4096.html" title="Oxygen patch history for a 4 KiB network echo" kind="observation_series" /></PluginTabsTab>
+<PluginTabsTab label="64 KiB"><InteractiveRecordedPlot source="/examples/real-packages/oxygen-network/history-65536.plot.json" html="/examples/real-packages/oxygen-network/history-65536.html" title="Oxygen patch history for a 64 KiB network echo" kind="observation_series" /></PluginTabsTab>
+<PluginTabsTab label="1 MiB"><InteractiveRecordedPlot source="/examples/real-packages/oxygen-network/history-1048576.plot.json" html="/examples/real-packages/oxygen-network/history-1048576.html" title="Oxygen patch history for a 1 MiB network echo" kind="observation_series" /></PluginTabsTab>
+</PluginTabs>
+</PluginTabsTab>
+<PluginTabsTab label="Latest version">
 <InteractiveRecordedPlot source="/examples/real-packages/oxygen-network/network.plot.json" html="/examples/real-packages/oxygen-network/network.html" title="Actual loopback latency, throughput, transmitted bytes and packets for four Oxygen payload sizes" kind="observation_series" />
 <p><a href="../examples/real-packages/oxygen-network/latest.json" download>Download the network observations</a></p>
+</PluginTabsTab>
+</PluginTabs>
 ```
 
 
@@ -187,12 +196,6 @@ The capability probe checks namespace and nftables support first. The recorded i
 
 ```@raw html
 <p><a href="../examples/real-packages/oxygen-network/isolation.json" download>Download the isolated process-tree capture</a></p>
-<PluginTabs>
-<PluginTabsTab label="64 bytes"><InteractiveRecordedPlot source="/examples/real-packages/oxygen-network/history-64.plot.json" html="/examples/real-packages/oxygen-network/history-64.html" title="Oxygen patch history for a 64-byte network echo" kind="observation_series" /></PluginTabsTab>
-<PluginTabsTab label="4 KiB"><InteractiveRecordedPlot source="/examples/real-packages/oxygen-network/history-4096.plot.json" html="/examples/real-packages/oxygen-network/history-4096.html" title="Oxygen patch history for a 4 KiB network echo" kind="observation_series" /></PluginTabsTab>
-<PluginTabsTab label="64 KiB"><InteractiveRecordedPlot source="/examples/real-packages/oxygen-network/history-65536.plot.json" html="/examples/real-packages/oxygen-network/history-65536.html" title="Oxygen patch history for a 64 KiB network echo" kind="observation_series" /></PluginTabsTab>
-<PluginTabsTab label="1 MiB"><InteractiveRecordedPlot source="/examples/real-packages/oxygen-network/history-1048576.plot.json" html="/examples/real-packages/oxygen-network/history-1048576.html" title="Oxygen patch history for a 1 MiB network echo" kind="observation_series" /></PluginTabsTab>
-</PluginTabs>
 ```
 
 
@@ -214,7 +217,7 @@ julia --project=.controller/extras profiles.jl results/YOUR-PROFILE-RUN exports/
 ```
 
 ```@raw html
-<RecordedFigures directory="/examples/real-packages/oxygen-profiles" />
+<p>The heap request's <strong>Latest version</strong> tab beside its History contains these recorded CPU, wall-time, allocation-stack, allocation-share and by-line diagnostics. No profile capture is available for the other two application routes or the seven small HTTP feature operations.</p>
 ```
 
 
@@ -379,11 +382,11 @@ VS Code settings for `examples/kitchen-sink`:
 <a id="Or-reopen-a-completed-report:"></a>
 ```
 
-For terminal plots, Makie, Pluto and reopening a completed run, follow the
-[interface recipes](interfaces.md). Download the notebook below for the same
-Oxygen experiment.
+### Open the complete Pluto notebook
 
-To share an improvement, include the before/after results and the change that produced them. See [Documentation guide](../contributing/documentation.md).
+Download the notebook below, then choose **Open a notebook** in Pluto's browser UI. Its embedded workloads, oracles and saved JSON need no checkout. First opening requires Julia **1.12+**, Git and internet; the preparation cell installs Core **1.1.0** and Makie/Pluto **1.0.1** in a separate runtime. Inspect the saved histories, select the experiment, collector, workload and targets, then choose **Launch selected checks** to start workers. See the [Pluto guide](../interfaces/pluto.md) for **Refresh status**, **Cancel active job** and **Save completed reports**.
+
+To share an improvement, include the before/after results and the change that produced them. See [Contributing](../contributing/index.md).
 
 ```@raw html
 <p><a href="../examples/real-packages/oxygen-notebook.jl" download>Download the Oxygen notebook (.jl)</a></p>

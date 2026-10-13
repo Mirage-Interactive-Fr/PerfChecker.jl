@@ -1,132 +1,18 @@
-# Configure an advisor and manage optional models
+```@raw html
+---
+search: false
+---
+```
 
-The deterministic advisor requires no model. The optional advisor panel lets
-you choose Ollama, a local or remote Chat Completions endpoint, or one MCP HTTP
-advice tool. It opens without contacting the provider or downloading weights.
+# Advisor setup
 
-## VS Code
-
-Run **PerfChecker: Configure MCP connection and models**, use the settings icon
-in **Scenarios & advice**, or choose **Model settings** in an investigation.
-
-1. Select a provider and enter its endpoint. Remote connections require an
-   explicit HTTPS opt-in. Enter only the *name* of a credential environment
-   variable; never paste a token into the panel.
-2. Choose **Test connection / discover**. This reads the available models
-   or MCP tools, without sending project evidence or generating advice.
-3. Choose **Use** beside a model/tool. For MCP, check the prompt argument
-   and any other required arguments shown in its schema. The selection remains
-   explicit; a tool name is not a guarantee that the server contains an assistant.
-4. Customize the instructions and save. The panel updates the configured advisor
-   file, or creates `perf/advisor.json`, then selects it in workspace settings.
-   Existing custom provider fields are retained through the common validator.
-5. Diagnose a scenario and choose **Explain with configured model**. The displayed
-   saved evidence is used directly; otherwise the extension offers its history.
-
-Choose **Rule-based advice only** and save to disable optional advice.
-This does not remove model files. Choosing experiments is separately enabled
-and bounded by count and duration. MCP requires structured responses for this
-mode; free text is displayed as unverified advice and never executed.
-
-## Explain and retain saved evidence
-
-1. In **Investigations**, open the measurement or diagnosis you want to discuss,
-   then select its deterministic advice. If another report is displayed, select
-   the intended entry from **Saved evidence** before asking for an explanation.
-2. Choose **Explain with configured model**. PerfChecker sends bounded saved
-   evidence and its identifiers to the selected provider. The target workload
-   is not rerun by this action.
-3. Read the returned explanation alongside its referenced evidence and the
-   deterministic fallback. References identify the supplied evidence; generated
-   prose remains unverified and does not establish a performance improvement.
-4. Under **Saved evidence**, use **JSON** or **Markdown** to retain the report.
-   Use **Cancel** during an active request to interrupt the local worker; inspect
-   the final status before starting another action.
-
-For a question and follow-up exchange, use [Advisor chat](mcp-advisor.md#Talk-to-the-advisor).
-An explanation of one saved report and a conversation are separate actions.
-
-The targeted native qualification exercised explanation, evidence identifiers,
-JSON/Markdown exports and active-request cancellation on Linux VS Code 1.141.0
-with Julia 1.13.1, VSIX candidate `75f84f631ba3` and Core candidate `975d9351250a`.
-It used a controlled HTTP provider, so it validates the interface and transport
-contract rather than the reasoning quality of an authenticated model.
-
-## Optional local model files
-
-Install/start Ollama through its [official guide](https://docs.ollama.com/quickstart).
-The panel connects to that existing service; it does not install system software.
-With a **local Ollama** endpoint selected, the panel provides:
-
-- Model inventory with sizes reported by the server.
-- Explicit download of an exact model name, with a confirmation step.
-- Unloading from memory while retaining the files.
-- Deletion from the shared server after confirmation.
-- Cancellation and a configurable deadline, including worker startup.
-
-Size before download and free disk space can be unknown. Reported installed
-sizes include shared layers and must not be summed as unique disk usage.
-Cancellation stops the local worker; the server may retain partial downloads.
-Refresh its inventory before deciding whether another operation is needed.
-Deleting a model affects every project using that Ollama installation. Management
-is disabled for remote servers and other providers.
+[Configure providers and discover models/tools](agentic/providers.md), or connect an [MCP tool](agentic/mcp.md). The same configuration serves [VS Code](interfaces/vscode.md), [Web](interfaces/web-studio.md) and [Pluto](interfaces/pluto.md).
 
 ```@raw html
 <a id="Web-studio-and-Pluto"></a>
+<a id="Configure-an-advisor-and-manage-optional-models"></a>
+<a id="VS-Code"></a>
+<a id="Explain-and-retain-saved-evidence"></a>
+<a id="Optional-local-model-files"></a>
+<a id="Web-interface-(Oxygen)-and-Pluto"></a>
 ```
-
-## Web interface (Oxygen) and Pluto
-
-The web interface links to the **same panel**. Saving applies to that studio and
-persists under its reports directory in `advisor-settings.json`. Investigation
-and model-management jobs cannot run concurrently in that studio. Requests use
-the studio session token and are restricted to the existing loopback service.
-
-Generated Pluto notebooks have an **Optional advisor setup** section with
-provider, prompt, MCP fields, discovery, save and model lifecycle controls.
-Only the action button launches a request; changing fields never does. The
-confirmation checkbox is required for model mutations and overwriting an
-existing configuration. Refresh displays the returned models/tool schemas;
-copy the selected identifier into the configuration before saving. The advisor
-file is then used by the existing narration/investigation controls.
-
-After saving `perf/advisor.json` through the panel, the equivalent Julia calls are:
-
-```julia
-using PerfChecker
-config = load_advisor_config("perf/advisor.json")
-result = advisor_setup(config) # inventory only; no generation/evidence
-(result["schema_version"], result["evidence_sent"], result["generation_tested"])
-```
-
-The returned discovery result contains this contract-defined tuple:
-
-```text
-("perfchecker-advisor-setup/1", false, false)
-```
-
-`evidence_sent=false` means the probe sent no project evidence.
-`generation_tested=false` means it did not ask a model or tool to generate a
-response. Read `result["status"]` separately: `complete` means discovery
-completed; `unavailable` or `error` explains why it did not. A reported model
-name, tool schema or `selected_available=true` does not prove generation works.
-
-For cancellable background discovery:
-
-```julia
-job = launch_advisor_setup(config; action=:models)
-investigation_status(job)
-cancel!(job)
-```
-
-`investigation_status(job)` reports the job's current state. Cancellation is a
-request; inspect its final status before treating the worker as stopped.
-
-The `advisor-setup` CLI takes `--source=request.json` containing `config`,
-`action`, optional `model`, and `confirmed` for mutations. Its JSON output has
-explicit availability, `evidence_sent=false`, and `generation_tested=false`.
-The connection check cannot establish model quality, and some otherwise
-compatible model endpoints do not expose a model-list route.
-
-See [MCP advice](mcp-advisor.md) for protocol limits and [advisors](advisors.md)
-for deterministic fallback and evidence verification.
