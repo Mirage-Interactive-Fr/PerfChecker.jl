@@ -31,7 +31,19 @@ function history_sources()
     return package, records
 end
 
-function build_suite()
+"""
+    build_suite(; backends=(:benchmark,))
+
+Build the nine pinned Bibliography revisions with BenchmarkTools or Chairmarks.
+`backends` accepts either backend symbol or a collection of `:benchmark` and
+`:chairmark`. Each selected feature keeps the upstream workload, state policy
+and dependency pins. This constructs a plan source; it does not measure code.
+"""
+function build_suite(; backends = (:benchmark,))
+    selected_backends = backends isa Symbol ? (backends,) : Tuple(backends)
+    !isempty(selected_backends) &&
+        all(backend -> backend in (:benchmark, :chairmark), selected_backends) ||
+        throw(ArgumentError("history backends must select :benchmark or :chairmark"))
     upstream, records = history_sources()
     candidates = [SuiteCandidate(record["version"], record["revision"];
                       source = upstream.source, compatibility_version = VersionNumber(record["version"]),
@@ -40,7 +52,7 @@ function build_suite()
                                           rev = dependency["revision"])
                                       for dependency in record["dependencies"]])
                   for record in records]
-    features = filter(feature -> feature.backend == :benchmark, upstream.features)
+    features = filter(feature -> feature.backend in selected_backends, upstream.features)
     package = PackageSuite("Bibliography"; source = upstream.source,
         worker_environment = worker_environment(upstream), versions = VersionNumber[],
         include_dev = false, features, candidates)

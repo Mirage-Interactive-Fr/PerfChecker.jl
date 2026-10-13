@@ -1,0 +1,1334 @@
+{
+  "plot": {
+    "data": [
+      {
+        "label": "Snapshot 1",
+        "panel": "memory",
+        "series": "Native heap",
+        "style": "scatterline",
+        "value": 0,
+        "x": 0
+      },
+      {
+        "label": "Snapshot 1",
+        "panel": "memory",
+        "series": "Allocator overhead",
+        "style": "scatterline",
+        "value": 0,
+        "x": 0
+      },
+      {
+        "label": "Snapshot 1",
+        "panel": "memory",
+        "series": "Tracked stacks",
+        "style": "scatterline",
+        "value": 0,
+        "x": 0
+      },
+      {
+        "label": "Snapshot 2",
+        "panel": "memory",
+        "series": "Native heap",
+        "style": "scatterline",
+        "value": 6016798,
+        "x": 51290817
+      },
+      {
+        "label": "Snapshot 2",
+        "panel": "memory",
+        "series": "Allocator overhead",
+        "style": "scatterline",
+        "value": 53538,
+        "x": 51290817
+      },
+      {
+        "label": "Snapshot 2",
+        "panel": "memory",
+        "series": "Tracked stacks",
+        "style": "scatterline",
+        "value": 0,
+        "x": 51290817
+      },
+      {
+        "label": "Snapshot 3",
+        "panel": "memory",
+        "series": "Native heap",
+        "style": "scatterline",
+        "value": 6017502,
+        "x": 319006050
+      },
+      {
+        "label": "Snapshot 3",
+        "panel": "memory",
+        "series": "Allocator overhead",
+        "style": "scatterline",
+        "value": 53546,
+        "x": 319006050
+      },
+      {
+        "label": "Snapshot 3",
+        "panel": "memory",
+        "series": "Tracked stacks",
+        "style": "scatterline",
+        "value": 0,
+        "x": 319006050
+      },
+      {
+        "label": "Snapshot 4",
+        "panel": "memory",
+        "series": "Native heap",
+        "style": "scatterline",
+        "value": 17377587,
+        "x": 392376483
+      },
+      {
+        "label": "Snapshot 4",
+        "panel": "memory",
+        "series": "Allocator overhead",
+        "style": "scatterline",
+        "value": 120125,
+        "x": 392376483
+      },
+      {
+        "label": "Snapshot 4",
+        "panel": "memory",
+        "series": "Tracked stacks",
+        "style": "scatterline",
+        "value": 0,
+        "x": 392376483
+      },
+      {
+        "label": "Snapshot 5",
+        "panel": "memory",
+        "series": "Native heap",
+        "style": "scatterline",
+        "value": 19459839,
+        "x": 450565894
+      },
+      {
+        "label": "Snapshot 5",
+        "panel": "memory",
+        "series": "Allocator overhead",
+        "style": "scatterline",
+        "value": 152361,
+        "x": 450565894
+      },
+      {
+        "label": "Snapshot 5",
+        "panel": "memory",
+        "series": "Tracked stacks",
+        "style": "scatterline",
+        "value": 0,
+        "x": 450565894
+      },
+      {
+        "label": "Snapshot 6",
+        "panel": "memory",
+        "series": "Native heap",
+        "style": "scatterline",
+        "value": 19001226,
+        "x": 512607758
+      },
+      {
+        "label": "Snapshot 6",
+        "panel": "memory",
+        "series": "Allocator overhead",
+        "style": "scatterline",
+        "value": 134414,
+        "x": 512607758
+      },
+      {
+        "label": "Snapshot 6",
+        "panel": "memory",
+        "series": "Tracked stacks",
+        "style": "scatterline",
+        "value": 0,
+        "x": 512607758
+      },
+      {
+        "label": "Snapshot 7",
+        "panel": "memory",
+        "series": "Native heap",
+        "style": "scatterline",
+        "value": 19108978,
+        "x": 580153391
+      },
+      {
+        "label": "Snapshot 7",
+        "panel": "memory",
+        "series": "Allocator overhead",
+        "style": "scatterline",
+        "value": 135150,
+        "x": 580153391
+      },
+      {
+        "label": "Snapshot 7",
+        "panel": "memory",
+        "series": "Tracked stacks",
+        "style": "scatterline",
+        "value": 0,
+        "x": 580153391
+      },
+      {
+        "label": "Snapshot 8",
+        "panel": "memory",
+        "series": "Native heap",
+        "style": "scatterline",
+        "value": 19242521,
+        "x": 618288002
+      },
+      {
+        "label": "Snapshot 8",
+        "panel": "memory",
+        "series": "Allocator overhead",
+        "style": "scatterline",
+        "value": 143599,
+        "x": 618288002
+      },
+      {
+        "label": "Snapshot 8",
+        "panel": "memory",
+        "series": "Tracked stacks",
+        "style": "scatterline",
+        "value": 0,
+        "x": 618288002
+      },
+      {
+        "label": "Snapshot 9",
+        "panel": "memory",
+        "series": "Native heap",
+        "style": "scatterline",
+        "value": 19914379,
+        "x": 680760974
+      },
+      {
+        "label": "Snapshot 9",
+        "panel": "memory",
+        "series": "Allocator overhead",
+        "style": "scatterline",
+        "value": 173677,
+        "x": 680760974
+      },
+      {
+        "label": "Snapshot 9",
+        "panel": "memory",
+        "series": "Tracked stacks",
+        "style": "scatterline",
+        "value": 0,
+        "x": 680760974
+      },
+      {
+        "label": "Snapshot 10",
+        "panel": "memory",
+        "series": "Native heap",
+        "style": "scatterline",
+        "value": 20179456,
+        "x": 723394466
+      },
+      {
+        "label": "Snapshot 10",
+        "panel": "memory",
+        "series": "Allocator overhead",
+        "style": "scatterline",
+        "value": 170336,
+        "x": 723394466
+      },
+      {
+        "label": "Snapshot 10",
+        "panel": "memory",
+        "series": "Tracked stacks",
+        "style": "scatterline",
+        "value": 0,
+        "x": 723394466
+      },
+      {
+        "label": "Snapshot 11",
+        "panel": "memory",
+        "series": "Native heap",
+        "style": "scatterline",
+        "value": 19246935,
+        "x": 803457318
+      },
+      {
+        "label": "Snapshot 11",
+        "panel": "memory",
+        "series": "Allocator overhead",
+        "style": "scatterline",
+        "value": 138705,
+        "x": 803457318
+      },
+      {
+        "label": "Snapshot 11",
+        "panel": "memory",
+        "series": "Tracked stacks",
+        "style": "scatterline",
+        "value": 0,
+        "x": 803457318
+      },
+      {
+        "label": "Snapshot 12",
+        "panel": "memory",
+        "series": "Native heap",
+        "style": "scatterline",
+        "value": 19452672,
+        "x": 858828272
+      },
+      {
+        "label": "Snapshot 12",
+        "panel": "memory",
+        "series": "Allocator overhead",
+        "style": "scatterline",
+        "value": 142128,
+        "x": 858828272
+      },
+      {
+        "label": "Snapshot 12",
+        "panel": "memory",
+        "series": "Tracked stacks",
+        "style": "scatterline",
+        "value": 0,
+        "x": 858828272
+      },
+      {
+        "label": "Snapshot 13",
+        "panel": "memory",
+        "series": "Native heap",
+        "style": "scatterline",
+        "value": 19596458,
+        "x": 943149069
+      },
+      {
+        "label": "Snapshot 13",
+        "panel": "memory",
+        "series": "Allocator overhead",
+        "style": "scatterline",
+        "value": 143806,
+        "x": 943149069
+      },
+      {
+        "label": "Snapshot 13",
+        "panel": "memory",
+        "series": "Tracked stacks",
+        "style": "scatterline",
+        "value": 0,
+        "x": 943149069
+      },
+      {
+        "label": "Snapshot 14",
+        "panel": "memory",
+        "series": "Native heap",
+        "style": "scatterline",
+        "value": 20117972,
+        "x": 1027353593
+      },
+      {
+        "label": "Snapshot 14",
+        "panel": "memory",
+        "series": "Allocator overhead",
+        "style": "scatterline",
+        "value": 164652,
+        "x": 1027353593
+      },
+      {
+        "label": "Snapshot 14",
+        "panel": "memory",
+        "series": "Tracked stacks",
+        "style": "scatterline",
+        "value": 0,
+        "x": 1027353593
+      },
+      {
+        "label": "Snapshot 15",
+        "panel": "memory",
+        "series": "Native heap",
+        "style": "scatterline",
+        "value": 21511376,
+        "x": 1086564939
+      },
+      {
+        "label": "Snapshot 15",
+        "panel": "memory",
+        "series": "Allocator overhead",
+        "style": "scatterline",
+        "value": 179712,
+        "x": 1086564939
+      },
+      {
+        "label": "Snapshot 15",
+        "panel": "memory",
+        "series": "Tracked stacks",
+        "style": "scatterline",
+        "value": 0,
+        "x": 1086564939
+      },
+      {
+        "label": "Snapshot 16",
+        "panel": "memory",
+        "series": "Native heap",
+        "style": "scatterline",
+        "value": 19725342,
+        "x": 1151015232
+      },
+      {
+        "label": "Snapshot 16",
+        "panel": "memory",
+        "series": "Allocator overhead",
+        "style": "scatterline",
+        "value": 145234,
+        "x": 1151015232
+      },
+      {
+        "label": "Snapshot 16",
+        "panel": "memory",
+        "series": "Tracked stacks",
+        "style": "scatterline",
+        "value": 0,
+        "x": 1151015232
+      },
+      {
+        "label": "Snapshot 17",
+        "panel": "memory",
+        "series": "Native heap",
+        "style": "scatterline",
+        "value": 19800534,
+        "x": 1240625115
+      },
+      {
+        "label": "Snapshot 17",
+        "panel": "memory",
+        "series": "Allocator overhead",
+        "style": "scatterline",
+        "value": 146298,
+        "x": 1240625115
+      },
+      {
+        "label": "Snapshot 17",
+        "panel": "memory",
+        "series": "Tracked stacks",
+        "style": "scatterline",
+        "value": 0,
+        "x": 1240625115
+      },
+      {
+        "label": "Snapshot 18",
+        "panel": "memory",
+        "series": "Native heap",
+        "style": "scatterline",
+        "value": 20392086,
+        "x": 1307630909
+      },
+      {
+        "label": "Snapshot 18",
+        "panel": "memory",
+        "series": "Allocator overhead",
+        "style": "scatterline",
+        "value": 153162,
+        "x": 1307630909
+      },
+      {
+        "label": "Snapshot 18",
+        "panel": "memory",
+        "series": "Tracked stacks",
+        "style": "scatterline",
+        "value": 0,
+        "x": 1307630909
+      },
+      {
+        "label": "Snapshot 19",
+        "panel": "memory",
+        "series": "Native heap",
+        "style": "scatterline",
+        "value": 20460142,
+        "x": 1346888543
+      },
+      {
+        "label": "Snapshot 19",
+        "panel": "memory",
+        "series": "Allocator overhead",
+        "style": "scatterline",
+        "value": 154514,
+        "x": 1346888543
+      },
+      {
+        "label": "Snapshot 19",
+        "panel": "memory",
+        "series": "Tracked stacks",
+        "style": "scatterline",
+        "value": 0,
+        "x": 1346888543
+      },
+      {
+        "label": "Snapshot 20",
+        "panel": "memory",
+        "series": "Native heap",
+        "style": "scatterline",
+        "value": 20893782,
+        "x": 1433928588
+      },
+      {
+        "label": "Snapshot 20",
+        "panel": "memory",
+        "series": "Allocator overhead",
+        "style": "scatterline",
+        "value": 158234,
+        "x": 1433928588
+      },
+      {
+        "label": "Snapshot 20",
+        "panel": "memory",
+        "series": "Tracked stacks",
+        "style": "scatterline",
+        "value": 0,
+        "x": 1433928588
+      },
+      {
+        "label": "Snapshot 21",
+        "panel": "memory",
+        "series": "Native heap",
+        "style": "scatterline",
+        "value": 21112700,
+        "x": 1490571473
+      },
+      {
+        "label": "Snapshot 21",
+        "panel": "memory",
+        "series": "Allocator overhead",
+        "style": "scatterline",
+        "value": 159956,
+        "x": 1490571473
+      },
+      {
+        "label": "Snapshot 21",
+        "panel": "memory",
+        "series": "Tracked stacks",
+        "style": "scatterline",
+        "value": 0,
+        "x": 1490571473
+      },
+      {
+        "label": "Snapshot 22",
+        "panel": "memory",
+        "series": "Native heap",
+        "style": "scatterline",
+        "value": 21163822,
+        "x": 1581810665
+      },
+      {
+        "label": "Snapshot 22",
+        "panel": "memory",
+        "series": "Allocator overhead",
+        "style": "scatterline",
+        "value": 160354,
+        "x": 1581810665
+      },
+      {
+        "label": "Snapshot 22",
+        "panel": "memory",
+        "series": "Tracked stacks",
+        "style": "scatterline",
+        "value": 0,
+        "x": 1581810665
+      },
+      {
+        "label": "Snapshot 23",
+        "panel": "memory",
+        "series": "Native heap",
+        "style": "scatterline",
+        "value": 19076726,
+        "x": 1648223580
+      },
+      {
+        "label": "Snapshot 23",
+        "panel": "memory",
+        "series": "Allocator overhead",
+        "style": "scatterline",
+        "value": 137906,
+        "x": 1648223580
+      },
+      {
+        "label": "Snapshot 23",
+        "panel": "memory",
+        "series": "Tracked stacks",
+        "style": "scatterline",
+        "value": 0,
+        "x": 1648223580
+      },
+      {
+        "label": "Snapshot 24",
+        "panel": "memory",
+        "series": "Native heap",
+        "style": "scatterline",
+        "value": 19796454,
+        "x": 1699014639
+      },
+      {
+        "label": "Snapshot 24",
+        "panel": "memory",
+        "series": "Allocator overhead",
+        "style": "scatterline",
+        "value": 175266,
+        "x": 1699014639
+      },
+      {
+        "label": "Snapshot 24",
+        "panel": "memory",
+        "series": "Tracked stacks",
+        "style": "scatterline",
+        "value": 0,
+        "x": 1699014639
+      },
+      {
+        "label": "Snapshot 25",
+        "panel": "memory",
+        "series": "Native heap",
+        "style": "scatterline",
+        "value": 20721060,
+        "x": 1749898338
+      },
+      {
+        "label": "Snapshot 25",
+        "panel": "memory",
+        "series": "Allocator overhead",
+        "style": "scatterline",
+        "value": 187612,
+        "x": 1749898338
+      },
+      {
+        "label": "Snapshot 25",
+        "panel": "memory",
+        "series": "Tracked stacks",
+        "style": "scatterline",
+        "value": 0,
+        "x": 1749898338
+      },
+      {
+        "label": "Snapshot 26",
+        "panel": "memory",
+        "series": "Native heap",
+        "style": "scatterline",
+        "value": 19142494,
+        "x": 1813763322
+      },
+      {
+        "label": "Snapshot 26",
+        "panel": "memory",
+        "series": "Allocator overhead",
+        "style": "scatterline",
+        "value": 139154,
+        "x": 1813763322
+      },
+      {
+        "label": "Snapshot 26",
+        "panel": "memory",
+        "series": "Tracked stacks",
+        "style": "scatterline",
+        "value": 0,
+        "x": 1813763322
+      },
+      {
+        "label": "Snapshot 27",
+        "panel": "memory",
+        "series": "Native heap",
+        "style": "scatterline",
+        "value": 19220574,
+        "x": 1862656476
+      },
+      {
+        "label": "Snapshot 27",
+        "panel": "memory",
+        "series": "Allocator overhead",
+        "style": "scatterline",
+        "value": 139954,
+        "x": 1862656476
+      },
+      {
+        "label": "Snapshot 27",
+        "panel": "memory",
+        "series": "Tracked stacks",
+        "style": "scatterline",
+        "value": 0,
+        "x": 1862656476
+      },
+      {
+        "label": "Snapshot 28",
+        "panel": "memory",
+        "series": "Native heap",
+        "style": "scatterline",
+        "value": 20170946,
+        "x": 1922122352
+      },
+      {
+        "label": "Snapshot 28",
+        "panel": "memory",
+        "series": "Allocator overhead",
+        "style": "scatterline",
+        "value": 215006,
+        "x": 1922122352
+      },
+      {
+        "label": "Snapshot 28",
+        "panel": "memory",
+        "series": "Tracked stacks",
+        "style": "scatterline",
+        "value": 0,
+        "x": 1922122352
+      },
+      {
+        "label": "Snapshot 29",
+        "panel": "memory",
+        "series": "Native heap",
+        "style": "scatterline",
+        "value": 20211441,
+        "x": 1972813878
+      },
+      {
+        "label": "Snapshot 29",
+        "panel": "memory",
+        "series": "Allocator overhead",
+        "style": "scatterline",
+        "value": 209863,
+        "x": 1972813878
+      },
+      {
+        "label": "Snapshot 29",
+        "panel": "memory",
+        "series": "Tracked stacks",
+        "style": "scatterline",
+        "value": 0,
+        "x": 1972813878
+      },
+      {
+        "label": "Snapshot 30",
+        "panel": "memory",
+        "series": "Native heap",
+        "style": "scatterline",
+        "value": 20360195,
+        "x": 2023687509
+      },
+      {
+        "label": "Snapshot 30",
+        "panel": "memory",
+        "series": "Allocator overhead",
+        "style": "scatterline",
+        "value": 204941,
+        "x": 2023687509
+      },
+      {
+        "label": "Snapshot 30",
+        "panel": "memory",
+        "series": "Tracked stacks",
+        "style": "scatterline",
+        "value": 0,
+        "x": 2023687509
+      },
+      {
+        "label": "Snapshot 31",
+        "panel": "memory",
+        "series": "Native heap",
+        "style": "scatterline",
+        "value": 20785477,
+        "x": 2074379795
+      },
+      {
+        "label": "Snapshot 31",
+        "panel": "memory",
+        "series": "Allocator overhead",
+        "style": "scatterline",
+        "value": 202547,
+        "x": 2074379795
+      },
+      {
+        "label": "Snapshot 31",
+        "panel": "memory",
+        "series": "Tracked stacks",
+        "style": "scatterline",
+        "value": 0,
+        "x": 2074379795
+      },
+      {
+        "label": "Snapshot 32",
+        "panel": "memory",
+        "series": "Native heap",
+        "style": "scatterline",
+        "value": 20252698,
+        "x": 2125118205
+      },
+      {
+        "label": "Snapshot 32",
+        "panel": "memory",
+        "series": "Allocator overhead",
+        "style": "scatterline",
+        "value": 174854,
+        "x": 2125118205
+      },
+      {
+        "label": "Snapshot 32",
+        "panel": "memory",
+        "series": "Tracked stacks",
+        "style": "scatterline",
+        "value": 0,
+        "x": 2125118205
+      },
+      {
+        "label": "Snapshot 33",
+        "panel": "memory",
+        "series": "Native heap",
+        "style": "scatterline",
+        "value": 19547709,
+        "x": 2203873718
+      },
+      {
+        "label": "Snapshot 33",
+        "panel": "memory",
+        "series": "Allocator overhead",
+        "style": "scatterline",
+        "value": 143163,
+        "x": 2203873718
+      },
+      {
+        "label": "Snapshot 33",
+        "panel": "memory",
+        "series": "Tracked stacks",
+        "style": "scatterline",
+        "value": 0,
+        "x": 2203873718
+      },
+      {
+        "label": "Snapshot 34",
+        "panel": "memory",
+        "series": "Native heap",
+        "style": "scatterline",
+        "value": 19859901,
+        "x": 2257115595
+      },
+      {
+        "label": "Snapshot 34",
+        "panel": "memory",
+        "series": "Allocator overhead",
+        "style": "scatterline",
+        "value": 147275,
+        "x": 2257115595
+      },
+      {
+        "label": "Snapshot 34",
+        "panel": "memory",
+        "series": "Tracked stacks",
+        "style": "scatterline",
+        "value": 0,
+        "x": 2257115595
+      },
+      {
+        "label": "Snapshot 35",
+        "panel": "memory",
+        "series": "Native heap",
+        "style": "scatterline",
+        "value": 20239421,
+        "x": 2309511094
+      },
+      {
+        "label": "Snapshot 35",
+        "panel": "memory",
+        "series": "Allocator overhead",
+        "style": "scatterline",
+        "value": 153955,
+        "x": 2309511094
+      },
+      {
+        "label": "Snapshot 35",
+        "panel": "memory",
+        "series": "Tracked stacks",
+        "style": "scatterline",
+        "value": 0,
+        "x": 2309511094
+      },
+      {
+        "label": "Snapshot 36",
+        "panel": "memory",
+        "series": "Native heap",
+        "style": "scatterline",
+        "value": 22559032,
+        "x": 2394558049
+      },
+      {
+        "label": "Snapshot 36",
+        "panel": "memory",
+        "series": "Allocator overhead",
+        "style": "scatterline",
+        "value": 275376,
+        "x": 2394558049
+      },
+      {
+        "label": "Snapshot 36",
+        "panel": "memory",
+        "series": "Tracked stacks",
+        "style": "scatterline",
+        "value": 0,
+        "x": 2394558049
+      },
+      {
+        "label": "Snapshot 37",
+        "panel": "memory",
+        "series": "Native heap",
+        "style": "scatterline",
+        "value": 21251258,
+        "x": 2445687573
+      },
+      {
+        "label": "Snapshot 37",
+        "panel": "memory",
+        "series": "Allocator overhead",
+        "style": "scatterline",
+        "value": 230318,
+        "x": 2445687573
+      },
+      {
+        "label": "Snapshot 37",
+        "panel": "memory",
+        "series": "Tracked stacks",
+        "style": "scatterline",
+        "value": 0,
+        "x": 2445687573
+      },
+      {
+        "label": "Snapshot 38",
+        "panel": "memory",
+        "series": "Native heap",
+        "style": "scatterline",
+        "value": 21033358,
+        "x": 2496783770
+      },
+      {
+        "label": "Snapshot 38",
+        "panel": "memory",
+        "series": "Allocator overhead",
+        "style": "scatterline",
+        "value": 213490,
+        "x": 2496783770
+      },
+      {
+        "label": "Snapshot 38",
+        "panel": "memory",
+        "series": "Tracked stacks",
+        "style": "scatterline",
+        "value": 0,
+        "x": 2496783770
+      },
+      {
+        "label": "Snapshot 39",
+        "panel": "memory",
+        "series": "Native heap",
+        "style": "scatterline",
+        "value": 21372724,
+        "x": 2547915533
+      },
+      {
+        "label": "Snapshot 39",
+        "panel": "memory",
+        "series": "Allocator overhead",
+        "style": "scatterline",
+        "value": 219764,
+        "x": 2547915533
+      },
+      {
+        "label": "Snapshot 39",
+        "panel": "memory",
+        "series": "Tracked stacks",
+        "style": "scatterline",
+        "value": 0,
+        "x": 2547915533
+      },
+      {
+        "label": "Snapshot 40",
+        "panel": "memory",
+        "series": "Native heap",
+        "style": "scatterline",
+        "value": 20777855,
+        "x": 2624554148
+      },
+      {
+        "label": "Snapshot 40",
+        "panel": "memory",
+        "series": "Allocator overhead",
+        "style": "scatterline",
+        "value": 184737,
+        "x": 2624554148
+      },
+      {
+        "label": "Snapshot 40",
+        "panel": "memory",
+        "series": "Tracked stacks",
+        "style": "scatterline",
+        "value": 0,
+        "x": 2624554148
+      },
+      {
+        "label": "Snapshot 41",
+        "panel": "memory",
+        "series": "Native heap",
+        "style": "scatterline",
+        "value": 20559327,
+        "x": 2701598644
+      },
+      {
+        "label": "Snapshot 41",
+        "panel": "memory",
+        "series": "Allocator overhead",
+        "style": "scatterline",
+        "value": 158761,
+        "x": 2701598644
+      },
+      {
+        "label": "Snapshot 41",
+        "panel": "memory",
+        "series": "Tracked stacks",
+        "style": "scatterline",
+        "value": 0,
+        "x": 2701598644
+      },
+      {
+        "label": "Snapshot 42",
+        "panel": "memory",
+        "series": "Native heap",
+        "style": "scatterline",
+        "value": 21372410,
+        "x": 2778246605
+      },
+      {
+        "label": "Snapshot 42",
+        "panel": "memory",
+        "series": "Allocator overhead",
+        "style": "scatterline",
+        "value": 183390,
+        "x": 2778246605
+      },
+      {
+        "label": "Snapshot 42",
+        "panel": "memory",
+        "series": "Tracked stacks",
+        "style": "scatterline",
+        "value": 0,
+        "x": 2778246605
+      },
+      {
+        "label": "Snapshot 43",
+        "panel": "memory",
+        "series": "Native heap",
+        "style": "scatterline",
+        "value": 20925706,
+        "x": 2854912422
+      },
+      {
+        "label": "Snapshot 43",
+        "panel": "memory",
+        "series": "Allocator overhead",
+        "style": "scatterline",
+        "value": 177694,
+        "x": 2854912422
+      },
+      {
+        "label": "Snapshot 43",
+        "panel": "memory",
+        "series": "Tracked stacks",
+        "style": "scatterline",
+        "value": 0,
+        "x": 2854912422
+      },
+      {
+        "label": "Snapshot 44",
+        "panel": "memory",
+        "series": "Native heap",
+        "style": "scatterline",
+        "value": 21077798,
+        "x": 2906033219
+      },
+      {
+        "label": "Snapshot 44",
+        "panel": "memory",
+        "series": "Allocator overhead",
+        "style": "scatterline",
+        "value": 178866,
+        "x": 2906033219
+      },
+      {
+        "label": "Snapshot 44",
+        "panel": "memory",
+        "series": "Tracked stacks",
+        "style": "scatterline",
+        "value": 0,
+        "x": 2906033219
+      },
+      {
+        "label": "Snapshot 45",
+        "panel": "memory",
+        "series": "Native heap",
+        "style": "scatterline",
+        "value": 20807163,
+        "x": 2958841858
+      },
+      {
+        "label": "Snapshot 45",
+        "panel": "memory",
+        "series": "Allocator overhead",
+        "style": "scatterline",
+        "value": 163389,
+        "x": 2958841858
+      },
+      {
+        "label": "Snapshot 45",
+        "panel": "memory",
+        "series": "Tracked stacks",
+        "style": "scatterline",
+        "value": 0,
+        "x": 2958841858
+      },
+      {
+        "label": "Snapshot 46",
+        "panel": "memory",
+        "series": "Native heap",
+        "style": "scatterline",
+        "value": 21985135,
+        "x": 3035499349
+      },
+      {
+        "label": "Snapshot 46",
+        "panel": "memory",
+        "series": "Allocator overhead",
+        "style": "scatterline",
+        "value": 245577,
+        "x": 3035499349
+      },
+      {
+        "label": "Snapshot 46",
+        "panel": "memory",
+        "series": "Tracked stacks",
+        "style": "scatterline",
+        "value": 0,
+        "x": 3035499349
+      },
+      {
+        "label": "Snapshot 47",
+        "panel": "memory",
+        "series": "Native heap",
+        "style": "scatterline",
+        "value": 22854106,
+        "x": 3125833818
+      },
+      {
+        "label": "Snapshot 47",
+        "panel": "memory",
+        "series": "Allocator overhead",
+        "style": "scatterline",
+        "value": 252238,
+        "x": 3125833818
+      },
+      {
+        "label": "Snapshot 47",
+        "panel": "memory",
+        "series": "Tracked stacks",
+        "style": "scatterline",
+        "value": 0,
+        "x": 3125833818
+      },
+      {
+        "label": "Snapshot 48",
+        "panel": "memory",
+        "series": "Native heap",
+        "style": "scatterline",
+        "value": 22200724,
+        "x": 3176948999
+      },
+      {
+        "label": "Snapshot 48",
+        "panel": "memory",
+        "series": "Allocator overhead",
+        "style": "scatterline",
+        "value": 222212,
+        "x": 3176948999
+      },
+      {
+        "label": "Snapshot 48",
+        "panel": "memory",
+        "series": "Tracked stacks",
+        "style": "scatterline",
+        "value": 0,
+        "x": 3176948999
+      },
+      {
+        "label": "Snapshot 49",
+        "panel": "memory",
+        "series": "Native heap",
+        "style": "scatterline",
+        "value": 21773825,
+        "x": 3228060604
+      },
+      {
+        "label": "Snapshot 49",
+        "panel": "memory",
+        "series": "Allocator overhead",
+        "style": "scatterline",
+        "value": 200863,
+        "x": 3228060604
+      },
+      {
+        "label": "Snapshot 49",
+        "panel": "memory",
+        "series": "Tracked stacks",
+        "style": "scatterline",
+        "value": 0,
+        "x": 3228060604
+      },
+      {
+        "label": "Snapshot 50",
+        "panel": "memory",
+        "series": "Native heap",
+        "style": "scatterline",
+        "value": 21063577,
+        "x": 3307704599
+      },
+      {
+        "label": "Snapshot 50",
+        "panel": "memory",
+        "series": "Allocator overhead",
+        "style": "scatterline",
+        "value": 166951,
+        "x": 3307704599
+      },
+      {
+        "label": "Snapshot 50",
+        "panel": "memory",
+        "series": "Tracked stacks",
+        "style": "scatterline",
+        "value": 0,
+        "x": 3307704599
+      },
+      {
+        "label": "Snapshot 51",
+        "panel": "memory",
+        "series": "Native heap",
+        "style": "scatterline",
+        "value": 21252211,
+        "x": 3347387198
+      },
+      {
+        "label": "Snapshot 51",
+        "panel": "memory",
+        "series": "Allocator overhead",
+        "style": "scatterline",
+        "value": 169205,
+        "x": 3347387198
+      },
+      {
+        "label": "Snapshot 51",
+        "panel": "memory",
+        "series": "Tracked stacks",
+        "style": "scatterline",
+        "value": 0,
+        "x": 3347387198
+      },
+      {
+        "label": "Snapshot 52",
+        "panel": "memory",
+        "series": "Native heap",
+        "style": "scatterline",
+        "value": 21711511,
+        "x": 3385546739
+      },
+      {
+        "label": "Snapshot 52",
+        "panel": "memory",
+        "series": "Allocator overhead",
+        "style": "scatterline",
+        "value": 183489,
+        "x": 3385546739
+      },
+      {
+        "label": "Snapshot 52",
+        "panel": "memory",
+        "series": "Tracked stacks",
+        "style": "scatterline",
+        "value": 0,
+        "x": 3385546739
+      },
+      {
+        "label": "Snapshot 53",
+        "panel": "memory",
+        "series": "Native heap",
+        "style": "scatterline",
+        "value": 22250653,
+        "x": 3423685213
+      },
+      {
+        "label": "Snapshot 53",
+        "panel": "memory",
+        "series": "Allocator overhead",
+        "style": "scatterline",
+        "value": 197267,
+        "x": 3423685213
+      },
+      {
+        "label": "Snapshot 53",
+        "panel": "memory",
+        "series": "Tracked stacks",
+        "style": "scatterline",
+        "value": 0,
+        "x": 3423685213
+      },
+      {
+        "label": "Snapshot 54",
+        "panel": "memory",
+        "series": "Native heap",
+        "style": "scatterline",
+        "value": 21538720,
+        "x": 3462113041
+      },
+      {
+        "label": "Snapshot 54",
+        "panel": "memory",
+        "series": "Allocator overhead",
+        "style": "scatterline",
+        "value": 172512,
+        "x": 3462113041
+      },
+      {
+        "label": "Snapshot 54",
+        "panel": "memory",
+        "series": "Tracked stacks",
+        "style": "scatterline",
+        "value": 0,
+        "x": 3462113041
+      }
+    ],
+    "description": "",
+    "encoding": {
+      "color": "series",
+      "panel": "panel",
+      "x": "x",
+      "y": "value"
+    },
+    "id": "massif-1",
+    "kind": "observation_series",
+    "options": {
+      "collector_label": "Valgrind Massif",
+      "metadata": {
+        "source_sha256": {
+          "massif-1.json": "671781465c1b3a719638dbaaa7c6f4c2df74dc4b79d02e5a7fba89c5bd7c97f5"
+        }
+      },
+      "panels": [
+        {
+          "id": "memory",
+          "title": "Native process memory",
+          "unit": "By",
+          "xkind": "numeric",
+          "xlabel": "Massif timeline",
+          "xunit": "instrumented instructions",
+          "ylabel": "Memory",
+          "yscale": "linear"
+        }
+      ],
+      "scope": "whole_process_including_startup"
+    },
+    "schema_version": "perfchecker-plot/1",
+    "title": "Massif native heap — process 1"
+  }
+}

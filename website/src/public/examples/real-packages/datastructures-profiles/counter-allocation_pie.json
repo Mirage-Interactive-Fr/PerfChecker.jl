@@ -1,0 +1,96 @@
+{
+  "allocation_profile": {
+    "bytes_measurement_evaluations": 1,
+    "count_measurement_evaluations": 1,
+    "message": "Allocation stacks were captured.",
+    "profile_evaluations": 1,
+    "retained_allocations": 11,
+    "retained_sampled_bytes": 2208,
+    "sample_rate": 1.0,
+    "sampled_allocations": 11,
+    "schema_version": "perfchecker-allocation-profile/1",
+    "source_allocations": 11,
+    "status": "complete",
+    "total_allocations": 11,
+    "total_bytes": 2352,
+    "total_measurement_evaluations": 2,
+    "total_semantics": "bytes and allocation count from two separate operation evaluations; not inferred from samples",
+    "weight_semantics": "raw sampled bytes and events across all profile evaluations"
+  },
+  "correctness": "passed",
+  "performance": "not_compared",
+  "plot": {
+    "data": [
+      {
+        "bytes": 2048.0,
+        "file": "boot.jl",
+        "label": "boot.jl:588",
+        "line": 588,
+        "percentage": 92.7536231884058,
+        "version": "0.19.6"
+      },
+      {
+        "bytes": 160.0,
+        "file": "dict.jl",
+        "label": "dict.jl:80",
+        "line": 80,
+        "percentage": 7.246376811594203,
+        "version": "0.19.6"
+      }
+    ],
+    "description": "DataStructures 0.19.6; 32,768-event counter; one native allocation profile. Raw sampled bytes, not independent operation totals.",
+    "encoding": {
+      "color": "label",
+      "label": "percentage",
+      "theta": "bytes"
+    },
+    "id": "allocation-pie-36db8d4534fe0275",
+    "kind": "allocation_pie",
+    "options": {
+      "feature": "counter_32768_profile_alloc",
+      "measurement_definitions": [
+        "julia.alloc.bytes/profile-allocs-v1"
+      ],
+      "metadata": {
+        "allocation_profile": {
+          "bytes_measurement_evaluations": 1,
+          "count_measurement_evaluations": 1,
+          "message": "Allocation stacks were captured.",
+          "profile_evaluations": 1,
+          "retained_allocations": 11,
+          "retained_sampled_bytes": 2208,
+          "sample_rate": 1.0,
+          "sampled_allocations": 11,
+          "schema_version": "perfchecker-allocation-profile/1",
+          "source_allocations": 11,
+          "status": "complete",
+          "total_allocations": 11,
+          "total_bytes": 2352,
+          "total_measurement_evaluations": 2,
+          "total_semantics": "bytes and allocation count from two separate operation evaluations; not inferred from samples",
+          "weight_semantics": "raw sampled bytes and events across all profile evaluations"
+        },
+        "run_id": "94cf6884-2e97-4623-b29a-c8fb727355ff",
+        "source_sha256": {
+          "counter-allocation-source.json": "a1a51272cda86603f609b88f126fd9f97528749f786f819cfb05ae73eafd541f"
+        }
+      },
+      "min_percentage": 5.0,
+      "package": "DataStructures",
+      "selected_version": "0.19.6",
+      "tags": [],
+      "top": 40,
+      "unit": "By",
+      "versions": [
+        "0.19.6"
+      ]
+    },
+    "schema_version": "perfchecker-plot/1",
+    "title": "DataStructures · counter_32768_profile_alloc · allocations"
+  },
+  "runtime": {
+    "language": "julia",
+    "threads": 1,
+    "version": "1.13.1"
+  }
+}

@@ -1,0 +1,18 @@
+core_version = "1.1.0"
+profile_evaluations = 1
+sample_rate = 1.0
+core_revision = "2cf431eb5a84f05e0af1098b7f6e5db84d479288"
+julia_version = "1.13.1"
+collector_runtime_version = "1.13.1"
+profile_collector_sha256 = "6458be3b7a27ae768f5cbc5bf269d7a6f6eb142427f2cabda81439a8db81a3bc"
+correctness = "not_checked"
+warmup = "repeat=true; one SharedScenarioRuntime.once before independent totals and profile"
+workload_sha256 = "ff2eaab6016e7c92dceb910e5c374bd6e0b95efbd5d2e47925ec7bc587af9335"
+recipe = "julia --startup-file=no --threads=1 --project=examples/bibliography/.controller/core examples/bibliography/run.jl profile_alloc Bibliography export_bibtex"
+os = "Linux"
+schema_version = "perfchecker-allocation-documentation-capture/1"
+suite_runner_sha256 = "486412988a1dabff8f27df3b372af8fe72ee235ae84f7f63dd39c804a3147b75"
+collector = "Profile.Allocs"
+threads = 1
+state_policy = "fresh prepared model per total/profile evaluation"
+performance = "not_compared"

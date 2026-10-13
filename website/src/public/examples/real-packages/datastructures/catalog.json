@@ -4311,7 +4311,9 @@
       "terminal": "normalized-metrics-9f15dd9785af6bf9.txt",
       "title": "DataStructures · buffer_2048_benchmark · relative to minimum",
       "unit": "ratio",
-      "workload": "buffer_2048"
+      "workload": "buffer_2048",
+      "html": "normalized-metrics-9f15dd9785af6bf9.html",
+      "html_input_sha256": "c3cf1e4b9a1912b35eedaa9bb42639fd2c805e52de4c5cbb7a12a13ab5dde22b"
     },
     {
       "feature": "buffer_2048_benchmark",
@@ -4523,7 +4525,9 @@
       "terminal": "normalized-metrics-a1318a90e3e855b9.txt",
       "title": "DataStructures · counter_2048_benchmark · relative to minimum",
       "unit": "ratio",
-      "workload": "counter_2048"
+      "workload": "counter_2048",
+      "html": "normalized-metrics-a1318a90e3e855b9.html",
+      "html_input_sha256": "0fff35a5cb62ab8405f8368a6aa145dfd75f53e9535d22fdb02a021893c3ad72"
     },
     {
       "feature": "counter_2048_benchmark",
@@ -4957,7 +4961,9 @@
       "terminal": "normalized-metrics-2733e6d4863b6def.txt",
       "title": "DataStructures · heap_2048_chairmark · relative to minimum",
       "unit": "ratio",
-      "workload": "heap_2048"
+      "workload": "heap_2048",
+      "html": "normalized-metrics-2733e6d4863b6def.html",
+      "html_input_sha256": "43d2dc5bce3213e2bc4ab159ef1086740aafc6c25f49eaeed2b154fb679e1c5d"
     },
     {
       "feature": "heap_2048_chairmark",
@@ -5169,7 +5175,9 @@
       "terminal": "normalized-metrics-2aa5516b1115a1c7.txt",
       "title": "DataStructures · vector_2048_benchmark · relative to minimum",
       "unit": "ratio",
-      "workload": "vector_2048"
+      "workload": "vector_2048",
+      "html": "normalized-metrics-2aa5516b1115a1c7.html",
+      "html_input_sha256": "baf56bbb6e215d6fb35034f5979520d7439a7f9c0a2ba2beb5ff497413abad1d"
     },
     {
       "feature": "vector_2048_benchmark",
@@ -5376,5 +5384,20 @@
     "renderer": "PerfChecker.performance_plot_html",
     "selected_views": 5,
     "selection": "guided_examples"
+  },
+  "documentation_interactive_export": {
+    "companion_version": "1.0.4",
+    "renderer": "PerfChecker.performance_plot_html",
+    "selected_views": 5,
+    "selection": "all_normalized_views_and_patch_windows",
+    "source_revision": "06b2b4d9b54c6c1c5c84ba346ff2317f896a20d9",
+    "working_tree_source_sha256": {
+      "examples/kitchen-sink/publish-evidence.jl": "ca037a55e07e5af269d08e1ff8429f03bbb008afc1eb565aa5b59f16f426e63a",
+      "examples/kitchen-sink/replay.jl": "38ea1ff24fecc064fdf30af471893842266f3f970a92b11b9b24bdda07dd3307",
+      "packages/PerfCheckerMakie/Project.toml": "bdfa81ec53cb083c1490e71ebbe4c69ea8b9381801dd6279ee1a4f744aaf8cdb",
+      "packages/PerfCheckerMakie/ext/WGLMakieExt.jl": "e24172b05c7f0a7f41d571c950d65226738cebc52d445aa33af57ba2437ef5cd",
+      "packages/PerfCheckerMakie/src/assets/normalized.html": "206252de88acf1d6d97534bda17705feadccc36c1db191b05f6ed8abf516b295",
+      "packages/PerfCheckerMakie/src/performance.jl": "21282e3db628f6944de523d956362e410e62611ce1b1d55ef35c280c563708e4"
+    }
   }
 }

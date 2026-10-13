@@ -1,0 +1,445 @@
+{
+  "plot": {
+    "data": [
+      {
+        "label": "Recorded operation 1",
+        "panel": "state_before_bytes",
+        "series": "State before",
+        "style": "scatterline",
+        "value": 27856,
+        "x": 1
+      },
+      {
+        "label": "Recorded operation 1",
+        "panel": "state_after_bytes",
+        "series": "State after",
+        "style": "scatterline",
+        "value": 28264,
+        "x": 1
+      },
+      {
+        "label": "Recorded operation 1",
+        "panel": "state_and_result_bytes",
+        "series": "State and result",
+        "style": "scatterline",
+        "value": 55852,
+        "x": 1
+      },
+      {
+        "label": "Recorded operation 1 · windows-psapi",
+        "panel": "process_before",
+        "series": "RSS",
+        "style": "scatterline",
+        "value": 536616960,
+        "x": 1
+      },
+      {
+        "label": "Recorded operation 1 · windows-psapi",
+        "panel": "process_before",
+        "series": "Private bytes",
+        "style": "scatterline",
+        "value": 612425728,
+        "x": 1
+      },
+      {
+        "label": "Recorded operation 1 · windows-psapi",
+        "panel": "process_before",
+        "series": "Peak RSS",
+        "style": "scatterline",
+        "value": 550666240,
+        "x": 1
+      },
+      {
+        "label": "Recorded operation 1 · windows-psapi",
+        "panel": "process_after",
+        "series": "RSS",
+        "style": "scatterline",
+        "value": 532635648,
+        "x": 1
+      },
+      {
+        "label": "Recorded operation 1 · windows-psapi",
+        "panel": "process_after",
+        "series": "Private bytes",
+        "style": "scatterline",
+        "value": 606199808,
+        "x": 1
+      },
+      {
+        "label": "Recorded operation 1 · windows-psapi",
+        "panel": "process_after",
+        "series": "Peak RSS",
+        "style": "scatterline",
+        "value": 550666240,
+        "x": 1
+      },
+      {
+        "label": "Recorded operation 2",
+        "panel": "state_before_bytes",
+        "series": "State before",
+        "style": "scatterline",
+        "value": 27856,
+        "x": 2
+      },
+      {
+        "label": "Recorded operation 2",
+        "panel": "state_after_bytes",
+        "series": "State after",
+        "style": "scatterline",
+        "value": 28264,
+        "x": 2
+      },
+      {
+        "label": "Recorded operation 2",
+        "panel": "state_and_result_bytes",
+        "series": "State and result",
+        "style": "scatterline",
+        "value": 55852,
+        "x": 2
+      },
+      {
+        "label": "Recorded operation 2 · windows-psapi",
+        "panel": "process_before",
+        "series": "RSS",
+        "style": "scatterline",
+        "value": 533860352,
+        "x": 2
+      },
+      {
+        "label": "Recorded operation 2 · windows-psapi",
+        "panel": "process_before",
+        "series": "Private bytes",
+        "style": "scatterline",
+        "value": 607723520,
+        "x": 2
+      },
+      {
+        "label": "Recorded operation 2 · windows-psapi",
+        "panel": "process_before",
+        "series": "Peak RSS",
+        "style": "scatterline",
+        "value": 550666240,
+        "x": 2
+      },
+      {
+        "label": "Recorded operation 2 · windows-psapi",
+        "panel": "process_after",
+        "series": "RSS",
+        "style": "scatterline",
+        "value": 534007808,
+        "x": 2
+      },
+      {
+        "label": "Recorded operation 2 · windows-psapi",
+        "panel": "process_after",
+        "series": "Private bytes",
+        "style": "scatterline",
+        "value": 607817728,
+        "x": 2
+      },
+      {
+        "label": "Recorded operation 2 · windows-psapi",
+        "panel": "process_after",
+        "series": "Peak RSS",
+        "style": "scatterline",
+        "value": 550666240,
+        "x": 2
+      },
+      {
+        "label": "Recorded operation 3",
+        "panel": "state_before_bytes",
+        "series": "State before",
+        "style": "scatterline",
+        "value": 27856,
+        "x": 3
+      },
+      {
+        "label": "Recorded operation 3",
+        "panel": "state_after_bytes",
+        "series": "State after",
+        "style": "scatterline",
+        "value": 28264,
+        "x": 3
+      },
+      {
+        "label": "Recorded operation 3",
+        "panel": "state_and_result_bytes",
+        "series": "State and result",
+        "style": "scatterline",
+        "value": 55852,
+        "x": 3
+      },
+      {
+        "label": "Recorded operation 3 · windows-psapi",
+        "panel": "process_before",
+        "series": "RSS",
+        "style": "scatterline",
+        "value": 534073344,
+        "x": 3
+      },
+      {
+        "label": "Recorded operation 3 · windows-psapi",
+        "panel": "process_before",
+        "series": "Private bytes",
+        "style": "scatterline",
+        "value": 607842304,
+        "x": 3
+      },
+      {
+        "label": "Recorded operation 3 · windows-psapi",
+        "panel": "process_before",
+        "series": "Peak RSS",
+        "style": "scatterline",
+        "value": 550666240,
+        "x": 3
+      },
+      {
+        "label": "Recorded operation 3 · windows-psapi",
+        "panel": "process_after",
+        "series": "RSS",
+        "style": "scatterline",
+        "value": 534290432,
+        "x": 3
+      },
+      {
+        "label": "Recorded operation 3 · windows-psapi",
+        "panel": "process_after",
+        "series": "Private bytes",
+        "style": "scatterline",
+        "value": 608022528,
+        "x": 3
+      },
+      {
+        "label": "Recorded operation 3 · windows-psapi",
+        "panel": "process_after",
+        "series": "Peak RSS",
+        "style": "scatterline",
+        "value": 550666240,
+        "x": 3
+      },
+      {
+        "label": "Recorded operation 4",
+        "panel": "state_before_bytes",
+        "series": "State before",
+        "style": "scatterline",
+        "value": 27856,
+        "x": 4
+      },
+      {
+        "label": "Recorded operation 4",
+        "panel": "state_after_bytes",
+        "series": "State after",
+        "style": "scatterline",
+        "value": 28264,
+        "x": 4
+      },
+      {
+        "label": "Recorded operation 4",
+        "panel": "state_and_result_bytes",
+        "series": "State and result",
+        "style": "scatterline",
+        "value": 55852,
+        "x": 4
+      },
+      {
+        "label": "Recorded operation 4 · windows-psapi",
+        "panel": "process_before",
+        "series": "RSS",
+        "style": "scatterline",
+        "value": 534376448,
+        "x": 4
+      },
+      {
+        "label": "Recorded operation 4 · windows-psapi",
+        "panel": "process_before",
+        "series": "Private bytes",
+        "style": "scatterline",
+        "value": 608116736,
+        "x": 4
+      },
+      {
+        "label": "Recorded operation 4 · windows-psapi",
+        "panel": "process_before",
+        "series": "Peak RSS",
+        "style": "scatterline",
+        "value": 550666240,
+        "x": 4
+      },
+      {
+        "label": "Recorded operation 4 · windows-psapi",
+        "panel": "process_after",
+        "series": "RSS",
+        "style": "scatterline",
+        "value": 534614016,
+        "x": 4
+      },
+      {
+        "label": "Recorded operation 4 · windows-psapi",
+        "panel": "process_after",
+        "series": "Private bytes",
+        "style": "scatterline",
+        "value": 608395264,
+        "x": 4
+      },
+      {
+        "label": "Recorded operation 4 · windows-psapi",
+        "panel": "process_after",
+        "series": "Peak RSS",
+        "style": "scatterline",
+        "value": 550666240,
+        "x": 4
+      },
+      {
+        "label": "Recorded operation 5",
+        "panel": "state_before_bytes",
+        "series": "State before",
+        "style": "scatterline",
+        "value": 27856,
+        "x": 5
+      },
+      {
+        "label": "Recorded operation 5",
+        "panel": "state_after_bytes",
+        "series": "State after",
+        "style": "scatterline",
+        "value": 28264,
+        "x": 5
+      },
+      {
+        "label": "Recorded operation 5",
+        "panel": "state_and_result_bytes",
+        "series": "State and result",
+        "style": "scatterline",
+        "value": 55852,
+        "x": 5
+      },
+      {
+        "label": "Recorded operation 5 · windows-psapi",
+        "panel": "process_before",
+        "series": "RSS",
+        "style": "scatterline",
+        "value": 534675456,
+        "x": 5
+      },
+      {
+        "label": "Recorded operation 5 · windows-psapi",
+        "panel": "process_before",
+        "series": "Private bytes",
+        "style": "scatterline",
+        "value": 608468992,
+        "x": 5
+      },
+      {
+        "label": "Recorded operation 5 · windows-psapi",
+        "panel": "process_before",
+        "series": "Peak RSS",
+        "style": "scatterline",
+        "value": 550666240,
+        "x": 5
+      },
+      {
+        "label": "Recorded operation 5 · windows-psapi",
+        "panel": "process_after",
+        "series": "RSS",
+        "style": "scatterline",
+        "value": 534872064,
+        "x": 5
+      },
+      {
+        "label": "Recorded operation 5 · windows-psapi",
+        "panel": "process_after",
+        "series": "Private bytes",
+        "style": "scatterline",
+        "value": 608673792,
+        "x": 5
+      },
+      {
+        "label": "Recorded operation 5 · windows-psapi",
+        "panel": "process_after",
+        "series": "Peak RSS",
+        "style": "scatterline",
+        "value": 550666240,
+        "x": 5
+      }
+    ],
+    "description": "",
+    "encoding": {
+      "color": "series",
+      "panel": "panel",
+      "x": "x",
+      "y": "value"
+    },
+    "id": "memory",
+    "kind": "observation_series",
+    "options": {
+      "collector_label": "Julia memory diagnostic",
+      "metadata": {
+        "correctness": "passed",
+        "runtime": {
+          "language": "julia",
+          "threads": 1,
+          "version": "1.13.0"
+        },
+        "source_sha256": {
+          "diagnosis.json": "ec446ba99269c49df0e6e83fa988779bb1daa8e1597947eb62784654459ff7b2"
+        },
+        "tool_version": null
+      },
+      "panels": [
+        {
+          "id": "state_before_bytes",
+          "title": "State before",
+          "unit": "By",
+          "xkind": "numeric",
+          "xlabel": "Diagnostic operation",
+          "xunit": "",
+          "ylabel": "State before",
+          "yscale": "linear"
+        },
+        {
+          "id": "state_after_bytes",
+          "title": "State after",
+          "unit": "By",
+          "xkind": "numeric",
+          "xlabel": "Diagnostic operation",
+          "xunit": "",
+          "ylabel": "State after",
+          "yscale": "linear"
+        },
+        {
+          "id": "state_and_result_bytes",
+          "title": "State and result",
+          "unit": "By",
+          "xkind": "numeric",
+          "xlabel": "Diagnostic operation",
+          "xunit": "",
+          "ylabel": "State and result",
+          "yscale": "linear"
+        },
+        {
+          "id": "process_before",
+          "title": "Process memory before",
+          "unit": "By",
+          "xkind": "numeric",
+          "xlabel": "Diagnostic operation",
+          "xunit": "",
+          "ylabel": "Process memory before",
+          "yscale": "linear"
+        },
+        {
+          "id": "process_after",
+          "title": "Process memory after",
+          "unit": "By",
+          "xkind": "numeric",
+          "xlabel": "Diagnostic operation",
+          "xunit": "",
+          "ylabel": "Process memory after",
+          "yscale": "linear"
+        }
+      ],
+      "scope": "Recorded memory observations; this source report does not include analysis_scope"
+    },
+    "schema_version": "perfchecker-plot/1",
+    "title": "Recorded memory observations"
+  }
+}

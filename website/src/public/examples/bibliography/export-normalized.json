@@ -1,0 +1,111 @@
+{
+  "correctness": "not_checked",
+  "description": "Four recorded BenchmarkTools minima overlaid; one source revision, not a version comparison",
+  "finished_at": "2026-09-12T12:28:06.084",
+  "input_manifest_sha256": "a2523f25c0eed22ef6c80bd59ce18534ad0cbf54c2c836f275c6805297371258",
+  "performance": "not_compared",
+  "plot": {
+    "data": [
+      {
+        "metric": "julia.wall.time",
+        "normalization_status": "ratio",
+        "ratio": 1,
+        "reference_value": 6900,
+        "reference_version": "minimum",
+        "samples": 50,
+        "statistic": "minimum",
+        "target_kind": "dev",
+        "unit": "ns",
+        "value": 6900,
+        "version": "dev@0.4.0"
+      },
+      {
+        "metric": "julia.gc.time",
+        "normalization_status": "both_zero",
+        "ratio": 1,
+        "reference_value": 0,
+        "reference_version": "minimum",
+        "samples": 50,
+        "statistic": "minimum",
+        "target_kind": "dev",
+        "unit": "ns",
+        "value": 0,
+        "version": "dev@0.4.0"
+      },
+      {
+        "metric": "julia.alloc.bytes",
+        "normalization_status": "ratio",
+        "ratio": 1,
+        "reference_value": 2976,
+        "reference_version": "minimum",
+        "samples": 50,
+        "statistic": "minimum",
+        "target_kind": "dev",
+        "unit": "By",
+        "value": 2976,
+        "version": "dev@0.4.0"
+      },
+      {
+        "metric": "julia.alloc.count",
+        "normalization_status": "ratio",
+        "ratio": 1,
+        "reference_value": 23,
+        "reference_version": "minimum",
+        "samples": 50,
+        "statistic": "minimum",
+        "target_kind": "dev",
+        "unit": "1",
+        "value": 23,
+        "version": "dev@0.4.0"
+      }
+    ],
+    "description": "minimum per version / reference (minimum) for each metric; 1 = reference, above 1 = more, below 1 = less. equal zeros = 1 (unchanged); nonzero / zero = unavailable",
+    "encoding": {
+      "color": "metric",
+      "x": "version",
+      "y": "ratio"
+    },
+    "id": "bibliography-export-single-normalized",
+    "kind": "normalized_metrics",
+    "options": {
+      "collector": "benchmarktools-v1/fresh-state-evals1-v1",
+      "feature": "export_bibtex",
+      "package": "Bibliography",
+      "reference_version": "minimum",
+      "statistic": "minimum",
+      "unit": "ratio",
+      "versions": [
+        "dev@0.4.0"
+      ],
+      "workload": "export_bibtex",
+      "zero_reference_policy": "equal zeros = 1 (unchanged); nonzero / zero = unavailable",
+      "scope": "One source revision; not a version comparison"
+    },
+    "schema_version": "perfchecker-plot/1",
+    "title": "Bibliography · export_bibtex · relative to minimum"
+  },
+  "publication_scope": "Numeric series and plot data only; local paths, host identifiers and logs omitted",
+  "run_id": "7f142c4b-7c47-417e-9c50-3a3c1e74c6dc",
+  "runtime": {
+    "language": "julia",
+    "threads": 1,
+    "version": "1.13.0"
+  },
+  "sources": {
+    "BibInternal": {
+      "revision": "792d8c709169505f998f7d70bfa092551dd4089f",
+      "url": "https://github.com/JuliaBibliographies/BibInternal.jl.git"
+    },
+    "BibParser": {
+      "revision": "cf1eb4446b986a23ed444963dcdb4c6ecc2da90f",
+      "url": "https://github.com/JuliaBibliographies/BibParser.jl.git"
+    },
+    "Bibliography": {
+      "revision": "575ec810042cc791fd47a2c025a80246ccf039b5",
+      "url": "https://github.com/JuliaBibliographies/Bibliography.jl.git"
+    }
+  },
+  "started_at": "2026-09-12T12:26:59.031",
+  "source_projection_sha256": "f41818bd096f3cef2e4da9c88c7d5e8b6b44ca3b2faa19da6258650915565d03",
+  "source_projection": "timing-evidence.json"
+}

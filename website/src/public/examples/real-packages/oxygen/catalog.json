@@ -4831,14 +4831,18 @@
         {
           "json": "normalized-metrics-991dcbde40e45f3b-1.10.json",
           "label": "1.10 patches",
-          "svg": "normalized-metrics-991dcbde40e45f3b-1.10.svg"
+          "svg": "normalized-metrics-991dcbde40e45f3b-1.10.svg",
+          "html": "normalized-metrics-991dcbde40e45f3b-1.10.html",
+          "html_input_sha256": "f8fcd220ac18003d9b1863ff8aac7d6d733fe6b91445c0004314bf1666fccb68"
         }
       ],
       "svg": "normalized-metrics-991dcbde40e45f3b.svg",
       "terminal": "normalized-metrics-991dcbde40e45f3b.txt",
       "title": "Oxygen · buffer_benchmark · relative to minimum",
       "unit": "ratio",
-      "workload": "buffer_request"
+      "workload": "buffer_request",
+      "html": "normalized-metrics-991dcbde40e45f3b.html",
+      "html_input_sha256": "d8f40928bf27fca2de0acf0057c2744d0af742ffcf49d453cea4365764078dca"
     },
     {
       "feature": "buffer_benchmark",
@@ -5049,14 +5053,18 @@
         {
           "json": "normalized-metrics-aef2136eb8d7d485-1.10.json",
           "label": "1.10 patches",
-          "svg": "normalized-metrics-aef2136eb8d7d485-1.10.svg"
+          "svg": "normalized-metrics-aef2136eb8d7d485-1.10.svg",
+          "html": "normalized-metrics-aef2136eb8d7d485-1.10.html",
+          "html_input_sha256": "35d28fa353366918c29150f8860e1ac5bba9c3fc44932c6e67657987f9609a8f"
         }
       ],
       "svg": "normalized-metrics-aef2136eb8d7d485.svg",
       "terminal": "normalized-metrics-aef2136eb8d7d485.txt",
       "title": "Oxygen · counter_benchmark · relative to minimum",
       "unit": "ratio",
-      "workload": "counter_request"
+      "workload": "counter_request",
+      "html": "normalized-metrics-aef2136eb8d7d485.html",
+      "html_input_sha256": "89ae6c3a1a2aa7208cc12303378b2e27d840dc8b23abbe59d992485f314d7779"
     },
     {
       "feature": "counter_benchmark",
@@ -5267,7 +5275,9 @@
         {
           "json": "normalized-metrics-708bc15499924df0-1.10.json",
           "label": "1.10 patches",
-          "svg": "normalized-metrics-708bc15499924df0-1.10.svg"
+          "svg": "normalized-metrics-708bc15499924df0-1.10.svg",
+          "html": "normalized-metrics-708bc15499924df0-1.10.html",
+          "html_input_sha256": "7ab9dff0afa606a398091ffed9e80aed9348798a1bb1b7acc861a247dd9e16e6"
         }
       ],
       "svg": "normalized-metrics-708bc15499924df0.svg",
@@ -5495,14 +5505,18 @@
         {
           "json": "normalized-metrics-05d37271dd506a1e-1.10.json",
           "label": "1.10 patches",
-          "svg": "normalized-metrics-05d37271dd506a1e-1.10.svg"
+          "svg": "normalized-metrics-05d37271dd506a1e-1.10.svg",
+          "html": "normalized-metrics-05d37271dd506a1e-1.10.html",
+          "html_input_sha256": "132c9e244d9260740bff0f3bd9fae78a97fa19c6438f5a3ef7173b91cad49e53"
         }
       ],
       "svg": "normalized-metrics-05d37271dd506a1e.svg",
       "terminal": "normalized-metrics-05d37271dd506a1e.txt",
       "title": "Oxygen · heap_chairmark · relative to minimum",
       "unit": "ratio",
-      "workload": "heap_request"
+      "workload": "heap_request",
+      "html": "normalized-metrics-05d37271dd506a1e.html",
+      "html_input_sha256": "b3e9ee72358f04e31bd285fd447a6850e6da254a26c94eda2eb2278c41153940"
     },
     {
       "feature": "heap_chairmark",
@@ -5709,5 +5723,20 @@
     "renderer": "PerfChecker.performance_plot_html",
     "selected_views": 5,
     "selection": "guided_examples"
+  },
+  "documentation_interactive_export": {
+    "companion_version": "1.0.4",
+    "renderer": "PerfChecker.performance_plot_html",
+    "selected_views": 8,
+    "selection": "all_normalized_views_and_patch_windows",
+    "source_revision": "06b2b4d9b54c6c1c5c84ba346ff2317f896a20d9",
+    "working_tree_source_sha256": {
+      "examples/kitchen-sink/publish-evidence.jl": "ca037a55e07e5af269d08e1ff8429f03bbb008afc1eb565aa5b59f16f426e63a",
+      "examples/kitchen-sink/replay.jl": "38ea1ff24fecc064fdf30af471893842266f3f970a92b11b9b24bdda07dd3307",
+      "packages/PerfCheckerMakie/Project.toml": "bdfa81ec53cb083c1490e71ebbe4c69ea8b9381801dd6279ee1a4f744aaf8cdb",
+      "packages/PerfCheckerMakie/ext/WGLMakieExt.jl": "e24172b05c7f0a7f41d571c950d65226738cebc52d445aa33af57ba2437ef5cd",
+      "packages/PerfCheckerMakie/src/assets/normalized.html": "206252de88acf1d6d97534bda17705feadccc36c1db191b05f6ed8abf516b295",
+      "packages/PerfCheckerMakie/src/performance.jl": "21282e3db628f6944de523d956362e410e62611ce1b1d55ef35c280c563708e4"
+    }
   }
 }

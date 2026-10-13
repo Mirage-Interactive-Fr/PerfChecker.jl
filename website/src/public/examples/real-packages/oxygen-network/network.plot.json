@@ -1,0 +1,4533 @@
+{
+  "plot": {
+    "data": [
+      {
+        "label": "64-byte body · sample 1",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001537981,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 2",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001306273,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 3",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001274584,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 4",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001292127,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 5",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.00122175,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 6",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001213685,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 7",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001206422,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 8",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001179465,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 9",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001352914,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 10",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001292709,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 11",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001266604,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 12",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001278563,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 13",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.00128182,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 14",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001290578,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 15",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001274972,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 16",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001286004,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 17",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001226904,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 18",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.00123755,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 19",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001198275,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 20",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001294575,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 21",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001258633,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 22",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001223385,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 23",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001340967,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 24",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001385676,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 25",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001283374,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 26",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001269545,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 27",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001275608,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 28",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001283691,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 29",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001225065,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 30",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001230679,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "Median of 30 recorded exchanges",
+        "panel": "latency",
+        "series": "Median",
+        "style": "scatterline",
+        "value": 0.00127529,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 1",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.07937049449895675,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 2",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.09344931151451497,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 3",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.09577266974950258,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 4",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.09447237964998798,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 5",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.09991431348475548,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 6",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.10057824929862362,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 7",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.10118375866819405,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 8",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.10349634156164024,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 9",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.09022769555197152,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 10",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.09442984654705738,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 11",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.09637606742123031,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 12",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.09547461681590974,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 13",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.09523202360705872,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 14",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.09458576893453942,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 15",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.0957435241715112,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 16",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.09492218725602719,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 17",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.09949459167139402,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 18",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.09863869136600541,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 19",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.10187170098683525,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 20",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.09429373539578625,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 21",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.09698642296841097,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 22",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.09978078241927112,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 23",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.09103155595924434,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 24",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.08809441204148734,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 25",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.09511670993802274,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 26",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.09615280474500708,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 27",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.09569578781255685,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 28",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.09509322142166612,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 29",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.09964394746401212,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 30",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.09918940072919097,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "Median of 30 recorded exchanges",
+        "panel": "throughput",
+        "series": "Median",
+        "style": "scatterline",
+        "value": 0.09571965599203403,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 1",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 667.0,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 2",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 615.0,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 3",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 615.0,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 4",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 615.0,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 5",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 615.0,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 6",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 615.0,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 7",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 615.0,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 8",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 615.0,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 9",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 615.0,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 10",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 615.0,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 11",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 615.0,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 12",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 615.0,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 13",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 615.0,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 14",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 615.0,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 15",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 615.0,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 16",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 615.0,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 17",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 615.0,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 18",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 615.0,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 19",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 615.0,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 20",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 615.0,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 21",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 615.0,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 22",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 615.0,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 23",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 615.0,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 24",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 615.0,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 25",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 615.0,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 26",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 615.0,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 27",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 615.0,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 28",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 615.0,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 29",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 615.0,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 30",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 615.0,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "Median of 30 recorded exchanges",
+        "panel": "bytes",
+        "series": "Median",
+        "style": "scatterline",
+        "value": 615.0,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 1",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 7.0,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 2",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 6.0,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 3",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 6.0,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 4",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 6.0,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 5",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 6.0,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 6",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 6.0,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 7",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 6.0,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 8",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 6.0,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 9",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 6.0,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 10",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 6.0,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 11",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 6.0,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 12",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 6.0,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 13",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 6.0,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 14",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 6.0,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 15",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 6.0,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 16",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 6.0,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 17",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 6.0,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 18",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 6.0,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 19",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 6.0,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 20",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 6.0,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 21",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 6.0,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 22",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 6.0,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 23",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 6.0,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 24",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 6.0,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 25",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 6.0,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 26",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 6.0,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 27",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 6.0,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 28",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 6.0,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 29",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 6.0,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "64-byte body · sample 30",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 6.0,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "Median of 30 recorded exchanges",
+        "panel": "packets",
+        "series": "Median",
+        "style": "scatterline",
+        "value": 6.0,
+        "version": "1.11.0",
+        "x": 64
+      },
+      {
+        "label": "4096-byte body · sample 1",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001251888,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 2",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001224599,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 3",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001550373,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 4",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001549196,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 5",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001282192,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 6",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001252842,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 7",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001222605,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 8",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001236469,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 9",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001285943,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 10",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001263876,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 11",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001237713,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 12",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001238122,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 13",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001206648,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 14",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001246452,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 15",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001270956,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 16",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001223886,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 17",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001247122,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 18",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001293741,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 19",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001222891,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 20",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001208052,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 21",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001212187,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 22",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001182196,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 23",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001170666,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 24",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001181711,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 25",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001248395,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 26",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001877562,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 27",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001326246,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 28",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001286384,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 29",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001225267,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 30",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001409177,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "Median of 30 recorded exchanges",
+        "panel": "latency",
+        "series": "Median",
+        "style": "scatterline",
+        "value": 0.001246787,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 1",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 6.240574236672929,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 2",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 6.379639375828332,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 3",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 5.039109943220115,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 4",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 5.042938401596699,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 5",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 6.093081223404919,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 6",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 6.235822234567487,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 7",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 6.3900442088818545,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 8",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 6.318395366159605,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 9",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 6.075308159070815,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 10",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 6.181381717826749,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 11",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 6.312044876316238,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 12",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 6.309959761638999,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 13",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 6.47454767256068,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 14",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 6.267790496545394,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 15",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 6.146947652003689,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 16",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 6.383355966160247,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 17",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 6.264423207994086,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 18",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 6.038689351268918,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 19",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 6.388549756274271,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 20",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 6.467022942721009,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 21",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 6.444962699649476,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 22",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 6.608464247891213,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 23",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 6.673551636418928,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 24",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 6.611176505930807,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 25",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 6.258035317347474,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 26",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 4.160981102088773,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 27",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 5.890686946463929,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 28",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 6.073225413251409,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 29",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 6.376161277501149,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 30",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 5.544016117208839,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "Median of 30 recorded exchanges",
+        "panel": "throughput",
+        "series": "Median",
+        "style": "scatterline",
+        "value": 6.26610685226974,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 1",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 8683.0,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 2",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 8683.0,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 3",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 8683.0,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 4",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 8683.0,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 5",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 8683.0,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 6",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 8683.0,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 7",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 8683.0,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 8",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 8683.0,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 9",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 8683.0,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 10",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 8683.0,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 11",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 8683.0,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 12",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 8683.0,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 13",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 8683.0,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 14",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 8683.0,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 15",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 8683.0,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 16",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 8683.0,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 17",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 8683.0,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 18",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 8683.0,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 19",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 8683.0,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 20",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 8683.0,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 21",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 8683.0,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 22",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 8683.0,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 23",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 8683.0,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 24",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 8683.0,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 25",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 8683.0,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 26",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 8683.0,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 27",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 8683.0,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 28",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 8683.0,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 29",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 8683.0,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 30",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 8683.0,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "Median of 30 recorded exchanges",
+        "panel": "bytes",
+        "series": "Median",
+        "style": "scatterline",
+        "value": 8683.0,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 1",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 6.0,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 2",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 6.0,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 3",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 6.0,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 4",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 6.0,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 5",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 6.0,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 6",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 6.0,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 7",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 6.0,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 8",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 6.0,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 9",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 6.0,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 10",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 6.0,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 11",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 6.0,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 12",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 6.0,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 13",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 6.0,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 14",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 6.0,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 15",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 6.0,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 16",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 6.0,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 17",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 6.0,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 18",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 6.0,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 19",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 6.0,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 20",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 6.0,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 21",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 6.0,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 22",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 6.0,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 23",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 6.0,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 24",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 6.0,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 25",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 6.0,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 26",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 6.0,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 27",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 6.0,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 28",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 6.0,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 29",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 6.0,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "4096-byte body · sample 30",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 6.0,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "Median of 30 recorded exchanges",
+        "panel": "packets",
+        "series": "Median",
+        "style": "scatterline",
+        "value": 6.0,
+        "version": "1.11.0",
+        "x": 4096
+      },
+      {
+        "label": "65536-byte body · sample 1",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001338021,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 2",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001350217,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 3",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.00132497,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 4",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001283995,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 5",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001324602,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 6",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001362836,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 7",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001303999,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 8",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.00131755,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 9",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001376686,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 10",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001334678,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 11",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001303372,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 12",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.00127748,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 13",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001256499,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 14",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001284161,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 15",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001388899,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 16",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001375719,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 17",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001419771,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 18",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001369079,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 19",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001411298,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 20",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001388008,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 21",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001361284,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 22",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001331673,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 23",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001269104,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 24",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001259664,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 25",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001248865,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 26",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001280733,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 27",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001357826,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 28",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.00136823,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 29",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.0013928,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 30",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001320617,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "Median of 30 recorded exchanges",
+        "panel": "latency",
+        "series": "Median",
+        "style": "scatterline",
+        "value": 0.0013331755,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 1",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 93.421553174427,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 2",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 92.57771158265672,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 3",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 94.34175868132864,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 4",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 97.35240402026487,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 5",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 94.36796864265644,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 6",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 91.72050048575177,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 7",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 95.85896921700093,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 8",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 94.87305984592615,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 9",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 90.79775635112146,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 10",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 93.65554837945932,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 11",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 95.90508312285365,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 12",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 97.84889000219182,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 13",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 99.48276918644584,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 14",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 97.33981953976176,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 15",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 89.99934480476982,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 16",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 90.86157856364562,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 17",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 88.04236739586877,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 18",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 91.30225501961537,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 19",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 88.57094674547827,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 20",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 90.05711782641022,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 21",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 91.82507103587496,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 22",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 93.86688774196068,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 23",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 98.49468601470014,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 24",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 99.2328112893597,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 25",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 100.09088252132936,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 26",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 97.60035854467715,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 27",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 92.05892360287696,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 28",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 91.35890895536569,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 29",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 89.74727168294083,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 30",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 94.65272671789019,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "Median of 30 recorded exchanges",
+        "panel": "throughput",
+        "series": "Median",
+        "style": "scatterline",
+        "value": 93.76121806071001,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 1",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 131877.0,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 2",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 131773.0,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 3",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 131773.0,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 4",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 131773.0,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 5",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 131773.0,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 6",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 131773.0,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 7",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 131773.0,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 8",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 131773.0,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 9",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 131773.0,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 10",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 131773.0,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 11",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 131773.0,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 12",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 131773.0,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 13",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 131773.0,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 14",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 131773.0,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 15",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 131773.0,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 16",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 131825.0,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 17",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 131825.0,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 18",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 131773.0,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 19",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 131773.0,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 20",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 131773.0,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 21",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 131773.0,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 22",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 131773.0,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 23",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 131773.0,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 24",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 131773.0,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 25",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 131773.0,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 26",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 131773.0,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 27",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 131773.0,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 28",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 131773.0,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 29",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 131773.0,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 30",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 131773.0,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "Median of 30 recorded exchanges",
+        "panel": "bytes",
+        "series": "Median",
+        "style": "scatterline",
+        "value": 131773.0,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 1",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 12.0,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 2",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 10.0,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 3",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 10.0,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 4",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 10.0,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 5",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 10.0,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 6",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 10.0,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 7",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 10.0,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 8",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 10.0,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 9",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 10.0,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 10",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 10.0,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 11",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 10.0,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 12",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 10.0,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 13",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 10.0,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 14",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 10.0,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 15",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 10.0,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 16",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 11.0,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 17",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 11.0,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 18",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 10.0,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 19",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 10.0,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 20",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 10.0,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 21",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 10.0,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 22",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 10.0,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 23",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 10.0,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 24",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 10.0,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 25",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 10.0,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 26",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 10.0,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 27",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 10.0,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 28",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 10.0,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 29",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 10.0,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "65536-byte body · sample 30",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 10.0,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "Median of 30 recorded exchanges",
+        "panel": "packets",
+        "series": "Median",
+        "style": "scatterline",
+        "value": 10.0,
+        "version": "1.11.0",
+        "x": 65536
+      },
+      {
+        "label": "1048576-byte body · sample 1",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.00253646,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 2",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.023556529,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 3",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001557368,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 4",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001629457,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 5",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001390477,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 6",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.007392787,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 7",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001709133,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 8",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001425472,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 9",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.00160994,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 10",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.002263651,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 11",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001419486,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 12",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001302077,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 13",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001340546,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 14",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001919351,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 15",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.002507653,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 16",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001330066,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 17",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001334519,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 18",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.017311883,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 19",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.053283055,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 20",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.001410833,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 21",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.002043755,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 22",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.0027751,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 23",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.002817556,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 24",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.003214479,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 25",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.004181097,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 26",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.003264935,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 27",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.00504043,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 28",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.004059765,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 29",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.00168865,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 30",
+        "panel": "latency",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 0.00165941,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "Median of 30 recorded exchanges",
+        "panel": "latency",
+        "series": "Median",
+        "style": "scatterline",
+        "value": 0.001981553,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 1",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 788.500508582828,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 2",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 84.902151755889,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 3",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 1284.2179882982057,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 4",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 1227.4027482774936,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 5",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 1438.3553269849124,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 6",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 270.533967771559,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 7",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 1170.1839470655589,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 8",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 1403.0440443586406,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 9",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 1242.2823210802887,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 10",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 883.528423772039,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 11",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 1408.9607083127273,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 12",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 1536.0074711403397,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 13",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 1491.9294078681373,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 14",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 1042.0188907604706,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 15",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 797.5585138773188,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 16",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 1503.6847795522929,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 17",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 1498.6673100944986,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 18",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 115.52758299025011,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 19",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 37.535385311521644,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 20",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 1417.6022250684525,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 21",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 978.5908780651301,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 22",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 720.6947497387482,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 23",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 709.8350485314222,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 24",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 622.1848081757572,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 25",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 478.343362997797,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 26",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 612.5696223661421,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 27",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 396.79154357862325,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 28",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 492.63935227777966,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 29",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 1184.378053474669,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 30",
+        "panel": "throughput",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 1205.2476482605264,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "Median of 30 recorded exchanges",
+        "panel": "throughput",
+        "series": "Median",
+        "style": "scatterline",
+        "value": 1010.3048844128004,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 1",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 2.101133e6,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 2",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 2.104201e6,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 3",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 2.103629e6,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 4",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 2.102797e6,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 5",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 2.102745e6,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 6",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 2.102693e6,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 7",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 2.102641e6,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 8",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 2.102693e6,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 9",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 2.102693e6,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 10",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 2.102693e6,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 11",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 2.102693e6,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 12",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 2.102693e6,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 13",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 2.102693e6,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 14",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 2.102693e6,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 15",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 2.102693e6,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 16",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 2.102693e6,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 17",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 2.102693e6,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 18",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 2.102693e6,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 19",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 2.102693e6,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 20",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 2.102693e6,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 21",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 2.102693e6,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 22",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 2.102693e6,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 23",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 2.102693e6,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 24",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 2.102693e6,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 25",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 2.102693e6,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 26",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 2.102693e6,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 27",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 2.102693e6,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 28",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 2.102693e6,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 29",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 2.102693e6,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 30",
+        "panel": "bytes",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 2.102693e6,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "Median of 30 recorded exchanges",
+        "panel": "bytes",
+        "series": "Median",
+        "style": "scatterline",
+        "value": 2.102693e6,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 1",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 73.0,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 2",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 132.0,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 3",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 121.0,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 4",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 105.0,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 5",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 104.0,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 6",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 103.0,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 7",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 102.0,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 8",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 103.0,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 9",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 103.0,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 10",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 103.0,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 11",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 103.0,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 12",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 103.0,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 13",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 103.0,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 14",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 103.0,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 15",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 103.0,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 16",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 103.0,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 17",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 103.0,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 18",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 103.0,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 19",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 103.0,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 20",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 103.0,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 21",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 103.0,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 22",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 103.0,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 23",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 103.0,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 24",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 103.0,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 25",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 103.0,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 26",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 103.0,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 27",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 103.0,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 28",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 103.0,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 29",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 103.0,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "1048576-byte body · sample 30",
+        "panel": "packets",
+        "series": "Samples",
+        "style": "scatter",
+        "value": 103.0,
+        "version": "1.11.0",
+        "x": 1048576
+      },
+      {
+        "label": "Median of 30 recorded exchanges",
+        "panel": "packets",
+        "series": "Median",
+        "style": "scatterline",
+        "value": 103.0,
+        "version": "1.11.0",
+        "x": 1048576
+      }
+    ],
+    "description": "",
+    "encoding": {
+      "color": "series",
+      "panel": "panel",
+      "x": "x",
+      "y": "value"
+    },
+    "id": "network",
+    "kind": "observation_series",
+    "options": {
+      "collector_label": "PerfChecker network runner",
+      "metadata": {
+        "source_sha256": {
+          "latest.json": "f40045e9edce65e6871356b3c0d12838e18d191f77506165fc5ff0db67ccfece"
+        },
+        "throughput_definition": "2 * request_body_bytes / workload_seconds / 2^20; application bodies, not wire traffic"
+      },
+      "panels": [
+        {
+          "id": "latency",
+          "title": "Round-trip latency",
+          "unit": "s",
+          "xkind": "numeric",
+          "xlabel": "Request body",
+          "xunit": "By",
+          "ylabel": "Round-trip latency",
+          "yscale": "linear"
+        },
+        {
+          "id": "throughput",
+          "title": "Application throughput (both bodies)",
+          "unit": "MiB/s",
+          "xkind": "numeric",
+          "xlabel": "Request body",
+          "xunit": "By",
+          "ylabel": "Application throughput (both bodies)",
+          "yscale": "linear"
+        },
+        {
+          "id": "bytes",
+          "title": "Loopback transmit bytes",
+          "unit": "By",
+          "xkind": "numeric",
+          "xlabel": "Request body",
+          "xunit": "By",
+          "ylabel": "Loopback transmit bytes",
+          "yscale": "linear"
+        },
+        {
+          "id": "packets",
+          "title": "Loopback transmit packets",
+          "unit": "packets",
+          "xkind": "numeric",
+          "xlabel": "Request body",
+          "xunit": "By",
+          "ylabel": "Loopback transmit packets",
+          "yscale": "linear"
+        }
+      ],
+      "scope": "Warm loopback HTTP client and server in one Julia process; host-interface counters; On loopback, each transfer appears in both transmit and receive counters. Do not sum these as physical wire traffic."
+    },
+    "schema_version": "perfchecker-plot/1",
+    "title": "Oxygen 1.11.0: real loopback exchanges"
+  }
+}

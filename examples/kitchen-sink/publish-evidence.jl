@@ -1,10 +1,75 @@
 using JSON, SHA
 isempty(ARGS) || ARGS == ["--interactive"] || ARGS == ["--interactive-normalized"] ||
-    error("Usage: julia --project=<prepared-environment> publish-evidence.jl [--interactive | --interactive-normalized]")
+    ARGS == ["--interactive-documentation"] ||
+    error("Usage: julia --project=<prepared-environment> publish-evidence.jl [--interactive | --interactive-normalized | --interactive-documentation]")
 interactive = !isempty(ARGS)
 normalized_only = ARGS == ["--interactive-normalized"]
+documentation_only = ARGS == ["--interactive-documentation"]
 root = normpath(joinpath(@__DIR__, "../../website/src/public/examples/real-packages"))
-if normalized_only
+if documentation_only
+    # Replay every view reachable through the timing atlases and profile tabs.
+    # Captured frontend provenance stays intact; replay provenance is separate.
+    using PerfChecker, PerfCheckerMakie, WGLMakie
+    include(joinpath(@__DIR__, "replay.jl"))
+    source_root = normpath(joinpath(@__DIR__, "../.."))
+    realpath(pkgdir(PerfChecker)) == realpath(source_root) &&
+        realpath(pkgdir(PerfCheckerMakie)) ==
+        realpath(joinpath(source_root, "packages", "PerfCheckerMakie")) ||
+        error("Documentation replay must load this checkout's renderer")
+    source_files = ["examples/kitchen-sink/replay.jl",
+        "examples/kitchen-sink/publish-evidence.jl",
+        "packages/PerfCheckerMakie/Project.toml",
+        "packages/PerfCheckerMakie/src/performance.jl",
+        "packages/PerfCheckerMakie/src/assets/normalized.html",
+        "packages/PerfCheckerMakie/ext/WGLMakieExt.jl"]
+    source_hashes = Dict(file => bytes2hex(sha256(read(joinpath(source_root, file))))
+    for file in source_files)
+    assets = normpath(joinpath(root, "../plot-assets"))
+    for package in ("datastructures", "containers", "oxygen", "oxygen-features",
+        "datastructures-profiles", "oxygen-profiles")
+        directory = joinpath(root, package)
+        catalog_path = joinpath(directory, "catalog.json")
+        catalog = JSON.parsefile(catalog_path)
+        timing = !endswith(package, "-profiles")
+        selected = [entry
+                    for view in catalog["views"]
+                    if !timing || view["kind"] == "normalized_metrics"
+                    for entry in [view; get(view, "patch_windows", Any[])]]
+        for entry in selected
+            source = joinpath(directory, entry["json"])
+            input_hash = bytes2hex(sha256(read(source)))
+            model = saved_plot(source)
+            timing && model.kind !== :normalized_metrics &&
+                error("A timing atlas must replay only normalized metrics")
+            before = deepcopy(performance_plot_dict(model))
+            entry["html"] = splitext(entry["json"])[1] * ".html"
+            destination = joinpath(directory, entry["html"])
+            # Existing non-timing exports retain their original bytes.
+            if timing || !isfile(destination) ||
+               model.kind in (:allocation_lines, :allocation_pie)
+                html = performance_plot_html(model; asset_directory = assets,
+                    html_directory = directory)
+                performance_plot_dict(model) == before || error("Replay changed the model")
+                bytes2hex(sha256(read(source))) == input_hash ||
+                    error("Replay changed the recorded source")
+                write(destination, html)
+            end
+            entry["html_input_sha256"] = input_hash
+            delete!(entry, "html_sha256")
+        end
+        catalog["documentation_interactive_export"] = Dict(
+            "renderer" => "PerfChecker.performance_plot_html",
+            "companion_version" => string(pkgversion(PerfCheckerMakie)),
+            "selection" => timing ? "all_normalized_views_and_patch_windows" :
+                           "all_profile_views",
+            "selected_views" => length(selected),
+            "source_revision" => strip(read(`git -C $source_root rev-parse HEAD`, String)),
+            "working_tree_source_sha256" => source_hashes)
+        open(io -> JSON.print(io, catalog, 2), catalog_path, "w")
+        println("Replayed ", length(selected), " documentation views for ", package)
+        flush(stdout)
+    end
+elseif normalized_only
     using PerfChecker, PerfCheckerMakie, WGLMakie
     include(joinpath(@__DIR__, "replay.jl"))
     source_root = normpath(joinpath(@__DIR__, "../.."))
