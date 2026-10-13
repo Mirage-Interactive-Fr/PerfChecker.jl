@@ -346,8 +346,8 @@ workers. A missing analyzer is unavailable rather than a passing diagnosis.
 The integration targets Pluto **1.0.4**, PerfChecker
 core, PlutoUI, BenchmarkTools, Chairmarks and **PerfCheckerPluto 1.0.1** from
 the root repository tag `v1.0.1`. The extension's guided setup selects its
-required Core version separately; the companion stays on that public tag while
-its separate General registration is pending.
+required Core version separately; its companion source recipe retains that
+public tag. PerfCheckerPluto 1.0.1 is also available by name from General.
 Set the folder configuration explicitly when you use several environments:
 
 ```json

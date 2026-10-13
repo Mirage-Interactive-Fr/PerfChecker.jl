@@ -66,11 +66,13 @@ The build rejects missing references and dead links. The core test suite checks 
 
 Registration is a human maintainer action on the reviewed final commit, after
 the required checks and documented installation paths pass. Registering Core
-does not register the six packages under `packages/`. They currently await
-their first General registrations; a version in a source `Project.toml` alone
-does not make `Pkg.add("CompanionName")` available.
+does not register the six packages under `packages/`. General includes
+PerfCheckerLinuxPerf, PerfCheckerLIKWID, PerfCheckerMakie and PerfCheckerPluto
+1.0.1, and PerfCheckerWeb 1.0.0. Each later companion version needs its own
+registration; a source `Project.toml` version alone does not make that version
+available through `Pkg.add`.
 
-These packages have independent versions:
+These independent package versions use the following registration paths:
 
 | Package | Version | Registrator subdirectory |
 | --- | --- | --- |
@@ -82,9 +84,9 @@ These packages have independent versions:
 | PerfCheckerTachikoma | 1.0.1 | `packages/PerfCheckerTachikoma` |
 | PerfCheckerWeb | 1.0.0 | `packages/PerfCheckerWeb` |
 
-First, the maintainer comments `@JuliaRegistrator register` on that final
-commit and waits for Core 1.1.0 to appear in General. Then the maintainer requests
-each companion separately on its reviewed source commit, using
+For a Core release, the maintainer comments `@JuliaRegistrator register` on the
+reviewed commit and waits for that version to appear in General. Request each
+companion separately on its reviewed source commit, using
 `@JuliaRegistrator register subdir=packages/PerfCheckerMakie`, for example,
 and the corresponding path from the table. Register Makie before Tachikoma's
 optional Makie integration. Review each registry pull request and its package

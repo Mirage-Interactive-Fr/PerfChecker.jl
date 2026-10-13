@@ -44,13 +44,15 @@ Install only what you need.
 - Pluto notebooks — [PerfCheckerPluto installation](#Prepare-integrated-Pluto-for-VS-Code)
 - Makie figures — [PerfCheckerMakie installation](../interfaces/visualization.md#Customize-and-export-Makie-figures)
 
-These interface packages have separate identities and are not yet registered in
-General. Use their versioned source recipes. Pluto and Makie 1.0.1 require Core
-1.0.1 or later; the Web companion's package version remains 1.0.0.
+Companions have independent package identities and versions. General includes
+PerfCheckerLinuxPerf, PerfCheckerLIKWID, PerfCheckerMakie and PerfCheckerPluto
+1.0.1, and PerfCheckerWeb 1.0.0. Pluto and Makie 1.0.1 require Core 1.0.1 or
+later. The figure recipes select Makie 1.0.3 for the features used on this site;
+use the exact source recipe if the required version is unavailable in your registry.
 
 ### Web controller with corrected shutdown
 
-Use the published root `v1.0.1` tag for both Core and Web. It includes the
+Install Core 1.0.1 and the registered Web companion 1.0.0. They include the
 corrected agent interruption and cleanup-failure behavior described in the
 [hosted guide](../operations/hosted.md#Cancel-and-stop-safely). The older root
 `v1.0.0` tag lacks those corrections and is not the recommended Web setup.
@@ -64,12 +66,9 @@ from Pluto:
 import Pkg
 controller = joinpath(homedir(), ".julia", "environments", "perfchecker-web-101")
 Pkg.activate(controller)
-repository = "https://github.com/Mirage-Interactive-Fr/PerfChecker.jl"
-revision = "v1.0.1"
 Pkg.add([
-    Pkg.PackageSpec(url = repository, rev = revision),
-    Pkg.PackageSpec(url = repository, rev = revision,
-        subdir = "packages/PerfCheckerWeb"),
+    Pkg.PackageSpec(name = "PerfChecker", version = "1.0.1"),
+    Pkg.PackageSpec(name = "PerfCheckerWeb", version = "1.0.0"),
 ])
 using PerfChecker, PerfCheckerWeb
 Pkg.status()
@@ -85,12 +84,12 @@ action on its host.
 
 ### Source companions for 1.0.1
 
-PerfCheckerTachikoma, PerfCheckerLinuxPerf and PerfCheckerLIKWID are separate
-**1.0.1 source companions**, not registered packages. They are absent from the
-immutable `v1.0.0` tag. The recipes below use reviewed revision
-`8864d3a0fec4e58390090324955eb8dbcebd5e07` and do not imply a new General release
-or hardware qualification. Keep an existing checkout unchanged: the following
-commands assume a new, unused destination under `~/.julia/dev`.
+PerfCheckerTachikoma, PerfCheckerLinuxPerf and PerfCheckerLIKWID have independent
+1.0.1 versions and are absent from the immutable `v1.0.0` tag. LinuxPerf and
+LIKWID are available from General. If Tachikoma 1.0.1 is unavailable in your
+registry, use the reviewed source revision below. Source installation does not
+imply registry availability or hardware qualification. Keep an existing checkout
+unchanged: these commands assume a new, unused destination under `~/.julia/dev`.
 
 ```sh
 git clone https://github.com/Mirage-Interactive-Fr/PerfChecker.jl \
@@ -131,34 +130,32 @@ and LIKWID 0.4.6 / PrettyTables 3 projects. Choose one recipe per fresh project;
 
 ```julia
 import Pkg
-source = joinpath(homedir(), ".julia", "dev", "PerfChecker-source-101")
 target_source = joinpath(homedir(), ".julia", "dev", "Example")
 worker_project = joinpath(homedir(), ".julia", "environments", "perfchecker-linuxperf-worker-101")
 Pkg.activate(worker_project)
-Pkg.develop([
-    Pkg.PackageSpec(path = source),
-    Pkg.PackageSpec(path = joinpath(source, "packages", "PerfCheckerLinuxPerf")),
-    Pkg.PackageSpec(path = target_source),
+Pkg.add([
+    Pkg.PackageSpec(name = "PerfChecker", version = "1.0.1"),
+    Pkg.PackageSpec(name = "PerfCheckerLinuxPerf", version = "1.0.1"),
 ])
+Pkg.develop(path = target_source)
 Pkg.instantiate()
 using PerfChecker, PerfCheckerLinuxPerf
 Pkg.status()
 @doc PerfCheckerLinuxPerf.run_counter_suite
 ```
 
-For LIKWID, use a different project and develop its companion instead:
+For LIKWID, use a different project and install its companion instead:
 
 ```julia
 import Pkg
-source = joinpath(homedir(), ".julia", "dev", "PerfChecker-source-101")
 target_source = joinpath(homedir(), ".julia", "dev", "Example")
 worker_project = joinpath(homedir(), ".julia", "environments", "perfchecker-likwid-worker-101")
 Pkg.activate(worker_project)
-Pkg.develop([
-    Pkg.PackageSpec(path = source),
-    Pkg.PackageSpec(path = joinpath(source, "packages", "PerfCheckerLIKWID")),
-    Pkg.PackageSpec(path = target_source),
+Pkg.add([
+    Pkg.PackageSpec(name = "PerfChecker", version = "1.0.1"),
+    Pkg.PackageSpec(name = "PerfCheckerLIKWID", version = "1.0.1"),
 ])
+Pkg.develop(path = target_source)
 Pkg.instantiate()
 using PerfChecker, PerfCheckerLIKWID
 Pkg.status()
@@ -191,9 +188,9 @@ Integrated Pluto is available from extension **1.0.1**. Choose Core from the
 [extension compatibility table](../interfaces/vscode.md#Version-compatibility):
 extension 1.0.1 requires Core 1.0.1 or newer, while extension 1.0.2 requires
 Core 1.1.0 or newer, both within the 1.x series. The companion remains
-**PerfCheckerPluto 1.0.1**, from the independent root `v1.0.1` tag.
-The Pluto companion is available from the tagged repository subdirectory while
-its own General registration is pending. See the
+**PerfCheckerPluto 1.0.1**, available from General. The extension's guided setup
+retains its explicit source recipe at root tag `v1.0.1`; manual installation
+can select the registered package by name. See the
 [extension download and platform limits](../interfaces/vscode.md#Qualification-and-reporting-a-problem).
 Extension 1.0.0 retains its earlier notebook workflow; the standalone Pluto
 interface above is also available.
@@ -212,10 +209,7 @@ Pkg.activate(pluto_project)
 Pkg.add(Pkg.PackageSpec(name = "PerfChecker", version = core_version))
 Pkg.add(Pkg.PackageSpec(name = "Pluto", version = "1.0.4"))
 Pkg.add(["PlutoUI", "BenchmarkTools", "Chairmarks"])
-Pkg.add(Pkg.PackageSpec(
-    url = "https://github.com/Mirage-Interactive-Fr/PerfChecker.jl",
-    rev = "v1.0.1",
-    subdir = "packages/PerfCheckerPluto"))
+Pkg.add(Pkg.PackageSpec(name = "PerfCheckerPluto", version = "1.0.1"))
 using PerfChecker, PerfCheckerPluto, Pluto, PlutoUI
 @assert v"1.0.1" <= Base.pkgversion(PerfCheckerPluto) < v"2.0.0"
 Pkg.status()
@@ -225,10 +219,9 @@ Pkg.status()
 manual use, choose an unused project directory instead; for guided setup,
 confirm installation or the explicit upgrade of your selected Pluto project.
 An older companion is reported as incompatible rather than upgraded silently.
-The companion installation uses its repository subdirectory at `v1.0.1`; the
-companion is not yet separately registered in General. Core registration alone
-does not make `Pkg.add("PerfCheckerPluto")` available; that requires its own
-[subdirectory registration](../contributing/documentation.md#Register-Core-and-its-companions).
+PerfCheckerPluto has its own
+[subdirectory registration](../contributing/documentation.md#Register-Core-and-its-companions),
+independently of Core.
 The other companion packages retain their own versions. Pluto 1.0.4's published
 dependency range uses HTTP 1.x; the qualified MCP controller
 uses HTTP 2.x. Keep these environments separate. Later Pluto versions can have

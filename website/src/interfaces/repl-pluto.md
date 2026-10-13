@@ -100,8 +100,8 @@ For Pluto integrated into the published VS Code extension **1.0.1**, follow
 It covers creating and reopening `.jl` notebooks, separate environments,
 Launch/Cancel, reactive cell edits, saved reports and session controls. Read the
 [platform qualification and macOS limits](vscode.md#Qualification-and-reporting-a-problem).
-The standalone Pluto workflow below remains available with the public core and
-tagged companion source; the companion's separate General registration is pending.
+The standalone Pluto workflow below uses the public Core and PerfCheckerPluto
+1.0.1, which is separately registered in General.
 
 Download the runnable notebook:
 

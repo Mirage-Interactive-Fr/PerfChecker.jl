@@ -70,8 +70,8 @@ Pluto project using companion 1.0.0 requires an explicit upgrade confirmation;
 the compatibility check does not update it silently. Declining keeps that
 environment unchanged. Its Core version must meet the
 [extension compatibility table](vscode.md#Version-compatibility). The guided
-setup installs the companion from the independent root `v1.0.1` tag while its
-separate General registration is pending.
+setup retains its companion source recipe at root tag `v1.0.1`.
+PerfCheckerPluto 1.0.1 can also be installed by name from General.
 See the
 [separate Pluto installation recipe](../guide/installation.md#Prepare-the-integrated-Pluto-candidate)
 and [existing notebook migration](vscode-workflows.md#Use-the-corrected-suite-plot-renderer).

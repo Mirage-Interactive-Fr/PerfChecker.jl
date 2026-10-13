@@ -32,7 +32,7 @@ integrated Pluto check these versions:
 | 1.0.2 (upcoming; not yet published) | 1.1.0 or newer within the 1.x series | PerfCheckerPluto 1.0.1 or newer within the 1.x series |
 
 Both notebook integrations use Pluto 1.0.4 and the companion source at the root
-`v1.0.1` tag while its separate General registration is pending. The companion
+`v1.0.1` tag. PerfCheckerPluto 1.0.1 is also available from General. The companion
 tag is independent of the Core version. Guided setup shows the required version
 before installation; an existing controller or Pluto environment needs an
 explicit upgrade when it does not meet those setup checks.

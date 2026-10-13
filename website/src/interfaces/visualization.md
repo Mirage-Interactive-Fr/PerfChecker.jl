@@ -10,8 +10,8 @@ Saved-bundle figures and offline controls require **PerfChecker 1.0.1 or later**
 and **PerfCheckerMakie 1.0.1 or later**. Diagnostic observation views require
 **PerfCheckerMakie 1.0.2 or later**; this site uses **1.0.3**, which preserves
 flame-frame inspection during keyboard focus and iframe resizing. Core and the companion have
-independent versions; use the [installation recipe below](#Customize-and-export-Makie-figures)
-while the companion is not available in General.
+independent versions; use the exact [installation recipe below](#Customize-and-export-Makie-figures)
+if Makie 1.0.3 is unavailable in your registry.
 
 ## Build a plot from a saved run
 
@@ -184,7 +184,7 @@ explains the workload, counter scope and loopback accounting.
 
 This site uses **PerfCheckerMakie 1.0.3**, independently of **PerfChecker 1.1.0**.
 In a separate plotting environment, install that
-companion's own published source tag when it is not yet available in General:
+companion's own published source tag if version 1.0.3 is unavailable in your registry:
 
 ```julia
 import Pkg
