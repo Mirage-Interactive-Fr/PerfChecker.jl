@@ -60,6 +60,318 @@ async function enumerate(directory, extension='.html') {
   }
   return paths;
 }
+function assertCompleteCapability(source, exported, label) {
+  assert.equal(source.length, exported.length, label);
+  const present = source.some(Boolean) || exported.some(Boolean);
+  if (present) assert.ok(source.every(Boolean) && exported.every(Boolean), `${label}: partial source/export capability`);
+  return present;
+}
+function declaredScreenshots(source) {
+  const result = [], tabs = [], lines = [], containers = [];
+  let fence, offset = 0;
+  for (const line of source.split('\n')) {
+    const boundary = /^\s*(`{3,}|~{3,})(.*)$/.exec(line);
+    if (boundary) {
+      if (fence && boundary[1][0] === fence.marker) fence = undefined;
+      else if (!fence) fence = { marker: boundary[1][0], html: /^@raw\s+html\s*$/.test(boundary[2].trim()) };
+    } else if (!fence) {
+      const open = /^\s*(:{3,})\s+(\S+)/.exec(line);
+      const close = /^\s*:{3,}\s*$/.test(line);
+      const label = /^\s*==\s+(.+?)\s*$/.exec(line);
+      if (open) containers.push({ kind: open[2], label: undefined });
+      else if (close) containers.pop();
+      else if (label) {
+        const tab = containers.findLast(container => container.kind === 'tabs');
+        assert.ok(tab, 'A historical Markdown tab must belong to a tabs container');
+        tab.label = label[1];
+      }
+    }
+    lines.push({ offset, rendered: !boundary && (!fence || fence.html),
+      tabs: containers.filter(container => container.kind === 'tabs').map(container => container.label).filter(Boolean) });
+    offset += line.length + 1;
+  }
+  const attributes = tag => Object.fromEntries([...tag.matchAll(/([:\w-]+)(?:\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+)))?/g)]
+    .map(match => [match[1], match[2] ?? match[3] ?? match[4] ?? '']));
+  let line = 0;
+  for (const token of source.matchAll(/<\/?PluginTabsTab\b[^>]*>|<DocMedia\b[^>]*>/g)) {
+    while (line + 1 < lines.length && lines[line + 1].offset <= token.index) line++;
+    if (!lines[line].rendered) continue;
+    const tag = token[0];
+    if (tag.startsWith('</PluginTabsTab')) { tabs.pop(); continue; }
+    const attrs = attributes(tag);
+    if (tag.startsWith('<PluginTabsTab')) { assert.ok(attrs.label); tabs.push(attrs.label); continue; }
+    if (Object.hasOwn(attrs, 'video')) continue;
+    assert.ok(attrs.src?.startsWith('/'), 'A historical screenshot must declare its local original');
+    result.push({ asset: attrs.src.slice(1), tabs: [...lines[line].tabs, ...tabs] });
+  }
+  return result;
+}
+function assertDocumentationLayout(version, sourcePages, exportedPages, sections, examples, hasCompanionAPIs) {
+  // Core 1.1.0 was published with the historical layout too. Version and shared
+  // screenshots cannot identify this reorganization; canonical routes must agree
+  // with their source tree. Partial modern exports must never fall back to legacy.
+  const modern = sourcePages.some(Boolean) || exportedPages.some(Boolean);
+  if (modern) {
+    assert.ok(sourcePages.every(Boolean) && exportedPages.every(Boolean),
+      'Incomplete modern documentation: all five canonical tool routes and sources are required');
+    assert.deepEqual(sections, ['Manual', 'Examples', 'Interfaces', 'Tools', 'Agentic workflows', 'API']);
+    assert.deepEqual(examples, ['Bibliography', 'DataStructures', 'Oxygen']);
+  } else {
+    assert.ok(['1.0.0', '1.0.1', '1.1.0'].includes(version), 'Unknown historical documentation layout');
+    const legacy = ['Manual', 'Examples', 'Interfaces', 'Further topics', 'Reference', 'Contributing'];
+    if (hasCompanionAPIs) legacy.push('Companion APIs');
+    assert.deepEqual(sections.filter(section => section !== 'Home'), legacy,
+      'An archive without canonical tool routes must retain its complete historical navigation');
+    assert.deepEqual(examples, ['Choose an example', 'Bibliography', 'DataStructures', 'Oxygen']);
+  }
+  return modern;
+}
+async function checkLegacyInterfaces(page, local, site, savedDiagnosticBytes, hasSavedDiagnostics, channel) {
+  const routes = ['interfaces/vscode.html', 'interfaces/vscode-workflows.html', 'mcp-advisor.html'];
+  const sources = new Map(await Promise.all(routes.map(async route =>
+    [route, await readFile(join('website/src', route.replace(/\.html$/, '.md')), 'utf8')])));
+  const workflow = 'interfaces/vscode-workflows.html';
+  const exported = await readFile(join(site, workflow), 'utf8');
+  const profiles = [
+    ['CPU samples', 'datastructures-profiles/cpu-flamegraph-054b5e59c351c558', 'cpu_flamegraph'],
+    ['Wall-time samples', 'datastructures-profiles/wall-flamegraph-1a28318cdf1f7700', 'wall_flamegraph'],
+    ['Allocated bytes', 'datastructures-profiles/allocation-flamegraph-6d6354c132248fdf', 'allocation_flamegraph'],
+  ];
+  const nativeProfiles = assertCompleteCapability(
+    profiles.map(([, asset]) => sources.get(workflow).includes(`${asset}.html`)),
+    profiles.map(([, asset]) => exported.includes(`${asset}.html`)), 'Historical native profile embeds');
+  const diagnosticAssets = savedDiagnostics.flatMap(entry => [entry.image, entry.report]);
+  const gallery = assertCompleteCapability(
+    diagnosticAssets.map(asset => sources.get(workflow).includes(asset)),
+    diagnosticAssets.map(asset => exported.includes(asset)), 'Historical diagnostic gallery');
+  if (gallery) assert.ok(hasSavedDiagnostics, 'The historical gallery requires every original capture and report');
+  async function originalBytes(asset, response) {
+    assert.equal(response.status(), 200);
+    const bytes = await response.body();
+    const original = savedDiagnosticBytes.get(asset) ?? await readFile(join('website/src/public', asset));
+    assert.deepEqual(await readFile(join(site, asset)), original, `${asset}: historical exported bytes`);
+    assert.deepEqual(bytes, original, `${asset}: historical downloaded bytes`);
+    assert.equal(sha256(bytes), sha256(original));
+    return bytes;
+  }
+  for (const width of [1440, 390, 360]) {
+    await page.setViewportSize({ width, height: 900 });
+    for (const route of routes) {
+      const screenshots = declaredScreenshots(sources.get(route));
+      await page.goto(new URL(route, local).href, { waitUntil: 'networkidle' });
+      await page.locator('.vp-doc h1').waitFor({ state: 'visible' });
+      for (const screenshot of screenshots) {
+        await page.goto(new URL(route, local).href, { waitUntil: 'networkidle' });
+        for (const label of screenshot.tabs) {
+          const tab = page.getByRole('tab', { name: label, exact: true });
+          await tab.click(); assert.equal(await tab.getAttribute('aria-selected'), 'true');
+        }
+        const image = page.locator(`.vp-doc img[src$="/${screenshot.asset}"]`);
+        for (const details of await image.locator('xpath=ancestor::details').all()) {
+          if (!await details.evaluate(node => node.open)) await details.locator(':scope > summary').click();
+        }
+        await image.scrollIntoViewIfNeeded();
+        await image.evaluate(image => image.decode());
+        assert.ok(await image.isVisible(), `${route}/${screenshot.asset}: visible at ${width}px`);
+        const dimensions = await image.evaluate(image => [image.naturalWidth, image.naturalHeight]);
+        assert.ok(dimensions.every(value => value > 0));
+        if (['vscode-studio.png', 'vscode-results.png', 'vscode-mcp-settings.png',
+          'vscode-advice-chat.png', 'vscode-implementation.png', 'native-items.png']
+          .includes(screenshot.asset.split('/').at(-1))) {
+          assert.ok(dimensions[0] >= 1200 && dimensions[1] > 500, `${screenshot.asset}: full historical capture`);
+        }
+        if (screenshot.asset.endsWith('/vscode-suite-designer.png')) assert.deepEqual(dimensions, [1440, 2609]);
+        if (screenshot.asset.endsWith('/suite-designer-linux-4fab779.png')) assert.deepEqual(dimensions, [1083, 502]);
+        if (savedDiagnostics.some(entry => entry.image === screenshot.asset)) assert.deepEqual(dimensions, [1800, 1400]);
+        assert.ok((await image.getAttribute('alt'))?.length > 40);
+        const url = new URL(screenshot.asset, local).href, link = image.locator('..');
+        assert.equal(new URL(await link.getAttribute('href'), local).href, url);
+        assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), route);
+        if (width === 1440) {
+          const [response] = await Promise.all([page.waitForResponse(response => response.url() === url), link.click()]);
+          await page.waitForURL(url); await originalBytes(screenshot.asset, response);
+        } else await originalBytes(screenshot.asset, await page.request.get(url));
+      }
+      await page.goto(new URL(route, local).href, { waitUntil: 'networkidle' });
+      assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), route);
+    }
+    if (nativeProfiles) {
+      await page.goto(new URL(workflow, local).href, { waitUntil: 'networkidle' });
+      for (const [tabName, asset, kind] of profiles) {
+        await page.getByRole('tab', { name: tabName, exact: true }).click();
+        const iframe = page.locator(`.vp-doc iframe[src$="/${asset}.html"]`);
+        await iframe.scrollIntoViewIfNeeded();
+        const link = iframe.locator('..').getByRole('link', { name: 'Download the serialized plot', exact: true });
+        const source = new URL(await link.getAttribute('href'), local);
+        assert.equal(source.href, new URL(`examples/real-packages/${asset}.json`, local).href);
+        const record = JSON.parse((await originalBytes(`examples/real-packages/${asset}.json`, await page.request.get(source.href))).toString());
+        assert.equal(record.plot.kind, kind);
+        const frame = iframe.contentFrame(), mark = frame.locator('.flame-frame').first();
+        await mark.focus(); await frame.getByRole('tooltip').waitFor({ state: 'visible' });
+        assert.ok((await frame.getByRole('tooltip').innerText()).includes(record.plot.data[0].label));
+        assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1));
+      }
+    }
+    if (gallery) for (const entry of savedDiagnostics) {
+      await page.goto(new URL(workflow, local).href, { waitUntil: 'networkidle' });
+      const link = page.locator(`.vp-doc a[href$="/${entry.report}"]`);
+      assert.equal(await link.innerText(), 'Original JSON');
+      const url = new URL(entry.report, local).href;
+      assert.equal(new URL(await link.getAttribute('href'), local).href, url);
+      const [response] = await Promise.all([page.waitForResponse(response => response.url() === url), link.click()]);
+      await page.waitForURL(url); await originalBytes(entry.report, response);
+    }
+  }
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto(new URL('reference/extensions.html', local).href, { waitUntil: 'networkidle' });
+  const text = await page.locator('.vp-doc').innerText();
+  assert.match(text, /64-bit/); assert.match(text, /PropCheck/); assert.match(text, /corpus/);
+  console.log(`${channel}: source-declared historical media, complete native/profile capabilities, original JSON and mobile layouts passed`);
+}
+async function checkCanonicalInterfaces(page, local, site, savedDiagnosticBytes, savedDiagnostics) {
+  const screenshots = [
+    ['interfaces/vscode.html', 'assets/screenshots/vscode/v101/suite-designer-linux-4fab779.png', [1083, 502]],
+    ['interfaces/vscode.html', 'examples/bibliography/vscode/native-items.png', [1442, 901]],
+    ['interfaces/pluto.html', 'examples/bibliography/pluto/completed.png', [1440, 2386]],
+    ['interfaces/web-studio.html', 'examples/real-packages/oxygen-web-studio.png', [1248, 1075]],
+  ];
+  const profiles = [
+    ['tools/cpu-profile.html', 'cpu', 'cpu_flamegraph'],
+    ['tools/wall-profile.html', 'wall', 'wall_flamegraph'],
+    ['tools/allocation-profile.html', 'allocations', 'allocation_flamegraph'],
+  ];
+  async function fits(label) {
+    assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), label);
+  }
+  async function originalBytes(asset, response) {
+    assert.equal(response.status(), 200, asset);
+    const bytes = await response.body();
+    const original = savedDiagnosticBytes.get(asset) ?? await readFile(join('website/src/public', asset));
+    assert.deepEqual(await readFile(join(site, asset)), original, `${asset}: exported original bytes`);
+    assert.deepEqual(bytes, original, `${asset}: downloaded original bytes`);
+    assert.equal(sha256(bytes), sha256(original), `${asset}: original SHA-256`);
+    return bytes;
+  }
+  for (const width of [1440, 390, 360]) {
+    await page.setViewportSize({ width, height: 900 });
+    for (const [route, asset, dimensions] of screenshots) {
+      await page.goto(new URL(route, local).href, { waitUntil: 'networkidle' });
+      const image = page.locator(`.vp-doc img[src$="/${asset}"]`);
+      await image.scrollIntoViewIfNeeded();
+      await image.evaluate(image => image.decode());
+      assert.ok(await image.isVisible(), `${route}/${asset}: visible at ${width}px`);
+      assert.deepEqual(await image.evaluate(image => [image.naturalWidth, image.naturalHeight]), dimensions);
+      assert.ok((await image.getAttribute('alt'))?.length > 40, `${asset}: descriptive alternative text`);
+      const imageUrl = new URL(asset, local).href;
+      const fullSize = image.locator('..');
+      assert.equal(new URL(await image.getAttribute('src'), local).href, imageUrl);
+      assert.equal(new URL(await fullSize.getAttribute('href'), local).href, imageUrl);
+      await fits(`${route}: screenshot page overflows at ${width}px`);
+      if (width === 1440) {
+        const [response] = await Promise.all([
+          page.waitForResponse(response => response.url() === imageUrl), fullSize.click(),
+        ]);
+        await page.waitForURL(imageUrl);
+        await originalBytes(asset, response);
+        const original = page.locator('body > img');
+        await original.evaluate(image => image.decode());
+        assert.deepEqual(await original.evaluate(image => [image.naturalWidth, image.naturalHeight]), dimensions);
+      } else {
+        await originalBytes(asset, await page.request.get(imageUrl));
+      }
+    }
+    for (const [route, name, kind] of profiles) {
+      await page.goto(new URL(route, local).href, { waitUntil: 'networkidle' });
+      const asset = `examples/bibliography/profiles/${name}`;
+      const iframe = page.locator(`.vp-doc iframe[src$="/${asset}.html"]`);
+      await iframe.scrollIntoViewIfNeeded();
+      const link = iframe.locator('..').getByRole('link', { name: 'Download the serialized plot', exact: true });
+      const source = new URL(await link.getAttribute('href'), local);
+      assert.equal(source.href, new URL(`${asset}.json`, local).href);
+      const record = JSON.parse((await originalBytes(`${asset}.json`, await page.request.get(source.href))).toString());
+      assert.equal(record.plot.kind, kind);
+      const frame = iframe.contentFrame();
+      const mark = frame.locator('.flame-frame').first();
+      await mark.focus();
+      const tooltip = frame.getByRole('tooltip');
+      await tooltip.waitFor({ state: 'visible' });
+      assert.ok((await tooltip.innerText()).includes(record.plot.data[0].label));
+      await frame.getByRole('button', { name: 'Zoom in', exact: true }).click();
+      assert.notEqual(await frame.locator('#flame-zoom-level').innerText(), 'Fit');
+      await frame.getByRole('button', { name: 'Fit graph', exact: true }).click();
+      assert.equal(await frame.locator('#flame-zoom-level').innerText(), 'Fit');
+      await fits(`${route}: native profile overflows at ${width}px`);
+    }
+    for (const kind of ['latency', 'memory']) {
+      const route = `tools/${kind}.html`, asset = `examples/real-packages/datastructures-diagnostics/${kind}`;
+      await page.goto(new URL(route, local).href, { waitUntil: 'networkidle' });
+      const iframe = page.locator(`.vp-doc iframe[src$="/${asset}.html"]`);
+      await iframe.scrollIntoViewIfNeeded();
+      const link = iframe.locator('..').getByRole('link', { name: 'Download the serialized plot', exact: true });
+      const source = new URL(await link.getAttribute('href'), local);
+      assert.equal(source.href, new URL(`${asset}.plot.json`, local).href);
+      const record = JSON.parse((await originalBytes(`${asset}.plot.json`, await page.request.get(source.href))).toString());
+      assert.equal(record.plot.kind, 'observation_series');
+      const frame = iframe.contentFrame(), mark = frame.locator('.point').first();
+      await mark.focus();
+      const label = await mark.getAttribute('aria-label');
+      assert.ok(label.includes(String(record.plot.data[0].value)), `${kind}: original recorded value`);
+      assert.equal(await frame.locator('#readout').innerText(), `Point 1: ${label}`);
+      await frame.getByRole('button', { name: 'Zoom in', exact: true }).click();
+      assert.notEqual(await frame.locator('#zoom').innerText(), '100%');
+      await frame.getByRole('button', { name: 'Fit', exact: true }).click();
+      assert.equal(await frame.locator('#zoom').innerText(), '100%');
+      await fits(`${route}: native diagnostic overflows at ${width}px`);
+    }
+    const workflow = new URL('interfaces/vscode.html', local).href;
+    for (const entry of savedDiagnostics) {
+      await page.goto(workflow, { waitUntil: 'networkidle' });
+      const details = page.locator('.vp-doc details').filter({ hasText: 'Import a saved diagnostic report' });
+      await details.locator('summary').click();
+      assert.ok(await details.evaluate(node => node.open));
+      const link = details.locator(`a[href$="/${entry.report}"]`);
+      assert.ok(await link.isVisible(), `${entry.tab}: visible original JSON at ${width}px`);
+      const url = new URL(entry.report, local).href;
+      assert.equal(new URL(await link.getAttribute('href'), workflow).href, url);
+      await fits(`${entry.tab}: diagnostic download page overflows at ${width}px`);
+      const [response] = await Promise.all([
+        page.waitForResponse(response => response.url() === url), link.click(),
+      ]);
+      await page.waitForURL(url);
+      await originalBytes(entry.report, response);
+    }
+    const redirected = 'interfaces/vscode-workflows.html#Open-a-saved-diagnostic-report';
+    await page.goto(new URL(redirected, local).href, { waitUntil: 'networkidle' });
+    await page.waitForURL(new URL('interfaces/vscode.html#Open-a-saved-diagnostic-report', local).href);
+    assert.ok(await page.locator('.vp-doc #Open-a-saved-diagnostic-report').count());
+    for (const [alias, destination] of [
+      ['mcp-advisor.html#MCP-advice-and-implementation', 'agentic/mcp.html'],
+      ['reference/extensions.html#Extensions-and-providers', 'tools/supposition.html'],
+    ]) {
+      await page.goto(new URL(alias, local).href, { waitUntil: 'networkidle' });
+      assert.equal(await page.locator('.vp-doc img, .vp-doc iframe').count(), 0, `${alias}: compatibility forwarder`);
+      await page.locator(`.vp-doc a[href$="/${destination}"]`).first().click();
+      await page.waitForURL(new URL(destination, local).href);
+      await page.locator('.vp-doc h1').waitFor({ state: 'visible' });
+      await fits(`${alias}: canonical destination overflows at ${width}px`);
+    }
+  }
+  await page.setViewportSize({ width: 1440, height: 900 });
+  for (const tool of ['propcheck', 'supposition']) {
+    await page.goto(new URL(`tools/${tool}.html`, local).href, { waitUntil: 'networkidle' });
+    assert.match(await page.locator('.vp-doc').innerText(), /corpus/);
+    const asset = `examples/tool-recipes/${tool}-corpus.json`;
+    const link = page.locator(`.vp-doc a[href$="/${asset}"]`);
+    const url = new URL(await link.getAttribute('href'), local).href;
+    assert.equal(url, new URL(asset, local).href);
+    await originalBytes(asset, await page.request.get(url));
+    if (tool === 'supposition') {
+      const text = await page.locator('.vp-doc').innerText();
+      assert.match(text, /64-bit/); assert.match(text, /PropCheck/);
+    }
+  }
+  console.log('Canonical interface media, three native profiles, two native diagnostics, four original JSON downloads, compatibility forwarding and property corpora passed at desktop/390px/360px');
+}
 const channels = localChecks ? [JSON.parse(await readFile(join(root,'build-info.json'),'utf8')).channel] : await readdir(root);
 const interactionChannel = channels.includes('dev') ? 'dev' : channels.includes('stable') ? 'stable' : channels[0];
 try {
@@ -209,14 +521,21 @@ for (const channel of channels) {
     const examplesMenu=page.locator('.VPNavBar .VPFlyout').filter({has:page.getByRole('button',{name:'Examples',exact:true})});
     await examplesMenu.getByRole('button',{name:'Examples',exact:true}).click();
     await examplesMenu.getByRole('link',{name:'Bibliography',exact:true}).waitFor({state:'visible'});
-    assert.deepEqual((await examplesMenu.getByRole('link').allTextContents()).map(text=>text.trim()),
-      ['Bibliography','DataStructures','Oxygen'],'Examples contains exactly the three package investigations');
     const sidebarGroups=page.locator('.VPSidebarItem.level-0');
-    assert.deepEqual((await sidebarGroups.locator(':scope > .item').allTextContents()).map(text=>text.trim()),
-      ['Manual','Examples','Interfaces','Tools','Agentic workflows','API']);
-    const manual=sidebarGroups.first().locator(':scope > .items > .VPSidebarItem.level-1');
-    assert.deepEqual((await manual.locator(':scope > .item').allTextContents()).map(text=>text.trim()),
-      ['1. Your first comparison','2. Investigate a change','3. Suites and CI','Architecture','Contributing']);
+    const canonicalTools=['cpu-profile','wall-profile','allocation-profile','latency','memory'];
+    const exists=async path=>access(path).then(()=>true).catch(error=>{
+      if(error.code==='ENOENT')return false;throw error;
+    });
+    const modernDocumentation=assertDocumentationLayout(info.version,
+      await Promise.all(canonicalTools.map(tool=>exists(join('website/src/tools',tool+'.md')))),
+      await Promise.all(canonicalTools.map(tool=>exists(join(site,'tools',tool+'.html')))),
+      (await sidebarGroups.locator(':scope > .item').allTextContents()).map(text=>text.trim()),
+      (await examplesMenu.getByRole('link').allTextContents()).map(text=>text.trim()),hasCompanionAPIs);
+    if(modernDocumentation){
+      const manual=sidebarGroups.first().locator(':scope > .items > .VPSidebarItem.level-1');
+      assert.deepEqual((await manual.locator(':scope > .item').allTextContents()).map(text=>text.trim()),
+        ['1. Your first comparison','2. Investigate a change','3. Suites and CI','Architecture','Contributing']);
+    }
     await examplesMenu.getByRole('button',{name:'Examples',exact:true}).click();
     await page.locator('.VPNavBar').getByRole('button', { name: /Search/ }).click();
     await page.locator('.VPLocalSearchBox input').fill('implementation');
@@ -258,130 +577,11 @@ for (const channel of channels) {
       await page.locator('.VPLocalSearchBox .result[href*="optional-api/"]').first().waitFor();
       await page.keyboard.press('Escape');
     }
-    // Stable 1.0.0 refreshes retain their original image; newer guides use the native Suite crop.
-    const [suiteScreenshot, suiteDimensions] = info.version === '1.0.0'
-      ? ['vscode-suite-designer.png', [1440, 2609]]
-      : ['suite-designer-linux-4fab779.png', [1083, 502]];
-    const illustrated = [
-      ['interfaces/vscode.html', ['vscode-studio.png', suiteScreenshot]],
-      ['interfaces/vscode-workflows.html', info.version === '1.0.0' ? ['vscode-results.png'] : []],
-      ['mcp-advisor.html', ['vscode-mcp-settings.png', 'vscode-advice-chat.png', 'vscode-implementation.png']],
-    ];
-    for (const [route, screenshots] of illustrated) {
-      await page.goto(new URL(route, local).href, { waitUntil: 'networkidle' });
-      for (const screenshot of screenshots) {
-        const image = page.locator(`.vp-doc img[src$="/${screenshot}"]`);
-        await image.scrollIntoViewIfNeeded();
-        await image.evaluate(image => image.decode());
-        if (screenshot === suiteScreenshot) {
-          assert.deepEqual(await image.evaluate(image => [image.naturalWidth, image.naturalHeight]), suiteDimensions);
-        } else {
-          assert.ok(await image.evaluate(image => image.naturalWidth >= 1200 && image.naturalHeight > 500));
-        }
-        assert.ok((await image.getAttribute('alt'))?.length > 40);
-        const imageUrl = new URL(await image.getAttribute('src'), local);
-        assert.ok(imageUrl.pathname.startsWith(info.base));
-        const fullSize = await image.locator('..').getAttribute('href');
-        assert.equal(new URL(fullSize, local).href, imageUrl.href, 'Screenshots must open their full-size source');
-        assert.equal((await page.request.get(imageUrl.href)).status(), 200);
-      }
-      await page.setViewportSize({ width: 390, height: 900 });
-      assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), route);
-      await page.reload({ waitUntil: 'networkidle' });
-      assert.ok(await page.locator('h1').isVisible());
-      await page.setViewportSize({ width: 1440, height: 900 });
+    if(modernDocumentation){
+      await checkCanonicalInterfaces(page, local, site, savedDiagnosticBytes, savedDiagnostics);
+    }else{
+      await checkLegacyInterfaces(page, local, site, savedDiagnosticBytes, hasSavedDiagnostics, channel);
     }
-    if (info.version !== '1.0.0') {
-      const workflowPlots = [
-        ['CPU samples', 'datastructures-profiles/cpu-flamegraph-054b5e59c351c558', 'cpu_flamegraph'],
-        ['Wall-time samples', 'datastructures-profiles/wall-flamegraph-1a28318cdf1f7700', 'wall_flamegraph'],
-        ['Allocated bytes', 'datastructures-profiles/allocation-flamegraph-6d6354c132248fdf', 'allocation_flamegraph'],
-      ];
-      for (const width of [1440, 390]) {
-        await page.setViewportSize({ width, height: 900 });
-        await page.goto(new URL('interfaces/vscode-workflows.html', local).href, { waitUntil: 'networkidle' });
-        for (const [tabName, asset, kind] of workflowPlots) {
-          if (tabName) await page.getByRole('tab', { name: tabName, exact: true }).click();
-          const iframe = page.locator(`.vp-doc iframe[src$="/${asset}.html"]`);
-          await iframe.scrollIntoViewIfNeeded();
-          const download = iframe.locator('..').getByRole('link', { name: 'Download the serialized plot', exact: true });
-          const source = new URL(await download.getAttribute('href'), local);
-          assert.equal(source.href, new URL(`examples/real-packages/${asset}.json`, local).href);
-          const response = await page.request.get(source.href);
-          assert.equal(response.status(), 200);
-          const record = await response.json();
-          assert.equal(record.plot.kind, kind);
-          const frame = iframe.contentFrame();
-          const mark = frame.locator('.flame-frame').first();
-          await mark.focus();
-          const tooltip = frame.getByRole('tooltip');
-          await tooltip.waitFor({ state: 'visible' });
-          assert((await tooltip.innerText()).includes(record.plot.data[0].label));
-          assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1),
-            `${asset}: workflow page overflows at ${width}px`);
-        }
-      }
-      await page.setViewportSize({ width: 1440, height: 900 });
-      console.log(`${channel}: three workflow profile tabs inspect their saved native models at desktop and mobile widths`);
-    }
-    if (hasSavedDiagnostics) {
-      const workflow = new URL('interfaces/vscode-workflows.html', local).href;
-      const screenshots = savedDiagnostics.map(entry => ({ ...entry, route: workflow, dimensions: [1800, 1400] }));
-      for (const width of [1440, 390, 360]) {
-        await page.setViewportSize({ width, height: 900 });
-        for (const entry of screenshots) {
-          await page.goto(entry.route, { waitUntil: 'networkidle' });
-          const tab = page.getByRole('tab', { name: entry.tab, exact: true });
-          await tab.click();
-          assert.equal(await tab.getAttribute('aria-selected'), 'true', `${entry.tab}: selected tab`);
-          const image = page.locator(`.vp-doc img[src$="/${entry.image}"]`);
-          await image.scrollIntoViewIfNeeded();
-          assert.ok(await image.isVisible(), `${entry.tab}: visible at ${width}px`);
-          await image.evaluate(image => image.decode());
-          assert.deepEqual(await image.evaluate(image => [image.naturalWidth, image.naturalHeight]), entry.dimensions);
-          assert.ok((await image.getAttribute('alt'))?.length > 40);
-          assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1),
-            `${entry.tab}: page overflows at ${width}px`);
-          const imageUrl = new URL(entry.image, local).href;
-          assert.equal(new URL(await image.getAttribute('src'), local).href, imageUrl);
-          const fullSize = image.locator('..');
-          assert.equal(new URL(await fullSize.getAttribute('href'), local).href, imageUrl);
-          if (width === 1440) {
-            const [response] = await Promise.all([
-              page.waitForResponse(response => response.url() === imageUrl), fullSize.click(),
-            ]);
-            await page.waitForURL(imageUrl);
-            assert.equal(response.status(), 200);
-            const bytes = await response.body();
-            assert.deepEqual(bytes, savedDiagnosticBytes.get(entry.image), `${entry.tab}: full-size original bytes`);
-            assert.equal(sha256(bytes), sha256(savedDiagnosticBytes.get(entry.image)));
-            const original = page.locator('body > img');
-            await original.evaluate(image => image.decode());
-            assert.deepEqual(await original.evaluate(image => [image.naturalWidth, image.naturalHeight]), entry.dimensions);
-          }
-        }
-      }
-      await page.setViewportSize({ width: 1440, height: 900 });
-      for (const entry of savedDiagnostics) {
-        await page.goto(workflow, { waitUntil: 'networkidle' });
-        const link = page.locator(`.vp-doc a[href$="/${entry.report}"]`);
-        assert.equal(await link.innerText(), 'Original JSON');
-        const url = new URL(entry.report, local).href;
-        assert.equal(new URL(await link.getAttribute('href'), workflow).href, url);
-        const [response] = await Promise.all([
-          page.waitForResponse(response => response.url() === url), link.click(),
-        ]);
-        await page.waitForURL(url);
-        assert.equal(response.status(), 200);
-        const bytes = await response.body();
-        assert.deepEqual(bytes, savedDiagnosticBytes.get(entry.report), `${entry.tab}: downloaded original JSON`);
-        assert.equal(sha256(bytes), sha256(savedDiagnosticBytes.get(entry.report)));
-      }
-      console.log(`${channel}: saved latency/memory tabs, original diagnostic captures, four original JSON downloads and mobile gallery passed`);
-    }
-    await page.goto(new URL('reference/extensions.html', local).href, { waitUntil: 'networkidle' });
-    const text = await page.locator('.vp-doc').innerText();
-    assert.match(text, /64-bit/); assert.match(text, /PropCheck/); assert.match(text, /corpus/);
     const label = channel === 'dev' ? 'dev' : `v${info.version}`;
     const picker = page.locator('.VPNavBar .VPVersionPicker');
     await picker.getByRole('button', { name: label, exact: true }).click();
