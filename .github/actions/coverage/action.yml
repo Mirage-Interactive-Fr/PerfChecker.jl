@@ -52,6 +52,8 @@ runs:
             "schema" => "perfchecker-component-coverage/1",
             "revision" => revision, "lane" => ENV["COVERAGE_LANE"],
             "working_tree_dirty" => !isempty(strip(read(`git status --porcelain --untracked-files=normal`, String))),
+            "tracked_files_dirty" => !isempty(strip(read(`git status --porcelain --untracked-files=no`, String))),
+            "dirty_scope" => "working_tree_dirty includes untracked outputs such as lcov.info; tracked_files_dirty checks all tracked files; source_sha256 records the exact reported source bytes",
             "julia" => string(VERSION), "os" => string(Sys.KERNEL), "arch" => string(Sys.ARCH),
             "run_id" => ENV["GITHUB_RUN_ID"], "run_attempt" => ENV["GITHUB_RUN_ATTEMPT"],
             "workflow" => ENV["GITHUB_WORKFLOW"], "remote_upload" => "not performed by collection",

@@ -4,7 +4,15 @@ uuid_seed(seed) = replace(String(seed), '\\' => '/')
 stable_uuid(seed) = uuid5(get_uuid() |> Base.UUID, uuid_seed(seed))
 stable_uuid_string(seed) = string(stable_uuid(seed))
 
-include("windows_process.jl")
+# Keep Windows calling conventions out of non-Windows inference/code generation.
+# A platform-independent union here can compile Windows process methods even
+# when the actual owned process is POSIX (LLVM 15 rejects stdcall on AArch64).
+@static if Sys.iswindows()
+    include("windows_process.jl")
+    const _OwnedProcess = Union{Base.Process, _WindowsOwnedProcess}
+else
+    const _OwnedProcess = Base.Process
+end
 
 "Terminate a controller process and, where supported, its complete child tree."
 function _terminate_process_tree(process)
@@ -19,7 +27,7 @@ function _terminate_process_tree(process)
 end
 
 mutable struct _OwnedProcessTree
-    process::Union{Base.Process, _WindowsOwnedProcess}
+    process::_OwnedProcess
     pid::Int
     stopped::Bool
 end

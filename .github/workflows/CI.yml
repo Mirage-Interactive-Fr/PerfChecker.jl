@@ -195,39 +195,42 @@ jobs:
             echo "::group::$companion"
             if julia --startup-file=no --code-coverage="@$GITHUB_WORKSPACE" -e '
               using Pkg, TOML
-              Sys.ARCH === :aarch64 || error("Native ARM Julia required")
-              root = pwd()
-              name = ENV["PERFCHECKER_COMPANION"]
-              companion = joinpath(root, "packages", name)
-              project = TOML.parsefile(joinpath(companion, "Project.toml"))
-              deps = merge(project["deps"], get(project, "extras", Dict()))
-              compat = Dict(k => v for (k, v) in project["compat"] if k == "julia" || haskey(deps, k))
-              environment = joinpath(ENV["RUNNER_TEMP"], "arm-companions", name)
-              mkpath(environment)
-              open(joinpath(environment, "Project.toml"), "w") do io
-                  TOML.print(io, Dict("deps" => deps, "compat" => compat))
-              end
-              Pkg.activate(environment)
-              specs = [Pkg.PackageSpec(path=root), Pkg.PackageSpec(path=companion)]
-              fixture = joinpath(companion, "test", "fixtures", "CounterFixture")
-              isdir(fixture) && push!(specs, Pkg.PackageSpec(path=fixture))
-              if name in ("PerfCheckerWeb", "PerfCheckerTachikoma")
-                  push!(specs, Pkg.PackageSpec(path=joinpath(root, "packages", "PerfCheckerMakie")))
-              end
-              Pkg.develop(specs)
-              if name in ("PerfCheckerMakie", "PerfCheckerWeb")
-                  Pkg.add(["WGLMakie", "Bonito"])
-              elseif name == "PerfCheckerTachikoma"
-                  Pkg.add("CairoMakie")
-              end
-              Pkg.instantiate()
-              Pkg.precompile(; strict=true)
-              Pkg.status()
-              Base.require(Main, :PerfChecker)
-              Base.require(Main, Symbol(name))
-              include(joinpath(companion, "test", "runtests.jl"))
-              if name == "PerfCheckerPluto"
-                  include(joinpath(companion, "test", "generated_controls.jl"))
+              # Test files own their Main constants; preparation variables stay local.
+              let
+                  Sys.ARCH === :aarch64 || error("Native ARM Julia required")
+                  root = pwd()
+                  name = ENV["PERFCHECKER_COMPANION"]
+                  companion = joinpath(root, "packages", name)
+                  project = TOML.parsefile(joinpath(companion, "Project.toml"))
+                  deps = merge(project["deps"], get(project, "extras", Dict()))
+                  compat = Dict(k => v for (k, v) in project["compat"] if k == "julia" || haskey(deps, k))
+                  environment = joinpath(ENV["RUNNER_TEMP"], "arm-companions", name)
+                  mkpath(environment)
+                  open(joinpath(environment, "Project.toml"), "w") do io
+                      TOML.print(io, Dict("deps" => deps, "compat" => compat))
+                  end
+                  Pkg.activate(environment)
+                  specs = [Pkg.PackageSpec(path=root), Pkg.PackageSpec(path=companion)]
+                  fixture = joinpath(companion, "test", "fixtures", "CounterFixture")
+                  isdir(fixture) && push!(specs, Pkg.PackageSpec(path=fixture))
+                  if name in ("PerfCheckerWeb", "PerfCheckerTachikoma")
+                      push!(specs, Pkg.PackageSpec(path=joinpath(root, "packages", "PerfCheckerMakie")))
+                  end
+                  Pkg.develop(specs)
+                  if name in ("PerfCheckerMakie", "PerfCheckerWeb")
+                      Pkg.add(["WGLMakie", "Bonito"])
+                  elseif name == "PerfCheckerTachikoma"
+                      Pkg.add("CairoMakie")
+                  end
+                  Pkg.instantiate()
+                  Pkg.precompile(; strict=true)
+                  Pkg.status()
+                  Base.require(Main, :PerfChecker)
+                  Base.require(Main, Symbol(name))
+                  include(joinpath(companion, "test", "runtests.jl"))
+                  if name == "PerfCheckerPluto"
+                      include(joinpath(companion, "test", "generated_controls.jl"))
+                  end
               end
             '; then
               echo "- $companion: native ARM precompile, load and functional suite passed." >> "$GITHUB_STEP_SUMMARY"

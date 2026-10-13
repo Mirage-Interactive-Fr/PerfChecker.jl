@@ -3,6 +3,14 @@
     using PerfChecker
     using Logging
 
+    @static if Sys.iswindows()
+        @test fieldtype(PerfChecker._OwnedProcessTree, :process) ==
+              Union{Base.Process, PerfChecker._WindowsOwnedProcess}
+    else
+        @test fieldtype(PerfChecker._OwnedProcessTree, :process) === Base.Process
+        @test !isdefined(PerfChecker, :_WindowsOwnedProcess)
+    end
+
     function alive(pid)
         if Sys.iswindows()
             output = read(ignorestatus(`tasklist /FI $("PID eq $pid") /FO CSV /NH`), String)

@@ -4,6 +4,9 @@
 
 ### PerfChecker 1.1.1
 
+- Load Windows Job Object implementations only on Windows and keep POSIX owned
+  processes typed as `Base.Process`. Prevent cancellation/cleanup compilation
+  from reaching Windows `stdcall` calls on AArch64, which LLVM 15 cannot lower.
 - Remove the unconditional CpuId dependency, which cannot precompile on ARM.
   Use Julia's native CPU identity and Hwloc's portable physical/logical topology,
   including on Linux 32-bit. Preserve exact counts on hybrid CPUs; zero threads
