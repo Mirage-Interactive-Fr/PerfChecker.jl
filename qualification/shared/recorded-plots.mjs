@@ -304,29 +304,34 @@ async function checkNativeProfileMenus(page,base){
    }
   }
  }
- await page.goto(base+'real-packages/extensions.html',{waitUntil:'networkidle'});
- await page.locator('details').evaluateAll(nodes=>nodes.forEach(node=>{node.open=true}));
- for(const name of ['DataStructures profiles','Oxygen profiles']){
-  const gallery=page.getByRole('region',{name:name+' recorded plots',exact:true});
-  const select=gallery.getByRole('combobox',{name:'Explore the recorded measurements',exact:true});
-  await select.waitFor();
-  const options=await select.locator('option').evaluateAll(nodes=>nodes.map(node=>node.value));
-  for(const option of options){
-   await select.selectOption(option);
-   await inspect(gallery.locator('.recorded-export'),name+' / '+option);
-  }
-  const family=gallery.getByRole('combobox',{name:'Plot family',exact:true});
-  const families=await family.locator('option').evaluateAll(nodes=>nodes.map(node=>node.value));
-  for(const kind of families){
-   await family.selectOption(kind);
-   const graph=gallery.locator('.recorded-export');
-   const source=await graph.getByRole('link',{name:'Download the serialized plot',exact:true}).getAttribute('href');
-   assert.equal((await(await page.request.get(new URL(source,base).href)).json()).plot.kind,kind,
-    `${name}: selecting a family opens a real model of that family`);
-   await inspect(graph,name+' / family '+kind);
-  }
+ for(const [name,destination]of [['BenchmarkTools','tools/benchmarktools.html'],['JET','tools/jet.html'],
+  ['native profiles','tools/callgrind.html'],['saved results','tools/results.html'],
+  ['interface pages','interfaces/visualization.html']]){
+  await page.goto(base+'real-packages/extensions.html#Allocation,-CPU-and-wall-time-profiles',{waitUntil:'networkidle'});
+  assert.equal(await page.locator('.vp-doc [id="Allocation,-CPU-and-wall-time-profiles"]').count(),1,
+   'The compatibility page preserves the old profile fragment');
+  assert.equal(await page.locator('.vp-doc iframe').count(),0,'Tool recipes is a compatibility link page');
+  const link=page.locator('.vp-doc').getByRole('link',{name,exact:true});
+  assert.equal(new URL(await link.getAttribute('href'),page.url()).href,new URL(destination,base).href);
+  await link.click();
+  await page.waitForURL(new URL(destination,base).href);
+  await page.locator('.vp-doc h1').waitFor({state:'visible'});
  }
- return `${inspected} native profile selections across both DataStructures workloads, Oxygen and both Tool recipe choosers preserve their saved models and working controls`;
+ for(const [route,kind]of [['allocation-profile','allocation_flamegraph'],['cpu-profile','cpu_flamegraph'],
+  ['wall-profile','wall_flamegraph']]){
+  await page.goto(base+'tools/'+route+'.html',{waitUntil:'networkidle'});
+  const graph=page.locator('.vp-doc .recorded-export');
+  const source=await graph.getByRole('link',{name:'Download the serialized plot',exact:true}).getAttribute('href');
+  assert.equal((await(await page.request.get(new URL(source,base).href)).json()).plot.kind,kind,
+   `${route}: the practical page opens its actual profile family`);
+  await inspect(graph,'Tool / '+route);
+  const frame=graph.frameLocator('iframe'),fitted=await frame.locator('#flame').boundingBox();
+  await frame.getByRole('button',{name:'Zoom in',exact:true}).click();
+  assert((await frame.locator('#flame').boundingBox()).width>fitted.width*1.4,`${route}: native viewport zoom`);
+  await frame.getByRole('button',{name:'Fit graph',exact:true}).click();
+  assert(Math.abs((await frame.locator('#flame').boundingBox()).width-fitted.width)<2,`${route}: fit restores the viewport`);
+ }
+ return `${inspected} native profile selections across both DataStructures workloads, Oxygen and three practical tool pages preserve their saved models and working controls; Tool recipe compatibility links resolve`;
 }
 
 async function checkFrameHeight(page,container,label){
@@ -456,9 +461,10 @@ export async function checkRecordedDiagnosticInteractions(page,base,output){
 
 export async function checkRecordedObservationInteractions(page,base,output){
  const checks=[];
- for(const [route,name]of [['real-packages/oxygen.html','Oxygen network'],['interfaces/vscode-workflows.html','saved diagnostics']]){
+ for(const [route,name]of [['real-packages/oxygen.html','Oxygen network'],
+  ['tools/latency.html','saved latency diagnostics'],['tools/memory.html','saved memory diagnostics']]){
   await page.goto(base+route,{waitUntil:'networkidle'});
-  const frames=page.locator('iframe[src*="oxygen-network/"],iframe[src*="oxygen-saved-diagnostics/"]');
+  const frames=page.locator('iframe[src*="oxygen-network/"],iframe[src*="datastructures-diagnostics/"]');
   assert(await frames.count()>0,`${name}: native observation exports are embedded`);
   const element=frames.first();await element.scrollIntoViewIfNeeded();
   const frame=page.frameLocator('iframe[src="'+await element.getAttribute('src')+'"]');
