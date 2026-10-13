@@ -362,7 +362,7 @@ async function checkCanonicalInterfaces(page, local, site, savedDiagnosticBytes,
     assert.match(await page.locator('.vp-doc').innerText(), /corpus/);
     const asset = `examples/tool-recipes/${tool}-corpus.json`;
     const link = page.locator(`.vp-doc a[href$="/${asset}"]`);
-    const url = new URL(await link.getAttribute('href'), local).href;
+    const url = await link.evaluate(anchor => anchor.href);
     assert.equal(url, new URL(asset, local).href);
     await originalBytes(asset, await page.request.get(url));
     if (tool === 'supposition') {
