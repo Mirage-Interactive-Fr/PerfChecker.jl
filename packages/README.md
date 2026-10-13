@@ -5,40 +5,51 @@ Each depends on the public PerfChecker engine. Loading the engine does not insta
 or load any of them. Interface sessions and jobs remain explicit; there is no
 global active PerfChecker interface.
 
-| Package | Use |
-| --- | --- |
-| PerfCheckerWeb | Oxygen Studio, HTTP routes and remote agents |
-| PerfCheckerPluto | Notebook generation, reactive controls and Pluto launch |
-| PerfCheckerMakie | Figures and plot recipes, with optional WGLMakie rendering |
-| [PerfCheckerTachikoma](PerfCheckerTachikoma/README.md) | Optional keyboard terminal UI and saved-evidence plots |
-| [PerfCheckerLinuxPerf](PerfCheckerLinuxPerf/README.md) | Optional calling-thread Linux perf-event counter collector |
-| [PerfCheckerLIKWID](PerfCheckerLIKWID/README.md) | Optional native CPU-window counter collector |
+| Package | General version | Use |
+| --- | --- | --- |
+| [PerfCheckerWeb](PerfCheckerWeb/README.md) | 1.0.0 | Oxygen Studio, HTTP routes and remote agents |
+| [PerfCheckerPluto](PerfCheckerPluto/README.md) | 1.0.1 | Notebook generation, reactive controls and Pluto launch |
+| [PerfCheckerMakie](PerfCheckerMakie/README.md) | 1.0.1 | Figures and plot recipes, with optional WGLMakie rendering |
+| [PerfCheckerTachikoma](PerfCheckerTachikoma/README.md) | Pending | Optional keyboard terminal UI and saved-evidence plots |
+| [PerfCheckerLinuxPerf](PerfCheckerLinuxPerf/README.md) | 1.0.1 | Optional calling-thread Linux perf-event counter collector |
+| [PerfCheckerLIKWID](PerfCheckerLIKWID/README.md) | 1.0.1 | Optional native CPU-window counter collector |
 
-The three original Web/Pluto/Makie interfaces are available from the immutable
-`v1.0.0` tag. Install the registered core and the selected tagged interface:
+The five published companions install by name from General. For example, prepare
+a separate Web controller environment:
 
 ```julia
 using Pkg
-Pkg.add(Pkg.PackageSpec(name="PerfChecker", version="1.0.0"))
-Pkg.add(Pkg.PackageSpec(
-    url="https://github.com/Mirage-Interactive-Fr/PerfChecker.jl",
-    rev="v1.0.0", subdir="packages/PerfCheckerWeb"))
+Pkg.activate("perf/controller")
+Pkg.add(["PerfChecker", "PerfCheckerWeb"])
 using PerfChecker, PerfCheckerWeb
 ```
 
-Replace the last directory with PerfCheckerPluto or PerfCheckerMakie as needed.
-These packages await their first General registrations. Once registered, install
-them by name with `Pkg.add`. The CLI and text REPL remain in
-PerfChecker. The VS Code client uses the same versioned process protocol.
+Follow the dedicated companion READMEs linked above for installation instructions
+and the appropriate controller or worker environment. The CLI
+and text REPL remain in PerfChecker. The VS Code client uses the same versioned
+process protocol.
 
-Tachikoma and the hardware-counter companions are **1.0.1 source packages**,
-absent from `v1.0.0` and not separately registered. Use the
-[source-companion installation recipes](../website/src/guide/installation.md)
-at reviewed revision `1a7577da782ba8676683f3ceefcb8dccf055afe5`; they explicitly
-develop both the core and chosen companion from that checkout. The
-[API ownership index](../website/src/reference/api.md) links
-their source docstrings and Julia help examples. The per-package READMEs provide
-the detailed terminal or counter contracts.
+Tachikoma 1.0.1 is proposed in [General PR #171531](https://github.com/JuliaRegistries/General/pull/171531)
+and is not yet installable by name. Its README gives an immutable source recipe.
+PerfCheckerMakie 1.0.4, used by this documentation, is also a source version;
+General currently supplies 1.0.1. See the [renderer installation](../website/src/interfaces/visualization.md)
+when reproducing the newer interactive figures.
+
+The working source candidates are Core 1.1.1, PerfCheckerLinuxPerf 1.0.2 and
+PerfCheckerLIKWID 1.0.2. They are not yet registered; General still provides
+Core 1.1.0 and the companion versions listed above.
+
+## ARM compatibility
+
+All six companions depend on Core. The published Core 1.1.0 pins CpuId 0.3.0,
+whose import can fail on aarch64, including Apple Silicon. Installing a
+companion by name does not bypass that dependency. The Core 1.1.1 source candidate
+replaces CpuId with portable Hwloc topology and a native Julia fallback. It needs
+its own validation and release before General installations benefit from it;
+registration alone does not establish ARM compatibility. See the
+[reported failure](https://github.com/JuliaRegistries/General/pull/171531#issuecomment-6145459097).
+
+## Environments and qualification
 
 Use separate controller environments when interfaces require incompatible HTTP
 versions. Workers continue to use their own environments; Web/Pluto/Makie renderer

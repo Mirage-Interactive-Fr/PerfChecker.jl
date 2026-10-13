@@ -58,7 +58,16 @@ Pluto saves cell edits into the `.jl` file. Keep both when retaining an experime
 
 Prepare a separate notebook project containing PerfChecker,
 PerfCheckerPluto **1.0.1**, PlutoUI and your suite's collectors.
-PerfCheckerPluto 1.0.1 is registered in General. From your package root:
+PerfCheckerPluto 1.0.1 is registered in General:
+
+```julia
+import Pkg
+Pkg.activate("perf/notebooks")
+Pkg.add(["PerfChecker", "PerfCheckerPluto", "PlutoUI"])
+```
+
+Published Core has a [known ARM import limitation](../guide/overview.md#ARM-installations).
+From your package root, using that notebook project:
 
 ```julia
 using PerfChecker, PerfCheckerPluto

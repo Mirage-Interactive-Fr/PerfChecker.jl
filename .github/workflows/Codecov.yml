@@ -1,0 +1,70 @@
+name: Upload collected coverage
+
+on:
+  workflow_call:
+
+# Collection remains available without any external account. To enable uploads,
+# activate this repository in Codecov and authorize its GitHub integration, then
+# set repository variable PERFCHECKER_CODECOV_UPLOAD=true. OIDC authenticates the
+# exact repository/run; no CODECOV_TOKEN secret is required or invented here.
+# Keep uploads disabled until the repository owner verifies that authorization.
+# Add a badge only after a successful upload is visible for the tested revision.
+permissions:
+  contents: read
+
+jobs:
+  reports:
+    runs-on: ubuntu-latest
+    outputs:
+      flags: ${{ steps.reports.outputs.flags }}
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          pattern: coverage-*
+          path: coverage-reports
+      - name: Discover only the components actually tested in this workflow
+        id: reports
+        shell: bash
+        run: |
+          flags="$(find coverage-reports -type f -name '*.info' -exec basename {} .info \; | sort -u | jq -Rsc 'split("\n") | map(select(length > 0))')"
+          [[ "$flags" != '[]' ]] || { echo 'No component LCOV reports were collected'; exit 1; }
+          jq -e 'all(.[]; . == "core" or . == "linuxperf" or . == "likwid" or . == "makie" or . == "web" or . == "pluto" or . == "tachikoma")' <<< "$flags"
+          echo "flags=$flags" >> "$GITHUB_OUTPUT"
+
+  upload:
+    needs: reports
+    name: Codecov upload - ${{ matrix.flag }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    strategy:
+      fail-fast: false
+      matrix:
+        flag: ${{ fromJSON(needs.reports.outputs.flags) }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/download-artifact@v8
+        with:
+          pattern: coverage-*
+          path: coverage-reports
+      - name: Select reports for this component only
+        id: reports
+        env:
+          COVERAGE_FLAG: ${{ matrix.flag }}
+        shell: bash
+        run: |
+          files="$(find coverage-reports -type f -name "$COVERAGE_FLAG.info" | sort | paste -sd, -)"
+          [[ -n "$files" ]] || { echo "Missing coverage report for $COVERAGE_FLAG"; exit 1; }
+          echo "files=$files" >> "$GITHUB_OUTPUT"
+      - uses: codecov/codecov-action@v5
+        with:
+          use_oidc: true
+          files: ${{ steps.reports.outputs.files }}
+          flags: ${{ matrix.flag }}
+          name: ${{ github.workflow }}-${{ matrix.flag }}-${{ github.run_id }}-${{ github.run_attempt }}
+          disable_search: true
+          fail_ci_if_error: true

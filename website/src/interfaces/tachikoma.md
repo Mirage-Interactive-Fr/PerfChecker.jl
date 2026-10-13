@@ -10,7 +10,8 @@ selection, progress and saved-result plots. Ordinary text commands are in
 
 ## Install
 
-The companion is version **1.0.1** and is awaiting General registration.
+The companion is version **1.0.1** and its [General registration PR #171531](https://github.com/JuliaRegistries/General/pull/171531)
+is pending. It is not yet installable by name.
 Use its reviewed source revision in a separate controller:
 
 ```julia
@@ -20,8 +21,11 @@ Pkg.add(Pkg.PackageSpec(name = "PerfChecker", version = "1.1"))
 Pkg.add(Pkg.PackageSpec(
     url = "https://github.com/Mirage-Interactive-Fr/PerfChecker.jl",
     subdir = "packages/PerfCheckerTachikoma",
-    rev = "8864d3a0fec4e58390090324955eb8dbcebd5e07"))
+    rev = "9947de5e4163388c0a14f0d439e6c578a4676597"))
 ```
+
+After registration merges, `Pkg.add("PerfCheckerTachikoma")` can replace the
+source specification. Published Core has a [known ARM import limitation](../guide/overview.md#ARM-installations).
 
 It uses Tachikoma 2.7 and UnicodePlots 3. Loading the companion opens no terminal
 and starts no measurement.

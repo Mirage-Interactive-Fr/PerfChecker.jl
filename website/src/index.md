@@ -141,7 +141,7 @@ contributors, and the Julia community for making these workflows possible.
 <details><summary>Additional foundations</summary>
 <p>Core's data and source handling also depend on
 <a href="https://github.com/JuliaData/CSV.jl">CSV</a>,
-<a href="https://github.com/m-j-w/CpuId.jl">CpuId</a>,
+<a href="https://github.com/JuliaParallel/Hwloc.jl">Hwloc</a>,
 <a href="https://github.com/JuliaIO/JSON.jl">JSON</a>,
 <a href="https://github.com/JuliaLang/JuliaSyntax.jl">JuliaSyntax</a>,
 <a href="https://github.com/JuliaData/TypedTables.jl">TypedTables</a>, and

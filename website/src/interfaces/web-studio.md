@@ -43,6 +43,7 @@ below. Saved-directory viewers cannot launch these jobs.
 ## Install and start a controller
 
 Prepare a controller project separate from the measured target and from Pluto:
+PerfCheckerWeb **1.0.0** is registered in General.
 
 ```julia
 import Pkg
@@ -53,6 +54,7 @@ Pkg.add([
 ])
 ```
 
+Published Core has a [known ARM import limitation](../guide/overview.md#ARM-installations).
 Install the collectors used by your suite deliberately. Load the suite from
 your package root, then start a local service:
 

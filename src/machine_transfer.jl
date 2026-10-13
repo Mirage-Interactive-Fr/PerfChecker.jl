@@ -11,6 +11,11 @@ Return `perfchecker-machine-profile/1` with `specs`, SHA-256 `spec_id`, label,
 Julia version and `limits_verified=false`. Limits are caller declarations,
 not measured enforcement. This takes a local hardware snapshot without running
 a calibration workload or writing a file.
+The native snapshot records Hwloc's physical/logical topology, falling back to
+Julia's OS logical CPU count if topology is unavailable. Zero physical cores
+or SIMD bytes mean unknown; similarity excludes unknown capabilities. Fresh
+hardware identities and cache keys can differ from older CPUID-based snapshots,
+including on x86; saved historical snapshots are not rewritten.
 """
 function machine_profile(; label::AbstractString = "", limits::AbstractDict = Dict())
     info = HwInfo()

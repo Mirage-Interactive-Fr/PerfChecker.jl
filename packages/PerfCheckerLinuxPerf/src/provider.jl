@@ -138,8 +138,10 @@ function counter_command(id::Symbol; source, environment, package,
         "pins" => pins, "dev_sources" => dev_sources,
         "events" => _events(events))
     worker = joinpath(@__DIR__, "worker.jl")
+    # Test/qualification controllers may be instrumented; counter windows must not be.
     command = vcat(Base.julia_cmd().exec,
-        ["--startup-file=no", "--project=" * environment, worker, JSON.json(request)])
+        ["--startup-file=no", "--code-coverage=none", "--track-allocation=none",
+            "--project=" * environment, worker, JSON.json(request)])
     ExternalCommandSpec(id, "julia-linuxperf", command;
         directory = environment, timeout_seconds)
 end

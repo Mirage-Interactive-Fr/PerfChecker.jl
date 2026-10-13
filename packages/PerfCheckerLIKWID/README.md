@@ -2,9 +2,28 @@
 
 An optional LIKWID 0.4.6 companion for PerfChecker 1.x. Keep its prepared worker
 project separate from LinuxPerf: LIKWID requires PrettyTables 3, LinuxPerf 2.
-Until this companion is separately registered, develop it explicitly from the
-monorepo into the worker project. Native `liblikwid` installation and permission
-configuration are prerequisites; the companion never installs or changes them.
+Native `liblikwid` installation and permission configuration are prerequisites;
+the companion never installs or changes them.
+
+## Installation
+
+PerfCheckerLIKWID 1.0.1 is registered in General. Install it in its own worker
+project, then prepare your measured target in that same project separately.
+
+The source candidate 1.0.2 explicitly disables coverage and allocation tracking
+in counter workers. It is not yet registered; the command below currently
+installs the registered 1.0.1:
+
+```julia
+using Pkg
+Pkg.activate("perf/likwid-worker")
+Pkg.add(["PerfChecker", "PerfCheckerLIKWID"])
+```
+
+The published Core has a [known ARM import limitation](../README.md#arm-compatibility).
+Loading successfully does not establish native counter support on a machine.
+
+## Measure counters
 
 Declare exact custom CPU event/counter pairs and units, not a group alias:
 

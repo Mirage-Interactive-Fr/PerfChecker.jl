@@ -86,7 +86,7 @@ jobs:
     name: Julia ${{ matrix.version }} - ${{ matrix.os }} - ${{ matrix.arch }} - ${{ github.event_name }}
     runs-on: ${{ matrix.runner || matrix.os }}
     # Preserve the complete macOS suite after its measured cold-worker overrun.
-    timeout-minutes: ${{ matrix.os == 'macOS-latest' && 180 || 90 }}
+    timeout-minutes: ${{ (matrix.os == 'macOS-latest' || matrix.os == 'macos-15') && 180 || 90 }}
     strategy:
       fail-fast: false
       matrix:
@@ -95,6 +95,10 @@ jobs:
           - {version: '1', os: ubuntu-latest, arch: x86}
           - {version: lts, os: ubuntu-latest, arch: x64}
           - {version: pre, os: ubuntu-latest, arch: x64}
+          - {version: '1.10', os: ubuntu-24.04-arm, arch: aarch64}
+          - {version: '1', os: ubuntu-24.04-arm, arch: aarch64}
+          - {version: '1.10', os: macos-15, arch: aarch64}
+          - {version: '1', os: macos-15, arch: aarch64}
           # The protected context keeps its name; macOS 26 runs natively on Intel.
           - {version: '1', os: macOS-latest, arch: x64, runner: macos-26-intel}
           - {version: '1', os: windows-latest, arch: x64}
@@ -109,7 +113,19 @@ jobs:
           arch: ${{ matrix.arch }}
       - uses: julia-actions/cache@v3
       - uses: julia-actions/julia-buildpkg@v1
+      - name: Strictly precompile and load Core on native ARM
+        if: matrix.arch == 'aarch64'
+        run: julia --startup-file=no --project=. -e 'using Pkg; Sys.ARCH === :aarch64 || error("Native ARM required"); Pkg.instantiate(); Pkg.precompile(; strict=true); using PerfChecker'
       - uses: julia-actions/julia-runtest@v1
+        with:
+          # Pkg.test restricts coverage=true to this package's source tree.
+          coverage: true
+      - uses: ./.github/actions/coverage
+        if: always()
+        with:
+          lane: core-${{ matrix.version }}-${{ matrix.os }}-${{ matrix.arch }}
+          components: core
+          environment-scope: resolved package environment; Pkg.test sandbox test extras are not captured
 
   hardware-counter-companions:
     name: Counter ${{ matrix.companion }} - Julia ${{ matrix.version }} - ${{ matrix.arch }}
@@ -138,4 +154,136 @@ jobs:
       - name: Prepare a separate worker project and test the real counter provider
         run: |
           export JULIA_DEPOT_PATH="$RUNNER_TEMP/counter-depot-$COUNTER_COMPANION-${{ matrix.version }}-${{ matrix.arch }}"
-          julia --startup-file=no -e 'using Pkg; root = pwd(); companion = joinpath(root, "packages", ENV["COUNTER_COMPANION"]); counter_fixture_path = joinpath(companion, "test", "fixtures", "CounterFixture"); Pkg.activate(joinpath(ENV["RUNNER_TEMP"], "counter-worker")); Pkg.develop([Pkg.PackageSpec(path=root), Pkg.PackageSpec(path=companion), Pkg.PackageSpec(path=counter_fixture_path)]); if ENV["COUNTER_COMPANION"] == "PerfCheckerLIKWID"; Pkg.add(Pkg.PackageSpec(name="LIKWID", version="0.4.6")); end; Pkg.instantiate(); Pkg.status(); include(joinpath(companion, "test", "runtests.jl"))'
+          julia --startup-file=no --code-coverage="@$GITHUB_WORKSPACE" -e 'using Pkg; root = pwd(); companion = joinpath(root, "packages", ENV["COUNTER_COMPANION"]); counter_fixture_path = joinpath(companion, "test", "fixtures", "CounterFixture"); Pkg.activate(joinpath(ENV["RUNNER_TEMP"], "counter-worker")); Pkg.develop([Pkg.PackageSpec(path=root), Pkg.PackageSpec(path=companion), Pkg.PackageSpec(path=counter_fixture_path)]); if ENV["COUNTER_COMPANION"] == "PerfCheckerLIKWID"; Pkg.add(Pkg.PackageSpec(name="LIKWID", version="0.4.6")); end; Pkg.instantiate(); Pkg.status(); include(joinpath(companion, "test", "runtests.jl"))'
+      - uses: ./.github/actions/coverage
+        if: always()
+        with:
+          lane: counter-${{ matrix.companion }}-${{ matrix.version }}-${{ matrix.arch }}
+          components: ${{ matrix.companion }}
+          environment: ${{ runner.temp }}/counter-worker
+
+  arm-companions:
+    name: ARM ${{ matrix.group }} - Julia ${{ matrix.version }} - ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 180
+    strategy:
+      fail-fast: false
+      matrix:
+        version: ['1.10', '1']
+        os: [ubuntu-24.04-arm, macos-15]
+        group: [counters, interfaces]
+    env:
+      PERFCHECKER_COMPANIONS: ${{ matrix.group == 'counters' && 'PerfCheckerLinuxPerf,PerfCheckerLIKWID' || 'PerfCheckerMakie,PerfCheckerWeb,PerfCheckerPluto,PerfCheckerTachikoma' }}
+      PERFCHECKER_TACHIKOMA_TEST_PIXELS: '1'
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: julia-actions/setup-julia@v3
+        with:
+          version: ${{ matrix.version }}
+          arch: aarch64
+      - uses: julia-actions/cache@v3
+      - name: Strictly precompile, load and test every companion in its own ARM environment
+        shell: bash
+        run: |
+          IFS=, read -ra companions <<< "$PERFCHECKER_COMPANIONS"
+          status=0
+          for companion in "${companions[@]}"; do
+            export PERFCHECKER_COMPANION="$companion"
+            echo "::group::$companion"
+            if julia --startup-file=no --code-coverage="@$GITHUB_WORKSPACE" -e '
+              using Pkg, TOML
+              Sys.ARCH === :aarch64 || error("Native ARM Julia required")
+              root = pwd()
+              name = ENV["PERFCHECKER_COMPANION"]
+              companion = joinpath(root, "packages", name)
+              project = TOML.parsefile(joinpath(companion, "Project.toml"))
+              deps = merge(project["deps"], get(project, "extras", Dict()))
+              compat = Dict(k => v for (k, v) in project["compat"] if k == "julia" || haskey(deps, k))
+              environment = joinpath(ENV["RUNNER_TEMP"], "arm-companions", name)
+              mkpath(environment)
+              open(joinpath(environment, "Project.toml"), "w") do io
+                  TOML.print(io, Dict("deps" => deps, "compat" => compat))
+              end
+              Pkg.activate(environment)
+              specs = [Pkg.PackageSpec(path=root), Pkg.PackageSpec(path=companion)]
+              fixture = joinpath(companion, "test", "fixtures", "CounterFixture")
+              isdir(fixture) && push!(specs, Pkg.PackageSpec(path=fixture))
+              if name in ("PerfCheckerWeb", "PerfCheckerTachikoma")
+                  push!(specs, Pkg.PackageSpec(path=joinpath(root, "packages", "PerfCheckerMakie")))
+              end
+              Pkg.develop(specs)
+              if name in ("PerfCheckerMakie", "PerfCheckerWeb")
+                  Pkg.add(["WGLMakie", "Bonito"])
+              elseif name == "PerfCheckerTachikoma"
+                  Pkg.add("CairoMakie")
+              end
+              Pkg.instantiate()
+              Pkg.precompile(; strict=true)
+              Pkg.status()
+              Base.require(Main, :PerfChecker)
+              Base.require(Main, Symbol(name))
+              include(joinpath(companion, "test", "runtests.jl"))
+              if name == "PerfCheckerPluto"
+                  include(joinpath(companion, "test", "generated_controls.jl"))
+              end
+            '; then
+              echo "- $companion: native ARM precompile, load and functional suite passed." >> "$GITHUB_STEP_SUMMARY"
+            else
+              echo "- $companion: FAILED native ARM qualification; inspect its log." >> "$GITHUB_STEP_SUMMARY"
+              status=1
+            fi
+            echo '::endgroup::'
+          done
+          exit "$status"
+      - name: State native hardware qualification limits
+        if: always()
+        shell: bash
+        run: |
+          echo 'Counter tests qualify native availability/refusal and isolated-worker contracts. Hosted runners do not guarantee permitted PMU access; macOS has no Linux perf-event backend. A refusal is not a positive hardware-counter qualification. Tachikoma uses its real TestBackend, not a physical terminal.' >> "$GITHUB_STEP_SUMMARY"
+      - uses: ./.github/actions/coverage
+        if: always() && matrix.group == 'counters'
+        with:
+          lane: arm-PerfCheckerLinuxPerf-${{ matrix.version }}-${{ matrix.os }}
+          components: PerfCheckerLinuxPerf
+          environment: ${{ runner.temp }}/arm-companions/PerfCheckerLinuxPerf
+      - uses: ./.github/actions/coverage
+        if: always() && matrix.group == 'counters'
+        with:
+          lane: arm-PerfCheckerLIKWID-${{ matrix.version }}-${{ matrix.os }}
+          components: PerfCheckerLIKWID
+          environment: ${{ runner.temp }}/arm-companions/PerfCheckerLIKWID
+      - uses: ./.github/actions/coverage
+        if: always() && matrix.group == 'interfaces'
+        with:
+          lane: arm-PerfCheckerMakie-${{ matrix.version }}-${{ matrix.os }}
+          components: PerfCheckerMakie
+          environment: ${{ runner.temp }}/arm-companions/PerfCheckerMakie
+      - uses: ./.github/actions/coverage
+        if: always() && matrix.group == 'interfaces'
+        with:
+          lane: arm-PerfCheckerWeb-${{ matrix.version }}-${{ matrix.os }}
+          components: PerfCheckerWeb
+          environment: ${{ runner.temp }}/arm-companions/PerfCheckerWeb
+      - uses: ./.github/actions/coverage
+        if: always() && matrix.group == 'interfaces'
+        with:
+          lane: arm-PerfCheckerPluto-${{ matrix.version }}-${{ matrix.os }}
+          components: PerfCheckerPluto
+          environment: ${{ runner.temp }}/arm-companions/PerfCheckerPluto
+      - uses: ./.github/actions/coverage
+        if: always() && matrix.group == 'interfaces'
+        with:
+          lane: arm-PerfCheckerTachikoma-${{ matrix.version }}-${{ matrix.os }}
+          components: PerfCheckerTachikoma
+          environment: ${{ runner.temp }}/arm-companions/PerfCheckerTachikoma
+
+  coverage-upload:
+    needs: [test, hardware-counter-companions, arm-companions]
+    if: vars.PERFCHECKER_CODECOV_UPLOAD == 'true' && (github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository)
+    permissions:
+      contents: read
+      id-token: write
+    uses: ./.github/workflows/Codecov.yml

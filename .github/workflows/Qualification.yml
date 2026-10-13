@@ -37,6 +37,14 @@ env:
   MKL_NUM_THREADS: '1'
 
 jobs:
+  coverage-upload:
+    needs: qualify
+    if: vars.PERFCHECKER_CODECOV_UPLOAD == 'true' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
+    permissions:
+      contents: read
+      id-token: write
+    uses: ./.github/workflows/Codecov.yml
+
   plan:
     runs-on: ubuntu-latest
     outputs:
@@ -145,7 +153,16 @@ jobs:
           name: qualification-plan
           path: .qualification
       - name: Execute and capture exact resolved environments
-        run: julia --startup-file=no --project=qualification qualification/scripts/run.jl '${{ matrix.id }}'
+        # Base.julia_cmd propagates this repository-only coverage setting to
+        # functional test subprocesses. Measurement workers explicitly set none.
+        run: julia --startup-file=no --code-coverage=@${{ github.workspace }} --project=qualification qualification/scripts/run.jl '${{ matrix.id }}'
+      - uses: ./.github/actions/coverage
+        if: always() && contains(fromJSON('["core", "web", "pluto", "plots", "tachikoma"]'), matrix.suite)
+        with:
+          lane: qualification-${{ matrix.id }}
+          components: ${{ matrix.suite == 'core' && 'core' || matrix.suite == 'web' && 'PerfCheckerWeb' || matrix.suite == 'pluto' && 'PerfCheckerPluto' || matrix.suite == 'plots' && 'PerfCheckerMakie' || 'PerfCheckerTachikoma' }}
+          environment: .qualification/results/${{ matrix.id }}
+          environment-prefix: julia-
       - uses: actions/upload-artifact@v7
         if: always()
         with:

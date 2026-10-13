@@ -13,7 +13,16 @@ HTML. Rendering does not repeat the workload.
 
 ## Install the renderer
 
-Use a separate plotting environment. This site's renderer is
+PerfCheckerMakie **1.0.1** is registered in General and installs by name in a
+separate plotting environment:
+
+```julia
+import Pkg
+Pkg.activate(joinpath(homedir(), ".julia", "environments", "perfchecker-plots"))
+Pkg.add(["PerfChecker", "PerfCheckerMakie", "WGLMakie"])
+```
+
+The newer interactive features on this page use this site's renderer,
 **PerfCheckerMakie 1.0.4**, independently of **Core 1.1.0**. Version 1.0.4 is
 not registered in General; select this documentation's exact renderer source:
 
@@ -26,6 +35,8 @@ Pkg.add(Pkg.PackageSpec(
     subdir = "packages/PerfCheckerMakie", rev = "06b2b4d9b54c6c1c5c84ba346ff2317f896a20d9"))
 Pkg.add("WGLMakie")
 ```
+
+Published Core has a [known ARM import limitation](../guide/overview.md#ARM-installations).
 
 ```@raw html
 <a id="Open-a-saved-bundle"></a>
