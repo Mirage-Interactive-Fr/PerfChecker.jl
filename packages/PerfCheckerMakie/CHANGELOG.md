@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.4
+
+- Let normalized saved-evidence plots label their target axis and selectors
+  explicitly, including implementations and source revisions. Existing package
+  version labels and all numeric values retain their previous behavior.
+
 ## 1.0.3
 
 - Keep the exact flame-frame tooltip visible while its frame retains keyboard

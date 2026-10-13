@@ -165,7 +165,9 @@ function _offline_point_controls(session, figure, source_plot)
         style = "width:7rem")
     highlight = scatter!(axis, [first(positions)];
         color = PerfCheckerMakie._PLOT_PALETTE[2], markersize = 14,
-        strokecolor = :white, strokewidth = 1.5, inspectable = true, depth_shift = -0.002)
+        strokecolor = :white, strokewidth = 1.5, inspectable = true, depth_shift = -0.002,
+        visible = !(plot.kind in (:allocation_lines, :allocation_files,
+            :allocation_heatmap, :allocation_pie)))
     readout = Bonito.DOM.output("Point 1: $(first(labels))";
         id = "point-readout", var"aria-live" = "polite")
     Bonito.evaljs(session,
@@ -265,6 +267,11 @@ directory where Bonito writes assets) and `html_directory` (the directory where
 the returned HTML will be saved). Links are relative to `html_directory`; deploy
 or move the HTML and asset directories together, preserving their relative layout.
 This function returns HTML without writing an HTML file or creating its directory.
+For normalized models, `plot.options["xlabel"]` labels the target axis (default
+`"Package version"`) and `plot.options["target_label"]` labels selectors and the
+recorded-target table (default `"version"`). For example, set these to
+`"Implementation"` and `"implementation"` for measured implementations; target
+identities remain in the model's `version` field and numeric values are unchanged.
 Shared-asset exports bypass the standalone HTML cache. Normalized plots, flame
 graphs and observation series already use compact standalone HTML and do not
 write shared assets. Observation series retain their explicit axes, units and
