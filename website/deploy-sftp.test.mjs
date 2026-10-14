@@ -3,20 +3,26 @@ import assert from 'node:assert/strict';
 import { mkdtemp, mkdir, writeFile, readFile, rm, symlink } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join, posix } from 'node:path';
-import { createHmac } from 'node:crypto';
+import { createHash, createHmac } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 import ssh2 from 'ssh2';
 const { Server, utils } = ssh2;
 import { hostVerifier, validateRoot, readExport, publishDocumentation, connectSftp,
   deploymentConfiguration, documentationSourceConfiguration, validateDocumentationExports,
   validateStableDocumentationSource, fetchStableDocumentationCompanions, validateDocumentationRenderer,
+  recovery111, recoveryContext, validateRecoveryOrigin, recoveryOptions, recoveryDownloadUrl,
+  writeVerifiedRecoveryArchive, inspectRecoveryDestination, reclaimRecoveryLock, validateRecoveryPlanArtifact,
   failureClass } from './deploy-sftp.mjs';
 const revision = 'a'.repeat(40), nextRevision = 'b'.repeat(40);
 class MemorySftp {
-  constructor() { this.files = new Map(); this.dirs = new Map([['/www', 0o755]]); this.operations = []; this.fail = null; }
+  constructor() {
+    this.files = new Map(); this.dirs = new Map([['/www', 0o755]]); this.operations = []; this.fail = null;
+    this.metadata = new Map(); this.links = new Set(); this.removed = [];
+  }
   async stat(path) {
     if (!this.files.has(path) && !this.dirs.has(path)) return null;
-    return { isFile: () => this.files.has(path), isDirectory: () => this.dirs.has(path), isSymbolicLink: () => false };
+    return { ...this.metadata.get(path), isFile: () => this.files.has(path), isDirectory: () => this.dirs.has(path),
+      isSymbolicLink: () => this.links.has(path) };
   }
   async read(path) { return this.files.get(path)?.bytes ?? null; }
   async mkdir(path) { if (this.dirs.has(path)) throw new Error('exists'); this.dirs.set(path, 0o755); }
@@ -28,7 +34,14 @@ class MemorySftp {
     this.operations.push(to); this.files.set(to, this.files.get(from)); this.files.delete(from);
   }
   async unlink(path) { this.files.delete(path); }
-  async rmdir(path) { this.dirs.delete(path); }
+  async readdir(path) {
+    return [...new Set([...this.files.keys(), ...this.dirs.keys()].filter(item => posix.dirname(item) === path))]
+      .map(item => ({ filename: posix.basename(item) }));
+  }
+  async rmdir(path) {
+    if ((await this.readdir(path)).length) throw new Error('not empty');
+    this.removed.push(path); this.dirs.delete(path);
+  }
 }
 async function exportsFor(t, version = '1.0.0', sha = revision) {
   const root = await mkdtemp(join(tmpdir(), 'perfchecker-sftp-test-'));
@@ -56,6 +69,190 @@ const protectedFiles = sftp => new Map([...sftp.files].filter(([path]) => path.s
   path.startsWith('/www/dev/') || ['/www/.perfchecker-releases.json', '/www/.perfchecker-promotion.json',
     '/www/.perfchecker-stable.json', '/www/versions.js'].includes(path))
   .map(([path, file]) => [path, Buffer.from(file.bytes)]));
+const recoveryEnv = () => ({ GITHUB_ACTIONS: 'true', GITHUB_EVENT_NAME: 'workflow_dispatch', GITHUB_REF: 'refs/heads/main',
+  GITHUB_REPOSITORY: recovery111.repository, GITHUB_SHA: nextRevision, GITHUB_RUN_ID: '90000000001', GITHUB_RUN_ATTEMPT: '1',
+  PERFCHECKER_DOCS_RECOVERY: 'recover-1.1.1' });
+const recoveryOrigin = () => ({
+  recoveryRun: { id: 90000000001, event: 'workflow_dispatch', head_branch: 'main', head_sha: nextRevision,
+    path: '.github/workflows/Documentation.yml', run_attempt: 1, status: 'in_progress' },
+  run: { id: recovery111.run, head_sha: recovery111.revision, head_branch: recovery111.version, event: 'push',
+    path: '.github/workflows/Documentation.yml', run_attempt: 1, status: 'completed', conclusion: 'cancelled' },
+  producer: { id: recovery111.producerJob, run_id: recovery111.run, head_sha: recovery111.revision, run_attempt: 1, status: 'completed', conclusion: 'success' },
+  publisher: { id: recovery111.publisherJob, run_id: recovery111.run, head_sha: recovery111.revision, run_attempt: 1, status: 'completed', conclusion: 'cancelled',
+    started_at: recovery111.publisherStarted, completed_at: recovery111.publisherCompleted },
+  artifact: { id: recovery111.artifact, name: recovery111.name, expired: false, size_in_bytes: recovery111.bytes,
+    digest: `sha256:${recovery111.sha256}`, workflow_run: { id: recovery111.run, head_sha: recovery111.revision } },
+  commit: { sha: recovery111.revision, commit: { tree: { sha: recovery111.tree } } },
+  tag: { sha: recovery111.revision, commit: { tree: { sha: recovery111.tree } } },
+  annotations: [{ annotation_level: 'failure', message: 'The job has exceeded the maximum execution time of 2h0m0s' }], publishers: []
+});
+test('artifact-only recovery retains the actual dispatch identity and refuses arbitrary sources or attempts', () => {
+  const env = recoveryEnv(), context = recoveryContext(env);
+  assert.deepEqual(context, { workflowRevision: nextRevision, recoveryRun: 90000000001 });
+  for (const change of [{ GITHUB_EVENT_NAME: 'push' }, { GITHUB_REF: 'refs/tags/v1.1.1' }, { GITHUB_ACTIONS: 'false' },
+    { GITHUB_REPOSITORY: 'other/repository' }, { GITHUB_RUN_ID: String(recovery111.run) }, { GITHUB_RUN_ATTEMPT: '2' },
+    { GITHUB_SHA: 'main' }, { PERFCHECKER_DOCS_RECOVERY: 'recover-any' }, { PERFCHECKER_DOCS_SOURCE_VERSION: 'v1.1.1' },
+    { PERFCHECKER_DOCS_SOURCE_REVISION: recovery111.revision }, { PERFCHECKER_DOCS_STABLE_REFRESH: 'true' }])
+    assert.throws(() => recoveryContext({ ...env, ...change }));
+  const identity = validateRecoveryOrigin(recoveryOrigin(), context);
+  assert.equal(identity.sourceRevision, recovery111.revision); assert.equal(identity.workflowRevision, nextRevision);
+  const changes = [data => data.run.head_sha = revision, data => data.run.path = '.github/workflows/Other.yml',
+    data => data.recoveryRun.head_sha = recovery111.revision, data => data.recoveryRun.event = 'push',
+    data => data.recoveryRun.head_branch = 'other', data => data.recoveryRun.run_attempt = 2,
+    data => data.run.conclusion = 'success', data => data.run.run_attempt = 2, data => data.producer.conclusion = 'failure',
+    data => data.producer.head_sha = revision, data => data.publisher.head_sha = revision,
+    data => data.publisher.status = 'in_progress', data => data.publisher.completed_at = '2026-10-14T10:00:00Z',
+    data => data.artifact.expired = true, data => data.artifact.id++, data => data.artifact.size_in_bytes--,
+    data => data.artifact.digest = `sha256:${'a'.repeat(64)}`, data => data.artifact.workflow_run.head_sha = revision,
+    data => data.tag.commit.tree.sha = revision, data => data.commit.sha = revision, data => data.annotations = [],
+    data => data.publishers.push({ run_id: 123, name: 'Publish canonical documentation through SFTP', status: 'in_progress' }),
+    data => data.publishers.push({ run_id: 123, name: 'Recover the retained v1.1.1 documentation exports', status: 'in_progress' })];
+  for (const change of changes) { const data = recoveryOrigin(); change(data); assert.throws(() => validateRecoveryOrigin(data, context)); }
+});
+test('recovery configuration validates real main credentials without impersonating the tag event', () => {
+  const key = Buffer.alloc(32, 1).toString('base64');
+  const env = { ...recoveryEnv(), GITHUB_RUN_NUMBER: '100', PERFCHECKER_DOCS_SFTP_DEPLOY: 'true',
+    PERFCHECKER_DOCS_SFTP_HOST: 'fixture.invalid', PERFCHECKER_DOCS_SFTP_USER: 'docs', PERFCHECKER_DOCS_SFTP_ROOT: '/www',
+    PERFCHECKER_DOCS_SFTP_PASSWORD: 'fixture-only', PERFCHECKER_DOCS_SFTP_KNOWN_HOSTS: `fixture.invalid ssh-ed25519 ${key}` };
+  const before = { ...env }, options = recoveryOptions(env);
+  assert.deepEqual(env, before); assert.equal(deploymentConfiguration(env).channel, 'dev');
+  assert.equal(options.channel, 'release'); assert.equal(options.recovery, true);
+  assert.equal(options.revision, recovery111.revision); assert.equal(options.workflowRevision, nextRevision);
+  assert.equal(options.reclaimCancelledLock, false);
+  assert.equal(recoveryOptions({ ...env, PERFCHECKER_RECOVERY_RECLAIM_LOCK: 'true' }).reclaimCancelledLock, true);
+  for (const changed of [{ PERFCHECKER_DOCS_SFTP_DEPLOY: 'false' }, { PERFCHECKER_DOCS_SFTP_KNOWN_HOSTS: '' },
+    { PERFCHECKER_DOCS_SFTP_ROOT: '/www/../other' }]) assert.throws(() => recoveryOptions({ ...env, ...changed }));
+});
+test('recovery downloads hash the streamed ZIP bytes and never accept arbitrary storage URLs', async t => {
+  const root = await mkdtemp(join(tmpdir(), 'perfchecker-doc-zip-')); t.after(() => rm(root, { recursive: true, force: true }));
+  const bytes = Buffer.from('original retained artifact fixture'), expected = { bytes: bytes.length,
+    sha256: createHash('sha256').update(bytes).digest('hex') };
+  assert.deepEqual(await writeVerifiedRecoveryArchive(new Response(bytes), join(root, 'archive.zip'), expected), expected);
+  assert.deepEqual(await readFile(join(root, 'archive.zip')), bytes);
+  await assert.rejects(writeVerifiedRecoveryArchive(new Response(bytes), join(root, 'archive.zip'), expected), /EEXIST/);
+  for (const [name, receipt] of [['long', { ...expected, bytes: bytes.length - 1 }],
+    ['short', { ...expected, bytes: bytes.length + 1 }], ['digest', { ...expected, sha256: '0'.repeat(64) }]])
+    await assert.rejects(writeVerifiedRecoveryArchive(new Response(bytes), join(root, name), receipt), /byte|digest/);
+  assert.equal(recoveryDownloadUrl('https://fixture.blob.core.windows.net/artifact?sig=fixture').protocol, 'https:');
+  for (const url of ['http://fixture.blob.core.windows.net/a', 'https://github.com/a',
+    'https://fixture.blob.core.windows.net.evil.invalid/a', 'https://user@fixture.blob.core.windows.net/a',
+    'https://fixture.blob.core.windows.net:444/a']) assert.throws(() => recoveryDownloadUrl(url));
+});
+test('a saved inspection receipt must belong to the actual new recovery run', () => {
+  const context = recoveryContext(recoveryEnv()), artifact = { id: 123, name: 'documentation-recovery-111-inspection',
+    size_in_bytes: 100, expired: false, digest: `sha256:${'c'.repeat(64)}`, workflow_run: { id: context.recoveryRun, head_sha: context.workflowRevision } };
+  validateRecoveryPlanArtifact(artifact, context, 'c'.repeat(64));
+  for (const changed of [{ name: recovery111.name }, { expired: true }, { digest: null }, { id: 0 },
+    { size_in_bytes: 0 }, { workflow_run: { id: recovery111.run, head_sha: recovery111.revision } }])
+    assert.throws(() => validateRecoveryPlanArtifact({ ...artifact, ...changed }, context, 'c'.repeat(64)));
+  assert.throws(() => validateRecoveryPlanArtifact(artifact, context, 'd'.repeat(64)));
+});
+async function recoverableDestination(t) {
+  const exports = await exportsFor(t, '1.1.1', recovery111.revision), sftp = new MemorySftp();
+  await publishDocumentation(sftp, release(await exportsFor(t)));
+  sftp.fail = path => path === '/www/guide.html';
+  await assert.rejects(publishDocumentation(sftp, release(exports, recovery111.version, recovery111.revision)), /injected/);
+  sftp.fail = null;
+  const options = { ...release(exports, recovery111.version, recovery111.revision), recovery: true, reclaimCancelledLock: true };
+  options.validatedExports = await validateDocumentationExports(options);
+  return { sftp, options };
+}
+test('retained-archive recovery resumes only stable files and preserves the original archive byte for byte', async t => {
+  const { sftp, options } = await recoverableDestination(t);
+  const archive = new Map([...sftp.files].filter(([path]) => path.startsWith('/www/v1.1.1/'))
+    .map(([path, file]) => [path, Buffer.from(file.bytes)]));
+  const inspected = await inspectRecoveryDestination(sftp, options);
+  assert.equal(inspected.committed.value.version, 'v1.0.0'); assert.equal(inspected.lock, null);
+  sftp.operations = [];
+  await publishDocumentation(sftp, options);
+  assert(sftp.operations.includes('/www/guide.html'));
+  assert(!sftp.operations.some(path => path.startsWith('/www/v1.1.1/')));
+  for (const [path, bytes] of archive) assert.deepEqual(sftp.files.get(path).bytes, bytes);
+  assert.equal(JSON.parse(sftp.files.get('/www/.perfchecker-stable.json').bytes).version, recovery111.version);
+  assert.equal(JSON.parse(sftp.files.get('/www/.perfchecker-releases.json').bytes).stable, recovery111.version);
+  sftp.operations = []; await publishDocumentation(sftp, options);
+  assert(!sftp.operations.some(path => path.startsWith('/www/v1.1.1/') || path.endsWith('/guide.html')));
+  assert(sftp.operations.includes('/www/versions.js'));
+});
+test('recovery inspects only the exact cancelled empty real lock and refuses changed or ambiguous ownership', async t => {
+  const { sftp, options } = await recoverableDestination(t), lock = '/www/.perfchecker-docs-lock';
+  const mtime = Date.parse(recovery111.publisherStarted) / 1000 + 60;
+  await sftp.mkdir(lock); sftp.metadata.set(lock, { mtime, mode: 0o40755, uid: 1000, gid: 1000 });
+  const before = new Map(sftp.files), inspected = await inspectRecoveryDestination(sftp, options);
+  assert.equal(inspected.lock.mtime, mtime); assert.deepEqual(sftp.files, before);
+  await assert.rejects(reclaimRecoveryLock(sftp, { ...options, reclaimCancelledLock: false }, inspected.lock), /opt-in/);
+  sftp.metadata.get(lock).mtime++;
+  await assert.rejects(reclaimRecoveryLock(sftp, options, inspected.lock), /changed/); sftp.metadata.get(lock).mtime = mtime;
+  await sftp.write(posix.join(lock, 'owner'), 'unexpected');
+  await assert.rejects(inspectRecoveryDestination(sftp, options), /nonempty/); await sftp.unlink(posix.join(lock, 'owner'));
+  sftp.links.add(lock); await assert.rejects(inspectRecoveryDestination(sftp, options), /symbolic link/); sftp.links.delete(lock);
+  for (const invalid of [undefined, mtime - 100000, Date.parse(recovery111.publisherCompleted) / 1000 + 1]) {
+    sftp.metadata.get(lock).mtime = invalid; await assert.rejects(inspectRecoveryDestination(sftp, options), /time/);
+  }
+  sftp.metadata.get(lock).mtime = mtime;
+  assert.equal(await reclaimRecoveryLock(sftp, options, inspected.lock), true); assert(!sftp.dirs.has(lock));
+  assert.equal(await reclaimRecoveryLock(sftp, options, null), false);
+  // A new owner winning the atomic mkdir is still protected by the usual lock.
+  await sftp.mkdir(lock); await assert.rejects(publishDocumentation(sftp, options), /holds the SFTP lock/);
+});
+test('recovery refuses missing or different archive markers, newer releases and stable refreshes before writing', async t => {
+  const { sftp, options } = await recoverableDestination(t);
+  const marker = '/www/v1.1.1/.perfchecker-docs.json', original = sftp.files.get(marker);
+  await sftp.unlink(marker); await assert.rejects(inspectRecoveryDestination(sftp, options), /matching completed/);
+  sftp.files.set(marker, original); sftp.links.add(marker);
+  await assert.rejects(inspectRecoveryDestination(sftp, options), /regular file/); sftp.links.delete(marker);
+  const mutations = [
+    ['/www/.perfchecker-promotion.json', { version: 'v1.1.2', revision, digest: 'a'.repeat(64) }],
+    ['/www/.perfchecker-stable.json', { version: 'v1.1.2', revision, digest: 'a'.repeat(64) }],
+    ['/www/.perfchecker-stable-refresh.json', { version: recovery111.version, revision, digest: 'a'.repeat(64), sequence: 30, status: 'pending' }],
+    [marker, { revision, digest: 'a'.repeat(64) }]
+  ];
+  for (const [path, value] of mutations) {
+    const prior = sftp.files.get(path); await sftp.write(path, JSON.stringify(value)); sftp.operations = [];
+    await assert.rejects(publishDocumentation(sftp, options)); assert.deepEqual(sftp.operations, []);
+    if (prior) sftp.files.set(path, prior); else sftp.files.delete(path);
+  }
+  await assert.rejects(publishDocumentation(sftp, { ...options, version: 'v1.1.2' }), /restricted/);
+});
+test('recovery refuses a missing remote catalogue without any SFTP writes or reconstruction', async t => {
+  const { sftp, options } = await recoverableDestination(t), catalogue = '/www/.perfchecker-releases.json';
+  await sftp.unlink(catalogue);
+  const before = new Map(sftp.files), mutations = [];
+  for (const method of ['mkdir', 'chmod', 'put', 'write', 'replace', 'unlink', 'rmdir']) {
+    const original = sftp[method].bind(sftp);
+    sftp[method] = async (...args) => { mutations.push(method); return original(...args); };
+  }
+  await assert.rejects(inspectRecoveryDestination(sftp, options), /Invalid remote publication state/);
+  assert.deepEqual(mutations, []); assert.deepEqual(sftp.files, before);
+  assert.equal(await sftp.stat(catalogue), null);
+});
+test('a failure during retained-export recovery keeps the old catalogue and can resume without archive writes', async t => {
+  const { sftp, options } = await recoverableDestination(t), catalogue = Buffer.from(sftp.files.get('/www/versions.js').bytes);
+  sftp.operations = []; sftp.fail = path => path === '/www/index.html';
+  await assert.rejects(publishDocumentation(sftp, options), /injected/);
+  assert.deepEqual(sftp.files.get('/www/versions.js').bytes, catalogue);
+  assert.equal(JSON.parse(sftp.files.get('/www/.perfchecker-stable.json').bytes).version, 'v1.0.0');
+  assert(!sftp.operations.some(path => path.startsWith('/www/v1.1.1/')));
+  sftp.fail = null; await publishDocumentation(sftp, options);
+  assert.equal(JSON.parse(sftp.files.get('/www/.perfchecker-stable.json').bytes).version, recovery111.version);
+});
+test('the recovery workflow skips producers, retains the publisher mutex and saves its receipt before applying', async () => {
+  const workflow = await readFile(new URL('../.github/workflows/Documentation.yml', import.meta.url), 'utf8');
+  assert.match(workflow, /options: \[dev, stable, recover-1\.1\.1\]/);
+  const build = workflow.split('  documentation:\n')[1].split('  sftp:\n')[0];
+  assert.match(build, /if: github\.event\.deleted != true && !\(github\.event_name == 'workflow_dispatch' && inputs\.publication == 'recover-1\.1\.1'\)/);
+  const recovery = workflow.split('  recover-111:\n')[1];
+  assert(recovery); assert.match(recovery, /timeout-minutes: 180/);
+  assert.match(recovery, /environment: documentation-sftp/); assert.match(recovery, /group: perfchecker-documentation-sftp/);
+  assert.match(recovery, /cancel-in-progress: false/); assert.match(recovery, /ref: \$\{\{ github\.sha \}\}/);
+  assert(!/julia|website\/make\.jl|GITHUB_SHA\s*:|GITHUB_EVENT_NAME\s*:|actions\/download-artifact/.test(recovery));
+  const verify = recovery.indexOf('run: node website/deploy-sftp.mjs recovery-download');
+  const inspect = recovery.indexOf('run: node website/deploy-sftp.mjs recovery-inspect');
+  const save = recovery.indexOf('name: documentation-recovery-111-inspection');
+  const apply = recovery.indexOf('run: node website/deploy-sftp.mjs recovery-apply');
+  assert(verify > 0 && inspect > verify && save > inspect && apply > save);
+  assert.match(recovery, /PERFCHECKER_RECOVERY_PLAN_ARTIFACT: \$\{\{ steps\.receipt\.outputs\.artifact-id \}\}/);
+});
 test('stable source validation accepts only documentation differences from an existing tag', async t => {
   const root = await mkdtemp(join(tmpdir(), 'perfchecker-doc-source-'));
   t.after(() => rm(root, { recursive: true, force: true }));
@@ -515,6 +712,17 @@ test('real SFTP uploads dev files with web modes and refuses unsafe replacement 
         stream.on('RMDIR', (id, name) => operation(id, async () => { await fs.rmdir(path(name)); stream.status(id, 0); }));
         stream.on('REMOVE', (id, name) => operation(id, async () => { await fs.unlink(path(name)); stream.status(id, 0); }));
         stream.on('SETSTAT', (id, name, mode) => operation(id, async () => { await fs.chmod(path(name), mode.mode); stream.status(id, 0); }));
+        stream.on('OPENDIR', (id, name) => operation(id, async () => {
+          const entries = await Promise.all((await fs.readdir(path(name))).map(async filename =>
+            ({ filename, longname: filename, attrs: attrs(await fs.lstat(join(path(name), filename))) })));
+          const buffer = Buffer.alloc(4); buffer.writeUInt32BE(++count);
+          handles.set(buffer.toString('hex'), { entries, close: async () => {} }); stream.handle(id, buffer);
+        }));
+        stream.on('READDIR', (id, buffer) => operation(id, async () => {
+          const directory = handle(buffer);
+          if (directory.entries.length) { stream.name(id, directory.entries); directory.entries = []; }
+          else stream.status(id, 1);
+        }));
         stream.on('OPEN', (id, name, flags, mode) => operation(id, async () => {
           let f = flags & 2 ? flags & 1 ? constants.O_RDWR : constants.O_WRONLY : constants.O_RDONLY;
           if (flags & 4) f |= constants.O_APPEND; if (flags & 8) f |= constants.O_CREAT;
@@ -549,6 +757,16 @@ test('real SFTP uploads dev files with web modes and refuses unsafe replacement 
   assert.equal((await fs.stat(installed)).mode & 0o777, 0o644);
   assert.equal((await fs.stat(join(remote, 'www/dev'))).mode & 0o777, 0o755);
   assert.ok(renames > 0); assert.equal(execs, 0);
+  assert((await transport.readdir('/www/dev')).some(entry => entry.filename === 'index.html'));
+  const cancellationLock = '/www/.perfchecker-docs-lock'; await transport.mkdir(cancellationLock);
+  const mtime = Date.parse(recovery111.publisherStarted) / 1000 + 60;
+  await fs.utimes(path(cancellationLock), mtime, mtime);
+  const lock = await transport.stat(cancellationLock);
+  assert.deepEqual(await transport.readdir(cancellationLock), []);
+  assert.equal(await reclaimRecoveryLock(transport, { root: '/www', channel: 'release', recovery: true,
+    version: recovery111.version, revision: recovery111.revision, reclaimCancelledLock: true },
+  { mtime: lock.mtime, mode: lock.mode, uid: lock.uid, gid: lock.gid, entries: [] }), true);
+  assert.equal(await transport.stat(cancellationLock), null);
   await assert.rejects(publishDocumentation(transport, { ...options, sequence: 2 }), /needs posix-rename/);
   assert.match(await readFile(installed, 'utf8'), /index 1.0.0 dev/);
   transport.close();
