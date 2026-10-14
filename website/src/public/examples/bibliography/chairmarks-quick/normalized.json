@@ -1,0 +1,467 @@
+{
+  "capture": {
+    "collector": "Chairmarks",
+    "collector_version": "1.3.1",
+    "correctness": "not_checked",
+    "equivalent_command": "julia --project=.controller/core run.jl chairmark Bibliography export_bibtex",
+    "evals": 1,
+    "julia_version": "1.13.1",
+    "os": "Linux",
+    "perfchecker_version": "1.1.0",
+    "performance": "not_compared",
+    "runner_sha256": "486412988a1dabff8f27df3b372af8fe72ee235ae84f7f63dd39c804a3147b75",
+    "samples_per_version": 50,
+    "schema_version": "perfchecker-chairmarks-documentation-capture/1",
+    "seconds": 0.5,
+    "snapshot_errors": [],
+    "source_revision": "2cf431eb5a84f05e0af1098b7f6e5db84d479288",
+    "state_policy": "fresh",
+    "threads": 1,
+    "worker_environment_snapshots": 1,
+    "workload": "export_bibtex"
+  },
+  "correctness": "not_checked",
+  "input_integrity_sha256": "9909e66e7dd107615039f7e63c705bcd48ea928c16a9996da6a19b19175db217",
+  "input_manifest_sha256": "077bbb6b61454a3fd7fdc2e4414d850a69f8e423f0007d44f6a682381ba3896e",
+  "os": "Linux",
+  "performance": "not_compared",
+  "plot": {
+    "data": [
+      {
+        "metric": "julia.wall.time",
+        "normalization_status": "ratio",
+        "ratio": 1,
+        "reference_value": 0.000001576,
+        "reference_version": "minimum",
+        "samples": 50,
+        "statistic": "minimum",
+        "target_kind": "dev",
+        "unit": "s",
+        "value": 0.000001576,
+        "version": "dev@0.4.0"
+      },
+      {
+        "metric": "julia.gc.fraction",
+        "normalization_status": "both_zero",
+        "ratio": 1,
+        "reference_value": 0,
+        "reference_version": "minimum",
+        "samples": 50,
+        "statistic": "minimum",
+        "target_kind": "dev",
+        "unit": "1",
+        "value": 0,
+        "version": "dev@0.4.0"
+      },
+      {
+        "metric": "julia.alloc.bytes",
+        "normalization_status": "ratio",
+        "ratio": 1,
+        "reference_value": 2976,
+        "reference_version": "minimum",
+        "samples": 50,
+        "statistic": "minimum",
+        "target_kind": "dev",
+        "unit": "By",
+        "value": 2976,
+        "version": "dev@0.4.0"
+      },
+      {
+        "metric": "julia.alloc.count",
+        "normalization_status": "ratio",
+        "ratio": 1,
+        "reference_value": 23,
+        "reference_version": "minimum",
+        "samples": 50,
+        "statistic": "minimum",
+        "target_kind": "dev",
+        "unit": "1",
+        "value": 23,
+        "version": "dev@0.4.0"
+      }
+    ],
+    "description": "minimum per version / reference (minimum) for each metric; 1 = reference, above 1 = more, below 1 = less. equal zeros = 1 (unchanged); nonzero / zero = unavailable",
+    "encoding": {
+      "color": "metric",
+      "x": "version",
+      "y": "ratio"
+    },
+    "id": "normalized-metrics-99f31cb6d615e391",
+    "kind": "normalized_metrics",
+    "options": {
+      "collector": "chairmarks-v1/fresh-state-evals1-v1",
+      "feature": "export_bibtex_chairmark",
+      "package": "Bibliography",
+      "reference_version": "minimum",
+      "statistic": "minimum",
+      "tags": [],
+      "unit": "ratio",
+      "versions": [
+        "dev@0.4.0"
+      ],
+      "workload": "export_bibtex",
+      "zero_reference_policy": "equal zeros = 1 (unchanged); nonzero / zero = unavailable"
+    },
+    "schema_version": "perfchecker-plot/1",
+    "title": "Bibliography · export_bibtex_chairmark · relative to minimum"
+  },
+  "run_id": "2f89266b-4c80-49e8-a9e0-628e6bdff22a",
+  "runtime": {
+    "language": "julia",
+    "threads": 1,
+    "version": "1.13.1"
+  },
+  "scope": "One Linux Chairmarks quick leaf,50 samples,dev@0.4.0 source575ec810; not a released-version history",
+  "sources": {
+    "BibInternal": {
+      "revision": "792d8c709169505f998f7d70bfa092551dd4089f",
+      "url": "https://github.com/JuliaBibliographies/BibInternal.jl.git"
+    },
+    "BibParser": {
+      "revision": "cf1eb4446b986a23ed444963dcdb4c6ecc2da90f",
+      "url": "https://github.com/JuliaBibliographies/BibParser.jl.git"
+    },
+    "Bibliography": {
+      "revision": "575ec810042cc791fd47a2c025a80246ccf039b5",
+      "url": "https://github.com/JuliaBibliographies/Bibliography.jl.git"
+    }
+  },
+  "sample_observations": {
+    "file": "observations.jsonl",
+    "sha256": "bbbac33aaa0b870b350b630f48e73b87427eba052f2d0f69bd79ba7ecd35e991",
+    "records": 200
+  },
+  "measurement_definitions": {
+    "file": "measurement-definitions.json",
+    "sha256": "7ddf20f48dc6effb71e5ff637c4e1604969e7827eaefcf72543a9af2768b26a1"
+  },
+  "resolved_environments": [
+    {
+      "version": "dev@0.4.0",
+      "manifest_sha256": "886c52083bc6efdf2bca6a8ec3b111fa7dc5dd1fd9a9d92225225d37d2e50169",
+      "project_sha256": "f8b6e0586fc2d9109d95367cef0a520f2d718d30b7e19803de693277de4f95d2",
+      "resolved_packages": [
+        {
+          "name": "ArgTools",
+          "uuid": "0dad84c5-d112-42e6-8d28-ef12dabb789f",
+          "version": "1.1.2"
+        },
+        {
+          "name": "Artifacts",
+          "uuid": "56f22d72-fd6d-98f1-02f0-08ddc0907c33",
+          "version": "1.11.0"
+        },
+        {
+          "name": "Base64",
+          "uuid": "2a0f44e3-6c83-55bd-87e4-b1978d98bd5f",
+          "version": "1.11.0"
+        },
+        {
+          "git-tree-sha1": "9670d3febc2b6da60a0ae57846ba74670290653f",
+          "name": "BenchmarkTools",
+          "uuid": "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf",
+          "version": "1.8.0"
+        },
+        {
+          "name": "BibInternal",
+          "uuid": "2027ae74-3657-4b95-ae00-e2f7d55c3e64",
+          "version": "0.4.0"
+        },
+        {
+          "name": "BibParser",
+          "uuid": "13533e5b-e1c2-4e57-8cef-cac5e52f6474",
+          "version": "0.3.0"
+        },
+        {
+          "name": "Bibliography",
+          "uuid": "f1be7e48-bf82-45af-a471-ae754a193061",
+          "version": "0.4.0"
+        },
+        {
+          "git-tree-sha1": "9a49491e67e7a4d6f885c43d00bb101e6e5a434b",
+          "name": "Chairmarks",
+          "uuid": "0ca39b1e-fe0b-4e98-acfc-b1656634c4de",
+          "version": "1.3.1"
+        },
+        {
+          "git-tree-sha1": "9d8a54ce4b17aa5bdce0ea5c34bc5e7c340d16ad",
+          "name": "Compat",
+          "uuid": "34da2185-b29b-5c13-b0c7-acf172513d20",
+          "version": "4.18.1"
+        },
+        {
+          "name": "CompilerSupportLibraries_jll",
+          "uuid": "e66e0078-7015-5450-92f7-15fbd957f2ae",
+          "version": "1.5.5+2"
+        },
+        {
+          "git-tree-sha1": "b0bc6d2cad1fed8b7fd59a1551a991cb3d2809e6",
+          "name": "DataStructures",
+          "uuid": "864edb3b-99cc-5e75-8d2d-829cb0a9cfe8",
+          "version": "0.19.6"
+        },
+        {
+          "name": "Dates",
+          "uuid": "ade2ca70-3891-5945-98fb-dc099432e06a",
+          "version": "1.11.0"
+        },
+        {
+          "name": "Downloads",
+          "uuid": "f43a241f-c20a-4ad4-852c-f6b1247861c6",
+          "version": "1.7.0"
+        },
+        {
+          "git-tree-sha1": "6621fef488e496356c9c9625d0562c12a6070819",
+          "name": "FileIO",
+          "uuid": "5789e2e9-d7fb-5bc7-8068-2c6fae9b9549",
+          "version": "1.20.0"
+        },
+        {
+          "name": "FileWatching",
+          "uuid": "7b1f6079-737a-58dc-b8bc-7a2ca5c1b5ee",
+          "version": "1.11.0"
+        },
+        {
+          "git-tree-sha1": "7204148362dafe5fe6a273f855b8ccbe4df8173e",
+          "name": "JLLWrappers",
+          "uuid": "692b3bcd-3c85-4b1f-b108-f13ce0eb3210",
+          "version": "1.8.0"
+        },
+        {
+          "git-tree-sha1": "4657a834b01ce00f2b94546095c4350617b9af2c",
+          "name": "JSON",
+          "uuid": "682c06a0-de6a-54ab-a142-c8b1cf79cde6",
+          "version": "1.10.0"
+        },
+        {
+          "git-tree-sha1": "d13f79c4242969874da7d00bda17d59bc7699aa7",
+          "name": "JSONSchema",
+          "uuid": "7d188eb4-7ad8-530c-ae41-71a32a6d4692",
+          "version": "1.5.0"
+        },
+        {
+          "name": "JuliaSyntaxHighlighting",
+          "uuid": "ac6e5ff7-fb65-4e79-a425-ec3bc9c03011",
+          "version": "1.12.0"
+        },
+        {
+          "name": "LibCURL",
+          "uuid": "b27032c2-a3e7-50c8-80cd-2d36dbcbfd21",
+          "version": "1.0.0"
+        },
+        {
+          "name": "LibCURL_jll",
+          "uuid": "deac9b47-8bc7-5906-a0fe-35ac56dc84c0",
+          "version": "8.18.0+1"
+        },
+        {
+          "name": "LibGit2",
+          "uuid": "76f85450-5226-5b5a-8eaa-529ad045b433",
+          "version": "1.11.0"
+        },
+        {
+          "name": "LibGit2_jll",
+          "uuid": "e37daf67-58a4-590a-8e99-b0245dd2ffc5",
+          "version": "1.9.1+0"
+        },
+        {
+          "name": "LibSSH2_jll",
+          "uuid": "29816b5a-b9ab-546f-933c-edad1886dfa8",
+          "version": "1.11.104+0"
+        },
+        {
+          "name": "Libdl",
+          "uuid": "8f399da3-3557-5675-b5ff-fb832c97cbdb",
+          "version": "1.11.0"
+        },
+        {
+          "git-tree-sha1": "be484f5c92fad0bd8acfef35fe017900b0b73809",
+          "name": "Libiconv_jll",
+          "uuid": "94ce4f54-9a6c-5748-9c1c-f9c7231a4531",
+          "version": "1.18.0+0"
+        },
+        {
+          "name": "LinearAlgebra",
+          "uuid": "37e2e46d-f89d-539d-b4ee-838fcccc9c8e",
+          "version": "1.13.0"
+        },
+        {
+          "name": "Logging",
+          "uuid": "56ddb016-857b-54e1-b83d-db4d58db5568",
+          "version": "1.11.0"
+        },
+        {
+          "name": "Markdown",
+          "uuid": "d6f4376e-aef5-505a-96c1-9c027394607a",
+          "version": "1.11.0"
+        },
+        {
+          "name": "MozillaCACerts_jll",
+          "uuid": "14a3606d-f60d-562e-9121-12d972cd8159",
+          "version": "2026.8.13"
+        },
+        {
+          "name": "NetworkOptions",
+          "uuid": "ca575930-c2e3-43a9-ace4-1e988b2c1908",
+          "version": "1.3.0"
+        },
+        {
+          "name": "OpenBLAS_jll",
+          "uuid": "4536629a-c528-5b80-bd46-f80d51c5b363",
+          "version": "0.3.30+0"
+        },
+        {
+          "name": "OpenSSL_jll",
+          "uuid": "458c3c95-2e84-50aa-8efc-19380b2a3a95",
+          "version": "3.5.6+0"
+        },
+        {
+          "git-tree-sha1": "f9b03759e9ef463718934fbed30820b39997511e",
+          "name": "OrderedCollections",
+          "uuid": "bac558e1-5e72-5ebc-8fee-abe8a469f55d",
+          "version": "2.0.2"
+        },
+        {
+          "name": "PCRE2_jll",
+          "uuid": "efcefdf7-47ab-520b-bdef-62a2eaa19f15",
+          "version": "10.46.0+0"
+        },
+        {
+          "git-tree-sha1": "663e8b48b789916221e0765393b289ca6c88f24e",
+          "name": "Parsers",
+          "uuid": "69de0a69-1ddd-5017-9359-2bf0b02dc9f0",
+          "version": "3.0.0"
+        },
+        {
+          "name": "Pkg",
+          "uuid": "44cfe95a-1eb2-52ea-b672-e2afdf69b78f",
+          "version": "1.13.0"
+        },
+        {
+          "git-tree-sha1": "edbeefc7a4889f528644251bdb5fc9ab5348bc2c",
+          "name": "PrecompileTools",
+          "uuid": "aea7be01-6a6a-4083-8856-8a6e6704d82a",
+          "version": "1.3.4"
+        },
+        {
+          "git-tree-sha1": "5005266de4bfe50e53ff44a5cb5c540b6e47a254",
+          "name": "Preferences",
+          "uuid": "21216c6a-2e73-6563-6e65-726566657250",
+          "version": "1.6.0"
+        },
+        {
+          "name": "Printf",
+          "uuid": "de0858da-6303-5e67-8744-51eddeeeb8d7",
+          "version": "1.11.0"
+        },
+        {
+          "name": "Profile",
+          "uuid": "9abbd945-dff8-562f-b5e8-e1ebf5ef1b79",
+          "version": "1.11.0"
+        },
+        {
+          "name": "Random",
+          "uuid": "9a3f8284-a2c9-5f02-9a11-845980a1fd5c",
+          "version": "1.11.0"
+        },
+        {
+          "git-tree-sha1": "62389eeff14780bfe55195b7204c0d8738436d64",
+          "name": "Requires",
+          "uuid": "ae029012-a4dd-5104-9daa-d747884805df",
+          "version": "1.3.1"
+        },
+        {
+          "name": "SHA",
+          "uuid": "ea8e919c-243c-51af-8825-aaa63cd721ce",
+          "version": "1.0.0"
+        },
+        {
+          "git-tree-sha1": "e2b53ce13a53367e96601081e33d34746b571bad",
+          "name": "Statistics",
+          "uuid": "10745b16-79ce-11e8-11f9-7d13ad32a3b2",
+          "version": "1.11.5"
+        },
+        {
+          "git-tree-sha1": "b765e46ba27ecf6b44faf70df40c57aa3a547dcb",
+          "name": "StringEncodings",
+          "uuid": "69024149-9ee7-55f6-a4c4-859efe599b68",
+          "version": "0.3.7"
+        },
+        {
+          "git-tree-sha1": "b814d5005d6a529d740ffe06f8a86396f6501138",
+          "name": "StructUtils",
+          "uuid": "ec057cc2-7a8d-4b58-b3b3-92acb9f63b42",
+          "version": "2.9.2"
+        },
+        {
+          "name": "StyledStrings",
+          "uuid": "f489334b-da3d-4c2e-b8f0-e476e12c162b",
+          "version": "1.11.0"
+        },
+        {
+          "name": "TOML",
+          "uuid": "fa267f1f-6049-4f14-aa54-33bafae1ed76",
+          "version": "1.0.3"
+        },
+        {
+          "name": "Tar",
+          "uuid": "a4e569a6-e804-4fa4-b0f3-eef7a1d5b13e",
+          "version": "1.10.0"
+        },
+        {
+          "git-tree-sha1": "a6dd904babc04670c784f81b67957a3545271610",
+          "name": "TestItems",
+          "uuid": "1c621080-faea-4a02-84b6-bbd5e436b8fe",
+          "version": "1.1.0"
+        },
+        {
+          "git-tree-sha1": "908fec9df6c5de98548ead82a468c95ccf6cd263",
+          "name": "URIs",
+          "uuid": "5c2747f8-b7ea-4ff2-ba2e-563bfd36b1d4",
+          "version": "1.7.0"
+        },
+        {
+          "name": "UUIDs",
+          "uuid": "cf7118a7-6976-5b1a-9a39-7adc72f591a4",
+          "version": "1.11.0"
+        },
+        {
+          "name": "Unicode",
+          "uuid": "4ec0a83e-493e-50e2-b9ac-8f72acf5a8f5",
+          "version": "1.11.0"
+        },
+        {
+          "git-tree-sha1": "9c685a6e94e255019e2bf9486318147cd42fe34a",
+          "name": "YAML",
+          "uuid": "ddb6d928-2868-570f-bddf-ab3f9cf99eb6",
+          "version": "0.4.17"
+        },
+        {
+          "name": "Zlib_jll",
+          "uuid": "83775a58-1f1d-513f-b197-d71354ab007a",
+          "version": "1.3.1+2"
+        },
+        {
+          "name": "Zstd_jll",
+          "uuid": "3161d3a3-bdf6-5164-811a-617609db77b4",
+          "version": "1.5.7+1"
+        },
+        {
+          "name": "libblastrampoline_jll",
+          "uuid": "8e850b90-86db-534c-a0d3-1478176c7d93",
+          "version": "5.15.0+0"
+        },
+        {
+          "name": "nghttp2_jll",
+          "uuid": "8e850ede-7688-5339-a07c-302acd2aaf8d",
+          "version": "1.67.1+0"
+        },
+        {
+          "name": "p7zip_jll",
+          "uuid": "3f19e933-33d8-53b3-aaab-bd5110c3b7a0",
+          "version": "17.8.2+0"
+        }
+      ]
+    }
+  ]
+}

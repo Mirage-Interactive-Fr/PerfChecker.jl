@@ -5,6 +5,7 @@ observations = Dict{String, Any}[]
 targets = [("1.0.$patch", patch + 1) for patch in 0:12]
 push!(targets, ("dev@6d742e35a516c7324af4ad14f58ce1780aa28728", 14))
 for (metric, unit, value) in (("julia.wall.time", "s", 1.0),
+        ("julia.gc.fraction", "1", 0.0), ("julia.alloc.count", "1", 2.0),
         ("julia.alloc.bytes", "By", 100.0)),
     (version, scale) in targets,
     sample in (1, 2, 3)
@@ -22,4 +23,8 @@ bundle = RunBundle(
     Dict{String, Any}[], observations, Dict{String, Any}[], Dict{String, Any}[])
 model = performance_plot(bundle)
 model.kind === :normalized_metrics || error("Expected a normalized model")
-write(only(ARGS), performance_plot_html(model))
+if length(ARGS) == 2
+    model.options["xlabel"] = "Implementation"
+    model.options["target_label"] = "implementation"
+end
+write(first(ARGS), performance_plot_html(model))

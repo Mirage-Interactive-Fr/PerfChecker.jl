@@ -69,9 +69,10 @@ end
 
 source_revision = strip(read(`git -C $root rev-parse HEAD`, String))
 occursin(r"^[0-9a-f]{40}$", source_revision) || error("A full source revision is required")
+local_preview = get(ENV, "PERFCHECKER_DOCS_LOCAL_PREVIEW", "false") == "true"
 # A documentation prototype may have uncommitted documentation inputs, whose hashes
 # are recorded below. Runtime source and package metadata must match this revision.
-run(`git -C $root diff --exit-code HEAD -- Project.toml src packages`)
+local_preview || run(`git -C $root diff --exit-code HEAD -- Project.toml src packages`)
 isempty(strip(read(
     `git -C $root ls-files --others --exclude-standard src packages`, String))) ||
     error("Untracked runtime/package files would make source provenance ambiguous")
@@ -156,7 +157,8 @@ sort!(method_records;
 
 include(joinpath(@__DIR__, "..", "compat.jl"))
 # Core makedocs cleans website/build; these validated exports must outlive it.
-build = joinpath(root, "website", "optional-api", "build", source_revision, slug)
+build = joinpath(root, "website", "optional-api", "build",
+    local_preview ? "local-working-tree" : source_revision, slug)
 makedocs(;
     root = @__DIR__, source = "src", build, modules = docmodules,
     pagesonly = true, checkdocs = :all, doctest = false, warnonly = false,
@@ -204,7 +206,8 @@ inputs = [@__FILE__, joinpath(@__DIR__, slug, "Project.toml"),
     [joinpath(@__DIR__, "src", slug, page * ".md")
      for page in ("public-api", "full-api")]...]
 receipt = Dict{String, Any}(
-    "schema" => "perfchecker-optional-doc-export/1", "channel" => "source",
+    "schema" => "perfchecker-optional-doc-export/1",
+    "channel" => local_preview ? "local-working-tree" : "source",
     "source_revision" => source_revision,
     "source_tree" => strip(read(
         Cmd(["git", "-C", root, "rev-parse", "HEAD^{tree}"]), String)),
@@ -224,6 +227,11 @@ receipt = Dict{String, Any}(
     "outputs" => [Dict("path" => replace(relpath(file, build), '\\' => '/'),
                       "sha256" => bytes2hex(sha256(read(file))))
                   for file in vcat(rendered_files, [inventory])])
+if local_preview
+    receipt["source_semantics"] = "Local working-tree preview; revision and tree identify the base commit, not an immutable export"
+    receipt["working_tree_diff_sha256"] = bytes2hex(sha256(read(
+        `git -C $root diff HEAD -- Project.toml src packages`)))
+end
 open(joinpath(build, "api-provenance.toml"), "w") do io
     TOML.print(io, receipt; sorted = true)
 end

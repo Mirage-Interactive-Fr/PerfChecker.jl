@@ -18,6 +18,7 @@ import PackageGallery from './PackageGallery.vue'
 import WorkloadAtlas from './WorkloadAtlas.vue'
 import RecordedFigures from './RecordedFigures.vue'
 import DiagnosticReports from './DiagnosticReports.vue'
+import DocumentationRedirect from './DocumentationRedirect.vue'
 
 export default {
   extends: DefaultTheme,
@@ -63,5 +64,6 @@ export default {
     app.component('WorkloadAtlas', WorkloadAtlas)
     app.component('RecordedFigures', RecordedFigures)
     app.component('DiagnosticReports', DiagnosticReports)
+    app.component('DocumentationRedirect', DocumentationRedirect)
   },
 } satisfies Theme

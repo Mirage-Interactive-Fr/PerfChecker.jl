@@ -1,0 +1,135 @@
+{
+  "plot": {
+    "data": [
+      {
+        "label": "Recorded operation 1",
+        "panel": "allocated_bytes",
+        "series": "Allocation activity",
+        "style": "scatterline",
+        "value": 1597544,
+        "x": 1
+      },
+      {
+        "label": "Recorded operation 1",
+        "panel": "gc_seconds",
+        "series": "Garbage-collection time",
+        "style": "scatterline",
+        "value": 0.0,
+        "x": 1
+      },
+      {
+        "label": "Recorded operation 2",
+        "panel": "allocated_bytes",
+        "series": "Allocation activity",
+        "style": "scatterline",
+        "value": 1597512,
+        "x": 2
+      },
+      {
+        "label": "Recorded operation 2",
+        "panel": "gc_seconds",
+        "series": "Garbage-collection time",
+        "style": "scatterline",
+        "value": 0.0,
+        "x": 2
+      },
+      {
+        "label": "Recorded operation 3",
+        "panel": "allocated_bytes",
+        "series": "Allocation activity",
+        "style": "scatterline",
+        "value": 1597512,
+        "x": 3
+      },
+      {
+        "label": "Recorded operation 3",
+        "panel": "gc_seconds",
+        "series": "Garbage-collection time",
+        "style": "scatterline",
+        "value": 0.0,
+        "x": 3
+      },
+      {
+        "label": "Recorded operation 4",
+        "panel": "allocated_bytes",
+        "series": "Allocation activity",
+        "style": "scatterline",
+        "value": 1597496,
+        "x": 4
+      },
+      {
+        "label": "Recorded operation 4",
+        "panel": "gc_seconds",
+        "series": "Garbage-collection time",
+        "style": "scatterline",
+        "value": 0.0,
+        "x": 4
+      },
+      {
+        "label": "Recorded operation 5",
+        "panel": "allocated_bytes",
+        "series": "Allocation activity",
+        "style": "scatterline",
+        "value": 1597432,
+        "x": 5
+      },
+      {
+        "label": "Recorded operation 5",
+        "panel": "gc_seconds",
+        "series": "Garbage-collection time",
+        "style": "scatterline",
+        "value": 0.0,
+        "x": 5
+      }
+    ],
+    "description": "",
+    "encoding": {
+      "color": "series",
+      "panel": "panel",
+      "x": "x",
+      "y": "value"
+    },
+    "id": "gc",
+    "kind": "observation_series",
+    "options": {
+      "collector_label": "Julia gc diagnostic",
+      "metadata": {
+        "correctness": "passed",
+        "runtime": {
+          "language": "julia",
+          "threads": 1,
+          "version": "1.13.0"
+        },
+        "source_sha256": {
+          "diagnosis.json": "ec446ba99269c49df0e6e83fa988779bb1daa8e1597947eb62784654459ff7b2"
+        },
+        "tool_version": null
+      },
+      "panels": [
+        {
+          "id": "allocated_bytes",
+          "title": "Allocation activity",
+          "unit": "By",
+          "xkind": "numeric",
+          "xlabel": "Diagnostic operation",
+          "xunit": "",
+          "ylabel": "Allocation activity",
+          "yscale": "linear"
+        },
+        {
+          "id": "gc_seconds",
+          "title": "Garbage-collection time",
+          "unit": "s",
+          "xkind": "numeric",
+          "xlabel": "Diagnostic operation",
+          "xunit": "",
+          "ylabel": "Garbage-collection time",
+          "yscale": "linear"
+        }
+      ],
+      "scope": "warmed operation and synchronization; fresh state; preparation, verification and cleanup excluded"
+    },
+    "schema_version": "perfchecker-plot/1",
+    "title": "Recorded gc observations"
+  }
+}

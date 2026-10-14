@@ -13,7 +13,48 @@
       "label": "BenchmarkTools and Chairmarks",
       "svg": "avltree.svg",
       "terminal": "avltree.txt",
-      "title": "AVLTree"
+      "title": "AVLTree",
+      "normalized_views": [
+        {
+          "collector": "BenchmarkTools",
+          "html": "avltree-avltree_build-benchmarktools.html",
+          "id": "avltree-avltree_build-benchmarktools",
+          "json": "avltree.json",
+          "kind": "normalized_metrics",
+          "operation": "AVLTree_build",
+          "plot": "avltree-avltree_build-benchmarktools.plot.json"
+        },
+        {
+          "collector": "Chairmarks",
+          "html": "avltree-avltree_build-chairmarks.html",
+          "id": "avltree-avltree_build-chairmarks",
+          "json": "avltree.json",
+          "kind": "normalized_metrics",
+          "operation": "AVLTree_build",
+          "plot": "avltree-avltree_build-chairmarks.plot.json"
+        },
+        {
+          "collector": "BenchmarkTools",
+          "html": "avltree-avltree_lookup-benchmarktools.html",
+          "id": "avltree-avltree_lookup-benchmarktools",
+          "json": "avltree.json",
+          "kind": "normalized_metrics",
+          "operation": "AVLTree_lookup",
+          "plot": "avltree-avltree_lookup-benchmarktools.plot.json"
+        },
+        {
+          "collector": "Chairmarks",
+          "html": "avltree-avltree_lookup-chairmarks.html",
+          "id": "avltree-avltree_lookup-chairmarks",
+          "json": "avltree.json",
+          "kind": "normalized_metrics",
+          "operation": "AVLTree_lookup",
+          "plot": "avltree-avltree_lookup-chairmarks.plot.json"
+        }
+      ],
+      "kind": "normalized_metrics",
+      "html": "avltree-avltree_build-benchmarktools.html",
+      "plot": "avltree-avltree_build-benchmarktools.plot.json"
     },
     {
       "id": "accumulator",
@@ -21,7 +62,48 @@
       "label": "BenchmarkTools and Chairmarks",
       "svg": "accumulator.svg",
       "terminal": "accumulator.txt",
-      "title": "Accumulator"
+      "title": "Accumulator",
+      "normalized_views": [
+        {
+          "collector": "BenchmarkTools",
+          "html": "accumulator-accumulator_build-benchmarktools.html",
+          "id": "accumulator-accumulator_build-benchmarktools",
+          "json": "accumulator.json",
+          "kind": "normalized_metrics",
+          "operation": "Accumulator_build",
+          "plot": "accumulator-accumulator_build-benchmarktools.plot.json"
+        },
+        {
+          "collector": "Chairmarks",
+          "html": "accumulator-accumulator_build-chairmarks.html",
+          "id": "accumulator-accumulator_build-chairmarks",
+          "json": "accumulator.json",
+          "kind": "normalized_metrics",
+          "operation": "Accumulator_build",
+          "plot": "accumulator-accumulator_build-chairmarks.plot.json"
+        },
+        {
+          "collector": "BenchmarkTools",
+          "html": "accumulator-accumulator_traverse-benchmarktools.html",
+          "id": "accumulator-accumulator_traverse-benchmarktools",
+          "json": "accumulator.json",
+          "kind": "normalized_metrics",
+          "operation": "Accumulator_traverse",
+          "plot": "accumulator-accumulator_traverse-benchmarktools.plot.json"
+        },
+        {
+          "collector": "Chairmarks",
+          "html": "accumulator-accumulator_traverse-chairmarks.html",
+          "id": "accumulator-accumulator_traverse-chairmarks",
+          "json": "accumulator.json",
+          "kind": "normalized_metrics",
+          "operation": "Accumulator_traverse",
+          "plot": "accumulator-accumulator_traverse-chairmarks.plot.json"
+        }
+      ],
+      "kind": "normalized_metrics",
+      "html": "accumulator-accumulator_build-benchmarktools.html",
+      "plot": "accumulator-accumulator_build-benchmarktools.plot.json"
     },
     {
       "id": "binarymaxheap",
@@ -29,7 +111,48 @@
       "label": "BenchmarkTools and Chairmarks",
       "svg": "binarymaxheap.svg",
       "terminal": "binarymaxheap.txt",
-      "title": "BinaryMaxHeap"
+      "title": "BinaryMaxHeap",
+      "normalized_views": [
+        {
+          "collector": "BenchmarkTools",
+          "html": "binarymaxheap-binarymaxheap_build-benchmarktools.html",
+          "id": "binarymaxheap-binarymaxheap_build-benchmarktools",
+          "json": "binarymaxheap.json",
+          "kind": "normalized_metrics",
+          "operation": "BinaryMaxHeap_build",
+          "plot": "binarymaxheap-binarymaxheap_build-benchmarktools.plot.json"
+        },
+        {
+          "collector": "Chairmarks",
+          "html": "binarymaxheap-binarymaxheap_build-chairmarks.html",
+          "id": "binarymaxheap-binarymaxheap_build-chairmarks",
+          "json": "binarymaxheap.json",
+          "kind": "normalized_metrics",
+          "operation": "BinaryMaxHeap_build",
+          "plot": "binarymaxheap-binarymaxheap_build-chairmarks.plot.json"
+        },
+        {
+          "collector": "BenchmarkTools",
+          "html": "binarymaxheap-binarymaxheap_drain-benchmarktools.html",
+          "id": "binarymaxheap-binarymaxheap_drain-benchmarktools",
+          "json": "binarymaxheap.json",
+          "kind": "normalized_metrics",
+          "operation": "BinaryMaxHeap_drain",
+          "plot": "binarymaxheap-binarymaxheap_drain-benchmarktools.plot.json"
+        },
+        {
+          "collector": "Chairmarks",
+          "html": "binarymaxheap-binarymaxheap_drain-chairmarks.html",
+          "id": "binarymaxheap-binarymaxheap_drain-chairmarks",
+          "json": "binarymaxheap.json",
+          "kind": "normalized_metrics",
+          "operation": "BinaryMaxHeap_drain",
+          "plot": "binarymaxheap-binarymaxheap_drain-chairmarks.plot.json"
+        }
+      ],
+      "kind": "normalized_metrics",
+      "html": "binarymaxheap-binarymaxheap_build-benchmarktools.html",
+      "plot": "binarymaxheap-binarymaxheap_build-benchmarktools.plot.json"
     },
     {
       "id": "binaryminheap",
@@ -37,7 +160,48 @@
       "label": "BenchmarkTools and Chairmarks",
       "svg": "binaryminheap.svg",
       "terminal": "binaryminheap.txt",
-      "title": "BinaryMinHeap"
+      "title": "BinaryMinHeap",
+      "normalized_views": [
+        {
+          "collector": "BenchmarkTools",
+          "html": "binaryminheap-binaryminheap_build-benchmarktools.html",
+          "id": "binaryminheap-binaryminheap_build-benchmarktools",
+          "json": "binaryminheap.json",
+          "kind": "normalized_metrics",
+          "operation": "BinaryMinHeap_build",
+          "plot": "binaryminheap-binaryminheap_build-benchmarktools.plot.json"
+        },
+        {
+          "collector": "Chairmarks",
+          "html": "binaryminheap-binaryminheap_build-chairmarks.html",
+          "id": "binaryminheap-binaryminheap_build-chairmarks",
+          "json": "binaryminheap.json",
+          "kind": "normalized_metrics",
+          "operation": "BinaryMinHeap_build",
+          "plot": "binaryminheap-binaryminheap_build-chairmarks.plot.json"
+        },
+        {
+          "collector": "BenchmarkTools",
+          "html": "binaryminheap-binaryminheap_drain-benchmarktools.html",
+          "id": "binaryminheap-binaryminheap_drain-benchmarktools",
+          "json": "binaryminheap.json",
+          "kind": "normalized_metrics",
+          "operation": "BinaryMinHeap_drain",
+          "plot": "binaryminheap-binaryminheap_drain-benchmarktools.plot.json"
+        },
+        {
+          "collector": "Chairmarks",
+          "html": "binaryminheap-binaryminheap_drain-chairmarks.html",
+          "id": "binaryminheap-binaryminheap_drain-chairmarks",
+          "json": "binaryminheap.json",
+          "kind": "normalized_metrics",
+          "operation": "BinaryMinHeap_drain",
+          "plot": "binaryminheap-binaryminheap_drain-chairmarks.plot.json"
+        }
+      ],
+      "kind": "normalized_metrics",
+      "html": "binaryminheap-binaryminheap_build-benchmarktools.html",
+      "plot": "binaryminheap-binaryminheap_build-benchmarktools.plot.json"
     },
     {
       "id": "binaryminmaxheap",
@@ -45,7 +209,48 @@
       "label": "BenchmarkTools and Chairmarks",
       "svg": "binaryminmaxheap.svg",
       "terminal": "binaryminmaxheap.txt",
-      "title": "BinaryMinMaxHeap"
+      "title": "BinaryMinMaxHeap",
+      "normalized_views": [
+        {
+          "collector": "BenchmarkTools",
+          "html": "binaryminmaxheap-binaryminmaxheap_build-benchmarktools.html",
+          "id": "binaryminmaxheap-binaryminmaxheap_build-benchmarktools",
+          "json": "binaryminmaxheap.json",
+          "kind": "normalized_metrics",
+          "operation": "BinaryMinMaxHeap_build",
+          "plot": "binaryminmaxheap-binaryminmaxheap_build-benchmarktools.plot.json"
+        },
+        {
+          "collector": "Chairmarks",
+          "html": "binaryminmaxheap-binaryminmaxheap_build-chairmarks.html",
+          "id": "binaryminmaxheap-binaryminmaxheap_build-chairmarks",
+          "json": "binaryminmaxheap.json",
+          "kind": "normalized_metrics",
+          "operation": "BinaryMinMaxHeap_build",
+          "plot": "binaryminmaxheap-binaryminmaxheap_build-chairmarks.plot.json"
+        },
+        {
+          "collector": "BenchmarkTools",
+          "html": "binaryminmaxheap-binaryminmaxheap_drain-benchmarktools.html",
+          "id": "binaryminmaxheap-binaryminmaxheap_drain-benchmarktools",
+          "json": "binaryminmaxheap.json",
+          "kind": "normalized_metrics",
+          "operation": "BinaryMinMaxHeap_drain",
+          "plot": "binaryminmaxheap-binaryminmaxheap_drain-benchmarktools.plot.json"
+        },
+        {
+          "collector": "Chairmarks",
+          "html": "binaryminmaxheap-binaryminmaxheap_drain-chairmarks.html",
+          "id": "binaryminmaxheap-binaryminmaxheap_drain-chairmarks",
+          "json": "binaryminmaxheap.json",
+          "kind": "normalized_metrics",
+          "operation": "BinaryMinMaxHeap_drain",
+          "plot": "binaryminmaxheap-binaryminmaxheap_drain-chairmarks.plot.json"
+        }
+      ],
+      "kind": "normalized_metrics",
+      "html": "binaryminmaxheap-binaryminmaxheap_build-benchmarktools.html",
+      "plot": "binaryminmaxheap-binaryminmaxheap_build-benchmarktools.plot.json"
     },
     {
       "id": "circularbuffer",
@@ -53,7 +258,48 @@
       "label": "BenchmarkTools and Chairmarks",
       "svg": "circularbuffer.svg",
       "terminal": "circularbuffer.txt",
-      "title": "CircularBuffer"
+      "title": "CircularBuffer",
+      "normalized_views": [
+        {
+          "collector": "BenchmarkTools",
+          "html": "circularbuffer-circularbuffer_build-benchmarktools.html",
+          "id": "circularbuffer-circularbuffer_build-benchmarktools",
+          "json": "circularbuffer.json",
+          "kind": "normalized_metrics",
+          "operation": "CircularBuffer_build",
+          "plot": "circularbuffer-circularbuffer_build-benchmarktools.plot.json"
+        },
+        {
+          "collector": "Chairmarks",
+          "html": "circularbuffer-circularbuffer_build-chairmarks.html",
+          "id": "circularbuffer-circularbuffer_build-chairmarks",
+          "json": "circularbuffer.json",
+          "kind": "normalized_metrics",
+          "operation": "CircularBuffer_build",
+          "plot": "circularbuffer-circularbuffer_build-chairmarks.plot.json"
+        },
+        {
+          "collector": "BenchmarkTools",
+          "html": "circularbuffer-circularbuffer_drain-benchmarktools.html",
+          "id": "circularbuffer-circularbuffer_drain-benchmarktools",
+          "json": "circularbuffer.json",
+          "kind": "normalized_metrics",
+          "operation": "CircularBuffer_drain",
+          "plot": "circularbuffer-circularbuffer_drain-benchmarktools.plot.json"
+        },
+        {
+          "collector": "Chairmarks",
+          "html": "circularbuffer-circularbuffer_drain-chairmarks.html",
+          "id": "circularbuffer-circularbuffer_drain-chairmarks",
+          "json": "circularbuffer.json",
+          "kind": "normalized_metrics",
+          "operation": "CircularBuffer_drain",
+          "plot": "circularbuffer-circularbuffer_drain-chairmarks.plot.json"
+        }
+      ],
+      "kind": "normalized_metrics",
+      "html": "circularbuffer-circularbuffer_build-benchmarktools.html",
+      "plot": "circularbuffer-circularbuffer_build-benchmarktools.plot.json"
     },
     {
       "id": "circulardeque",
@@ -61,7 +307,48 @@
       "label": "BenchmarkTools and Chairmarks",
       "svg": "circulardeque.svg",
       "terminal": "circulardeque.txt",
-      "title": "CircularDeque"
+      "title": "CircularDeque",
+      "normalized_views": [
+        {
+          "collector": "BenchmarkTools",
+          "html": "circulardeque-circulardeque_build-benchmarktools.html",
+          "id": "circulardeque-circulardeque_build-benchmarktools",
+          "json": "circulardeque.json",
+          "kind": "normalized_metrics",
+          "operation": "CircularDeque_build",
+          "plot": "circulardeque-circulardeque_build-benchmarktools.plot.json"
+        },
+        {
+          "collector": "Chairmarks",
+          "html": "circulardeque-circulardeque_build-chairmarks.html",
+          "id": "circulardeque-circulardeque_build-chairmarks",
+          "json": "circulardeque.json",
+          "kind": "normalized_metrics",
+          "operation": "CircularDeque_build",
+          "plot": "circulardeque-circulardeque_build-chairmarks.plot.json"
+        },
+        {
+          "collector": "BenchmarkTools",
+          "html": "circulardeque-circulardeque_drain-benchmarktools.html",
+          "id": "circulardeque-circulardeque_drain-benchmarktools",
+          "json": "circulardeque.json",
+          "kind": "normalized_metrics",
+          "operation": "CircularDeque_drain",
+          "plot": "circulardeque-circulardeque_drain-benchmarktools.plot.json"
+        },
+        {
+          "collector": "Chairmarks",
+          "html": "circulardeque-circulardeque_drain-chairmarks.html",
+          "id": "circulardeque-circulardeque_drain-chairmarks",
+          "json": "circulardeque.json",
+          "kind": "normalized_metrics",
+          "operation": "CircularDeque_drain",
+          "plot": "circulardeque-circulardeque_drain-chairmarks.plot.json"
+        }
+      ],
+      "kind": "normalized_metrics",
+      "html": "circulardeque-circulardeque_build-benchmarktools.html",
+      "plot": "circulardeque-circulardeque_build-benchmarktools.plot.json"
     },
     {
       "id": "defaultdict",
@@ -69,7 +356,48 @@
       "label": "BenchmarkTools and Chairmarks",
       "svg": "defaultdict.svg",
       "terminal": "defaultdict.txt",
-      "title": "DefaultDict"
+      "title": "DefaultDict",
+      "normalized_views": [
+        {
+          "collector": "BenchmarkTools",
+          "html": "defaultdict-defaultdict_build-benchmarktools.html",
+          "id": "defaultdict-defaultdict_build-benchmarktools",
+          "json": "defaultdict.json",
+          "kind": "normalized_metrics",
+          "operation": "DefaultDict_build",
+          "plot": "defaultdict-defaultdict_build-benchmarktools.plot.json"
+        },
+        {
+          "collector": "Chairmarks",
+          "html": "defaultdict-defaultdict_build-chairmarks.html",
+          "id": "defaultdict-defaultdict_build-chairmarks",
+          "json": "defaultdict.json",
+          "kind": "normalized_metrics",
+          "operation": "DefaultDict_build",
+          "plot": "defaultdict-defaultdict_build-chairmarks.plot.json"
+        },
+        {
+          "collector": "BenchmarkTools",
+          "html": "defaultdict-defaultdict_lookup-benchmarktools.html",
+          "id": "defaultdict-defaultdict_lookup-benchmarktools",
+          "json": "defaultdict.json",
+          "kind": "normalized_metrics",
+          "operation": "DefaultDict_lookup",
+          "plot": "defaultdict-defaultdict_lookup-benchmarktools.plot.json"
+        },
+        {
+          "collector": "Chairmarks",
+          "html": "defaultdict-defaultdict_lookup-chairmarks.html",
+          "id": "defaultdict-defaultdict_lookup-chairmarks",
+          "json": "defaultdict.json",
+          "kind": "normalized_metrics",
+          "operation": "DefaultDict_lookup",
+          "plot": "defaultdict-defaultdict_lookup-chairmarks.plot.json"
+        }
+      ],
+      "kind": "normalized_metrics",
+      "html": "defaultdict-defaultdict_build-benchmarktools.html",
+      "plot": "defaultdict-defaultdict_build-benchmarktools.plot.json"
     },
     {
       "id": "defaultordereddict",
@@ -77,7 +405,48 @@
       "label": "BenchmarkTools and Chairmarks",
       "svg": "defaultordereddict.svg",
       "terminal": "defaultordereddict.txt",
-      "title": "DefaultOrderedDict"
+      "title": "DefaultOrderedDict",
+      "normalized_views": [
+        {
+          "collector": "BenchmarkTools",
+          "html": "defaultordereddict-defaultordereddict_build-benchmarktools.html",
+          "id": "defaultordereddict-defaultordereddict_build-benchmarktools",
+          "json": "defaultordereddict.json",
+          "kind": "normalized_metrics",
+          "operation": "DefaultOrderedDict_build",
+          "plot": "defaultordereddict-defaultordereddict_build-benchmarktools.plot.json"
+        },
+        {
+          "collector": "Chairmarks",
+          "html": "defaultordereddict-defaultordereddict_build-chairmarks.html",
+          "id": "defaultordereddict-defaultordereddict_build-chairmarks",
+          "json": "defaultordereddict.json",
+          "kind": "normalized_metrics",
+          "operation": "DefaultOrderedDict_build",
+          "plot": "defaultordereddict-defaultordereddict_build-chairmarks.plot.json"
+        },
+        {
+          "collector": "BenchmarkTools",
+          "html": "defaultordereddict-defaultordereddict_lookup-benchmarktools.html",
+          "id": "defaultordereddict-defaultordereddict_lookup-benchmarktools",
+          "json": "defaultordereddict.json",
+          "kind": "normalized_metrics",
+          "operation": "DefaultOrderedDict_lookup",
+          "plot": "defaultordereddict-defaultordereddict_lookup-benchmarktools.plot.json"
+        },
+        {
+          "collector": "Chairmarks",
+          "html": "defaultordereddict-defaultordereddict_lookup-chairmarks.html",
+          "id": "defaultordereddict-defaultordereddict_lookup-chairmarks",
+          "json": "defaultordereddict.json",
+          "kind": "normalized_metrics",
+          "operation": "DefaultOrderedDict_lookup",
+          "plot": "defaultordereddict-defaultordereddict_lookup-chairmarks.plot.json"
+        }
+      ],
+      "kind": "normalized_metrics",
+      "html": "defaultordereddict-defaultordereddict_build-benchmarktools.html",
+      "plot": "defaultordereddict-defaultordereddict_build-benchmarktools.plot.json"
     },
     {
       "id": "deque",
@@ -85,7 +454,48 @@
       "label": "BenchmarkTools and Chairmarks",
       "svg": "deque.svg",
       "terminal": "deque.txt",
-      "title": "Deque"
+      "title": "Deque",
+      "normalized_views": [
+        {
+          "collector": "BenchmarkTools",
+          "html": "deque-deque_build-benchmarktools.html",
+          "id": "deque-deque_build-benchmarktools",
+          "json": "deque.json",
+          "kind": "normalized_metrics",
+          "operation": "Deque_build",
+          "plot": "deque-deque_build-benchmarktools.plot.json"
+        },
+        {
+          "collector": "Chairmarks",
+          "html": "deque-deque_build-chairmarks.html",
+          "id": "deque-deque_build-chairmarks",
+          "json": "deque.json",
+          "kind": "normalized_metrics",
+          "operation": "Deque_build",
+          "plot": "deque-deque_build-chairmarks.plot.json"
+        },
+        {
+          "collector": "BenchmarkTools",
+          "html": "deque-deque_drain-benchmarktools.html",
+          "id": "deque-deque_drain-benchmarktools",
+          "json": "deque.json",
+          "kind": "normalized_metrics",
+          "operation": "Deque_drain",
+          "plot": "deque-deque_drain-benchmarktools.plot.json"
+        },
+        {
+          "collector": "Chairmarks",
+          "html": "deque-deque_drain-chairmarks.html",
+          "id": "deque-deque_drain-chairmarks",
+          "json": "deque.json",
+          "kind": "normalized_metrics",
+          "operation": "Deque_drain",
+          "plot": "deque-deque_drain-chairmarks.plot.json"
+        }
+      ],
+      "kind": "normalized_metrics",
+      "html": "deque-deque_build-benchmarktools.html",
+      "plot": "deque-deque_build-benchmarktools.plot.json"
     },
     {
       "id": "dibitvector",
@@ -93,7 +503,48 @@
       "label": "BenchmarkTools and Chairmarks",
       "svg": "dibitvector.svg",
       "terminal": "dibitvector.txt",
-      "title": "DiBitVector"
+      "title": "DiBitVector",
+      "normalized_views": [
+        {
+          "collector": "BenchmarkTools",
+          "html": "dibitvector-dibitvector_build-benchmarktools.html",
+          "id": "dibitvector-dibitvector_build-benchmarktools",
+          "json": "dibitvector.json",
+          "kind": "normalized_metrics",
+          "operation": "DiBitVector_build",
+          "plot": "dibitvector-dibitvector_build-benchmarktools.plot.json"
+        },
+        {
+          "collector": "Chairmarks",
+          "html": "dibitvector-dibitvector_build-chairmarks.html",
+          "id": "dibitvector-dibitvector_build-chairmarks",
+          "json": "dibitvector.json",
+          "kind": "normalized_metrics",
+          "operation": "DiBitVector_build",
+          "plot": "dibitvector-dibitvector_build-chairmarks.plot.json"
+        },
+        {
+          "collector": "BenchmarkTools",
+          "html": "dibitvector-dibitvector_traverse-benchmarktools.html",
+          "id": "dibitvector-dibitvector_traverse-benchmarktools",
+          "json": "dibitvector.json",
+          "kind": "normalized_metrics",
+          "operation": "DiBitVector_traverse",
+          "plot": "dibitvector-dibitvector_traverse-benchmarktools.plot.json"
+        },
+        {
+          "collector": "Chairmarks",
+          "html": "dibitvector-dibitvector_traverse-chairmarks.html",
+          "id": "dibitvector-dibitvector_traverse-chairmarks",
+          "json": "dibitvector.json",
+          "kind": "normalized_metrics",
+          "operation": "DiBitVector_traverse",
+          "plot": "dibitvector-dibitvector_traverse-chairmarks.plot.json"
+        }
+      ],
+      "kind": "normalized_metrics",
+      "html": "dibitvector-dibitvector_build-benchmarktools.html",
+      "plot": "dibitvector-dibitvector_build-benchmarktools.plot.json"
     },
     {
       "id": "disjointset",
@@ -101,7 +552,48 @@
       "label": "BenchmarkTools and Chairmarks",
       "svg": "disjointset.svg",
       "terminal": "disjointset.txt",
-      "title": "DisjointSet"
+      "title": "DisjointSet",
+      "normalized_views": [
+        {
+          "collector": "BenchmarkTools",
+          "html": "disjointset-disjointset_build-benchmarktools.html",
+          "id": "disjointset-disjointset_build-benchmarktools",
+          "json": "disjointset.json",
+          "kind": "normalized_metrics",
+          "operation": "DisjointSet_build",
+          "plot": "disjointset-disjointset_build-benchmarktools.plot.json"
+        },
+        {
+          "collector": "Chairmarks",
+          "html": "disjointset-disjointset_build-chairmarks.html",
+          "id": "disjointset-disjointset_build-chairmarks",
+          "json": "disjointset.json",
+          "kind": "normalized_metrics",
+          "operation": "DisjointSet_build",
+          "plot": "disjointset-disjointset_build-chairmarks.plot.json"
+        },
+        {
+          "collector": "BenchmarkTools",
+          "html": "disjointset-disjointset_connectivity-benchmarktools.html",
+          "id": "disjointset-disjointset_connectivity-benchmarktools",
+          "json": "disjointset.json",
+          "kind": "normalized_metrics",
+          "operation": "DisjointSet_connectivity",
+          "plot": "disjointset-disjointset_connectivity-benchmarktools.plot.json"
+        },
+        {
+          "collector": "Chairmarks",
+          "html": "disjointset-disjointset_connectivity-chairmarks.html",
+          "id": "disjointset-disjointset_connectivity-chairmarks",
+          "json": "disjointset.json",
+          "kind": "normalized_metrics",
+          "operation": "DisjointSet_connectivity",
+          "plot": "disjointset-disjointset_connectivity-chairmarks.plot.json"
+        }
+      ],
+      "kind": "normalized_metrics",
+      "html": "disjointset-disjointset_build-benchmarktools.html",
+      "plot": "disjointset-disjointset_build-benchmarktools.plot.json"
     },
     {
       "id": "fenwicktree",
@@ -109,7 +601,48 @@
       "label": "BenchmarkTools and Chairmarks",
       "svg": "fenwicktree.svg",
       "terminal": "fenwicktree.txt",
-      "title": "FenwickTree"
+      "title": "FenwickTree",
+      "normalized_views": [
+        {
+          "collector": "BenchmarkTools",
+          "html": "fenwicktree-fenwicktree_build-benchmarktools.html",
+          "id": "fenwicktree-fenwicktree_build-benchmarktools",
+          "json": "fenwicktree.json",
+          "kind": "normalized_metrics",
+          "operation": "FenwickTree_build",
+          "plot": "fenwicktree-fenwicktree_build-benchmarktools.plot.json"
+        },
+        {
+          "collector": "Chairmarks",
+          "html": "fenwicktree-fenwicktree_build-chairmarks.html",
+          "id": "fenwicktree-fenwicktree_build-chairmarks",
+          "json": "fenwicktree.json",
+          "kind": "normalized_metrics",
+          "operation": "FenwickTree_build",
+          "plot": "fenwicktree-fenwicktree_build-chairmarks.plot.json"
+        },
+        {
+          "collector": "BenchmarkTools",
+          "html": "fenwicktree-fenwicktree_prefixsum-benchmarktools.html",
+          "id": "fenwicktree-fenwicktree_prefixsum-benchmarktools",
+          "json": "fenwicktree.json",
+          "kind": "normalized_metrics",
+          "operation": "FenwickTree_prefixsum",
+          "plot": "fenwicktree-fenwicktree_prefixsum-benchmarktools.plot.json"
+        },
+        {
+          "collector": "Chairmarks",
+          "html": "fenwicktree-fenwicktree_prefixsum-chairmarks.html",
+          "id": "fenwicktree-fenwicktree_prefixsum-chairmarks",
+          "json": "fenwicktree.json",
+          "kind": "normalized_metrics",
+          "operation": "FenwickTree_prefixsum",
+          "plot": "fenwicktree-fenwicktree_prefixsum-chairmarks.plot.json"
+        }
+      ],
+      "kind": "normalized_metrics",
+      "html": "fenwicktree-fenwicktree_build-benchmarktools.html",
+      "plot": "fenwicktree-fenwicktree_build-benchmarktools.plot.json"
     },
     {
       "id": "intdisjointset",
@@ -117,7 +650,48 @@
       "label": "BenchmarkTools and Chairmarks",
       "svg": "intdisjointset.svg",
       "terminal": "intdisjointset.txt",
-      "title": "IntDisjointSet"
+      "title": "IntDisjointSet",
+      "normalized_views": [
+        {
+          "collector": "BenchmarkTools",
+          "html": "intdisjointset-intdisjointset_build-benchmarktools.html",
+          "id": "intdisjointset-intdisjointset_build-benchmarktools",
+          "json": "intdisjointset.json",
+          "kind": "normalized_metrics",
+          "operation": "IntDisjointSet_build",
+          "plot": "intdisjointset-intdisjointset_build-benchmarktools.plot.json"
+        },
+        {
+          "collector": "Chairmarks",
+          "html": "intdisjointset-intdisjointset_build-chairmarks.html",
+          "id": "intdisjointset-intdisjointset_build-chairmarks",
+          "json": "intdisjointset.json",
+          "kind": "normalized_metrics",
+          "operation": "IntDisjointSet_build",
+          "plot": "intdisjointset-intdisjointset_build-chairmarks.plot.json"
+        },
+        {
+          "collector": "BenchmarkTools",
+          "html": "intdisjointset-intdisjointset_connectivity-benchmarktools.html",
+          "id": "intdisjointset-intdisjointset_connectivity-benchmarktools",
+          "json": "intdisjointset.json",
+          "kind": "normalized_metrics",
+          "operation": "IntDisjointSet_connectivity",
+          "plot": "intdisjointset-intdisjointset_connectivity-benchmarktools.plot.json"
+        },
+        {
+          "collector": "Chairmarks",
+          "html": "intdisjointset-intdisjointset_connectivity-chairmarks.html",
+          "id": "intdisjointset-intdisjointset_connectivity-chairmarks",
+          "json": "intdisjointset.json",
+          "kind": "normalized_metrics",
+          "operation": "IntDisjointSet_connectivity",
+          "plot": "intdisjointset-intdisjointset_connectivity-chairmarks.plot.json"
+        }
+      ],
+      "kind": "normalized_metrics",
+      "html": "intdisjointset-intdisjointset_build-benchmarktools.html",
+      "plot": "intdisjointset-intdisjointset_build-benchmarktools.plot.json"
     },
     {
       "id": "linkedlist",
@@ -125,7 +699,48 @@
       "label": "BenchmarkTools and Chairmarks",
       "svg": "linkedlist.svg",
       "terminal": "linkedlist.txt",
-      "title": "LinkedList"
+      "title": "LinkedList",
+      "normalized_views": [
+        {
+          "collector": "BenchmarkTools",
+          "html": "linkedlist-linkedlist_build-benchmarktools.html",
+          "id": "linkedlist-linkedlist_build-benchmarktools",
+          "json": "linkedlist.json",
+          "kind": "normalized_metrics",
+          "operation": "LinkedList_build",
+          "plot": "linkedlist-linkedlist_build-benchmarktools.plot.json"
+        },
+        {
+          "collector": "Chairmarks",
+          "html": "linkedlist-linkedlist_build-chairmarks.html",
+          "id": "linkedlist-linkedlist_build-chairmarks",
+          "json": "linkedlist.json",
+          "kind": "normalized_metrics",
+          "operation": "LinkedList_build",
+          "plot": "linkedlist-linkedlist_build-chairmarks.plot.json"
+        },
+        {
+          "collector": "BenchmarkTools",
+          "html": "linkedlist-linkedlist_traverse-benchmarktools.html",
+          "id": "linkedlist-linkedlist_traverse-benchmarktools",
+          "json": "linkedlist.json",
+          "kind": "normalized_metrics",
+          "operation": "LinkedList_traverse",
+          "plot": "linkedlist-linkedlist_traverse-benchmarktools.plot.json"
+        },
+        {
+          "collector": "Chairmarks",
+          "html": "linkedlist-linkedlist_traverse-chairmarks.html",
+          "id": "linkedlist-linkedlist_traverse-chairmarks",
+          "json": "linkedlist.json",
+          "kind": "normalized_metrics",
+          "operation": "LinkedList_traverse",
+          "plot": "linkedlist-linkedlist_traverse-chairmarks.plot.json"
+        }
+      ],
+      "kind": "normalized_metrics",
+      "html": "linkedlist-linkedlist_build-benchmarktools.html",
+      "plot": "linkedlist-linkedlist_build-benchmarktools.plot.json"
     },
     {
       "id": "littledict",
@@ -133,7 +748,48 @@
       "label": "BenchmarkTools and Chairmarks",
       "svg": "littledict.svg",
       "terminal": "littledict.txt",
-      "title": "LittleDict"
+      "title": "LittleDict",
+      "normalized_views": [
+        {
+          "collector": "BenchmarkTools",
+          "html": "littledict-littledict_build-benchmarktools.html",
+          "id": "littledict-littledict_build-benchmarktools",
+          "json": "littledict.json",
+          "kind": "normalized_metrics",
+          "operation": "LittleDict_build",
+          "plot": "littledict-littledict_build-benchmarktools.plot.json"
+        },
+        {
+          "collector": "Chairmarks",
+          "html": "littledict-littledict_build-chairmarks.html",
+          "id": "littledict-littledict_build-chairmarks",
+          "json": "littledict.json",
+          "kind": "normalized_metrics",
+          "operation": "LittleDict_build",
+          "plot": "littledict-littledict_build-chairmarks.plot.json"
+        },
+        {
+          "collector": "BenchmarkTools",
+          "html": "littledict-littledict_lookup-benchmarktools.html",
+          "id": "littledict-littledict_lookup-benchmarktools",
+          "json": "littledict.json",
+          "kind": "normalized_metrics",
+          "operation": "LittleDict_lookup",
+          "plot": "littledict-littledict_lookup-benchmarktools.plot.json"
+        },
+        {
+          "collector": "Chairmarks",
+          "html": "littledict-littledict_lookup-chairmarks.html",
+          "id": "littledict-littledict_lookup-chairmarks",
+          "json": "littledict.json",
+          "kind": "normalized_metrics",
+          "operation": "LittleDict_lookup",
+          "plot": "littledict-littledict_lookup-chairmarks.plot.json"
+        }
+      ],
+      "kind": "normalized_metrics",
+      "html": "littledict-littledict_build-benchmarktools.html",
+      "plot": "littledict-littledict_build-benchmarktools.plot.json"
     },
     {
       "id": "multidict",
@@ -141,7 +797,48 @@
       "label": "BenchmarkTools and Chairmarks",
       "svg": "multidict.svg",
       "terminal": "multidict.txt",
-      "title": "MultiDict"
+      "title": "MultiDict",
+      "normalized_views": [
+        {
+          "collector": "BenchmarkTools",
+          "html": "multidict-multidict_build-benchmarktools.html",
+          "id": "multidict-multidict_build-benchmarktools",
+          "json": "multidict.json",
+          "kind": "normalized_metrics",
+          "operation": "MultiDict_build",
+          "plot": "multidict-multidict_build-benchmarktools.plot.json"
+        },
+        {
+          "collector": "Chairmarks",
+          "html": "multidict-multidict_build-chairmarks.html",
+          "id": "multidict-multidict_build-chairmarks",
+          "json": "multidict.json",
+          "kind": "normalized_metrics",
+          "operation": "MultiDict_build",
+          "plot": "multidict-multidict_build-chairmarks.plot.json"
+        },
+        {
+          "collector": "BenchmarkTools",
+          "html": "multidict-multidict_traverse-benchmarktools.html",
+          "id": "multidict-multidict_traverse-benchmarktools",
+          "json": "multidict.json",
+          "kind": "normalized_metrics",
+          "operation": "MultiDict_traverse",
+          "plot": "multidict-multidict_traverse-benchmarktools.plot.json"
+        },
+        {
+          "collector": "Chairmarks",
+          "html": "multidict-multidict_traverse-chairmarks.html",
+          "id": "multidict-multidict_traverse-chairmarks",
+          "json": "multidict.json",
+          "kind": "normalized_metrics",
+          "operation": "MultiDict_traverse",
+          "plot": "multidict-multidict_traverse-chairmarks.plot.json"
+        }
+      ],
+      "kind": "normalized_metrics",
+      "html": "multidict-multidict_build-benchmarktools.html",
+      "plot": "multidict-multidict_build-benchmarktools.plot.json"
     },
     {
       "id": "mutablebinarymaxheap",
@@ -149,7 +846,48 @@
       "label": "BenchmarkTools and Chairmarks",
       "svg": "mutablebinarymaxheap.svg",
       "terminal": "mutablebinarymaxheap.txt",
-      "title": "MutableBinaryMaxHeap"
+      "title": "MutableBinaryMaxHeap",
+      "normalized_views": [
+        {
+          "collector": "BenchmarkTools",
+          "html": "mutablebinarymaxheap-mutablebinarymaxheap_build-benchmarktools.html",
+          "id": "mutablebinarymaxheap-mutablebinarymaxheap_build-benchmarktools",
+          "json": "mutablebinarymaxheap.json",
+          "kind": "normalized_metrics",
+          "operation": "MutableBinaryMaxHeap_build",
+          "plot": "mutablebinarymaxheap-mutablebinarymaxheap_build-benchmarktools.plot.json"
+        },
+        {
+          "collector": "Chairmarks",
+          "html": "mutablebinarymaxheap-mutablebinarymaxheap_build-chairmarks.html",
+          "id": "mutablebinarymaxheap-mutablebinarymaxheap_build-chairmarks",
+          "json": "mutablebinarymaxheap.json",
+          "kind": "normalized_metrics",
+          "operation": "MutableBinaryMaxHeap_build",
+          "plot": "mutablebinarymaxheap-mutablebinarymaxheap_build-chairmarks.plot.json"
+        },
+        {
+          "collector": "BenchmarkTools",
+          "html": "mutablebinarymaxheap-mutablebinarymaxheap_drain-benchmarktools.html",
+          "id": "mutablebinarymaxheap-mutablebinarymaxheap_drain-benchmarktools",
+          "json": "mutablebinarymaxheap.json",
+          "kind": "normalized_metrics",
+          "operation": "MutableBinaryMaxHeap_drain",
+          "plot": "mutablebinarymaxheap-mutablebinarymaxheap_drain-benchmarktools.plot.json"
+        },
+        {
+          "collector": "Chairmarks",
+          "html": "mutablebinarymaxheap-mutablebinarymaxheap_drain-chairmarks.html",
+          "id": "mutablebinarymaxheap-mutablebinarymaxheap_drain-chairmarks",
+          "json": "mutablebinarymaxheap.json",
+          "kind": "normalized_metrics",
+          "operation": "MutableBinaryMaxHeap_drain",
+          "plot": "mutablebinarymaxheap-mutablebinarymaxheap_drain-chairmarks.plot.json"
+        }
+      ],
+      "kind": "normalized_metrics",
+      "html": "mutablebinarymaxheap-mutablebinarymaxheap_build-benchmarktools.html",
+      "plot": "mutablebinarymaxheap-mutablebinarymaxheap_build-benchmarktools.plot.json"
     },
     {
       "id": "mutablebinaryminheap",
@@ -157,7 +895,48 @@
       "label": "BenchmarkTools and Chairmarks",
       "svg": "mutablebinaryminheap.svg",
       "terminal": "mutablebinaryminheap.txt",
-      "title": "MutableBinaryMinHeap"
+      "title": "MutableBinaryMinHeap",
+      "normalized_views": [
+        {
+          "collector": "BenchmarkTools",
+          "html": "mutablebinaryminheap-mutablebinaryminheap_build-benchmarktools.html",
+          "id": "mutablebinaryminheap-mutablebinaryminheap_build-benchmarktools",
+          "json": "mutablebinaryminheap.json",
+          "kind": "normalized_metrics",
+          "operation": "MutableBinaryMinHeap_build",
+          "plot": "mutablebinaryminheap-mutablebinaryminheap_build-benchmarktools.plot.json"
+        },
+        {
+          "collector": "Chairmarks",
+          "html": "mutablebinaryminheap-mutablebinaryminheap_build-chairmarks.html",
+          "id": "mutablebinaryminheap-mutablebinaryminheap_build-chairmarks",
+          "json": "mutablebinaryminheap.json",
+          "kind": "normalized_metrics",
+          "operation": "MutableBinaryMinHeap_build",
+          "plot": "mutablebinaryminheap-mutablebinaryminheap_build-chairmarks.plot.json"
+        },
+        {
+          "collector": "BenchmarkTools",
+          "html": "mutablebinaryminheap-mutablebinaryminheap_drain-benchmarktools.html",
+          "id": "mutablebinaryminheap-mutablebinaryminheap_drain-benchmarktools",
+          "json": "mutablebinaryminheap.json",
+          "kind": "normalized_metrics",
+          "operation": "MutableBinaryMinHeap_drain",
+          "plot": "mutablebinaryminheap-mutablebinaryminheap_drain-benchmarktools.plot.json"
+        },
+        {
+          "collector": "Chairmarks",
+          "html": "mutablebinaryminheap-mutablebinaryminheap_drain-chairmarks.html",
+          "id": "mutablebinaryminheap-mutablebinaryminheap_drain-chairmarks",
+          "json": "mutablebinaryminheap.json",
+          "kind": "normalized_metrics",
+          "operation": "MutableBinaryMinHeap_drain",
+          "plot": "mutablebinaryminheap-mutablebinaryminheap_drain-chairmarks.plot.json"
+        }
+      ],
+      "kind": "normalized_metrics",
+      "html": "mutablebinaryminheap-mutablebinaryminheap_build-benchmarktools.html",
+      "plot": "mutablebinaryminheap-mutablebinaryminheap_build-benchmarktools.plot.json"
     },
     {
       "id": "mutablelinkedlist",
@@ -165,7 +944,48 @@
       "label": "BenchmarkTools and Chairmarks",
       "svg": "mutablelinkedlist.svg",
       "terminal": "mutablelinkedlist.txt",
-      "title": "MutableLinkedList"
+      "title": "MutableLinkedList",
+      "normalized_views": [
+        {
+          "collector": "BenchmarkTools",
+          "html": "mutablelinkedlist-mutablelinkedlist_build-benchmarktools.html",
+          "id": "mutablelinkedlist-mutablelinkedlist_build-benchmarktools",
+          "json": "mutablelinkedlist.json",
+          "kind": "normalized_metrics",
+          "operation": "MutableLinkedList_build",
+          "plot": "mutablelinkedlist-mutablelinkedlist_build-benchmarktools.plot.json"
+        },
+        {
+          "collector": "Chairmarks",
+          "html": "mutablelinkedlist-mutablelinkedlist_build-chairmarks.html",
+          "id": "mutablelinkedlist-mutablelinkedlist_build-chairmarks",
+          "json": "mutablelinkedlist.json",
+          "kind": "normalized_metrics",
+          "operation": "MutableLinkedList_build",
+          "plot": "mutablelinkedlist-mutablelinkedlist_build-chairmarks.plot.json"
+        },
+        {
+          "collector": "BenchmarkTools",
+          "html": "mutablelinkedlist-mutablelinkedlist_drain-benchmarktools.html",
+          "id": "mutablelinkedlist-mutablelinkedlist_drain-benchmarktools",
+          "json": "mutablelinkedlist.json",
+          "kind": "normalized_metrics",
+          "operation": "MutableLinkedList_drain",
+          "plot": "mutablelinkedlist-mutablelinkedlist_drain-benchmarktools.plot.json"
+        },
+        {
+          "collector": "Chairmarks",
+          "html": "mutablelinkedlist-mutablelinkedlist_drain-chairmarks.html",
+          "id": "mutablelinkedlist-mutablelinkedlist_drain-chairmarks",
+          "json": "mutablelinkedlist.json",
+          "kind": "normalized_metrics",
+          "operation": "MutableLinkedList_drain",
+          "plot": "mutablelinkedlist-mutablelinkedlist_drain-chairmarks.plot.json"
+        }
+      ],
+      "kind": "normalized_metrics",
+      "html": "mutablelinkedlist-mutablelinkedlist_build-benchmarktools.html",
+      "plot": "mutablelinkedlist-mutablelinkedlist_build-benchmarktools.plot.json"
     },
     {
       "id": "ordereddict",
@@ -173,7 +993,48 @@
       "label": "BenchmarkTools and Chairmarks",
       "svg": "ordereddict.svg",
       "terminal": "ordereddict.txt",
-      "title": "OrderedDict"
+      "title": "OrderedDict",
+      "normalized_views": [
+        {
+          "collector": "BenchmarkTools",
+          "html": "ordereddict-ordereddict_build-benchmarktools.html",
+          "id": "ordereddict-ordereddict_build-benchmarktools",
+          "json": "ordereddict.json",
+          "kind": "normalized_metrics",
+          "operation": "OrderedDict_build",
+          "plot": "ordereddict-ordereddict_build-benchmarktools.plot.json"
+        },
+        {
+          "collector": "Chairmarks",
+          "html": "ordereddict-ordereddict_build-chairmarks.html",
+          "id": "ordereddict-ordereddict_build-chairmarks",
+          "json": "ordereddict.json",
+          "kind": "normalized_metrics",
+          "operation": "OrderedDict_build",
+          "plot": "ordereddict-ordereddict_build-chairmarks.plot.json"
+        },
+        {
+          "collector": "BenchmarkTools",
+          "html": "ordereddict-ordereddict_lookup-benchmarktools.html",
+          "id": "ordereddict-ordereddict_lookup-benchmarktools",
+          "json": "ordereddict.json",
+          "kind": "normalized_metrics",
+          "operation": "OrderedDict_lookup",
+          "plot": "ordereddict-ordereddict_lookup-benchmarktools.plot.json"
+        },
+        {
+          "collector": "Chairmarks",
+          "html": "ordereddict-ordereddict_lookup-chairmarks.html",
+          "id": "ordereddict-ordereddict_lookup-chairmarks",
+          "json": "ordereddict.json",
+          "kind": "normalized_metrics",
+          "operation": "OrderedDict_lookup",
+          "plot": "ordereddict-ordereddict_lookup-chairmarks.plot.json"
+        }
+      ],
+      "kind": "normalized_metrics",
+      "html": "ordereddict-ordereddict_build-benchmarktools.html",
+      "plot": "ordereddict-ordereddict_build-benchmarktools.plot.json"
     },
     {
       "id": "orderedrobindict",
@@ -181,7 +1042,48 @@
       "label": "BenchmarkTools and Chairmarks",
       "svg": "orderedrobindict.svg",
       "terminal": "orderedrobindict.txt",
-      "title": "OrderedRobinDict"
+      "title": "OrderedRobinDict",
+      "normalized_views": [
+        {
+          "collector": "BenchmarkTools",
+          "html": "orderedrobindict-orderedrobindict_build-benchmarktools.html",
+          "id": "orderedrobindict-orderedrobindict_build-benchmarktools",
+          "json": "orderedrobindict.json",
+          "kind": "normalized_metrics",
+          "operation": "OrderedRobinDict_build",
+          "plot": "orderedrobindict-orderedrobindict_build-benchmarktools.plot.json"
+        },
+        {
+          "collector": "Chairmarks",
+          "html": "orderedrobindict-orderedrobindict_build-chairmarks.html",
+          "id": "orderedrobindict-orderedrobindict_build-chairmarks",
+          "json": "orderedrobindict.json",
+          "kind": "normalized_metrics",
+          "operation": "OrderedRobinDict_build",
+          "plot": "orderedrobindict-orderedrobindict_build-chairmarks.plot.json"
+        },
+        {
+          "collector": "BenchmarkTools",
+          "html": "orderedrobindict-orderedrobindict_lookup-benchmarktools.html",
+          "id": "orderedrobindict-orderedrobindict_lookup-benchmarktools",
+          "json": "orderedrobindict.json",
+          "kind": "normalized_metrics",
+          "operation": "OrderedRobinDict_lookup",
+          "plot": "orderedrobindict-orderedrobindict_lookup-benchmarktools.plot.json"
+        },
+        {
+          "collector": "Chairmarks",
+          "html": "orderedrobindict-orderedrobindict_lookup-chairmarks.html",
+          "id": "orderedrobindict-orderedrobindict_lookup-chairmarks",
+          "json": "orderedrobindict.json",
+          "kind": "normalized_metrics",
+          "operation": "OrderedRobinDict_lookup",
+          "plot": "orderedrobindict-orderedrobindict_lookup-chairmarks.plot.json"
+        }
+      ],
+      "kind": "normalized_metrics",
+      "html": "orderedrobindict-orderedrobindict_build-benchmarktools.html",
+      "plot": "orderedrobindict-orderedrobindict_build-benchmarktools.plot.json"
     },
     {
       "id": "orderedset",
@@ -189,7 +1091,48 @@
       "label": "BenchmarkTools and Chairmarks",
       "svg": "orderedset.svg",
       "terminal": "orderedset.txt",
-      "title": "OrderedSet"
+      "title": "OrderedSet",
+      "normalized_views": [
+        {
+          "collector": "BenchmarkTools",
+          "html": "orderedset-orderedset_build-benchmarktools.html",
+          "id": "orderedset-orderedset_build-benchmarktools",
+          "json": "orderedset.json",
+          "kind": "normalized_metrics",
+          "operation": "OrderedSet_build",
+          "plot": "orderedset-orderedset_build-benchmarktools.plot.json"
+        },
+        {
+          "collector": "Chairmarks",
+          "html": "orderedset-orderedset_build-chairmarks.html",
+          "id": "orderedset-orderedset_build-chairmarks",
+          "json": "orderedset.json",
+          "kind": "normalized_metrics",
+          "operation": "OrderedSet_build",
+          "plot": "orderedset-orderedset_build-chairmarks.plot.json"
+        },
+        {
+          "collector": "BenchmarkTools",
+          "html": "orderedset-orderedset_lookup-benchmarktools.html",
+          "id": "orderedset-orderedset_lookup-benchmarktools",
+          "json": "orderedset.json",
+          "kind": "normalized_metrics",
+          "operation": "OrderedSet_lookup",
+          "plot": "orderedset-orderedset_lookup-benchmarktools.plot.json"
+        },
+        {
+          "collector": "Chairmarks",
+          "html": "orderedset-orderedset_lookup-chairmarks.html",
+          "id": "orderedset-orderedset_lookup-chairmarks",
+          "json": "orderedset.json",
+          "kind": "normalized_metrics",
+          "operation": "OrderedSet_lookup",
+          "plot": "orderedset-orderedset_lookup-chairmarks.plot.json"
+        }
+      ],
+      "kind": "normalized_metrics",
+      "html": "orderedset-orderedset_build-benchmarktools.html",
+      "plot": "orderedset-orderedset_build-benchmarktools.plot.json"
     },
     {
       "id": "priorityqueue",
@@ -197,7 +1140,48 @@
       "label": "BenchmarkTools and Chairmarks",
       "svg": "priorityqueue.svg",
       "terminal": "priorityqueue.txt",
-      "title": "PriorityQueue"
+      "title": "PriorityQueue",
+      "normalized_views": [
+        {
+          "collector": "BenchmarkTools",
+          "html": "priorityqueue-priorityqueue_build-benchmarktools.html",
+          "id": "priorityqueue-priorityqueue_build-benchmarktools",
+          "json": "priorityqueue.json",
+          "kind": "normalized_metrics",
+          "operation": "PriorityQueue_build",
+          "plot": "priorityqueue-priorityqueue_build-benchmarktools.plot.json"
+        },
+        {
+          "collector": "Chairmarks",
+          "html": "priorityqueue-priorityqueue_build-chairmarks.html",
+          "id": "priorityqueue-priorityqueue_build-chairmarks",
+          "json": "priorityqueue.json",
+          "kind": "normalized_metrics",
+          "operation": "PriorityQueue_build",
+          "plot": "priorityqueue-priorityqueue_build-chairmarks.plot.json"
+        },
+        {
+          "collector": "BenchmarkTools",
+          "html": "priorityqueue-priorityqueue_drain-benchmarktools.html",
+          "id": "priorityqueue-priorityqueue_drain-benchmarktools",
+          "json": "priorityqueue.json",
+          "kind": "normalized_metrics",
+          "operation": "PriorityQueue_drain",
+          "plot": "priorityqueue-priorityqueue_drain-benchmarktools.plot.json"
+        },
+        {
+          "collector": "Chairmarks",
+          "html": "priorityqueue-priorityqueue_drain-chairmarks.html",
+          "id": "priorityqueue-priorityqueue_drain-chairmarks",
+          "json": "priorityqueue.json",
+          "kind": "normalized_metrics",
+          "operation": "PriorityQueue_drain",
+          "plot": "priorityqueue-priorityqueue_drain-chairmarks.plot.json"
+        }
+      ],
+      "kind": "normalized_metrics",
+      "html": "priorityqueue-priorityqueue_build-benchmarktools.html",
+      "plot": "priorityqueue-priorityqueue_build-benchmarktools.plot.json"
     },
     {
       "id": "queue",
@@ -205,7 +1189,48 @@
       "label": "BenchmarkTools and Chairmarks",
       "svg": "queue.svg",
       "terminal": "queue.txt",
-      "title": "Queue"
+      "title": "Queue",
+      "normalized_views": [
+        {
+          "collector": "BenchmarkTools",
+          "html": "queue-queue_build-benchmarktools.html",
+          "id": "queue-queue_build-benchmarktools",
+          "json": "queue.json",
+          "kind": "normalized_metrics",
+          "operation": "Queue_build",
+          "plot": "queue-queue_build-benchmarktools.plot.json"
+        },
+        {
+          "collector": "Chairmarks",
+          "html": "queue-queue_build-chairmarks.html",
+          "id": "queue-queue_build-chairmarks",
+          "json": "queue.json",
+          "kind": "normalized_metrics",
+          "operation": "Queue_build",
+          "plot": "queue-queue_build-chairmarks.plot.json"
+        },
+        {
+          "collector": "BenchmarkTools",
+          "html": "queue-queue_drain-benchmarktools.html",
+          "id": "queue-queue_drain-benchmarktools",
+          "json": "queue.json",
+          "kind": "normalized_metrics",
+          "operation": "Queue_drain",
+          "plot": "queue-queue_drain-benchmarktools.plot.json"
+        },
+        {
+          "collector": "Chairmarks",
+          "html": "queue-queue_drain-chairmarks.html",
+          "id": "queue-queue_drain-chairmarks",
+          "json": "queue.json",
+          "kind": "normalized_metrics",
+          "operation": "Queue_drain",
+          "plot": "queue-queue_drain-chairmarks.plot.json"
+        }
+      ],
+      "kind": "normalized_metrics",
+      "html": "queue-queue_build-benchmarktools.html",
+      "plot": "queue-queue_build-benchmarktools.plot.json"
     },
     {
       "id": "rbtree",
@@ -213,7 +1238,48 @@
       "label": "BenchmarkTools and Chairmarks",
       "svg": "rbtree.svg",
       "terminal": "rbtree.txt",
-      "title": "RBTree"
+      "title": "RBTree",
+      "normalized_views": [
+        {
+          "collector": "BenchmarkTools",
+          "html": "rbtree-rbtree_build-benchmarktools.html",
+          "id": "rbtree-rbtree_build-benchmarktools",
+          "json": "rbtree.json",
+          "kind": "normalized_metrics",
+          "operation": "RBTree_build",
+          "plot": "rbtree-rbtree_build-benchmarktools.plot.json"
+        },
+        {
+          "collector": "Chairmarks",
+          "html": "rbtree-rbtree_build-chairmarks.html",
+          "id": "rbtree-rbtree_build-chairmarks",
+          "json": "rbtree.json",
+          "kind": "normalized_metrics",
+          "operation": "RBTree_build",
+          "plot": "rbtree-rbtree_build-chairmarks.plot.json"
+        },
+        {
+          "collector": "BenchmarkTools",
+          "html": "rbtree-rbtree_lookup-benchmarktools.html",
+          "id": "rbtree-rbtree_lookup-benchmarktools",
+          "json": "rbtree.json",
+          "kind": "normalized_metrics",
+          "operation": "RBTree_lookup",
+          "plot": "rbtree-rbtree_lookup-benchmarktools.plot.json"
+        },
+        {
+          "collector": "Chairmarks",
+          "html": "rbtree-rbtree_lookup-chairmarks.html",
+          "id": "rbtree-rbtree_lookup-chairmarks",
+          "json": "rbtree.json",
+          "kind": "normalized_metrics",
+          "operation": "RBTree_lookup",
+          "plot": "rbtree-rbtree_lookup-chairmarks.plot.json"
+        }
+      ],
+      "kind": "normalized_metrics",
+      "html": "rbtree-rbtree_build-benchmarktools.html",
+      "plot": "rbtree-rbtree_build-benchmarktools.plot.json"
     },
     {
       "id": "robindict",
@@ -221,7 +1287,48 @@
       "label": "BenchmarkTools and Chairmarks",
       "svg": "robindict.svg",
       "terminal": "robindict.txt",
-      "title": "RobinDict"
+      "title": "RobinDict",
+      "normalized_views": [
+        {
+          "collector": "BenchmarkTools",
+          "html": "robindict-robindict_build-benchmarktools.html",
+          "id": "robindict-robindict_build-benchmarktools",
+          "json": "robindict.json",
+          "kind": "normalized_metrics",
+          "operation": "RobinDict_build",
+          "plot": "robindict-robindict_build-benchmarktools.plot.json"
+        },
+        {
+          "collector": "Chairmarks",
+          "html": "robindict-robindict_build-chairmarks.html",
+          "id": "robindict-robindict_build-chairmarks",
+          "json": "robindict.json",
+          "kind": "normalized_metrics",
+          "operation": "RobinDict_build",
+          "plot": "robindict-robindict_build-chairmarks.plot.json"
+        },
+        {
+          "collector": "BenchmarkTools",
+          "html": "robindict-robindict_lookup-benchmarktools.html",
+          "id": "robindict-robindict_lookup-benchmarktools",
+          "json": "robindict.json",
+          "kind": "normalized_metrics",
+          "operation": "RobinDict_lookup",
+          "plot": "robindict-robindict_lookup-benchmarktools.plot.json"
+        },
+        {
+          "collector": "Chairmarks",
+          "html": "robindict-robindict_lookup-chairmarks.html",
+          "id": "robindict-robindict_lookup-chairmarks",
+          "json": "robindict.json",
+          "kind": "normalized_metrics",
+          "operation": "RobinDict_lookup",
+          "plot": "robindict-robindict_lookup-chairmarks.plot.json"
+        }
+      ],
+      "kind": "normalized_metrics",
+      "html": "robindict-robindict_build-benchmarktools.html",
+      "plot": "robindict-robindict_build-benchmarktools.plot.json"
     },
     {
       "id": "sorteddict",
@@ -229,7 +1336,48 @@
       "label": "BenchmarkTools and Chairmarks",
       "svg": "sorteddict.svg",
       "terminal": "sorteddict.txt",
-      "title": "SortedDict"
+      "title": "SortedDict",
+      "normalized_views": [
+        {
+          "collector": "BenchmarkTools",
+          "html": "sorteddict-sorteddict_build-benchmarktools.html",
+          "id": "sorteddict-sorteddict_build-benchmarktools",
+          "json": "sorteddict.json",
+          "kind": "normalized_metrics",
+          "operation": "SortedDict_build",
+          "plot": "sorteddict-sorteddict_build-benchmarktools.plot.json"
+        },
+        {
+          "collector": "Chairmarks",
+          "html": "sorteddict-sorteddict_build-chairmarks.html",
+          "id": "sorteddict-sorteddict_build-chairmarks",
+          "json": "sorteddict.json",
+          "kind": "normalized_metrics",
+          "operation": "SortedDict_build",
+          "plot": "sorteddict-sorteddict_build-chairmarks.plot.json"
+        },
+        {
+          "collector": "BenchmarkTools",
+          "html": "sorteddict-sorteddict_lookup-benchmarktools.html",
+          "id": "sorteddict-sorteddict_lookup-benchmarktools",
+          "json": "sorteddict.json",
+          "kind": "normalized_metrics",
+          "operation": "SortedDict_lookup",
+          "plot": "sorteddict-sorteddict_lookup-benchmarktools.plot.json"
+        },
+        {
+          "collector": "Chairmarks",
+          "html": "sorteddict-sorteddict_lookup-chairmarks.html",
+          "id": "sorteddict-sorteddict_lookup-chairmarks",
+          "json": "sorteddict.json",
+          "kind": "normalized_metrics",
+          "operation": "SortedDict_lookup",
+          "plot": "sorteddict-sorteddict_lookup-chairmarks.plot.json"
+        }
+      ],
+      "kind": "normalized_metrics",
+      "html": "sorteddict-sorteddict_build-benchmarktools.html",
+      "plot": "sorteddict-sorteddict_build-benchmarktools.plot.json"
     },
     {
       "id": "sortedmultidict",
@@ -237,7 +1385,48 @@
       "label": "BenchmarkTools and Chairmarks",
       "svg": "sortedmultidict.svg",
       "terminal": "sortedmultidict.txt",
-      "title": "SortedMultiDict"
+      "title": "SortedMultiDict",
+      "normalized_views": [
+        {
+          "collector": "BenchmarkTools",
+          "html": "sortedmultidict-sortedmultidict_build-benchmarktools.html",
+          "id": "sortedmultidict-sortedmultidict_build-benchmarktools",
+          "json": "sortedmultidict.json",
+          "kind": "normalized_metrics",
+          "operation": "SortedMultiDict_build",
+          "plot": "sortedmultidict-sortedmultidict_build-benchmarktools.plot.json"
+        },
+        {
+          "collector": "Chairmarks",
+          "html": "sortedmultidict-sortedmultidict_build-chairmarks.html",
+          "id": "sortedmultidict-sortedmultidict_build-chairmarks",
+          "json": "sortedmultidict.json",
+          "kind": "normalized_metrics",
+          "operation": "SortedMultiDict_build",
+          "plot": "sortedmultidict-sortedmultidict_build-chairmarks.plot.json"
+        },
+        {
+          "collector": "BenchmarkTools",
+          "html": "sortedmultidict-sortedmultidict_traverse-benchmarktools.html",
+          "id": "sortedmultidict-sortedmultidict_traverse-benchmarktools",
+          "json": "sortedmultidict.json",
+          "kind": "normalized_metrics",
+          "operation": "SortedMultiDict_traverse",
+          "plot": "sortedmultidict-sortedmultidict_traverse-benchmarktools.plot.json"
+        },
+        {
+          "collector": "Chairmarks",
+          "html": "sortedmultidict-sortedmultidict_traverse-chairmarks.html",
+          "id": "sortedmultidict-sortedmultidict_traverse-chairmarks",
+          "json": "sortedmultidict.json",
+          "kind": "normalized_metrics",
+          "operation": "SortedMultiDict_traverse",
+          "plot": "sortedmultidict-sortedmultidict_traverse-chairmarks.plot.json"
+        }
+      ],
+      "kind": "normalized_metrics",
+      "html": "sortedmultidict-sortedmultidict_build-benchmarktools.html",
+      "plot": "sortedmultidict-sortedmultidict_build-benchmarktools.plot.json"
     },
     {
       "id": "sortedset",
@@ -245,7 +1434,48 @@
       "label": "BenchmarkTools and Chairmarks",
       "svg": "sortedset.svg",
       "terminal": "sortedset.txt",
-      "title": "SortedSet"
+      "title": "SortedSet",
+      "normalized_views": [
+        {
+          "collector": "BenchmarkTools",
+          "html": "sortedset-sortedset_build-benchmarktools.html",
+          "id": "sortedset-sortedset_build-benchmarktools",
+          "json": "sortedset.json",
+          "kind": "normalized_metrics",
+          "operation": "SortedSet_build",
+          "plot": "sortedset-sortedset_build-benchmarktools.plot.json"
+        },
+        {
+          "collector": "Chairmarks",
+          "html": "sortedset-sortedset_build-chairmarks.html",
+          "id": "sortedset-sortedset_build-chairmarks",
+          "json": "sortedset.json",
+          "kind": "normalized_metrics",
+          "operation": "SortedSet_build",
+          "plot": "sortedset-sortedset_build-chairmarks.plot.json"
+        },
+        {
+          "collector": "BenchmarkTools",
+          "html": "sortedset-sortedset_lookup-benchmarktools.html",
+          "id": "sortedset-sortedset_lookup-benchmarktools",
+          "json": "sortedset.json",
+          "kind": "normalized_metrics",
+          "operation": "SortedSet_lookup",
+          "plot": "sortedset-sortedset_lookup-benchmarktools.plot.json"
+        },
+        {
+          "collector": "Chairmarks",
+          "html": "sortedset-sortedset_lookup-chairmarks.html",
+          "id": "sortedset-sortedset_lookup-chairmarks",
+          "json": "sortedset.json",
+          "kind": "normalized_metrics",
+          "operation": "SortedSet_lookup",
+          "plot": "sortedset-sortedset_lookup-chairmarks.plot.json"
+        }
+      ],
+      "kind": "normalized_metrics",
+      "html": "sortedset-sortedset_build-benchmarktools.html",
+      "plot": "sortedset-sortedset_build-benchmarktools.plot.json"
     },
     {
       "id": "sparseintset",
@@ -253,7 +1483,48 @@
       "label": "BenchmarkTools and Chairmarks",
       "svg": "sparseintset.svg",
       "terminal": "sparseintset.txt",
-      "title": "SparseIntSet"
+      "title": "SparseIntSet",
+      "normalized_views": [
+        {
+          "collector": "BenchmarkTools",
+          "html": "sparseintset-sparseintset_build-benchmarktools.html",
+          "id": "sparseintset-sparseintset_build-benchmarktools",
+          "json": "sparseintset.json",
+          "kind": "normalized_metrics",
+          "operation": "SparseIntSet_build",
+          "plot": "sparseintset-sparseintset_build-benchmarktools.plot.json"
+        },
+        {
+          "collector": "Chairmarks",
+          "html": "sparseintset-sparseintset_build-chairmarks.html",
+          "id": "sparseintset-sparseintset_build-chairmarks",
+          "json": "sparseintset.json",
+          "kind": "normalized_metrics",
+          "operation": "SparseIntSet_build",
+          "plot": "sparseintset-sparseintset_build-chairmarks.plot.json"
+        },
+        {
+          "collector": "BenchmarkTools",
+          "html": "sparseintset-sparseintset_lookup-benchmarktools.html",
+          "id": "sparseintset-sparseintset_lookup-benchmarktools",
+          "json": "sparseintset.json",
+          "kind": "normalized_metrics",
+          "operation": "SparseIntSet_lookup",
+          "plot": "sparseintset-sparseintset_lookup-benchmarktools.plot.json"
+        },
+        {
+          "collector": "Chairmarks",
+          "html": "sparseintset-sparseintset_lookup-chairmarks.html",
+          "id": "sparseintset-sparseintset_lookup-chairmarks",
+          "json": "sparseintset.json",
+          "kind": "normalized_metrics",
+          "operation": "SparseIntSet_lookup",
+          "plot": "sparseintset-sparseintset_lookup-chairmarks.plot.json"
+        }
+      ],
+      "kind": "normalized_metrics",
+      "html": "sparseintset-sparseintset_build-benchmarktools.html",
+      "plot": "sparseintset-sparseintset_build-benchmarktools.plot.json"
     },
     {
       "id": "splaytree",
@@ -261,7 +1532,48 @@
       "label": "BenchmarkTools and Chairmarks",
       "svg": "splaytree.svg",
       "terminal": "splaytree.txt",
-      "title": "SplayTree"
+      "title": "SplayTree",
+      "normalized_views": [
+        {
+          "collector": "BenchmarkTools",
+          "html": "splaytree-splaytree_build-benchmarktools.html",
+          "id": "splaytree-splaytree_build-benchmarktools",
+          "json": "splaytree.json",
+          "kind": "normalized_metrics",
+          "operation": "SplayTree_build",
+          "plot": "splaytree-splaytree_build-benchmarktools.plot.json"
+        },
+        {
+          "collector": "Chairmarks",
+          "html": "splaytree-splaytree_build-chairmarks.html",
+          "id": "splaytree-splaytree_build-chairmarks",
+          "json": "splaytree.json",
+          "kind": "normalized_metrics",
+          "operation": "SplayTree_build",
+          "plot": "splaytree-splaytree_build-chairmarks.plot.json"
+        },
+        {
+          "collector": "BenchmarkTools",
+          "html": "splaytree-splaytree_lookup-benchmarktools.html",
+          "id": "splaytree-splaytree_lookup-benchmarktools",
+          "json": "splaytree.json",
+          "kind": "normalized_metrics",
+          "operation": "SplayTree_lookup",
+          "plot": "splaytree-splaytree_lookup-benchmarktools.plot.json"
+        },
+        {
+          "collector": "Chairmarks",
+          "html": "splaytree-splaytree_lookup-chairmarks.html",
+          "id": "splaytree-splaytree_lookup-chairmarks",
+          "json": "splaytree.json",
+          "kind": "normalized_metrics",
+          "operation": "SplayTree_lookup",
+          "plot": "splaytree-splaytree_lookup-chairmarks.plot.json"
+        }
+      ],
+      "kind": "normalized_metrics",
+      "html": "splaytree-splaytree_build-benchmarktools.html",
+      "plot": "splaytree-splaytree_build-benchmarktools.plot.json"
     },
     {
       "id": "stack",
@@ -269,7 +1581,48 @@
       "label": "BenchmarkTools and Chairmarks",
       "svg": "stack.svg",
       "terminal": "stack.txt",
-      "title": "Stack"
+      "title": "Stack",
+      "normalized_views": [
+        {
+          "collector": "BenchmarkTools",
+          "html": "stack-stack_build-benchmarktools.html",
+          "id": "stack-stack_build-benchmarktools",
+          "json": "stack.json",
+          "kind": "normalized_metrics",
+          "operation": "Stack_build",
+          "plot": "stack-stack_build-benchmarktools.plot.json"
+        },
+        {
+          "collector": "Chairmarks",
+          "html": "stack-stack_build-chairmarks.html",
+          "id": "stack-stack_build-chairmarks",
+          "json": "stack.json",
+          "kind": "normalized_metrics",
+          "operation": "Stack_build",
+          "plot": "stack-stack_build-chairmarks.plot.json"
+        },
+        {
+          "collector": "BenchmarkTools",
+          "html": "stack-stack_drain-benchmarktools.html",
+          "id": "stack-stack_drain-benchmarktools",
+          "json": "stack.json",
+          "kind": "normalized_metrics",
+          "operation": "Stack_drain",
+          "plot": "stack-stack_drain-benchmarktools.plot.json"
+        },
+        {
+          "collector": "Chairmarks",
+          "html": "stack-stack_drain-chairmarks.html",
+          "id": "stack-stack_drain-chairmarks",
+          "json": "stack.json",
+          "kind": "normalized_metrics",
+          "operation": "Stack_drain",
+          "plot": "stack-stack_drain-chairmarks.plot.json"
+        }
+      ],
+      "kind": "normalized_metrics",
+      "html": "stack-stack_build-benchmarktools.html",
+      "plot": "stack-stack_build-benchmarktools.plot.json"
     },
     {
       "id": "swissdict",
@@ -277,7 +1630,48 @@
       "label": "BenchmarkTools and Chairmarks",
       "svg": "swissdict.svg",
       "terminal": "swissdict.txt",
-      "title": "SwissDict"
+      "title": "SwissDict",
+      "normalized_views": [
+        {
+          "collector": "BenchmarkTools",
+          "html": "swissdict-swissdict_build-benchmarktools.html",
+          "id": "swissdict-swissdict_build-benchmarktools",
+          "json": "swissdict.json",
+          "kind": "normalized_metrics",
+          "operation": "SwissDict_build",
+          "plot": "swissdict-swissdict_build-benchmarktools.plot.json"
+        },
+        {
+          "collector": "Chairmarks",
+          "html": "swissdict-swissdict_build-chairmarks.html",
+          "id": "swissdict-swissdict_build-chairmarks",
+          "json": "swissdict.json",
+          "kind": "normalized_metrics",
+          "operation": "SwissDict_build",
+          "plot": "swissdict-swissdict_build-chairmarks.plot.json"
+        },
+        {
+          "collector": "BenchmarkTools",
+          "html": "swissdict-swissdict_lookup-benchmarktools.html",
+          "id": "swissdict-swissdict_lookup-benchmarktools",
+          "json": "swissdict.json",
+          "kind": "normalized_metrics",
+          "operation": "SwissDict_lookup",
+          "plot": "swissdict-swissdict_lookup-benchmarktools.plot.json"
+        },
+        {
+          "collector": "Chairmarks",
+          "html": "swissdict-swissdict_lookup-chairmarks.html",
+          "id": "swissdict-swissdict_lookup-chairmarks",
+          "json": "swissdict.json",
+          "kind": "normalized_metrics",
+          "operation": "SwissDict_lookup",
+          "plot": "swissdict-swissdict_lookup-chairmarks.plot.json"
+        }
+      ],
+      "kind": "normalized_metrics",
+      "html": "swissdict-swissdict_build-benchmarktools.html",
+      "plot": "swissdict-swissdict_build-benchmarktools.plot.json"
     },
     {
       "id": "trie",
@@ -285,7 +1679,48 @@
       "label": "BenchmarkTools and Chairmarks",
       "svg": "trie.svg",
       "terminal": "trie.txt",
-      "title": "Trie"
+      "title": "Trie",
+      "normalized_views": [
+        {
+          "collector": "BenchmarkTools",
+          "html": "trie-trie_build-benchmarktools.html",
+          "id": "trie-trie_build-benchmarktools",
+          "json": "trie.json",
+          "kind": "normalized_metrics",
+          "operation": "Trie_build",
+          "plot": "trie-trie_build-benchmarktools.plot.json"
+        },
+        {
+          "collector": "Chairmarks",
+          "html": "trie-trie_build-chairmarks.html",
+          "id": "trie-trie_build-chairmarks",
+          "json": "trie.json",
+          "kind": "normalized_metrics",
+          "operation": "Trie_build",
+          "plot": "trie-trie_build-chairmarks.plot.json"
+        },
+        {
+          "collector": "BenchmarkTools",
+          "html": "trie-trie_lookup-benchmarktools.html",
+          "id": "trie-trie_lookup-benchmarktools",
+          "json": "trie.json",
+          "kind": "normalized_metrics",
+          "operation": "Trie_lookup",
+          "plot": "trie-trie_lookup-benchmarktools.plot.json"
+        },
+        {
+          "collector": "Chairmarks",
+          "html": "trie-trie_lookup-chairmarks.html",
+          "id": "trie-trie_lookup-chairmarks",
+          "json": "trie.json",
+          "kind": "normalized_metrics",
+          "operation": "Trie_lookup",
+          "plot": "trie-trie_lookup-chairmarks.plot.json"
+        }
+      ],
+      "kind": "normalized_metrics",
+      "html": "trie-trie_build-benchmarktools.html",
+      "plot": "trie-trie_build-benchmarktools.plot.json"
     }
   ]
 }

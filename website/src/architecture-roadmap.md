@@ -1,93 +1,33 @@
 # Architecture
 
-PerfChecker separates the controller, the measured programs and presentation. The same test definitions work from VS Code, a script or a web controller; results cross those boundaries as versioned data with measurement definitions and provenance attached.
+PerfChecker keeps experiment control, measured code and presentation separate. A Julia call, VS Code command, Web job or Pluto notebook prepares the same suite plan. The controller selects targets and collectors; isolated workers execute them; interfaces read the saved result.
 
-## Packages and ownership
+## Controller and workers
 
-- `PerfChecker` — discovery, plans, workers, measurements, comparisons, CLI, REPL, reports. No required web, notebook or plotting framework.
-- `PerfCheckerWeb` — Oxygen routes, studio assets, auth, jobs. Depends on the web stack.
-- `PerfCheckerPluto` — notebook generation, controls, Pluto launch. Depends on Pluto and PlutoUI.
-- `PerfCheckerMakie` — figures and dashboards. Depends on Makie; WGLMakie is an optional renderer.
-- **VS Code client** — testing view, commands, source navigation. Separate TypeScript project that calls the Julia controller.
-- `PerfCheckerQualification` — impact planning, contracts, matrix receipts. Independent stdlib-only package.
-- `website/` — this documentation. Its own Documenter/Vitepress environment.
+Core owns discovery, plans, worker setup, measurement definitions, comparisons and reports. A plan names a package version or immutable source revision, a workload, its collector and its environment. Constructing or filtering a plan starts no measurement.
 
-The Julia satellites live in `packages/` in the same repository, so a shared-contract change and its consumers can be reviewed together. Each satellite has its own project, compat bounds and tests. Installation requires the explicit satellite package; loading Oxygen or Makie alone no longer activates an interface.
+[Malt](https://github.com/JuliaPluto/Malt.jl) supplies isolated Julia workers for checks. Target dependencies resolve in their worker project rather than in the editor or plotting environment. A worker's Julia version, source, dependency manifests and thread settings stay attached to its result. Remote execution also needs an explicit controller and worker lifecycle; see [Scenarios](tools/scenarios.md).
 
-PerfChecker does not need a global active backend. A notebook, a web job and a VS Code item have their own controller state and may stay open together.
+## Prepare, operate, verify
 
-```@raw html
-<a id="Extensions-that-remain-useful"></a>
-```
+A feature describes three steps:
 
-## Extensions that stay useful
+1. **Prepare** creates the input and any state excluded from measurement.
+2. **Operate** performs the one operation the collector observes.
+3. **Verify** checks the answer against an independent oracle, outside measurement.
 
-Small interoperability methods stay in Julia extensions: BenchmarkTools and Chairmarks measurements, the TestItemRunner bridge, UnicodePlots rendering and Documenter report blocks. They adapt an existing API without owning an application or a large dependency tree.
+Fresh-state features prepare each evaluation independently. Reused state must be declared deliberately, for example for a continuous sampling profile of a read-only operation. An existing test item instead measures its whole item, including setup and assertions. Those are different measurement boundaries.
 
-- An interface with assets, server lifecycle or notebook generation belongs in a satellite.
-- A diagnostic tool that must inspect the target environment belongs in a worker adapter.
-- Adding a new dependency should begin with this ownership choice, not another entry in the engine's weak-dependency list.
+## Saved bundles and comparisons
 
-## Diagnostic workers
+A run bundle contains observations, measurement definitions, source/environment provenance, diagnostics and artifacts. A completed collector, a passing oracle and a passing regression budget are separate outcomes. Comparisons require compatible definitions and conditions; a zero or unavailable reference cannot acquire a meaningful percentage by plotting it.
 
-JET, AllocCheck, SnoopCompile and Aqua adapters live under `providers/`, each declaring its tool compatibility separately.
+Interfaces exchange these files instead of sharing mutable controller state. Replaying a bundle or rendering its JSON runs no workload. [Saved results](tools/results.md) explains inspection and export.
 
-- The worker loads the requested tool in its prepared environment.
-- It does not import PerfChecker.
-- An unavailable tool returns explicit diagnostic evidence. It does not fail the controller import.
-- Provider source participates in development-source fingerprints, so editing an adapter changes the recorded source identity.
+## Optional tools and interfaces
 
-## One collection, several environments
+Core has no required plotting, Web or notebook application. `PerfCheckerMakie`, `PerfCheckerWeb`, `PerfCheckerPluto` and `PerfCheckerTachikoma` own their interfaces and dependencies. The VS Code client calls a Julia controller. Each companion has its own package identity and compatibility bounds.
 
-A collection is a set of compatible, tested component versions — not one Manifest containing every optional interface. An Oxygen controller using HTTP 2 and a Pluto controller using HTTP 1 can exchange saved bundles while keeping separate environments.
+Small integrations such as BenchmarkTools, Chairmarks, TestItemRunner, UnicodePlots and Documenter use Julia extensions. Diagnostic adapters load tools such as JET or Aqua in prepared target environments. Hardware-counter companions require their own workers and native prerequisites. Missing tools produce explicit unavailable evidence; importing Core does not certify a native backend.
 
-- The qualification runner resolves and saves each lane's actual environment.
-- Core and shared-contract changes select all consumers; a web-only change selects web tests and its dependent documentation.
-- The full matrix also checks historical multi-interface integration in a separate environment.
-
-The [qualification contract](reference/qualification.md) requires the same candidate revisions, campaign ID, successful lanes and unmodified artifacts before publication. A targeted PR result cannot promote a complete collection.
-
-
-```@raw html
-<a id="Register-packages-from-the-shared-repository"></a>
-```
-
-## Registering from the shared repository
-
-General supports a package in a repository subdirectory. Its registry entry records the repository and the package's `subdir`; users still install it by name.
-
-- `packages/PerfCheckerWeb` is a package source root with its own `Project.toml` and `src/`.
-- It is not a nested module loaded through the parent's directory.
-- Its dependency on PerfChecker is declared by UUID and resolved by Pkg.
-
-The local `[sources.PerfChecker]` path is a development convenience when an interface project is active; Pkg does not propagate it when the interface is installed as a dependency.
-
-Registration is separate per package, for example `@JuliaRegistrator register subdir=packages/PerfCheckerWeb` on a published release commit. The engine version required by an interface's compat bounds must also be registered.
-
-```@raw html
-<a id="Temporary-previews-before-registration"></a>
-```
-
-For an unregistered interface, use the explicit repository-subdirectory recipe
-in [Installation](guide/installation.md#Optional-packages). A candidate requires
-its published revision and dependencies; the documentation does not establish
-that a future release is available.
-
-## Test items and performance evidence
-
-- The TestItemRunner bridge discovers existing declarations and can run one item in a fresh process.
-- Untagged items are shared. `:perf_only` and `:test_only` separate the two modes.
-- Functional success, a completed measurement and a passing regression budget are three separate results.
-- Ordinary test-item timing includes setup and assertions; feature workloads give a narrower measurement region.
-
-Saved bundles retain the metric definition, runtime, source identity, environment and qualification outcome needed to judge comparability.
-
-```@raw html
-<a id="Platform-and-prediction-limits"></a>
-```
-
-## Platform limits
-
-- Windows and Linux are recorded separately.
-- Core package tests have Intel macOS CI coverage, and the documented Intel macOS extension workflows passed within their stated scope. This does not qualify Apple Silicon, physical Mac sessions, or additional native and GPU backends.
-- The cross-machine estimator is an experimental planning aid; predictions never replace measurements or qualify a blocking CI decision.
+See the [Public API](reference/public-api.md) for supported entry points and [Contributing](contributing/index.md) for changing this code or its examples.

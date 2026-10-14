@@ -3,18 +3,30 @@
 An optional terminal companion for PerfChecker 1.x, built with Tachikoma 2.7
 and UnicodePlots 3. This companion is version 1.0.1 and requires Julia 1.10 or
 newer. Its source is `packages/PerfCheckerTachikoma` in the PerfChecker repository;
-it is not yet a separately registered package.
+its [General registration PR #171531](https://github.com/JuliaRegistries/General/pull/171531)
+is pending, so it is not yet installable by name.
 The qualification lanes target Ubuntu with Julia 1.10 and the current Julia
 release. Windows has not been qualified for this companion.
 
-Install from a reviewed checkout under `~/.julia/dev/PerfChecker`:
+## Installation
+
+Install the proposed 1.0.1 source in a separate controller project:
 
 ```julia
 using Pkg
-Pkg.develop(path=joinpath(homedir(), ".julia", "dev", "PerfChecker"))
-Pkg.develop(path=joinpath(homedir(), ".julia", "dev", "PerfChecker",
-    "packages", "PerfCheckerTachikoma"))
+Pkg.activate("perf/terminal")
+Pkg.add("PerfChecker")
+Pkg.add(Pkg.PackageSpec(
+    url="https://github.com/Mirage-Interactive-Fr/PerfChecker.jl",
+    subdir="packages/PerfCheckerTachikoma",
+    rev="9947de5e4163388c0a14f0d439e6c578a4676597"))
 ```
+
+Once registration is merged, `Pkg.add("PerfCheckerTachikoma")` can replace the
+source specification. The published Core has a
+[known ARM import limitation](../README.md#arm-compatibility).
+
+## Use the terminal
 
 Open a resolved suite without measuring until you press **R**:
 
@@ -45,9 +57,7 @@ raster plots, install and explicitly load the Makie companion and a renderer:
 
 ```julia
 using Pkg
-Pkg.develop(path=joinpath(homedir(), ".julia", "dev", "PerfChecker",
-    "packages", "PerfCheckerMakie"))
-Pkg.add("CairoMakie")
+Pkg.add(["PerfCheckerMakie", "CairoMakie"])
 
 using PerfChecker, PerfCheckerTachikoma, PerfCheckerMakie, CairoMakie
 tui(read_run_bundle("reports/run"))
@@ -75,7 +85,8 @@ terminal, plus actual isolated allocation workers for run/cancel/cleanup.
 
 Run the companion's ordinary tests with `Pkg.test("PerfCheckerTachikoma")`.
 To also verify the optional raster adapter, use a disposable Julia environment
-containing the three developed packages above and CairoMakie, then run:
+containing PerfChecker, PerfCheckerTachikoma, PerfCheckerMakie and CairoMakie,
+then run:
 
 ```julia
 using PerfCheckerTachikoma

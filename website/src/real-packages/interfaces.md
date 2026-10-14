@@ -1,184 +1,20 @@
-# Replay the experiment in every interface
-
-The example runner saves a bundle and a suite report that you can reopen in
-any interface. Plotters read the measurements from that bundle.
-The scripts below work for either DataStructures or Oxygen. Choose a completed
-directory printed by the runner wherever you see `results/ACTUAL-RUN`.
-
-## Terminal and REPL
-
-```sh
-julia --project=. replay.jl results/ACTUAL-RUN
-```
-
-This prints every plot in the bundle's catalogue with UnicodePlots and saves
-the text under `exports/terminal`. No measurement starts. The browser galleries
-on the package pages also link to these exact text exports.
-
-For a single view in a Julia session:
-
-```julia
-include("replay.jl")
-bundle = example_bundle("results/ACTUAL-RUN")
-catalog = plot_catalog(bundle)
-entry = first(filter(v -> v["kind"] == "normalized_metrics", catalog))
-model = performance_plot(bundle, entry["id"])
-terminal_plot(model)
-```
-
 ```@raw html
-<p>Expected output: a UnicodePlots rendering of the selected model. The published Oxygen export reads fourteen releases; its original <a href="../examples/real-packages/oxygen-features/normalized-metrics-24034c4be099f2e2.txt" download="normalized-metrics-24034c4be099f2e2.txt">terminal text</a> preserves the terminal view. The same saved values are inspectable here:</p>
-<NormalizedMeasurements source="/examples/real-packages/oxygen-features/normalized-metrics-24034c4be099f2e2.json" html="/examples/real-packages/oxygen-features/normalized-metrics-24034c4be099f2e2.html" package-name="Saved Oxygen plain HTTP measurements" />
+---
+search: false
+---
 ```
 
-This native view reads the published fourteen-release Oxygen model, not your local path. Each metric is relative to its own minimum; inspect a point to recover its original value and unit. No measurement starts when rendering it.
+# Interface recipes
 
-
-The same helper can open a plot JSON downloaded from the documentation:
-`terminal_plot(saved_plot("downloaded-plot.json"))`. A published plot is a
-projection of observations for visualization, not a complete qualification bundle.
-
-## Makie: interactive figures and downloadable models
-
-```sh
-julia setup.jl plots
-julia --project=.controller/plots export.jl results/ACTUAL-RUN exports/history
-```
-
-Expected artifacts: `exports/history/catalog.json` and the selected catalogue's HTML, plot JSON and terminal-text files. Missing evidence produces no invented observations.
-
-The export writes interactive HTML, a JSON plot model and a Unicode text plot
-for every catalogue entry, alongside optional static SVG downloads. The
-documentation embeds the native HTML rather than recreating its calculations.
-Use panel and series selectors, inspect an observation for its exact value,
-and zoom where the selected view supports it. Every patch window has its own
-interactive export too.
-
-For standalone interactive HTML, open Julia with `--project=.controller/plots`:
-
-```julia
-using PerfChecker, PerfCheckerMakie, WGLMakie
-include("replay.jl")
-bundle = example_bundle("results/ACTUAL-RUN")
-entry = first(filter(v -> v["kind"] == "normalized_metrics", plot_catalog(bundle)))
-model = performance_plot(bundle, entry["id"])
-write("exports/interactive-history.html", performance_plot_html(model))
-```
-
-Expected artifact: `exports/interactive-history.html`. Its point and series controls operate on the same model displayed in the native example above.
-
-Open the saved HTML in a browser. Inspect a point to read its value and version.
-The [visualization guide](../interfaces/visualization.md) describes which
-interactions work in standalone HTML and which require a live Julia session.
-Large HTML exports and recordings should be shared as release assets, not
-repeatedly committed into source history.
-
-## Pluto: an actual notebook
-
-Start with the notebook for your package. Each combines an executable oracle,
-recorded release histories, Makie figures, Unicode plots and reproduction commands.
-The generic notebook remains useful for browsing arbitrary completed bundles.
-
-```@raw html
-<p><a href="../examples/real-packages/notebook.jl" download="notebook.jl">Download the runnable Pluto notebook (.jl)</a></p>
-<p><a href="../examples/real-packages/datastructures-notebook.jl" download="datastructures-notebook.jl">Download the DataStructures walkthrough (.jl)</a></p>
-<p><a href="../examples/real-packages/oxygen-notebook.jl" download="oxygen-notebook.jl">Download the Oxygen walkthrough (.jl)</a></p>
-```
-
-Prepare its separate environment:
-
-```sh
-julia +1.12 setup.jl pluto
-julia +1.12 --project=.controller/pluto -e 'using Pluto; Pluto.run(notebook="notebook.jl", threads=1)'
-```
-
-Expected result: a Pluto session displaying the supplied notebook and its saved-history selectors. It reads the published models; no benchmark starts on opening. The native figure above shows the evidence the notebook can render.
-
-The notebook opens the published measurements included in the checkout, so you
-can explore the full version history **without running a benchmark first**.
-It also lists completed local runs, lets you select any catalogue view,
-and shows both a Makie figure and its terminal rendering. Changing a selector
-does not start a campaign. If you downloaded it outside the example directory,
-set `PERFCHECKER_EXAMPLE_ROOT` to your `examples/kitchen-sink` directory first.
-
-These commands use Juliaup's `+1.12` selector. With a standalone Julia
-installation, invoke your Julia 1.12 executable instead. Pluto 1.0.3 warns that
-Julia 1.13 is unsupported; the notebook can still read measurements collected
-with Julia 1.13 because the saved plot format is independent of its renderer.
-
-To get a notebook that can also launch selected suite checks:
-
-```sh
-julia +1.12 --project=.controller/pluto controller-notebook.jl datastructures
-julia +1.12 --project=.controller/pluto controller-notebook.jl oxygen
-```
-
-Expected artifact: a controller notebook under `exports/`. Its plan selectors and explicit launch/save controls are separate from the read-only notebook.
-
-Open the generated file under `exports/` with Pluto. Package, workload,
-collector and target selectors filter the plan; **Launch selected checks**
-starts it explicitly. The notebook environment stays separate from the newest
-Oxygen web stack because their HTTP.jl compatibility constraints differ.
-
+Open saved evidence through the [REPL](../interfaces/repl.md), [Pluto](../interfaces/pluto.md), [Web studio](../interfaces/web-studio.md), [visualization](../interfaces/visualization.md) or [documentation](../interfaces/documentation.md). Each page includes its actual usage and recorded output.
 
 ```@raw html
 <a id="Oxygen-Web-Studio"></a>
+<a id="Replay-the-experiment-in-every-interface"></a>
+<a id="Terminal-and-REPL"></a>
+<a id="Makie:-interactive-figures-and-downloadable-models"></a>
+<a id="Pluto:-an-actual-notebook"></a>
+<a id="Web-interface-(Oxygen)"></a>
+<a id="Or,-in-a-separate-invocation:"></a>
+<a id="VS-Code"></a>
 ```
-
-## Web interface (Oxygen)
-
-```sh
-julia setup.jl web
-julia --project=.controller/web web.jl datastructures
-# Or, in a separate invocation:
-julia --project=.controller/web web.jl oxygen
-```
-
-After starting one of the `web.jl` commands above, open
-`http://127.0.0.1:8873/perfchecker/v1/` on the same machine. This local address
-is available only while that server is running. Select a workload, then a collector and a version
-range. Start with `heap_2048` / `benchmark` for DataStructures or `heap_request`
-/ `benchmark` for Oxygen. Review the number of selected checks before launching.
-Runs launched by the studio are saved under `results/web-datastructures` or
-`results/web-oxygen`; use its result selector to inspect them. To reopen a
-completed command-line campaign directly, pass its report directory instead:
-
-```sh
-julia --project=.controller/web web.jl results/ACTUAL-RUN
-```
-
-Expected result: the Web result explorer lists that directory's saved runs and plot catalogue. Opening it launches no measurement. The native rendering below shows the recorded plain-HTTP campaign.
-
-This opens the result explorer without launching a measurement or scanning
-unrelated diagnostic artifacts. Stop the Julia command when you finish using
-the studio.
-
-```@raw html
-<NormalizedMeasurements source="/examples/real-packages/oxygen-features/normalized-metrics-24034c4be099f2e2.json" figure="/examples/real-packages/oxygen-features/normalized-metrics-24034c4be099f2e2.svg" html="/examples/real-packages/oxygen-features/normalized-metrics-24034c4be099f2e2.html" package-name="Oxygen · plain HTTP request" />
-<details><summary>See the same measurements in the Web Studio</summary>
-<DocMedia src="/examples/real-packages/oxygen-web-studio.png" alt="Web interface displaying Oxygen plain_benchmark across fourteen releases, with feature and view filters and four measurement toggles" caption="The saved plain HTTP campaign reopened in Web Studio: fourteen releases from 1.0.0 to 1.11.0. The feature and view selectors filter saved observations; the checkboxes isolate individual curves." />
-</details>
-```
-
-Here, Oxygen hosts the interface that controls measurements of Oxygen in
-separate workers. The studio itself and the loopback test service have distinct
-routers and ports.
-
-## VS Code
-
-Open `examples/kitchen-sink` as the workspace and select its root as
-**PerfChecker: Runner Project** for native items. Use **PerfChecker: Discover
-existing test items**, then run **Representative event queue** from the Testing
-view. Its `:perf_only` tag explains why the ordinary example test command skips it.
-
-For suite comparisons, choose `suite.jl` or `oxygen/suite.jl` in the visual suite
-editor. Set the runner project to the prepared `.controller/web` directory if
-you want the Makie and web renderers available as well. Filter workloads,
-collectors and versions before execution. These are the same suite files used
-by the command line, not a second editor-only definition.
-
-Expected result in Testing: the selected item receives an execution status and measured duration; unselected items remain unrun. Suite output opens the saved native plots rather than starting another check.
-
-The [VS Code guide](../interfaces/vscode.md) covers Marketplace installation, result panels and saved selections. The executable scripts and saved plots
-here are distinct from a claim that every possible editor interaction has been
-tested on every operating system.

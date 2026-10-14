@@ -9,10 +9,10 @@ module PerfChecker
 # SECTION - Imports
 import Base.Sys: CPUinfo, CPU_NAME, cpu_info, WORD_SIZE
 import CoverageTools: analyze_malloc_files, find_malloc_files, MallocInfo
-import CpuId: simdbytes, cpucores, cputhreads, cputhreads_per_core
 import CSV
 import Dates
 import Downloads
+import Hwloc
 import JSON
 import Libdl
 import Malt: remote_eval_wait, Worker, remote_eval_fetch, stop, fetch

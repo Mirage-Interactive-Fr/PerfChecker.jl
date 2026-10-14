@@ -22,6 +22,7 @@ end
     using PerfChecker, PerfCheckerMakie, Makie
     observations = Dict{String, Any}[]
     for (metric, unit, value) in (("julia.wall.time", "s", 1.0),
+            ("julia.gc.fraction", "1", 0.0), ("julia.alloc.count", "1", 2.0),
             ("julia.alloc.bytes", "By", 100.0)),
         (version, scale) in (("6d742e35a516c7324af4ad14f58ce1780aa28728", 1),
             ("dev@dd8d424e20a5cd76fce2d0ff15e023d585a1c179", 2))
@@ -44,13 +45,24 @@ end
     @test all(length(version) >= 40 for version in model.options["versions"])
     curves = filter(item -> item isa Makie.ScatterLines, axis.scene.plots)
     toggles = filter(item -> item isa Toggle, figure.content)
-    @test length(toggles) == length(curves) == 2
+    @test length(toggles) == length(curves) == 4
     toggles[1].active[] = false
     @test !curves[1].visible[]
     @test curves[2].visible[]
     toggles[1].active[] = true
     @test curves[1].visible[]
     @test performance_plot_dict(model) == before
+    labeled = PerfChecker.PerformancePlot(model.id, model.kind, model.title,
+        model.description, model.encoding, model.data,
+        merge(model.options,
+            Dict("xlabel" => "Implementation", "target_label" => "implementation")))
+    labeled_figure = performance_figure(labeled)
+    labeled_axis = only(filter(item -> item isa Axis, labeled_figure.content))
+    @test axis.xlabel[] == "package version"
+    @test labeled_axis.xlabel[] == "Implementation"
+    labeled_curves = filter(item -> item isa Makie.ScatterLines, labeled_axis.scene.plots)
+    @test [curve[1][] for curve in labeled_curves] == [curve[1][] for curve in curves]
+    @test labeled.data == model.data
 end
 
 @testitem "Suite dashboard retains absolute view" tags=[:plots] begin

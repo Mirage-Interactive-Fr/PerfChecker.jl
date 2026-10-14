@@ -1,0 +1,120 @@
+{
+  "plot": {
+    "data": [
+      {
+        "collector": "Chairmarks",
+        "collector_definition": "chairmarks-v1/fresh-state-evals1-v1",
+        "comparison_key": "containers/Stack/build/512/seed42/v1",
+        "derivation": "recorded minimum",
+        "metric": "julia.wall.time",
+        "normalization_status": "ratio",
+        "ratio": 1.0,
+        "reference_value": 8.1,
+        "reference_version": "minimum",
+        "samples": 30,
+        "source_metric": "julia.wall.time",
+        "source_unit": "s",
+        "statistic": "minimum",
+        "target_kind": "recorded",
+        "unit": "µs",
+        "value": 8.1,
+        "version": "0.19.6",
+        "workload": "Stack_build"
+      },
+      {
+        "collector": "Chairmarks",
+        "collector_definition": "chairmarks-v1/fresh-state-evals1-v1",
+        "comparison_key": "containers/Stack/build/512/seed42/v1",
+        "derivation": "recorded minimum",
+        "metric": "julia.gc.fraction",
+        "normalization_status": "both_zero",
+        "ratio": 1.0,
+        "reference_value": 0.0,
+        "reference_version": "minimum",
+        "samples": 30,
+        "source_metric": "julia.gc.fraction",
+        "source_unit": "1",
+        "statistic": "minimum",
+        "target_kind": "recorded",
+        "unit": "%",
+        "value": 0.0,
+        "version": "0.19.6",
+        "workload": "Stack_build"
+      },
+      {
+        "collector": "Chairmarks",
+        "collector_definition": "chairmarks-v1/fresh-state-evals1-v1",
+        "comparison_key": "containers/Stack/build/512/seed42/v1",
+        "derivation": "recorded minimum",
+        "metric": "julia.alloc.bytes",
+        "normalization_status": "ratio",
+        "ratio": 1.0,
+        "reference_value": 8407.0,
+        "reference_version": "minimum",
+        "samples": 30,
+        "source_metric": "julia.alloc.bytes",
+        "source_unit": "By",
+        "statistic": "minimum",
+        "target_kind": "recorded",
+        "unit": "By",
+        "value": 8407.0,
+        "version": "0.19.6",
+        "workload": "Stack_build"
+      },
+      {
+        "collector": "Chairmarks",
+        "collector_definition": "chairmarks-v1/fresh-state-evals1-v1",
+        "comparison_key": "containers/Stack/build/512/seed42/v1",
+        "derivation": "recorded minimum",
+        "metric": "julia.alloc.count",
+        "normalization_status": "ratio",
+        "ratio": 1.0,
+        "reference_value": 7.0,
+        "reference_version": "minimum",
+        "samples": 30,
+        "source_metric": "julia.alloc.count",
+        "source_unit": "1",
+        "statistic": "minimum",
+        "target_kind": "recorded",
+        "unit": "1",
+        "value": 7.0,
+        "version": "0.19.6",
+        "workload": "Stack_build"
+      }
+    ],
+    "description": "Separate collector sessions on one local machine; not a collector speed verdict; minimum per recorded target / minimum reference for each metric. Single recorded target; ratios do not establish an improvement.",
+    "encoding": {
+      "color": "metric",
+      "x": "version",
+      "y": "ratio"
+    },
+    "id": "stack-stack_build-chairmarks",
+    "kind": "normalized_metrics",
+    "options": {
+      "collector": "Chairmarks",
+      "metadata": {
+        "projection": "Recorded metric minima; reference=minimum for each metric",
+        "run_ids": [
+          "de4d48db-443e-4566-9985-d95aa8a7074c"
+        ],
+        "scope": "Separate collector sessions on one local machine; not a collector speed verdict",
+        "single_version": true,
+        "source_sha256": {
+          "stack.json": "0cbf95cc5ebb9f524a3e692fc58ac7e11f6c90fb3684c49482e9f2c665337757"
+        },
+        "workload": "Stack_build"
+      },
+      "reference_version": "minimum",
+      "statistic": "minimum",
+      "target_label": "version",
+      "unit": "ratio",
+      "versions": [
+        "0.19.6"
+      ],
+      "xlabel": "Package version",
+      "zero_reference_policy": "equal zeros = 1 (unchanged); nonzero / zero = unavailable"
+    },
+    "schema_version": "perfchecker-plot/1",
+    "title": "Stack_build · Chairmarks · DataStructures 0.19.6"
+  }
+}

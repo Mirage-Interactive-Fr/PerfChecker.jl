@@ -8,7 +8,9 @@ import { fileURLToPath } from 'node:url'
 
 const docsVersion = process.env.PERFCHECKER_DOCS_VERSION ?? '1.0.0'
 const docsURL = new URL(process.env.PERFCHECKER_DOCS_URL ?? 'https://perfchecker.mirageinteractive.fr/')
-if (docsURL.protocol !== 'https:' || docsURL.username || docsURL.password || docsURL.search || docsURL.hash)
+const localPreview = process.env.PERFCHECKER_DOCS_LOCAL_PREVIEW === 'true'
+const previewURL = localPreview && docsURL.protocol === 'http:' && ['127.0.0.1', 'localhost'].includes(docsURL.hostname)
+if ((!previewURL && docsURL.protocol !== 'https:') || docsURL.username || docsURL.password || docsURL.search || docsURL.hash)
   throw new Error('Documentation deployment URL must be plain HTTPS')
 const sftp = (process.env.PERFCHECKER_DOCS_HOSTING ??
   (docsURL.origin === 'https://perfchecker.mirageinteractive.fr' ? 'sftp' : 'github')) === 'sftp'
@@ -130,51 +132,279 @@ const config = defineConfig({
       options: { detailedView: true },
     },
     nav: [
-      { text: 'Manual', link: '/guide/overview' },
-      { text: 'Examples', items: [
-        { text: 'Choose an example', link: '/real-packages/' },
-        { text: 'Bibliography', link: '/tutorials/bibliography' },
-        { text: 'DataStructures', link: '/real-packages/datastructures' },
-        { text: 'Oxygen', link: '/real-packages/oxygen' },
-      ] },
-      { text: 'Interfaces', items: [
-        { text: 'Choose an interface', link: '/interfaces/packages' },
-        { text: 'VS Code', link: '/interfaces/vscode' },
-        { text: 'VS Code configuration', link: '/interfaces/vscode-configuration' },
-        { text: 'Notebooks and Julia tools', link: '/interfaces/vscode-workflows' },
-        { text: 'VS Code video walkthroughs', link: '/interfaces/vscode-videos' },
-        { text: 'MCP advice and implementation', link: '/mcp-advisor' },
-        { text: 'Web interface (Oxygen)', link: '/interfaces/web-studio' },
-        { text: 'REPL and Pluto', link: '/interfaces/repl-pluto' },
-        { text: 'Plots', link: '/interfaces/visualization' },
-        { text: 'Documenter', link: '/interfaces/documentation' },
-      ] },
-      { text: 'API & reference', items: [
-        { text: 'Reference index', link: '/reference/' },
-        { text: 'Public API', link: '/reference/public-api' },
-        { text: 'Full API', link: '/reference/api' },
-        { text: 'Companion APIs', link: '/reference/optional-api' },
-        { text: 'Command line', link: '/reference/cli' },
-        { text: 'Checks and tools', link: '/reference/checks' },
-        { text: 'Run bundles', link: '/reference/run-bundles' },
-        { text: 'Comparison options', link: '/reference/comparisons' },
-      ] },
-      { text: 'More', items: [
-        { text: 'Further topics', items: [
-          { text: 'Experiments', link: '/experiments' },
-          { text: 'Native profiling', link: '/native-profiling' },
-          { text: 'Network traffic', link: '/network-measurement' },
-          { text: 'Remote workers', link: '/operations/hosted' },
-          { text: 'Optional advisors', link: '/advisors' },
-        ] },
-        { text: 'Contributing', items: [
-        { text: 'Architecture', link: '/architecture-roadmap' },
-        { text: 'Report an issue', link: 'https://github.com/Mirage-Interactive-Fr/PerfChecker.jl/issues' },
-        { text: 'Contributing documentation', link: '/contributing/documentation' },
-        { text: 'Contribute an example', link: '/real-packages/contributing' },
-        ] },
-      ] },
-      { component: 'VersionPicker' },
+      {
+        "text": "Manual",
+        "link": "/guide/overview"
+      },
+      {
+        "text": "Examples",
+        "items": [
+          {
+            "text": "Bibliography",
+            "link": "/tutorials/bibliography"
+          },
+          {
+            "text": "DataStructures",
+            "link": "/real-packages/datastructures"
+          },
+          {
+            "text": "Oxygen",
+            "link": "/real-packages/oxygen"
+          }
+        ]
+      },
+      {
+        "text": "Interfaces",
+        "items": [
+          {
+            "text": "VS Code",
+            "link": "/interfaces/vscode"
+          },
+          {
+            "text": "Web (Oxygen)",
+            "link": "/interfaces/web-studio"
+          },
+          {
+            "text": "Pluto",
+            "link": "/interfaces/pluto"
+          },
+          {
+            "text": "REPL",
+            "link": "/interfaces/repl"
+          },
+          {
+            "text": "Makie",
+            "link": "/interfaces/visualization"
+          },
+          {
+            "text": "Documenter",
+            "link": "/interfaces/documentation"
+          },
+          {
+            "text": "Tachikoma",
+            "link": "/interfaces/tachikoma"
+          }
+        ]
+      },
+      {
+        "text": "Tools",
+        "items": [
+          {
+            "text": "Timing",
+            "items": [
+              {
+                "text": "BenchmarkTools",
+                "link": "/tools/benchmarktools"
+              },
+              {
+                "text": "Chairmarks",
+                "link": "/tools/chairmarks"
+              },
+              {
+                "text": "TestItemRunner",
+                "link": "/tools/testitemrunner"
+              }
+            ]
+          },
+          {
+            "text": "Profiles",
+            "items": [
+              {
+                "text": "CPU profile",
+                "link": "/tools/cpu-profile"
+              },
+              {
+                "text": "Wall profile",
+                "link": "/tools/wall-profile"
+              },
+              {
+                "text": "Allocation profile",
+                "link": "/tools/allocation-profile"
+              },
+              {
+                "text": "Line allocations",
+                "link": "/tools/line-allocations"
+              },
+              {
+                "text": "PProf",
+                "link": "/tools/pprof"
+              },
+              {
+                "text": "FlameGraphs",
+                "link": "/tools/flamegraphs"
+              }
+            ]
+          },
+          {
+            "text": "Diagnostics",
+            "items": [
+              {
+                "text": "JET",
+                "link": "/tools/jet"
+              },
+              {
+                "text": "AllocCheck",
+                "link": "/tools/alloccheck"
+              },
+              {
+                "text": "SnoopCompile",
+                "link": "/tools/snoopcompile"
+              },
+              {
+                "text": "Latency",
+                "link": "/tools/latency"
+              },
+              {
+                "text": "GC",
+                "link": "/tools/gc"
+              },
+              {
+                "text": "Memory",
+                "link": "/tools/memory"
+              },
+              {
+                "text": "Locks",
+                "link": "/tools/locks"
+              },
+              {
+                "text": "Aqua",
+                "link": "/tools/aqua"
+              },
+              {
+                "text": "Heap snapshot",
+                "link": "/tools/heap-snapshot"
+              }
+            ]
+          },
+          {
+            "text": "Workloads and results",
+            "items": [
+              {
+                "text": "DrWatson",
+                "link": "/tools/drwatson"
+              },
+              {
+                "text": "PropCheck",
+                "link": "/tools/propcheck"
+              },
+              {
+                "text": "Supposition",
+                "link": "/tools/supposition"
+              },
+              {
+                "text": "Scenarios",
+                "link": "/tools/scenarios"
+              },
+              {
+                "text": "Saved results",
+                "link": "/tools/results"
+              },
+              {
+                "text": "Command line",
+                "link": "/tools/cli"
+              },
+              {
+                "text": "Network",
+                "link": "/tools/network"
+              },
+              {
+                "text": "Machine profiles",
+                "link": "/tools/machine"
+              },
+              {
+                "text": "Preferences",
+                "link": "/tools/preferences"
+              },
+              {
+                "text": "PkgEval",
+                "link": "/tools/pkgeval"
+              },
+              {
+                "text": "Julia runtimes",
+                "link": "/tools/julia-runtimes"
+              }
+            ]
+          },
+          {
+            "text": "Native tools",
+            "items": [
+              {
+                "text": "Memcheck",
+                "link": "/tools/memcheck"
+              },
+              {
+                "text": "Callgrind",
+                "link": "/tools/callgrind"
+              },
+              {
+                "text": "Massif",
+                "link": "/tools/massif"
+              },
+              {
+                "text": "Cachegrind",
+                "link": "/tools/cachegrind"
+              },
+              {
+                "text": "heaptrack",
+                "link": "/tools/heaptrack"
+              },
+              {
+                "text": "Linux perf",
+                "link": "/tools/linux-perf"
+              },
+              {
+                "text": "VTune",
+                "link": "/tools/vtune"
+              },
+              {
+                "text": "LinuxPerf companion",
+                "link": "/tools/linuxperf"
+              },
+              {
+                "text": "LIKWID",
+                "link": "/tools/likwid"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "text": "Agentic workflows",
+        "items": [
+          {
+            "text": "Connect an MCP tool",
+            "link": "/agentic/mcp"
+          },
+          {
+            "text": "Advice → implementation",
+            "link": "/agentic/advice"
+          },
+          {
+            "text": "Providers",
+            "link": "/agentic/providers"
+          }
+        ]
+      },
+      {
+        "text": "API",
+        "items": [
+          {
+            "text": "Public API",
+            "link": "/reference/public-api"
+          },
+          {
+            "text": "Full API",
+            "link": "/reference/api"
+          },
+          {
+            "text": "Companion APIs",
+            "link": "/reference/optional-api"
+          }
+        ]
+      },
+      {
+        "component": "VersionPicker"
+      }
     ],
     sidebar: 'REPLACE_ME_DOCUMENTER_VITEPRESS',
     editLink: {
@@ -239,19 +469,25 @@ if (Array.isArray(sidebar)) {
     const optional = JSON.parse(readFileSync(optionalNavigation, 'utf8'))
     if (!/^[a-f0-9]{40}$/.test(optional.source_revision) || optional.owners.length !== 6)
       throw new Error('Invalid optional API navigation provenance')
-    sidebar.push({ text: 'Companion APIs', items: optional.owners.map(({ slug, name }) => {
+    const apiGroup = sidebar.find(group => group.text === 'API')
+    const companions = apiGroup?.items?.find(item => item.text === 'Companion APIs')
+    if (!companions) throw new Error('Companion APIs must be nested in the API section')
+    companions.collapsed = true
+    companions.items = optional.owners.map(({ slug, name }) => {
       if (!/^[a-z]+$/.test(slug) || !/^PerfChecker[A-Za-z]+$/.test(name))
         throw new Error('Invalid companion API namespace')
-      return { text: name, items: [
+      return { text: name, collapsed: true, items: [
         { text: 'Public API', link: `/optional-api/${slug}/public-api` },
         { text: 'Full API', link: `/optional-api/${slug}/full-api` },
       ] }
-    }) })
+    })
   }
   for (const group of sidebar) {
     if (!group.items) continue
     group.collapsed = false
-    for (const child of group.items) if (child.items) child.collapsed = false
+    for (const child of group.items) {
+      if (child.items) child.collapsed = group.text === 'Tools' || group.text === 'API'
+    }
   }
 }
 export default config

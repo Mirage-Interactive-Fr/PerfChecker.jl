@@ -5,8 +5,8 @@
 # Full API
 
 
-This is the complete reference generated from PerfChecker's Julia docstrings,
-including documented implementation hooks. Start with the [Public API](public-api.md)
+This is the full **Core** reference generated from the PerfChecker module's Julia docstrings, including documented implementation hooks. The six
+[companion APIs](optional-api.md) have separate generated references. Start with the [Public API](public-api.md)
 for supported package entry points or [Quickstart](../guide/first-check.md) for an
 executable introduction. Internal bindings support extensions and maintenance;
 their behavior can change independently of the exported interface.
@@ -31,7 +31,7 @@ Some entry points are implemented by an interface package. Install and load the 
 
 - **PerfCheckerWeb** — `serve_suite`, `register_oxygen_routes!`, `register_testitem_routes!`, `studio_token_authenticator`, `run_studio_agent`.
 - **PerfCheckerPluto** — `prepare_pluto_dashboard`, `launch_pluto_dashboard`, `write_suite_notebook`, `write_investigation_notebook`.
-- **PerfCheckerMakie** — `performance_figure`, `suite_dashboard`, `checkres_to_boxplots`, `checkres_to_scatterlines`, `checkres_to_pie`, `table_to_pie`, `checkres_figures`, `saveplot`, `observation_plot` (companion 1.0.3).
+- **PerfCheckerMakie** — `performance_figure`, `suite_dashboard`, `checkres_to_boxplots`, `checkres_to_scatterlines`, `checkres_to_pie`, `table_to_pie`, `checkres_figures`, `saveplot`, `observation_plot` (companion 1.0.4).
 - **PerfCheckerMakie + WGLMakie** — `performance_plot_html`.
 - **PerfCheckerTachikoma** — `SuiteTUI`, `tui_model`, `tui`, `refresh!`, `close!`, `plot_pixels`.
 - **PerfCheckerLinuxPerf / PerfCheckerLIKWID** — each owns its own `CounterRecord`, `CounterResult`, `measure_counters`, `counter_bundle`, `counter_command`, `counter_executor`, `run_counter_suite`.
@@ -43,8 +43,9 @@ source revision. Their isolated projects preserve incompatible dependency
 requirements and their methods of shared Core bindings. The supplementary
 source references below retain the published `1a7577da782ba8676683f3ceefcb8dccf055afe5`
 snapshot and Julia help examples. Install the selected owner
-using [the source-companion recipes](../guide/installation.md#Source-companions-for-1.0.1)
-before using its methods or Julia help.
+following its interface or counter-tool installation instructions before using
+its methods or Julia help. The [companion index](optional-api.md) identifies
+the package that owns each API.
 
 ### Tachikoma terminal API
 

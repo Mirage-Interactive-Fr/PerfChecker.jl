@@ -19,10 +19,26 @@ required ABI assertion. aarch64 currently has source/guard review only, not an
 execution qualification. CI does not change permissions or the kernel; any
 native positive counters depend on the runner's existing access.
 
-This companion is developed from the monorepo until separately registered. Use
-an explicit worker project with `Pkg.develop(path=...)` for the companion and
-the target source. LinuxPerf requires PrettyTables 2, so keep this worker project
-separate from the LIKWID worker project, which requires PrettyTables 3.
+## Installation
+
+PerfCheckerLinuxPerf 1.0.1 is registered in General. Prepare an explicit worker
+project; install your measured target in that same project separately.
+
+The source candidate 1.0.2 explicitly disables coverage and allocation tracking
+in counter workers. It is not yet registered; the command below currently
+installs the registered 1.0.1:
+
+```julia
+using Pkg
+Pkg.activate("perf/linuxperf-worker")
+Pkg.add(["PerfChecker", "PerfCheckerLinuxPerf"])
+```
+
+LinuxPerf requires PrettyTables 2, so keep this worker project separate from the
+LIKWID worker project, which requires PrettyTables 3. The published Core has a
+[known ARM import limitation](../README.md#arm-compatibility).
+
+## Measure counters
 
 ```julia
 using PerfChecker, PerfCheckerLinuxPerf

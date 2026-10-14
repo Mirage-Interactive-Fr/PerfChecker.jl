@@ -12,17 +12,17 @@ hero:
   actions:
     - theme: brand
       text: Quickstart
-      link: /guide/first-check
+      link: /guide/overview
     - theme: alt
       text: Examples
-      link: /real-packages/
+      link: /tutorials/bibliography
     - theme: alt
       text: Use VS Code
       link: /interfaces/vscode
 features:
   - title: Measure a test
     details: Run an existing TestItem and inspect its time and allocations.
-    link: /guide/first-check
+    link: /guide/overview
     linkText: Try the quickstart
   - title: Compare versions
     details: Measure the same operation across releases or Git revisions.
@@ -30,12 +30,12 @@ features:
     linkText: Compare results
   - title: Find expensive calls
     details: Inspect CPU, wall-time and allocation profiles from saved runs.
-    link: /guide/investigate
+    link: /tutorials/comparisons
     linkText: Read a profile
-  - title: Choose an interface
-    details: Work in Julia, VS Code, Oxygen or Pluto with the same results.
-    link: /interfaces/packages
-    linkText: Explore interfaces
+  - title: Open a notebook
+    details: Prepare a suite, inspect saved results and launch selected checks in Pluto.
+    link: /interfaces/pluto
+    linkText: Use Pluto
 ---
 ```
 
@@ -62,10 +62,9 @@ features:
 
 ## Where to start
 
-- New here? Read [Introduction](guide/overview.md), then [Installation](guide/installation.md).
-- Have a test? [Quickstart: measure a test](guide/first-check.md).
-- Have an operation? [Measure an operation](tutorials/quick-tour.md).
-- Want to compare? [Suites and comparisons](suites-and-comparisons.md).
+- New here? Start with [your first comparison](guide/overview.md).
+- Investigating a change? Follow [the Bibliography case study](tutorials/comparisons.md).
+- Define a larger experiment with [suites and CI](software-suites.md).
 
 ```@raw html
 <a id="Use-the-results-in-your-own-workflow"></a>
@@ -75,21 +74,24 @@ features:
 
 - [VS Code](interfaces/vscode.md) — run one item while editing.
 - [Web interface (Oxygen)](interfaces/web-studio.md) — select workloads in a browser.
-- [REPL and Pluto](interfaces/repl-pluto.md) — terminal, or an editable notebook.
-- [Plots](interfaces/visualization.md) — Makie figures from saved runs.
+- [Pluto](interfaces/pluto.md) — editable notebooks with explicit launch controls.
+- [REPL](interfaces/repl.md) — plan and inspect results in Julia.
+- [Tachikoma](interfaces/tachikoma.md) — interactive terminal selection.
+- [Makie](interfaces/visualization.md) — figures from saved runs.
+- [Documenter](interfaces/documentation.md) — include saved results in documentation.
 
 ## Examples
 
-- [Bibliography](tutorials/bibliography.md) — the manual's running example, extended.
+- [Bibliography](tutorials/bibliography.md) — compare nine releases, then investigate export costs.
 - [DataStructures](real-packages/datastructures.md) — 35 containers over eight years.
 - [Oxygen](real-packages/oxygen.md) — HTTP handlers and real network traffic.
 
 ## Contribute
 
 [Report a problem](https://github.com/Mirage-Interactive-Fr/PerfChecker.jl/issues),
-[improve a page](contributing/documentation.md), or open a pull request.
+[improve code, documentation or an example](contributing/index.md), or open a pull request.
 
-## Built with the Julia community
+::: details Built with the Julia community
 
 PerfChecker.jl brings together work from many projects. We thank their maintainers,
 contributors, and the Julia community for making these workflows possible.
@@ -139,7 +141,7 @@ contributors, and the Julia community for making these workflows possible.
 <details><summary>Additional foundations</summary>
 <p>Core's data and source handling also depend on
 <a href="https://github.com/JuliaData/CSV.jl">CSV</a>,
-<a href="https://github.com/m-j-w/CpuId.jl">CpuId</a>,
+<a href="https://github.com/JuliaParallel/Hwloc.jl">Hwloc</a>,
 <a href="https://github.com/JuliaIO/JSON.jl">JSON</a>,
 <a href="https://github.com/JuliaLang/JuliaSyntax.jl">JuliaSyntax</a>,
 <a href="https://github.com/JuliaData/TypedTables.jl">TypedTables</a>, and
@@ -156,3 +158,5 @@ and Julia's Test, Logging, and Sockets libraries.</p>
 
 Optional integrations require their packages; hardware and platform support vary.
 Thank you to everyone who builds, documents, tests, and maintains these tools.
+
+:::

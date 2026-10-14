@@ -1,60 +1,49 @@
-```@raw html
-<a id="Overview"></a>
+# Your first comparison
+
+PerfChecker measures the same operation across package versions and keeps the conditions with the result. Install Core in a Julia project:
+
+```julia
+] add PerfChecker
 ```
 
-# Introduction
+For this benchmark, also run `] add BenchmarkTools`. The figure needs [PerfCheckerMakie and WGLMakie](../interfaces/visualization.md#Customize-and-export-Makie-figures); they are optional, separate installations.
 
-A test can pass while the code it checks becomes slower. PerfChecker measures that change and helps you find where it comes from.
-
-## The problem
-
-- Unit tests check correctness, not cost.
-- A new temporary array, an extra parse or a different algorithm can slow an operation without failing any test.
-- Two runs on the same machine differ anyway, so a single number proves nothing.
-
-PerfChecker measures the same operation repeatedly, records the distribution, and keeps the conditions of the run with the numbers.
-
-```@raw html
-<a id="Save-a-result-and-reopen-it"></a>
+```julia
+using PerfChecker, BenchmarkTools
+config = PerfConfig(:benchmark; path = dirname(Base.active_project()),
+    pkgs = ("Bibliography", :custom, [v"0.3.1", v"0.4.0"], false),
+    include_current = false, samples = 50, evals = 1, seconds = 1.0)
+result = @check config begin
+    using Bibliography
+    entries = Bibliography.import_bibtex(
+        "@article{example, title={A small example}, author={Ada Lovelace}, " *
+        "journal={Julia Studies}, year={2026}}\n")
+end begin
+    Bibliography.export_bibtex(entries)
+end
+using PerfCheckerMakie, WGLMakie
+WGLMakie.activate!()
+checkres_to_scatterlines(result, Val(:benchmark))
 ```
 
-## The workflow
-
-```text
-choose a workload → measure it → save the result → compare or profile it
-```
-
-- **Workload** — one operation and its inputs, or an existing test item.
-- **Collector** — what to record: time, allocations, a CPU profile, network counters.
-- **Run** — the saved result, with source revision, runtime and settings attached.
-- **Comparison** — the change from a reference, with optional pass/fail limits.
-
-Every interface reads the same saved run. Changing from the REPL to VS Code to the browser does not re-measure anything.
-
-## What runs, and where
-
-- The **controller** is your Julia process. It prepares versions, schedules work and writes reports.
-- A **worker** is a separate Julia process that loads and measures the target.
-- The collector decides the measurement boundary inside the worker.
-- Interface and plotting code never runs inside the worker.
-
-A whole-test measurement includes setup and assertions. An operation benchmark can exclude input preparation. Both are useful; pick the boundary that matches your question.
+Preparation parses one entry once outside the timed export; the read-only benchmark reuses it. Two released versions are measured with fifty samples each; dependencies resolve for each release. This compares complete resolved stacks, not an isolated source change.
 
 ```@raw html
-<a id="Start-with-one-operation"></a>
-<a id="Adapt-the-example"></a>
-<a id="Explore-a-larger-example"></a>
+<NormalizedMeasurements source="/examples/bibliography/first-comparison/normalized.json" html="/examples/bibliography/first-comparison/normalized.html" package-name="Bibliography · first comparison" />
 ```
 
-## Start
+The recorded example uses exactly this workload: Linux, Julia 1.13.1, BenchmarkTools 1.7.0. Release 0.4.0 has lower minimum time but higher allocated bytes and allocation count. Four curves overlay each metric's minimum divided by its minimum across the two versions; 1 is the reference, and equal zeros are shown at 1. Inspect a point for its original value, unit and capture conditions. A lower minimum alone does not prove an improvement.
 
-- [Installation](installation.md)
-- [Quickstart: measure a test](first-check.md)
-- [Measure an operation](../tutorials/quick-tour.md)
-- [Understand the result](understanding-measurements.md)
+Continue with [a focused investigation](../tutorials/comparisons.md), then [a suite and CI](../software-suites.md). [Installation details](../interfaces/packages.md#Installation) and [measurement definitions](../measurement-model.md) remain available as references.
 
-## Measure safely
+## ARM installations
 
-- Keep a correctness check. A faster wrong answer is not an improvement.
-- Save the run. Reports record the source, environment and settings needed to judge comparability.
-- Do not promote a planned feature or platform to a real one. If a tool is unavailable, the report says `unavailable` — not zero.
+Published Core **1.1.0** pins CpuId **0.3.0**, whose import can fail on aarch64,
+including Apple Silicon. All six companions depend on Core, so installing them
+by name does not bypass this [reported failure](https://github.com/JuliaRegistries/General/pull/171531#issuecomment-6145459097).
+A source correction must be validated and released before installations from
+General receive it. Saved examples retain their original capture environments.
+
+```@raw html
+<a id="Introduction"></a><a id="introduction"></a><a id="The-problem"></a><a id="the-problem"></a><a id="The-workflow"></a><a id="the-workflow"></a><a id="What-runs,-and-where"></a><a id="what-runs,-and-where"></a><a id="Start"></a><a id="start"></a><a id="Measure-safely"></a><a id="measure-safely"></a>
+```

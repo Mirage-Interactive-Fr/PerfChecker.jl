@@ -3,6 +3,12 @@
     base = machine_profile(; label = "target")
     @test base["spec_id"] == machine_profile(; label = "different host name")["spec_id"]
     @test only(similar_machines(base, [base]))["distance"] == 0
+    @test base["specs"]["logical_cpus"] > 0
+    @test base["specs"]["physical_cores"] >= 0
+    @test base["specs"]["simd_bytes"] == 0
+    @test Set(only(similar_machines(base, [base]))["missing_features"]) ==
+          Set(base["specs"]["physical_cores"] == 0 ?
+              ["physical_cores", "simd_bytes"] : ["simd_bytes"])
     context = Dict("suite_revision" => "rev1", "environment" => "deps1",
         "measurement" => "warm median", "unit" => "seconds", "resource_policy" => "one pinned CPU")
     target = Dict("machine" => base, "context" => context,

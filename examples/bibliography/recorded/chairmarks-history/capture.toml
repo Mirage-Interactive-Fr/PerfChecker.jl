@@ -1,0 +1,56 @@
+source_revision = "2cf431eb5a84f05e0af1098b7f6e5db84d479288"
+perfchecker_version = "1.1.0"
+julia_version = "1.13.1"
+samples_per_version = 100
+workload = "export_bibtex"
+correctness = "not_checked"
+snapshot_errors = []
+collector_version = "1.3.1"
+os = "Linux"
+schema_version = "perfchecker-chairmarks-documentation-capture/1"
+seconds = 1.0
+collector = "Chairmarks"
+evals = 1
+threads = 1
+state_policy = "fresh"
+performance = "not_compared"
+worker_environment_snapshots = 9
+feature = "export_bibtex_chairmark"
+history_builder_sha256 = "4ad18261dd2f642788b552439976367242a269f583432682f9930e8aae61931d"
+
+[[statuses]]
+version = "0.1.0"
+status = "pass"
+message = ""
+[[statuses]]
+version = "0.2.0"
+status = "pass"
+message = ""
+[[statuses]]
+version = "0.2.5"
+status = "pass"
+message = ""
+[[statuses]]
+version = "0.2.10"
+status = "pass"
+message = ""
+[[statuses]]
+version = "0.2.15"
+status = "pass"
+message = ""
+[[statuses]]
+version = "0.2.20"
+status = "pass"
+message = ""
+[[statuses]]
+version = "0.3.0"
+status = "pass"
+message = ""
+[[statuses]]
+version = "0.3.1"
+status = "pass"
+message = ""
+[[statuses]]
+version = "0.4.0"
+status = "pass"
+message = ""

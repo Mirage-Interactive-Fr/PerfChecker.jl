@@ -502,13 +502,7 @@ function check_function(x::Symbol, config::CheckConfig, block1, block2;
     g = prep(di, block1, x)
     h = check(di, block2, x)
     initpkg = initpkgs(x)
-    hwinfo = HwInfo(
-        cpu_info(),
-        CPU_NAME,
-        WORD_SIZE,
-        simdbytes(),
-        (cpucores(), cputhreads(), cputhreads_per_core())
-    )
+    hwinfo = HwInfo()
 
     results = CheckerResult(
         Table[],
