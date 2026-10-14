@@ -10,7 +10,7 @@ const { Server, utils } = ssh2;
 import { hostVerifier, validateRoot, readExport, publishDocumentation, connectSftp,
   deploymentConfiguration, documentationSourceConfiguration, validateDocumentationExports,
   validateStableDocumentationSource, fetchStableDocumentationCompanions, validateDocumentationRenderer,
-  recovery111, recoveryContext, validateRecoveryOrigin, recoveryOptions, recoveryDownloadUrl,
+  recovery111, recovery111After3h, recoveryContext, validateRecoveryOrigin, validateRecoveryContinuation, verifyRecoveryOrigin, recoveryOptions, recoveryDownloadUrl,
   writeVerifiedRecoveryArchive, inspectRecoveryDestination, reclaimRecoveryLock, validateRecoveryPlanArtifact,
   failureClass } from './deploy-sftp.mjs';
 const revision = 'a'.repeat(40), nextRevision = 'b'.repeat(40);
@@ -85,6 +85,96 @@ const recoveryOrigin = () => ({
   commit: { sha: recovery111.revision, commit: { tree: { sha: recovery111.tree } } },
   tag: { sha: recovery111.revision, commit: { tree: { sha: recovery111.tree } } },
   annotations: [{ annotation_level: 'failure', message: 'The job has exceeded the maximum execution time of 2h0m0s' }], publishers: []
+});
+const previousRecovery = () => {
+  const previous = recovery111After3h;
+  return {
+    run: { id: previous.run, head_sha: previous.revision, head_branch: 'main', event: 'workflow_dispatch',
+      path: '.github/workflows/Documentation.yml', run_attempt: 1, status: 'completed', conclusion: 'cancelled' },
+    job: { id: previous.job, run_id: previous.run, head_sha: previous.revision, run_attempt: 1,
+      name: 'Recover the retained v1.1.1 documentation exports', status: 'completed', conclusion: 'cancelled',
+      started_at: previous.started, completed_at: previous.completed },
+    commit: { sha: previous.revision, commit: { tree: { sha: previous.tree } } },
+    annotations: [{ annotation_level: 'failure', message: 'The job has exceeded the maximum execution time of 3h0m0s' }],
+    artifact: { id: previous.inspectionArtifact, name: 'documentation-recovery-111-inspection', expired: false,
+      size_in_bytes: previous.inspectionBytes, digest: `sha256:${previous.inspectionSha256}`,
+      workflow_run: { id: previous.run, head_sha: previous.revision } },
+    log: [previous.inspectionLog, previous.uploadLog, previous.cancelledLog, ''].join('\n')
+  };
+};
+const continuationOrigin = () => ({ ...recoveryOrigin(), previousRecovery: previousRecovery() });
+const continuationContext = () => recoveryContext({ ...recoveryEnv(), PERFCHECKER_DOCS_RECOVERY: 'recover-1.1.1-after-3h' });
+test('the continuation keeps the original export and requires the exact previous cancellation, source and saved receipt', () => {
+  const context = continuationContext(), data = continuationOrigin();
+  const proof = validateRecoveryOrigin(data, context);
+  assert.equal(proof.sourceRun, recovery111.run); assert.equal(proof.artifactId, recovery111.artifact);
+  assert.equal(proof.sourceRevision, recovery111.revision); assert.equal(proof.previousRecoveryRun, recovery111After3h.run);
+  assert(Object.values(proof).every(value => ['string', 'number', 'boolean'].includes(typeof value)));
+  assert.throws(() => recoveryContext({ ...recoveryEnv(), PERFCHECKER_DOCS_RECOVERY: 'recover-1.1.1-after-3h',
+    PERFCHECKER_RECOVERY_RECLAIM_LOCK: 'true' }), /original cancellation-lock opt-in/);
+  assert.throws(() => recoveryContext({ ...recoveryEnv(), GITHUB_RUN_ID: String(recovery111After3h.run) }));
+  const changes = [d => d.run.id++, d => d.run.head_sha = revision, d => d.run.head_branch = 'other',
+    d => d.run.event = 'push', d => d.run.path = 'other', d => d.run.run_attempt++, d => d.run.status = 'in_progress',
+    d => d.run.conclusion = 'failure', d => d.job.id++, d => d.job.run_id++, d => d.job.head_sha = revision,
+    d => d.job.run_attempt++, d => d.job.name = 'other', d => d.job.conclusion = 'success',
+    d => d.job.started_at = recovery111.publisherStarted, d => d.job.completed_at = recovery111.publisherCompleted,
+    d => d.commit.sha = revision, d => d.commit.commit.tree.sha = revision, d => d.annotations = [],
+    d => d.annotations[0].message = 'The job has exceeded the maximum execution time of 2h0m0s',
+    d => d.artifact.id++, d => d.artifact.expired = true, d => d.artifact.size_in_bytes--,
+    d => d.artifact.digest = `sha256:${'a'.repeat(64)}`, d => d.artifact.workflow_run.id++,
+    d => d.artifact.workflow_run.head_sha = revision];
+  for (const change of changes) { const altered = previousRecovery(); change(altered); assert.throws(() => validateRecoveryContinuation(altered)); }
+  assert.throws(() => validateRecoveryOrigin(recoveryOrigin(), context));
+  data.publishers.push({ run_id: 123, name: 'Recover the retained v1.1.1 documentation exports', status: 'in_progress' });
+  assert.throws(() => validateRecoveryOrigin(data, context), /Another documentation publisher/);
+});
+test('the continuation refuses absent, ambiguous, reordered or completed transfer journal evidence', () => {
+  const previous = recovery111After3h, original = previousRecovery();
+  for (const log of ['', original.log.replace(previous.uploadLog, ''), original.log + previous.inspectionLog,
+    [previous.uploadLog, previous.inspectionLog, previous.cancelledLog].join('\n'),
+    original.log + '\nRetained export recovery completed; stable=v1.1.1',
+    original.log + '\nUploading version: 7151 files', 'x'.repeat(1024 * 1024 + 1)])
+    assert.throws(() => validateRecoveryContinuation({ ...original, log }));
+  assert.match(validateRecoveryContinuation(original).previousRecoveryLogSha256, /^[a-f0-9]{64}$/);
+});
+test('the continuation reads only fixed GitHub journal metadata and never forwards its token to storage', async t => {
+  const original = recoveryOrigin(), previous = previousRecovery(), base = `https://api.github.com/repos/${recovery111.repository}/`;
+  const previousCheck = `${base}check-runs/${recovery111After3h.job}`;
+  const metadata = new Map([
+    [`actions/runs/${recovery111.run}`, original.run], [`actions/jobs/${recovery111.producerJob}`, original.producer],
+    [`actions/jobs/${recovery111.publisherJob}`, { ...original.publisher, check_run_url: `${base}check-runs/123` }],
+    [`actions/artifacts/${recovery111.artifact}`, original.artifact], [`commits/${recovery111.revision}`, original.commit],
+    [`commits/${recovery111.version}`, original.tag], ['actions/runs/90000000001', original.recoveryRun],
+    ['check-runs/123/annotations?per_page=100', original.annotations],
+    [`actions/runs/${recovery111After3h.run}`, previous.run],
+    [`actions/jobs/${recovery111After3h.job}`, { ...previous.job, check_run_url: previousCheck }],
+    [`commits/${recovery111After3h.revision}`, previous.commit],
+    [`actions/artifacts/${recovery111After3h.inspectionArtifact}`, previous.artifact],
+    [`check-runs/${recovery111After3h.job}/annotations?per_page=100`, previous.annotations]
+  ]);
+  const storage = 'https://fixture.blob.core.windows.net/previous-journal', calls = [];
+  let redirect = storage, log = previous.log;
+  t.mock.method(globalThis, 'fetch', async (url, options) => {
+    const address = String(url); calls.push({ address, authorization: options.headers?.Authorization });
+    if (address === storage) { assert.equal(options.headers, undefined); assert.equal(options.redirect, 'error'); return new Response(log); }
+    assert(address.startsWith(base)); assert.equal(options.headers.Authorization, 'Bearer fixture-read-only-token');
+    const path = address.slice(base.length);
+    if (path === `actions/jobs/${recovery111After3h.job}/logs`) {
+      assert.equal(options.redirect, 'manual'); return new Response(null, { status: 302, headers: { location: redirect } });
+    }
+    if (path.startsWith('actions/workflows/Documentation.yml/runs?'))
+      return Response.json({ total_count: 0, workflow_runs: [] });
+    assert(metadata.has(path), `Unexpected metadata request: ${path}`); return Response.json(metadata.get(path));
+  });
+  const env = { ...recoveryEnv(), GH_TOKEN: 'fixture-read-only-token', PERFCHECKER_DOCS_RECOVERY: 'recover-1.1.1-after-3h' };
+  const proof = await verifyRecoveryOrigin(env);
+  assert.equal(proof.previousRecoveryRun, recovery111After3h.run);
+  assert.equal(calls.filter(call => call.address === storage).length, 1);
+  assert(!calls.some(call => call.address.includes(`/actions/artifacts/${recovery111After3h.inspectionArtifact}/zip`)));
+  redirect = 'https://untrusted.invalid/journal'; await assert.rejects(verifyRecoveryOrigin(env), /storage URL/);
+  assert(!calls.some(call => call.address.startsWith('https://untrusted.invalid/')));
+  redirect = storage; log = 'x'.repeat(1024 * 1024 + 1);
+  await assert.rejects(verifyRecoveryOrigin(env), /size limit/);
 });
 test('artifact-only recovery retains the actual dispatch identity and refuses arbitrary sources or attempts', () => {
   const env = recoveryEnv(), context = recoveryContext(env);
@@ -195,6 +285,63 @@ test('recovery inspects only the exact cancelled empty real lock and refuses cha
   // A new owner winning the atomic mkdir is still protected by the usual lock.
   await sftp.mkdir(lock); await assert.rejects(publishDocumentation(sftp, options), /holds the SFTP lock/);
 });
+test('the later empty lock needs the full verified cancellation evidence and separate opt-in, not its timestamp alone', async t => {
+  const { sftp, options } = await recoverableDestination(t), lock = '/www/.perfchecker-docs-lock', previous = recovery111After3h;
+  const proof = validateRecoveryOrigin(continuationOrigin(), continuationContext());
+  const later = { ...options, ...continuationContext(), continuationProof: proof };
+  await sftp.mkdir(lock);
+  const metadata = { mtime: Date.parse(previous.lockEarliest) / 1000 + 30, mode: previous.lockMode, uid: previous.lockUid, gid: previous.lockGid };
+  sftp.metadata.set(lock, { ...metadata });
+  const removedBeforeInspection = [...sftp.removed];
+  // The original route must continue refusing the later cancellation window.
+  await assert.rejects(inspectRecoveryDestination(sftp, options), /time/);
+  await assert.rejects(inspectRecoveryDestination(sftp, { ...later, continuationProof: undefined }), /verified previous/);
+  const inspected = await inspectRecoveryDestination(sftp, later);
+  assert.equal(inspected.lock.mtime, metadata.mtime); assert.deepEqual(sftp.removed, removedBeforeInspection);
+  await assert.rejects(reclaimRecoveryLock(sftp, { ...later, reclaimCancelledLock: false }, inspected.lock), /opt-in/);
+  for (const change of [{ mode: 0o40700 }, { uid: 0 }, { gid: 0 }, { mtime: Date.parse(previous.lockEarliest) / 1000 - 1 },
+    { mtime: Date.parse(previous.lockLatest) / 1000 + 1 }]) {
+    sftp.metadata.set(lock, { ...metadata, ...change }); await assert.rejects(inspectRecoveryDestination(sftp, later));
+  }
+  sftp.metadata.set(lock, { ...metadata });
+  await sftp.write(posix.join(lock, 'unexpected'), 'never remove');
+  await assert.rejects(inspectRecoveryDestination(sftp, later), /nonempty/); await sftp.unlink(posix.join(lock, 'unexpected'));
+  sftp.links.add(lock); await assert.rejects(inspectRecoveryDestination(sftp, later), /symbolic link/); sftp.links.delete(lock);
+  sftp.metadata.set(lock, { ...metadata, mtime: metadata.mtime + 1 });
+  await assert.rejects(reclaimRecoveryLock(sftp, later, inspected.lock), /changed/);
+  sftp.metadata.set(lock, { ...metadata });
+  assert.equal(await reclaimRecoveryLock(sftp, later, inspected.lock), true);
+  await assert.rejects(reclaimRecoveryLock(sftp, later, inspected.lock), /changed/);
+  assert.equal(await reclaimRecoveryLock(sftp, later, null), false);
+  await sftp.mkdir(lock); await assert.rejects(publishDocumentation(sftp, later), /Another documentation publisher/);
+});
+test('the continuation recopies stable completely, writes markers last and never mutates any version-archive path', async t => {
+  const { sftp, options } = await recoverableDestination(t);
+  const later = { ...options, ...continuationContext(), continuationProof: validateRecoveryOrigin(continuationOrigin(), continuationContext()) };
+  const archive = new Map([...sftp.files].filter(([path]) => path.startsWith('/www/v1.1.1/'))
+    .map(([path, file]) => [path, Buffer.from(file.bytes)]));
+  const mutations = [];
+  for (const method of ['mkdir', 'chmod', 'write', 'put', 'replace', 'unlink', 'rmdir']) {
+    const original = sftp[method].bind(sftp);
+    sftp[method] = async (...args) => {
+      const paths = method === 'put' ? [args[1]] : method === 'replace' ? args.slice(0, 2) : [args[0]];
+      mutations.push(...paths); return original(...args);
+    };
+  }
+  sftp.operations = [];
+  sftp.fail = path => path === '/www/guide.html';
+  await assert.rejects(publishDocumentation(sftp, later), /injected/);
+  assert.equal(JSON.parse(sftp.files.get('/www/.perfchecker-stable.json').bytes).version, 'v1.0.0');
+  sftp.fail = null; await publishDocumentation(sftp, later);
+  for (const path of ['assets/app.js', 'assets/chunks/@localSearchIndexroot.fixture.js', 'build-info.json', 'guide.html', 'index.html', 'siteinfo.js'])
+    assert(sftp.operations.includes('/www/' + path));
+  const stableMarker = sftp.operations.indexOf('/www/.perfchecker-stable.json');
+  assert(stableMarker > sftp.operations.lastIndexOf('/www/index.html'));
+  assert(sftp.operations.lastIndexOf('/www/.perfchecker-releases.json') > stableMarker);
+  assert(sftp.operations.lastIndexOf('/www/versions.js') > stableMarker);
+  assert(!mutations.some(path => path === '/www/v1.1.1' || path.startsWith('/www/v1.1.1/')));
+  for (const [path, bytes] of archive) assert.deepEqual(sftp.files.get(path).bytes, bytes);
+});
 test('recovery refuses missing or different archive markers, newer releases and stable refreshes before writing', async t => {
   const { sftp, options } = await recoverableDestination(t);
   const marker = '/www/v1.1.1/.perfchecker-docs.json', original = sftp.files.get(marker);
@@ -238,11 +385,12 @@ test('a failure during retained-export recovery keeps the old catalogue and can 
 });
 test('the recovery workflow skips producers, retains the publisher mutex and saves its receipt before applying', async () => {
   const workflow = await readFile(new URL('../.github/workflows/Documentation.yml', import.meta.url), 'utf8');
-  assert.match(workflow, /options: \[dev, stable, recover-1\.1\.1\]/);
+  assert.match(workflow, /options: \[dev, stable, recover-1\.1\.1, recover-1\.1\.1-after-3h\]/);
   const build = workflow.split('  documentation:\n')[1].split('  sftp:\n')[0];
-  assert.match(build, /if: github\.event\.deleted != true && !\(github\.event_name == 'workflow_dispatch' && inputs\.publication == 'recover-1\.1\.1'\)/);
+  assert.match(build, /if: github\.event\.deleted != true && !\(github\.event_name == 'workflow_dispatch' && \(inputs\.publication == 'recover-1\.1\.1' \|\| inputs\.publication == 'recover-1\.1\.1-after-3h'\)\)/);
   const recovery = workflow.split('  recover-111:\n')[1];
-  assert(recovery); assert.match(recovery, /timeout-minutes: 180/);
+  assert(recovery); assert.match(recovery, /timeout-minutes: \$\{\{ inputs\.publication == 'recover-1\.1\.1-after-3h' && 360 \|\| 180 \}\}/);
+  assert.match(recovery, /PERFCHECKER_RECOVERY_RECLAIM_AFTER3H_LOCK: \$\{\{ inputs\.reclaim_3h_recovery_lock \}\}/);
   assert.match(recovery, /environment: documentation-sftp/); assert.match(recovery, /group: perfchecker-documentation-sftp/);
   assert.match(recovery, /cancel-in-progress: false/); assert.match(recovery, /ref: \$\{\{ github\.sha \}\}/);
   assert(!/julia|website\/make\.jl|GITHUB_SHA\s*:|GITHUB_EVENT_NAME\s*:|actions\/download-artifact/.test(recovery));

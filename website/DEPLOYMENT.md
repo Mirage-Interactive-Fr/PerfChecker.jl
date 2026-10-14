@@ -230,6 +230,52 @@ for 14 days, including any inspection saved before a later transfer failure.
 After the job succeeds, verify root and `/v1.1.1/` HTTPS metadata and navigation;
 do not infer completion from a build result or an early metadata upload.
 
+### Continue the reviewed three-hour cancellation
+
+The first recovery, run `38571832707`, job `115879366129`, was cancelled at its
+three-hour limit on 14 October 2026. Its stable transfer reported 2,500 of 7,151
+files; it did not produce a successful completion record. This is a failed
+publication, even when an early `build-info.json` is already visible over HTTPS.
+
+The separate **recover-1.1.1-after-3h** choice accepts only that terminal run,
+attempt 1, workflow source `8a0df457fdd84bc9ad8e897ae2c4000db8b2009a` and tree
+`d71844a820b20ac4b5ffd6da6574ac6d42a69d49`, with its exact three-hour timeout
+annotation. It also verifies the metadata and digest of the already reviewed
+inspection artifact `11897109791` and reads the cancelled job's bounded journal
+through GitHub's authenticated endpoint. The exact saved-inspection, first
+stable-upload and cancellation events must each occur once and in order. The
+journal digest is sealed in the new receipt and rechecked in each later phase.
+The old receipt is not downloaded again, and is never used as an export source.
+The original 1,362,821,498-byte ZIP, tag, producer and SHA256 checks still apply.
+
+That workflow source created an **empty lock directory without an owner
+record**. Its modification time alone does not establish ownership. Together
+with the verified source and journal, a lock can be attributed to this known
+cancelled execution only when it is empty, non-symlink, mode `16877`, UID/GID
+`978`, and dated between 13:32:15 and 13:33:26 UTC on 14 October 2026: after the
+inspection was saved and before that source began its stable upload. Any other
+lock, missing evidence, changed snapshot or competing active publisher is
+refused. An absent lock requires no removal.
+
+Dispatch this choice on **main**, leaving both source inputs and the original
+`reclaim_cancelled_lock` opt-in empty/false. The separate
+`reclaim_3h_recovery_lock` opt-in permits only the attributed lock above. The
+authenticated inspection remains read-only; a new Actions receipt is uploaded
+before apply, which repeats all checks and removes only that unchanged empty
+directory with nonrecursive `rmdir` before acquiring the usual atomic lock.
+
+Only this choice has a **360-minute** job budget; the original recovery remains
+180 minutes and ordinary publication remains 120 minutes. GitHub documents
+[job timeout limits](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#jobsjob_idtimeout-minutes).
+The observed first 1,000 files took 156 minutes 35 seconds; the next three
+500-file batches took 8 minutes 57 seconds, 5 minutes 25 seconds and 4 minutes
+55 seconds. Six hours provides room for another complete stable copy if the
+later throughput persists, but is not a completion guarantee. Upload concurrency
+stays at four. No files are skipped using old progress counts, sizes or mtimes.
+No version-archive path is written, including on failure. Stable completion,
+release state and the live catalogue are committed only after the complete
+root transfer. The stable-refresh first-promotion guard is unchanged.
+
 Configure these repository Actions variables:
 
 | Variable | Meaning |

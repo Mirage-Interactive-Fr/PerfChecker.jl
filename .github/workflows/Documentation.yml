@@ -8,9 +8,9 @@ on:
   workflow_dispatch:
     inputs:
       publication:
-        description: Documentation to publish (recover-1.1.1 reuses only the reviewed retained export)
+        description: Documentation to publish (recovery choices reuse only the reviewed retained export)
         type: choice
-        options: [dev, stable, recover-1.1.1]
+        options: [dev, stable, recover-1.1.1, recover-1.1.1-after-3h]
         default: dev
         required: true
       stable_version:
@@ -23,6 +23,11 @@ on:
         required: false
       reclaim_cancelled_lock:
         description: Only for recover-1.1.1; allow removing its inspected empty lock from the cancelled original job
+        type: boolean
+        default: false
+        required: false
+      reclaim_3h_recovery_lock:
+        description: Only for recover-1.1.1-after-3h; allow removal of the inspected empty lock attributed to cancelled run 38571832707
         type: boolean
         default: false
         required: false
@@ -48,7 +53,7 @@ env:
 
 jobs:
   documentation:
-    if: github.event.deleted != true && !(github.event_name == 'workflow_dispatch' && inputs.publication == 'recover-1.1.1')
+    if: github.event.deleted != true && !(github.event_name == 'workflow_dispatch' && (inputs.publication == 'recover-1.1.1' || inputs.publication == 'recover-1.1.1-after-3h'))
     name: Build documentation exports and test SFTP publication
     runs-on: ubuntu-latest
     timeout-minutes: 180
@@ -464,12 +469,12 @@ jobs:
   recover-111:
     name: Recover the retained v1.1.1 documentation exports
     if: >-
-      github.event_name == 'workflow_dispatch' && inputs.publication == 'recover-1.1.1' &&
+      github.event_name == 'workflow_dispatch' && (inputs.publication == 'recover-1.1.1' || inputs.publication == 'recover-1.1.1-after-3h') &&
       github.ref == 'refs/heads/main' && vars.PERFCHECKER_DOCS_SFTP_DEPLOY_V2 == 'true'
     runs-on: ubuntu-latest
-    # The original single archive copy took 112 minutes; do not copy it again.
-    # This budget covers one stable copy, byte verification and final markers.
-    timeout-minutes: 180
+    # Keep the original route unchanged. Its one reviewed 3h cancellation needs
+    # a separate bounded budget; neither route repeats the version archive.
+    timeout-minutes: ${{ inputs.publication == 'recover-1.1.1-after-3h' && 360 || 180 }}
     environment: documentation-sftp
     permissions:
       contents: read
@@ -484,6 +489,7 @@ jobs:
       PERFCHECKER_DOCS_SOURCE_VERSION: ${{ inputs.stable_version }}
       PERFCHECKER_DOCS_SOURCE_REVISION: ${{ inputs.docs_source_revision }}
       PERFCHECKER_RECOVERY_RECLAIM_LOCK: ${{ inputs.reclaim_cancelled_lock }}
+      PERFCHECKER_RECOVERY_RECLAIM_AFTER3H_LOCK: ${{ inputs.reclaim_3h_recovery_lock }}
       PERFCHECKER_DOCS_SFTP_DEPLOY: ${{ vars.PERFCHECKER_DOCS_SFTP_DEPLOY_V2 }}
       PERFCHECKER_DOCS_SFTP_HOST: ${{ vars.PERFCHECKER_DOCS_SFTP_HOST }}
       PERFCHECKER_DOCS_SFTP_PORT: ${{ vars.PERFCHECKER_DOCS_SFTP_PORT }}
