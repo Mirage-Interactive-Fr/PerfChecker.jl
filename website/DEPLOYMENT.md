@@ -164,6 +164,118 @@ GitHub reruns preserve their original commit and ref, so the newer transport's
 watermarks alone cannot protect against an old transport. Do not re-enable the old
 flag to recover a failure; rerun the current V2 publisher with its validated export.
 
+### Recover the retained v1.1.1 export after its transfer timeout
+
+This one-time route resumes the original first publication of `v1.1.1` without
+rebuilding documentation, rerunning measurements or changing its registered tag.
+The original run **38518482302** remains **Cancelled**: its SFTP job
+**115731474024** exceeded 120 minutes. The completed archive copy took
+112 minutes 21 seconds; the root copy had transferred only 500 of 7151 files
+when GitHub stopped it. A root `build-info.json` alone therefore does not prove
+a completed publication.
+
+The recovery accepts only the retained `documentation-sftp-exports` artifact
+**11876003542** from that run: **1,362,821,498 bytes**, SHA256
+`2df37458511deb2d978095bdbce53776d0117b192c410527d12f86ce5829fa08`.
+Its source is Core `d079efd5c24c3dcac5b7550781822038e0ff780f`, tree
+`749f8eac351ed2a1f0bc110456f2eb37a3bc08ee`. No dispatch input can select a
+different run, artifact, version or source. If the artifact has expired or any
+identity differs, recovery refuses to publish.
+
+After the reviewed workflow is on **main**, select **Actions → Documentation →
+Run workflow**, branch **main**, publication **recover-1.1.1**. Leave
+`stable_version` and `docs_source_revision` empty. Enable
+`reclaim_cancelled_lock` only to authorize removal of the original cancelled
+job's inspected empty lock. No manual SFTP cleanup is needed or performed.
+The same protected `documentation-sftp` environment, pinned host key and global
+publisher mutex apply. The recovery job allows **180 minutes** for verification,
+one stable copy and the final publication records; it never copies the completed
+version archive again.
+
+Before connecting, the job verifies the original producer succeeded, the
+publisher is terminal with the recorded timeout, the immutable tag/tree still
+match, and no other documentation publisher is active. It downloads the exact
+original ZIP, recalculates its size and SHA256, and validates all three extracted
+exports. Subsequent phases recheck the ZIP and extracted file digests. The
+download token is never sent to the signed storage URL. The actual recovery
+workflow commit and run stay distinct from the original export's source;
+`GITHUB_SHA` and the event are never overridden.
+
+The first authenticated SFTP phase is read-only. It requires the version
+archive's completion marker to match the original export digest, checks the
+promotion and publication records, and refuses a newer release or a refresh
+of this stable version. The existing release catalogue is required: if it is
+missing, recovery refuses to write or reconstruct it from the partially copied
+root. An existing lock must be a real, non-symlink directory
+with an empty SFTP directory listing and a modification time within the
+original cancelled job's start/end window. Missing or ambiguous metadata,
+nonempty locks and competing publishers fail closed.
+
+The job saves `documentation-recovery-111-inspection`, containing the original
+verification and remote lock/publication snapshot, **before any lock removal**.
+The apply phase verifies that artifact belongs to the current recovery run,
+checks the local receipt's SHA256, repeats the original-source and remote
+checks, and refuses any changed snapshot. With explicit opt-in it removes only
+that inspected empty lock using `rmdir`, then acquires the usual atomic lock.
+It repeats archive and promotion guards under the new lock before uploading
+root files. Neither the version archive nor its marker is rewritten.
+
+Successful recovery commits the ordinary stable completion marker, release
+state and version catalogue. A completed retry updates only final metadata;
+an incomplete stable copy can be retried with a new dispatch while the original
+artifact remains available and the same checks pass. A lock left by a failed
+**recovery** run is outside the original job's time window and is deliberately
+refused; it needs a separately reviewed recovery decision. Receipts are retained
+for 14 days, including any inspection saved before a later transfer failure.
+After the job succeeds, verify root and `/v1.1.1/` HTTPS metadata and navigation;
+do not infer completion from a build result or an early metadata upload.
+
+### Continue the reviewed three-hour cancellation
+
+The first recovery, run `38571832707`, job `115879366129`, was cancelled at its
+three-hour limit on 14 October 2026. Its stable transfer reported 2,500 of 7,151
+files; it did not produce a successful completion record. This is a failed
+publication, even when an early `build-info.json` is already visible over HTTPS.
+
+The separate **recover-1.1.1-after-3h** choice accepts only that terminal run,
+attempt 1, workflow source `8a0df457fdd84bc9ad8e897ae2c4000db8b2009a` and tree
+`d71844a820b20ac4b5ffd6da6574ac6d42a69d49`, with its exact three-hour timeout
+annotation. It also verifies the metadata and digest of the already reviewed
+inspection artifact `11897109791` and reads the cancelled job's bounded journal
+through GitHub's authenticated endpoint. The exact saved-inspection, first
+stable-upload and cancellation events must each occur once and in order. The
+journal digest is sealed in the new receipt and rechecked in each later phase.
+The old receipt is not downloaded again, and is never used as an export source.
+The original 1,362,821,498-byte ZIP, tag, producer and SHA256 checks still apply.
+
+That workflow source created an **empty lock directory without an owner
+record**. Its modification time alone does not establish ownership. Together
+with the verified source and journal, a lock can be attributed to this known
+cancelled execution only when it is empty, non-symlink, mode `16877`, UID/GID
+`978`, and dated between 13:32:15 and 13:33:26 UTC on 14 October 2026: after the
+inspection was saved and before that source began its stable upload. Any other
+lock, missing evidence, changed snapshot or competing active publisher is
+refused. An absent lock requires no removal.
+
+Dispatch this choice on **main**, leaving both source inputs and the original
+`reclaim_cancelled_lock` opt-in empty/false. The separate
+`reclaim_3h_recovery_lock` opt-in permits only the attributed lock above. The
+authenticated inspection remains read-only; a new Actions receipt is uploaded
+before apply, which repeats all checks and removes only that unchanged empty
+directory with nonrecursive `rmdir` before acquiring the usual atomic lock.
+
+Only this choice has a **360-minute** job budget; the original recovery remains
+180 minutes and ordinary publication remains 120 minutes. GitHub documents
+[job timeout limits](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#jobsjob_idtimeout-minutes).
+The observed first 1,000 files took 156 minutes 35 seconds; the next three
+500-file batches took 8 minutes 57 seconds, 5 minutes 25 seconds and 4 minutes
+55 seconds. Six hours provides room for another complete stable copy if the
+later throughput persists, but is not a completion guarantee. Upload concurrency
+stays at four. No files are skipped using old progress counts, sizes or mtimes.
+No version-archive path is written, including on failure. Stable completion,
+release state and the live catalogue are committed only after the complete
+root transfer. The stable-refresh first-promotion guard is unchanged.
+
 Configure these repository Actions variables:
 
 | Variable | Meaning |
@@ -191,9 +303,9 @@ only SFTP and requires no remote shell. Existing files require the server's
 adjacent temporary files, apply file mode `0644`, then rename them; created
 and used subdirectories have mode `0755`. Assets upload before pages, and
 `index.html` follows the other pages. Progress is logged every 500 files.
-The publication job allows 45 minutes for a development export and 90 minutes
-for stable tags, which transfer both the version export and the root export.
-Each export currently contains approximately 204 MB of files.
+The ordinary publication job allows 120 minutes. Stable tags transfer both the
+version export and the root export. The fixed v1.1.1 recovery above instead
+allows 180 minutes and preserves its already completed version archive.
 
 No recursive deletion runs. Development, previous versions and unrelated user
 files remain present. Hashed assets from older builds remain usable during an
@@ -204,9 +316,10 @@ failed publication job to repair the transfer.
 
 All workflow refs share a publication mutex, with cancellation disabled. An
 atomic remote `.perfchecker-docs-lock` directory also excludes overlapping
-publishers. A cancelled runner can leave this lock behind: confirm there is no
-active publisher, then remove only that empty lock directory through SFTP and
-retry. Never remove a lock held by an active run.
+publishers. A cancelled runner can leave this lock behind. The fixed v1.1.1
+recovery above checks its exact ownership window and saves an inspection receipt
+before removing an eligible empty lock. Other stale locks need a separately
+reviewed recovery; never delete an unknown lock or one held by an active run.
 
 The publisher maintains `.perfchecker-releases.json`, immutable per-version
 `.perfchecker-docs.json` markers, a root `.perfchecker-promotion.json`

@@ -2,7 +2,10 @@
 import ssh2 from 'ssh2';
 const { Client } = ssh2;
 import { createHash, createHmac, randomUUID, timingSafeEqual } from 'node:crypto';
-import { readFile, readdir, lstat, realpath } from 'node:fs/promises';
+import { readFile, readdir, lstat, realpath, mkdir, writeFile } from 'node:fs/promises';
+import { createReadStream, createWriteStream } from 'node:fs';
+import { Readable, Transform } from 'node:stream';
+import { pipeline } from 'node:stream/promises';
 import { posix, resolve, join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { execFile } from 'node:child_process';
@@ -18,6 +21,219 @@ const intentName = '.perfchecker-promotion.json';
 const stableName = '.perfchecker-stable.json';
 const refreshName = '.perfchecker-stable-refresh.json';
 const assert = (condition, message) => { if (!condition) throw new Error(message); };
+// One reviewed failed publication, not a general-purpose artifact publishing input.
+export const recovery111 = Object.freeze({
+  repository: 'Mirage-Interactive-Fr/PerfChecker.jl', version: 'v1.1.1',
+  revision: 'd079efd5c24c3dcac5b7550781822038e0ff780f',
+  tree: '749f8eac351ed2a1f0bc110456f2eb37a3bc08ee', run: 38518482302,
+  producerJob: 115702546626, publisherJob: 115731474024,
+  publisherStarted: '2026-10-14T07:54:24Z', publisherCompleted: '2026-10-14T09:54:55Z',
+  artifact: 11876003542, name: 'documentation-sftp-exports', bytes: 1362821498,
+  sha256: '2df37458511deb2d978095bdbce53776d0117b192c410527d12f86ce5829fa08'
+});
+// A separate exception for the one recovery that itself reached its 3h limit.
+// This code wrote an empty directory, not a persisted owner record. Its exact
+// Actions identity, source and journal must therefore accompany the tight time
+// window below; a timestamp by itself never authorizes removing this lock.
+export const recovery111After3h = Object.freeze({
+  run: 38571832707, job: 115879366129,
+  revision: '8a0df457fdd84bc9ad8e897ae2c4000db8b2009a',
+  tree: 'd71844a820b20ac4b5ffd6da6574ac6d42a69d49',
+  started: '2026-10-14T13:29:57Z', completed: '2026-10-14T16:30:26Z',
+  inspectionArtifact: 11897109791, inspectionBytes: 2178,
+  inspectionSha256: '5f58bab1251ba9c5e25f5a2809e4b525b30fef49523f31f9973af7345248686e',
+  lockEarliest: '2026-10-14T13:32:15Z', lockLatest: '2026-10-14T13:33:26Z',
+  lockMode: 16877, lockUid: 978, lockGid: 978,
+  inspectionLog: '2026-10-14T13:32:15.2505666Z Artifact documentation-recovery-111-inspection successfully finalized. Artifact ID 11897109791',
+  uploadLog: '2026-10-14T13:33:26.7455988Z Uploading stable: 7151 files',
+  cancelledLog: '2026-10-14T16:30:22.0348966Z ##[error]The operation was canceled.'
+});
+export function recoveryContext(env) {
+  assert(env.GITHUB_ACTIONS === 'true' && env.GITHUB_EVENT_NAME === 'workflow_dispatch' &&
+    env.GITHUB_REF === 'refs/heads/main' && env.GITHUB_REPOSITORY === recovery111.repository,
+  'Recovery requires an explicit dispatch on this repository main');
+  const after3h = env.PERFCHECKER_DOCS_RECOVERY === 'recover-1.1.1-after-3h';
+  assert((env.PERFCHECKER_DOCS_RECOVERY === 'recover-1.1.1' || after3h) && revisionPattern.test(env.GITHUB_SHA ?? '') &&
+    /^\d+$/.test(env.GITHUB_RUN_ID ?? '') && Number(env.GITHUB_RUN_ID) !== recovery111.run &&
+    Number(env.GITHUB_RUN_ID) !== recovery111After3h.run && env.GITHUB_RUN_ATTEMPT === '1',
+  'Recovery must retain its actual Actions revision and new run identity');
+  assert(!env.PERFCHECKER_DOCS_SOURCE_VERSION && !env.PERFCHECKER_DOCS_SOURCE_REVISION &&
+    env.PERFCHECKER_DOCS_STABLE_REFRESH !== 'true', 'Recovery cannot be combined with stable refresh inputs');
+  assert(!after3h || env.PERFCHECKER_RECOVERY_RECLAIM_LOCK !== 'true',
+    'The original cancellation-lock opt-in cannot authorize the later recovery lock');
+  return { workflowRevision: env.GITHUB_SHA, recoveryRun: Number(env.GITHUB_RUN_ID), ...(after3h ? { after3h: true } : {}) };
+}
+const publisherJobName = name => name === 'Publish canonical documentation through SFTP' ||
+  name === 'Recover the retained v1.1.1 documentation exports';
+export function validateRecoveryContinuation({ run, job, commit, annotations, artifact, log }) {
+  const expected = recovery111After3h;
+  assert(run.id === expected.run && run.head_sha === expected.revision && run.head_branch === 'main' &&
+    run.event === 'workflow_dispatch' && run.path === '.github/workflows/Documentation.yml' && run.run_attempt === 1 &&
+    run.status === 'completed' && run.conclusion === 'cancelled', 'The previous recovery run identity differs');
+  assert(job.id === expected.job && job.run_id === expected.run && job.head_sha === expected.revision && job.run_attempt === 1 &&
+    job.name === 'Recover the retained v1.1.1 documentation exports' && job.status === 'completed' && job.conclusion === 'cancelled' &&
+    job.started_at === expected.started && job.completed_at === expected.completed,
+  'The previous recovery is not the reviewed cancelled job');
+  assert(commit.sha === expected.revision && commit.commit?.tree?.sha === expected.tree,
+    'The previous recovery source tree differs');
+  assert(annotations.some(item => item.annotation_level === 'failure' &&
+    item.message === 'The job has exceeded the maximum execution time of 3h0m0s'), 'The previous recovery timeout annotation is absent');
+  assert(artifact.id === expected.inspectionArtifact && artifact.name === 'documentation-recovery-111-inspection' && !artifact.expired &&
+    artifact.size_in_bytes === expected.inspectionBytes && artifact.digest === `sha256:${expected.inspectionSha256}` &&
+    artifact.workflow_run?.id === expected.run && artifact.workflow_run?.head_sha === expected.revision,
+  'The already reviewed previous inspection receipt differs');
+  assert(typeof log === 'string' && Buffer.byteLength(log) <= 1024 * 1024, 'The previous recovery log is unavailable or too large');
+  const lines = log.split(/\r?\n/);
+  const events = [expected.inspectionLog, expected.uploadLog, expected.cancelledLog].map(line => {
+    assert(lines.filter(item => item === line).length === 1, 'The reviewed recovery journal event is absent or ambiguous');
+    return lines.indexOf(line);
+  });
+  assert(events[0] < events[1] && events[1] < events[2] &&
+    !lines.some(line => /Retained export recovery completed;|Uploading version:/.test(line)),
+  'The previous recovery journal does not describe the reviewed incomplete stable-only transfer');
+  return { previousRecoveryRun: expected.run, previousRecoveryJob: expected.job,
+    previousRecoveryRevision: expected.revision, previousRecoveryTree: expected.tree,
+    previousInspectionArtifact: expected.inspectionArtifact, previousInspectionSha256: expected.inspectionSha256,
+    previousRecoveryLogSha256: createHash('sha256').update(log).digest('hex'), previousRecoveryTimedOut: true,
+    lockEarliest: expected.lockEarliest, lockLatest: expected.lockLatest };
+}
+export function validateRecoveryOrigin({ run, producer, publisher, artifact, commit, tag, annotations, publishers, recoveryRun, previousRecovery }, context) {
+  const expected = recovery111;
+  assert(recoveryRun.id === context.recoveryRun && recoveryRun.event === 'workflow_dispatch' && recoveryRun.head_branch === 'main' &&
+    recoveryRun.head_sha === context.workflowRevision && recoveryRun.path === '.github/workflows/Documentation.yml' &&
+    recoveryRun.run_attempt === 1 && recoveryRun.status === 'in_progress', 'The actual recovery run identity differs');
+  assert(run.id === expected.run && run.head_sha === expected.revision && run.head_branch === expected.version &&
+    run.event === 'push' && run.path === '.github/workflows/Documentation.yml' && run.run_attempt === 1 &&
+    run.status === 'completed' && run.conclusion === 'cancelled', 'The original tag publication identity differs');
+  assert(producer.id === expected.producerJob && producer.run_id === expected.run && producer.run_attempt === 1 && producer.head_sha === expected.revision &&
+    producer.status === 'completed' && producer.conclusion === 'success', 'The original export producer did not pass');
+  assert(publisher.id === expected.publisherJob && publisher.run_id === expected.run && publisher.run_attempt === 1 && publisher.head_sha === expected.revision &&
+    publisher.status === 'completed' && publisher.conclusion === 'cancelled' &&
+    publisher.started_at === expected.publisherStarted && publisher.completed_at === expected.publisherCompleted,
+  'The original publisher is not the reviewed terminal job');
+  assert(annotations.some(item => item.annotation_level === 'failure' &&
+    item.message === 'The job has exceeded the maximum execution time of 2h0m0s'), 'The reviewed timeout annotation is absent');
+  assert(artifact.id === expected.artifact && artifact.name === expected.name && !artifact.expired &&
+    artifact.size_in_bytes === expected.bytes && artifact.digest === `sha256:${expected.sha256}` &&
+    artifact.workflow_run?.id === expected.run && artifact.workflow_run?.head_sha === expected.revision,
+  'The retained original artifact identity differs');
+  assert(commit.sha === expected.revision && commit.commit?.tree?.sha === expected.tree &&
+    tag.sha === expected.revision && tag.commit?.tree?.sha === expected.tree, 'The immutable registered tag source differs');
+  assert(publishers.every(job => job.run_id === context.recoveryRun || job.status !== 'in_progress' || !publisherJobName(job.name)),
+    'Another documentation publisher is active');
+  return { ...context, sourceRun: expected.run, sourceRevision: expected.revision, sourceTree: expected.tree,
+    sourceVersion: expected.version, artifactId: expected.artifact, artifactSha256: expected.sha256,
+    artifactBytes: expected.bytes, sourceProducerJob: expected.producerJob, sourcePublisherJob: expected.publisherJob,
+    producerPassed: true, publisherCancelled: true, noOtherPublisher: true,
+    publisherStarted: publisher.started_at, publisherCompleted: publisher.completed_at,
+    ...(context.after3h ? validateRecoveryContinuation(previousRecovery ?? {}) : {}) };
+}
+async function recoveryApi(env, path) {
+  assert(env.GH_TOKEN, 'Recovery requires the read-only Actions token');
+  const response = await fetch(`https://api.github.com/repos/${recovery111.repository}/${path}`, {
+    headers: { Authorization: `Bearer ${env.GH_TOKEN}`, Accept: 'application/vnd.github+json', 'X-GitHub-Api-Version': '2022-11-28' },
+    redirect: 'error', signal: AbortSignal.timeout(30000)
+  });
+  assert(response.ok, `Recovery metadata request failed: HTTP ${response.status}`);
+  return response.json();
+}
+export async function verifyRecoveryOrigin(env) {
+  const context = recoveryContext(env), expected = recovery111;
+  const [run, producer, publisher, artifact, commit, tag, recoveryRun] = await Promise.all([
+    recoveryApi(env, `actions/runs/${expected.run}`), recoveryApi(env, `actions/jobs/${expected.producerJob}`),
+    recoveryApi(env, `actions/jobs/${expected.publisherJob}`), recoveryApi(env, `actions/artifacts/${expected.artifact}`),
+    recoveryApi(env, `commits/${expected.revision}`), recoveryApi(env, `commits/${expected.version}`),
+    recoveryApi(env, `actions/runs/${context.recoveryRun}`)
+  ]);
+  assert(new RegExp(`^https://api\\.github\\.com/repos/Mirage-Interactive-Fr/PerfChecker\\.jl/check-runs/\\d+$`).test(publisher.check_run_url ?? ''),
+    'The original publication check URL differs');
+  const annotations = await recoveryApi(env, publisher.check_run_url.split(`/${expected.repository}/`)[1] + '/annotations?per_page=100');
+  const activeRuns = await Promise.all(['in_progress', 'queued', 'pending', 'waiting', 'requested']
+    .map(status => recoveryApi(env, `actions/workflows/Documentation.yml/runs?status=${status}&per_page=100`)));
+  assert(activeRuns.every(page => page.total_count <= 100 && Array.isArray(page.workflow_runs)),
+    'Active documentation publications cannot be inspected completely');
+  const ids = [...new Set(activeRuns.flatMap(page => page.workflow_runs.map(item => item.id)))];
+  const jobs = await Promise.all(ids.filter(id => id !== context.recoveryRun).map(id => recoveryApi(env, `actions/runs/${id}/jobs?per_page=100`)));
+  assert(jobs.every(page => page.total_count <= 100 && Array.isArray(page.jobs)), 'Publisher jobs cannot be inspected completely');
+  let previousRecovery;
+  if (context.after3h) {
+    const previous = recovery111After3h;
+    const [run, job, commit, artifact] = await Promise.all([
+      recoveryApi(env, `actions/runs/${previous.run}`), recoveryApi(env, `actions/jobs/${previous.job}`),
+      recoveryApi(env, `commits/${previous.revision}`), recoveryApi(env, `actions/artifacts/${previous.inspectionArtifact}`)
+    ]);
+    assert(job.check_run_url === `https://api.github.com/repos/${expected.repository}/check-runs/${previous.job}`,
+      'The previous recovery check URL differs');
+    const annotations = await recoveryApi(env, `check-runs/${previous.job}/annotations?per_page=100`);
+    // Logs are read through the authenticated job endpoint, never a user URL.
+    // The token is not forwarded to its signed storage redirect.
+    const response = await fetch(`https://api.github.com/repos/${expected.repository}/actions/jobs/${previous.job}/logs`, {
+      headers: { Authorization: `Bearer ${env.GH_TOKEN}`, Accept: 'application/vnd.github+json', 'X-GitHub-Api-Version': '2022-11-28' },
+      redirect: 'manual', signal: AbortSignal.timeout(30000)
+    });
+    assert(response.status === 302, 'The previous recovery journal redirect is unavailable');
+    const logs = await fetch(recoveryDownloadUrl(response.headers.get('location')), { redirect: 'error', signal: AbortSignal.timeout(30000) });
+    assert(logs.ok && logs.body, 'The previous recovery journal download failed');
+    let bytes = 0; const chunks = [];
+    for await (const chunk of Readable.fromWeb(logs.body)) {
+      bytes += chunk.length; assert(bytes <= 1024 * 1024, 'The previous recovery journal exceeds its size limit'); chunks.push(chunk);
+    }
+    previousRecovery = { run, job, commit, artifact, annotations, log: Buffer.concat(chunks).toString('utf8') };
+  }
+  return validateRecoveryOrigin({ run, producer, publisher, artifact, commit, tag, annotations, recoveryRun, previousRecovery,
+    publishers: jobs.flatMap(page => page.jobs) }, context);
+}
+export async function writeVerifiedRecoveryArchive(response, destination, expected) {
+  assert(response.ok && response.body, 'The original artifact download failed');
+  const hash = createHash('sha256'); let bytes = 0;
+  const inspect = new Transform({ transform(chunk, encoding, callback) {
+    bytes += chunk.length;
+    if (bytes > expected.bytes) { callback(new Error('The artifact exceeds its recorded byte count')); return; }
+    hash.update(chunk); callback(null, chunk);
+  } });
+  await pipeline(Readable.fromWeb(response.body), inspect, createWriteStream(destination, { flags: 'wx' }));
+  const sha256 = hash.digest('hex');
+  assert(bytes === expected.bytes && sha256 === expected.sha256, 'The downloaded artifact bytes differ from the original digest');
+  return { bytes, sha256 };
+}
+export function recoveryDownloadUrl(location) {
+  const url = new URL(location);
+  assert(url.protocol === 'https:' && !url.username && !url.password && !url.port &&
+    (url.hostname.endsWith('.blob.core.windows.net') || url.hostname.endsWith('.actions.githubusercontent.com')),
+  'The artifact redirect is not a GitHub Actions storage URL');
+  return url;
+}
+async function verifyRecoveryArchiveFile(path) {
+  const attrs = await lstat(path);
+  assert(attrs.isFile() && !attrs.isSymbolicLink() && attrs.size === recovery111.bytes, 'The retained ZIP is not the original regular file');
+  const hash = createHash('sha256');
+  for await (const chunk of createReadStream(path)) hash.update(chunk);
+  assert(hash.digest('hex') === recovery111.sha256, 'The retained ZIP digest changed');
+}
+async function downloadRecoveryArchive(env) {
+  const proof = await verifyRecoveryOrigin(env);
+  const directory = resolve('.recovery'); await mkdir(directory, { recursive: true });
+  const response = await fetch(`https://api.github.com/repos/${recovery111.repository}/actions/artifacts/${recovery111.artifact}/zip`, {
+    headers: { Authorization: `Bearer ${env.GH_TOKEN}`, Accept: 'application/vnd.github+json', 'X-GitHub-Api-Version': '2022-11-28' },
+    redirect: 'manual', signal: AbortSignal.timeout(30000)
+  });
+  assert(response.status === 302, 'The retained artifact did not return its signed download URL');
+  // The read-only GitHub token must never be forwarded to blob storage.
+  const archive = await fetch(recoveryDownloadUrl(response.headers.get('location')), {
+    redirect: 'error', signal: AbortSignal.timeout(15 * 60 * 1000)
+  });
+  const bytes = await writeVerifiedRecoveryArchive(archive, join(directory, 'canonical-exports.zip'), recovery111);
+  // Extract only the hashed original ZIP, into a directory that did not exist.
+  // The resulting file digests are sealed with the download receipt and checked
+  // again in both later phases; no build or renderer runs in this route.
+  await mkdir(resolve('website/build'), { recursive: true });
+  await mkdir(resolve('website/build/sftp'));
+  await promisify(execFile)('unzip', ['-q', join(directory, 'canonical-exports.zip'), '-d', resolve('website/build/sftp')]);
+  const exports = await recoveryExportDigests();
+  await writeFile(join(directory, 'verified-origin.json'), JSON.stringify({ schema: 'perfchecker-doc-recovery-origin/1',
+    ...proof, verifiedAt: new Date().toISOString(), archive: bytes, exports }, null, 2) + '\n', { flag: 'wx' });
+  console.log('Retained original export verified; no documentation was rebuilt');
+}
 const documentationGenerators = new Set(['export', 'publish-evidence', 'network-export',
   'diagnostic-export', 'native-export', 'extra-export', 'collector-export', 'observation-export']
   .map(name => `examples/kitchen-sink/${name}.jl`));
@@ -202,6 +418,7 @@ export async function connectSftp(configuration) {
   return {
     stat: path => optional('lstat', path),
     read: path => optional('readFile', path),
+    readdir: path => call(sftp, 'readdir', path),
     mkdir: path => call(sftp, 'mkdir', path, { mode: 0o755 }),
     chmod: (path, mode) => call(sftp, 'chmod', path, mode),
     put: (local, remote) => call(sftp, 'fastPut', local, remote, { concurrency: 4, mode: 0o644 }),
@@ -272,6 +489,163 @@ export async function validateDocumentationExports(options) {
   const stable = options.channel === 'release' ? await readExport(options.stableSite, 'stable', options.revision, options.version) : null;
   return { primary, stable };
 }
+function assertRecoveryOptions(options) {
+  assert(options.recovery === true && options.channel === 'release' && options.version === recovery111.version &&
+    options.revision === recovery111.revision, 'Recovery is restricted to the reviewed v1.1.1 export');
+}
+export function recoveryOptions(env) {
+  const context = recoveryContext(env);
+  // Validate the actual main dispatch and connection configuration, without
+  // disguising it as the original tag push or overriding any Actions identity.
+  const configuration = deploymentConfiguration(env);
+  assert(configuration.channel === 'dev', 'Recovery connection must use the actual main dispatch');
+  return { ...configuration, ...context, recovery: true, channel: 'release', version: recovery111.version,
+    revision: recovery111.revision, site: resolve('website/build/sftp/version/site'),
+    stableSite: resolve('website/build/sftp/stable/site'), reclaimCancelledLock: context.after3h ?
+      env.PERFCHECKER_RECOVERY_RECLAIM_AFTER3H_LOCK === 'true' : env.PERFCHECKER_RECOVERY_RECLAIM_LOCK === 'true' };
+}
+const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+const byteDigest = bytes => createHash('sha256').update(bytes).digest('hex');
+async function inspectRecoveryLock(transport, options) {
+  const root = options.root;
+  const path = posix.join(root, lockName), attrs = await transport.stat(path);
+  if (!attrs) return null;
+  assert(attrs.isDirectory() && !attrs.isSymbolicLink(), 'Recovery lock must be a real directory, never a symbolic link');
+  const entries = await transport.readdir(path);
+  assert(Array.isArray(entries) && entries.every(entry => ['.', '..'].includes(entry.filename)),
+    'Recovery refuses a nonempty or uninspectable lock');
+  let earliest = recovery111.publisherStarted, latest = recovery111.publisherCompleted;
+  if (options.after3h) {
+    const previous = recovery111After3h, proof = options.continuationProof;
+    assert(proof?.after3h === true && proof.previousRecoveryRun === previous.run && proof.previousRecoveryJob === previous.job &&
+      proof.previousRecoveryRevision === previous.revision && proof.previousRecoveryTree === previous.tree &&
+      proof.previousInspectionArtifact === previous.inspectionArtifact && proof.previousInspectionSha256 === previous.inspectionSha256 &&
+      /^[a-f0-9]{64}$/.test(proof.previousRecoveryLogSha256 ?? '') && proof.previousRecoveryTimedOut === true &&
+      proof.noOtherPublisher === true && proof.lockEarliest === previous.lockEarliest && proof.lockLatest === previous.lockLatest,
+    'The later empty lock requires the verified previous Actions source, journal and inspection receipt');
+    assert(attrs.mode === previous.lockMode && attrs.uid === previous.lockUid && attrs.gid === previous.lockGid,
+      'The later recovery lock metadata differs from the reviewed account and directory mode');
+    earliest = proof.lockEarliest; latest = proof.lockLatest;
+  }
+  assert(Number.isInteger(attrs.mtime) && attrs.mtime >= Date.parse(earliest) / 1000 &&
+    attrs.mtime <= Date.parse(latest) / 1000, 'Recovery lock time is outside the cancelled publisher window');
+  return { mtime: attrs.mtime, mode: attrs.mode, uid: attrs.uid, gid: attrs.gid, entries: [] };
+}
+export async function inspectRecoveryDestination(transport, options, { includeLock = true } = {}) {
+  assertRecoveryOptions(options);
+  const root = validateRoot(options.root), attrs = await transport.stat(root);
+  assert(attrs?.isDirectory() && !attrs.isSymbolicLink(), 'SFTP document root must be a real directory');
+  const directory = await transport.stat(posix.join(root, recovery111.version));
+  assert(directory?.isDirectory() && !directory.isSymbolicLink(), 'The retained version archive must be a real directory');
+  const read = async name => {
+    const path = posix.join(root, name), attrs = await transport.stat(path);
+    assert(!attrs || (attrs.isFile() && !attrs.isSymbolicLink()), 'Remote recovery metadata must be a regular file');
+    const bytes = attrs ? await transport.read(path) : null;
+    return { value: bytes ? JSON.parse(bytes.toString()) : null, sha256: bytes ? byteDigest(bytes) : null };
+  };
+  const archive = await read(`${recovery111.version}/${markerName}`), state = await read(stateName),
+    intent = await read(intentName), committed = await read(stableName), refresh = await read(refreshName);
+  const record = { revision: options.revision, digest: options.validatedExports.primary.digest };
+  assert(archive.value && same(archive.value, record), 'The version archive has no matching completed original export marker');
+  validateState(state.value ?? {});
+  assert(!state.value.stable || compareVersions(state.value.stable, options.version) <= 0, 'Recovery cannot replace a newer stable release');
+  assert(!state.value.versions[options.version] || same(state.value.versions[options.version], record),
+    'The release catalogue has different original archive bytes');
+  assert(intent.value?.version === options.version && recordValid(intent.value) &&
+    intent.value.revision === record.revision && intent.value.digest === record.digest,
+  'Recovery requires the matching original pending promotion');
+  if (committed.value) {
+    assert(versionPattern.test(committed.value.version) && recordValid(committed.value), 'Invalid completed stable marker');
+    assert(compareVersions(committed.value.version, options.version) <= 0 &&
+      (committed.value.version !== options.version || (committed.value.revision === record.revision && committed.value.digest === record.digest)),
+    'Recovery refuses a different or newer completed stable publication');
+  }
+  if (refresh.value) assert(versionPattern.test(refresh.value.version) && recordValid(refresh.value) &&
+    Number.isSafeInteger(refresh.value.sequence) && ['pending', 'complete'].includes(refresh.value.status) &&
+    compareVersions(refresh.value.version, options.version) < 0, 'Recovery cannot overwrite refreshed documentation');
+  return { root, archive, state, intent, committed, refresh,
+    ...(includeLock ? { lock: await inspectRecoveryLock(transport, options) } : {}) };
+}
+export async function reclaimRecoveryLock(transport, options, inspected) {
+  assertRecoveryOptions(options);
+  const current = await inspectRecoveryLock(transport, options);
+  assert(same(current, inspected), 'The inspected cancellation lock changed before recovery');
+  if (!current) return false;
+  assert(options.reclaimCancelledLock === true, 'Removing the reviewed cancelled lock requires explicit dispatch opt-in');
+  // Never recurse, unlink files, follow links, or remove an unknown owner's lock.
+  // A competing mkdir after this rmdir still makes publishDocumentation refuse.
+  await transport.rmdir(posix.join(options.root, lockName));
+  return true;
+}
+async function verifiedRecoveryOptions(env) {
+  const options = recoveryOptions(env);
+  const proof = await verifyRecoveryOrigin(env);
+  if (options.after3h) options.continuationProof = proof;
+  const saved = JSON.parse(await readFile(resolve('.recovery/verified-origin.json'), 'utf8'));
+  assert(saved.schema === 'perfchecker-doc-recovery-origin/1' &&
+    same(saved.archive, { bytes: recovery111.bytes, sha256: recovery111.sha256 }) &&
+    Object.entries(proof).every(([key, value]) => saved[key] === value), 'The verified original artifact receipt differs');
+  await verifyRecoveryArchiveFile(resolve('.recovery/canonical-exports.zip'));
+  // Recompute every extracted file before opening the authenticated connection.
+  options.validatedExports = await validateDocumentationExports(options);
+  const dev = await readExport(resolve('website/build/sftp/dev/site'), 'dev', recovery111.revision, recovery111.version);
+  assert(same(saved.exports, { dev: dev.digest, version: options.validatedExports.primary.digest,
+    stable: options.validatedExports.stable.digest }), 'The extracted original export bytes changed');
+  return { options, proof };
+}
+async function recoveryExportDigests() {
+  const [dev, version, stable] = await Promise.all(['dev', 'version', 'stable'].map(channel =>
+    readExport(resolve(`website/build/sftp/${channel}/site`), channel, recovery111.revision, recovery111.version)));
+  return { dev: dev.digest, version: version.digest, stable: stable.digest };
+}
+const recoveryPlanName = 'documentation-recovery-111-inspection';
+export function validateRecoveryPlanArtifact(artifact, context, uploadedDigest) {
+  assert(Number.isSafeInteger(artifact.id) && artifact.id > 0 && artifact.size_in_bytes > 0 && artifact.name === recoveryPlanName && !artifact.expired &&
+    artifact.workflow_run?.id === context.recoveryRun && artifact.workflow_run?.head_sha === context.workflowRevision &&
+    /^[a-f0-9]{64}$/.test(uploadedDigest ?? '') && artifact.digest === `sha256:${uploadedDigest}`,
+  'The inspection receipt was not saved by this recovery run with the uploaded digest');
+}
+async function inspectRecovery(env) {
+  const { options, proof } = await verifiedRecoveryOptions(env);
+  const transport = await connectSftp(options.connection);
+  try {
+    const destination = await inspectRecoveryDestination(transport, options);
+    if (destination.lock) assert(options.reclaimCancelledLock, 'The reviewed lock requires explicit dispatch opt-in');
+    const plan = { schema: 'perfchecker-doc-recovery-inspection/1', inspectedAt: new Date().toISOString(), proof, destination,
+      exports: { version: options.validatedExports.primary.digest, stable: options.validatedExports.stable.digest },
+      archivePreserved: true, reclaimCancelledLock: options.reclaimCancelledLock };
+    const bytes = Buffer.from(JSON.stringify(plan, null, 2) + '\n');
+    await writeFile(resolve('.recovery/inspection.json'), bytes, { flag: 'wx' });
+    assert(env.GITHUB_OUTPUT, 'Recovery inspection requires the Actions output file');
+    await writeFile(env.GITHUB_OUTPUT, `plan-sha256=${byteDigest(bytes)}\n`, { flag: 'a' });
+    console.log('Original archive marker and cancellation lock inspected; no remote writes performed');
+  } finally { transport.close(); }
+}
+async function applyRecovery(env) {
+  const { options, proof } = await verifiedRecoveryOptions(env);
+  const bytes = await readFile(resolve('.recovery/inspection.json'));
+  assert(/^[a-f0-9]{64}$/.test(env.PERFCHECKER_RECOVERY_PLAN_SHA256 ?? '') &&
+    byteDigest(bytes) === env.PERFCHECKER_RECOVERY_PLAN_SHA256, 'The saved inspection receipt bytes changed');
+  assert(/^\d+$/.test(env.PERFCHECKER_RECOVERY_PLAN_ARTIFACT ?? ''), 'An uploaded inspection receipt is required before changing the lock');
+  const artifact = await recoveryApi(env, `actions/artifacts/${env.PERFCHECKER_RECOVERY_PLAN_ARTIFACT}`);
+  assert(artifact.id === Number(env.PERFCHECKER_RECOVERY_PLAN_ARTIFACT), 'The saved inspection artifact ID differs');
+  validateRecoveryPlanArtifact(artifact, proof, env.PERFCHECKER_RECOVERY_PLAN_ARTIFACT_SHA256);
+  const plan = JSON.parse(bytes.toString());
+  assert(plan.schema === 'perfchecker-doc-recovery-inspection/1' && same(plan.proof, proof) && plan.archivePreserved === true &&
+    plan.reclaimCancelledLock === options.reclaimCancelledLock && same(plan.exports, {
+      version: options.validatedExports.primary.digest, stable: options.validatedExports.stable.digest }), 'The recovery plan source or exports differ');
+  const transport = await connectSftp(options.connection);
+  try {
+    const current = await inspectRecoveryDestination(transport, options);
+    assert(same(current, plan.destination), 'The inspected remote publication changed before recovery');
+    const lockReclaimed = await reclaimRecoveryLock(transport, options, plan.destination.lock);
+    const result = await publishDocumentation(transport, { ...options, progress: message => console.log(message) });
+    await writeFile(resolve('.recovery/result.json'), JSON.stringify({ schema: 'perfchecker-doc-recovery-result/1',
+      proof, completedAt: new Date().toISOString(), inspectionArtifact: artifact.id, inspectionArtifactDigest: artifact.digest,
+      inspectionSha256: env.PERFCHECKER_RECOVERY_PLAN_SHA256, lockReclaimed, archivePreserved: true, result }, null, 2) + '\n', { flag: 'wx' });
+    console.log(`Retained export recovery completed; stable=${result.stable}`);
+  } finally { transport.close(); }
+}
 export async function publishDocumentation(transport, options) {
   const root = validateRoot(options.root), remote = name => posix.join(root, name);
   assert(revisionPattern.test(options.revision), 'Invalid publication revision');
@@ -279,6 +653,7 @@ export async function publishDocumentation(transport, options) {
   if (options.channel !== 'dev') assert(versionPattern.test(options.version), 'Invalid release tag');
   if (options.channel !== 'release') assert(Number.isSafeInteger(options.sequence) && options.sequence > 0, 'Invalid documentation run sequence');
   if (options.channel === 'stable-refresh') assert(revisionPattern.test(options.releaseRevision), 'Unverified stable release source');
+  if (options.recovery) assertRecoveryOptions(options);
   const { primary, stable } = options.validatedExports ?? await validateDocumentationExports(options);
   const rootAttrs = await transport.stat(root);
   assert(rootAttrs?.isDirectory() && !rootAttrs.isSymbolicLink(), 'SFTP document root must be a real directory');
@@ -334,6 +709,9 @@ export async function publishDocumentation(transport, options) {
     }
   };
   try {
+    // Repeat immutable-archive/newer-release guards under the newly acquired
+    // lock, even after the separately saved read-only inspection succeeded.
+    if (options.recovery) await inspectRecoveryDestination(transport, { ...options, validatedExports: { primary, stable } }, { includeLock: false });
     const raw = await read(remote(stateName));
     let state;
     if (raw) state = validateState(JSON.parse(raw.toString()));
@@ -393,8 +771,10 @@ export async function publishDocumentation(transport, options) {
       const marker = await read(posix.join(destination, markerName));
       const prior = marker ? JSON.parse(marker.toString()) : state.versions[options.version];
       assert(!prior || (prior.revision === record.revision && prior.digest === record.digest), 'A published version cannot be replaced by different source or bytes');
-      await upload(primary, destination);
-      await json(posix.join(destination, markerName), record);
+      if (!options.recovery) {
+        await upload(primary, destination);
+        await json(posix.join(destination, markerName), record);
+      }
       const floor = intent && (!state.stable || compareVersions(intent.version, state.stable) > 0)
         ? intent.version : state.stable;
       const newer = !floor || compareVersions(options.version, floor) > 0;
@@ -430,6 +810,14 @@ export function failureClass(error) {
 async function main() {
   let phase = 'configuration', transport;
   try {
+    if (process.argv[2]) {
+      phase = process.argv[2];
+      if (phase === 'recovery-download') await downloadRecoveryArchive(process.env);
+      else if (phase === 'recovery-inspect') await inspectRecovery(process.env);
+      else if (phase === 'recovery-apply') await applyRecovery(process.env);
+      else throw new Error('Unknown publication command');
+      return;
+    }
     const configuration = deploymentConfiguration(process.env);
     const options = { ...configuration, site: process.env.PERFCHECKER_DOCS_SITE,
       stableSite: process.env.PERFCHECKER_DOCS_STABLE_SITE, progress: message => console.log(message) };
