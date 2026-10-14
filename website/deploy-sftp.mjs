@@ -31,20 +31,73 @@ export const recovery111 = Object.freeze({
   artifact: 11876003542, name: 'documentation-sftp-exports', bytes: 1362821498,
   sha256: '2df37458511deb2d978095bdbce53776d0117b192c410527d12f86ce5829fa08'
 });
+// A separate exception for the one recovery that itself reached its 3h limit.
+// This code wrote an empty directory, not a persisted owner record. Its exact
+// Actions identity, source and journal must therefore accompany the tight time
+// window below; a timestamp by itself never authorizes removing this lock.
+export const recovery111After3h = Object.freeze({
+  run: 38571832707, job: 115879366129,
+  revision: '8a0df457fdd84bc9ad8e897ae2c4000db8b2009a',
+  tree: 'd71844a820b20ac4b5ffd6da6574ac6d42a69d49',
+  started: '2026-10-14T13:29:57Z', completed: '2026-10-14T16:30:26Z',
+  inspectionArtifact: 11897109791, inspectionBytes: 2178,
+  inspectionSha256: '5f58bab1251ba9c5e25f5a2809e4b525b30fef49523f31f9973af7345248686e',
+  lockEarliest: '2026-10-14T13:32:15Z', lockLatest: '2026-10-14T13:33:26Z',
+  lockMode: 16877, lockUid: 978, lockGid: 978,
+  inspectionLog: '2026-10-14T13:32:15.2505666Z Artifact documentation-recovery-111-inspection successfully finalized. Artifact ID 11897109791',
+  uploadLog: '2026-10-14T13:33:26.7455988Z Uploading stable: 7151 files',
+  cancelledLog: '2026-10-14T16:30:22.0348966Z ##[error]The operation was canceled.'
+});
 export function recoveryContext(env) {
   assert(env.GITHUB_ACTIONS === 'true' && env.GITHUB_EVENT_NAME === 'workflow_dispatch' &&
     env.GITHUB_REF === 'refs/heads/main' && env.GITHUB_REPOSITORY === recovery111.repository,
   'Recovery requires an explicit dispatch on this repository main');
-  assert(env.PERFCHECKER_DOCS_RECOVERY === 'recover-1.1.1' && revisionPattern.test(env.GITHUB_SHA ?? '') &&
-    /^\d+$/.test(env.GITHUB_RUN_ID ?? '') && Number(env.GITHUB_RUN_ID) !== recovery111.run && env.GITHUB_RUN_ATTEMPT === '1',
+  const after3h = env.PERFCHECKER_DOCS_RECOVERY === 'recover-1.1.1-after-3h';
+  assert((env.PERFCHECKER_DOCS_RECOVERY === 'recover-1.1.1' || after3h) && revisionPattern.test(env.GITHUB_SHA ?? '') &&
+    /^\d+$/.test(env.GITHUB_RUN_ID ?? '') && Number(env.GITHUB_RUN_ID) !== recovery111.run &&
+    Number(env.GITHUB_RUN_ID) !== recovery111After3h.run && env.GITHUB_RUN_ATTEMPT === '1',
   'Recovery must retain its actual Actions revision and new run identity');
   assert(!env.PERFCHECKER_DOCS_SOURCE_VERSION && !env.PERFCHECKER_DOCS_SOURCE_REVISION &&
     env.PERFCHECKER_DOCS_STABLE_REFRESH !== 'true', 'Recovery cannot be combined with stable refresh inputs');
-  return { workflowRevision: env.GITHUB_SHA, recoveryRun: Number(env.GITHUB_RUN_ID) };
+  assert(!after3h || env.PERFCHECKER_RECOVERY_RECLAIM_LOCK !== 'true',
+    'The original cancellation-lock opt-in cannot authorize the later recovery lock');
+  return { workflowRevision: env.GITHUB_SHA, recoveryRun: Number(env.GITHUB_RUN_ID), ...(after3h ? { after3h: true } : {}) };
 }
 const publisherJobName = name => name === 'Publish canonical documentation through SFTP' ||
   name === 'Recover the retained v1.1.1 documentation exports';
-export function validateRecoveryOrigin({ run, producer, publisher, artifact, commit, tag, annotations, publishers, recoveryRun }, context) {
+export function validateRecoveryContinuation({ run, job, commit, annotations, artifact, log }) {
+  const expected = recovery111After3h;
+  assert(run.id === expected.run && run.head_sha === expected.revision && run.head_branch === 'main' &&
+    run.event === 'workflow_dispatch' && run.path === '.github/workflows/Documentation.yml' && run.run_attempt === 1 &&
+    run.status === 'completed' && run.conclusion === 'cancelled', 'The previous recovery run identity differs');
+  assert(job.id === expected.job && job.run_id === expected.run && job.head_sha === expected.revision && job.run_attempt === 1 &&
+    job.name === 'Recover the retained v1.1.1 documentation exports' && job.status === 'completed' && job.conclusion === 'cancelled' &&
+    job.started_at === expected.started && job.completed_at === expected.completed,
+  'The previous recovery is not the reviewed cancelled job');
+  assert(commit.sha === expected.revision && commit.commit?.tree?.sha === expected.tree,
+    'The previous recovery source tree differs');
+  assert(annotations.some(item => item.annotation_level === 'failure' &&
+    item.message === 'The job has exceeded the maximum execution time of 3h0m0s'), 'The previous recovery timeout annotation is absent');
+  assert(artifact.id === expected.inspectionArtifact && artifact.name === 'documentation-recovery-111-inspection' && !artifact.expired &&
+    artifact.size_in_bytes === expected.inspectionBytes && artifact.digest === `sha256:${expected.inspectionSha256}` &&
+    artifact.workflow_run?.id === expected.run && artifact.workflow_run?.head_sha === expected.revision,
+  'The already reviewed previous inspection receipt differs');
+  assert(typeof log === 'string' && Buffer.byteLength(log) <= 1024 * 1024, 'The previous recovery log is unavailable or too large');
+  const lines = log.split(/\r?\n/);
+  const events = [expected.inspectionLog, expected.uploadLog, expected.cancelledLog].map(line => {
+    assert(lines.filter(item => item === line).length === 1, 'The reviewed recovery journal event is absent or ambiguous');
+    return lines.indexOf(line);
+  });
+  assert(events[0] < events[1] && events[1] < events[2] &&
+    !lines.some(line => /Retained export recovery completed;|Uploading version:/.test(line)),
+  'The previous recovery journal does not describe the reviewed incomplete stable-only transfer');
+  return { previousRecoveryRun: expected.run, previousRecoveryJob: expected.job,
+    previousRecoveryRevision: expected.revision, previousRecoveryTree: expected.tree,
+    previousInspectionArtifact: expected.inspectionArtifact, previousInspectionSha256: expected.inspectionSha256,
+    previousRecoveryLogSha256: createHash('sha256').update(log).digest('hex'), previousRecoveryTimedOut: true,
+    lockEarliest: expected.lockEarliest, lockLatest: expected.lockLatest };
+}
+export function validateRecoveryOrigin({ run, producer, publisher, artifact, commit, tag, annotations, publishers, recoveryRun, previousRecovery }, context) {
   const expected = recovery111;
   assert(recoveryRun.id === context.recoveryRun && recoveryRun.event === 'workflow_dispatch' && recoveryRun.head_branch === 'main' &&
     recoveryRun.head_sha === context.workflowRevision && recoveryRun.path === '.github/workflows/Documentation.yml' &&
@@ -72,7 +125,8 @@ export function validateRecoveryOrigin({ run, producer, publisher, artifact, com
     sourceVersion: expected.version, artifactId: expected.artifact, artifactSha256: expected.sha256,
     artifactBytes: expected.bytes, sourceProducerJob: expected.producerJob, sourcePublisherJob: expected.publisherJob,
     producerPassed: true, publisherCancelled: true, noOtherPublisher: true,
-    publisherStarted: publisher.started_at, publisherCompleted: publisher.completed_at };
+    publisherStarted: publisher.started_at, publisherCompleted: publisher.completed_at,
+    ...(context.after3h ? validateRecoveryContinuation(previousRecovery ?? {}) : {}) };
 }
 async function recoveryApi(env, path) {
   assert(env.GH_TOKEN, 'Recovery requires the read-only Actions token');
@@ -101,7 +155,32 @@ export async function verifyRecoveryOrigin(env) {
   const ids = [...new Set(activeRuns.flatMap(page => page.workflow_runs.map(item => item.id)))];
   const jobs = await Promise.all(ids.filter(id => id !== context.recoveryRun).map(id => recoveryApi(env, `actions/runs/${id}/jobs?per_page=100`)));
   assert(jobs.every(page => page.total_count <= 100 && Array.isArray(page.jobs)), 'Publisher jobs cannot be inspected completely');
-  return validateRecoveryOrigin({ run, producer, publisher, artifact, commit, tag, annotations, recoveryRun,
+  let previousRecovery;
+  if (context.after3h) {
+    const previous = recovery111After3h;
+    const [run, job, commit, artifact] = await Promise.all([
+      recoveryApi(env, `actions/runs/${previous.run}`), recoveryApi(env, `actions/jobs/${previous.job}`),
+      recoveryApi(env, `commits/${previous.revision}`), recoveryApi(env, `actions/artifacts/${previous.inspectionArtifact}`)
+    ]);
+    assert(job.check_run_url === `https://api.github.com/repos/${expected.repository}/check-runs/${previous.job}`,
+      'The previous recovery check URL differs');
+    const annotations = await recoveryApi(env, `check-runs/${previous.job}/annotations?per_page=100`);
+    // Logs are read through the authenticated job endpoint, never a user URL.
+    // The token is not forwarded to its signed storage redirect.
+    const response = await fetch(`https://api.github.com/repos/${expected.repository}/actions/jobs/${previous.job}/logs`, {
+      headers: { Authorization: `Bearer ${env.GH_TOKEN}`, Accept: 'application/vnd.github+json', 'X-GitHub-Api-Version': '2022-11-28' },
+      redirect: 'manual', signal: AbortSignal.timeout(30000)
+    });
+    assert(response.status === 302, 'The previous recovery journal redirect is unavailable');
+    const logs = await fetch(recoveryDownloadUrl(response.headers.get('location')), { redirect: 'error', signal: AbortSignal.timeout(30000) });
+    assert(logs.ok && logs.body, 'The previous recovery journal download failed');
+    let bytes = 0; const chunks = [];
+    for await (const chunk of Readable.fromWeb(logs.body)) {
+      bytes += chunk.length; assert(bytes <= 1024 * 1024, 'The previous recovery journal exceeds its size limit'); chunks.push(chunk);
+    }
+    previousRecovery = { run, job, commit, artifact, annotations, log: Buffer.concat(chunks).toString('utf8') };
+  }
+  return validateRecoveryOrigin({ run, producer, publisher, artifact, commit, tag, annotations, recoveryRun, previousRecovery,
     publishers: jobs.flatMap(page => page.jobs) }, context);
 }
 export async function writeVerifiedRecoveryArchive(response, destination, expected) {
@@ -422,19 +501,34 @@ export function recoveryOptions(env) {
   assert(configuration.channel === 'dev', 'Recovery connection must use the actual main dispatch');
   return { ...configuration, ...context, recovery: true, channel: 'release', version: recovery111.version,
     revision: recovery111.revision, site: resolve('website/build/sftp/version/site'),
-    stableSite: resolve('website/build/sftp/stable/site'), reclaimCancelledLock: env.PERFCHECKER_RECOVERY_RECLAIM_LOCK === 'true' };
+    stableSite: resolve('website/build/sftp/stable/site'), reclaimCancelledLock: context.after3h ?
+      env.PERFCHECKER_RECOVERY_RECLAIM_AFTER3H_LOCK === 'true' : env.PERFCHECKER_RECOVERY_RECLAIM_LOCK === 'true' };
 }
 const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 const byteDigest = bytes => createHash('sha256').update(bytes).digest('hex');
-async function inspectRecoveryLock(transport, root) {
+async function inspectRecoveryLock(transport, options) {
+  const root = options.root;
   const path = posix.join(root, lockName), attrs = await transport.stat(path);
   if (!attrs) return null;
   assert(attrs.isDirectory() && !attrs.isSymbolicLink(), 'Recovery lock must be a real directory, never a symbolic link');
   const entries = await transport.readdir(path);
   assert(Array.isArray(entries) && entries.every(entry => ['.', '..'].includes(entry.filename)),
     'Recovery refuses a nonempty or uninspectable lock');
-  assert(Number.isInteger(attrs.mtime) && attrs.mtime >= Date.parse(recovery111.publisherStarted) / 1000 &&
-    attrs.mtime <= Date.parse(recovery111.publisherCompleted) / 1000, 'Recovery lock time is outside the cancelled publisher window');
+  let earliest = recovery111.publisherStarted, latest = recovery111.publisherCompleted;
+  if (options.after3h) {
+    const previous = recovery111After3h, proof = options.continuationProof;
+    assert(proof?.after3h === true && proof.previousRecoveryRun === previous.run && proof.previousRecoveryJob === previous.job &&
+      proof.previousRecoveryRevision === previous.revision && proof.previousRecoveryTree === previous.tree &&
+      proof.previousInspectionArtifact === previous.inspectionArtifact && proof.previousInspectionSha256 === previous.inspectionSha256 &&
+      /^[a-f0-9]{64}$/.test(proof.previousRecoveryLogSha256 ?? '') && proof.previousRecoveryTimedOut === true &&
+      proof.noOtherPublisher === true && proof.lockEarliest === previous.lockEarliest && proof.lockLatest === previous.lockLatest,
+    'The later empty lock requires the verified previous Actions source, journal and inspection receipt');
+    assert(attrs.mode === previous.lockMode && attrs.uid === previous.lockUid && attrs.gid === previous.lockGid,
+      'The later recovery lock metadata differs from the reviewed account and directory mode');
+    earliest = proof.lockEarliest; latest = proof.lockLatest;
+  }
+  assert(Number.isInteger(attrs.mtime) && attrs.mtime >= Date.parse(earliest) / 1000 &&
+    attrs.mtime <= Date.parse(latest) / 1000, 'Recovery lock time is outside the cancelled publisher window');
   return { mtime: attrs.mtime, mode: attrs.mode, uid: attrs.uid, gid: attrs.gid, entries: [] };
 }
 export async function inspectRecoveryDestination(transport, options, { includeLock = true } = {}) {
@@ -470,11 +564,11 @@ export async function inspectRecoveryDestination(transport, options, { includeLo
     Number.isSafeInteger(refresh.value.sequence) && ['pending', 'complete'].includes(refresh.value.status) &&
     compareVersions(refresh.value.version, options.version) < 0, 'Recovery cannot overwrite refreshed documentation');
   return { root, archive, state, intent, committed, refresh,
-    ...(includeLock ? { lock: await inspectRecoveryLock(transport, root) } : {}) };
+    ...(includeLock ? { lock: await inspectRecoveryLock(transport, options) } : {}) };
 }
 export async function reclaimRecoveryLock(transport, options, inspected) {
   assertRecoveryOptions(options);
-  const current = await inspectRecoveryLock(transport, options.root);
+  const current = await inspectRecoveryLock(transport, options);
   assert(same(current, inspected), 'The inspected cancellation lock changed before recovery');
   if (!current) return false;
   assert(options.reclaimCancelledLock === true, 'Removing the reviewed cancelled lock requires explicit dispatch opt-in');
@@ -486,6 +580,7 @@ export async function reclaimRecoveryLock(transport, options, inspected) {
 async function verifiedRecoveryOptions(env) {
   const options = recoveryOptions(env);
   const proof = await verifyRecoveryOrigin(env);
+  if (options.after3h) options.continuationProof = proof;
   const saved = JSON.parse(await readFile(resolve('.recovery/verified-origin.json'), 'utf8'));
   assert(saved.schema === 'perfchecker-doc-recovery-origin/1' &&
     same(saved.archive, { bytes: recovery111.bytes, sha256: recovery111.sha256 }) &&
