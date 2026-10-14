@@ -24,7 +24,7 @@ thread's user-space execution; cycles have count unit <code>1</code>, not second
 
 ::: details Prepare the explicit worker
 
-PerfCheckerLinuxPerf 1.0.1 is registered in General. Use a separate worker project:
+PerfCheckerLinuxPerf 1.0.2 is registered in General. Use a separate worker project:
 
 ```julia
 using Pkg
@@ -33,7 +33,7 @@ Pkg.add(["PerfChecker", "PerfCheckerLinuxPerf"])
 Pkg.add(Pkg.PackageSpec(name="LinuxPerf", version="0.4.2"))
 ```
 
-Start Julia with `--project=perf/linuxperf-worker` for the callback above. Install your measured target in that worker project separately. LinuxPerf 0.4.2 requires PrettyTables 2; the other companion requires PrettyTables 3. The kernel must permit perf events on a supported little-endian Linux x86_64, i686 or aarch64 ABI; architecture guards do not qualify positive hardware counts. Published Core has a [known ARM import limitation](../guide/overview.md#ARM-installations).
+Start Julia with `--project=perf/linuxperf-worker` for the callback above. Install your measured target in that worker project separately. LinuxPerf 0.4.2 requires PrettyTables 2; the other companion requires PrettyTables 3. The kernel must permit perf events on a supported little-endian Linux x86_64, i686 or aarch64 ABI; architecture guards do not qualify positive hardware counts. On ARM, use [Core 1.1.1 or newer](../guide/overview.md#ARM-installations).
 
 :::
 

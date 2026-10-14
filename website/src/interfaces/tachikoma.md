@@ -25,7 +25,7 @@ Pkg.add(Pkg.PackageSpec(
 ```
 
 After registration merges, `Pkg.add("PerfCheckerTachikoma")` can replace the
-source specification. Published Core has a [known ARM import limitation](../guide/overview.md#ARM-installations).
+source specification. On ARM, use [Core 1.1.1 or newer](../guide/overview.md#ARM-installations).
 
 It uses Tachikoma 2.7 and UnicodePlots 3. Loading the companion opens no terminal
 and starts no measurement.

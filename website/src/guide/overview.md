@@ -38,11 +38,20 @@ Continue with [a focused investigation](../tutorials/comparisons.md), then [a su
 
 ## ARM installations
 
-Published Core **1.1.0** pins CpuId **0.3.0**, whose import can fail on aarch64,
-including Apple Silicon. All six companions depend on Core, so installing them
-by name does not bypass this [reported failure](https://github.com/JuliaRegistries/General/pull/171531#issuecomment-6145459097).
-A source correction must be validated and released before installations from
-General receive it. Saved examples retain their original capture environments.
+Use **Core 1.1.1 or newer** on ARM, including Apple Silicon. Version 1.1.1 is
+available in General and replaces CpuId 0.3.0 with Julia's
+native CPU information and Hwloc topology. Core and all six companions passed
+native Linux ARM and Apple Silicon tests with Julia 1.10 and current stable.
+
+Core 1.1.0 remains affected. In an existing controller or worker project, update it with:
+
+```julia
+import Pkg
+Pkg.add(Pkg.PackageSpec(name = "PerfChecker", version = "1.1.1 - 1"))
+```
+
+Successful loading does not establish hardware-counter access. Saved examples
+retain their original capture environments.
 
 ```@raw html
 <a id="Introduction"></a><a id="introduction"></a><a id="The-problem"></a><a id="the-problem"></a><a id="The-workflow"></a><a id="the-workflow"></a><a id="What-runs,-and-where"></a><a id="what-runs,-and-where"></a><a id="Start"></a><a id="start"></a><a id="Measure-safely"></a><a id="measure-safely"></a>

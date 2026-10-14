@@ -23,7 +23,7 @@ Pkg.add(["PerfChecker", "PerfCheckerMakie", "WGLMakie"])
 ```
 
 The newer interactive features on this page use this site's renderer,
-**PerfCheckerMakie 1.0.4**, independently of **Core 1.1.0**. Version 1.0.4 is
+**PerfCheckerMakie 1.0.4**, versioned independently from Core. Version 1.0.4 is
 not registered in General; select this documentation's exact renderer source:
 
 ```julia
@@ -36,7 +36,7 @@ Pkg.add(Pkg.PackageSpec(
 Pkg.add("WGLMakie")
 ```
 
-Published Core has a [known ARM import limitation](../guide/overview.md#ARM-installations).
+On ARM, use [Core 1.1.1 or newer](../guide/overview.md#ARM-installations).
 
 ```@raw html
 <a id="Open-a-saved-bundle"></a>
