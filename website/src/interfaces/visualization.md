@@ -13,7 +13,7 @@ HTML. Rendering does not repeat the workload.
 
 ## Install the renderer
 
-PerfCheckerMakie **1.0.1** is registered in General and installs by name in a
+PerfCheckerMakie **1.0.4** is registered in General and installs by name in a
 separate plotting environment:
 
 ```julia
@@ -22,19 +22,7 @@ Pkg.activate(joinpath(homedir(), ".julia", "environments", "perfchecker-plots"))
 Pkg.add(["PerfChecker", "PerfCheckerMakie", "WGLMakie"])
 ```
 
-The newer interactive features on this page use this site's renderer,
-**PerfCheckerMakie 1.0.4**, versioned independently from Core. Version 1.0.4 is
-not registered in General; select this documentation's exact renderer source:
-
-```julia
-import Pkg
-Pkg.activate(joinpath(homedir(), ".julia", "environments", "perfchecker-plots"))
-Pkg.add(Pkg.PackageSpec(name = "PerfChecker", version = "1.1"))
-Pkg.add(Pkg.PackageSpec(
-    url = "https://github.com/Mirage-Interactive-Fr/PerfChecker.jl",
-    subdir = "packages/PerfCheckerMakie", rev = "06b2b4d9b54c6c1c5c84ba346ff2317f896a20d9"))
-Pkg.add("WGLMakie")
-```
+The renderer is versioned independently from Core.
 
 On ARM, use [Core 1.1.1 or newer](../guide/overview.md#ARM-installations).
 
