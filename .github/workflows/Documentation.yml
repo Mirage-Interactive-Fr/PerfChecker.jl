@@ -8,9 +8,9 @@ on:
   workflow_dispatch:
     inputs:
       publication:
-        description: Documentation to publish (stable refresh keeps the release archive unchanged)
+        description: Documentation to publish (recover-1.1.1 reuses only the reviewed retained export)
         type: choice
-        options: [dev, stable]
+        options: [dev, stable, recover-1.1.1]
         default: dev
         required: true
       stable_version:
@@ -20,6 +20,11 @@ on:
       docs_source_revision:
         description: Optional immutable documentation-only source commit (full 40-character SHA); requires stable_version
         type: string
+        required: false
+      reclaim_cancelled_lock:
+        description: Only for recover-1.1.1; allow removing its inspected empty lock from the cancelled original job
+        type: boolean
+        default: false
         required: false
 
 permissions:
@@ -43,7 +48,7 @@ env:
 
 jobs:
   documentation:
-    if: github.event.deleted != true
+    if: github.event.deleted != true && !(github.event_name == 'workflow_dispatch' && inputs.publication == 'recover-1.1.1')
     name: Build documentation exports and test SFTP publication
     runs-on: ubuntu-latest
     timeout-minutes: 180
@@ -455,3 +460,80 @@ jobs:
             export PERFCHECKER_DOCS_SITE=website/build/sftp/dev/site
           fi
           node website/deploy-sftp.mjs
+
+  recover-111:
+    name: Recover the retained v1.1.1 documentation exports
+    if: >-
+      github.event_name == 'workflow_dispatch' && inputs.publication == 'recover-1.1.1' &&
+      github.ref == 'refs/heads/main' && vars.PERFCHECKER_DOCS_SFTP_DEPLOY_V2 == 'true'
+    runs-on: ubuntu-latest
+    # The original single archive copy took 112 minutes; do not copy it again.
+    # This budget covers one stable copy, byte verification and final markers.
+    timeout-minutes: 180
+    environment: documentation-sftp
+    permissions:
+      contents: read
+      actions: read
+      checks: read
+    concurrency:
+      group: perfchecker-documentation-sftp
+      cancel-in-progress: false
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PERFCHECKER_DOCS_RECOVERY: ${{ inputs.publication }}
+      PERFCHECKER_DOCS_SOURCE_VERSION: ${{ inputs.stable_version }}
+      PERFCHECKER_DOCS_SOURCE_REVISION: ${{ inputs.docs_source_revision }}
+      PERFCHECKER_RECOVERY_RECLAIM_LOCK: ${{ inputs.reclaim_cancelled_lock }}
+      PERFCHECKER_DOCS_SFTP_DEPLOY: ${{ vars.PERFCHECKER_DOCS_SFTP_DEPLOY_V2 }}
+      PERFCHECKER_DOCS_SFTP_HOST: ${{ vars.PERFCHECKER_DOCS_SFTP_HOST }}
+      PERFCHECKER_DOCS_SFTP_PORT: ${{ vars.PERFCHECKER_DOCS_SFTP_PORT }}
+      PERFCHECKER_DOCS_SFTP_USER: ${{ vars.PERFCHECKER_DOCS_SFTP_USER }}
+      PERFCHECKER_DOCS_SFTP_ROOT: ${{ vars.PERFCHECKER_DOCS_SFTP_ROOT }}
+      PERFCHECKER_DOCS_SFTP_PASSWORD: ${{ secrets.PERFCHECKER_DOCS_SFTP_PASSWORD }}
+      PERFCHECKER_DOCS_SFTP_KNOWN_HOSTS: ${{ secrets.PERFCHECKER_DOCS_SFTP_KNOWN_HOSTS }}
+      PERFCHECKER_DOCS_SFTP_SSH_KEY: ${{ secrets.PERFCHECKER_DOCS_SFTP_SSH_KEY }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+      - name: Install the pinned SFTP transport without building documentation
+        working-directory: website
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Verify original producer, cancelled publisher, tag and retained ZIP bytes
+        run: node website/deploy-sftp.mjs recovery-download
+      - name: Inspect the original archive marker and cancelled lock without remote writes
+        id: inspect
+        run: node website/deploy-sftp.mjs recovery-inspect
+      - name: Save verification and lock receipt before allowing any lock removal
+        id: receipt
+        uses: actions/upload-artifact@v7
+        with:
+          name: documentation-recovery-111-inspection
+          include-hidden-files: true
+          path: |
+            .recovery/verified-origin.json
+            .recovery/inspection.json
+          if-no-files-found: error
+          retention-days: 14
+      - name: Recheck the saved receipt and resume only the stable copy and final markers
+        env:
+          PERFCHECKER_RECOVERY_PLAN_SHA256: ${{ steps.inspect.outputs.plan-sha256 }}
+          PERFCHECKER_RECOVERY_PLAN_ARTIFACT: ${{ steps.receipt.outputs.artifact-id }}
+          PERFCHECKER_RECOVERY_PLAN_ARTIFACT_SHA256: ${{ steps.receipt.outputs.artifact-digest }}
+        run: node website/deploy-sftp.mjs recovery-apply
+      - name: Preserve recovery receipts even when a later transfer fails
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: documentation-recovery-111-result
+          include-hidden-files: true
+          path: |
+            .recovery/verified-origin.json
+            .recovery/inspection.json
+            .recovery/result.json
+          if-no-files-found: warn
+          retention-days: 14
