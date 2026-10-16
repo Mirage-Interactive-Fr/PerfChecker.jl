@@ -9,10 +9,10 @@ global active PerfChecker interface.
 | --- | --- | --- |
 | [PerfCheckerWeb](PerfCheckerWeb/README.md) | 1.0.0 | Oxygen Studio, HTTP routes and remote agents |
 | [PerfCheckerPluto](PerfCheckerPluto/README.md) | 1.0.1 | Notebook generation, reactive controls and Pluto launch |
-| [PerfCheckerMakie](PerfCheckerMakie/README.md) | 1.0.1 | Figures and plot recipes, with optional WGLMakie rendering |
+| [PerfCheckerMakie](PerfCheckerMakie/README.md) | 1.0.4 | Figures and plot recipes, with optional WGLMakie rendering |
 | [PerfCheckerTachikoma](PerfCheckerTachikoma/README.md) | Pending | Optional keyboard terminal UI and saved-evidence plots |
-| [PerfCheckerLinuxPerf](PerfCheckerLinuxPerf/README.md) | 1.0.1 | Optional calling-thread Linux perf-event counter collector |
-| [PerfCheckerLIKWID](PerfCheckerLIKWID/README.md) | 1.0.1 | Optional native CPU-window counter collector |
+| [PerfCheckerLinuxPerf](PerfCheckerLinuxPerf/README.md) | 1.0.2 | Optional calling-thread Linux perf-event counter collector |
+| [PerfCheckerLIKWID](PerfCheckerLIKWID/README.md) | 1.0.2 | Optional native CPU-window counter collector |
 
 The five published companions install by name from General. For example, prepare
 a separate Web controller environment:
@@ -31,23 +31,15 @@ process protocol.
 
 Tachikoma 1.0.1 is proposed in [General PR #171531](https://github.com/JuliaRegistries/General/pull/171531)
 and is not yet installable by name. Its README gives an immutable source recipe.
-PerfCheckerMakie 1.0.4, used by this documentation, is also a source version;
-General currently supplies 1.0.1. See the [renderer installation](../website/src/interfaces/visualization.md)
-when reproducing the newer interactive figures.
-
-The working source candidates are Core 1.1.1, PerfCheckerLinuxPerf 1.0.2 and
-PerfCheckerLIKWID 1.0.2. They are not yet registered; General still provides
-Core 1.1.0 and the companion versions listed above.
 
 ## ARM compatibility
 
-All six companions depend on Core. The published Core 1.1.0 pins CpuId 0.3.0,
-whose import can fail on aarch64, including Apple Silicon. Installing a
-companion by name does not bypass that dependency. The Core 1.1.1 source candidate
-replaces CpuId with portable Hwloc topology and a native Julia fallback. It needs
-its own validation and release before General installations benefit from it;
-registration alone does not establish ARM compatibility. See the
-[reported failure](https://github.com/JuliaRegistries/General/pull/171531#issuecomment-6145459097).
+All six companions depend on Core. On ARM, including Apple Silicon, use
+**Core 1.1.1 or newer**, available in General. It replaces CpuId 0.3.0 with
+Julia's native CPU information and Hwloc topology. Core 1.1.0 remains affected.
+Update Core in each existing controller or worker project using the
+[ARM installation instructions](../website/src/guide/overview.md#ARM-installations).
+Successful loading does not establish hardware-counter access.
 
 ## Environments and qualification
 

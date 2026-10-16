@@ -13,7 +13,7 @@ Pkg.activate("perf/notebooks")
 Pkg.add(["PerfChecker", "PerfCheckerPluto"])
 ```
 
-The published Core has a [known ARM import limitation](../README.md#arm-compatibility).
+On ARM, use [Core 1.1.1 or newer](../README.md#arm-compatibility).
 
 ## Open a suite notebook
 
