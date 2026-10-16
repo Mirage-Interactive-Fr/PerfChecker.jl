@@ -364,17 +364,23 @@ end
 
 function _scenario_process(request::AbstractDict; project::AbstractString,
         timeout::Real, cancellation::CancellationToken, diagnostic::Bool = false,
-        threads::Integer = 1, advisor::Bool = false, testitems::Bool = false)
+        threads::Integer = 1, advisor::Bool = false, testitems::Bool = false,
+        _launch_worker::Function = (command, log) ->
+            run(pipeline(command; stdout = log, stderr = log); wait = false))
     timeout > 0 && isfinite(timeout) ||
         throw(ArgumentError("timeout must be finite and positive"))
     threads > 0 || throw(ArgumentError("threads must be positive"))
     isfile(joinpath(project, "Project.toml")) ||
         throw(ArgumentError("worker project does not exist"))
     cancellation.requested[] && return Dict{String, Any}("status" => "cancelled")
-    return mktempdir() do directory
+    stage = Ref(:worker_transport)
+    try
+      return mktempdir() do directory
+        Sys.isunix() && chmod(directory, 0o700)
+        stage[] = :request_write
         input, output = joinpath(directory, "request.toml"),
         joinpath(directory, "response.toml")
-        open(io -> TOML.print(io, request), input, "w")
+        PerfCheckerWorkerPrivacy.write_response(input, request)
         worker = joinpath(
             @__DIR__, testitems ? "testitem_worker.jl" :
                       advisor ? "advisor_worker.jl" :
@@ -393,7 +399,10 @@ function _scenario_process(request::AbstractDict; project::AbstractString,
         started = time()
         logpath = joinpath(directory, "worker.log")
         return open(logpath, "w") do log
-            process = run(pipeline(command; stdout = log, stderr = log); wait = false)
+            Sys.isunix() && chmod(logpath, 0o600)
+            stage[] = :worker_launch
+            process = _launch_worker(command, log)
+            stage[] = :worker_wait
             status = "complete"
             try
                 while process_running(process)
@@ -413,24 +422,37 @@ function _scenario_process(request::AbstractDict; project::AbstractString,
                     advisor && merge!(result, _advisor_worker_diagnostics(logpath))
                     return result
                 elseif !success(process) || !isfile(output)
-                    message = advisor ? "isolated advisor worker failed" :
-                              first(read(logpath, String), 8192)
-                    result = Dict{String, Any}("status" => "error", "message" => message)
+                    result = Dict{String, Any}("status" => "error",
+                        "message" => "Isolated worker failed; private stdout/stderr are not exported.",
+                        "worker_exitcode" => process.exitcode)
                     advisor && merge!(result, _advisor_worker_diagnostics(logpath))
                     return result
                 end
+                stage[] = :response_read
                 result = TOML.parsefile(output)
                 advisor && (result = _json_parse(result["payload_json"]))
                 advisor && get(result, "status", "error") != "complete" &&
                     merge!(result, _advisor_worker_diagnostics(logpath))
                 result["worker_elapsed_seconds"] = time() - started
-                diagnostic && (result["log_excerpt"] = last(read(logpath, String), 16384))
+                result["worker_log_policy"] = "Private stdout/stderr omitted; only typed failure/source diagnostics or fixed advisor phase markers may be exported"
                 return result
             finally
-                process_running(process) && _stop_scenario_worker(process)
-                wait(process)
+                try
+                    process_running(process) && _stop_scenario_worker(process)
+                    wait(process)
+                catch error
+                    stage[] = :worker_cleanup
+                    # Stop scheduling new jobs after an unverified cleanup.
+                    # The enclosing owner must reap any remaining children.
+                    cancellation.requested[] = true
+                    rethrow()
+                end
             end
         end
+      end
+    catch error
+        error isa InterruptException && rethrow()
+        return PerfCheckerWorkerPrivacy.failure_result(error, catch_backtrace(); stage = stage[])
     end
 end
 

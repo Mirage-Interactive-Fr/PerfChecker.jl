@@ -8,6 +8,15 @@ search: false
 
 [Define and run shared scenarios](tools/scenarios.md), keeping preparation, measured operations and correctness checks separate.
 
+Measurement and diagnostic workers keep their transport files and stdout/stderr
+private. Exported failures contain exception types, callback phases and source
+frames, without rendering exception messages, argument values, commands or
+environments. Raw worker logs are omitted from both failed and successful
+diagnostic evidence. Advisor phase markers retain their existing fixed whitelist.
+If worker cleanup cannot be verified, further jobs are cancelled and the enclosing
+process owner must reap remaining children; a diagnostic result does not certify
+that cleanup succeeded.
+
 ```@raw html
 <a id="Shared-scenarios,-discovery-and-advice"></a>
 <a id="Declare-the-catalog"></a>

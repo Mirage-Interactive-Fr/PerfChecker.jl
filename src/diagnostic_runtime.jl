@@ -34,9 +34,8 @@ function _diagnostic_inprocess(request)
             result["tool_version"] = string(Base.pkgversion(loaded_tool))
             include(joinpath(@__DIR__, "..", "providers", package, "adapter.jl"))
         catch error
-            return merge(result,
-                Dict("message" => sprint(showerror, error),
-                    "status" => "unavailable"))
+            return merge(result, PerfCheckerWorkerPrivacy.failure_result(error,
+                catch_backtrace(); status = "unavailable", stage = :analyzer_loading))
         end
     end
     options = get(request, "options", Dict{String, Any}())
