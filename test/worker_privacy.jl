@@ -10,7 +10,7 @@
         (printed[] += 1; throw(ErrorException("exception printer must not run")))
     canary = "PRIVATE_CANARY_DSN_PASSWORD_COOKIE_TOKEN"
     failure, trace = try
-        throw(PrivateWorkerFailure{Symbol(canary)}(Cmd(["private-command", canary]; env = ["TOKEN=" * canary])))
+        throw(PrivateWorkerFailure{Symbol(canary)}(Cmd(Cmd(["private-command", canary]); env = ["TOKEN=" * canary])))
     catch error
         (error, catch_backtrace())
     end
@@ -145,13 +145,20 @@ end
                     write(output, "invalid = [" * canary)
                     chmod(output, 0o600)
                 end
-                command = Cmd([sh, "-c", "printf '%s' '" * canary * "' >&2; exit " *
-                    (mode == :failed ? "17" : "0")]; detach = true)
+                command = Cmd(Cmd([sh, "-c", "printf '%s' '" * canary * "' >&2; exit " *
+                    (mode == :failed ? "17" : "0")]); detach = true)
                 run(pipeline(command; stdout = log, stderr = log); wait = false)
             end
             result = Base.invokelatest(runner, Dict(); project = dirname(@__DIR__),
                 timeout = 5, cancellation = token(), diagnostic, _launch_worker = launcher)
             @test result["status"] == (mode == :complete ? "complete" : "error")
+            if mode == :failed
+                @test result["worker_exitcode"] == 17
+            elseif mode == :parse
+                @test result["failure"]["stage"] == "response_read"
+            else
+                @test haskey(result, "worker_elapsed_seconds")
+            end
             @test !haskey(result, "log_excerpt") && !haskey(result, "worker_log_excerpt")
             io = IOBuffer(); TOML.print(io, result)
             @test !occursin(canary, String(take!(io)))
