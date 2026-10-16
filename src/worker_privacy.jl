@@ -7,7 +7,7 @@ using TOML
 
 const FAILURE_STAGES = (:scenario_execution, :diagnostic_execution, :analyzer_loading,
     :worker_transport, :request_write, :worker_launch, :worker_wait, :response_read,
-    :worker_cleanup)
+    :worker_cleanup, :provenance_capture)
 const CALLBACK_PHASES = (:prepare, :operation, :synchronize, :verify, :cleanup)
 
 function failure_diagnostic(error, trace; stage::Symbol = :worker_transport,

@@ -40,6 +40,51 @@
     end
 end
 
+@testitem "Provenance failures omit inherited environments and malformed manifest contents" tags=[:unit, :worker_privacy] default_imports=false begin
+    using Test, TOML
+    owner = Module(gensym(:PrivateProvenance))
+    Core.eval(owner, :(using TOML, SHA))
+    Base.include(owner, joinpath(@__DIR__, "..", "src", "worker_privacy.jl"))
+    source = joinpath(@__DIR__, "..", "src", "qualification.jl")
+    unwrap(expr) = expr isa Expr && expr.head == :macrocall ? unwrap(last(expr.args)) : expr
+    selected = Set([:_sha256_file, :_environment_provenance, :_git_output, :_git_provenance])
+    found = Set{Symbol}()
+    for raw in Meta.parseall(read(source, String); filename = source).args
+        expr = unwrap(raw)
+        expr isa Expr && expr.head == :function || continue
+        signature = first(expr.args)
+        signature isa Expr && signature.head == :call || continue
+        name = first(signature.args)
+        name in selected || continue
+        Core.eval(owner, expr)
+        push!(found, name)
+    end
+    @test found == selected
+    canary = "PRIVATE_CANARY_DSN_PASSWORD_COOKIE_TOKEN"
+    mktempdir() do directory
+        for missing_executable in (false, true)
+            failure = withenv("PRIVATE_PROVENANCE_CANARY" => canary,
+                    "PATH" => missing_executable ? directory : get(ENV, "PATH", "")) do
+                Base.invokelatest(getfield(owner, :_git_provenance), directory)
+            end
+            @test !failure["captured"]
+            @test failure["capture_failure"]["stage"] == "provenance_capture"
+            @test failure["capture_failure"]["exception_type"] in
+                ("ProcessFailedException", "IOError")
+            io = IOBuffer()
+            TOML.print(io, Dict(k => v for (k, v) in failure if v !== nothing))
+            @test !occursin(canary, String(take!(io)))
+        end
+        manifest = joinpath(directory, "Manifest.toml")
+        write(manifest, "private_value = [" * canary)
+        failure = Base.invokelatest(getfield(owner, :_environment_provenance), directory)
+        @test failure["development_capture_failure"]["stage"] == "provenance_capture"
+        io = IOBuffer()
+        TOML.print(io, Dict(k => v for (k, v) in failure if v !== nothing))
+        @test !occursin(canary, String(take!(io)))
+    end
+end
+
 @testitem "Scenario transport omits private logs and neutralizes launch and parse errors" tags=[:unit, :worker_privacy] default_imports=false begin
     using Test, TOML
     # Compile the production owner functions without importing controller

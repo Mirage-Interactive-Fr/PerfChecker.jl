@@ -13,6 +13,8 @@ private. Exported failures contain exception types, callback phases and source
 frames, without rendering exception messages, argument values, commands or
 environments. Raw worker logs are omitted from both failed and successful
 diagnostic evidence. Advisor phase markers retain their existing fixed whitelist.
+Source and environment provenance capture failures follow the same typed policy;
+Git stderr is omitted and failed Git commands never render their inherited environment.
 If worker cleanup cannot be verified, further jobs are cancelled and the enclosing
 process owner must reap remaining children; a diagnostic result does not certify
 that cleanup succeeded.

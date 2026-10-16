@@ -233,7 +233,11 @@ function _environment_provenance(path::AbstractString)
                             "message" => "development dependency directory missing")))
             end
         catch error
-            evidence["development_capture_error"] = first(sprint(showerror, error), 1024)
+            evidence["development_capture_error"] =
+                "Private provenance capture failed; exception messages and values are not exported."
+            evidence["development_capture_failure"] =
+                PerfCheckerWorkerPrivacy.failure_diagnostic(error, catch_backtrace();
+                    stage = :provenance_capture)
         end
     end
     evidence["development_sources"] = sources
@@ -245,7 +249,9 @@ function _git_output(root::String, arguments::AbstractVector{<:AbstractString})
     # Provenance reads must not refresh the index's stat cache.
     command = addenv(Cmd(Cmd(vcat(["git"], String.(arguments))); dir = root),
         "GIT_OPTIONAL_LOCKS" => "0")
-    return strip(read(command, String))
+    # Git failures can carry the inherited private environment in Cmd.env.
+    # Stderr is unstructured workload data, not source provenance evidence.
+    return strip(read(pipeline(command; stderr = devnull), String))
 end
 
 "Capture reproducible source identity without recording remotes or file contents."
@@ -273,7 +279,11 @@ function _git_provenance(path::AbstractString)
         evidence["dirty"] = !isempty(dirty_state)
         evidence["dirty_state_sha256"] = bytes2hex(SHA.sha256(codeunits(dirty_state)))
     catch error
-        evidence["capture_error"] = first(sprint(showerror, error), 2_048)
+        evidence["capture_error"] =
+            "Private provenance capture failed; exception messages and values are not exported."
+        evidence["capture_failure"] =
+            PerfCheckerWorkerPrivacy.failure_diagnostic(error, catch_backtrace();
+                stage = :provenance_capture)
     end
     return evidence
 end
