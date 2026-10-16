@@ -17,7 +17,7 @@ Studio opens in a full editor tab beside your source.
 The controller is the Julia project that runs PerfChecker and coordinates measurement workers. Create one in `perf/controller`, or select an existing compatible project.
 
 1. Use VS Code **1.96+** and Julia **1.10+**.
-2. Install [PerfChecker from the Marketplace](https://marketplace.visualstudio.com/items?itemName=mirage-interactive-fr.perfchecker-vscode), or search Extensions for `@id:mirage-interactive-fr.perfchecker-vscode`. The released extension **1.0.2** requires **Core 1.1.0+ within 1.x** for guided controller setup and integrated Pluto. Existing CLI controllers using **Core 1.0.1** remain compatible.
+2. Install [PerfChecker from the Marketplace](https://marketplace.visualstudio.com/items?itemName=mirage-interactive-fr.perfchecker-vscode), or search Extensions for `@id:mirage-interactive-fr.perfchecker-vscode`. Extension **1.0.3** installs **Core 1.1.1+ within 1.x** for a new controller or integrated Pluto project. Existing guided projects using **Core 1.1.0+ within 1.x** and CLI controllers using **Core 1.0.1** remain compatible. Linux ARM and Apple Silicon require **Core 1.1.1+**.
 3. Open your package folder and run **PerfChecker: Open Studio**. In a multi-root workspace, select the intended package.
 4. Choose **Set up workspace and create suite**. Create a controller in `perf/controller`, or select an existing project containing compatible PerfChecker packages. Review and confirm the installation when offered.
 5. Inspect the selected environment. Existing TestItems also need your package and its test dependencies; guided setup supplies collectors, not every package's dependencies.
@@ -61,6 +61,10 @@ test items**. In VS Code's **Testing** view, expand your package's PerfChecker
 controller and run one item. Inspect its correctness, measured duration and
 sample count. **View → Output → PerfChecker test items** prints the JSON
 `Evidence:` path.
+
+After changing tests, save the files, choose **Refresh Tests** or **Discover
+existing test items**, and wait for the current list before choosing **Run Test**.
+Refresh again if you change the selected controller or workspace package.
 
 The whole item includes setup and assertions and has no automatic warmup.
 A green functional test does not establish a performance budget.
@@ -153,6 +157,17 @@ Keep Pluto separate from an HTTP 2 MCP controller: the qualified Pluto **1.0.4**
 environment uses HTTP 1.x and **PerfCheckerPluto 1.0.1**. Updating the companion
 does not rewrite old generated notebooks; create a new notebook to adopt corrected
 plot cells. For standalone notebooks, use [Pluto](pluto.md).
+
+::: warning Known limitation in 1.0.3: Pluto on Intel macOS
+
+The first integrated Pluto notebook may fail to be created on Intel macOS. In
+the release qualification, the expected notebook file was still absent after
+one hour. The cause remains undetermined, so this integration is not fully
+qualified on Intel macOS. A correction is planned for the next extension
+version. The passing configured and prepared notebook cases do not remove this
+first-use limitation. Standalone notebook setup is documented in [Pluto](pluto.md).
+
+:::
 
 ```@raw html
 <a id="Open-a-saved-diagnostic-report"></a>
@@ -318,15 +333,20 @@ Run from your package root, using a fresh controller project:
 ```julia
 import Pkg
 Pkg.activate("perf/controller")
-Pkg.add(Pkg.PackageSpec(name = "PerfChecker", version = "1.1"))
-Pkg.add(["BenchmarkTools", "Chairmarks", "TestItemRunner"])
+Pkg.add([
+    Pkg.PackageSpec(name = "PerfChecker", version = "1.1.1 - 1"),
+    Pkg.PackageSpec(name = "BenchmarkTools"),
+    Pkg.PackageSpec(name = "Chairmarks"),
+    Pkg.PackageSpec(name = "TestItemRunner"),
+])
 Pkg.develop(path = ".")
 ```
 
 Add the package's test dependencies deliberately; add `HTTP` for MCP.
 Set `runnerProject` to `perf/controller` and inspect it with **Open Julia
-terminal**. Guided setup and integrated Pluto in extension 1.0.2 require Core
-1.1.0+ within 1.x; existing CLI controllers with Core 1.0.1 remain compatible.
+terminal**. Extension 1.0.3 uses Core 1.1.1+ within 1.x for new projects;
+existing guided projects with Core 1.1.0+ within 1.x and CLI controllers with
+Core 1.0.1 remain compatible. ARM hosts require Core 1.1.1+.
 
 :::
 
@@ -362,23 +382,31 @@ do not establish GPU timing or displayed frame rate.
 | Saved MCP settings ignored | `advisorConfig` or an active session connection takes precedence |
 | Chat configuration refused | `mcp_http`, text mode, actual tool schema and required arguments |
 | Pluto cannot resolve HTTP | Separate `plutoProject` from the MCP controller |
+| First integrated Pluto notebook is not created on Intel macOS | Known 1.0.3 limitation above; retain the Pluto output when reporting it |
 | Notebook or cleanup error | **View → Output → PerfChecker Pluto** or **Show worker output** |
 
 The screenshots retain their **1.0.1** provenance and that release's recorded limits.
-The released **1.0.2** has separate automated [native-workflow checks](https://github.com/Mirage-Interactive-Fr/PerfCheckerVSCode/actions/runs/38109682602)
-and [General bootstrap checks](https://github.com/Mirage-Interactive-Fr/PerfCheckerVSCode/actions/runs/38146341004).
-Both passed five jobs: Ubuntu and Windows with VS Code 1.96/stable, and Intel
-macOS with stable VS Code. These are automated editor-host tests, including
-macOS, rather than a manual Mac-machine walkthrough. The broad native run does
-not qualify every control. General bootstrap covers setup, a suite run and
-integrated Pluto; the native checks include closing Pluto with active workers.
+The **1.0.3** release retains the results and limitations recorded in its
+[release report](https://github.com/Mirage-Interactive-Fr/PerfCheckerVSCode/releases/tag/v1.0.3).
+The [native qualification](https://github.com/Mirage-Interactive-Fr/PerfCheckerVSCode/actions/runs/38826278250/attempts/1)
+passed **34 of 35 functional groups**: all seven groups on Linux and Windows
+with VS Code 1.96/stable, and six of seven on Intel macOS with stable VS Code.
+The remaining Intel group failed during first integrated Pluto notebook
+creation, as described above. The campaign is therefore a recorded failure;
+the release accepts this known limitation rather than claiming a complete pass.
 
-Separate focused native-MCP stdio checks passed on [Linux](https://github.com/Mirage-Interactive-Fr/PerfCheckerVSCode/actions/runs/38109227234),
-[Windows](https://github.com/Mirage-Interactive-Fr/PerfCheckerVSCode/actions/runs/38114299498) and
-[Intel macOS](https://github.com/Mirage-Interactive-Fr/PerfCheckerVSCode/actions/runs/38109232151),
-covering advice, reviewed implementation, cancellation, disconnect and reload.
-These tests use controlled protocol fixtures.
-Apple Silicon, physical GPU and commercial model providers are outside this evidence.
+Separate fresh-install bootstrap checks passed **45 cases on nine lanes**:
+[25 x64 cases](https://github.com/Mirage-Interactive-Fr/PerfCheckerVSCode/actions/runs/38769699307)
+and [20 Linux ARM / Apple Silicon cases](https://github.com/Mirage-Interactive-Fr/PerfCheckerVSCode/actions/runs/38772625253).
+They loaded registered Core 1.1.1 in both the controller and Pluto project.
+These bootstrap checks do not establish full ARM feature coverage or native
+qualification of upgrades to existing Pluto projects.
+
+MCP and provider tests use controlled protocol fixtures; they do not establish
+commercial model inference or physical GPU support. Arbitrary Pluto cleanup
+callbacks and a second cancellation during cleanup remain outside the recorded
+guarantees. Consult the release report for collector availability and the scope
+of each teardown check.
 
 Use the [extension release reports](https://github.com/Mirage-Interactive-Fr/PerfCheckerVSCode/releases)
 for the scope of each released build. Report UI issues to
