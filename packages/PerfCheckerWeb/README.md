@@ -14,7 +14,7 @@ Pkg.activate("perf/controller")
 Pkg.add(["PerfChecker", "PerfCheckerWeb"])
 ```
 
-The published Core has a [known ARM import limitation](../README.md#arm-compatibility).
+On ARM, use [Core 1.1.1 or newer](../README.md#arm-compatibility).
 
 ## Start a local controller
 

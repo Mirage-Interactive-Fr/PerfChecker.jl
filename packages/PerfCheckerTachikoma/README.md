@@ -5,8 +5,8 @@ and UnicodePlots 3. This companion is version 1.0.1 and requires Julia 1.10 or
 newer. Its source is `packages/PerfCheckerTachikoma` in the PerfChecker repository;
 its [General registration PR #171531](https://github.com/JuliaRegistries/General/pull/171531)
 is pending, so it is not yet installable by name.
-The qualification lanes target Ubuntu with Julia 1.10 and the current Julia
-release. Windows has not been qualified for this companion.
+The qualification lanes cover Linux and Apple Silicon with Julia 1.10 and
+current stable. Windows has not been qualified for this companion.
 
 ## Installation
 
@@ -23,8 +23,8 @@ Pkg.add(Pkg.PackageSpec(
 ```
 
 Once registration is merged, `Pkg.add("PerfCheckerTachikoma")` can replace the
-source specification. The published Core has a
-[known ARM import limitation](../README.md#arm-compatibility).
+source specification. On ARM, use
+[Core 1.1.1 or newer](../README.md#arm-compatibility).
 
 ## Use the terminal
 

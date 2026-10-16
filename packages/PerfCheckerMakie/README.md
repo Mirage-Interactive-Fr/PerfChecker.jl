@@ -7,7 +7,7 @@ load `WGLMakie` to export an interactive document with
 
 ## Installation
 
-PerfCheckerMakie 1.0.1 is registered in General. Use a separate plotting project:
+PerfCheckerMakie 1.0.4 is registered in General. Use a separate plotting project:
 
 ```julia
 using Pkg
@@ -16,10 +16,7 @@ Pkg.add(["PerfChecker", "PerfCheckerMakie", "WGLMakie"])
 using PerfChecker, PerfCheckerMakie, WGLMakie
 ```
 
-The features described below belong to source version 1.0.4, which is not yet
-registered. To reproduce them, use the immutable renderer revision in the
-[visualization guide](https://perfchecker.mirageinteractive.fr/dev/interfaces/visualization.html#Install-the-renderer).
-The published Core has a [known ARM import limitation](../README.md#arm-compatibility).
+On ARM, use [Core 1.1.1 or newer](../README.md#arm-compatibility).
 
 ## Saved evidence
 
