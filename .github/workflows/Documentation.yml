@@ -21,6 +21,14 @@ on:
         description: Optional immutable documentation-only source commit (full 40-character SHA); requires stable_version
         type: string
         required: false
+      reviewed_export_asset:
+        description: Optional release asset ID for a locally rendered stable export; publication only, no build or tests
+        type: string
+        required: false
+      reviewed_export_sha256:
+        description: Required SHA256 of that exact reviewed ZIP, supplied with reviewed_export_asset
+        type: string
+        required: false
       reclaim_cancelled_lock:
         description: Only for recover-1.1.1; allow removing its inspected empty lock from the cancelled original job
         type: boolean
@@ -53,7 +61,7 @@ env:
 
 jobs:
   documentation:
-    if: github.event.deleted != true && !(github.event_name == 'workflow_dispatch' && (inputs.publication == 'recover-1.1.1' || inputs.publication == 'recover-1.1.1-after-3h'))
+    if: github.event.deleted != true && !(github.event_name == 'workflow_dispatch' && (inputs.publication == 'recover-1.1.1' || inputs.publication == 'recover-1.1.1-after-3h' || inputs.reviewed_export_asset != ''))
     name: Build documentation exports and test SFTP publication
     runs-on: ubuntu-latest
     timeout-minutes: 180
@@ -401,7 +409,9 @@ jobs:
       github.event_name != 'pull_request' &&
       (github.ref == 'refs/heads/main' || github.ref_type == 'tag')
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    # The earlier v1.1.1 root copy was incomplete at the three-hour job limit.
+    # Allow its automatic dev copy and explicit stable refresh bounded room.
+    timeout-minutes: ${{ github.ref == 'refs/heads/main' && needs.documentation.outputs['stable-version'] == 'v1.1.1' && (github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.publication == 'stable' && inputs.stable_version == 'v1.1.1')) && 360 || 120 }}
     environment: documentation-sftp
     # All refs share one publisher; the server-side lock also protects manual clients.
     concurrency:
@@ -465,6 +475,106 @@ jobs:
             export PERFCHECKER_DOCS_SITE=website/build/sftp/dev/site
           fi
           node website/deploy-sftp.mjs
+
+  publish-reviewed:
+    name: Publish reviewed local export — no build or tests
+    if: >-
+      github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' &&
+      inputs.publication == 'stable' && inputs.reviewed_export_asset != '' &&
+      vars.PERFCHECKER_DOCS_SFTP_DEPLOY_V2 == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    environment: documentation-sftp
+    concurrency:
+      group: perfchecker-documentation-sftp
+      cancel-in-progress: false
+    env:
+      PERFCHECKER_DOCS_STABLE_REFRESH: 'true'
+      PERFCHECKER_DOCS_STABLE_VERSION: ${{ inputs.stable_version }}
+      PERFCHECKER_DOCS_SOURCE_VERSION: ${{ inputs.stable_version }}
+      PERFCHECKER_DOCS_SOURCE_REVISION: ${{ inputs.docs_source_revision }}
+      PERFCHECKER_DOCS_SOURCE_REPOSITORY: stable-doc-source
+      REVIEWED_EXPORT_ASSET: ${{ inputs.reviewed_export_asset }}
+      REVIEWED_EXPORT_SHA256: ${{ inputs.reviewed_export_sha256 }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+      - name: Install only the pinned publication transport
+        working-directory: website
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Validate the explicit stable publication inputs
+        run: |
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';
+          import {documentationSourceConfiguration} from './website/deploy-sftp.mjs';
+          assert(documentationSourceConfiguration(process.env).explicit);
+          assert(/^[1-9][0-9]*$/.test(process.env.REVIEWED_EXPORT_ASSET));
+          assert(/^[0-9a-f]{64}$/.test(process.env.REVIEWED_EXPORT_SHA256));
+          NODE
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ inputs.docs_source_revision }}
+          path: stable-doc-source
+          persist-credentials: false
+      - name: Verify the immutable Core and renderer sources
+        run: |
+          git -C stable-doc-source fetch --no-tags --depth=1 origin "refs/tags/$PERFCHECKER_DOCS_STABLE_VERSION:refs/tags/$PERFCHECKER_DOCS_STABLE_VERSION"
+          node --input-type=module <<'NODE'
+          import {fetchStableDocumentationCompanions, validateStableDocumentationSource} from './website/deploy-sftp.mjs';
+          const env = process.env;
+          await fetchStableDocumentationCompanions('stable-doc-source', env.PERFCHECKER_DOCS_STABLE_VERSION, env.PERFCHECKER_DOCS_SOURCE_REVISION);
+          await validateStableDocumentationSource('stable-doc-source', env.PERFCHECKER_DOCS_STABLE_VERSION, env.PERFCHECKER_DOCS_SOURCE_REVISION);
+          NODE
+      - name: Retrieve only the exact reviewed stable export
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';
+          import {execFileSync} from 'node:child_process';
+          import {createHash} from 'node:crypto';
+          import {createReadStream} from 'node:fs';
+          import {mkdir, stat} from 'node:fs/promises';
+          import {join} from 'node:path';
+          const env = process.env, revision = env.PERFCHECKER_DOCS_SOURCE_REVISION;
+          const version = env.PERFCHECKER_DOCS_STABLE_VERSION;
+          const name = `documentation-stable-${revision}.zip`;
+          const release = JSON.parse(execFileSync('gh', ['api', `repos/${env.GITHUB_REPOSITORY}/releases/tags/${version}`], {encoding: 'utf8'}));
+          assert.equal(release.tag_name, version); assert.equal(release.draft, false);
+          const asset = release.assets.find(asset => String(asset.id) === env.REVIEWED_EXPORT_ASSET);
+          assert(asset && asset.name === name && asset.size > 0 && asset.size < 2 * 1024 ** 3);
+          if (asset.digest) assert.equal(asset.digest, `sha256:${env.REVIEWED_EXPORT_SHA256}`);
+          const download = join(env.RUNNER_TEMP, 'reviewed-documentation');
+          await mkdir(download);
+          execFileSync('gh', ['release', 'download', version, '--repo', env.GITHUB_REPOSITORY, '--pattern', name, '--dir', download], {stdio: 'inherit', timeout: 1200000});
+          const archive = join(download, name), hash = createHash('sha256');
+          assert.equal((await stat(archive)).size, asset.size);
+          for await (const chunk of createReadStream(archive)) hash.update(chunk);
+          assert.equal(hash.digest('hex'), env.REVIEWED_EXPORT_SHA256);
+          const paths = execFileSync('unzip', ['-Z1', archive], {encoding: 'utf8', maxBuffer: 4 * 1024 ** 2}).trim().split('\n');
+          assert(paths.length > 0 && new Set(paths).size === paths.length);
+          assert(paths.every(path => path.startsWith('stable/site/') && !path.includes('\\') && !path.split('/').includes('..')));
+          await mkdir('website/build/sftp', {recursive: true});
+          execFileSync('unzip', ['-q', archive, '-d', 'website/build/sftp'], {stdio: 'inherit'});
+          console.log(`Reviewed export verified: asset=${asset.id}, bytes=${asset.size}, revision=${revision}, sha256=${env.REVIEWED_EXPORT_SHA256}`);
+          NODE
+      - name: Publish the reviewed stable export, preserving the version archive
+        env:
+          PERFCHECKER_DOCS_SITE: website/build/sftp/stable/site
+          PERFCHECKER_DOCS_SFTP_DEPLOY: ${{ vars.PERFCHECKER_DOCS_SFTP_DEPLOY_V2 }}
+          PERFCHECKER_DOCS_SFTP_HOST: ${{ vars.PERFCHECKER_DOCS_SFTP_HOST }}
+          PERFCHECKER_DOCS_SFTP_PORT: ${{ vars.PERFCHECKER_DOCS_SFTP_PORT }}
+          PERFCHECKER_DOCS_SFTP_USER: ${{ vars.PERFCHECKER_DOCS_SFTP_USER }}
+          PERFCHECKER_DOCS_SFTP_ROOT: ${{ vars.PERFCHECKER_DOCS_SFTP_ROOT }}
+          PERFCHECKER_DOCS_SFTP_PASSWORD: ${{ secrets.PERFCHECKER_DOCS_SFTP_PASSWORD }}
+          PERFCHECKER_DOCS_SFTP_KNOWN_HOSTS: ${{ secrets.PERFCHECKER_DOCS_SFTP_KNOWN_HOSTS }}
+          PERFCHECKER_DOCS_SFTP_SSH_KEY: ${{ secrets.PERFCHECKER_DOCS_SFTP_SSH_KEY }}
+        run: node website/deploy-sftp.mjs
 
   recover-111:
     name: Recover the retained v1.1.1 documentation exports

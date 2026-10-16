@@ -54,6 +54,25 @@ URL and `/PerfChecker/dev/` or version base. Its clean URLs and Documenter
 catalogue are separate from the SFTP export. Do not upload a mirror artifact
 to the canonical host.
 
+### Publish a reviewed local export without another test campaign
+
+The `Documentation` manual dispatch also supports a publication-only stable
+refresh. Render the complete stable site locally from the immutable,
+documentation-only `docs_source_revision`, with the canonical HTTPS URL and
+published renderer metadata. Package only `stable/site/**` in a ZIP named
+`documentation-stable-<full-source-SHA>.zip` and attach it to the existing Core
+release selected by `stable_version`. Record the ZIP's SHA256 and asset ID.
+
+Dispatch from `main` with `publication=stable`, `stable_version`,
+`docs_source_revision`, `reviewed_export_asset` and `reviewed_export_sha256`.
+This route runs no documentation build or test suite. It verifies the exact
+release asset, recalculates its hash, checks the selected Core/renderer source
+and invokes the unchanged stable-refresh publisher. The pinned SFTP host,
+environment, global mutex, server lock, complete-export validation and archive
+preservation rules still apply. A local build or accepted dispatch does not
+prove publication; require successful completion and the expected HTTPS pages
+and build metadata before reporting delivery.
+
 The full qualification still produces `qualified-documentation-static` and
 `qualified-documentation-site`, with separate recorded hashes. Its existing
 collection and release guards are unchanged. The independent Documentation
@@ -264,8 +283,10 @@ authenticated inspection remains read-only; a new Actions receipt is uploaded
 before apply, which repeats all checks and removes only that unchanged empty
 directory with nonrecursive `rmdir` before acquiring the usual atomic lock.
 
-Only this choice has a **360-minute** job budget; the original recovery remains
-180 minutes and ordinary publication remains 120 minutes. GitHub documents
+This recovery choice has a **360-minute** job budget; the original recovery
+remains 180 minutes. The automatic v1.1.1 publication on `main` and its later
+explicit stable refresh described below also allow 360 minutes; other ordinary
+publication remains 120 minutes. GitHub documents
 [job timeout limits](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#jobsjob_idtimeout-minutes).
 The observed first 1,000 files took 156 minutes 35 seconds; the next three
 500-file batches took 8 minutes 57 seconds, 5 minutes 25 seconds and 4 minutes
@@ -303,9 +324,18 @@ only SFTP and requires no remote shell. Existing files require the server's
 adjacent temporary files, apply file mode `0644`, then rename them; created
 and used subdirectories have mode `0755`. Assets upload before pages, and
 `index.html` follows the other pages. Progress is logged every 500 files.
-The ordinary publication job allows 120 minutes. Stable tags transfer both the
-version export and the root export. The fixed v1.1.1 recovery above instead
-allows 180 minutes and preserves its already completed version archive.
+The ordinary publication job allows 120 minutes. An automatic push on `main`
+whose completed build selects the exact version `v1.1.1` allows 360 minutes for
+its complete development copy. A manual dispatch on `main` with
+`publication=stable`, the exact `stable_version=v1.1.1` and the same validated
+build version also allows 360 minutes for its complete root copy. This does
+not change the source checks or permit a refresh before the initial stable
+promotion has completed. Other versions, manual development publications and
+tag publications retain 120 minutes.
+Stable tags transfer both the version export and the root export. The original
+fixed v1.1.1 recovery allows 180 minutes, and its separate continuation after
+the known three-hour cancellation allows 360; both preserve the completed
+version archive. None of these transfer budgets guarantees completion.
 
 No recursive deletion runs. Development, previous versions and unrelated user
 files remain present. Hashed assets from older builds remain usable during an
