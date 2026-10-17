@@ -387,7 +387,13 @@ test('the recovery workflow skips producers, retains the publisher mutex and sav
   const workflow = await readFile(new URL('../.github/workflows/Documentation.yml', import.meta.url), 'utf8');
   assert.match(workflow, /options: \[dev, stable, recover-1\.1\.1, recover-1\.1\.1-after-3h\]/);
   const build = workflow.split('  documentation:\n')[1].split('  sftp:\n')[0];
-  assert.match(build, /if: github\.event\.deleted != true && !\(github\.event_name == 'workflow_dispatch' && \(inputs\.publication == 'recover-1\.1\.1' \|\| inputs\.publication == 'recover-1\.1\.1-after-3h'\)\)/);
+  assert.match(build, /if: github\.event\.deleted != true && !\(github\.event_name == 'workflow_dispatch' && \(inputs\.publication == 'recover-1\.1\.1' \|\| inputs\.publication == 'recover-1\.1\.1-after-3h' \|\| inputs\.reviewed_export_asset != ''\)\)/);
+  const reviewed = workflow.split('  publish-reviewed:\n')[1].split('  recover-111:\n')[0];
+  assert.match(reviewed, /github\.event_name == 'workflow_dispatch' && github\.ref == 'refs\/heads\/main'/);
+  assert.match(reviewed, /inputs\.publication == 'stable' && inputs\.reviewed_export_asset != ''/);
+  assert.match(reviewed, /group: perfchecker-documentation-sftp/);
+  assert.match(reviewed, /cancel-in-progress: false/);
+  assert(!/needs: documentation|npm run test|website\/make\.jl/.test(reviewed));
   const recovery = workflow.split('  recover-111:\n')[1];
   assert(recovery); assert.match(recovery, /timeout-minutes: \$\{\{ inputs\.publication == 'recover-1\.1\.1-after-3h' && 360 \|\| 180 \}\}/);
   assert.match(recovery, /PERFCHECKER_RECOVERY_RECLAIM_AFTER3H_LOCK: \$\{\{ inputs\.reclaim_3h_recovery_lock \}\}/);
