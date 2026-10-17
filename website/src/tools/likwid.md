@@ -29,7 +29,7 @@ count units are explicit and backend access mode determines attribution.</p>
 
 ::: details Prepare the explicit worker
 
-PerfCheckerLIKWID 1.0.1 is registered in General. Use a separate worker project:
+PerfCheckerLIKWID 1.0.2 is registered in General. Use a separate worker project:
 
 ```julia
 using Pkg
@@ -38,7 +38,7 @@ Pkg.add(["PerfChecker", "PerfCheckerLIKWID"])
 Pkg.add(Pkg.PackageSpec(name="LIKWID", version="0.4.6"))
 ```
 
-Start Julia with `--project=perf/likwid-worker` for the callback above. Install your measured target in that worker project separately. LIKWID 0.4.6 requires PrettyTables 3; the other companion requires PrettyTables 2. Native liblikwid and permitted CPU counter access must already exist. Choose exact event/counter pairs supported by your hardware and CPUs inside inherited affinity; group aliases and automatic repinning are refused. Published Core has a [known ARM import limitation](../guide/overview.md#ARM-installations).
+Start Julia with `--project=perf/likwid-worker` for the callback above. Install your measured target in that worker project separately. LIKWID 0.4.6 requires PrettyTables 3; the other companion requires PrettyTables 2. Native liblikwid and permitted CPU counter access must already exist. Choose exact event/counter pairs supported by your hardware and CPUs inside inherited affinity; group aliases and automatic repinning are refused. On ARM, use [Core 1.1.1 or newer](../guide/overview.md#ARM-installations).
 
 :::
 

@@ -7,12 +7,10 @@ the companion never installs or changes them.
 
 ## Installation
 
-PerfCheckerLIKWID 1.0.1 is registered in General. Install it in its own worker
+PerfCheckerLIKWID 1.0.2 is registered in General. Install it in its own worker
 project, then prepare your measured target in that same project separately.
 
-The source candidate 1.0.2 explicitly disables coverage and allocation tracking
-in counter workers. It is not yet registered; the command below currently
-installs the registered 1.0.1:
+Counter workers explicitly disable coverage and allocation tracking.
 
 ```julia
 using Pkg
@@ -20,7 +18,7 @@ Pkg.activate("perf/likwid-worker")
 Pkg.add(["PerfChecker", "PerfCheckerLIKWID"])
 ```
 
-The published Core has a [known ARM import limitation](../README.md#arm-compatibility).
+On ARM, use [Core 1.1.1 or newer](../README.md#arm-compatibility).
 Loading successfully does not establish native counter support on a machine.
 
 ## Measure counters

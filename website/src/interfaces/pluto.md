@@ -66,7 +66,7 @@ Pkg.activate("perf/notebooks")
 Pkg.add(["PerfChecker", "PerfCheckerPluto", "PlutoUI"])
 ```
 
-Published Core has a [known ARM import limitation](../guide/overview.md#ARM-installations).
+On ARM, use [Core 1.1.1 or newer](../guide/overview.md#ARM-installations).
 From your package root, using that notebook project:
 
 ```julia

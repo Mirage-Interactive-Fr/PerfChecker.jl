@@ -54,7 +54,7 @@ Pkg.add([
 ])
 ```
 
-Published Core has a [known ARM import limitation](../guide/overview.md#ARM-installations).
+On ARM, use [Core 1.1.1 or newer](../guide/overview.md#ARM-installations).
 Install the collectors used by your suite deliberately. Load the suite from
 your package root, then start a local service:
 
