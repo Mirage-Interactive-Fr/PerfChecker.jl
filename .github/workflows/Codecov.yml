@@ -60,7 +60,7 @@ jobs:
           files="$(find coverage-reports -type f -name "$COVERAGE_FLAG.info" | sort | paste -sd, -)"
           [[ -n "$files" ]] || { echo "Missing coverage report for $COVERAGE_FLAG"; exit 1; }
           echo "files=$files" >> "$GITHUB_OUTPUT"
-      - uses: codecov/codecov-action@v5
+      - uses: codecov/codecov-action@v7
         with:
           use_oidc: true
           files: ${{ steps.reports.outputs.files }}
