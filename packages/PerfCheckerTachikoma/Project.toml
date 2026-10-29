@@ -13,7 +13,7 @@ PerfChecker = "1"
 PerfCheckerMakie = "1"
 Tachikoma = "2.7"
 UnicodePlots = "3"
-julia = "1.10"
+julia = "1.13"
 
 [weakdeps]
 Makie = "ee78f7c6-11fb-53f2-987a-cfe4a2b5a57a"

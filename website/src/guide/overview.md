@@ -40,8 +40,10 @@ Continue with [a focused investigation](../tutorials/comparisons.md), then [a su
 
 Use **Core 1.1.1 or newer** on ARM, including Apple Silicon. Version 1.1.1 is
 available in General and replaces CpuId 0.3.0 with Julia's
-native CPU information and Hwloc topology. Core and all six companions passed
-native Linux ARM and Apple Silicon tests with Julia 1.10 and current stable.
+native CPU information and Hwloc topology. Its historical Core and companion
+qualification used native Linux ARM and Apple Silicon with Julia 1.10 and the
+then-current stable runtime. This SDK requires Julia 1.13 and selects it
+explicitly in CI; historical platform results do not qualify a new SDK source.
 
 Core 1.1.0 remains affected. In an existing controller or worker project, update it with:
 

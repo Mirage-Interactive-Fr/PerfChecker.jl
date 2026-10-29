@@ -5,12 +5,23 @@ using SHA, TOML, UUIDs
 export load_collection, impacted_components, qualification_plan, validate_receipts,
        write_toml, file_digest, tree_digest, json
 
+function _validate_sdk_julia_suites(suites)
+    for (name, suite) in suites
+        versions = get(suite, "julias", nothing)
+        versions isa AbstractVector && length(versions) == 1 &&
+            only(versions) == "1.13" ||
+            error("SDK qualification requires julias = [\"1.13\"]; invalid suite $name")
+    end
+    nothing
+end
+
 "Load and validate the component graph, suite matrix and immutable external revisions."
 function load_collection(path::AbstractString)
     collection = TOML.parsefile(path)
     get(collection, "schema", "") == "perfchecker-collection/1" ||
         error("Unknown collection schema")
     components, suites = collection["components"], collection["suites"]
+    _validate_sdk_julia_suites(suites)
     for (name, component) in components
         all(haskey(components, dep) for dep in component["depends"]) ||
             error("Unknown dependency of $name")
@@ -77,14 +88,16 @@ end
 
 Create an explicit OS/Julia matrix. Every nonempty selection runs shared contracts.
 The plan is bound to the source revision and collection configuration. A partial
-plan may pass but never qualifies a release. The routine profile checks current
-dependencies and the core's minimum Julia; the documentation profile builds only
-the website. Development documentation can publish after its own checks.
+plan may pass but never qualifies a release. SDK suites declare exactly Julia
+1.13. The routine profile checks the selected current dependencies on Ubuntu and
+the core on each declared OS; the documentation profile builds only the website.
+Development documentation can publish after its own checks.
 """
 function qualification_plan(collection, paths; revision, full = false,
         changed_components = String[], campaign = string(uuid4()), profile = "extended")
     profile in ("extended", "routine", "documentation") ||
         error("Unknown qualification profile")
+    _validate_sdk_julia_suites(collection["suites"])
     occursin(r"^[0-9a-f]{40}$", revision) || error("A full source commit SHA is required")
     impacted = impacted_components(collection, paths; changed_components, full)
     suites = Set{String}()
@@ -103,10 +116,7 @@ function qualification_plan(collection, paths; revision, full = false,
             suite = lane["suite"]
             suite in ("docs", "legacy_interfaces", "legacy_protocol",
                 "advisor_http1", "advisor_http2") && return false
-            suite == "tachikoma" && lane["os"] == "ubuntu-latest" && return true
-            return (lane["os"] == "ubuntu-latest" && lane["julia"] == "1") ||
-                   (suite == "core" &&
-                    (lane["os"] == "ubuntu-latest" || lane["julia"] == "1"))
+            return lane["os"] == "ubuntu-latest" || suite == "core"
         end
     elseif profile == "documentation"
         filter!(lane -> lane["suite"] == "docs", lanes)
@@ -156,6 +166,8 @@ also requires clean checkouts. This checks evidence consistency, not authenticit
 CI must retrieve receipts from trusted jobs of the same run, never from a PR payload.
 """
 function validate_receipts(plan, receipts; require_full = false)
+    all(lane -> lane["julia"] == "1.13", plan["lanes"]) ||
+        error("SDK qualification plans require the Julia selector 1.13")
     require_full && !plan["full"] &&
         error("Partial qualification cannot qualify a release")
     expected = Dict(lane["id"] => lane for lane in plan["lanes"])
@@ -175,8 +187,8 @@ function validate_receipts(plan, receipts; require_full = false)
         runtime = VersionNumber(receipt["runtime"])
         requested = VersionNumber(expected[id]["julia"])
         runtime.major == requested.major || error("Wrong Julia major in $id")
-        occursin('.', expected[id]["julia"]) && runtime.minor != requested.minor &&
-            error("Wrong Julia minor in $id")
+        runtime.minor == requested.minor || error("Wrong Julia minor in $id")
+        isempty(runtime.prerelease) || error("Stable Julia 1.13 is required in $id")
         isempty(receipt["environments"]) && error("Missing environment evidence in $id")
         require_full && receipt["dirty"] &&
             error("Dirty source cannot qualify a release")

@@ -7,4 +7,4 @@ TestItems = "1c621080-faea-4a02-84b6-bbd5e436b8fe"
 
 [compat]
 TestItems = "1"
-julia = "1.10"
+julia = "1.13"

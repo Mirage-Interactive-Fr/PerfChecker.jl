@@ -1,6 +1,6 @@
 # Wall profile
 
-Find task stacks that explain elapsed time, including waiting. Requires Julia 1.12 or later. Width is task-sample weight, separate from CPU samples.
+Find task stacks that explain elapsed time, including waiting. This SDK uses Julia 1.13. Width is task-sample weight, separate from CPU samples.
 
 From `examples/bibliography`, prepare the core controller with `julia setup.jl core`, then run:
 

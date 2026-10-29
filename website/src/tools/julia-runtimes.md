@@ -5,6 +5,10 @@
 # Julia runtimes
 
 A runtime campaign changes Julia while keeping the package source, workloads and measurement definitions fixed.
+This SDK requires Julia 1.13. The default campaign repeats that runtime with
+separate baseline and candidate identities; an actual version comparison needs
+explicit installed Julia 1.13 patch versions. A repeat is not evidence of a
+cross-version performance gain.
 
 ```@raw html
 <a id="Prepare-Julia-channels"></a>
@@ -15,9 +19,7 @@ A runtime campaign changes Julia while keeping the package source, workloads and
 PerfChecker does not install Julia versions. With juliaup:
 
 ```sh
-juliaup add release
-juliaup add rc
-juliaup add nightly
+juliaup add 1.13
 ```
 
 Each runtime is probed in a fresh process; the resolved version, commit, bindir and LLVM version are recorded.
@@ -31,8 +33,8 @@ Each runtime is probed in a fresh process; the resolved version, commit, bindir 
 Run from the controller project containing PerfChecker and the dependencies used by your existing `perf/suite.jl`. Install PerfChecker there with `] add PerfChecker` if needed.
 
 ```sh
-julia --startup-file=no --project=. -e 'using PerfChecker; exit(perfchecker_main(ARGS))' -- julia-campaign \
-  --suite=perf/suite.jl --baseline=release --candidate=rc --candidate=nightly \
+julia +1.13 --startup-file=no --project=. -e 'using PerfChecker; exit(perfchecker_main(ARGS))' -- julia-campaign \
+  --suite=perf/suite.jl --baseline=1.13 --candidate=1.13 \
   --profile=ci --reports=perf/julia-campaign \
   --limit=julia.wall.time=0.05 --min-samples=10 --progress=jsonl
 ```
@@ -41,7 +43,7 @@ Once the campaign starts, the initial progress record has these fields
 (`PERFCHECKER_PROGRESS ` precedes the JSON):
 
 ```json
-{"schema_version":"perfchecker-progress/1","stage":"runtime_campaign","state":"running","completed":0,"total":3}
+{"schema_version":"perfchecker-progress/1","stage":"runtime_campaign","state":"running","completed":0,"total":2}
 ```
 
 The final line is `PASS` or `FAIL`, based on both runtime runs and baseline
@@ -56,8 +58,8 @@ perf/julia-campaign/
 └── julia-investigation.md
 ```
 
-These are expected outputs of the recipe, not a recorded release/RC/nightly
-performance comparison. The campaign Markdown table shows each runtime's
+These are expected outputs of the recipe, not a recorded performance
+comparison. The campaign Markdown table shows each runtime's
 resolved Julia version, status, failure phase, duration and diagnostic.
 
 - Each runtime gets a child controller and normal isolated workers.
@@ -75,9 +77,8 @@ resolved Julia version, status, failure phase, duration and diagnostic.
 ```julia
 using PerfChecker
 specs = [
-    JuliaRuntimeSpec(:stable, "release"; role = :baseline),
-    JuliaRuntimeSpec(:next, "rc"; role = :candidate),
-    JuliaRuntimeSpec(:nightly, "nightly"; role = :candidate),
+    JuliaRuntimeSpec(:baseline, "1.13"; role = :baseline),
+    JuliaRuntimeSpec(:candidate, "1.13"; role = :candidate),
 ]
 
 campaign = run_julia_runtime_campaign(specs;
@@ -97,7 +98,7 @@ Expected identities for the explicit specs above:
 
 ```text
 "perfchecker-julia-runtime-campaign/1"
-[("stable", "baseline"), ("next", "candidate"), ("nightly", "candidate")]
+[("baseline", "baseline"), ("candidate", "candidate")]
 ```
 
 Read each run's `status`, `probe`, `elapsed_seconds` and any `failure_stage`, then

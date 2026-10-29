@@ -147,8 +147,10 @@ julia --project=. -e 'using Pkg; Pkg.instantiate()'
 julia --project=. run.jl results
 ```
 
-The pinned tools require Julia 1.12 or newer; use Julia 1.13.1 with the recorded
-Manifest. Analysis and measurement need only the downloaded environment. The
+Use Julia 1.13.1 with the recorded Manifest. The downloaded Project and Manifest
+belong to the historical Core 1.1.0 capture and retain their recorded hashes;
+their older compatibility floor does not declare support for this SDK.
+Analysis and measurement need only the downloaded environment. The
 optional interactive export uses **PerfCheckerMakie 1.0.4** and
 WGLMakie in a rendering environment; it reads the saved evidence without rerunning
 JET or the workload:
