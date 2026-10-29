@@ -61,6 +61,7 @@ makedocs(;
             "1. Your first comparison" => "guide/overview.md",
             "2. Investigate a change" => "tutorials/comparisons.md",
             "3. Suites and CI" => "software-suites.md",
+            "Worker lifetime" => "worker-lifecycle.md",
             "Architecture" => "architecture-roadmap.md",
             "Contributing" => "contributing/index.md"
         ],

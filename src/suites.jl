@@ -1121,6 +1121,9 @@ function _execute_suite_plan(plan::SuitePlan; executor = _default_suite_executor
     environment_provenance = Dict{String, Dict{String, Any}}()
     preparation_errors = Dict{String, Any}()
     preparation_roots = String[]
+    retained_preparation_roots = Set{String}()
+    cleanup_primary = nothing
+    cleanup_backtrace = nothing
     _notify_suite_progress(progress_callback,
         _suite_progress(plan, runs; state = :running))
     try
@@ -1195,7 +1198,16 @@ function _execute_suite_plan(plan::SuitePlan; executor = _default_suite_executor
                     throw(QualificationFailure(qualification_failure, qualification))
                 end
             catch error
-                (error isa InterruptException || error isa CheckCleanupFailure) && rethrow()
+                if error isa CheckCleanupFailure
+                    if config isa Union{PerfConfig, CheckConfig} &&
+                       haskey(config.options, :prepared_environment)
+                        _retain_cleanup_dependency!(error,
+                            config.options[:prepared_environment], preparation_roots,
+                            retained_preparation_roots)
+                    end
+                    rethrow()
+                end
+                error isa InterruptException && rethrow()
                 status = error isa QualificationFailure ?
                          (error.kind === :probe ? :blocked : :invalid) :
                          _unavailable_exception(error) ? :unavailable : :error
@@ -1222,8 +1234,13 @@ function _execute_suite_plan(plan::SuitePlan; executor = _default_suite_executor
             _notify_suite_progress(progress_callback,
                 _suite_progress(plan, runs; state = :running))
         end
+    catch error
+        cleanup_primary = error
+        cleanup_backtrace = catch_backtrace()
+        rethrow()
     finally
-        foreach(root -> rm(root; recursive = true, force = true), preparation_roots)
+        _cleanup_preparation_roots!(preparation_roots, retained_preparation_roots,
+            cleanup_primary, cleanup_backtrace)
     end
     result = SoftwareSuiteResult(plan, started, string(Dates.now(Dates.UTC)), runs)
     final_state = suite_passed(result) ? :complete : :failed

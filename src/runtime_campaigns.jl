@@ -1,5 +1,9 @@
 const JULIA_RUNTIME_CAMPAIGN_SCHEMA = "perfchecker-julia-runtime-campaign/1"
 
+# SIGSEGV is 11 on the supported Linux/macOS/FreeBSD POSIX targets. Julia 1.13
+# does not expose Base.SIGSEGV; native Windows records use their exit code instead.
+const _RUNTIME_POSIX_SIGSEGV = 11
+
 """
     JuliaRuntimeCampaign
 
@@ -24,13 +28,73 @@ struct JuliaRuntimeCampaign
     comparisons::Vector{Dict{String, Any}}
 end
 
-function _runtime_process(command::Vector{String}, timeout_seconds::Real)
+function _runtime_exit_observation(process::Base.Process)
+    exited = process_exited(process)
+    return (process_exited = exited,
+        exit_code = exited ? Int64(process.exitcode) : nothing,
+        termination_signal = exited ? Int32(process.termsignal) : nothing,
+        termination_mode = "posix")
+end
+
+@static if Sys.iswindows()
+    function _runtime_exit_observation(process::_WindowsOwnedProcess)
+        # The owned Windows provider obtains GetExitCodeProcess before closing
+        # its handle. POSIX signals do not apply to that native observation.
+        return (process_exited = process_exited(process),
+            exit_code = process.exitcode == -1 ? nothing : process.exitcode,
+            termination_signal = nothing, termination_mode = "windows_native")
+    end
+end
+
+function _runtime_status_value(record::AbstractDict, name::String, default)
+    return get(record, name, default)
+end
+function _runtime_status_value(record::NamedTuple, name::String, default)
+    return get(record, Symbol(name), default)
+end
+_runtime_status_integer(value) = value isa Integer && !(value isa Bool)
+
+function _runtime_termination_observed(record)
+    _runtime_status_value(record, "process_exited", false) === true || return false
+    code = _runtime_status_value(record, "exit_code", nothing)
+    _runtime_status_integer(code) || return false
+    mode = _runtime_status_value(record, "termination_mode", nothing)
+    signal = _runtime_status_value(record, "termination_signal", nothing)
+    mode isa AbstractString || return false
+    return mode == "posix" ? _runtime_status_integer(signal) && signal >= 0 :
+           mode == "windows_native" ? signal === nothing && code >= 0 : false
+end
+
+function _runtime_normal_exit(record)
+    _runtime_termination_observed(record) || return false
+    return _runtime_status_value(record, "exit_code", nothing) == 0 &&
+           (_runtime_status_value(record, "termination_mode", nothing) ==
+            "windows_native" ||
+            _runtime_status_value(record, "termination_signal", nothing) == 0)
+end
+
+function _runtime_run_passed(record::AbstractDict)
+    return get(record, "status", nothing) == "passed" &&
+           get(record, "cleanup_complete", false) === true && _runtime_normal_exit(record)
+end
+
+function _runtime_execution_status(execution, bundle_path)
+    execution.timed_out && return "timeout"
+    execution.cleanup_complete || return "cleanup_error"
+    _runtime_termination_observed(execution) || return "termination_unverified"
+    _runtime_normal_exit(execution) || return "failed"
+    return bundle_path === nothing ? "missing_bundle" : "passed"
+end
+
+function _runtime_process(command::Vector{String}, timeout_seconds::Real;
+        observation = nothing)
     stdout_buffer = IOBuffer()
     stderr_buffer = IOBuffer()
     tree = nothing
     primary_error = nothing
     started = time()
     timed_out = false
+    execution = nothing
     try
         tree = _spawn_owned_process(
             Cmd(command); stdout = stdout_buffer, stderr = stderr_buffer)
@@ -42,21 +106,42 @@ function _runtime_process(command::Vector{String}, timeout_seconds::Real)
         end
         _stop_owned_process(tree)
         wait(process)
-        return (exit_code = process.exitcode, timed_out,
-            elapsed_seconds = time() - started,
-            stdout = String(take!(stdout_buffer)),
-            stderr = String(take!(stderr_buffer)))
     catch error
         primary_error = error
         rethrow()
     finally
-        _cleanup_owned_process(tree,
-            (() -> close(stdout_buffer), () -> close(stderr_buffer)), primary_error)
+        try
+            _cleanup_owned_process(tree, (), primary_error)
+        finally
+            try
+                # Capture the reaped status even when cleanup throws. A caller can
+                # retain this observation without mistaking incomplete cleanup for PASS.
+                status = tree === nothing ?
+                         (process_exited = false, exit_code = nothing,
+                    termination_signal = nothing, termination_mode = nothing) :
+                         _runtime_exit_observation(tree.process)
+                execution = (; status..., timed_out,
+                    pid = tree === nothing ? nothing : tree.pid,
+                    cleanup_complete = tree !== nothing && tree.stopped,
+                    elapsed_seconds = time() - started,
+                    stdout = String(take!(stdout_buffer)),
+                    stderr = String(take!(stderr_buffer)))
+                observation === nothing || (observation[] = execution)
+            finally
+                _cleanup_owned_process(nothing,
+                    (() -> close(stdout_buffer), () -> close(stderr_buffer)), primary_error)
+            end
+        end
     end
+    return execution
 end
 
 function _runtime_failure_kind(execution)
     execution.timed_out && return "timeout"
+    signal = _runtime_status_value(execution, "termination_signal", nothing)
+    if _runtime_status_integer(signal) && signal != 0
+        return signal == _RUNTIME_POSIX_SIGSEGV ? "runtime_crash" : "runtime_signal"
+    end
     output = lowercase(string(execution.stderr, '\n', execution.stdout))
     if any(marker -> occursin(marker, output),
         ("exception_access_violation", "segmentation fault", "signal (11)",
@@ -78,6 +163,8 @@ end
 
 function _runtime_failure_stage(execution)
     execution.timed_out && return "unknown"
+    signal = _runtime_status_value(execution, "termination_signal", nothing)
+    _runtime_status_integer(signal) && signal != 0 && return "termination"
     output = lowercase(string(execution.stderr, '\n', execution.stdout))
     any(marker -> occursin(marker, output),
         ("unsatisfiable requirements", "resolvererror", "resolving package versions")) &&
@@ -108,8 +195,16 @@ function _runtime_failure_summary(execution, status::AbstractString)
                     !startswith(line, "└"),
         lines)
     selected = preferred === nothing ? fallback : preferred
-    selected === nothing && return "runtime process exited without a diagnostic"
-    return first(lines[selected], 2_048)
+    message = selected === nothing ? "runtime process exited without a diagnostic" :
+              lines[selected]
+    if _runtime_termination_observed(execution) && !_runtime_normal_exit(execution)
+        message = "runtime process exited abnormally (exit_code=$(_runtime_status_value(execution, "exit_code", nothing)), " *
+                  "termination_signal=$(_runtime_status_value(execution, "termination_signal", nothing)), " *
+                  "termination_mode=$(_runtime_status_value(execution, "termination_mode", nothing))): $message"
+    elseif status == "termination_unverified"
+        message = "runtime process termination was not verified: $message"
+    end
+    return first(message, 2_048)
 end
 
 function _runtime_failure_frames(execution; limit::Integer = 12)
@@ -130,13 +225,17 @@ end
 """
     runtime_campaign_passed(campaign::JuliaRuntimeCampaign) -> Bool
 
-Return whether every run has status `"passed"` and every recorded comparison's
+Return whether every run has status `"passed"`, explicit normal termination and
+completed owned cleanup, and every recorded comparison's
 `"passed"` flag is true. A diagnostic comparison without configured budgets
 does not pass. This only inspects the supplied object; it does not schedule
 missing runtimes or validate that a manually constructed campaign is complete.
+POSIX records require an observed zero code and zero signal; native Windows
+records require an explicit `"windows_native"` mode and observed zero native code.
+Older records without this evidence remain unchanged but do not qualify as passed.
 """
 function runtime_campaign_passed(campaign::JuliaRuntimeCampaign)
-    all(run -> run["status"] == "passed", campaign.runs) &&
+    all(_runtime_run_passed, campaign.runs) &&
         all(comparison -> comparison["passed"], campaign.comparisons)
 end
 
@@ -157,12 +256,16 @@ function _runtime_campaign_run(spec::JuliaRuntimeSpec; suite::String, reports::S
     probe = try
         probe_julia_runtime(spec; project = perfchecker_project)
     catch error
+        error isa InterruptException && rethrow()
         return Dict{String, Any}(
             "runtime_id" => string(spec.id), "role" => string(spec.role),
             "spec" => julia_runtime_spec_dict(spec), "status" => "probe_error",
             "command" => command, "reports" => reports,
             "controller_project" => controller_project, "bundle_path" => nothing,
-            "exit_code" => nothing, "elapsed_seconds" => 0.0,
+            "exit_code" => nothing, "termination_signal" => nothing,
+            "termination_mode" => nothing, "process_exited" => false,
+            "cleanup_complete" => false, "pid" => nothing, "timed_out" => false,
+            "elapsed_seconds" => 0.0,
             "stdout" => "", "stderr" => "",
             "failure_kind" => "probe_error",
             "failure_stage" => "probe",
@@ -170,21 +273,46 @@ function _runtime_campaign_run(spec::JuliaRuntimeSpec; suite::String, reports::S
             "failure_frames" => Dict{String, Any}[],
             "error" => first(sprint(showerror, error), 8_192))
     end
+    observation = Ref{Any}(nothing)
     execution = try
-        _runtime_process(command, timeout_seconds)
+        _runtime_process(command, timeout_seconds; observation)
     catch error
+        error isa InterruptException && rethrow()
+        observed = observation[]
+        failed_status = observed === nothing || observed.pid === nothing ?
+                        "launch_error" : "execution_error"
+        failure_kind = observed !== nothing && _runtime_termination_observed(observed) &&
+                       !_runtime_normal_exit(observed) ?
+                       _runtime_failure_kind(observed) : failed_status
+        failure_summary = first(sprint(showerror, error), 2_048)
+        if observed !== nothing && _runtime_termination_observed(observed) &&
+           !_runtime_normal_exit(observed)
+            failure_summary = first(
+                _runtime_failure_summary(observed, failed_status) * "; " * failure_summary,
+                2_048)
+        end
         return Dict{String, Any}(
             "runtime_id" => string(spec.id), "role" => string(spec.role),
             "spec" => julia_runtime_spec_dict(spec), "probe" => probe,
-            "status" => "launch_error", "command" => command,
+            "status" => failed_status, "command" => command,
             "reports" => reports, "controller_project" => controller_project,
             "bundle_path" => nothing,
-            "exit_code" => nothing, "elapsed_seconds" => 0.0,
-            "stdout" => "", "stderr" => "",
-            "failure_kind" => "launch_error",
-            "failure_stage" => "launch",
-            "failure_summary" => first(sprint(showerror, error), 2_048),
-            "failure_frames" => Dict{String, Any}[],
+            "exit_code" => observed === nothing ? nothing : observed.exit_code,
+            "termination_signal" => observed === nothing ? nothing :
+                                    observed.termination_signal,
+            "termination_mode" => observed === nothing ? nothing : observed.termination_mode,
+            "process_exited" => observed !== nothing && observed.process_exited,
+            "cleanup_complete" => observed !== nothing && observed.cleanup_complete,
+            "pid" => observed === nothing ? nothing : observed.pid,
+            "timed_out" => observed !== nothing && observed.timed_out,
+            "elapsed_seconds" => observed === nothing ? 0.0 : observed.elapsed_seconds,
+            "stdout" => observed === nothing ? "" : first(observed.stdout, 16_384),
+            "stderr" => observed === nothing ? "" : first(observed.stderr, 16_384),
+            "failure_kind" => failure_kind,
+            "failure_stage" => failed_status == "launch_error" ? "launch" : "termination",
+            "failure_summary" => failure_summary,
+            "failure_frames" => observed === nothing ? Dict{String, Any}[] :
+                                _runtime_failure_frames(observed),
             "error" => first(sprint(showerror, error), 8_192))
     end
     bundle_path = try
@@ -192,17 +320,17 @@ function _runtime_campaign_run(spec::JuliaRuntimeSpec; suite::String, reports::S
     catch error
         nothing
     end
-    status = execution.timed_out ? "timeout" :
-             execution.exit_code != 0 ? "failed" :
-             bundle_path === nothing ? "missing_bundle" : "passed"
+    status = _runtime_execution_status(execution, bundle_path)
     failure_kind = status == "passed" ? "" :
                    status == "missing_bundle" ? "missing_bundle" :
+                   status in ("termination_unverified", "cleanup_error") ? status :
                    _runtime_failure_kind(execution)
     failure_summary = status == "missing_bundle" ?
                       "suite emitted no run bundle" :
                       _runtime_failure_summary(execution, status)
     failure_stage = status == "passed" ? "complete" :
                     status == "missing_bundle" ? "report" :
+                    status in ("termination_unverified", "cleanup_error") ? "termination" :
                     _runtime_failure_stage(execution)
     return Dict{String, Any}(
         "runtime_id" => string(spec.id), "role" => string(spec.role),
@@ -210,6 +338,11 @@ function _runtime_campaign_run(spec::JuliaRuntimeSpec; suite::String, reports::S
         "status" => status, "command" => command, "reports" => reports,
         "controller_project" => controller_project,
         "bundle_path" => bundle_path, "exit_code" => execution.exit_code,
+        "termination_signal" => execution.termination_signal,
+        "termination_mode" => execution.termination_mode,
+        "process_exited" => execution.process_exited,
+        "cleanup_complete" => execution.cleanup_complete, "pid" => execution.pid,
+        "timed_out" => execution.timed_out,
         "elapsed_seconds" => execution.elapsed_seconds,
         "stdout" => first(execution.stdout, 16_384),
         "stderr" => first(execution.stderr, 16_384),
@@ -251,7 +384,7 @@ function _runtime_controller_project(root::String, spec::JuliaRuntimeSpec,
         for name in sort!(collect(keys(dependencies)))
             println(io, name, " = \"1\"")
         end
-        println(io, "julia = \"1.10\"")
+        println(io, "julia = \"1.13\"")
     end
     return directory
 end
@@ -266,7 +399,7 @@ function _resumable_runtime_run(previous, spec::JuliaRuntimeSpec;
                   if String(get(run, "runtime_id", "")) == string(spec.id) &&
                      String(get(run, "role", "")) == string(spec.role) &&
                      String(get(get(run, "spec", Dict()), "selector", "")) ==
-                     spec.selector && String(get(run, "status", "")) == "passed"]
+                     spec.selector && _runtime_run_passed(run)]
     length(candidates) == 1 || return nothing
     record = only(candidates)
     bundle_path = get(record, "bundle_path", nothing)
@@ -301,15 +434,17 @@ function _runtime_comparison(baseline::Dict{String, Any},
         default_sample_statistic)
     base_path = get(baseline, "bundle_path", nothing)
     candidate_path = get(candidate, "bundle_path", nothing)
-    if base_path === nothing || candidate_path === nothing
-        failed = candidate_path === nothing ? candidate : baseline
+    if !_runtime_run_passed(baseline) || !_runtime_run_passed(candidate) ||
+       base_path === nothing || candidate_path === nothing
+        failed = !_runtime_run_passed(candidate) || candidate_path === nothing ?
+                 candidate : baseline
         failure = String(get(failed, "failure_summary", "runtime bundle is unavailable"))
         return Dict{String, Any}(
             "schema_version" => "perfchecker-runtime-comparison/1",
             "baseline_runtime_id" => baseline["runtime_id"],
             "candidate_runtime_id" => candidate["runtime_id"],
             "status" => "unavailable", "passed" => false,
-            "reason" => "runtime $(failed["runtime_id"]) did not emit a comparable bundle: $failure",
+            "reason" => "runtime $(failed["runtime_id"]) did not qualify a comparable bundle: $failure",
             "comparison" => nothing)
     end
     comparison = compare_bundles(read_run_bundle(base_path),
@@ -351,13 +486,14 @@ Comparison budgets/statistics have the meanings documented by
 Invalid declarations, suite loading and other orchestration failures can still
 throw in either mode.
 
-With `resume=true`, previously passed runs may be reused only when matching
+With `resume=true`, previously passed runs with explicit normal termination and
+completed cleanup may be reused only when matching
 suite path, profile, runtime ID/role/selector, verified bundle integrity and
 the freshly probed runtime version/commit permit it. Reuse is recorded explicitly;
 it is not a new measurement and does not prove that an edited suite is unchanged.
 
 ```julia
-specs = julia_runtime_matrix(baseline="1.10", candidates=["release"])
+specs = julia_runtime_matrix(baseline="1.13.0", candidates=["1.13.1"])
 campaign = run_julia_runtime_campaign(specs;
     suite="perf/suite.jl", reports="perf/results/runtimes",
     relative_limits=Dict("julia.wall.time" => 0.05), min_samples=3)
@@ -514,14 +650,19 @@ function write_julia_runtime_campaign(campaign::JuliaRuntimeCampaign,
         println(io, "Status: **$(payload["passed"] ? "PASS" : "FAIL")**  ")
         println(io, "Baseline: `$(campaign.baseline_id)`  ")
         println(io, "Suite: `$(campaign.suite)`\n")
-        println(io, "| Runtime | Role | Julia | Status | Phase | Duration | Diagnostic |")
-        println(io, "| --- | --- | --- | --- | --- | ---: | --- |")
+        println(io,
+            "| Runtime | Role | Julia | Status | Exit code | Signal | Termination mode | Cleanup | Phase | Duration | Diagnostic |")
+        println(
+            io, "| --- | --- | --- | --- | ---: | ---: | --- | --- | --- | ---: | --- |")
         for run in campaign.runs
             version = haskey(run, "probe") ? run["probe"]["version"] : "—"
             diagnostic = replace(String(get(run, "failure_summary", "")), '|' => "\\|")
             println(io,
                 "| $(run["runtime_id"]) | $(run["role"]) | $version | " *
-                "$(run["status"]) | $(get(run, "failure_stage", "—")) | " *
+                "$(run["status"]) | $(get(run, "exit_code", "—")) | " *
+                "$(get(run, "termination_signal", "—")) | " *
+                "$(get(run, "termination_mode", "—")) | " *
+                "$(get(run, "cleanup_complete", "—")) | $(get(run, "failure_stage", "—")) | " *
                 "$(round(run["elapsed_seconds"]; digits = 2)) s | " *
                 "$diagnostic |")
         end
@@ -542,7 +683,9 @@ end
     campaign = JuliaRuntimeCampaign("campaign-1", "suite.jl", :ci, :stable,
         "start", "finish",
         [Dict{String, Any}("runtime_id" => "stable", "role" => "baseline",
-            "status" => "passed", "stdout" => "secret", "stderr" => "",
+            "status" => "passed", "exit_code" => 0, "termination_signal" => 0,
+            "termination_mode" => "posix", "process_exited" => true,
+            "cleanup_complete" => true, "stdout" => "secret", "stderr" => "",
             "elapsed_seconds" => 1.0)], Dict{String, Any}[])
     payload = julia_runtime_campaign_dict(campaign)
     @test payload["schema_version"] == "perfchecker-julia-runtime-campaign/1"

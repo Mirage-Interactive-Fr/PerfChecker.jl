@@ -50,8 +50,10 @@ function _runtime_investigation_comparison(campaign::JuliaRuntimeCampaign,
     candidate_run = only(filter(run -> run["runtime_id"] == candidate_id, campaign.runs))
     baseline_path = get(baseline_run, "bundle_path", nothing)
     candidate_path = get(candidate_run, "bundle_path", nothing)
-    if baseline_path === nothing || candidate_path === nothing
-        failed = candidate_path === nothing ? candidate_run : baseline_run
+    if !_runtime_run_passed(baseline_run) || !_runtime_run_passed(candidate_run) ||
+       baseline_path === nothing || candidate_path === nothing
+        failed = !_runtime_run_passed(candidate_run) || candidate_path === nothing ?
+                 candidate_run : baseline_run
         failure = String(get(failed, "failure_summary", "runtime bundle is unavailable"))
         return Dict{String, Any}(
             "baseline_runtime_id" => baseline_id,
@@ -120,7 +122,8 @@ fraction of all positive deltas. It is a heuristic, not proof of causation;
 ranked rows can contain different metrics and units, so their combined shares
 are not a unit-normalized performance budget.
 
-Missing bundles produce `"unavailable"` records with failure details; no source
+Missing bundles or unqualified process termination produce `"unavailable"`
+records with failure details; no source
 deltas produce `"no_source_evidence"`; other records are `"ranked"`. Existing
 bundle read/integrity errors propagate. No campaign is rerun, file modified,
 minimal reproduction generated or report written.
@@ -219,8 +222,14 @@ end
             "00000000-0000-0000-0000-000000000001", 10)
         candidate_path = bundle(joinpath(root, "candidate"),
             "00000000-0000-0000-0000-000000000002", 30)
-        runs = [Dict{String, Any}("runtime_id" => "base", "bundle_path" => baseline_path),
-            Dict{String, Any}("runtime_id" => "next", "bundle_path" => candidate_path)]
+        proof = Dict{String, Any}("status" => "passed", "exit_code" => 0,
+            "termination_signal" => 0, "termination_mode" => "posix",
+            "process_exited" => true, "cleanup_complete" => true)
+        runs = [
+            merge(proof,
+                Dict{String, Any}("runtime_id" => "base", "bundle_path" => baseline_path)),
+            merge(proof,
+                Dict{String, Any}("runtime_id" => "next", "bundle_path" => candidate_path))]
         comparisons = [Dict{String, Any}("baseline_runtime_id" => "base",
             "candidate_runtime_id" => "next")]
         campaign = JuliaRuntimeCampaign("campaign", "suite.jl", :ci, :base,

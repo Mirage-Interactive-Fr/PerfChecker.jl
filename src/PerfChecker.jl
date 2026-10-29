@@ -15,6 +15,7 @@ import Downloads
 import Hwloc
 import JSON
 import Libdl
+import Malt
 import Malt: remote_eval_wait, Worker, remote_eval_fetch, stop, fetch
 import Pkg
 import Pkg.Types: PackageSpec, Context

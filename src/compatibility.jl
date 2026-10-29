@@ -32,17 +32,21 @@ function _default_preflight_resolver(planned::PlannedFeatureRun,
         overrides::AbstractDict)
     config = _run_config(planned, overrides; resolve_preferences = true)
     root, _ = _prepare_check_environment(config)
-    rm(root; recursive = true, force = true)
+    _cleanup_preparation_roots!([root], Set{String}())
     return nothing
 end
 
 function _default_preflight_probe_runner(planned::PlannedFeatureRun,
         overrides::AbstractDict)
     config = _run_config(planned, overrides; resolve_preferences = true)
+    normalized = normalize_config(config)
+    shutdown_options = _worker_shutdown_options(legacy_options(normalized))
     root, environment = _prepare_check_environment(config)
     worker = nothing
+    creation_error = nothing
+    primary_error = nothing
+    primary_backtrace = nothing
     try
-        normalized = normalize_config(config)
         worker = Worker(; exeflags = ["-t $(normalized.threads)",
             "--project=$environment"])
         remote_eval_wait(Main, worker, initpkgs(planned.feature.backend))
@@ -57,9 +61,23 @@ function _default_preflight_probe_runner(planned::PlannedFeatureRun,
             "preflight probe block must return a dictionary"))
         return _finalize_qualification!(Dict{String, Any}(
             string(key) => value for (key, value) in pairs(evidence)))
+    catch error
+        primary_error = error
+        primary_backtrace = catch_backtrace()
+        worker === nothing && (creation_error = error)
+        rethrow()
     finally
-        worker === nothing || safe_stop(worker)
-        rm(root; recursive = true, force = true)
+        try
+            _finish_check_cleanup!(
+                Pair{Int, Task}[], Any[creation_error], Any[worker], [1],
+                Dict{Int, Malt.WorkerShutdownReport}(), shutdown_options, nothing,
+                Dict{Symbol, Any}(), Dict{Symbol, Any}[], Dict(1 => root),
+                Dict{Int, AllocationArtifacts}(); primary_error)
+        catch cleanup_error
+            primary_error === nothing && rethrow()
+            throw(_combine_check_cleanup_failure(
+                primary_error, primary_backtrace, cleanup_error))
+        end
     end
 end
 
@@ -149,6 +167,7 @@ function preflight_suite(plan::SuitePlan;
                     "blocking_packages" => String[],
                     "message" => "dependency graph resolved inside declared constraints")
             catch error
+                (error isa InterruptException || error isa CheckCleanupFailure) && rethrow()
                 message = sprint(showerror, error)
                 status = _unavailable_exception(error) ? "unsatisfiable" : "unknown"
                 Dict{String, Any}(
@@ -183,6 +202,7 @@ function preflight_suite(plan::SuitePlan;
                     run_evidence["message"] = "dependency graph resolved and functional capability probes passed"
                 end
             catch error
+                (error isa InterruptException || error isa CheckCleanupFailure) && rethrow()
                 run_evidence["status"] = "probe_error"
                 run_evidence["blocking"] = true
                 run_evidence["message"] = first(sprint(showerror, error), 16_384)

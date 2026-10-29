@@ -93,6 +93,13 @@ end
 struct CheckCleanupFailure <: Exception
     errors::Vector{Any}
     directories::Vector{String}
+    retained_workers::Vector{Worker}
+    primary::Union{Nothing, CapturedException}
+end
+
+function CheckCleanupFailure(errors, directories)
+    CheckCleanupFailure(convert(Vector{Any}, errors),
+        convert(Vector{String}, directories), Worker[], nothing)
 end
 
 function Base.showerror(io::IO, error::CheckCleanupFailure)
@@ -106,7 +113,8 @@ function Base.showerror(io::IO, error::CheckCleanupFailure)
 end
 
 function _cleanup_check_directories!(
-        temp_roots, allocation_artifacts, retained_roots, failures)
+        temp_roots, allocation_artifacts, retained_roots, failures;
+        retained_workers = Worker[])
     for (i, root) in temp_roots
         if !(i in retained_roots)
             try
@@ -130,50 +138,427 @@ function _cleanup_check_directories!(
         end
     end
     isempty(failures) || throw(CheckCleanupFailure(failures,
-        [temp_roots[i] for i in retained_roots if ispath(temp_roots[i])]))
+        [temp_roots[i] for i in retained_roots if ispath(temp_roots[i])],
+        retained_workers, nothing))
     nothing
 end
 
-function safe_stop(worker)
+"A worker's terminal observation failed PerfChecker's acceptance criteria."
+struct WorkerShutdownFailure <: Exception
+    report::Malt.WorkerShutdownReport
+    reasons::Vector{String}
+end
+
+function Base.showerror(io::IO, error::WorkerShutdownFailure)
+    report = error.report
+    print(io, "PerfChecker worker ", report.pid, " shutdown was not qualified",
+        " (exitcode=", report.exitcode, ", termsignal=", report.termsignal, ")")
+    for reason in error.reasons
+        print(io, "; ", reason)
+    end
+    nothing
+end
+
+function _worker_resources_closed(report::Malt.WorkerShutdownReport)
+    report.complete && report.process_exited && report.socket_closed &&
+        report.stdout_closed && report.stderr_closed && report.tasks_done &&
+        report.active_senders == 0 && report.pending_replies == 0 &&
+        all(task -> task.done, report.tasks)
+end
+
+function _qualify_worker_shutdown(report::Malt.WorkerShutdownReport)
+    reasons = String[]
+    _worker_resources_closed(report) ||
+        push!(reasons, "resources or manager tasks remain owned")
+    report.exitcode == 0 || push!(reasons, "worker did not exit with code zero")
+    report.termsignal == 0 || push!(reasons, "worker terminated with a signal")
+    isempty(report.errors) || append!(reasons, report.errors)
+    all(task -> !task.failed, report.tasks) || push!(reasons, "a manager task failed")
+    report.failed_replies == 0 || push!(reasons, "an asynchronous RPC failed")
+    isempty(reasons) || throw(WorkerShutdownFailure(report, reasons))
+    report
+end
+
+function safe_stop(worker::Worker; exit_timeout::Real = 15.0,
+        term_timeout::Real = 15.0, timeout::Real = exit_timeout + term_timeout + 20.0)
+    # The report observes process exit, every retained task and the connections.
+    # A PID which stopped running alone is not an accepted measurement outcome.
+    report = Malt.shutdown(worker; exit_timeout, term_timeout, timeout,
+        close_unmonitored = true)
+    _qualify_worker_shutdown(report)
+end
+
+safe_cleanup(options, backend::Symbol) = cleanup(options, backend)
+
+function _worker_shutdown_options(options)
+    raw = get(options, :worker_shutdown, (;))
+    raw isa Union{NamedTuple, AbstractDict} ||
+        throw(ArgumentError(":worker_shutdown must be a NamedTuple or dictionary"))
+    all(key -> key isa Symbol && key in (:timeout, :exit_timeout, :term_timeout),
+        keys(raw)) ||
+        throw(ArgumentError(":worker_shutdown accepts only timeout, exit_timeout and term_timeout"))
+    function duration(value, name)
+        value isa Real && !(value isa Bool) ||
+            throw(ArgumentError("worker shutdown $name must be a finite nonnegative duration"))
+        seconds = Float64(value)
+        isfinite(seconds) && seconds >= 0 && seconds * 1.0e9 < Float64(typemax(Int64)) ||
+            throw(ArgumentError("worker shutdown $name must fit a finite nonnegative deadline"))
+        seconds
+    end
+    exit_timeout = duration(get(raw, :exit_timeout, 15.0), :exit_timeout)
+    term_timeout = duration(get(raw, :term_timeout, 15.0), :term_timeout)
+    timeout = duration(get(raw, :timeout, exit_timeout + term_timeout + 20.0), :timeout)
+    (; exit_timeout, term_timeout, timeout)
+end
+
+"A saved table lacks a matching, successful worker-shutdown receipt."
+struct HistoricalCacheUnqualified <: Exception
+    path::String
+    reason::String
+end
+
+function Base.showerror(io::IO, error::HistoricalCacheUnqualified)
+    print(io, "Historical PerfChecker cache is not shutdown-qualified: ",
+        error.path, "; ", error.reason,
+        ". Read it explicitly with csv_to_table or select a new run identity.")
+end
+
+const WORKER_SHUTDOWN_CACHE_SCHEMA = "perfchecker-worker-shutdown/1"
+
+function _worker_qualification_sources(root)
+    sources = Dict{String, String}()
+    for (directory, _, names) in walkdir(joinpath(root, "src"))
+        for name in names
+            endswith(name, ".jl") || continue
+            path = joinpath(directory, name)
+            Base.include_dependency(path)
+            sources[replace(relpath(path, root), '\\' => '/')] = bytes2hex(SHA.sha256(read(path)))
+        end
+    end
+    project = joinpath(root, "Project.toml")
+    Base.include_dependency(project)
+    sources["Project.toml"] = bytes2hex(SHA.sha256(read(project)))
+    Dict{String, Any}("version" => String(TOML.parsefile(project)["version"]),
+        "sources" => sources)
+end
+
+function _worker_qualification_identity()
+    Dict{String, Any}(
+        "PerfChecker" => _worker_qualification_sources(dirname(@__DIR__)),
+        "Malt" => _worker_qualification_sources(dirname(dirname(pathof(Malt)))))
+end
+
+# This records the source tree observed when this module is loaded. The same
+# tree must still be present before collection and before publishing a receipt.
+# It is provenance for a frozen checkout, not attestation of arbitrary hot reloads.
+const _LOADED_WORKER_QUALIFICATION_IDENTITY = _worker_qualification_identity()
+
+function _check_worker_qualification_identity(expected)
+    current = _worker_qualification_identity()
+    current == expected || throw(ArgumentError(
+        "PerfChecker or Malt sources changed; reload the frozen packages before collection"))
+    current
+end
+
+function _worker_shutdown_receipt_path(root, result)
+    joinpath(root, "metadata", "worker-shutdown", string(result) * ".json")
+end
+
+function _worker_shutdown_report_dict(report::Malt.WorkerShutdownReport)
+    Dict{String, Any}("pid" => report.pid, "stage" => string(report.stage),
+        "process_exited" => report.process_exited, "exitcode" => report.exitcode,
+        "termsignal" => report.termsignal, "socket_closed" => report.socket_closed,
+        "stdout_closed" => report.stdout_closed, "stderr_closed" => report.stderr_closed,
+        "tasks_done" => report.tasks_done, "pending_replies" => report.pending_replies,
+        "active_senders" => report.active_senders, "failed_replies" => report.failed_replies,
+        "completed_replies" => report.completed_replies,
+        "unmonitored_discarded" => report.unmonitored_discarded,
+        "errors" => collect(report.errors), "complete" => report.complete,
+        "tasks" => [Dict("name" => string(task.name), "done" => task.done,
+                        "failed" => task.failed) for task in report.tasks])
+end
+
+function _qualified_cached_shutdown(report)
+    report isa AbstractDict || return false
+    for key in ("complete", "process_exited", "socket_closed", "stdout_closed",
+        "stderr_closed", "tasks_done")
+        get(report, key, nothing) === true || return false
+    end
+    for key in (
+        "exitcode", "termsignal", "active_senders", "pending_replies", "failed_replies")
+        value = get(report, key, nothing)
+        value isa Integer && !(value isa Bool) && value == 0 || return false
+    end
+    errors = get(report, "errors", nothing)
+    errors isa AbstractVector && isempty(errors) || return false
+    tasks = get(report, "tasks", nothing)
+    tasks isa AbstractVector && !isempty(tasks) || return false
+    all(
+        task -> task isa AbstractDict && get(task, "done", nothing) === true &&
+                    get(task, "failed", nothing) === false,
+        tasks)
+end
+
+function _read_worker_shutdown_receipt(root, result, csv_path)
+    path = _worker_shutdown_receipt_path(root, result)
+    isfile(path) || throw(HistoricalCacheUnqualified(String(csv_path),
+        "worker-shutdown receipt is missing"))
     try
-        stop(worker)
-    catch err
-        @debug "failed to stop PerfChecker worker" exception=(err, catch_backtrace())
+        document = _json_parsefile(path)
+        document isa AbstractDict || error("receipt is not an object")
+        get(document, "schema_version", nothing) == WORKER_SHUTDOWN_CACHE_SCHEMA ||
+            error("unsupported receipt schema")
+        get(document, "result_uuid", nothing) == string(result) ||
+            error("result UUID mismatch")
+        get(document, "csv_sha256", nothing) == bytes2hex(SHA.sha256(read(csv_path))) ||
+            error("saved table digest mismatch")
+        identity = get(document, "code_identity", nothing)
+        identity isa AbstractDict || error("source identity is missing")
+        for package in ("PerfChecker", "Malt")
+            entry = get(identity, package, nothing)
+            entry isa AbstractDict || error("$package identity is missing")
+            get(entry, "version", nothing) isa AbstractString ||
+                error("$package version is missing")
+            sources = get(entry, "sources", nothing)
+            sources isa AbstractDict && !isempty(sources) ||
+                error("$package sources are missing")
+        end
+        get(document, "code_identity_sha256", nothing) == _content_digest(identity) ||
+            error("source identity digest mismatch")
+        get(document, "observed_at_utc", nothing) isa AbstractString ||
+            error("observation time is missing")
+        _qualified_cached_shutdown(get(document, "report", nothing)) ||
+            error("worker shutdown did not satisfy the terminal contract")
+        return Dict{String, Any}("origin" => "qualified_cache", "receipt_path" => path,
+            "receipt" => document)
+    catch error
+        error isa InterruptException && rethrow()
+        throw(HistoricalCacheUnqualified(String(csv_path), sprint(showerror, error)))
+    end
+end
+
+function _write_worker_shutdown_receipt(root, result, csv_path, report, identity)
+    _qualify_worker_shutdown(report)
+    document = Dict{String, Any}("schema_version" => WORKER_SHUTDOWN_CACHE_SCHEMA,
+        "result_uuid" => string(result), "csv_sha256" => bytes2hex(SHA.sha256(read(csv_path))),
+        "code_identity" => deepcopy(identity), "code_identity_sha256" => _content_digest(identity),
+        "observed_at_utc" => string(Dates.now(Dates.UTC)),
+        "report" => _worker_shutdown_report_dict(report))
+    path = _worker_shutdown_receipt_path(root, result)
+    mkpath(dirname(path))
+    temporary, stream = mktemp(dirname(path); cleanup = false)
+    try
+        close(stream)
+        _write_json(temporary, document; canonical = true)
+        # Same-directory rename publishes the complete receipt last. No fsync or
+        # power-loss durability is implied by this namespace-atomic operation.
+        Base.Filesystem.rename(temporary, path)
     finally
-        if worker isa Worker && Base.process_running(worker.proc)
-            try
-                # Only this worker's process is signalled, never another check.
-                kill(worker.proc, Base.SIGKILL)
-                timedwait(() -> !Base.process_running(worker.proc), 5; pollint = 0.02)
-            catch error
-                @warn "Could not terminate PerfChecker worker" pid=getpid(worker.proc) exception=error
-            end
-        end
-        # Malt 1.x stops the process but retains its parent-side pipe handles.
-        # On Windows, a blocked reader can retain an OS thread for each pipe.
-        # Repeated suite workers therefore need explicit connection cleanup.
-        if worker isa Worker && !Base.process_running(worker.proc)
-            for connection in (worker.stdout, worker.stderr, worker.current_socket)
-                try
-                    close(connection)
-                catch err
-                    @debug "failed to close terminated worker connection" exception=(
-                        err, catch_backtrace())
-                end
-            end
-        end
+        isopen(stream) && close(stream)
+        ispath(temporary) && rm(temporary; force = true)
     end
-    worker isa Worker && Base.process_running(worker.proc) &&
-        error("PerfChecker worker $(getpid(worker.proc)) is still running; cleanup cannot complete")
+    Dict{String, Any}("origin" => "current_run", "receipt_path" => path,
+        "receipt" => document)
+end
+
+function _shutdown_report(error)
+    error isa Union{WorkerShutdownFailure, Malt.ShutdownIncompleteException,
+        Malt.WorkerStartupException} ? error.report : nothing
+end
+
+function _contains_incomplete_shutdown(error, seen = Base.IdSet{Any}())
+    error in seen && return false
+    push!(seen, error)
+    report = _shutdown_report(error)
+    report === nothing || return !_worker_resources_closed(report)
+    if error isa TaskFailedException
+        return any(item -> _contains_incomplete_shutdown(item.exception, seen),
+            Base.current_exceptions(error.task))
+    elseif error isa CompositeException
+        return any(cause -> _contains_incomplete_shutdown(cause, seen), error.exceptions)
+    elseif error isa CheckCleanupFailure
+        return !isempty(error.retained_workers) ||
+               any(cause -> _contains_incomplete_shutdown(cause, seen), error.errors)
+    end
+    false
+end
+
+function _same_failure(first, second)
+    first === second || (first isa TaskFailedException && second isa TaskFailedException &&
+     first.task === second.task)
+end
+
+function _append_check_failure!(failures, error)
+    any(previous -> _same_failure(previous, error), failures) || push!(failures, error)
     nothing
 end
 
-function safe_cleanup(options, backend::Symbol)
-    try
-        cleanup(options, backend)
-    catch err
-        @debug "failed to run PerfChecker cleanup hook" exception=(err, catch_backtrace())
+function _combine_check_cleanup_failure(primary, backtrace, cleanup_error)
+    errors = Any[primary]
+    directories = String[]
+    workers = Worker[]
+    if primary isa CheckCleanupFailure
+        append!(directories, primary.directories)
+        append!(workers, primary.retained_workers)
     end
+    if cleanup_error isa CheckCleanupFailure
+        for cause in cleanup_error.errors
+            _append_check_failure!(errors, cause)
+        end
+        append!(directories, cleanup_error.directories)
+        append!(workers, cleanup_error.retained_workers)
+    else
+        _append_check_failure!(errors, cleanup_error)
+    end
+    CheckCleanupFailure(errors, unique(directories), unique(workers),
+        CapturedException(primary, backtrace))
+end
+
+function _stop_check_worker!(reports, index, worker, shutdown_options)
+    try
+        report = safe_stop(worker; shutdown_options...)
+        reports[index] = report
+        report
+    catch error
+        report = _shutdown_report(error)
+        # A complete but abnormal exit is still a failure, but requires no
+        # second stop merely to rediscover the same terminal status.
+        report === nothing || !_worker_resources_closed(report) ||
+            (reports[index] = report)
+        rethrow()
+    end
+end
+
+function _retain_related_check_roots!(retained_roots, temp_roots, error)
+    error isa CheckCleanupFailure || return nothing
+    for (index, root) in temp_roots
+        any(
+            path -> PerfCheckerProfileRuntime.within_root(root, path) ||
+                PerfCheckerProfileRuntime.within_root(path, root),
+            error.directories) &&
+            push!(retained_roots, index)
+    end
+    nothing
+end
+
+function _retain_cleanup_dependency!(error::CheckCleanupFailure, environment,
+        owned_roots, retained_roots)
+    (isempty(error.directories) && isempty(error.retained_workers) &&
+     !_contains_incomplete_shutdown(error)) && return nothing
+    for root in owned_roots
+        if PerfCheckerProfileRuntime.within_root(environment, root)
+            push!(retained_roots, root)
+            root in error.directories || push!(error.directories, root)
+        end
+    end
+    nothing
+end
+
+function _cleanup_preparation_roots!(roots, retained_roots,
+        primary_error = nothing, primary_backtrace = nothing)
+    failures = Any[]
+    for root in roots
+        root in retained_roots && continue
+        try
+            rm(root; recursive = true, force = true)
+        catch error
+            push!(retained_roots, root)
+            _append_check_failure!(failures, error)
+        end
+    end
+    isempty(failures) && return nothing
+    cleanup_error = CheckCleanupFailure(failures,
+        [root for root in retained_roots if ispath(root)])
+    primary_error === nothing && throw(cleanup_error)
+    throw(_combine_check_cleanup_failure(primary_error, primary_backtrace, cleanup_error))
+end
+
+function _finish_check_cleanup!(creation_tasks, creation_errors, procs, worker_indices,
+        reports, shutdown_options, backend, options, cleanup_options,
+        temp_roots, allocation_artifacts; primary_error = nothing, keep_roots = false)
+    failures = Any[]
+    retained_roots = Set{Int}()
+    unsafe_roots = Set{Int}()
+    retained_workers = Worker[]
+    _retain_related_check_roots!(retained_roots, temp_roots, primary_error)
+
+    # A cancelled constructor wait does not cancel the constructor. Drain every
+    # task before observing the worker slots or removing any environment.
+    for (index, task) in creation_tasks
+        try
+            wait(task)
+        catch error
+            cause = creation_errors[index] === nothing ? error : creation_errors[index]
+            incomplete = _contains_incomplete_shutdown(cause)
+            if incomplete
+                push!(retained_roots, index)
+                push!(unsafe_roots, index)
+            end
+            if incomplete || !_same_failure(error, primary_error)
+                _append_check_failure!(failures, error)
+            end
+        end
+    end
+    for index in worker_indices
+        worker = procs[index]
+        if worker === nothing
+            cause = creation_errors[index]
+            if cause !== nothing && _contains_incomplete_shutdown(cause)
+                push!(retained_roots, index)
+                push!(unsafe_roots, index)
+                isempty(creation_tasks) && _append_check_failure!(failures, cause)
+            end
+            continue
+        end
+        haskey(reports, index) && continue
+        try
+            _stop_check_worker!(reports, index, worker, shutdown_options)
+        catch error
+            _append_check_failure!(failures, error)
+            report = _shutdown_report(error)
+            if report === nothing || !_worker_resources_closed(report)
+                push!(retained_roots, index)
+                push!(unsafe_roots, index)
+                push!(retained_workers, worker)
+            end
+        end
+    end
+
+    if backend !== nothing && backend !== :alloc
+        # Cleanup hooks promise that their workers have stopped. Do not invoke
+        # a destructive hook against a still-owned process; defer it with the
+        # retained environment instead. Independent closed targets still run.
+        if isempty(unsafe_roots)
+            try
+                safe_cleanup(options, backend)
+            catch error
+                _append_check_failure!(failures, error)
+                union!(retained_roots, keys(temp_roots))
+            end
+        end
+        for (index, target_options) in enumerate(cleanup_options)
+            index in unsafe_roots && continue
+            try
+                safe_cleanup(target_options, backend)
+            catch error
+                _append_check_failure!(failures, error)
+                haskey(temp_roots, index) && push!(retained_roots, index)
+            end
+        end
+    end
+    for (index, artifacts) in allocation_artifacts
+        index in unsafe_roots && continue
+        try
+            _cleanup_allocation_artifacts!(artifacts)
+        catch error
+            push!(retained_roots, index)
+            _append_check_failure!(failures, error)
+        end
+    end
+    keep_roots && isempty(failures) && return nothing
+    _cleanup_check_directories!(temp_roots, allocation_artifacts,
+        retained_roots, failures; retained_workers)
+    nothing
 end
 
 function _external_memory_probe(worker, options::Dict{Symbol, Any})
@@ -463,30 +848,46 @@ function _prepare_check_environment(config::Union{PerfConfig, CheckConfig})
     length(targets) == 1 || throw(ArgumentError(
         "suite environment preparation requires exactly one package target"))
     options = legacy_options(normalized)
-    root = mktempdir()
+    shutdown_options = _worker_shutdown_options(options)
+    root = mktempdir(; prefix = "perfchecker-prepared-", cleanup = false)
     environment = joinpath(root, "environment")
-    _copy_check_environment(normalized.path, environment;
-        exclude = get(options, :environment_excludes, String[]))
-    _drop_incompatible_manifest!(environment)
-    worker = nothing
+    procs = Any[nothing]
+    creation_errors = Any[nothing]
+    reports = Dict{Int, Malt.WorkerShutdownReport}()
+    temp_roots = Dict(1 => root)
+    artifacts = Dict{Int, AllocationArtifacts}()
+    function finish(; primary_error = nothing, keep_roots = false)
+        _finish_check_cleanup!(Pair{Int, Task}[], creation_errors, procs, [1],
+            reports, shutdown_options, nothing, options, Dict{Symbol, Any}[],
+            temp_roots, artifacts; primary_error, keep_roots)
+    end
     try
-        worker = Worker(; exeflags = ["-t $(normalized.threads)",
-            "--project=$environment"])
+        _copy_check_environment(normalized.path, environment;
+            exclude = get(options, :environment_excludes, String[]))
+        _drop_incompatible_manifest!(environment)
+        procs[1] = Worker(;
+            exeflags = ["-t $(normalized.threads)",
+                "--project=$environment"])
         quiet = get(options, :quiet, false)
-        remote_eval_wait(Main, worker,
+        remote_eval_wait(Main, procs[1],
             quote
                 import Pkg
                 ENV["JULIA_PKG_PRECOMPILE_AUTO"] = "0"
                 $quiet && (Pkg.UPDATED_REGISTRY_THIS_SESSION[] = true)
                 Pkg.instantiate(; io = $quiet ? devnull : stderr)
             end)
-        _install_target!(worker, only(targets), options)
-    catch
-        rm(root; recursive = true, force = true)
+        _install_target!(procs[1], only(targets), options)
+    catch error
+        backtrace = catch_backtrace()
+        procs[1] === nothing && (creation_errors[1] = error)
+        try
+            finish(; primary_error = error)
+        catch cleanup_error
+            throw(_combine_check_cleanup_failure(error, backtrace, cleanup_error))
+        end
         rethrow()
-    finally
-        worker === nothing || safe_stop(worker)
     end
+    finish(; keep_roots = true)
     return root, environment
 end
 
@@ -499,9 +900,8 @@ function check_function(x::Symbol, config::CheckConfig, block1, block2;
     x == config.backend || throw(ArgumentError(
         "backend mismatch: requested $x but CheckConfig uses $(config.backend)"))
     di = legacy_options(config)
-    g = prep(di, block1, x)
-    h = check(di, block2, x)
-    initpkg = initpkgs(x)
+    shutdown_options = _worker_shutdown_options(di)
+    code_identity = _check_worker_qualification_identity(_LOADED_WORKER_QUALIFICATION_IDENTITY)
     hwinfo = HwInfo()
 
     results = CheckerResult(
@@ -523,16 +923,38 @@ function check_function(x::Symbol, config::CheckConfig, block1, block2;
                     cached_output_path(
                         config, target.spec.name, target.spec.version, block1, block2, hwinfo) :
                     nothing for target in targets]
+    cache_receipts = Dict{Int, Any}()
+    # Validate the entire cache plan before admitting any worker, including a
+    # mixed plan whose other targets are not cached. Legacy data is never replayed
+    # implicitly merely because its terminal provenance is absent or damaged.
+    for (index, path) in enumerate(cached_paths)
+        target = targets[index]
+        eligible = !collect_resources && qualification === nothing && !target.is_dev &&
+                   !isnothing(target.spec.name)
+        eligible || continue
+        result = result_uuid(config, target.spec.name, target.spec.version,
+            block1, block2, hwinfo)
+        if path === nothing
+            candidate = output_path(config.path, result)
+            isfile(candidate) && throw(HistoricalCacheUnqualified(candidate,
+                "saved table is not recorded in the cache index"))
+            continue
+        end
+        cache_receipts[index] = _read_worker_shutdown_receipt(config.path, result, path)
+    end
     allocation_caches = Dict{Int, Any}()
     if x === :profile_alloc
         for (i, path) in enumerate(cached_paths)
             path === nothing && continue
-            capture = _read_allocation_cache(path)
-            if capture === nothing
-                cached_paths[i] = nothing
-            else
-                allocation_caches[i] = capture
+            capture = try
+                _read_allocation_cache(path)
+            catch error
+                error isa InterruptException && rethrow()
+                throw(HistoricalCacheUnqualified(path, sprint(showerror, error)))
             end
+            capture === nothing && throw(HistoricalCacheUnqualified(path,
+                "allocation-profile cache payload is missing or invalid"))
+            allocation_caches[i] = capture
         end
     end
     worker_indices = findall(isnothing, cached_paths)
@@ -546,8 +968,18 @@ function check_function(x::Symbol, config::CheckConfig, block1, block2;
     procs = Any[nothing for _ in 1:len]
     cleanup_options = Dict{Symbol, Any}[]
     allocation_artifacts = Dict{Int, AllocationArtifacts}()
-    creation_tasks = Task[]
+    creation_tasks = Pair{Int, Task}[]
+    creation_errors = Any[nothing for _ in 1:len]
+    reports = Dict{Int, Malt.WorkerShutdownReport}()
+    function finish(; primary_error = nothing)
+        _finish_check_cleanup!(creation_tasks, creation_errors, procs, worker_indices,
+            reports, shutdown_options, x, di, cleanup_options,
+            temp_roots, allocation_artifacts; primary_error)
+    end
     try
+        g = prep(di, block1, x)
+        h = check(di, block2, x)
+        initpkg = initpkgs(x)
         for index in worker_indices
             temp_roots[index] = mktempdir(; prefix = "perfchecker-check-", cleanup = false)
             worker_envs[index] = joinpath(temp_roots[index], "environment")
@@ -560,8 +992,8 @@ function check_function(x::Symbol, config::CheckConfig, block1, block2;
                                  di, [environment_source, worker_envs[i]])
         for i in worker_indices)
         for i in worker_indices
-            push!(creation_tasks,
-                @async begin
+            task = @async begin
+                try
                     procs[i] = Worker(;
                         exeflags = ["--track-allocation=$(config.track)",
                             "-t $(config.threads)", "--project=$(worker_envs[i])"])
@@ -580,9 +1012,14 @@ function check_function(x::Symbol, config::CheckConfig, block1, block2;
                             rethrow()
                         end
                     end
-                end)
+                catch error
+                    creation_errors[i] = error
+                    rethrow()
+                end
+            end
+            push!(creation_tasks, i => task)
         end
-        foreach(wait, creation_tasks)
+        foreach(entry -> wait(last(entry)), creation_tasks)
 
         for i in 1:len
             target = targets[i]
@@ -659,11 +1096,13 @@ function check_function(x::Symbol, config::CheckConfig, block1, block2;
                 else
                     run_options[:check_result] = remote_eval_fetch(Main, procs[i], h)
                 end
-                stop_before_post(x) && safe_stop(procs[i])
+                stop_before_post(x) &&
+                    _stop_check_worker!(reports, i, procs[i], shutdown_options)
                 res = post(run_options, x) |> to_table
                 x === :profile_alloc &&
                     (qualification_evidence["allocation_profile"] = run_options[:check_result].summary)
             else
+                qualification_evidence["worker_shutdown"] = cache_receipts[i]
                 if x === :profile_alloc
                     capture = allocation_caches[i]
                     res = to_table(capture.sites)
@@ -682,63 +1121,42 @@ function check_function(x::Symbol, config::CheckConfig, block1, block2;
             push!(results.resource_envelopes, resource_envelope)
         end
 
-        for (k, t) in enumerate(results.tables)
-            ps = results.pkgs[k]
-            pkg = ps.name
-            v = ps.version
-            (isnothing(pkg) || v == "dev") && continue
-
-            run = run_metadata(config, pkg, v, block1, block2, hwinfo)
-            out = output_path(config.path, run.result_uuid)
-            metadata = metadata_path(config.path)
-            recorded = metadata_has_result(metadata, run.result_uuid)
-            if recorded && !(x === :profile_alloc && cached_paths[k] === nothing)
-                continue
-            end
-            table_to_csv(t, out)
-            x === :profile_alloc && _write_allocation_cache(
-                out, t, results.qualifications[k]["allocation_profile"])
-            recorded || write_run_metadata(metadata, run)
-        end
-    finally
-        # Cancellation of the controller's wait must not race a worker whose
-        # constructor is still running in another task.
-        for task in creation_tasks
-            try
-                wait(task)
-            catch error
-                @debug "worker creation did not finish successfully" exception=error
-            end
-        end
-        failures = Any[]
-        retained_roots = Set{Int}()
-        for i in worker_indices
-            procs[i] === nothing && continue
-            try
-                safe_stop(procs[i])
-            catch error
-                push!(retained_roots, i)
-                push!(failures, error)
-            end
-        end
+    catch error
+        backtrace = catch_backtrace()
         try
-            if x !== :alloc
-                safe_cleanup(di, x)
-                foreach(options -> safe_cleanup(options, x), cleanup_options)
-            end
-            for (i, artifacts) in allocation_artifacts
-                i in retained_roots && continue
-                try
-                    _cleanup_allocation_artifacts!(artifacts)
-                catch error
-                    push!(retained_roots, i)
-                    push!(failures, error)
-                end
-            end
-        finally
-            _cleanup_check_directories!(
-                temp_roots, allocation_artifacts, retained_roots, failures)
+            finish(; primary_error = error)
+        catch cleanup_error
+            throw(_combine_check_cleanup_failure(error, backtrace, cleanup_error))
         end
+        rethrow()
+    end
+    finish()
+    _check_worker_qualification_identity(code_identity)
+    for index in worker_indices
+        results.qualifications[index]["worker_shutdown"] = Dict{String, Any}(
+            "origin" => "current_run", "code_identity" => deepcopy(code_identity),
+            "report" => _worker_shutdown_report_dict(reports[index]))
+    end
+
+    # These writes make a result externally reusable. They must follow every
+    # worker close, backend hook, artifact restoration and private-root cleanup.
+    for (k, t) in enumerate(results.tables)
+        ps = results.pkgs[k]
+        pkg = ps.name
+        v = ps.version
+        (isnothing(pkg) || v == "dev") && continue
+
+        run = run_metadata(config, pkg, v, block1, block2, hwinfo)
+        out = output_path(config.path, run.result_uuid)
+        metadata = metadata_path(config.path)
+        cached_paths[k] === nothing || continue
+        recorded = metadata_has_result(metadata, run.result_uuid)
+        table_to_csv(t, out)
+        x === :profile_alloc && _write_allocation_cache(
+            out, t, results.qualifications[k]["allocation_profile"])
+        recorded || write_run_metadata(metadata, run)
+        results.qualifications[k]["worker_shutdown"] = _write_worker_shutdown_receipt(
+            config.path, run.result_uuid, out, reports[k], code_identity)
     end
 
     return results
@@ -774,6 +1192,7 @@ function check_function(backends::AbstractVector,
         which(check, Tuple{Dict{Symbol, Any}, Expr, typeof(Val(backend))}) == fallback &&
             throw(ArgumentError("check backend $backend is unavailable; load its collector package"))
         config = normalize_config(backend, options; preferences)
+        _worker_shutdown_options(legacy_options(config))
         run_targets(config)
         config
     end
