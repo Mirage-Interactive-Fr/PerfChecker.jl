@@ -1,17 +1,14 @@
-@testitem "Constructor cancellation preserves rollback and suite state" tags=[
-    :integration, :worker_cleanup, :check_shutdown] begin
+@testmodule PreparationCancellationController begin
     using PerfChecker
 
-    if !Sys.islinux()
-        # The deterministic stop below is a Linux-only fault injection. It does
-        # not claim qualification of native process control on other systems.
-        @test_skip Sys.islinux()
-    else
-        script = raw"""
-        using PerfChecker, Test, Dates
+    const SCRIPT = raw"""
+        using PerfChecker, Test, Dates, TOML
         import Malt
 
-        @assert VERSION.major == 1 && VERSION.minor == 13
+        println("PREPARATION_CANCEL_CONTROLLER pid=", getpid(),
+            " utc=", Dates.now(Dates.UTC))
+        flush(stdout)
+        @assert VERSION >= v"1.10"
         @assert Sys.islinux() && Threads.nthreads() == 1
 
         function process_starttime(pid)
@@ -31,7 +28,7 @@
             Malt.WorkerStartupException[]
         end
 
-        function cancellation_case(block_manager)
+        function cancellation_case(block_manager; failed_manager = false)
             fixture = mktempdir(; prefix = "perfchecker-constructor-cancel-", cleanup = false)
             owned = Ref{Any}(nothing)
             identity = Ref{Any}(nothing)
@@ -45,10 +42,11 @@
             try
                 source = mkpath(joinpath(fixture, "source"))
                 seed = mkpath(joinpath(fixture, "seed"))
-                write(joinpath(source, "Project.toml"),
-                    "name = \"PrepCancellationFixture\"\n" *
-                    "uuid = \"fab08b63-242a-4a89-a32c-5de2d4264d04\"\n" *
-                    "version = \"0.1.0\"\n")
+                open(joinpath(source, "Project.toml"), "w") do io
+                    TOML.print(io, Dict("name" => "PrepCancellationFixture",
+                        "uuid" => "fab08b63-242a-4a89-a32c-5de2d4264d04",
+                        "version" => "0.1.0"))
+                end
                 seed_project = joinpath(seed, "Project.toml")
                 write(seed_project, "[deps]\n")
                 before_seed = read(seed_project)
@@ -82,15 +80,18 @@
                             # starts the port reader. J1 makes that a rendezvous.
                             @assert isempty(state.tasks)
                             println("PREPARATION_CANCEL_OWNED pid=", pid,
-                                " starttime=", token, " blocked_manager=", block_manager)
+                                " starttime=", token, " blocked_manager=", block_manager,
+                                " failed_manager=", failed_manager)
                             flush(stdout)
                             # SIGSTOP is 19 on this explicitly guarded Linux
                             # fixture; production cancellation uses no signal ID.
                             kill(state.proc, Int32(19))
-                            if block_manager
+                            if block_manager || failed_manager
                                 manager = Malt._track_task!(state, :fixture_manager) do
                                     put!(manager_entered, nothing)
                                     take!(release)
+                                    failed_manager && error("deliberate finished startup manager failure")
+                                    nothing
                                 end
                             end
                             put!(entered, state)
@@ -101,15 +102,28 @@
                     error("constructor publication rendezvous timed out")
                 end
                 job = launch_suite(plan)
-                @test timedwait(() -> isready(entered) || istaskdone(observer), 35) == :ok
+                rendezvous = timedwait(() -> isready(entered) || istaskdone(observer), 35)
+                @test rendezvous == :ok
+                rendezvous == :ok || error("constructor publication rendezvous timed out")
                 isready(entered) || fetch(observer)
+                isready(entered) || error("constructor observer returned without its owned state")
                 state = take!(entered)
                 pid, token = identity[]
                 @test process_starttime(pid) == token
-                if block_manager
-                    @test timedwait(() -> isready(manager_entered), 10) == :ok
+                if block_manager || failed_manager
+                    manager_ready = timedwait(() -> isready(manager_entered), 10)
+                    @test manager_ready == :ok
+                    manager_ready == :ok || error("fixture manager did not enter its barrier")
                     take!(manager_entered)
                     @test !istaskdone(manager)
+                    if failed_manager
+                        put!(release, nothing)
+                        finished = timedwait(() -> istaskdone(manager), 10)
+                        @test finished == :ok
+                        finished == :ok || error("faulted fixture manager did not finish")
+                        @test_throws TaskFailedException wait(manager)
+                        @test istaskdone(manager) && istaskfailed(manager)
+                    end
                 end
                 environment = only(filter(argument -> startswith(argument, "--project="),
                     state.proc.cmd.exec))[11:end]
@@ -118,7 +132,9 @@
                 @test isdir(environment)
                 @test cancel_suite!(job)
                 @test !cancel_suite!(job)
-                @test timedwait(() -> istaskdone(job.task), 40) == :ok
+                settled = timedwait(() -> istaskdone(job.task), 40)
+                @test settled == :ok
+                settled == :ok || error("cancelled constructor did not settle within its fixture budget")
                 wait(job.task)
                 @test job.cancelled[]
                 @test job.result[] === nothing
@@ -144,6 +160,9 @@
                         !error.report.complete, startups)
                     @test_throws PerfChecker.CheckCleanupFailure wait_suite(job; strict = false)
                     put!(release, nothing)
+                    released = timedwait(() -> istaskdone(manager), 10)
+                    @test released == :ok
+                    released == :ok || error("released fixture manager did not finish")
                     wait(manager)
                     final = first(Malt._shutdown_state!(state; timeout = 10,
                         exit_timeout = 0, term_timeout = 0))
@@ -152,6 +171,21 @@
                     # A later close does not upgrade the failed measurement.
                     @test suite_job_status(job) === :failed
                     rm(private_root; recursive = true, force = true)
+                elseif failed_manager
+                    @test suite_job_status(job) === :failed
+                    @test observed.complete && observed.tasks_done
+                    @test any(task -> task.name === :fixture_manager && task.failed,
+                        observed.tasks)
+                    @test !ispath(private_root)
+                    failure = job.error[][1]
+                    @test failure isa PerfChecker.CheckCleanupFailure
+                    @test !(private_root in failure.directories)
+                    @test isempty(failure.retained_workers)
+                    @test failure.primary !== nothing
+                    startups = nested_startup_failures(failure)
+                    @test any(error -> error.cause isa InterruptException &&
+                        error.report.complete && any(task -> task.failed, error.report.tasks), startups)
+                    @test_throws PerfChecker.CheckCleanupFailure wait_suite(job; strict = false)
                 else
                     @test suite_job_status(job) === :cancelled
                     @test job.error[] === nothing
@@ -212,17 +246,104 @@
             end
             @test safe
             @test !ispath(fixture)
-        end
-
-        @testset "Constructor cancellation after real rollback" begin
-            cancellation_case(false)
-            cancellation_case(true)
+            if failed_manager
+                @test suite_job_status(job) === :failed
+            end
         end
         """
+
+    function qualify(failed_manager::Bool)
+        cases = failed_manager ?
+                "cancellation_case(false; failed_manager = true)" :
+                "cancellation_case(false)\ncancellation_case(true)"
+        script = SCRIPT * "\n" *
+                 "@testset \"Constructor cancellation after real rollback\" begin\n" *
+                 cases * "\nend\n"
         command = Cmd([Base.julia_cmd()[1], "--startup-file=no", "--threads=1",
             "--gcthreads=1", "--project=$(dirname(Base.active_project()))", "-e", script])
-        passed = success(addenv(command, "JULIA_NUM_THREADS" => "1",
-            "JULIA_NUM_GC_THREADS" => "1", "OPENBLAS_NUM_THREADS" => "1"))
-        @test passed
+        passed = success(pipeline(
+            addenv(command, "JULIA_NUM_THREADS" => "1",
+                "JULIA_NUM_GC_THREADS" => "1", "OPENBLAS_NUM_THREADS" => "1");
+            stdout, stderr))
+        return passed
+    end
+end
+
+@testitem "Constructor cancellation preserves rollback and suite state" tags=[
+    :integration, :worker_cleanup, :check_shutdown] setup=[PreparationCancellationController] begin
+    if !Sys.islinux()
+        @test_skip Sys.islinux()
+    else
+        @test PreparationCancellationController.qualify(false)
+    end
+end
+
+@testitem "Constructor cancellation preserves a finished manager failure" tags=[
+    :integration, :worker_cleanup, :check_shutdown, :constructor_rollback_fault] setup=[
+    PreparationCancellationController] begin
+    if !Sys.islinux()
+        @test_skip Sys.islinux()
+    else
+        @test PreparationCancellationController.qualify(true)
+    end
+end
+
+@testitem "Complete startup faults fail cleanup without retaining closed inputs" tags=[
+    :unit, :worker_cleanup, :check_shutdown, :constructor_rollback_fault] begin
+    using PerfChecker
+    import Malt
+
+    # These synthetic terminal reports exercise classification only; no worker
+    # or operating-system process is created, signalled or queried by this test.
+    closed_report(; errors = (), failed_replies = 0) = Malt.WorkerShutdownReport(
+        Int32(1), :startup_rollback, true, Int64(0), Int32(9), true, true, true, true,
+        0, errors, true, (Malt.WorkerTaskStatus(:fixture_manager, true, false),),
+        0, (false, false), 0, failed_replies)
+    clean = Malt.WorkerStartupException(InterruptException(), closed_report(), "")
+    @test PerfChecker._worker_resources_closed(clean.report)
+    @test !PerfChecker._contains_incomplete_shutdown(clean)
+    @test !PerfChecker._contains_shutdown_fault(clean) # Expected rollback signal 9.
+
+    for fault in (:errors, :failed_replies)
+        report = fault === :errors ?
+                 closed_report(; errors = ("fixture cleanup failure",)) :
+                 closed_report(; failed_replies = 1)
+        startup = Malt.WorkerStartupException(InterruptException(), report, "")
+        @test PerfChecker._worker_resources_closed(report)
+        @test !PerfChecker._contains_incomplete_shutdown(startup)
+        @test PerfChecker._contains_shutdown_fault(startup)
+        for asynchronous in (false, true)
+            mktempdir() do root
+                creation_tasks = Pair{Int, Task}[]
+                primary = startup
+                if asynchronous
+                    task = @async throw(startup)
+                    primary = try
+                        wait(task)
+                    catch error
+                        error
+                    end
+                    @test primary isa TaskFailedException
+                    push!(creation_tasks, 1 => task)
+                end
+                failure = try
+                    PerfChecker._finish_check_cleanup!(creation_tasks, Any[startup],
+                        Any[nothing], [1], Dict{Int, Malt.WorkerShutdownReport}(),
+                        (; timeout = 1.0, exit_timeout = 0.0, term_timeout = 0.0),
+                        nothing, Dict{Symbol, Any}(), Dict{Symbol, Any}[], Dict(1 => root),
+                        Dict{Int, PerfChecker.AllocationArtifacts}(); primary_error = primary)
+                catch error
+                    error
+                end
+                @test failure isa PerfChecker.CheckCleanupFailure
+                @test !ispath(root)
+                if failure isa PerfChecker.CheckCleanupFailure
+                    @test isempty(failure.directories)
+                    @test isempty(failure.retained_workers)
+                    @test !PerfChecker._contains_incomplete_shutdown(failure)
+                    @test PerfChecker._contains_shutdown_fault(failure)
+                end
+            end
+        end
     end
 end

@@ -15,6 +15,13 @@ table is accepted only after the relevant workers and cleanup have been
 qualified; runtime campaigns also retain the actual native termination status.
 See [worker lifetime and accepted results](website/src/worker-lifecycle.md) for
 ownership, shutdown budgets, recovery and historical-result compatibility.
-The branch requires the Malt 1.6 lifecycle API. PerfChecker remains an external
-measurement tool with its own Julia compatibility policy, independent of the
-Julia 1.13 target used to qualify Étendu3D.
+An interrupted worker constructor counts as cancellation only after an
+error-free rollback. Incomplete or faulted cleanup remains a failed suite;
+`strict=false` does not hide it. Profile-cache reuse also verifies the acquired
+sidecar bytes, without silently recollecting a missing or changed historical
+result. The guide separates these integrity checks from authentication,
+environment manifests and storage durability.
+
+The branch requires the Malt 1.6 lifecycle API and retains PerfChecker's own
+Julia 1.10 compatibility. These are external measurement-tool requirements,
+independent of the Julia 1.13 target used to qualify Étendu3D.

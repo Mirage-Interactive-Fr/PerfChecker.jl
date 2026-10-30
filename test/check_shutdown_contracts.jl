@@ -453,7 +453,7 @@ end
     version = "0.1.0"
 
     [compat]
-    julia = "1.13"
+    julia = "1.10"
     """)
             source = joinpath(environment, "src", "LifecycleCollectorFixture.jl")
             write(source, """

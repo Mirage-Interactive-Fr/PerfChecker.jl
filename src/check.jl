@@ -394,6 +394,27 @@ function _contains_incomplete_shutdown(error, seen = Base.IdSet{Any}())
     false
 end
 
+# Resource completion permits retiring inputs, but a finished manager or cleanup
+# can still have failed. Startup rollback may legitimately terminate by signal.
+function _contains_shutdown_fault(error, seen = Base.IdSet{Any}())
+    error in seen && return false
+    push!(seen, error)
+    report = _shutdown_report(error)
+    if report !== nothing
+        return !isempty(report.errors) || report.failed_replies != 0 ||
+               any(task -> task.failed, report.tasks)
+    end
+    if error isa TaskFailedException
+        return any(item -> _contains_shutdown_fault(item.exception, seen),
+            Base.current_exceptions(error.task))
+    elseif error isa CompositeException
+        return any(cause -> _contains_shutdown_fault(cause, seen), error.exceptions)
+    elseif error isa CheckCleanupFailure
+        return any(cause -> _contains_shutdown_fault(cause, seen), error.errors)
+    end
+    false
+end
+
 function _same_failure(first, second)
     first === second || (first isa TaskFailedException && second isa TaskFailedException &&
      first.task === second.task)
@@ -505,7 +526,8 @@ function _finish_check_cleanup!(creation_tasks, creation_errors, procs, worker_i
                 push!(retained_roots, index)
                 push!(unsafe_roots, index)
             end
-            if incomplete || !_same_failure(error, primary_error)
+            if incomplete || _contains_shutdown_fault(cause) ||
+               !_same_failure(error, primary_error)
                 _append_check_failure!(failures, error)
             end
         end
@@ -514,10 +536,15 @@ function _finish_check_cleanup!(creation_tasks, creation_errors, procs, worker_i
         worker = procs[index]
         if worker === nothing
             cause = creation_errors[index]
-            if cause !== nothing && _contains_incomplete_shutdown(cause)
-                push!(retained_roots, index)
-                push!(unsafe_roots, index)
-                isempty(creation_tasks) && _append_check_failure!(failures, cause)
+            if cause !== nothing
+                incomplete = _contains_incomplete_shutdown(cause)
+                if incomplete
+                    push!(retained_roots, index)
+                    push!(unsafe_roots, index)
+                end
+                isempty(creation_tasks) &&
+                    (incomplete || _contains_shutdown_fault(cause)) &&
+                    _append_check_failure!(failures, cause)
             end
             continue
         end

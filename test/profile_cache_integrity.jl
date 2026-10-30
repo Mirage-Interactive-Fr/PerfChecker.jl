@@ -8,7 +8,7 @@
                  info = stat(path)
                  (read(path), info.mode, info.mtime, info.ctime)
              end
-             for (parent, _, files) in walkdir(directory) for file in files)
+        for (parent, _, files) in walkdir(directory) for file in files)
     end
 
     mktempdir() do directory
@@ -20,7 +20,7 @@ uuid = "952f3c73-71f9-4e30-80e0-f3a87fb0ef54"
 version = "0.1.0"
 
 [compat]
-julia = "1.13"
+julia = "1.10"
 """)
         write(joinpath(environment, "src", "CacheIntegrityFixture.jl"), """
 __precompile__(false)
@@ -50,7 +50,8 @@ end
         csv = PerfChecker.cached_output_path(PerfChecker.normalize_config(config),
             "PatternFolds", v"0.2.4", preparation, operation, PerfChecker.HwInfo())
         sidecar = PerfChecker._allocation_cache_path(csv)
-        csv_bytes, sidecar_bytes, receipt_bytes = read(csv), read(sidecar), read(receipt_path)
+        csv_bytes, sidecar_bytes, receipt_bytes = read(csv), read(sidecar),
+        read(receipt_path)
         receipt = PerfChecker._json_parsefile(receipt_path)
         @test receipt["csv_sha256"] == bytes2hex(sha256(csv_bytes))
         @test receipt["allocation_profile_sha256"] == bytes2hex(sha256(sidecar_bytes))

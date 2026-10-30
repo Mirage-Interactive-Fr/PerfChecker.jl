@@ -6,18 +6,19 @@ report a cleanup error. Accepting the table at the earlier boundary loses that
 failure. This review branch qualifies the owned resources before returning a
 successful check or writing its successful cache metadata.
 
-The lifecycle changes require Malt 1.6's terminal shutdown report. They are developed
-on `release/sdk-1.0`; the upstream 1.1.1 release and its historical results keep
-their original provenance.
-PerfChecker is an external measurement tool. Its Julia compatibility policy
-is independent of the Julia 1.13 target of the Étendu3D packages under review.
+The lifecycle changes require the Malt 1.6 dependency API. PerfChecker's Julia
+compatibility starts at 1.10; the dependency version is not a Julia version.
+These changes are developed on `release/sdk-1.0`; upstream 1.1.1 and its historical
+results keep their original provenance. PerfChecker remains an external
+measurement tool with its own runtime policy, independent of Étendu3D's Julia
+1.13 target.
 
 ## Ownership boundaries
 
 | Owner | Resources | Successful boundary |
 |---|---|---|
 | Malt worker | Julia process, RPC connection, output pipes and manager tasks | Process reaped, connections closed, senders and pending replies retired, managed tasks finished |
-| PerfChecker check | Worker-creation tasks, workers, copied environments and allocation inventories | All creation outcomes joined and relevant workers qualified before removing their live inputs |
+| PerfChecker check | Worker-creation tasks, workers, copied environments and allocation inventories | All creation outcomes joined; results require qualified workers, while input removal requires finished users and restoration |
 | Backend cleanup | Application state, collector artifacts and restoration callbacks | Every safe cleanup attempted; failures propagated rather than logged and forgotten |
 | Runtime campaign | Child controller, owned descendants and captured output | Actual termination observed and owned process cleanup completed |
 | Invoking application | The outermost controller process | Final exit status checked after its exit hooks, even if a report was already emitted |
@@ -45,7 +46,9 @@ Successful results and cache metadata are published only after this boundary
 succeeds. If calculation and cleanup both fail, the cleanup exception retains
 the primary failure as well. Cancellation with incomplete cleanup remains a
 failed cleanup; it does not become an ordinary cancelled job which has forgotten
-its worker.
+its worker. The same rule applies to cleanup which finished but reported a
+fault. Resource closure permits retiring safe private inputs; it does not erase
+the fault or make the computation successful.
 
 ## Reusing a cache without losing the exit evidence
 
@@ -60,12 +63,19 @@ report. The receipt is written last, after cleanup and the result/index writes.
 This ordering keeps a partially published entry from becoming accepted merely
 because its CSV exists.
 
-Allocation-profile caches also bind the SHA-256 of the `.allocation-profile.toml`
-payload, which supplies their sites and independent totals. The reader verifies
-and parses the same byte snapshot before admitting any worker. A receipt without
-this payload digest, a missing payload or changed bytes leaves the cache
-unqualified; it does not trigger automatic recollection. The historical CSV
-remains available through `csv_to_table`.
+Allocation-profile caches have a second payload: the `.allocation-profile.toml`
+sidecar holds the retained sites, stacks and independent operation totals used
+to reconstruct the profile. Hashing only the CSV would leave this input outside
+the acquired evidence. The receipt therefore also binds the sidecar's SHA-256.
+Valid TOML with an unchanged schema/result UUID can still contain changed sites
+or totals and must be rejected when its bytes differ from that digest.
+
+The profile reader reads the sidecar once into an owned byte buffer, checks
+that buffer against the receipt and parses that same buffer. It does not verify
+one file read and then reopen the path for parsing. Missing payloads, missing or
+invalid digests and changed bytes leave the cache unqualified before a worker
+is admitted. These checks do not trigger automatic recollection. Deliberate
+historical CSV reading remains available through `csv_to_table`.
 
 Cache lookup requires a coherent receipt. A missing or inconsistent receipt
 raises `PerfChecker.HistoricalCacheUnqualified`; lookup does not start a worker,
@@ -75,8 +85,33 @@ proof. `csv_to_table` remains available for deliberate historical reading.
 A valid reused receipt describes the collecting run's acquired shutdown. Its
 PID is historical; it is not queried as a new worker or interpreted as proof
 about whichever process currently has that number. Reuse preserves that
-provenance. An atomic receipt publication is an acceptance boundary, not a
-claim that a multi-file result store survives every power or storage failure.
+provenance.
+
+### What the receipt does and does not establish
+
+The digest checks establish consistency with the recorded collection, assuming
+the cache and its receipt are trusted. They are not a signature, authentication
+of a publisher or protection against a writer which can replace both payloads
+and receipt. The source identities describe the collecting PerfChecker/Malt
+sources; they are not an attestation of every transitive dependency.
+
+The receipt is also distinct from a Julia `Manifest.toml`. It supplements the
+existing configuration/runtime/environment provenance rather than replacing
+the resolved environment inventory. Preserve the exact Project/Manifest and
+source selections separately when the experiment requires that provenance.
+
+Writing the receipt last prevents an incomplete publication from being accepted
+on the presence of a CSV alone. It is not a multi-file durable transaction:
+the contract does not promise `fsync`, recovery from a power loss or rollback
+of every result/index write. A partial store may remain readable historically
+while being ineligible for accepted cache reuse.
+
+Callers must serialize writes to the same result/cache entry and keep its
+inputs stable during lookup. The receipt does not acquire a writer lock or
+take one atomic snapshot of the CSV, sidecar, index and receipt together. The
+sidecar's checked-buffer guarantee concerns that parser input; it does not
+make concurrent replacement of the rest of the result store safe. Independent
+owners can use separate result roots instead of sharing a writable entry.
 
 ## Shutdown budgets
 
@@ -123,6 +158,43 @@ An incomplete constructor rollback also matters when no worker was assigned to
 the controller's worker array. Its startup exception can still report owned
 resources. Absence of an array entry is not proof that deleting the prepared
 root is safe.
+
+### Cancellation while the worker constructor is running
+
+`cancel_suite!` acknowledges one interruption request. Observe the terminal
+outcome with `suite_job_status` and `wait_suite`; the request itself does not
+permit removing inputs or reporting a successful check. In particular, Malt
+can catch the interruption before the public `Worker` handle is assigned and
+return a `WorkerStartupException` containing both the original cause and its
+rollback report.
+
+PerfChecker distinguishes whether resources are still owned from whether a
+rollback reported a fault. Resource closure requires a reaped process, closed
+connections, completed tasks, no active senders and no pending replies. Faults
+are reported errors, failed manager tasks or failed asynchronous replies. A
+report can satisfy the resource conditions and still contain one of those
+faults: `complete=true` is not an error-free cancellation certificate.
+
+| Constructor interruption outcome | Suite outcome | What the caller retains or may retire |
+|---|---|---|
+| Rollback resources closed, no reported fault | `:cancelled`; `wait_suite` throws the original `InterruptException` | Safe private roots can be removed after their users/restoration finish; no measurement is accepted |
+| Rollback resources still owned | `:failed`; `CheckCleanupFailure` preserves the startup failure/report | Retain related private roots and available recovery ownership; a missing public handle does not release them |
+| Rollback resources closed but a fault was reported | `:failed`; `CheckCleanupFailure` preserves the fault and primary interruption | Private roots may be retired once safe; keeping a failure does not require keeping already retired resources |
+
+Normal-exit qualification for an accepted measurement must not be applied
+unchanged to constructor rollback. An interrupted startup can require Malt to
+send SIGKILL to its owned child. That expected termination signal alone does
+not make rollback faulty. The resource and fault checks above determine
+whether the original interruption can be exposed as cancellation; they do not
+claim the child completed a measurement with code/signal zero.
+
+`wait_suite(job; strict=false)` still throws `CheckCleanupFailure`. It does not
+turn a faulted or incomplete rollback into cancellation or a partial result.
+The original `InterruptException` is exposed only after cleanup succeeds
+without faults. Recovery can later finish the retained resources, but the
+failed suite stays failed; it does not publish a successful result/cache or
+become cancelled retroactively. Inspect the exception's causes and inventories
+before deciding which owned roots can now be removed.
 
 ## Runtime campaigns and native exit status
 
