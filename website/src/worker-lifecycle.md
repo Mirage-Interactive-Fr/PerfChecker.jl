@@ -229,3 +229,120 @@ performance campaigns are preserved. Minimal profiling fixtures exercise the
 tool's functional paths; their timings do not establish a new application
 performance result. Native Windows execution requires its own platform run;
 testing its status policy on Linux does not supply that hardware evidence.
+
+## Targeted local qualification — 30 October 2026
+
+This is a Linux x86_64 qualification of the lifecycle changes, not a new Render
+or Fleet performance campaign. Their historical acquired results are preserved.
+The final runtime commit is **61c26e5f9d229a32d8b895a294bf7b788e1a884a**,
+PerfChecker **1.1.2**, with Malt SDK **8b42be58e87ee63ffacf1cdb3f9e5fd8628c6e09**
+(**1.6.0**). Execution uses Julia **1.13.1**, TestItemRunner **1.3.2**,
+BenchmarkTools **1.7.0**, Hwloc **3.3.0** / Hwloc_jll **2.15.0+0**,
+CSV **1.2.0**, JSON **1.13.0** and JuliaSyntax **1.0.2**.
+The package's compatibility remains Julia1.10+; executing on1.13.1 does not
+qualify its other runtimes or impose Étendu3D's bound on either tool.
+
+The following are separate acquired passages. Counts from an earlier source
+are not relabelled as a full-suite run of the final commit.
+
+| Passage | Observed checks | Controller and UTC interval | Controller maxrss bytes / exit |
+|---|---|---|---|
+| Allocation-cache integrity | 52 assertions; one acquired copy32 profile, valid cache reuse, six payload/receipt/CSV mutations refused without a worker or file rewrite | 1139742; 08:44:44.437–08:46:08.470 | 885641216 /0 |
+| Constructor cancellation, clean and incomplete rollback | 57 child assertions +1 parent; clean rollback becomes cancelled; incomplete manager remains failed with inputs retained until actual recovery | 1140850; 08:47:48.663–08:48:30.779 | 706064384 /0 |
+| Publication/cleanup/native termination contracts | 654 assertions in9 test items across check_shutdown_contracts, runtime_termination_contracts and worker_cleanup | 1140785; 08:47:22.901–08:48:35.107 | 1001529344 /0 |
+| Completed but faulted rollback, final runtime | 34 child assertions; a real failed manager keeps the suite failed; 35 unit assertions cover report errors, failed replies, unassigned constructors and an asynchronous creation failure identical to the primary | 1143759; 08:57:28.224–08:57:53.920 | 759181312 /0 |
+
+The last passage's outer TestItemRunner count is **36**:35 unit assertions plus
+one parent assertion accepting the child controller. The child's34 are recorded
+separately. Its actual child controller is **1143805**, started
+**08:57:44.436 UTC**; the owned startup worker **1143829** is reaped, connections
+and tasks closed, suite status failed, and its private fixture removed.
+The earlier cancellation child **1140877** starts **08:48:01.023** and verifies
+workers **1140936/1140940**. Its incomplete case removes the retained input root
+only after releasing and joining its actual owned manager task; the failed
+measurement is never upgraded to success. The cache's fresh worker **1140357**
+is reaped before the receipt is accepted.
+
+Each controller uses one Julia/GC/BLAS thread and bounds checks; cache and
+cancellation use CPUs4/6, the654-assertion passage CPU8. These functional
+controllers can overlap; no timing comparison or aggregate memory bound is
+inferred. The tiny profile fixtures qualify collector paths, not PatternFolds
+or an application workload. Existing registry labels identify test records;
+the custom prepared environments do not import the labelled business package.
+
+The first three passages use `src/check.jl` SHA256
+**6540d38fba5547a0f3877a2bc2b85f8b172f7b6519d560ab739278136fb26f85**.
+The final runtime is
+**632d7ddad746086aec0b9d30af56480e60efbc5aeff3ef9cea7e1e2f0c8dac7f**.
+A fresh AST comparison at **08:56:05.305–08:56:05.673 UTC** establishes exact
+syntax equality outside the added fault classifier and its cleanup use.
+The cache reader, publication, normal-exit policy, collectors and other helpers
+are unchanged. The new fault-specific passage exercises the changed boundary;
+the acquired cache, normal/incomplete cancellation and654 assertions are not
+unnecessarily replayed. This is scoped evidence, not a claim that the whole
+PerfChecker test suite ran on this commit.
+
+The fault classifier checks reported errors, failed tasks and failed replies
+separately from owned-resource completion. Synthetic reports exercise policy
+without signalling or querying the synthetic PID. The real failed-manager case
+uses a tracked task and actual child rollback; it checks that `strict=false`
+still raises `CheckCleanupFailure`, the primary interruption is retained, and
+already closed roots are removed. It does not force SIGSEGV or create a core.
+
+### Exact source and environment evidence
+
+| File | SHA256 |
+|---|---|
+| src/check.jl | 632d7ddad746086aec0b9d30af56480e60efbc5aeff3ef9cea7e1e2f0c8dac7f |
+| src/profile_allocs.jl | 8bfcfd301cbb2dafdf08f535116fca0b525e3328309376268cc0fb86f3e015b8 |
+| test/preparation_cancellation.jl | 6f2cd2cfd136d8217343570318065f6933fa96011a3190c7e48fe08e3e1abc8d |
+| test/profile_cache_integrity.jl | ac1a629e1178718b37f919bfcab2b9c779780aa90eb33d02b4be72877bcc2ee1 |
+| test/check_shutdown_contracts.jl | 05e30d88673e63c2d2b606cf1c8f8cce72d6093d201dfa82cf04493cd35f7f7a |
+| test/worker_cleanup.jl | 5a40d851aa0afc380987fc0528cc8d5296b3dd7ef6cab9d2d94ec722017473fc |
+| test/runtime_termination_contracts.jl | dcd4981890f1fdd6b83399133fe9972fa8b6639c6a193f91fc124049b9ce143c |
+
+The isolated test Project/Manifest hashes are
+**77a39001e54d18fb6dbe1acdcb07233ea098dbcaf750d8d9dee2d47526493473** /
+**94cab1da9eab9be80f5ab750509f0064e9cb732e60e5f69b16ba55d9d9525819**.
+They select the two development sources explicitly. Test setup does not update
+registries or mutate either source Project/Manifest. BenchmarkTools1.8.0 stays
+excluded by PerfChecker's compatibility policy.
+
+The repository's exact required JuliaFormatter **1.0.50** check,
+`qualification/scripts/style.jl`, passes on all its tracked source selection,
+controller **1143768**, **08:57:29.672–08:57:31.522 UTC**, exit0, maxrss
+**663912448bytes**. Formatting the five touched Julia files preserves their ASTs
+and is idempotent. Its separate Project/Manifest hashes are
+**dbb64b9f388a251fb9262d1ea4e7596d56f67f428db9f057fc53bc180c6ddc4a** /
+**46ed972993f8b3982098ae782eb71099fa1ef3f734ebbc0b5f2c4f0277ee75b6**.
+
+Two preliminary cancellation controllers stop before any fixture worker because
+the nested raw script loses escaped quotes in its Project string. The first
+reports only a failed child status; the second exposes the ParseError after
+stdout/stderr forwarding is added. Writing that fixture Project with TOML.print
+fixes the launcher. Subsequent acquired passages above are complete; these
+preparation failures are not counted as test successes. An initial formatting
+environment also rejects a mistyped JuliaFormatter UUID before loading or
+formatting source; the installed package identity corrects it. No SDK campaign
+is replayed to repair these drivers.
+
+### Remaining qualification boundaries
+
+The historical Render/Fleet controller SIGSEGV causes remain **unidentified**.
+Successful miniature collectors and strict lifetime boundaries close demonstrated
+acceptance/ownership gaps; they do not establish which fault caused either old
+crash. No new application performance gain, full test-suite pass, Windows
+process qualification, Julia1.10 execution or registry publication follows from
+this local run. Full documentation-site construction is not repeated for these
+prose-only guide changes; no new executable documentation example is introduced.
+
+At **09:01:18 UTC**, the22 observed controller/preparation/worker/check PIDs
+are absent. Both qualification environments are removed after their final use.
+The only pre-existing "/tmp/perfchecker-prepared-oBBlCC" root is left unchanged;
+it predates these passages and is not claimed as their cleanup. Other owners'
+running Julia processes are not stopped. The source checkouts retain no new
+Manifest. Oasis remains at98489fa0339272fb736863538b8160a81eaf0dd7 with its
+pre-existing30Compat edits and untracked user test; its binary diff SHA256 stays
+**3d00148e84a66e6cd6affa1f3b8a29b7acaddbae4ea8c2cf32b53530bbf4982c**.
+The final static compatibility guard admits Julia1.10 and excludes BenchmarkTools
+1.8.0; it is not an execution of those other runtimes.

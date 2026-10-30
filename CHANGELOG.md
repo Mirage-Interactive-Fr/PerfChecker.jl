@@ -4,6 +4,13 @@
 
 ### PerfChecker 1.1.2
 
+- Preserve constructor cancellation only after an error-free rollback. A
+  resource-complete rollback with failed tasks, replies or cleanup remains a
+  cleanup failure, including with `strict=false`; closed private inputs can
+  still be retired safely.
+- Bind allocation-profile sidecars to successful shutdown receipts. Verify and
+  parse the same acquired byte buffer; changed sites/totals, missing payloads
+  and legacy receipts are rejected before worker admission without recollection.
 - Require the Malt 1.6 shutdown report before accepting a worker result.
   Join worker creation and cleanup, propagate abnormal exits and failed cleanup,
   and retain live workers and their inputs for recovery. Publish successful

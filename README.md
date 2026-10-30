@@ -25,3 +25,8 @@ environment manifests and storage durability.
 The branch requires the Malt 1.6 lifecycle API and retains PerfChecker's own
 Julia 1.10 compatibility. These are external measurement-tool requirements,
 independent of the Julia 1.13 target used to qualify Étendu3D.
+
+This branch's local integration selects the [Malt SDK lifecycle branch](https://gitlab.naze.baffier.fr/etendu3d/Malt.jl/-/tree/release/sdk-1.0)
+explicitly. An older Malt installation with the same package name does not
+provide that API. Registry-only installation of this source pair is a separate
+release step; the targeted verification below does not claim it.
