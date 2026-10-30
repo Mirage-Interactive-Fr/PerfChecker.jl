@@ -299,7 +299,8 @@ function _qualified_cached_shutdown(report)
         tasks)
 end
 
-function _read_worker_shutdown_receipt(root, result, csv_path)
+function _read_worker_shutdown_receipt(root, result, csv_path;
+        allocation_profile::Bool = false)
     path = _worker_shutdown_receipt_path(root, result)
     isfile(path) || throw(HistoricalCacheUnqualified(String(csv_path),
         "worker-shutdown receipt is missing"))
@@ -312,6 +313,11 @@ function _read_worker_shutdown_receipt(root, result, csv_path)
             error("result UUID mismatch")
         get(document, "csv_sha256", nothing) == bytes2hex(SHA.sha256(read(csv_path))) ||
             error("saved table digest mismatch")
+        if allocation_profile
+            digest = get(document, "allocation_profile_sha256", nothing)
+            digest isa AbstractString && occursin(r"^[0-9a-f]{64}$", digest) ||
+                error("allocation-profile payload digest is missing or invalid")
+        end
         identity = get(document, "code_identity", nothing)
         identity isa AbstractDict || error("source identity is missing")
         for package in ("PerfChecker", "Malt")
@@ -337,13 +343,18 @@ function _read_worker_shutdown_receipt(root, result, csv_path)
     end
 end
 
-function _write_worker_shutdown_receipt(root, result, csv_path, report, identity)
+function _write_worker_shutdown_receipt(root, result, csv_path, report, identity;
+        allocation_profile::Bool = false)
     _qualify_worker_shutdown(report)
     document = Dict{String, Any}("schema_version" => WORKER_SHUTDOWN_CACHE_SCHEMA,
         "result_uuid" => string(result), "csv_sha256" => bytes2hex(SHA.sha256(read(csv_path))),
         "code_identity" => deepcopy(identity), "code_identity_sha256" => _content_digest(identity),
         "observed_at_utc" => string(Dates.now(Dates.UTC)),
         "report" => _worker_shutdown_report_dict(report))
+    if allocation_profile
+        document["allocation_profile_sha256"] = bytes2hex(
+            SHA.sha256(read(_allocation_cache_path(csv_path))))
+    end
     path = _worker_shutdown_receipt_path(root, result)
     mkpath(dirname(path))
     temporary, stream = mktemp(dirname(path); cleanup = false)
@@ -945,14 +956,16 @@ function check_function(x::Symbol, config::CheckConfig, block1, block2;
                 "saved table is not recorded in the cache index"))
             continue
         end
-        cache_receipts[index] = _read_worker_shutdown_receipt(config.path, result, path)
+        cache_receipts[index] = _read_worker_shutdown_receipt(config.path, result, path;
+            allocation_profile = x === :profile_alloc)
     end
     allocation_caches = Dict{Int, Any}()
     if x === :profile_alloc
         for (i, path) in enumerate(cached_paths)
             path === nothing && continue
             capture = try
-                _read_allocation_cache(path)
+                _read_allocation_cache(path;
+                    expected_sha256 = cache_receipts[i]["receipt"]["allocation_profile_sha256"])
             catch error
                 error isa InterruptException && rethrow()
                 throw(HistoricalCacheUnqualified(path, sprint(showerror, error)))
@@ -1161,7 +1174,8 @@ function check_function(x::Symbol, config::CheckConfig, block1, block2;
             out, t, results.qualifications[k]["allocation_profile"])
         recorded || write_run_metadata(metadata, run)
         results.qualifications[k]["worker_shutdown"] = _write_worker_shutdown_receipt(
-            config.path, run.result_uuid, out, reports[k], code_identity)
+            config.path, run.result_uuid, out, reports[k], code_identity;
+            allocation_profile = x === :profile_alloc)
     end
 
     return results

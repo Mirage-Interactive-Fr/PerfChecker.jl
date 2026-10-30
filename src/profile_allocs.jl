@@ -172,11 +172,16 @@ function _write_allocation_cache(path, table, summary)
     nothing
 end
 
-function _read_allocation_cache(path)
+function _read_allocation_cache(path; expected_sha256 = nothing)
     sidecar = _allocation_cache_path(path)
     isfile(sidecar) || return nothing
     try
-        document = TOML.parsefile(sidecar)
+        # Parse the exact byte snapshot whose digest was checked, rather than
+        # reopening a path after verification and accepting different contents.
+        contents = read(sidecar)
+        expected_sha256 === nothing ||
+            expected_sha256 == bytes2hex(SHA.sha256(contents)) || return nothing
+        document = TOML.parse(String(contents))
         document["schema_version"] == PerfCheckerProfileRuntime.ALLOCATION_PROFILE_SCHEMA ||
             return nothing
         document["result_uuid"] == splitext(basename(path))[1] || return nothing

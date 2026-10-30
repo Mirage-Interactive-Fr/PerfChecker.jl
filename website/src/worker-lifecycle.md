@@ -60,6 +60,13 @@ report. The receipt is written last, after cleanup and the result/index writes.
 This ordering keeps a partially published entry from becoming accepted merely
 because its CSV exists.
 
+Allocation-profile caches also bind the SHA-256 of the `.allocation-profile.toml`
+payload, which supplies their sites and independent totals. The reader verifies
+and parses the same byte snapshot before admitting any worker. A receipt without
+this payload digest, a missing payload or changed bytes leaves the cache
+unqualified; it does not trigger automatic recollection. The historical CSV
+remains available through `csv_to_table`.
+
 Cache lookup requires a coherent receipt. A missing or inconsistent receipt
 raises `PerfChecker.HistoricalCacheUnqualified`; lookup does not start a worker,
 recollect the workload or rewrite the historical table to hide the missing
