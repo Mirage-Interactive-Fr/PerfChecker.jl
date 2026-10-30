@@ -885,6 +885,11 @@ function _prepare_check_environment(config::Union{PerfConfig, CheckConfig})
         catch cleanup_error
             throw(_combine_check_cleanup_failure(error, backtrace, cleanup_error))
         end
+        # Malt retains a constructor interruption until its rollback completes.
+        # Only successful cleanup permits exposing that original cancellation.
+        if error isa Malt.WorkerStartupException && error.cause isa InterruptException
+            throw(error.cause)
+        end
         rethrow()
     end
     finish(; keep_roots = true)
