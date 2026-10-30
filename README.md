@@ -10,11 +10,11 @@ PerfChecker measures and compares the performance of Julia packages across versi
 
 [Documentation](https://perfchecker.mirageinteractive.fr/)
 
-This SDK branch strengthens worker shutdown and result acceptance. A returned
+This review branch strengthens worker shutdown and result acceptance. A returned
 table is accepted only after the relevant workers and cleanup have been
 qualified; runtime campaigns also retain the actual native termination status.
 See [worker lifetime and accepted results](website/src/worker-lifecycle.md) for
 ownership, shutdown budgets, recovery and historical-result compatibility.
-The branch requires the Malt 1.6 SDK lifecycle API.
-Its runtime requirement is Julia 1.13, including companions, providers,
-documentation and qualification environments.
+The branch requires the Malt 1.6 lifecycle API. PerfChecker remains an external
+measurement tool with its own Julia compatibility policy, independent of the
+Julia 1.13 target used to qualify Étendu3D.

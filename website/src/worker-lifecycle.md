@@ -3,15 +3,14 @@
 A collector can return a valid table before its worker finishes shutting down.
 The worker can then fail in an exit hook, leave a manager task unfinished or
 report a cleanup error. Accepting the table at the earlier boundary loses that
-failure. This SDK branch qualifies the owned resources before returning a
+failure. This review branch qualifies the owned resources before returning a
 successful check or writing its successful cache metadata.
 
-The SDK changes require Malt 1.6's terminal shutdown report. They are developed
+The lifecycle changes require Malt 1.6's terminal shutdown report. They are developed
 on `release/sdk-1.0`; the upstream 1.1.1 release and its historical results keep
 their original provenance.
-The SDK runtime is Julia 1.13 throughout the package, companions, providers,
-documentation and qualification environments. Earlier runtime records remain
-historical data rather than compatibility declarations for this SDK.
+PerfChecker is an external measurement tool. Its Julia compatibility policy
+is independent of the Julia 1.13 target of the Étendu3D packages under review.
 
 ## Ownership boundaries
 

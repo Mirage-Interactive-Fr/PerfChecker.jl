@@ -150,7 +150,7 @@ julia --project=.controller/core run.jl wall_profile Bibliography export_bibtex
 <InteractiveRecordedPlot source="/examples/bibliography/profiles/wall.json" html="/examples/bibliography/profiles/wall.html" title="Streaming export · wall-time task samples at 575ec81" kind="wall_flamegraph" />
 ```
 
-Wall-time sampling includes waiting; use Julia 1.13 for this SDK. Inspect a frame's task-sample weight and source path. Its denominator differs from CPU samples and allocation bytes.
+Wall-time sampling includes waiting and requires Julia 1.12+. Inspect a frame's task-sample weight and source path. Its denominator differs from CPU samples and allocation bytes.
 
 :::
 
@@ -196,7 +196,7 @@ Start a Pluto environment once:
 julia --project=@perfchecker-pluto -e 'using Pkg; Pkg.add("Pluto"); using Pluto; Pluto.run()'
 ```
 
-In the browser, use **Open a notebook** and select the downloaded file. Its first cell prepares registered Core 1.1 and Pluto/Makie companions (currently 1.0.1), plus pinned upstream sources in `.perfchecker-bibliography` beside the notebook. Use Julia 1.13, Git and internet access for the first opening; no PerfChecker checkout is needed. The recorded notebook keeps its original source and environment provenance.
+In the browser, use **Open a notebook** and select the downloaded file. Its first cell prepares registered Core 1.1 and Pluto/Makie companions (currently 1.0.1), plus pinned upstream sources in `.perfchecker-bibliography` beside the notebook. First opening needs Julia 1.12+, Git and internet access; no PerfChecker checkout is needed.
 
 Enable **Compare nine tagged versions**, choose **Bibliography → export_bibtex → benchmark** (or **chairmark**), and leave **All targets** selected for a history. Review the plan, then press **Launch selected checks**. **Refresh status** shows progress; **Save completed reports** preserves the bundle. Editing selectors prepares the reactive plan; it does not launch workers. The [Pluto guide](../interfaces/pluto.md) covers saved results and your own suites.
 

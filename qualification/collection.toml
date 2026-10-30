@@ -50,69 +50,69 @@ repository = "Mirage-Interactive-Fr/PerfCheckerVSCode"
 revision = "992af2a449cf2c5586555339e5fbba08c0dd79df"
 
 [suites.analyzers]
-julias = ["1.13"]
+julias = ["1.12", "1"]
 oses = ["ubuntu-latest", "windows-latest"]
 
 [suites.advisor_http1]
-julias = ["1.13"]
+julias = ["1"]
 oses = ["ubuntu-latest", "windows-latest"]
 
 [suites.advisor_http2]
-julias = ["1.13"]
+julias = ["1"]
 oses = ["ubuntu-latest", "windows-latest"]
 
 [suites.contracts]
-julias = ["1.13"]
+julias = ["1.10", "1"]
 oses = ["ubuntu-latest", "windows-latest"]
 
 [suites.core]
-julias = ["1.13"]
+julias = ["1.10", "1"]
 oses = ["ubuntu-latest", "windows-latest"]
 
 [suites.docs]
-julias = ["1.13"]
+julias = ["1"]
 oses = ["ubuntu-latest"]
 
 [suites.legacy_interfaces]
-julias = ["1.13"]
+julias = ["1"]
 oses = ["ubuntu-latest", "windows-latest"]
 
 [suites.legacy_protocol]
-julias = ["1.13"]
+julias = ["1"]
 oses = ["ubuntu-latest"]
 
 [suites.native]
-julias = ["1.13"]
+julias = ["1.10", "1"]
 oses = ["ubuntu-latest", "windows-latest"]
 
 [suites.plots]
-julias = ["1.13"]
+julias = ["1"]
 oses = ["ubuntu-latest"]
 
 [suites.pluto]
-julias = ["1.13"]
+julias = ["1"]
 oses = ["ubuntu-latest", "windows-latest"]
 
 [suites.shared]
-julias = ["1.13"]
+julias = ["1"]
 oses = ["ubuntu-latest", "windows-latest"]
 
 [suites.style]
-julias = ["1.13"]
+julias = ["1"]
 oses = ["ubuntu-latest"]
 
 [suites.supposition]
-julias = ["1.13"]
+julias = ["1"]
 oses = ["ubuntu-latest", "windows-latest"]
 
 [suites.tachikoma]
-julias = ["1.13"]
+julias = ["1.10", "1"]
 oses = ["ubuntu-latest"]
 
 [suites.vscode]
-julias = ["1.13"]
+julias = ["1"]
 oses = ["ubuntu-latest", "windows-latest"]
 
 [suites.web]
-julias = ["1.13"]
+julias = ["1"]
 oses = ["ubuntu-latest", "windows-latest"]

@@ -11,14 +11,14 @@ package versions selected by its suite. `role` is `:baseline`, `:candidate` or
 `:control`; a campaign requires exactly one baseline.
 
 With `source=:juliaup`, the command is `executable +selector` (for example,
-`julia +1.13`). With `source=:executable`, `executable` must name an existing
+`julia +1.10`). With `source=:executable`, `executable` must name an existing
 file and the nonempty `selector` is its descriptive label. `arguments` are
 additional command-prefix arguments, copied as strings. Construction validates
 these fields but neither installs a Julia channel nor launches a process.
 
 ```julia
-baseline = JuliaRuntimeSpec(:baseline, "1.13"; role=:baseline)
-candidate = JuliaRuntimeSpec(:candidate, "1.13")
+baseline = JuliaRuntimeSpec(:lts, "1.10"; role=:baseline)
+candidate = JuliaRuntimeSpec(:current, "release")
 ```
 """
 struct JuliaRuntimeSpec
@@ -74,7 +74,7 @@ files are disabled by default; the command still uses the caller's environment
 and Julia depot.
 
 ```julia
-spec = JuliaRuntimeSpec(:sdk, "1.13"; role=:baseline)
+spec = JuliaRuntimeSpec(:lts, "1.10"; role=:baseline)
 command = julia_runtime_command(spec; project=pwd(),
     extra_arguments=["-e", "println(VERSION)"])
 # Execute explicitly when desired: run(Cmd(command))
@@ -94,22 +94,21 @@ function julia_runtime_command(spec::JuliaRuntimeSpec; project = nothing,
 end
 
 """
-    julia_runtime_matrix(; baseline="1.13", candidates=["1.13"])
+    julia_runtime_matrix(; baseline="release", candidates=["rc", "nightly"])
         -> Vector{JuliaRuntimeSpec}
 
 Create a Juliaup runtime axis with baseline ID `:baseline` and candidate IDs
 `:candidate_1`, `:candidate_2`, and so on, preserving candidate order. The
 selectors must already be usable when the campaign executes; this function
-does not install or probe channels. The SDK default repeats Julia 1.13 under
-distinct baseline and candidate identities. Override the selectors to compare
-explicit installed Julia 1.13 patch versions.
+does not install or probe channels. Override `candidates` to use explicit
+installed versions instead of moving aliases.
 
 ```julia
-julia_runtime_matrix(baseline="1.13.0", candidates=["1.13.1"])
+julia_runtime_matrix(baseline="1.10", candidates=["1.12", "1.13"])
 ```
 """
-function julia_runtime_matrix(; baseline::AbstractString = "1.13",
-        candidates = ["1.13"])
+function julia_runtime_matrix(; baseline::AbstractString = "release",
+        candidates = ["rc", "nightly"])
     specs = JuliaRuntimeSpec[JuliaRuntimeSpec(:baseline, baseline; role = :baseline)]
     for (index, selector) in enumerate(candidates)
         id = Symbol("candidate_", index)
@@ -192,16 +191,16 @@ end
 @testitem "Julia runtime axis" tags=[:unit, :runtime, :protocol] begin
     using PerfChecker
 
-    specs = julia_runtime_matrix()
-    @test length(specs) == 2
+    specs = julia_runtime_matrix(; baseline = "release", candidates = ["rc", "nightly"])
+    @test length(specs) == 3
     @test specs[1].role == :baseline
-    @test specs[2].selector == "1.13"
+    @test specs[2].selector == "rc"
     command = julia_runtime_command(specs[2]; project = pwd())
-    @test command[1:2] == ["julia", "+1.13"]
+    @test command[1:2] == ["julia", "+rc"]
     @test "--startup-file=no" in command
     @test "--history-file=no" in command
     @test startswith(command[5], "--project=")
-    @test julia_runtime_spec_dict(specs[1])["selector"] == "1.13"
+    @test julia_runtime_spec_dict(specs[3])["selector"] == "nightly"
     suite_command = julia_runtime_suite_command(specs[1]; suite = pathof(PerfChecker),
         reports = joinpath(pwd(), "runtime-results"),
         controller_project = pkgdir(PerfChecker))

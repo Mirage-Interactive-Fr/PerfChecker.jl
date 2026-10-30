@@ -159,7 +159,7 @@ Commands:
   report           Export portable JSON and Markdown from one bundle
   verify           Verify bundle SHA-256 integrity
   migrate          Rewrite a legacy bundle with current integrity metadata
-  julia-campaign   Compare one suite with explicit Julia 1.13 runtime selectors
+  julia-campaign   Compare one suite across Julia stable/RC/nightly
   network          Measure a command tree; command follows --
   capabilities     Print controller capabilities as JSON
   version          Print the PerfChecker package version
@@ -418,9 +418,9 @@ function perfchecker_main(args = ARGS; stdout::IO = Base.stdout,
             return 0
         elseif command == "julia-campaign"
             candidates = _cli_values(options, "candidate")
-            isempty(candidates) && push!(candidates, "1.13")
+            isempty(candidates) && append!(candidates, ["rc", "nightly"])
             specs = julia_runtime_matrix(
-                baseline = _cli_value(options, "baseline", "1.13"); candidates)
+                baseline = _cli_value(options, "baseline", "release"); candidates)
             campaign = run_julia_runtime_campaign(specs;
                 suite = _cli_required(options, "suite"),
                 reports = _cli_value(

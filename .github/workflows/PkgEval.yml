@@ -76,7 +76,7 @@ jobs:
           persist-credentials: false
       - uses: julia-actions/setup-julia@v3
         with:
-          version: '1.13'
+          version: '1'
       - name: Test registered and candidate source selection
         shell: julia --startup-file=no {0}
         run: |
@@ -173,13 +173,13 @@ jobs:
           if-no-files-found: error
 
   stable:
-    name: PkgEval on Julia 1.13
+    name: PkgEval on Julia stable
     needs: select
     if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     timeout-minutes: ${{ (inputs.time_limit_minutes == '90' || github.event_name == 'schedule') && 120 || 75 }}
     env:
-      TARGET_JULIA: '1.13'
+      TARGET_JULIA: stable
     steps: &evaluate
       - uses: actions/checkout@v7
         with:
@@ -190,7 +190,7 @@ jobs:
           path: .pkgeval
       - uses: julia-actions/setup-julia@v3
         with:
-          version: '1.13'
+          version: '1'
       - name: Allow rootless containers on the disposable runner
         run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
       - name: Install the pinned PkgEval controller
@@ -277,3 +277,13 @@ jobs:
           include-hidden-files: true
           if-no-files-found: error
           retention-days: 30
+
+  nightly:
+    name: PkgEval on Julia nightly
+    needs: [select, stable]
+    if: ${{ always() && !cancelled() && github.event_name != 'pull_request' && needs.select.result == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: ${{ (inputs.time_limit_minutes == '90' || github.event_name == 'schedule') && 120 || 75 }}
+    env:
+      TARGET_JULIA: nightly
+    steps: *evaluate

@@ -384,7 +384,7 @@ function _runtime_controller_project(root::String, spec::JuliaRuntimeSpec,
         for name in sort!(collect(keys(dependencies)))
             println(io, name, " = \"1\"")
         end
-        println(io, "julia = \"1.13\"")
+        println(io, "julia = \"1.10\"")
     end
     return directory
 end
@@ -493,7 +493,7 @@ the freshly probed runtime version/commit permit it. Reuse is recorded explicitl
 it is not a new measurement and does not prove that an edited suite is unchanged.
 
 ```julia
-specs = julia_runtime_matrix(baseline="1.13.0", candidates=["1.13.1"])
+specs = julia_runtime_matrix(baseline="1.10", candidates=["release"])
 campaign = run_julia_runtime_campaign(specs;
     suite="perf/suite.jl", reports="perf/results/runtimes",
     relative_limits=Dict("julia.wall.time" => 0.05), min_samples=3)

@@ -31,8 +31,8 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - {version: '1.13', arch: x64}
-          - {version: '1.13', arch: x86}
+          - {version: '1.10', arch: x64}
+          - {version: '1', arch: x86}
     env:
       PERFCHECKER_TEST_TAGS: csv_contract
       PERFCHECKER_EXPECT_CSV_VERSION: '1.1.0'
@@ -62,7 +62,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        julia-version: ['1.13']
+        julia-version: [1]
         julia-arch: [x86]
         os: [ubuntu-latest]
     steps:
@@ -91,13 +91,17 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - {version: '1.13', os: ubuntu-latest, arch: x64}
-          - {version: '1.13', os: ubuntu-latest, arch: x86}
-          - {version: '1.13', os: ubuntu-24.04-arm, arch: aarch64}
-          - {version: '1.13', os: macos-15, arch: aarch64}
-          # macOS 26 runs natively on Intel.
-          - {version: '1.13', os: macOS-latest, arch: x64, runner: macos-26-intel}
-          - {version: '1.13', os: windows-latest, arch: x64}
+          - {version: '1', os: ubuntu-latest, arch: x64}
+          - {version: '1', os: ubuntu-latest, arch: x86}
+          - {version: lts, os: ubuntu-latest, arch: x64}
+          - {version: pre, os: ubuntu-latest, arch: x64}
+          - {version: '1.10', os: ubuntu-24.04-arm, arch: aarch64}
+          - {version: '1', os: ubuntu-24.04-arm, arch: aarch64}
+          - {version: '1.10', os: macos-15, arch: aarch64}
+          - {version: '1', os: macos-15, arch: aarch64}
+          # The protected context keeps its name; macOS 26 runs natively on Intel.
+          - {version: '1', os: macOS-latest, arch: x64, runner: macos-26-intel}
+          - {version: '1', os: windows-latest, arch: x64}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -131,9 +135,11 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - {companion: PerfCheckerLinuxPerf, version: '1.13', arch: x64}
-          - {companion: PerfCheckerLIKWID, version: '1.13', arch: x64}
-          - {companion: PerfCheckerLinuxPerf, version: '1.13', arch: x86}
+          - {companion: PerfCheckerLinuxPerf, version: '1.10', arch: x64}
+          - {companion: PerfCheckerLinuxPerf, version: '1', arch: x64}
+          - {companion: PerfCheckerLIKWID, version: '1.10', arch: x64}
+          - {companion: PerfCheckerLIKWID, version: '1', arch: x64}
+          - {companion: PerfCheckerLinuxPerf, version: '1', arch: x86}
     env:
       COUNTER_COMPANION: ${{ matrix.companion }}
     steps:
@@ -163,7 +169,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        version: ['1.13']
+        version: ['1.10', '1']
         os: [ubuntu-24.04-arm, macos-15]
         group: [counters, interfaces]
     env:

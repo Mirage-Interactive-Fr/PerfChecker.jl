@@ -3,21 +3,18 @@
 An independent, stdlib-only Julia package for qualifying PerfChecker components.
 It lives in this repository so implementation and contracts can change in one PR.
 It can move without becoming a runtime dependency of PerfChecker.
-The SDK collection requires stable Julia 1.13 for the controller, lanes and
-recorded runtime evidence. Other or floating selectors are rejected before
-planning; a receipt from another runtime cannot satisfy a Julia 1.13 lane.
 
 ## Local use
 
 From the repository root:
 
 ```sh
-julia +1.13 --startup-file=no --project=qualification qualification/test/runtests.jl
-julia +1.13 --startup-file=no --project=qualification qualification/scripts/plan.jl --full
-julia +1.13 --startup-file=no --project=qualification qualification/scripts/run.jl contracts-windows-latest-1.13
+julia --startup-file=no --project=qualification qualification/test/runtests.jl
+julia --startup-file=no --project=qualification qualification/scripts/plan.jl --full
+julia --startup-file=no --project=qualification qualification/scripts/run.jl contracts-windows-latest-1
 ```
 
-Use `contracts-ubuntu-latest-1.13` on Linux. Each lane records the actual Julia
+Use `contracts-ubuntu-latest-1` on Linux. Each lane records the actual Julia
 version, OS, source commit, dirty state, resolved manifests and outcome under
 `.qualification/results`. Environments are prepared before tests. The common
 test-item corpus is `shared/items.jl`; Julia and CLI check identical selection,

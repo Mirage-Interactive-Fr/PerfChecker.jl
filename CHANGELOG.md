@@ -2,17 +2,9 @@
 
 ## Unreleased
 
-### PerfChecker 1.1.2 SDK
+### PerfChecker 1.1.2
 
-- Require Julia 1.13 in Core, companions, providers, generated worker projects,
-  documentation and qualification. CI selects 1.13 explicitly. Runtime campaign
-  defaults repeat 1.13 rather than selecting moving release/RC/nightly aliases;
-  supply explicit installed 1.13 patch versions for a version comparison.
-- Preserve the qualification collection's 29 full lanes and 13 routine lanes
-  after the version migration. Reject unsupported collection selectors and
-  receipts from another Julia minor or a prerelease, while retaining source,
-  environment, dirty-state and external-revision checks.
-- Require the Malt 1.6 SDK shutdown report before accepting a worker result.
+- Require the Malt 1.6 shutdown report before accepting a worker result.
   Join worker creation and cleanup, propagate abnormal exits and failed cleanup,
   and retain live workers and their inputs for recovery. Publish successful
   cache receipts only after that boundary. Historical cache entries without
