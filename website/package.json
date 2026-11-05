@@ -6,7 +6,7 @@
     "test:sftp": "node --test deploy-sftp.test.mjs"
   },
   "dependencies": {
-    "@shikijs/transformers": "^4.5.0",
+    "@shikijs/transformers": "^4.6.0",
     "markdown-it": "^15.0.2",
     "markdown-it-footnote": "^4.0.0",
     "markdown-it-mathjax3": "^4.3.2",
