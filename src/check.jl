@@ -168,6 +168,26 @@ function safe_stop(worker)
     nothing
 end
 
+"""
+    _stop_check_worker(worker::Worker)
+
+Stop a measurement worker and wait for its process to exit before accepting
+its result. Throw if the worker remains running after cleanup or if Julia
+reports a nonzero exit code or termination signal, even after a successful
+remote reply.
+"""
+function _stop_check_worker(worker::Worker)
+    safe_stop(worker)
+    process = worker.proc
+    Base.process_running(process) && error("PerfChecker worker did not exit after cleanup")
+    wait(process)
+    if process.exitcode != 0 || process.termsignal != 0
+        error("PerfChecker worker exited with code " *
+              "$(process.exitcode) and signal $(process.termsignal)")
+    end
+    nothing
+end
+
 function safe_cleanup(options, backend::Symbol)
     try
         cleanup(options, backend)
@@ -536,6 +556,7 @@ function check_function(x::Symbol, config::CheckConfig, block1, block2;
         end
     end
     worker_indices = findall(isnothing, cached_paths)
+    stop_for_post = !isempty(worker_indices) && stop_before_post(x)
     temp_roots = Dict{Int, String}()
     worker_envs = Dict{Int, String}()
     prepared_environment = get(di, :prepared_environment, nothing)
@@ -659,7 +680,7 @@ function check_function(x::Symbol, config::CheckConfig, block1, block2;
                 else
                     run_options[:check_result] = remote_eval_fetch(Main, procs[i], h)
                 end
-                stop_before_post(x) && safe_stop(procs[i])
+                stop_for_post && _stop_check_worker(procs[i])
                 res = post(run_options, x) |> to_table
                 x === :profile_alloc &&
                     (qualification_evidence["allocation_profile"] = run_options[:check_result].summary)
@@ -680,6 +701,14 @@ function check_function(x::Symbol, config::CheckConfig, block1, block2;
             push!(results.pkgs, target.spec)
             push!(results.qualifications, qualification_evidence)
             push!(results.resource_envelopes, resource_envelope)
+        end
+
+        # A successful reply can precede an abnormal exit. Qualify every new
+        # worker before publishing any result from this check.
+        if !stop_for_post
+            for i in worker_indices
+                _stop_check_worker(procs[i])
+            end
         end
 
         for (k, t) in enumerate(results.tables)
