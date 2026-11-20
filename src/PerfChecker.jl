@@ -294,6 +294,7 @@ export InvestigationView, investigation_view, InvestigationJob, launch_investiga
 export investigation_status, wait_investigation
 export write_investigation_notebook
 export discover, run_scenarios, diagnose, advise, write_investigation_report
+export run_scenario
 export diagnostic_capabilities
 export CancellationToken, cancel!, compare_scenarios
 export tool_catalog, AdvisorConfig, load_advisor_config, read_advice, narrate_advice,
@@ -347,6 +348,7 @@ include("perfitems.jl")
 include("testitems.jl")
 include("discovery.jl")
 include("diagnostics.jl")
+include("live_scenarios.jl")
 include("advice.jl")
 include("tool_catalog.jl")
 include("native_tools.jl")

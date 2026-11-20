@@ -435,13 +435,19 @@ function _scenario_process(request::AbstractDict; project::AbstractString,
 end
 
 function _scenario_bundle(catalog, spec, collector, raw, fingerprints)
-    status = get(raw, "status", "error")
     definition_context = Dict("collector" => string(collector),
         "collector_version" => get(raw, "collector_version", string(VERSION)),
         "parameters" => spec.parameters, "repeatable" => spec.repeatable,
         "fixtures" => [fingerprints[path] for path in spec.fixtures],
         "source_sha256" => fingerprints[spec.source], "factory" => spec.factory,
         "measurement" => "operation-and-synchronization;fresh-state;evals=1/v1")
+    return _scenario_bundle_from_context(catalog.root, _scenario_dict(spec), collector,
+        raw, fingerprints, definition_context)
+end
+
+function _scenario_bundle_from_context(root, scenario, collector, raw, fingerprints, definition_context;
+        suite = "shared-scenarios")
+    status = get(raw, "status", "error")
     fingerprint = _content_digest(definition_context)
     definitions, observations = Dict{String, Any}[], Dict{String, Any}[]
     metrics = (("time", "julia.wall.time", "s"), ("bytes", "julia.alloc.bytes", "By"),
@@ -457,7 +463,7 @@ function _scenario_bundle(catalog, spec, collector, raw, fingerprints)
                 Dict("metric" => metric, "unit" => unit,
                     "value" => sample[field], "measurement_definition" => definition,
                     "comparison_key" => definition, "sample_index" => i,
-                    "attributes" => Dict("implementation" => spec.implementation,
+                    "attributes" => Dict("implementation" => scenario["implementation"],
                         "collector" => string(collector))))
         end
     end
@@ -479,7 +485,7 @@ function _scenario_bundle(catalog, spec, collector, raw, fingerprints)
                     "value" => summary[field], "measurement_definition" => definition,
                     "comparison_key" => definition, "sample_index" => 1,
                     "aggregation" => "independent_operation_total", "scope" => "whole_operation",
-                    "attributes" => Dict("implementation" => spec.implementation,
+                    "attributes" => Dict("implementation" => scenario["implementation"],
                         "collector" => string(collector), "profile_status" => summary["status"])))
         end
     end
@@ -487,15 +493,15 @@ function _scenario_bundle(catalog, spec, collector, raw, fingerprints)
         Dict("rule_id" => "scenario.$status",
             "severity" => "error", "message" => get(raw, "message", status)))
     bundle = _provider_result(Dict("schema_version" => PROVIDER_RESULT_SCHEMA,
-        "suite" => "shared-scenarios", "case_id" => spec.id, "target_id" => spec.implementation,
+        "suite" => suite, "case_id" => scenario["id"], "target_id" => scenario["implementation"],
         "state" => status == "complete" ? "complete" : "failed",
         "runtime" => get(raw, "runtime", Dict("language" => "julia")),
         "environment" => Dict("os" => string(Sys.KERNEL), "arch" => string(Sys.ARCH),
             "hardware_ids" => Dict("cpu" => Sys.CPU_NAME, "host" => gethostname())),
         "measurement_definitions" => definitions, "observations" => observations,
         "diagnostics" => diagnostics))
-    bundle.manifest["scenario"] = _scenario_dict(spec)
-    bundle.manifest["source_provenance"] = _git_provenance(catalog.root)
+    bundle.manifest["scenario"] = scenario
+    bundle.manifest["source_provenance"] = _git_provenance(root)
     bundle.manifest["input_fingerprints"] = fingerprints
     bundle.manifest["qualification"] = Dict("availability" => status,
         "correctness" => get(raw, "correctness", "not_checked"),
