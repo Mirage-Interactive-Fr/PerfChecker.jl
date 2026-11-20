@@ -97,3 +97,168 @@ end
     @test haskey(bundles[2].manifest["scenario_evidence"], "allocation_profile")
     @test all(b.manifest["live_qualification"]["exclusive_profiles"] for b in bundles)
 end
+
+@testitem "Live failures retain owned task cleanup and stop before another collector" tags=[:unit, :shared_scenarios] begin
+    using PerfChecker
+    P=PerfChecker
+    R=P.SharedScenarioRuntime
+    mutable struct LiveOwner <: Exception
+        native::Union{Nothing,Task}
+        gate::Union{Nothing,Channel{Bool}}
+        failures::Int
+        closes::Int
+    end
+    Base.isopen(owner::LiveOwner)=owner.native!==nothing
+    Base.showerror(io::IO,owner::LiveOwner)=print(io,"owned task fixture")
+    function Base.close(owner::LiveOwner)
+        owner.native===nothing && return nothing
+        owner.closes+=1
+        if owner.failures>0
+            owner.failures-=1
+            error("injected owned task cleanup failure")
+        end
+        put!(owner.gate,true)
+        wait(owner.native)
+        owner.native=nothing
+        owner.gate=nothing
+        return nothing
+    end
+    owners=LiveOwner[]
+    function acquire(failures)
+        gate=Channel{Bool}(1)
+        task=@async take!(gate)
+        owner=LiveOwner(task,gate,failures,0)
+        push!(owners,owner)
+        return owner
+    end
+    try
+        mktempdir() do project
+            prepared=Ref(0)
+            latest=Ref{Any}()
+            case=(;prepare=()->begin
+                    prepared[]+=1
+                    owner=acquire(2)
+                    latest[]=owner
+                    throw(owner)
+                end,
+                operation=identity,verify=(state,result)->true)
+            pending=try
+                P.run_scenario(case;id="owned_prepare",collectors=(:benchmark,:chairmark),
+                    samples=1,project,qualification_limits="task-owning failure fixture; no manifest")
+            catch error
+                error
+            end
+            @test pending isa R.PendingScenarioCleanup
+            owner=latest[]
+            task=owner.native
+            @test prepared[]==1 # Second collector must not start.
+            @test isopen(pending) && !istaskdone(task)
+            @test length(pending.owners)==1
+            @test occursin("owned task fixture",sprint(showerror,pending))
+            @test_throws R.PendingScenarioCleanup close(pending)
+            @test isopen(pending) && owner.native===task
+            @test !isempty(pending.retry_failures)
+            close(pending)
+            @test istaskdone(task) && !isopen(pending)
+            @test owner.native===nothing && owner.gate===nothing
+            @test close(pending)===nothing && owner.closes==3
+
+            released=Ref{Any}()
+            recovered=merge(case,(;prepare=()->begin
+                owner=acquire(0);released[]=owner;throw(owner)
+            end))
+            bundle=only(P.run_scenario(recovered;id="recovered_prepare",samples=1,project,
+                qualification_limits="task-owning failure fixture; no manifest"))
+            raw=bundle.manifest["scenario_evidence"]
+            @test raw["status"]=="error"
+            @test raw["cleanup_recovery"]["attempted"]==1
+            @test raw["cleanup_recovery"]["released"]==1
+            @test raw["cleanup_recovery"]["pending"]==0
+            @test !isopen(released[])
+            ordinary=(;prepare=()->nothing,operation=state->error("ordinary failure"),verify=(s,r)->true)
+            normal=only(P.run_scenario(ordinary;id="ordinary_failure",samples=1,project,
+                qualification_limits="ordinary failure fixture; no manifest"))
+            @test normal.manifest["scenario_evidence"]["status"]=="error"
+            @test !haskey(normal.manifest["scenario_evidence"],"cleanup_recovery")
+            @test isempty(normal.observations)
+
+            state_owner=Ref{Any}()
+            state_case=(;prepare=()->begin
+                    state=acquire(1);state_owner[]=state;state
+                end,
+                operation=state->error("state operation failure"),verify=(s,r)->true,
+                cleanup=state->close(state))
+            pending=try
+                P.run_scenario(state_case;id="state_cleanup",samples=1,project,
+                    qualification_limits="state-owned task fixture; no manifest")
+            catch error
+                error
+            end
+            @test pending isa R.PendingScenarioCleanup
+            action=only(pending.owners)
+            evaluation=action.evaluation
+            state_task=state_owner[].native
+            @test !evaluation.closed && !istaskdone(state_task)
+            @test state_owner[].closes==1
+            close(pending)
+            @test evaluation.closed && istaskdone(state_task)
+            @test action.evaluation===nothing && state_owner[].native===nothing
+        end
+
+        # Known composite cause order is preserved; an unresolved earlier owner
+        # prevents unsafe disposal of a later, potentially parent owner.
+        first,second=acquire(1),acquire(0)
+        wrapped=CompositeException(Any[CapturedException(first,backtrace()),R.ScenarioFailure(:cleanup,second)])
+        pending=try P.recover_scenario_exception!(wrapped) catch error;error end
+        @test pending isa R.PendingScenarioCleanup
+        @test isopen(second) && isopen(first)
+        @test pending.original===wrapped
+        close(pending)
+        @test !isopen(first) && !isopen(second)
+        struct OpaqueFailure <: Exception
+            hidden::Any
+        end
+        hidden=acquire(0)
+        @test P.recover_scenario_exception!(OpaqueFailure(hidden)).attempted==0
+        @test isopen(hidden)
+        close(hidden)
+
+        state=Ref(0)
+        cleanups=Ref(0)
+        both=(;prepare=()->state,operation=s->error("primary operation"),
+            verify=(s,r)->true,cleanup=s->begin
+                cleanups[]+=1
+                cleanups[]==1 && error("secondary cleanup")
+                s[]=-1
+            end)
+        aggregate=try R.once(both) catch error;error end
+        @test aggregate isa R.PendingScenarioCleanup
+        action=only(aggregate.owners)
+        evaluation=action.evaluation
+        @test !evaluation.closed && cleanups[]==1
+        @test occursin("primary operation",sprint(showerror,aggregate))
+        @test occursin("secondary cleanup",sprint(showerror,aggregate))
+        close(aggregate)
+        @test evaluation.closed && cleanups[]==2 && state[] == -1
+        @test action.evaluation===nothing
+
+        dependency=acquire(1)
+        dependency_task=dependency.native
+        parent_closed=Ref(false)
+        ordered=(;prepare=()->nothing,operation=state->throw(dependency),
+            verify=(s,r)->true,cleanup=state->begin
+                isopen(dependency) && error("unsafe parent disposal")
+                parent_closed[]=true
+            end)
+        pending=try R.once(ordered) catch error;error end
+        @test pending isa R.PendingScenarioCleanup
+        @test !parent_closed[] && !istaskdone(dependency_task)
+        close(pending)
+        @test parent_closed[] && istaskdone(dependency_task)
+    finally
+        for owner in owners
+            owner.failures=0
+            close(owner)
+        end
+    end
+end

@@ -289,6 +289,7 @@ export write_template
 export write_property_corpus
 export wait_suite
 export ScenarioSpec, ScenarioCatalog, load_scenario_catalog, scenario_catalog_dict
+export PendingScenarioCleanup, recover_scenario_exception!
 export select_scenarios, read_scenario_runs
 export InvestigationView, investigation_view, InvestigationJob, launch_investigation
 export investigation_status, wait_investigation
@@ -348,6 +349,7 @@ include("perfitems.jl")
 include("testitems.jl")
 include("discovery.jl")
 include("diagnostics.jl")
+using .SharedScenarioRuntime: PendingScenarioCleanup
 include("live_scenarios.jl")
 include("advice.jl")
 include("tool_catalog.jl")

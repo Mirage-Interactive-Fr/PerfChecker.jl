@@ -40,3 +40,14 @@ Optional `:profile` and `:profile_alloc` collectors require
 Concurrent or nested `run_scenario` calls are rejected; unrelated external
 profiling remains the caller's responsibility. Neither allocation traffic nor
 process RSS is silently labelled owned-memory footprint.
+
+Live failures inspect only the public exception-owned `close`/`isopen` protocol
+and known scenario/captured/composite wrappers. If recovery succeeds, the failed
+bundle records cleanup counts without serializing owners. If resources remain
+open, `run_scenario` throws `PendingScenarioCleanup` and stops before another
+collector/candidate. Preserve that exception and use `close(error)` to retry;
+a failed retry retains its owners. `recover_scenario_exception!` exposes this
+recovery boundary to callers. Operation/oracle and cleanup failures retain both
+causes. Arbitrary user exception fields are never guessed; resource-owning
+exceptions must expose the protocol. Isolated workers report failure and exit;
+live resource owners never cross a process or RunBundle serialization boundary.

@@ -4,6 +4,18 @@
 const _LIVE_SCENARIO_LOCK = ReentrantLock()
 const _LIVE_SCENARIO_ACTIVE = Ref(false)
 
+"""
+    recover_scenario_exception!(error)
+
+Recover exception-owned resources through public `close`/`isopen` methods.
+Only ScenarioFailure, CapturedException and CompositeException wrappers are
+traversed. No arbitrary user fields are inspected. Return recovery counts when
+all owners are closed; otherwise throw an owned `PendingScenarioCleanup`.
+Preserve that exception and call `close(error)` to retry before starting another
+live candidate. Pending owners are never serialized into a RunBundle.
+"""
+recover_scenario_exception!(error) = SharedScenarioRuntime.recover_exception!(error)
+
 function _live_callback_sources(case, source_files)
     files = Set{String}()
     missing = String[]
@@ -114,11 +126,16 @@ function run_scenario(case::NamedTuple; id::AbstractString,
                 Base.invokelatest(SharedScenarioRuntime.execute_loaded, case, string(collector), Int(samples))
             catch error
                 error isa InterruptException && rethrow()
-                Dict{String, Any}("status" => error isa SharedScenarioRuntime.ScenarioUnavailable ? "unavailable" : "error",
+                recovery = recover_scenario_exception!(error)
+                failure = Dict{String, Any}("status" => error isa SharedScenarioRuntime.ScenarioUnavailable ? "unavailable" : "error",
                     "correctness" => "not_passed", "collector" => string(collector),
                     "message" => sprint(showerror, error),
                     "runtime" => Dict("language" => "julia", "version" => string(VERSION),
                         "threads" => Threads.nthreads()))
+                recovery.attempted > 0 && (failure["cleanup_recovery"] = Dict(
+                    "attempted" => recovery.attempted, "released" => recovery.released,
+                    "pending" => recovery.pending, "errors" => collect(recovery.cleanup_errors)))
+                failure
             end
             after = _live_fingerprints(files)
             environment_after = _environment_provenance(root)

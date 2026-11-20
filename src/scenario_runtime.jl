@@ -17,6 +17,105 @@ function Base.showerror(io::IO, error::ScenarioFailure)
     (print(io, "scenario ", error.phase, ": "); showerror(io, error.cause))
 end
 
+"""
+    PendingScenarioCleanup
+
+A live-scenario failure retaining exception-owned resources whose cleanup has
+not completed. `close(error)` retries every pending owner, retains failures for
+diagnosis, and clears owners only after their `isopen` reports false. Preserve
+this structured error and stop the live campaign until cleanup succeeds.
+"""
+mutable struct PendingScenarioCleanup <: Exception
+    original::Any
+    owners::Vector{Any}
+    failures::Vector{CapturedException}
+    retry_failures::Vector{CapturedException}
+end
+function _owner_isopen(owner)
+    try
+        value = isopen(owner)
+        return value isa Bool ? value : true
+    catch
+        return true
+    end
+end
+Base.isopen(error::PendingScenarioCleanup) = any(_owner_isopen, error.owners)
+function Base.showerror(io::IO, error::PendingScenarioCleanup)
+    print(io, isopen(error) ? "scenario cleanup remains pending; close(error) retries: " :
+        "scenario cleanup recovered; original failure: ")
+    showerror(io, error.original)
+    for failure in (error.failures..., error.retry_failures...)
+        print(io, "; cleanup: ")
+        showerror(io, failure.ex)
+    end
+end
+function _owned_exception_owners(error)
+    owners, stack = Any[], Any[error]
+    seen = IdDict{Any, Nothing}()
+    while !isempty(stack)
+        value = pop!(stack)
+        haskey(seen, value) && continue
+        seen[value] = nothing
+        if value isa Exception && applicable(close, value) && applicable(isopen, value)
+            push!(owners, value)
+        elseif value isa ScenarioFailure
+            push!(stack, value.cause)
+        elseif value isa CapturedException
+            push!(stack, value.ex)
+        elseif value isa CompositeException
+            append!(stack, reverse(value.exceptions))
+        end
+    end
+    return owners
+end
+function _recover_owners(owners; retry_pending = false)
+    pending, failures = Any[], CapturedException[]
+    attempted, released = 0, 0
+    blocked = false
+    for owner in owners
+        _owner_isopen(owner) || continue
+        if blocked
+            push!(pending, owner)
+            continue
+        end
+        if owner isa PendingScenarioCleanup && !retry_pending
+            # An inner boundary already attempted recovery. Do not silently
+            # add another automatic retry while unwinding a live campaign.
+            push!(pending, owner)
+            blocked = true
+            continue
+        end
+        attempted += 1
+        try
+            close(owner)
+        catch error
+            push!(failures, CapturedException(error, catch_backtrace()))
+        end
+        if _owner_isopen(owner)
+            push!(pending, owner)
+            blocked = true
+        else
+            released += 1
+        end
+    end
+    return (; pending, failures, attempted, released)
+end
+function Base.close(error::PendingScenarioCleanup)
+    result = _recover_owners(error.owners; retry_pending = true)
+    error.owners = result.pending
+    error.retry_failures = result.failures
+    isempty(error.owners) || throw(error)
+    return nothing
+end
+function recover_exception!(error)
+    error isa PendingScenarioCleanup && isopen(error) && throw(error)
+    result = _recover_owners(_owned_exception_owners(error))
+    isempty(result.pending) || throw(PendingScenarioCleanup(error, result.pending,
+        result.failures, CapturedException[]))
+    return (; attempted = result.attempted, released = result.released, pending = 0,
+        cleanup_errors = Tuple(sprint(showerror, failure.ex) for failure in result.failures))
+end
+
 function callback(phase, f, args...)
     try
         return f(args...)
@@ -57,22 +156,102 @@ mutable struct Evaluation{C, S, R}
     state::S
     result::Base.RefValue{R}
     closed::Bool
+    pending_cleanup::Any
 end
 function prepare(case)
     state = callback(:prepare, case.prepare)
     result_type = Core.Compiler.return_type(case.operation, Tuple{typeof(state)})
     result_type === Union{} && (result_type = Any)
-    return Evaluation(case, state, Ref{result_type}(), false)
+    return Evaluation(case, state, Ref{result_type}(), false, nothing)
 end
 
-function cleanup!(evaluation)
+function _cleanup_raw!(evaluation)
     evaluation.closed && return
-    evaluation.closed = true
     hasproperty(evaluation.case, :cleanup) &&
         callback(:cleanup, evaluation.case.cleanup, evaluation.state)
+    evaluation.closed = true
     return nothing
 end
 
+mutable struct EvaluationCleanupOwner{E} <: Exception
+    evaluation::Union{Nothing, E}
+    primary::Union{Nothing, CapturedException}
+    cleanup::Union{Nothing, CapturedException}
+    dependency::Any
+end
+Base.isopen(owner::EvaluationCleanupOwner) = owner.evaluation !== nothing
+function Base.showerror(io::IO, owner::EvaluationCleanupOwner)
+    print(io, "scenario state cleanup is retained")
+    for captured in (owner.primary, owner.cleanup)
+        captured === nothing && continue
+        print(io, "; ")
+        showerror(io, captured.ex)
+    end
+end
+function Base.close(owner::EvaluationCleanupOwner)
+    evaluation = owner.evaluation
+    evaluation === nothing && return nothing
+    # A dependent owned failure must be quiescent before its parent case state
+    # (which can be a world/runner) is allowed to close.
+    if owner.dependency !== nothing
+        close(owner.dependency)
+        owner.dependency = nothing
+    end
+    for captured in (owner.primary, owner.cleanup)
+        captured === nothing && continue
+        try
+            recover_exception!(captured.ex)
+        catch pending
+            pending isa PendingScenarioCleanup && (owner.dependency = pending)
+            rethrow()
+        end
+    end
+    try
+        _cleanup_raw!(evaluation)
+    catch cleanup
+        owner.cleanup = CapturedException(cleanup, catch_backtrace())
+        rethrow()
+    end
+    evaluation.pending_cleanup = nothing
+    owner.evaluation = nothing
+    return nothing
+end
+function _pending_evaluation!(evaluation, primary, cleanup, dependency)
+    owner = EvaluationCleanupOwner{typeof(evaluation)}(evaluation, primary, cleanup, dependency)
+    failures = cleanup === nothing ? CapturedException[] : CapturedException[cleanup]
+    pending = PendingScenarioCleanup(owner, Any[owner], failures, CapturedException[])
+    evaluation.pending_cleanup = pending
+    throw(pending)
+end
+function cleanup!(evaluation)
+    evaluation.closed && return nothing
+    evaluation.pending_cleanup === nothing || throw(evaluation.pending_cleanup)
+    try
+        _cleanup_raw!(evaluation)
+    catch cleanup
+        _pending_evaluation!(evaluation, nothing, CapturedException(cleanup, catch_backtrace()), nothing)
+    end
+    return nothing
+end
+function _cleanup_after_failure!(evaluation, primary, trace)
+    evaluation.pending_cleanup === nothing || throw(evaluation.pending_cleanup)
+    captured = CapturedException(primary, trace)
+    try
+        recover_exception!(primary)
+    catch dependency
+        if dependency isa PendingScenarioCleanup
+            _pending_evaluation!(evaluation, captured, nothing, dependency)
+        else
+            _pending_evaluation!(evaluation, captured, CapturedException(dependency, catch_backtrace()), nothing)
+        end
+    end
+    try
+        _cleanup_raw!(evaluation)
+    catch cleanup
+        _pending_evaluation!(evaluation, captured, CapturedException(cleanup, catch_backtrace()), nothing)
+    end
+    return nothing
+end
 function operation!(evaluation)
     try
         result = callback(:operation, evaluation.case.operation, evaluation.state)
@@ -80,21 +259,24 @@ function operation!(evaluation)
             callback(:synchronize, evaluation.case.synchronize, evaluation.state, result)
         evaluation.result[] = result
         return result
-    catch
-        cleanup!(evaluation)
+    catch primary
+        _cleanup_after_failure!(evaluation, primary, catch_backtrace())
         rethrow()
     end
 end
 
 function verify!(evaluation)
+    evaluation.pending_cleanup === nothing || throw(evaluation.pending_cleanup)
     try
         callback(:verify, evaluation.case.verify, evaluation.state, evaluation.result[]) ===
         true ||
             throw(ScenarioFailure(:verify,
                 ErrorException("correctness oracle returned a value other than true")))
-    finally
-        cleanup!(evaluation)
+    catch primary
+        _cleanup_after_failure!(evaluation, primary, catch_backtrace())
+        rethrow()
     end
+    cleanup!(evaluation)
     return nothing
 end
 
