@@ -847,24 +847,29 @@ function _feature_blocks(planned::PlannedFeatureRun)
     entrypoint = (planned.variant::FeatureVariant).entrypoint
     state_name = Symbol("_perfchecker_feature_state_", planned_run_id(planned))
     qualification = _feature_qualification_block(planned, state_name)
-    needs_qualification_state = qualification !== nothing
+    fresh = :(isdefined(Main, :d) && get(Main.d, :fresh_feature, false))
     setup = quote
         include($entrypoint)
         isdefined(Main, :perf_workload) ||
             error("feature entrypoint must define perf_workload(state)")
-        const $state_name = isdefined(Main, :d) && get(Main.d, :fresh_feature, false) &&
-                            !$needs_qualification_state ?
+        const $state_name = $fresh ?
                             nothing : isdefined(Main, :perf_setup) ? perf_setup() : nothing
     end
     workload = Expr(:call, :perf_workload, state_name)
-    if needs_qualification_state
+    if qualification !== nothing
         qualification = quote
-            try
-                $qualification
-            finally
-                if isdefined(Main, :d) && get(Main.d, :fresh_feature, false) &&
-                   isdefined(Main, :perf_cleanup)
-                    Base.invokelatest(Main.perf_cleanup, $state_name)
+            # Qualification runs before measurement. Its fresh owner belongs
+            # to this scope, not to the global setup constant: after cleanup,
+            # closed payloads can be reclaimed before fresh evaluations run.
+            let $state_name = $fresh ?
+                    (isdefined(Main, :perf_setup) ? Base.invokelatest(Main.perf_setup) : nothing) :
+                    $state_name
+                try
+                    $qualification
+                finally
+                    if $fresh && isdefined(Main, :perf_cleanup)
+                        Base.invokelatest(Main.perf_cleanup, $state_name)
+                    end
                 end
             end
         end
