@@ -245,7 +245,9 @@ function _git_output(root::String, arguments::AbstractVector{<:AbstractString})
     # Provenance reads must not refresh the index's stat cache.
     command = addenv(Cmd(Cmd(vcat(["git"], String.(arguments))); dir = root),
         "GIT_OPTIONAL_LOCKS" => "0")
-    return strip(read(command, String))
+    # A plain project directory is valid. Record unavailable Git provenance in
+    # the result without printing a misleading fatal error to the caller.
+    return strip(read(pipeline(command; stderr = devnull), String))
 end
 
 "Capture reproducible source identity without recording remotes or file contents."
