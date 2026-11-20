@@ -21,11 +21,13 @@ function checked_file(root, relative)
 end
 
 function validate_optional_exports(root, revision;
-        exports = joinpath(root, "website", "optional-api", "build", revision))
+        local_preview = get(ENV, "PERFCHECKER_DOCS_LOCAL_PREVIEW", "false") == "true",
+        exports = joinpath(root, "website", "optional-api", "build",
+            local_preview ? "local-working-tree" : revision))
     occursin(r"^[0-9a-f]{40}$", revision) || error("Expected a full source revision")
     strip(read(Cmd(["git", "-C", root, "rev-parse", "HEAD"]), String)) == revision ||
         error("Optional API exports must match the canonical checkout revision")
-    run(Cmd(["git", "-C", root, "diff", "--exit-code", "HEAD",
+    local_preview || run(Cmd(["git", "-C", root, "diff", "--exit-code", "HEAD",
         "--", "Project.toml", "src", "packages"]))
     version = TOML.parsefile(joinpath(root, "Project.toml"))["version"]
     v"1.0.1" <= VersionNumber(version) < v"2.0.0" ||
@@ -37,9 +39,16 @@ function validate_optional_exports(root, revision;
         receipt = TOML.parsefile(checked_file(directory, "api-provenance.toml"))
         receipt["schema"] == "perfchecker-optional-doc-export/1" ||
             error("Unknown API receipt")
-        receipt["channel"] == "source" && receipt["source_revision"] == revision &&
+        receipt["channel"] == (local_preview ? "local-working-tree" : "source") &&
+            receipt["source_revision"] == revision &&
             receipt["source_tree"] == tree && receipt["core_version"] == version &&
             receipt["owner"] == owner || error("Mixed optional API provenance: $slug")
+        if local_preview
+            receipt["working_tree_diff_sha256"] == bytes2hex(sha256(read(
+                Cmd(["git", "-C", root, "diff", "HEAD", "--",
+                "Project.toml", "src", "packages"])))) ||
+                error("Local preview source changed after API rendering: $slug")
+        end
         receipt["documenter"] == "1.19.0" && receipt["renderer"] == "0.3.5" ||
             error("Unexpected isolated API renderer versions")
         !isempty(receipt["bindings"]) && !isempty(receipt["methods"]) ||
@@ -90,7 +99,9 @@ function canonical_optional_page(body, slug)
 end
 
 function assemble_optional_api(root, markdown, revision;
-        exports = joinpath(root, "website", "optional-api", "build", revision))
+        local_preview = get(ENV, "PERFCHECKER_DOCS_LOCAL_PREVIEW", "false") == "true",
+        exports = joinpath(root, "website", "optional-api", "build",
+            local_preview ? "local-working-tree" : revision))
     exports, receipts = validate_optional_exports(root, revision; exports)
     destination = joinpath(markdown, "optional-api")
     ispath(destination) && error("Optional API destination already exists")

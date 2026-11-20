@@ -26,11 +26,16 @@ function scheduleFit() {
     resizeRequest = undefined
     try {
       const body = frame.value?.contentDocument?.body
-      if (!body) return
+      if (!body || !frame.value?.clientWidth) return
       // Native exports keep a bounded plot viewport; measure the body, not the
       // iframe's document element, whose height would include our own viewport.
       const height = Math.ceil(Math.max(body.scrollHeight, body.getBoundingClientRect().height))
-      if (Number.isFinite(height) && height > 0) frameHeight.value = Math.max(640, height + 2)
+      const viewport = frame.value.clientHeight
+      // min-height:100vh is already our viewport, not additional content.
+      if (Number.isFinite(height) && height > 0 &&
+          (height > viewport + 1 || height < viewport - 3)) {
+        frameHeight.value = Math.max(640, height + 2)
+      }
     } catch { /* Keep the fallback height if this is not a same-origin export. */ }
   })
 }

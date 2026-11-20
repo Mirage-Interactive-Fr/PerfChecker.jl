@@ -1,0 +1,14 @@
+[deps]
+BenchmarkTools = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
+JET = "c3a54625-cd67-489e-a8e7-0a5a0ff4e31b"
+JSON = "682c06a0-de6a-54ab-a142-c8b1cf79cde6"
+PerfChecker = "6309bf6b-a531-4b08-891e-8ee981e5c424"
+SHA = "ea8e919c-243c-51af-8825-aaa63cd721ce"
+Statistics = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
+
+[compat]
+BenchmarkTools = "=1.7.0"
+JET = "=0.12.3"
+JSON = "1"
+PerfChecker = "=1.1.0"
+julia = "1.12"

@@ -1,0 +1,120 @@
+{
+  "plot": {
+    "data": [
+      {
+        "collector": "BenchmarkTools",
+        "collector_definition": "benchmarktools-v1/fresh-state-evals1-v1",
+        "comparison_key": "containers/Deque/drain/512/seed42/v1",
+        "derivation": "recorded minimum",
+        "metric": "julia.wall.time",
+        "normalization_status": "ratio",
+        "ratio": 1.0,
+        "reference_value": 1.8,
+        "reference_version": "minimum",
+        "samples": 30,
+        "source_metric": "julia.wall.time",
+        "source_unit": "ns",
+        "statistic": "minimum",
+        "target_kind": "recorded",
+        "unit": "µs",
+        "value": 1.8,
+        "version": "0.19.6",
+        "workload": "Deque_drain"
+      },
+      {
+        "collector": "BenchmarkTools",
+        "collector_definition": "benchmarktools-v1/fresh-state-evals1-v1",
+        "comparison_key": "containers/Deque/drain/512/seed42/v1",
+        "derivation": "minimum of paired per-sample gc.time / wall.time; not a ratio of separate minima",
+        "metric": "julia.gc.fraction",
+        "normalization_status": "both_zero",
+        "ratio": 1.0,
+        "reference_value": 0.0,
+        "reference_version": "minimum",
+        "samples": 30,
+        "source_metric": "julia.gc.time",
+        "source_unit": "ns",
+        "statistic": "minimum",
+        "target_kind": "recorded",
+        "unit": "%",
+        "value": 0.0,
+        "version": "0.19.6",
+        "workload": "Deque_drain"
+      },
+      {
+        "collector": "BenchmarkTools",
+        "collector_definition": "benchmarktools-v1/fresh-state-evals1-v1",
+        "comparison_key": "containers/Deque/drain/512/seed42/v1",
+        "derivation": "recorded minimum",
+        "metric": "julia.alloc.bytes",
+        "normalization_status": "ratio",
+        "ratio": 1.0,
+        "reference_value": 4167.0,
+        "reference_version": "minimum",
+        "samples": 30,
+        "source_metric": "julia.alloc.bytes",
+        "source_unit": "By",
+        "statistic": "minimum",
+        "target_kind": "recorded",
+        "unit": "By",
+        "value": 4167.0,
+        "version": "0.19.6",
+        "workload": "Deque_drain"
+      },
+      {
+        "collector": "BenchmarkTools",
+        "collector_definition": "benchmarktools-v1/fresh-state-evals1-v1",
+        "comparison_key": "containers/Deque/drain/512/seed42/v1",
+        "derivation": "recorded minimum",
+        "metric": "julia.alloc.count",
+        "normalization_status": "ratio",
+        "ratio": 1.0,
+        "reference_value": 3.0,
+        "reference_version": "minimum",
+        "samples": 30,
+        "source_metric": "julia.alloc.count",
+        "source_unit": "1",
+        "statistic": "minimum",
+        "target_kind": "recorded",
+        "unit": "1",
+        "value": 3.0,
+        "version": "0.19.6",
+        "workload": "Deque_drain"
+      }
+    ],
+    "description": "Separate collector sessions on one local machine; not a collector speed verdict; minimum per recorded target / minimum reference for each metric. Single recorded target; ratios do not establish an improvement.",
+    "encoding": {
+      "color": "metric",
+      "x": "version",
+      "y": "ratio"
+    },
+    "id": "deque-deque_drain-benchmarktools",
+    "kind": "normalized_metrics",
+    "options": {
+      "collector": "BenchmarkTools",
+      "metadata": {
+        "projection": "Recorded metric minima; reference=minimum for each metric",
+        "run_ids": [
+          "51ef987b-fda5-41d4-be72-19bf54d88d53"
+        ],
+        "scope": "Separate collector sessions on one local machine; not a collector speed verdict",
+        "single_version": true,
+        "source_sha256": {
+          "deque.json": "07db53d7fd89d5f4d45c4d5069bb95634aa7cf2d268b44fdbb26d65446d011d8"
+        },
+        "workload": "Deque_drain"
+      },
+      "reference_version": "minimum",
+      "statistic": "minimum",
+      "target_label": "version",
+      "unit": "ratio",
+      "versions": [
+        "0.19.6"
+      ],
+      "xlabel": "Package version",
+      "zero_reference_policy": "equal zeros = 1 (unchanged); nonzero / zero = unavailable"
+    },
+    "schema_version": "perfchecker-plot/1",
+    "title": "Deque_drain · BenchmarkTools · DataStructures 0.19.6"
+  }
+}

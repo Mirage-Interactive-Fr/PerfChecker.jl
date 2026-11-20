@@ -1,0 +1,1034 @@
+{
+  "allocation_profile": {
+    "bytes_measurement_evaluations": 1,
+    "count_measurement_evaluations": 1,
+    "message": "Allocation stacks were captured.",
+    "profile_evaluations": 1,
+    "retained_allocations": 11,
+    "retained_sampled_bytes": 2208,
+    "sample_rate": 1.0,
+    "sampled_allocations": 11,
+    "schema_version": "perfchecker-allocation-profile/1",
+    "source_allocations": 11,
+    "status": "complete",
+    "total_allocations": 11,
+    "total_bytes": 2352,
+    "total_measurement_evaluations": 2,
+    "total_semantics": "bytes and allocation count from two separate operation evaluations; not inferred from samples",
+    "weight_semantics": "raw sampled bytes and events across all profile evaluations"
+  },
+  "correctness": "passed",
+  "performance": "not_compared",
+  "plot": {
+    "data": [
+      {
+        "depth": 1,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "count_events (kitchen-sink/src/PerfCheckerKitchenSink.jl:42)",
+        "path": [
+          "count_events (kitchen-sink/src/PerfCheckerKitchenSink.jl:42)"
+        ],
+        "percentage": 100.0,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 2208.0,
+        "x0": 0.0,
+        "x1": 1.0
+      },
+      {
+        "depth": 2,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "counter (DataStructures/src/accumulator.jl:36)",
+        "path": [
+          "count_events (kitchen-sink/src/PerfCheckerKitchenSink.jl:42)",
+          "counter (DataStructures/src/accumulator.jl:36)"
+        ],
+        "percentage": 65.94202898550725,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 1456.0,
+        "x0": 0.0,
+        "x1": 0.6594202898550725
+      },
+      {
+        "depth": 3,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "inc! (DataStructures/src/accumulator.jl:80)",
+        "path": [
+          "count_events (kitchen-sink/src/PerfCheckerKitchenSink.jl:42)",
+          "counter (DataStructures/src/accumulator.jl:36)",
+          "inc! (DataStructures/src/accumulator.jl:80)"
+        ],
+        "percentage": 65.94202898550725,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 1456.0,
+        "x0": 0.0,
+        "x1": 0.6594202898550725
+      },
+      {
+        "depth": 4,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "inc! (DataStructures/src/accumulator.jl:79)",
+        "path": [
+          "count_events (kitchen-sink/src/PerfCheckerKitchenSink.jl:42)",
+          "counter (DataStructures/src/accumulator.jl:36)",
+          "inc! (DataStructures/src/accumulator.jl:80)",
+          "inc! (DataStructures/src/accumulator.jl:79)"
+        ],
+        "percentage": 65.94202898550725,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 1456.0,
+        "x0": 0.0,
+        "x1": 0.6594202898550725
+      },
+      {
+        "depth": 5,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "setindex! (DataStructures/src/accumulator.jl:59)",
+        "path": [
+          "count_events (kitchen-sink/src/PerfCheckerKitchenSink.jl:42)",
+          "counter (DataStructures/src/accumulator.jl:36)",
+          "inc! (DataStructures/src/accumulator.jl:80)",
+          "inc! (DataStructures/src/accumulator.jl:79)",
+          "setindex! (DataStructures/src/accumulator.jl:59)"
+        ],
+        "percentage": 65.94202898550725,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 1456.0,
+        "x0": 0.0,
+        "x1": 0.6594202898550725
+      },
+      {
+        "depth": 6,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "setindex! (dict.jl:365)",
+        "path": [
+          "count_events (kitchen-sink/src/PerfCheckerKitchenSink.jl:42)",
+          "counter (DataStructures/src/accumulator.jl:36)",
+          "inc! (DataStructures/src/accumulator.jl:80)",
+          "inc! (DataStructures/src/accumulator.jl:79)",
+          "setindex! (DataStructures/src/accumulator.jl:59)",
+          "setindex! (dict.jl:365)"
+        ],
+        "percentage": 51.44927536231884,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 1136.0,
+        "x0": 0.0,
+        "x1": 0.5144927536231884
+      },
+      {
+        "depth": 7,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "_setindex! (dict.jl:339)",
+        "path": [
+          "count_events (kitchen-sink/src/PerfCheckerKitchenSink.jl:42)",
+          "counter (DataStructures/src/accumulator.jl:36)",
+          "inc! (DataStructures/src/accumulator.jl:80)",
+          "inc! (DataStructures/src/accumulator.jl:79)",
+          "setindex! (DataStructures/src/accumulator.jl:59)",
+          "setindex! (dict.jl:365)",
+          "_setindex! (dict.jl:339)"
+        ],
+        "percentage": 51.44927536231884,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 1136.0,
+        "x0": 0.0,
+        "x1": 0.5144927536231884
+      },
+      {
+        "depth": 8,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "rehash! (dict.jl:160)",
+        "path": [
+          "count_events (kitchen-sink/src/PerfCheckerKitchenSink.jl:42)",
+          "counter (DataStructures/src/accumulator.jl:36)",
+          "inc! (DataStructures/src/accumulator.jl:80)",
+          "inc! (DataStructures/src/accumulator.jl:79)",
+          "setindex! (DataStructures/src/accumulator.jl:59)",
+          "setindex! (dict.jl:365)",
+          "_setindex! (dict.jl:339)",
+          "rehash! (dict.jl:160)"
+        ],
+        "percentage": 23.91304347826087,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 528.0,
+        "x0": 0.0,
+        "x1": 0.2391304347826087
+      },
+      {
+        "depth": 9,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "GenericMemory (boot.jl:588)",
+        "path": [
+          "count_events (kitchen-sink/src/PerfCheckerKitchenSink.jl:42)",
+          "counter (DataStructures/src/accumulator.jl:36)",
+          "inc! (DataStructures/src/accumulator.jl:80)",
+          "inc! (DataStructures/src/accumulator.jl:79)",
+          "setindex! (DataStructures/src/accumulator.jl:59)",
+          "setindex! (dict.jl:365)",
+          "_setindex! (dict.jl:339)",
+          "rehash! (dict.jl:160)",
+          "GenericMemory (boot.jl:588)"
+        ],
+        "percentage": 23.91304347826087,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 528.0,
+        "x0": 0.0,
+        "x1": 0.2391304347826087
+      },
+      {
+        "depth": 8,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "rehash! (dict.jl:159)",
+        "path": [
+          "count_events (kitchen-sink/src/PerfCheckerKitchenSink.jl:42)",
+          "counter (DataStructures/src/accumulator.jl:36)",
+          "inc! (DataStructures/src/accumulator.jl:80)",
+          "inc! (DataStructures/src/accumulator.jl:79)",
+          "setindex! (DataStructures/src/accumulator.jl:59)",
+          "setindex! (dict.jl:365)",
+          "_setindex! (dict.jl:339)",
+          "rehash! (dict.jl:159)"
+        ],
+        "percentage": 23.91304347826087,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 528.0,
+        "x0": 0.2391304347826087,
+        "x1": 0.4782608695652174
+      },
+      {
+        "depth": 9,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "GenericMemory (boot.jl:588)",
+        "path": [
+          "count_events (kitchen-sink/src/PerfCheckerKitchenSink.jl:42)",
+          "counter (DataStructures/src/accumulator.jl:36)",
+          "inc! (DataStructures/src/accumulator.jl:80)",
+          "inc! (DataStructures/src/accumulator.jl:79)",
+          "setindex! (DataStructures/src/accumulator.jl:59)",
+          "setindex! (dict.jl:365)",
+          "_setindex! (dict.jl:339)",
+          "rehash! (dict.jl:159)",
+          "GenericMemory (boot.jl:588)"
+        ],
+        "percentage": 23.91304347826087,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 528.0,
+        "x0": 0.2391304347826087,
+        "x1": 0.4782608695652174
+      },
+      {
+        "depth": 8,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "rehash! (dict.jl:157)",
+        "path": [
+          "count_events (kitchen-sink/src/PerfCheckerKitchenSink.jl:42)",
+          "counter (DataStructures/src/accumulator.jl:36)",
+          "inc! (DataStructures/src/accumulator.jl:80)",
+          "inc! (DataStructures/src/accumulator.jl:79)",
+          "setindex! (DataStructures/src/accumulator.jl:59)",
+          "setindex! (dict.jl:365)",
+          "_setindex! (dict.jl:339)",
+          "rehash! (dict.jl:157)"
+        ],
+        "percentage": 3.6231884057971016,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 80.0,
+        "x0": 0.4782608695652174,
+        "x1": 0.5144927536231885
+      },
+      {
+        "depth": 9,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "GenericMemory (boot.jl:588)",
+        "path": [
+          "count_events (kitchen-sink/src/PerfCheckerKitchenSink.jl:42)",
+          "counter (DataStructures/src/accumulator.jl:36)",
+          "inc! (DataStructures/src/accumulator.jl:80)",
+          "inc! (DataStructures/src/accumulator.jl:79)",
+          "setindex! (DataStructures/src/accumulator.jl:59)",
+          "setindex! (dict.jl:365)",
+          "_setindex! (dict.jl:339)",
+          "rehash! (dict.jl:157)",
+          "GenericMemory (boot.jl:588)"
+        ],
+        "percentage": 3.6231884057971016,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 80.0,
+        "x0": 0.4782608695652174,
+        "x1": 0.5144927536231885
+      },
+      {
+        "depth": 6,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "setindex! (dict.jl:358)",
+        "path": [
+          "count_events (kitchen-sink/src/PerfCheckerKitchenSink.jl:42)",
+          "counter (DataStructures/src/accumulator.jl:36)",
+          "inc! (DataStructures/src/accumulator.jl:80)",
+          "inc! (DataStructures/src/accumulator.jl:79)",
+          "setindex! (DataStructures/src/accumulator.jl:59)",
+          "setindex! (dict.jl:358)"
+        ],
+        "percentage": 14.492753623188406,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 320.0,
+        "x0": 0.5144927536231884,
+        "x1": 0.6594202898550724
+      },
+      {
+        "depth": 7,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "ht_keyindex2_shorthash! (dict.jl:270)",
+        "path": [
+          "count_events (kitchen-sink/src/PerfCheckerKitchenSink.jl:42)",
+          "counter (DataStructures/src/accumulator.jl:36)",
+          "inc! (DataStructures/src/accumulator.jl:80)",
+          "inc! (DataStructures/src/accumulator.jl:79)",
+          "setindex! (DataStructures/src/accumulator.jl:59)",
+          "setindex! (dict.jl:358)",
+          "ht_keyindex2_shorthash! (dict.jl:270)"
+        ],
+        "percentage": 14.492753623188406,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 320.0,
+        "x0": 0.5144927536231884,
+        "x1": 0.6594202898550724
+      },
+      {
+        "depth": 8,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "rehash! (dict.jl:151)",
+        "path": [
+          "count_events (kitchen-sink/src/PerfCheckerKitchenSink.jl:42)",
+          "counter (DataStructures/src/accumulator.jl:36)",
+          "inc! (DataStructures/src/accumulator.jl:80)",
+          "inc! (DataStructures/src/accumulator.jl:79)",
+          "setindex! (DataStructures/src/accumulator.jl:59)",
+          "setindex! (dict.jl:358)",
+          "ht_keyindex2_shorthash! (dict.jl:270)",
+          "rehash! (dict.jl:151)"
+        ],
+        "percentage": 6.521739130434782,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 144.0,
+        "x0": 0.5144927536231884,
+        "x1": 0.5797101449275361
+      },
+      {
+        "depth": 9,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "GenericMemory (boot.jl:588)",
+        "path": [
+          "count_events (kitchen-sink/src/PerfCheckerKitchenSink.jl:42)",
+          "counter (DataStructures/src/accumulator.jl:36)",
+          "inc! (DataStructures/src/accumulator.jl:80)",
+          "inc! (DataStructures/src/accumulator.jl:79)",
+          "setindex! (DataStructures/src/accumulator.jl:59)",
+          "setindex! (dict.jl:358)",
+          "ht_keyindex2_shorthash! (dict.jl:270)",
+          "rehash! (dict.jl:151)",
+          "GenericMemory (boot.jl:588)"
+        ],
+        "percentage": 6.521739130434782,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 144.0,
+        "x0": 0.5144927536231884,
+        "x1": 0.5797101449275361
+      },
+      {
+        "depth": 8,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "rehash! (dict.jl:150)",
+        "path": [
+          "count_events (kitchen-sink/src/PerfCheckerKitchenSink.jl:42)",
+          "counter (DataStructures/src/accumulator.jl:36)",
+          "inc! (DataStructures/src/accumulator.jl:80)",
+          "inc! (DataStructures/src/accumulator.jl:79)",
+          "setindex! (DataStructures/src/accumulator.jl:59)",
+          "setindex! (dict.jl:358)",
+          "ht_keyindex2_shorthash! (dict.jl:270)",
+          "rehash! (dict.jl:150)"
+        ],
+        "percentage": 6.521739130434782,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 144.0,
+        "x0": 0.5797101449275361,
+        "x1": 0.6449275362318839
+      },
+      {
+        "depth": 9,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "GenericMemory (boot.jl:588)",
+        "path": [
+          "count_events (kitchen-sink/src/PerfCheckerKitchenSink.jl:42)",
+          "counter (DataStructures/src/accumulator.jl:36)",
+          "inc! (DataStructures/src/accumulator.jl:80)",
+          "inc! (DataStructures/src/accumulator.jl:79)",
+          "setindex! (DataStructures/src/accumulator.jl:59)",
+          "setindex! (dict.jl:358)",
+          "ht_keyindex2_shorthash! (dict.jl:270)",
+          "rehash! (dict.jl:150)",
+          "GenericMemory (boot.jl:588)"
+        ],
+        "percentage": 6.521739130434782,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 144.0,
+        "x0": 0.5797101449275361,
+        "x1": 0.6449275362318839
+      },
+      {
+        "depth": 8,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "rehash! (dict.jl:148)",
+        "path": [
+          "count_events (kitchen-sink/src/PerfCheckerKitchenSink.jl:42)",
+          "counter (DataStructures/src/accumulator.jl:36)",
+          "inc! (DataStructures/src/accumulator.jl:80)",
+          "inc! (DataStructures/src/accumulator.jl:79)",
+          "setindex! (DataStructures/src/accumulator.jl:59)",
+          "setindex! (dict.jl:358)",
+          "ht_keyindex2_shorthash! (dict.jl:270)",
+          "rehash! (dict.jl:148)"
+        ],
+        "percentage": 1.4492753623188406,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 32.0,
+        "x0": 0.6449275362318839,
+        "x1": 0.6594202898550723
+      },
+      {
+        "depth": 9,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "GenericMemory (boot.jl:588)",
+        "path": [
+          "count_events (kitchen-sink/src/PerfCheckerKitchenSink.jl:42)",
+          "counter (DataStructures/src/accumulator.jl:36)",
+          "inc! (DataStructures/src/accumulator.jl:80)",
+          "inc! (DataStructures/src/accumulator.jl:79)",
+          "setindex! (DataStructures/src/accumulator.jl:59)",
+          "setindex! (dict.jl:358)",
+          "ht_keyindex2_shorthash! (dict.jl:270)",
+          "rehash! (dict.jl:148)",
+          "GenericMemory (boot.jl:588)"
+        ],
+        "percentage": 1.4492753623188406,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 32.0,
+        "x0": 0.6449275362318839,
+        "x1": 0.6594202898550723
+      },
+      {
+        "depth": 2,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "Dict (dict.jl:117)",
+        "path": [
+          "count_events (kitchen-sink/src/PerfCheckerKitchenSink.jl:42)",
+          "Dict (dict.jl:117)"
+        ],
+        "percentage": 30.434782608695652,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 672.0,
+        "x0": 0.6594202898550725,
+        "x1": 0.963768115942029
+      },
+      {
+        "depth": 3,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "dict_with_eltype (abstractdict.jl:637)",
+        "path": [
+          "count_events (kitchen-sink/src/PerfCheckerKitchenSink.jl:42)",
+          "Dict (dict.jl:117)",
+          "dict_with_eltype (abstractdict.jl:637)"
+        ],
+        "percentage": 30.434782608695652,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 672.0,
+        "x0": 0.6594202898550725,
+        "x1": 0.963768115942029
+      },
+      {
+        "depth": 4,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "Dict (dict.jl:92)",
+        "path": [
+          "count_events (kitchen-sink/src/PerfCheckerKitchenSink.jl:42)",
+          "Dict (dict.jl:117)",
+          "dict_with_eltype (abstractdict.jl:637)",
+          "Dict (dict.jl:92)"
+        ],
+        "percentage": 26.81159420289855,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 592.0,
+        "x0": 0.6594202898550725,
+        "x1": 0.9275362318840581
+      },
+      {
+        "depth": 5,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "sizehint! (dict.jl:194)",
+        "path": [
+          "count_events (kitchen-sink/src/PerfCheckerKitchenSink.jl:42)",
+          "Dict (dict.jl:117)",
+          "dict_with_eltype (abstractdict.jl:637)",
+          "Dict (dict.jl:92)",
+          "sizehint! (dict.jl:194)"
+        ],
+        "percentage": 26.81159420289855,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 592.0,
+        "x0": 0.6594202898550725,
+        "x1": 0.9275362318840581
+      },
+      {
+        "depth": 6,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "#sizehint!#304 (dict.jl:201)",
+        "path": [
+          "count_events (kitchen-sink/src/PerfCheckerKitchenSink.jl:42)",
+          "Dict (dict.jl:117)",
+          "dict_with_eltype (abstractdict.jl:637)",
+          "Dict (dict.jl:92)",
+          "sizehint! (dict.jl:194)",
+          "#sizehint!#304 (dict.jl:201)"
+        ],
+        "percentage": 26.81159420289855,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 592.0,
+        "x0": 0.6594202898550725,
+        "x1": 0.9275362318840581
+      },
+      {
+        "depth": 7,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "rehash! (dict.jl:151)",
+        "path": [
+          "count_events (kitchen-sink/src/PerfCheckerKitchenSink.jl:42)",
+          "Dict (dict.jl:117)",
+          "dict_with_eltype (abstractdict.jl:637)",
+          "Dict (dict.jl:92)",
+          "sizehint! (dict.jl:194)",
+          "#sizehint!#304 (dict.jl:201)",
+          "rehash! (dict.jl:151)"
+        ],
+        "percentage": 12.318840579710145,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 272.0,
+        "x0": 0.6594202898550725,
+        "x1": 0.782608695652174
+      },
+      {
+        "depth": 8,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "GenericMemory (boot.jl:588)",
+        "path": [
+          "count_events (kitchen-sink/src/PerfCheckerKitchenSink.jl:42)",
+          "Dict (dict.jl:117)",
+          "dict_with_eltype (abstractdict.jl:637)",
+          "Dict (dict.jl:92)",
+          "sizehint! (dict.jl:194)",
+          "#sizehint!#304 (dict.jl:201)",
+          "rehash! (dict.jl:151)",
+          "GenericMemory (boot.jl:588)"
+        ],
+        "percentage": 12.318840579710145,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 272.0,
+        "x0": 0.6594202898550725,
+        "x1": 0.782608695652174
+      },
+      {
+        "depth": 7,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "rehash! (dict.jl:150)",
+        "path": [
+          "count_events (kitchen-sink/src/PerfCheckerKitchenSink.jl:42)",
+          "Dict (dict.jl:117)",
+          "dict_with_eltype (abstractdict.jl:637)",
+          "Dict (dict.jl:92)",
+          "sizehint! (dict.jl:194)",
+          "#sizehint!#304 (dict.jl:201)",
+          "rehash! (dict.jl:150)"
+        ],
+        "percentage": 12.318840579710145,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 272.0,
+        "x0": 0.782608695652174,
+        "x1": 0.9057971014492754
+      },
+      {
+        "depth": 8,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "GenericMemory (boot.jl:588)",
+        "path": [
+          "count_events (kitchen-sink/src/PerfCheckerKitchenSink.jl:42)",
+          "Dict (dict.jl:117)",
+          "dict_with_eltype (abstractdict.jl:637)",
+          "Dict (dict.jl:92)",
+          "sizehint! (dict.jl:194)",
+          "#sizehint!#304 (dict.jl:201)",
+          "rehash! (dict.jl:150)",
+          "GenericMemory (boot.jl:588)"
+        ],
+        "percentage": 12.318840579710145,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 272.0,
+        "x0": 0.782608695652174,
+        "x1": 0.9057971014492754
+      },
+      {
+        "depth": 7,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "rehash! (dict.jl:148)",
+        "path": [
+          "count_events (kitchen-sink/src/PerfCheckerKitchenSink.jl:42)",
+          "Dict (dict.jl:117)",
+          "dict_with_eltype (abstractdict.jl:637)",
+          "Dict (dict.jl:92)",
+          "sizehint! (dict.jl:194)",
+          "#sizehint!#304 (dict.jl:201)",
+          "rehash! (dict.jl:148)"
+        ],
+        "percentage": 2.1739130434782608,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 48.0,
+        "x0": 0.9057971014492754,
+        "x1": 0.927536231884058
+      },
+      {
+        "depth": 8,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "GenericMemory (boot.jl:588)",
+        "path": [
+          "count_events (kitchen-sink/src/PerfCheckerKitchenSink.jl:42)",
+          "Dict (dict.jl:117)",
+          "dict_with_eltype (abstractdict.jl:637)",
+          "Dict (dict.jl:92)",
+          "sizehint! (dict.jl:194)",
+          "#sizehint!#304 (dict.jl:201)",
+          "rehash! (dict.jl:148)",
+          "GenericMemory (boot.jl:588)"
+        ],
+        "percentage": 2.1739130434782608,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 48.0,
+        "x0": 0.9057971014492754,
+        "x1": 0.927536231884058
+      },
+      {
+        "depth": 4,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "Dict (dict.jl:91)",
+        "path": [
+          "count_events (kitchen-sink/src/PerfCheckerKitchenSink.jl:42)",
+          "Dict (dict.jl:117)",
+          "dict_with_eltype (abstractdict.jl:637)",
+          "Dict (dict.jl:91)"
+        ],
+        "percentage": 3.6231884057971016,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 80.0,
+        "x0": 0.9275362318840581,
+        "x1": 0.9637681159420292
+      },
+      {
+        "depth": 5,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "Dict (dict.jl:80)",
+        "path": [
+          "count_events (kitchen-sink/src/PerfCheckerKitchenSink.jl:42)",
+          "Dict (dict.jl:117)",
+          "dict_with_eltype (abstractdict.jl:637)",
+          "Dict (dict.jl:91)",
+          "Dict (dict.jl:80)"
+        ],
+        "percentage": 3.6231884057971016,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 80.0,
+        "x0": 0.9275362318840581,
+        "x1": 0.9637681159420292
+      },
+      {
+        "depth": 2,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "counter (DataStructures/src/accumulator.jl:34)",
+        "path": [
+          "count_events (kitchen-sink/src/PerfCheckerKitchenSink.jl:42)",
+          "counter (DataStructures/src/accumulator.jl:34)"
+        ],
+        "percentage": 3.6231884057971016,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 80.0,
+        "x0": 0.963768115942029,
+        "x1": 1.0
+      },
+      {
+        "depth": 3,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "counter (DataStructures/src/accumulator.jl:25)",
+        "path": [
+          "count_events (kitchen-sink/src/PerfCheckerKitchenSink.jl:42)",
+          "counter (DataStructures/src/accumulator.jl:34)",
+          "counter (DataStructures/src/accumulator.jl:25)"
+        ],
+        "percentage": 3.6231884057971016,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 80.0,
+        "x0": 0.963768115942029,
+        "x1": 1.0
+      },
+      {
+        "depth": 4,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "Accumulator (DataStructures/src/accumulator.jl:15)",
+        "path": [
+          "count_events (kitchen-sink/src/PerfCheckerKitchenSink.jl:42)",
+          "counter (DataStructures/src/accumulator.jl:34)",
+          "counter (DataStructures/src/accumulator.jl:25)",
+          "Accumulator (DataStructures/src/accumulator.jl:15)"
+        ],
+        "percentage": 3.6231884057971016,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 80.0,
+        "x0": 0.963768115942029,
+        "x1": 1.0
+      },
+      {
+        "depth": 5,
+        "gc_event_percentage": 0.0,
+        "gc_event_value": 0.0,
+        "inference_status": [
+          "unknown"
+        ],
+        "inferred_return_type": [],
+        "label": "Dict (dict.jl:80)",
+        "path": [
+          "count_events (kitchen-sink/src/PerfCheckerKitchenSink.jl:42)",
+          "counter (DataStructures/src/accumulator.jl:34)",
+          "counter (DataStructures/src/accumulator.jl:25)",
+          "Accumulator (DataStructures/src/accumulator.jl:15)",
+          "Dict (dict.jl:80)"
+        ],
+        "percentage": 3.6231884057971016,
+        "runtime_dispatch_percentage": 0.0,
+        "runtime_dispatch_value": 0.0,
+        "status": "normal",
+        "value": 80.0,
+        "x0": 0.963768115942029,
+        "x1": 1.0
+      }
+    ],
+    "description": "DataStructures 0.19.6; 32,768-event counter; one native allocation profile. Raw sampled bytes, not independent operation totals.",
+    "encoding": {
+      "color": "status",
+      "x": "percentage",
+      "y": "depth"
+    },
+    "id": "allocation-flamegraph-c087f78e413d3873",
+    "kind": "allocation_flamegraph",
+    "options": {
+      "feature": "counter_32768_profile_alloc",
+      "measurement_definitions": [
+        "julia.alloc.bytes/profile-allocs-v1"
+      ],
+      "metadata": {
+        "allocation_profile": {
+          "bytes_measurement_evaluations": 1,
+          "count_measurement_evaluations": 1,
+          "message": "Allocation stacks were captured.",
+          "profile_evaluations": 1,
+          "retained_allocations": 11,
+          "retained_sampled_bytes": 2208,
+          "sample_rate": 1.0,
+          "sampled_allocations": 11,
+          "schema_version": "perfchecker-allocation-profile/1",
+          "source_allocations": 11,
+          "status": "complete",
+          "total_allocations": 11,
+          "total_bytes": 2352,
+          "total_measurement_evaluations": 2,
+          "total_semantics": "bytes and allocation count from two separate operation evaluations; not inferred from samples",
+          "weight_semantics": "raw sampled bytes and events across all profile evaluations"
+        },
+        "run_id": "94cf6884-2e97-4623-b29a-c8fb727355ff",
+        "source_sha256": {
+          "counter-allocation-source.json": "a1a51272cda86603f609b88f126fd9f97528749f786f819cfb05ae73eafd541f"
+        }
+      },
+      "package": "DataStructures",
+      "selected_version": "0.19.6",
+      "tags": [],
+      "top": 40,
+      "total": 2208.0,
+      "unit": "By",
+      "value_label": "allocated bytes",
+      "versions": [
+        "0.19.6"
+      ]
+    },
+    "schema_version": "perfchecker-plot/1",
+    "title": "DataStructures · counter_32768_profile_alloc · allocation flame graph"
+  },
+  "runtime": {
+    "language": "julia",
+    "threads": 1,
+    "version": "1.13.1"
+  }
+}

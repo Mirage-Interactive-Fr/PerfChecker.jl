@@ -4058,7 +4058,9 @@
       "terminal": "normalized-metrics-69f130e64e539282.txt",
       "title": "DataStructures · AVLTree_build_benchmark · relative to minimum",
       "unit": "ratio",
-      "workload": "AVLTree_build"
+      "workload": "AVLTree_build",
+      "html": "normalized-metrics-69f130e64e539282.html",
+      "html_input_sha256": "428f744084c948b02c15c53415ee5589b98c453d78c8fa639051677135498e35"
     },
     {
       "feature": "AVLTree_build_benchmark",
@@ -4270,7 +4272,9 @@
       "terminal": "normalized-metrics-d7347c97a7b4188f.txt",
       "title": "DataStructures · AVLTree_lookup_benchmark · relative to minimum",
       "unit": "ratio",
-      "workload": "AVLTree_lookup"
+      "workload": "AVLTree_lookup",
+      "html": "normalized-metrics-d7347c97a7b4188f.html",
+      "html_input_sha256": "e14c8f055fd30e7d4af3588632bf27b4778fa19f3276f855b6cee68064e87e88"
     },
     {
       "feature": "AVLTree_lookup_benchmark",
@@ -4482,7 +4486,9 @@
       "terminal": "normalized-metrics-d382f09739931a4f.txt",
       "title": "DataStructures · Accumulator_build_benchmark · relative to minimum",
       "unit": "ratio",
-      "workload": "Accumulator_build"
+      "workload": "Accumulator_build",
+      "html": "normalized-metrics-d382f09739931a4f.html",
+      "html_input_sha256": "ba50c30d0ea61a1a111db18dba6bbf5f8e3b123f15aa5020c0f8f700d5acb5b5"
     },
     {
       "feature": "Accumulator_build_benchmark",
@@ -4694,7 +4700,9 @@
       "terminal": "normalized-metrics-3a6cd20d2c06db23.txt",
       "title": "DataStructures · Accumulator_traverse_benchmark · relative to minimum",
       "unit": "ratio",
-      "workload": "Accumulator_traverse"
+      "workload": "Accumulator_traverse",
+      "html": "normalized-metrics-3a6cd20d2c06db23.html",
+      "html_input_sha256": "a3b5a039142d0b83fd2e6fa4ca63ab9783d0bb9ee54c3625b2557bd2c528a09c"
     },
     {
       "feature": "Accumulator_traverse_benchmark",
@@ -4906,7 +4914,9 @@
       "terminal": "normalized-metrics-3f5219fbaf9eb2e9.txt",
       "title": "DataStructures · BinaryMaxHeap_build_benchmark · relative to minimum",
       "unit": "ratio",
-      "workload": "BinaryMaxHeap_build"
+      "workload": "BinaryMaxHeap_build",
+      "html": "normalized-metrics-3f5219fbaf9eb2e9.html",
+      "html_input_sha256": "6d1551bba821e75d945975d6b6dac1cb613bd1658e61ec79cd165f7fb282b230"
     },
     {
       "feature": "BinaryMaxHeap_build_benchmark",
@@ -5118,7 +5128,9 @@
       "terminal": "normalized-metrics-37ea45b9adaaa38a.txt",
       "title": "DataStructures · BinaryMaxHeap_drain_benchmark · relative to minimum",
       "unit": "ratio",
-      "workload": "BinaryMaxHeap_drain"
+      "workload": "BinaryMaxHeap_drain",
+      "html": "normalized-metrics-37ea45b9adaaa38a.html",
+      "html_input_sha256": "fd1db4ee6e5dad5391e7681ff3d2e5ecd72b8791f7fddfc729a40be88ffa7f04"
     },
     {
       "feature": "BinaryMaxHeap_drain_benchmark",
@@ -5330,7 +5342,9 @@
       "terminal": "normalized-metrics-331ab86ae6852337.txt",
       "title": "DataStructures · BinaryMinHeap_build_benchmark · relative to minimum",
       "unit": "ratio",
-      "workload": "BinaryMinHeap_build"
+      "workload": "BinaryMinHeap_build",
+      "html": "normalized-metrics-331ab86ae6852337.html",
+      "html_input_sha256": "e68f4ccead5c124ffed9259918f71e8d3fa9bf7c1f77a91e73443c22a774671b"
     },
     {
       "feature": "BinaryMinHeap_build_benchmark",
@@ -5542,7 +5556,9 @@
       "terminal": "normalized-metrics-ab8a1400437de023.txt",
       "title": "DataStructures · BinaryMinHeap_drain_benchmark · relative to minimum",
       "unit": "ratio",
-      "workload": "BinaryMinHeap_drain"
+      "workload": "BinaryMinHeap_drain",
+      "html": "normalized-metrics-ab8a1400437de023.html",
+      "html_input_sha256": "de00fd942031d4b695d19d2bca237e92a99308c9c450313b3c00e83904b1f64c"
     },
     {
       "feature": "BinaryMinHeap_drain_benchmark",
@@ -5754,7 +5770,9 @@
       "terminal": "normalized-metrics-7b267d7cb9ddc988.txt",
       "title": "DataStructures · BinaryMinMaxHeap_build_benchmark · relative to minimum",
       "unit": "ratio",
-      "workload": "BinaryMinMaxHeap_build"
+      "workload": "BinaryMinMaxHeap_build",
+      "html": "normalized-metrics-7b267d7cb9ddc988.html",
+      "html_input_sha256": "ee243c234044885ebcb33e6bf4aa8be37cb272a104b0b28a0f6b20fd6c911996"
     },
     {
       "feature": "BinaryMinMaxHeap_build_benchmark",
@@ -5966,7 +5984,9 @@
       "terminal": "normalized-metrics-16fd8c1547950a5f.txt",
       "title": "DataStructures · BinaryMinMaxHeap_drain_benchmark · relative to minimum",
       "unit": "ratio",
-      "workload": "BinaryMinMaxHeap_drain"
+      "workload": "BinaryMinMaxHeap_drain",
+      "html": "normalized-metrics-16fd8c1547950a5f.html",
+      "html_input_sha256": "78bab14d5480313d38cab1ad95bbe500537cec0e2e6391cf4c978b4e6680d8b8"
     },
     {
       "feature": "BinaryMinMaxHeap_drain_benchmark",
@@ -6178,7 +6198,9 @@
       "terminal": "normalized-metrics-dac02d5d1065294f.txt",
       "title": "DataStructures · CircularBuffer_build_benchmark · relative to minimum",
       "unit": "ratio",
-      "workload": "CircularBuffer_build"
+      "workload": "CircularBuffer_build",
+      "html": "normalized-metrics-dac02d5d1065294f.html",
+      "html_input_sha256": "2ccb8e524f0b8df952eb46c5af012081acadbcbed863387bf839bb752addf67a"
     },
     {
       "feature": "CircularBuffer_build_benchmark",
@@ -6390,7 +6412,9 @@
       "terminal": "normalized-metrics-c78b940b83b7a61a.txt",
       "title": "DataStructures · CircularBuffer_drain_benchmark · relative to minimum",
       "unit": "ratio",
-      "workload": "CircularBuffer_drain"
+      "workload": "CircularBuffer_drain",
+      "html": "normalized-metrics-c78b940b83b7a61a.html",
+      "html_input_sha256": "23ffacc4112e782dce28e6e2d2048fdfc9ff09d0f7a031cce0eb6e7e26ab09d9"
     },
     {
       "feature": "CircularBuffer_drain_benchmark",
@@ -6602,7 +6626,9 @@
       "terminal": "normalized-metrics-65eb5e0b7e3fc3a0.txt",
       "title": "DataStructures · CircularDeque_build_benchmark · relative to minimum",
       "unit": "ratio",
-      "workload": "CircularDeque_build"
+      "workload": "CircularDeque_build",
+      "html": "normalized-metrics-65eb5e0b7e3fc3a0.html",
+      "html_input_sha256": "80a6ac7ff98af27520f3e66078a7884191c1d63d431f60ac2ed62c41de655360"
     },
     {
       "feature": "CircularDeque_build_benchmark",
@@ -6814,7 +6840,9 @@
       "terminal": "normalized-metrics-fbc21c6d4a2620e5.txt",
       "title": "DataStructures · CircularDeque_drain_benchmark · relative to minimum",
       "unit": "ratio",
-      "workload": "CircularDeque_drain"
+      "workload": "CircularDeque_drain",
+      "html": "normalized-metrics-fbc21c6d4a2620e5.html",
+      "html_input_sha256": "2645cb97deb4f8e21f1fb84a5eb602736bf1a7052455f95d3d642ca17f7e5c8d"
     },
     {
       "feature": "CircularDeque_drain_benchmark",
@@ -7026,7 +7054,9 @@
       "terminal": "normalized-metrics-693dacf45b528cac.txt",
       "title": "DataStructures · DefaultDict_build_benchmark · relative to minimum",
       "unit": "ratio",
-      "workload": "DefaultDict_build"
+      "workload": "DefaultDict_build",
+      "html": "normalized-metrics-693dacf45b528cac.html",
+      "html_input_sha256": "73ed91a3c4ba468c24832d6554cb84f84db12ddc51928aadef2339191c7a7f7b"
     },
     {
       "feature": "DefaultDict_build_benchmark",
@@ -7238,7 +7268,9 @@
       "terminal": "normalized-metrics-4bb6f5ae17bad2e0.txt",
       "title": "DataStructures · DefaultDict_lookup_benchmark · relative to minimum",
       "unit": "ratio",
-      "workload": "DefaultDict_lookup"
+      "workload": "DefaultDict_lookup",
+      "html": "normalized-metrics-4bb6f5ae17bad2e0.html",
+      "html_input_sha256": "3c1ca14aabb441730096979db77ea43c6c5d8cd706c13f02c93589fcea096993"
     },
     {
       "feature": "DefaultDict_lookup_benchmark",
@@ -7450,7 +7482,9 @@
       "terminal": "normalized-metrics-a298c9d74816df4f.txt",
       "title": "DataStructures · DefaultOrderedDict_build_benchmark · relative to minimum",
       "unit": "ratio",
-      "workload": "DefaultOrderedDict_build"
+      "workload": "DefaultOrderedDict_build",
+      "html": "normalized-metrics-a298c9d74816df4f.html",
+      "html_input_sha256": "7a45d2234b58b634f0dbf342035fa225824ce198d05c35e67e6c31a0a9c60478"
     },
     {
       "feature": "DefaultOrderedDict_build_benchmark",
@@ -7662,7 +7696,9 @@
       "terminal": "normalized-metrics-15dabd99f85b480d.txt",
       "title": "DataStructures · DefaultOrderedDict_lookup_benchmark · relative to minimum",
       "unit": "ratio",
-      "workload": "DefaultOrderedDict_lookup"
+      "workload": "DefaultOrderedDict_lookup",
+      "html": "normalized-metrics-15dabd99f85b480d.html",
+      "html_input_sha256": "510dcd6c6b6dc3f36ff2a9c168a0be2b2ff5341e7f2b52eff3135ee6b727feb1"
     },
     {
       "feature": "DefaultOrderedDict_lookup_benchmark",
@@ -7874,7 +7910,9 @@
       "terminal": "normalized-metrics-9d10255778caf597.txt",
       "title": "DataStructures · Deque_build_benchmark · relative to minimum",
       "unit": "ratio",
-      "workload": "Deque_build"
+      "workload": "Deque_build",
+      "html": "normalized-metrics-9d10255778caf597.html",
+      "html_input_sha256": "44c3b4e55c4d1699d7f5b75ff892eb4c6bc130cbb4c70a2798885f003f90c64f"
     },
     {
       "feature": "Deque_build_benchmark",
@@ -8086,7 +8124,9 @@
       "terminal": "normalized-metrics-8d7693a86d8f6731.txt",
       "title": "DataStructures · Deque_drain_benchmark · relative to minimum",
       "unit": "ratio",
-      "workload": "Deque_drain"
+      "workload": "Deque_drain",
+      "html": "normalized-metrics-8d7693a86d8f6731.html",
+      "html_input_sha256": "faa7b63a1cbbaa429a458fbbe397da063e58f35da369014ec417c9a14dc84f64"
     },
     {
       "feature": "Deque_drain_benchmark",
@@ -8298,7 +8338,9 @@
       "terminal": "normalized-metrics-3a648783b0e41f21.txt",
       "title": "DataStructures · DiBitVector_build_benchmark · relative to minimum",
       "unit": "ratio",
-      "workload": "DiBitVector_build"
+      "workload": "DiBitVector_build",
+      "html": "normalized-metrics-3a648783b0e41f21.html",
+      "html_input_sha256": "5389f95a3c524b85c2282eec067b1201883a1e27a0e5a7aaafdacc022aa950a5"
     },
     {
       "feature": "DiBitVector_build_benchmark",
@@ -8510,7 +8552,9 @@
       "terminal": "normalized-metrics-933a712119535aab.txt",
       "title": "DataStructures · DiBitVector_traverse_benchmark · relative to minimum",
       "unit": "ratio",
-      "workload": "DiBitVector_traverse"
+      "workload": "DiBitVector_traverse",
+      "html": "normalized-metrics-933a712119535aab.html",
+      "html_input_sha256": "ac3e0b3bbd2f166a55abba35fad8ec07eb1ef0d352111fb37ccd6361aec35c22"
     },
     {
       "feature": "DiBitVector_traverse_benchmark",
@@ -8722,7 +8766,9 @@
       "terminal": "normalized-metrics-6a8500f2246e32a9.txt",
       "title": "DataStructures · DisjointSet_build_benchmark · relative to minimum",
       "unit": "ratio",
-      "workload": "DisjointSet_build"
+      "workload": "DisjointSet_build",
+      "html": "normalized-metrics-6a8500f2246e32a9.html",
+      "html_input_sha256": "0854ace2df949865d540c473f13a35f27f5bde483dce0d060673d7126fb5ffd6"
     },
     {
       "feature": "DisjointSet_build_benchmark",
@@ -8934,7 +8980,9 @@
       "terminal": "normalized-metrics-22ddf9622f771893.txt",
       "title": "DataStructures · DisjointSet_connectivity_benchmark · relative to minimum",
       "unit": "ratio",
-      "workload": "DisjointSet_connectivity"
+      "workload": "DisjointSet_connectivity",
+      "html": "normalized-metrics-22ddf9622f771893.html",
+      "html_input_sha256": "3a6708da5f95c9e491999556c416db93a3f5322f5b8eafbffddb234b2a2e41a0"
     },
     {
       "feature": "DisjointSet_connectivity_benchmark",
@@ -9146,7 +9194,9 @@
       "terminal": "normalized-metrics-38546a909b8a7d82.txt",
       "title": "DataStructures · FenwickTree_build_benchmark · relative to minimum",
       "unit": "ratio",
-      "workload": "FenwickTree_build"
+      "workload": "FenwickTree_build",
+      "html": "normalized-metrics-38546a909b8a7d82.html",
+      "html_input_sha256": "a32648428015b9aaf564af17c364f65d32682cfad86988d6a70d676660f20133"
     },
     {
       "feature": "FenwickTree_build_benchmark",
@@ -9358,7 +9408,9 @@
       "terminal": "normalized-metrics-1c737dd86dc28506.txt",
       "title": "DataStructures · FenwickTree_prefixsum_benchmark · relative to minimum",
       "unit": "ratio",
-      "workload": "FenwickTree_prefixsum"
+      "workload": "FenwickTree_prefixsum",
+      "html": "normalized-metrics-1c737dd86dc28506.html",
+      "html_input_sha256": "d88a142b4e9e96d5c86df393ac8a85e94f963f314f4adf8c114627e1471988c7"
     },
     {
       "feature": "FenwickTree_prefixsum_benchmark",
@@ -9570,7 +9622,9 @@
       "terminal": "normalized-metrics-dbc5b519c1efea6a.txt",
       "title": "DataStructures · IntDisjointSet_build_benchmark · relative to minimum",
       "unit": "ratio",
-      "workload": "IntDisjointSet_build"
+      "workload": "IntDisjointSet_build",
+      "html": "normalized-metrics-dbc5b519c1efea6a.html",
+      "html_input_sha256": "8f8006f814d6b5f6ea3ea0777d2fc92d8b6ce245ad1c4ffcfbe8205786cd2a69"
     },
     {
       "feature": "IntDisjointSet_build_benchmark",
@@ -9782,7 +9836,9 @@
       "terminal": "normalized-metrics-d7f0343a4fc7169f.txt",
       "title": "DataStructures · IntDisjointSet_connectivity_benchmark · relative to minimum",
       "unit": "ratio",
-      "workload": "IntDisjointSet_connectivity"
+      "workload": "IntDisjointSet_connectivity",
+      "html": "normalized-metrics-d7f0343a4fc7169f.html",
+      "html_input_sha256": "14718981598176856b6c1f623aa10dcc116484ef4893406babbd4690c18f67f4"
     },
     {
       "feature": "IntDisjointSet_connectivity_benchmark",
@@ -9994,7 +10050,9 @@
       "terminal": "normalized-metrics-1c4f7b20a738b0ef.txt",
       "title": "DataStructures · LinkedList_build_benchmark · relative to minimum",
       "unit": "ratio",
-      "workload": "LinkedList_build"
+      "workload": "LinkedList_build",
+      "html": "normalized-metrics-1c4f7b20a738b0ef.html",
+      "html_input_sha256": "e5a50233dfd9ff474fb292553ab8bf5c0c257332baa9401c38bdb70257b07785"
     },
     {
       "feature": "LinkedList_build_benchmark",
@@ -10206,7 +10264,9 @@
       "terminal": "normalized-metrics-eeff1613b0337cfe.txt",
       "title": "DataStructures · LinkedList_traverse_benchmark · relative to minimum",
       "unit": "ratio",
-      "workload": "LinkedList_traverse"
+      "workload": "LinkedList_traverse",
+      "html": "normalized-metrics-eeff1613b0337cfe.html",
+      "html_input_sha256": "959934fe648022017662bdcdb8d19e48c04e980f4c9b782006a57cb3bf1340c7"
     },
     {
       "feature": "LinkedList_traverse_benchmark",
@@ -10418,7 +10478,9 @@
       "terminal": "normalized-metrics-0cd6f3da098c519d.txt",
       "title": "DataStructures · LittleDict_build_benchmark · relative to minimum",
       "unit": "ratio",
-      "workload": "LittleDict_build"
+      "workload": "LittleDict_build",
+      "html": "normalized-metrics-0cd6f3da098c519d.html",
+      "html_input_sha256": "4adb02347a38762ac4d892fb8f3860c878dd0e67a6c019c4e4e646e56319c6ca"
     },
     {
       "feature": "LittleDict_build_benchmark",
@@ -10630,7 +10692,9 @@
       "terminal": "normalized-metrics-466aea5921fe2626.txt",
       "title": "DataStructures · LittleDict_lookup_benchmark · relative to minimum",
       "unit": "ratio",
-      "workload": "LittleDict_lookup"
+      "workload": "LittleDict_lookup",
+      "html": "normalized-metrics-466aea5921fe2626.html",
+      "html_input_sha256": "8eb657cc651a3fc5ef0485001681ae1dee360089d858ee36862412ad5e708c07"
     },
     {
       "feature": "LittleDict_lookup_benchmark",
@@ -10842,7 +10906,9 @@
       "terminal": "normalized-metrics-5fd899819cdfbb83.txt",
       "title": "DataStructures · MultiDict_build_benchmark · relative to minimum",
       "unit": "ratio",
-      "workload": "MultiDict_build"
+      "workload": "MultiDict_build",
+      "html": "normalized-metrics-5fd899819cdfbb83.html",
+      "html_input_sha256": "fe9ced6534416b7f4ec285741f6705f6c64a59cf7eb8bad75b5f26a167da82bc"
     },
     {
       "feature": "MultiDict_build_benchmark",
@@ -11054,7 +11120,9 @@
       "terminal": "normalized-metrics-ab9d7d1ffb44293a.txt",
       "title": "DataStructures · MultiDict_traverse_benchmark · relative to minimum",
       "unit": "ratio",
-      "workload": "MultiDict_traverse"
+      "workload": "MultiDict_traverse",
+      "html": "normalized-metrics-ab9d7d1ffb44293a.html",
+      "html_input_sha256": "6e8ad14ae0db7bbe73626ca95f26913675d794828256d9d06c059674a35ed4b1"
     },
     {
       "feature": "MultiDict_traverse_benchmark",
@@ -11266,7 +11334,9 @@
       "terminal": "normalized-metrics-0fb3ed86f758d227.txt",
       "title": "DataStructures · MutableBinaryMaxHeap_build_benchmark · relative to minimum",
       "unit": "ratio",
-      "workload": "MutableBinaryMaxHeap_build"
+      "workload": "MutableBinaryMaxHeap_build",
+      "html": "normalized-metrics-0fb3ed86f758d227.html",
+      "html_input_sha256": "53faffc817eae5a402cb46ee06f24c401e682aec67e16722b6d871d296e7ebab"
     },
     {
       "feature": "MutableBinaryMaxHeap_build_benchmark",
@@ -11478,7 +11548,9 @@
       "terminal": "normalized-metrics-a6c2da2d8f9e69bd.txt",
       "title": "DataStructures · MutableBinaryMaxHeap_drain_benchmark · relative to minimum",
       "unit": "ratio",
-      "workload": "MutableBinaryMaxHeap_drain"
+      "workload": "MutableBinaryMaxHeap_drain",
+      "html": "normalized-metrics-a6c2da2d8f9e69bd.html",
+      "html_input_sha256": "9fd34214a8939153d42e2f30b80c1af3202ea1a6f761ade85d68a863cc61f769"
     },
     {
       "feature": "MutableBinaryMaxHeap_drain_benchmark",
@@ -11690,7 +11762,9 @@
       "terminal": "normalized-metrics-180042aa4eef456d.txt",
       "title": "DataStructures · MutableBinaryMinHeap_build_benchmark · relative to minimum",
       "unit": "ratio",
-      "workload": "MutableBinaryMinHeap_build"
+      "workload": "MutableBinaryMinHeap_build",
+      "html": "normalized-metrics-180042aa4eef456d.html",
+      "html_input_sha256": "c89240e094df7a8081e64238323a375feb746742cc62b6e2be8290aa6920950a"
     },
     {
       "feature": "MutableBinaryMinHeap_build_benchmark",
@@ -11902,7 +11976,9 @@
       "terminal": "normalized-metrics-14441adb30fa0ca5.txt",
       "title": "DataStructures · MutableBinaryMinHeap_drain_benchmark · relative to minimum",
       "unit": "ratio",
-      "workload": "MutableBinaryMinHeap_drain"
+      "workload": "MutableBinaryMinHeap_drain",
+      "html": "normalized-metrics-14441adb30fa0ca5.html",
+      "html_input_sha256": "6a142ad510138ca4f6cdf8c7e139754d015276a3055447dd79c9baaa9c11250d"
     },
     {
       "feature": "MutableBinaryMinHeap_drain_benchmark",
@@ -12114,7 +12190,9 @@
       "terminal": "normalized-metrics-32c7ae40420bfddf.txt",
       "title": "DataStructures · MutableLinkedList_build_benchmark · relative to minimum",
       "unit": "ratio",
-      "workload": "MutableLinkedList_build"
+      "workload": "MutableLinkedList_build",
+      "html": "normalized-metrics-32c7ae40420bfddf.html",
+      "html_input_sha256": "69fbedf0baf25fac5309bf76a10c9a2a439da6f6e0e7a5f581019058939b29bb"
     },
     {
       "feature": "MutableLinkedList_build_benchmark",
@@ -12326,7 +12404,9 @@
       "terminal": "normalized-metrics-ad8ae219b031c2a6.txt",
       "title": "DataStructures · MutableLinkedList_drain_benchmark · relative to minimum",
       "unit": "ratio",
-      "workload": "MutableLinkedList_drain"
+      "workload": "MutableLinkedList_drain",
+      "html": "normalized-metrics-ad8ae219b031c2a6.html",
+      "html_input_sha256": "7fe9164ddfb0f9bee38eb24aff31d50c3b95cf2e2996a7a0aef831f44fc119ba"
     },
     {
       "feature": "MutableLinkedList_drain_benchmark",
@@ -12538,7 +12618,9 @@
       "terminal": "normalized-metrics-a63b8a28f9a0ce32.txt",
       "title": "DataStructures · OrderedDict_build_benchmark · relative to minimum",
       "unit": "ratio",
-      "workload": "OrderedDict_build"
+      "workload": "OrderedDict_build",
+      "html": "normalized-metrics-a63b8a28f9a0ce32.html",
+      "html_input_sha256": "de2283659b23fc321ab9eea2125e1e891b0db9ceea642bd1a3ebeb04bcdef14d"
     },
     {
       "feature": "OrderedDict_build_benchmark",
@@ -12750,7 +12832,9 @@
       "terminal": "normalized-metrics-36abaa63f3c48c70.txt",
       "title": "DataStructures · OrderedDict_lookup_benchmark · relative to minimum",
       "unit": "ratio",
-      "workload": "OrderedDict_lookup"
+      "workload": "OrderedDict_lookup",
+      "html": "normalized-metrics-36abaa63f3c48c70.html",
+      "html_input_sha256": "b71986667fbc2f9477f824faca8e72ec47a763afd47df3e08050af81978e7680"
     },
     {
       "feature": "OrderedDict_lookup_benchmark",
@@ -12962,7 +13046,9 @@
       "terminal": "normalized-metrics-406ebf0ba7b1d5a1.txt",
       "title": "DataStructures · OrderedRobinDict_build_benchmark · relative to minimum",
       "unit": "ratio",
-      "workload": "OrderedRobinDict_build"
+      "workload": "OrderedRobinDict_build",
+      "html": "normalized-metrics-406ebf0ba7b1d5a1.html",
+      "html_input_sha256": "e9ca5ef440620f061c3187d8755d1060d4c0368971ee6ded7922e6f267a4c0e8"
     },
     {
       "feature": "OrderedRobinDict_build_benchmark",
@@ -13174,7 +13260,9 @@
       "terminal": "normalized-metrics-c1ada2c956e9cc3d.txt",
       "title": "DataStructures · OrderedRobinDict_lookup_benchmark · relative to minimum",
       "unit": "ratio",
-      "workload": "OrderedRobinDict_lookup"
+      "workload": "OrderedRobinDict_lookup",
+      "html": "normalized-metrics-c1ada2c956e9cc3d.html",
+      "html_input_sha256": "213c2d2046ee2f74ac477917089530c3e9ccfad4f8113f2118e2724c3f40e29e"
     },
     {
       "feature": "OrderedRobinDict_lookup_benchmark",
@@ -13386,7 +13474,9 @@
       "terminal": "normalized-metrics-42665fa239556b81.txt",
       "title": "DataStructures · OrderedSet_build_benchmark · relative to minimum",
       "unit": "ratio",
-      "workload": "OrderedSet_build"
+      "workload": "OrderedSet_build",
+      "html": "normalized-metrics-42665fa239556b81.html",
+      "html_input_sha256": "9f9f91536a01b6eb0d46d6aa4b193ecba0fb945ecb759ec014bd3461edf57f20"
     },
     {
       "feature": "OrderedSet_build_benchmark",
@@ -13598,7 +13688,9 @@
       "terminal": "normalized-metrics-d37763de1b29d501.txt",
       "title": "DataStructures · OrderedSet_lookup_benchmark · relative to minimum",
       "unit": "ratio",
-      "workload": "OrderedSet_lookup"
+      "workload": "OrderedSet_lookup",
+      "html": "normalized-metrics-d37763de1b29d501.html",
+      "html_input_sha256": "90d5b2fb48df0fe1c7b69365d9429bd2acfe0184f654bbc5063457cb7a7656f6"
     },
     {
       "feature": "OrderedSet_lookup_benchmark",
@@ -13810,7 +13902,9 @@
       "terminal": "normalized-metrics-8da730313df6dc97.txt",
       "title": "DataStructures · PriorityQueue_build_benchmark · relative to minimum",
       "unit": "ratio",
-      "workload": "PriorityQueue_build"
+      "workload": "PriorityQueue_build",
+      "html": "normalized-metrics-8da730313df6dc97.html",
+      "html_input_sha256": "60c3e08a4a66f48f7b8ca6343124ed43a61cf094b47a01e171dccaf2a6685147"
     },
     {
       "feature": "PriorityQueue_build_benchmark",
@@ -14022,7 +14116,9 @@
       "terminal": "normalized-metrics-6ed367d1ce097357.txt",
       "title": "DataStructures · PriorityQueue_drain_benchmark · relative to minimum",
       "unit": "ratio",
-      "workload": "PriorityQueue_drain"
+      "workload": "PriorityQueue_drain",
+      "html": "normalized-metrics-6ed367d1ce097357.html",
+      "html_input_sha256": "b5e8d7275f1ab5b5a9a5c40538169ca8fbfd7f80e8e4fd624de31b02bdfb93f7"
     },
     {
       "feature": "PriorityQueue_drain_benchmark",
@@ -14234,7 +14330,9 @@
       "terminal": "normalized-metrics-e794624175921180.txt",
       "title": "DataStructures · Queue_build_benchmark · relative to minimum",
       "unit": "ratio",
-      "workload": "Queue_build"
+      "workload": "Queue_build",
+      "html": "normalized-metrics-e794624175921180.html",
+      "html_input_sha256": "e9e570369a5efbe813aadbd181abc1a6b1ca371771e2673fca65f84bc81070b1"
     },
     {
       "feature": "Queue_build_benchmark",
@@ -14446,7 +14544,9 @@
       "terminal": "normalized-metrics-45d000a1b0c8a366.txt",
       "title": "DataStructures · Queue_drain_benchmark · relative to minimum",
       "unit": "ratio",
-      "workload": "Queue_drain"
+      "workload": "Queue_drain",
+      "html": "normalized-metrics-45d000a1b0c8a366.html",
+      "html_input_sha256": "31c69978e3b9fb441284eb2fb3791e344e27314400afa92b25a8b904a6942428"
     },
     {
       "feature": "Queue_drain_benchmark",
@@ -14658,7 +14758,9 @@
       "terminal": "normalized-metrics-5a816ef4770784a1.txt",
       "title": "DataStructures · RBTree_build_benchmark · relative to minimum",
       "unit": "ratio",
-      "workload": "RBTree_build"
+      "workload": "RBTree_build",
+      "html": "normalized-metrics-5a816ef4770784a1.html",
+      "html_input_sha256": "d4ee3e8cd0c2d4ad6f01aa83982f89219a1781271a2cec6ec1ccadcae0a88f6b"
     },
     {
       "feature": "RBTree_build_benchmark",
@@ -14870,7 +14972,9 @@
       "terminal": "normalized-metrics-a429f0d531717409.txt",
       "title": "DataStructures · RBTree_lookup_benchmark · relative to minimum",
       "unit": "ratio",
-      "workload": "RBTree_lookup"
+      "workload": "RBTree_lookup",
+      "html": "normalized-metrics-a429f0d531717409.html",
+      "html_input_sha256": "97c0292a3df7a30c673f1f9e371c661abb48fc8afe18b89c5275e71a7de6fa2f"
     },
     {
       "feature": "RBTree_lookup_benchmark",
@@ -15082,7 +15186,9 @@
       "terminal": "normalized-metrics-f3db21ac85ebee59.txt",
       "title": "DataStructures · RobinDict_build_benchmark · relative to minimum",
       "unit": "ratio",
-      "workload": "RobinDict_build"
+      "workload": "RobinDict_build",
+      "html": "normalized-metrics-f3db21ac85ebee59.html",
+      "html_input_sha256": "3b1e4cf9af9025af4f4151ecd19746f8bb39fb6d525ddd0658ed0b131f4673a3"
     },
     {
       "feature": "RobinDict_build_benchmark",
@@ -15294,7 +15400,9 @@
       "terminal": "normalized-metrics-41a850eed0544f8c.txt",
       "title": "DataStructures · RobinDict_lookup_benchmark · relative to minimum",
       "unit": "ratio",
-      "workload": "RobinDict_lookup"
+      "workload": "RobinDict_lookup",
+      "html": "normalized-metrics-41a850eed0544f8c.html",
+      "html_input_sha256": "033695dafb61d9626554703a2ed435b3c5a689b00d1da0f974d644dba8baf6d5"
     },
     {
       "feature": "RobinDict_lookup_benchmark",
@@ -15506,7 +15614,9 @@
       "terminal": "normalized-metrics-93220d46f1d318ce.txt",
       "title": "DataStructures · SortedDict_build_benchmark · relative to minimum",
       "unit": "ratio",
-      "workload": "SortedDict_build"
+      "workload": "SortedDict_build",
+      "html": "normalized-metrics-93220d46f1d318ce.html",
+      "html_input_sha256": "c15d895b9b76e4953fac25d236ff928c261bd64875de667b89cad24b07fddeec"
     },
     {
       "feature": "SortedDict_build_benchmark",
@@ -15718,7 +15828,9 @@
       "terminal": "normalized-metrics-0d44ff9db228bac2.txt",
       "title": "DataStructures · SortedDict_lookup_benchmark · relative to minimum",
       "unit": "ratio",
-      "workload": "SortedDict_lookup"
+      "workload": "SortedDict_lookup",
+      "html": "normalized-metrics-0d44ff9db228bac2.html",
+      "html_input_sha256": "1db47e859a7381265ff4dddb8cacd68f2db0b6ee98a053c6457bb0dd527aebb4"
     },
     {
       "feature": "SortedDict_lookup_benchmark",
@@ -15930,7 +16042,9 @@
       "terminal": "normalized-metrics-a8f0cf4dfcf89dd5.txt",
       "title": "DataStructures · SortedMultiDict_build_benchmark · relative to minimum",
       "unit": "ratio",
-      "workload": "SortedMultiDict_build"
+      "workload": "SortedMultiDict_build",
+      "html": "normalized-metrics-a8f0cf4dfcf89dd5.html",
+      "html_input_sha256": "1af2d488db0d1f5f68427883f1cf3f0cb99dd1bc2d30512a3c6537ed9d75b494"
     },
     {
       "feature": "SortedMultiDict_build_benchmark",
@@ -16142,7 +16256,9 @@
       "terminal": "normalized-metrics-3aa027a06135db6d.txt",
       "title": "DataStructures · SortedMultiDict_traverse_benchmark · relative to minimum",
       "unit": "ratio",
-      "workload": "SortedMultiDict_traverse"
+      "workload": "SortedMultiDict_traverse",
+      "html": "normalized-metrics-3aa027a06135db6d.html",
+      "html_input_sha256": "55562c57ec8f7699b4947a9bb7edd2ee3baa513977962827bf35fc871b936761"
     },
     {
       "feature": "SortedMultiDict_traverse_benchmark",
@@ -16354,7 +16470,9 @@
       "terminal": "normalized-metrics-572cc2e838e9a924.txt",
       "title": "DataStructures · SortedSet_build_benchmark · relative to minimum",
       "unit": "ratio",
-      "workload": "SortedSet_build"
+      "workload": "SortedSet_build",
+      "html": "normalized-metrics-572cc2e838e9a924.html",
+      "html_input_sha256": "35d3e29e1e29394e2620dbaa808c7d1c703130a354c342dd7a983cd6110672ef"
     },
     {
       "feature": "SortedSet_build_benchmark",
@@ -16788,7 +16906,9 @@
       "terminal": "normalized-metrics-088be8d35fc4ca56.txt",
       "title": "DataStructures · SparseIntSet_build_benchmark · relative to minimum",
       "unit": "ratio",
-      "workload": "SparseIntSet_build"
+      "workload": "SparseIntSet_build",
+      "html": "normalized-metrics-088be8d35fc4ca56.html",
+      "html_input_sha256": "ec72822c1bcd7f47b2ccec0aee6e8388df09361a0113b6d7108faca9fccb0808"
     },
     {
       "feature": "SparseIntSet_build_benchmark",
@@ -17000,7 +17120,9 @@
       "terminal": "normalized-metrics-84f1e576cc66361f.txt",
       "title": "DataStructures · SparseIntSet_lookup_benchmark · relative to minimum",
       "unit": "ratio",
-      "workload": "SparseIntSet_lookup"
+      "workload": "SparseIntSet_lookup",
+      "html": "normalized-metrics-84f1e576cc66361f.html",
+      "html_input_sha256": "c6da2317fdf46f8175930c6969f2100e9d6ba795e69a21293832ad38c87a7de7"
     },
     {
       "feature": "SparseIntSet_lookup_benchmark",
@@ -17212,7 +17334,9 @@
       "terminal": "normalized-metrics-24b4a364bbacef58.txt",
       "title": "DataStructures · SplayTree_build_benchmark · relative to minimum",
       "unit": "ratio",
-      "workload": "SplayTree_build"
+      "workload": "SplayTree_build",
+      "html": "normalized-metrics-24b4a364bbacef58.html",
+      "html_input_sha256": "620278940ed313517a6b86ed6fc23a8716ca06f95e6299d2e20a5fc8908af02d"
     },
     {
       "feature": "SplayTree_build_benchmark",
@@ -17424,7 +17548,9 @@
       "terminal": "normalized-metrics-1180cdda9b2ed117.txt",
       "title": "DataStructures · SplayTree_lookup_benchmark · relative to minimum",
       "unit": "ratio",
-      "workload": "SplayTree_lookup"
+      "workload": "SplayTree_lookup",
+      "html": "normalized-metrics-1180cdda9b2ed117.html",
+      "html_input_sha256": "e84cf5261056ad87389c8b764d9ac719af8d5ed89585218f47bf299f9cb77622"
     },
     {
       "feature": "SplayTree_lookup_benchmark",
@@ -17636,7 +17762,9 @@
       "terminal": "normalized-metrics-a322701d5253a866.txt",
       "title": "DataStructures · Stack_build_benchmark · relative to minimum",
       "unit": "ratio",
-      "workload": "Stack_build"
+      "workload": "Stack_build",
+      "html": "normalized-metrics-a322701d5253a866.html",
+      "html_input_sha256": "f147d7f82255f7a2c5b088f882f931b0ca237be7a5d888b19636cbc38ae1690a"
     },
     {
       "feature": "Stack_build_benchmark",
@@ -17848,7 +17976,9 @@
       "terminal": "normalized-metrics-0fb7dc4998def343.txt",
       "title": "DataStructures · Stack_drain_benchmark · relative to minimum",
       "unit": "ratio",
-      "workload": "Stack_drain"
+      "workload": "Stack_drain",
+      "html": "normalized-metrics-0fb7dc4998def343.html",
+      "html_input_sha256": "d5046970ed51a62d804a78d0fa446e9a8a0576d36ea2ec3e651d28d6993d9d07"
     },
     {
       "feature": "Stack_drain_benchmark",
@@ -18060,7 +18190,9 @@
       "terminal": "normalized-metrics-78c7ba9240ab3ba2.txt",
       "title": "DataStructures · SwissDict_build_benchmark · relative to minimum",
       "unit": "ratio",
-      "workload": "SwissDict_build"
+      "workload": "SwissDict_build",
+      "html": "normalized-metrics-78c7ba9240ab3ba2.html",
+      "html_input_sha256": "8cb683c88a6c472a3f6170d2b617a585b64e520d13203a7286f88ad2d2dd8c31"
     },
     {
       "feature": "SwissDict_build_benchmark",
@@ -18272,7 +18404,9 @@
       "terminal": "normalized-metrics-9bcab73c08460161.txt",
       "title": "DataStructures · SwissDict_lookup_benchmark · relative to minimum",
       "unit": "ratio",
-      "workload": "SwissDict_lookup"
+      "workload": "SwissDict_lookup",
+      "html": "normalized-metrics-9bcab73c08460161.html",
+      "html_input_sha256": "b80db34b42550cd961ebb99bc4c3e678fd4a1b2b74247a4394fe64aae54f2bfe"
     },
     {
       "feature": "SwissDict_lookup_benchmark",
@@ -18484,7 +18618,9 @@
       "terminal": "normalized-metrics-b7b87a77f279fcfe.txt",
       "title": "DataStructures · Trie_build_benchmark · relative to minimum",
       "unit": "ratio",
-      "workload": "Trie_build"
+      "workload": "Trie_build",
+      "html": "normalized-metrics-b7b87a77f279fcfe.html",
+      "html_input_sha256": "beee4726c83efa0e9948fcfc8dbd20ec3feee42fb8f618b2127ed216d8ed882e"
     },
     {
       "feature": "Trie_build_benchmark",
@@ -18696,7 +18832,9 @@
       "terminal": "normalized-metrics-747fb3cc1e89181d.txt",
       "title": "DataStructures · Trie_lookup_benchmark · relative to minimum",
       "unit": "ratio",
-      "workload": "Trie_lookup"
+      "workload": "Trie_lookup",
+      "html": "normalized-metrics-747fb3cc1e89181d.html",
+      "html_input_sha256": "4615ee4960a606bd44a804506d132fe78ae186323606b7853322aa587e96530a"
     },
     {
       "feature": "Trie_lookup_benchmark",
@@ -18903,5 +19041,20 @@
     "renderer": "PerfChecker.performance_plot_html",
     "selected_views": 5,
     "selection": "guided_examples"
+  },
+  "documentation_interactive_export": {
+    "companion_version": "1.0.4",
+    "renderer": "PerfChecker.performance_plot_html",
+    "selected_views": 70,
+    "selection": "all_normalized_views_and_patch_windows",
+    "source_revision": "06b2b4d9b54c6c1c5c84ba346ff2317f896a20d9",
+    "working_tree_source_sha256": {
+      "examples/kitchen-sink/publish-evidence.jl": "ca037a55e07e5af269d08e1ff8429f03bbb008afc1eb565aa5b59f16f426e63a",
+      "examples/kitchen-sink/replay.jl": "38ea1ff24fecc064fdf30af471893842266f3f970a92b11b9b24bdda07dd3307",
+      "packages/PerfCheckerMakie/Project.toml": "bdfa81ec53cb083c1490e71ebbe4c69ea8b9381801dd6279ee1a4f744aaf8cdb",
+      "packages/PerfCheckerMakie/ext/WGLMakieExt.jl": "e24172b05c7f0a7f41d571c950d65226738cebc52d445aa33af57ba2437ef5cd",
+      "packages/PerfCheckerMakie/src/assets/normalized.html": "206252de88acf1d6d97534bda17705feadccc36c1db191b05f6ed8abf516b295",
+      "packages/PerfCheckerMakie/src/performance.jl": "21282e3db628f6944de523d956362e410e62611ce1b1d55ef35c280c563708e4"
+    }
   }
 }

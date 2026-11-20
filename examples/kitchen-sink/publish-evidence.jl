@@ -1,10 +1,75 @@
 using JSON, SHA
 isempty(ARGS) || ARGS == ["--interactive"] || ARGS == ["--interactive-normalized"] ||
-    error("Usage: julia --project=<prepared-environment> publish-evidence.jl [--interactive | --interactive-normalized]")
+    ARGS == ["--interactive-documentation"] ||
+    error("Usage: julia --project=<prepared-environment> publish-evidence.jl [--interactive | --interactive-normalized | --interactive-documentation]")
 interactive = !isempty(ARGS)
 normalized_only = ARGS == ["--interactive-normalized"]
+documentation_only = ARGS == ["--interactive-documentation"]
 root = normpath(joinpath(@__DIR__, "../../website/src/public/examples/real-packages"))
-if normalized_only
+if documentation_only
+    # Replay every view reachable through the timing atlases and profile tabs.
+    # Captured frontend provenance stays intact; replay provenance is separate.
+    using PerfChecker, PerfCheckerMakie, WGLMakie
+    include(joinpath(@__DIR__, "replay.jl"))
+    source_root = normpath(joinpath(@__DIR__, "../.."))
+    realpath(pkgdir(PerfChecker)) == realpath(source_root) &&
+        realpath(pkgdir(PerfCheckerMakie)) ==
+        realpath(joinpath(source_root, "packages", "PerfCheckerMakie")) ||
+        error("Documentation replay must load this checkout's renderer")
+    source_files = ["examples/kitchen-sink/replay.jl",
+        "examples/kitchen-sink/publish-evidence.jl",
+        "packages/PerfCheckerMakie/Project.toml",
+        "packages/PerfCheckerMakie/src/performance.jl",
+        "packages/PerfCheckerMakie/src/assets/normalized.html",
+        "packages/PerfCheckerMakie/ext/WGLMakieExt.jl"]
+    source_hashes = Dict(file => bytes2hex(sha256(read(joinpath(source_root, file))))
+    for file in source_files)
+    assets = normpath(joinpath(root, "../plot-assets"))
+    for package in ("datastructures", "containers", "oxygen", "oxygen-features",
+        "datastructures-profiles", "oxygen-profiles")
+        directory = joinpath(root, package)
+        catalog_path = joinpath(directory, "catalog.json")
+        catalog = JSON.parsefile(catalog_path)
+        timing = !endswith(package, "-profiles")
+        selected = [entry
+                    for view in catalog["views"]
+                    if !timing || view["kind"] == "normalized_metrics"
+                    for entry in [view; get(view, "patch_windows", Any[])]]
+        for entry in selected
+            source = joinpath(directory, entry["json"])
+            input_hash = bytes2hex(sha256(read(source)))
+            model = saved_plot(source)
+            timing && model.kind !== :normalized_metrics &&
+                error("A timing atlas must replay only normalized metrics")
+            before = deepcopy(performance_plot_dict(model))
+            entry["html"] = splitext(entry["json"])[1] * ".html"
+            destination = joinpath(directory, entry["html"])
+            # Existing non-timing exports retain their original bytes.
+            if timing || !isfile(destination) ||
+               model.kind in (:allocation_lines, :allocation_pie)
+                html = performance_plot_html(model; asset_directory = assets,
+                    html_directory = directory)
+                performance_plot_dict(model) == before || error("Replay changed the model")
+                bytes2hex(sha256(read(source))) == input_hash ||
+                    error("Replay changed the recorded source")
+                write(destination, html)
+            end
+            entry["html_input_sha256"] = input_hash
+            delete!(entry, "html_sha256")
+        end
+        catalog["documentation_interactive_export"] = Dict(
+            "renderer" => "PerfChecker.performance_plot_html",
+            "companion_version" => string(pkgversion(PerfCheckerMakie)),
+            "selection" => timing ? "all_normalized_views_and_patch_windows" :
+                           "all_profile_views",
+            "selected_views" => length(selected),
+            "source_revision" => strip(read(`git -C $source_root rev-parse HEAD`, String)),
+            "working_tree_source_sha256" => source_hashes)
+        open(io -> JSON.print(io, catalog, 2), catalog_path, "w")
+        println("Replayed ", length(selected), " documentation views for ", package)
+        flush(stdout)
+    end
+elseif normalized_only
     using PerfChecker, PerfCheckerMakie, WGLMakie
     include(joinpath(@__DIR__, "replay.jl"))
     source_root = normpath(joinpath(@__DIR__, "../.."))
@@ -24,95 +89,62 @@ if normalized_only
         catalog_path = joinpath(directory, "catalog.json")
         catalog_hash = bytes2hex(sha256(read(catalog_path)))
         catalog = JSON.parsefile(catalog_path)
-        entry = only(filter(
-            view -> view["kind"] == "normalized_metrics" &&
-                haskey(view, "html"),
-            catalog["views"]))
-        source = joinpath(directory, get(entry, "json", get(entry, "evidence", "")))
-        input_hash = bytes2hex(sha256(read(source)))
-        get(entry, "html_input_sha256", input_hash) == input_hash ||
-            error("Normalized input differs from its published fingerprint")
-        model = saved_plot(source)
-        model.kind === :normalized_metrics || error("Expected a normalized model")
-        before = deepcopy(performance_plot_dict(model))
-        html = performance_plot_html(model)
-        performance_plot_dict(model) == before || error("Rendering changed the model")
-        bytes2hex(sha256(read(source))) == input_hash ||
-            error("Rendering changed the serialized plot")
-        bytes2hex(sha256(read(catalog_path))) == catalog_hash ||
-            error("Rendering changed the catalogue")
-        destination = joinpath(directory, entry["html"])
-        write(destination, html)
-        println(relpath(destination, source_root), " input_sha256=", input_hash,
-            " html_sha256=", bytes2hex(sha256(html)))
+        entries = [entry
+                   for view in catalog["views"]
+                   if view["kind"] == "normalized_metrics"
+                   for entry in [view; get(view, "patch_windows", Any[])]
+                   if haskey(entry, "html")]
+        isempty(entries) && error("No published normalized exports in $directory")
+        for entry in entries
+            source = joinpath(directory, get(entry, "json", get(entry, "evidence", "")))
+            input_hash = bytes2hex(sha256(read(source)))
+            get(entry, "html_input_sha256", input_hash) == input_hash ||
+                error("Normalized input differs from its published fingerprint")
+            model = saved_plot(source)
+            model.kind === :normalized_metrics || error("Expected a normalized model")
+            before = deepcopy(performance_plot_dict(model))
+            html = performance_plot_html(model)
+            performance_plot_dict(model) == before || error("Rendering changed the model")
+            bytes2hex(sha256(read(source))) == input_hash ||
+                error("Rendering changed the serialized plot")
+            bytes2hex(sha256(read(catalog_path))) == catalog_hash ||
+                error("Rendering changed the catalogue")
+            destination = joinpath(directory, entry["html"])
+            write(destination, html)
+            println(relpath(destination, source_root), " input_sha256=", input_hash,
+                " html_sha256=", bytes2hex(sha256(html)))
+        end
     end
 elseif interactive
     # Optional rendering belongs to the prepared plots controller, not core setup.
     using PerfChecker, PerfCheckerMakie, WGLMakie
     include(joinpath(@__DIR__, "replay.jl"))
     assets = normpath(joinpath(root, "../plot-assets"))
-    # Keep one coherent, visibly changing workload per comparison gallery.
-    # The complete catalogue remains available as SVG, terminal plots and JSON.
-    features = Dict("datastructures" => "heap_2048_benchmark",
-        "containers" => "SortedSet_lookup_benchmark", "oxygen" => "heap_benchmark",
-        "oxygen-features" => "html_benchmark")
-    function guided_views(package, catalog)
-        if haskey(features, package)
-            return [only(filter(catalog["views"]) do view
-                        view["kind"] == kind && view["feature"] == features[package] &&
-                            (!(kind in ("distribution", "version_delta", "version_series")) ||
-                             view["metric"] == "julia.wall.time")
-                    end)
-                    for kind in ("normalized_metrics", "distribution",
-                "time_allocation_tradeoff", "version_delta", "version_series")]
-        end
-        allocation_feature = package == "datastructures-profiles" ?
-                             "heap_32768_alloc" : "heap_profile_alloc"
-        return [only(filter(catalog["views"]) do view
-                    view["kind"] == kind &&
-                        (!(kind in ("allocation_files", "allocation_lines",
-                            "allocation_heatmap", "allocation_pie")) ||
-                         view["feature"] == allocation_feature)
-                end)
-                for kind in ("allocation_files", "allocation_lines", "allocation_heatmap",
-            "allocation_pie", "allocation_flamegraph", "cpu_flamegraph",
-            "wall_flamegraph")]
-    end
+    # Every saved view, including patch windows and profile totals, uses the
+    # public renderer. Shared assets avoid embedding the WGL runtime per view.
     prepared = []
     for package in ("datastructures", "containers", "oxygen", "oxygen-features",
         "datastructures-profiles", "oxygen-profiles")
         directory = joinpath(root, package)
         catalog_path = joinpath(directory, "catalog.json")
         catalog = JSON.parsefile(catalog_path)
-        selected = guided_views(package, catalog)
-        selected_ids = Set(view["id"] for view in selected)
+        selected = Any[]
         for view in catalog["views"]
             for entry in [view; get(view, "patch_windows", Any[])]
-                keep = entry === view && view["id"] in selected_ids
-                previous = get(entry, "html", nothing)
-                for key in ("html", "html_input_sha256", "html_sha256")
-                    delete!(entry, key)
-                end
-                if previous !== nothing && !keep
-                    # Only remove the generator's normalized/flame exports. Preserve
-                    # historical SVG/JSON and other pre-existing public HTML.
-                    expected = splitext(entry["json"])[1] * ".html"
-                    previous == expected &&
-                        view["kind"] in ("normalized_metrics", "cpu_flamegraph",
-                            "wall_flamegraph", "allocation_flamegraph") &&
-                        rm(joinpath(directory, previous); force = true)
-                end
-                keep || continue
+                # The catalogue is itself used for legacy unit provenance.
+                # Keep HTML hashes outside it to avoid circular fingerprints.
+                delete!(entry, "html_sha256")
                 entry["html"] = splitext(entry["json"])[1] * ".html"
                 entry["html_input_sha256"] = bytes2hex(sha256(read(joinpath(directory,
                     entry["json"]))))
+                push!(selected, entry)
             end
         end
         catalog["interactive_export"] = Dict(
             "renderer" => "PerfChecker.performance_plot_html",
             "companion_version" => string(pkgversion(PerfCheckerMakie)),
             "input_kind" => "published_serialized_plot",
-            "selection" => "guided_examples",
+            "selection" => "all_saved_views",
             "selected_views" => length(selected),
             "asset_layout" => "shared_relative",
             "recipe" => "examples/kitchen-sink/replay.jl:saved_plot",
@@ -127,11 +159,6 @@ elseif interactive
             source = joinpath(item.directory, entry["json"])
             model = saved_plot(source)
             before = deepcopy(performance_plot_dict(model))
-            if haskey(features, item.package)
-                field = model.kind === :version_delta ? "candidate_version" : "version"
-                length(unique(row[field] for row in model.data)) >= 2 ||
-                    error("The guided comparison needs distinct recorded versions")
-            end
             html = performance_plot_html(model; asset_directory = assets,
                 html_directory = item.directory)
             performance_plot_dict(model) == before || error("Rendering changed the model")
@@ -158,6 +185,8 @@ elseif interactive
         write(joinpath(bibliography, entry["html"]), html)
     end
     println("Rendered the six measured Bibliography views")
+    include(joinpath(@__DIR__, "observation-export.jl"))
+    export_documentation_observations(root)
 end
 for package in ("datastructures", "oxygen")
     directory = joinpath(root, package)

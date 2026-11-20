@@ -1,0 +1,74 @@
+{
+  "plot": {
+    "data": [
+      {
+        "label": "load_seconds",
+        "panel": "time",
+        "series": "Latency",
+        "style": "scatterline",
+        "value": 7.3849228,
+        "x": "load"
+      },
+      {
+        "label": "first_case_seconds",
+        "panel": "time",
+        "series": "Latency",
+        "style": "scatterline",
+        "value": 1.0387099,
+        "x": "first operation"
+      },
+      {
+        "label": "warm_case_seconds",
+        "panel": "time",
+        "series": "Latency",
+        "style": "scatterline",
+        "value": 0.0041275,
+        "x": "warm operation"
+      }
+    ],
+    "description": "",
+    "encoding": {
+      "color": "series",
+      "panel": "panel",
+      "x": "x",
+      "y": "value"
+    },
+    "id": "latency",
+    "kind": "observation_series",
+    "options": {
+      "collector_label": "Julia latency diagnostic",
+      "metadata": {
+        "correctness": "passed",
+        "runtime": {
+          "language": "julia",
+          "threads": 1,
+          "version": "1.13.0"
+        },
+        "source_sha256": {
+          "diagnosis.json": "ec446ba99269c49df0e6e83fa988779bb1daa8e1597947eb62784654459ff7b2"
+        },
+        "tool_version": null
+      },
+      "panels": [
+        {
+          "categories": [
+            "load",
+            "first operation",
+            "warm operation"
+          ],
+          "id": "time",
+          "title": "Loading, first and warm operation",
+          "unit": "s",
+          "xkind": "categorical",
+          "xlabel": "Phase",
+          "xunit": "",
+          "ylabel": "Elapsed time",
+          "yscale": "log10"
+        }
+      ],
+      "scope": "Recorded latency observations; this source report does not include analysis_scope"
+    },
+    "schema_version": "perfchecker-plot/1",
+    "title": "Source loading and operation latency"
+  }
+}

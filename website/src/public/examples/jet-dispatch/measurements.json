@@ -1,0 +1,195 @@
+{
+  "plot": {
+    "data": [
+      {
+        "capture_id": "704f1795-1640-4773-b837-c8bea64edd74",
+        "derivation": "minimum of recorded paired BenchmarkTools samples",
+        "metric": "julia.wall.time",
+        "normalization_status": "ratio",
+        "ratio": 1.0,
+        "reference_value": 0.000502955,
+        "reference_version": "dynamic",
+        "samples": 20,
+        "statistic": "minimum",
+        "target_kind": "implementation",
+        "unit": "s",
+        "value": 0.000502955,
+        "version": "dynamic"
+      },
+      {
+        "capture_id": "70fcbd49-d369-40da-a32b-d577e088e646",
+        "derivation": "minimum of recorded paired BenchmarkTools samples",
+        "metric": "julia.wall.time",
+        "normalization_status": "ratio",
+        "ratio": 0.003666331978009961,
+        "reference_value": 0.000502955,
+        "reference_version": "dynamic",
+        "samples": 20,
+        "statistic": "minimum",
+        "target_kind": "implementation",
+        "unit": "s",
+        "value": 1.844e-6,
+        "version": "typed"
+      },
+      {
+        "capture_id": "704f1795-1640-4773-b837-c8bea64edd74",
+        "derivation": "minimum of recorded paired BenchmarkTools samples",
+        "metric": "julia.gc.time",
+        "normalization_status": "both_zero",
+        "ratio": 1.0,
+        "reference_value": 0,
+        "reference_version": "dynamic",
+        "samples": 20,
+        "statistic": "minimum",
+        "target_kind": "implementation",
+        "unit": "s",
+        "value": 0,
+        "version": "dynamic"
+      },
+      {
+        "capture_id": "70fcbd49-d369-40da-a32b-d577e088e646",
+        "derivation": "minimum of recorded paired BenchmarkTools samples",
+        "metric": "julia.gc.time",
+        "normalization_status": "both_zero",
+        "ratio": 1.0,
+        "reference_value": 0,
+        "reference_version": "dynamic",
+        "samples": 20,
+        "statistic": "minimum",
+        "target_kind": "implementation",
+        "unit": "s",
+        "value": 0,
+        "version": "typed"
+      },
+      {
+        "capture_id": "704f1795-1640-4773-b837-c8bea64edd74",
+        "derivation": "minimum of recorded paired BenchmarkTools samples",
+        "metric": "julia.alloc.bytes",
+        "normalization_status": "ratio",
+        "ratio": 1.0,
+        "reference_value": 720896,
+        "reference_version": "dynamic",
+        "samples": 20,
+        "statistic": "minimum",
+        "target_kind": "implementation",
+        "unit": "By",
+        "value": 720896,
+        "version": "dynamic"
+      },
+      {
+        "capture_id": "70fcbd49-d369-40da-a32b-d577e088e646",
+        "derivation": "minimum of recorded paired BenchmarkTools samples",
+        "metric": "julia.alloc.bytes",
+        "normalization_status": "ratio",
+        "ratio": 0.0,
+        "reference_value": 720896,
+        "reference_version": "dynamic",
+        "samples": 20,
+        "statistic": "minimum",
+        "target_kind": "implementation",
+        "unit": "By",
+        "value": 0,
+        "version": "typed"
+      },
+      {
+        "capture_id": "704f1795-1640-4773-b837-c8bea64edd74",
+        "derivation": "minimum of recorded paired BenchmarkTools samples",
+        "metric": "julia.alloc.count",
+        "normalization_status": "ratio",
+        "ratio": 1.0,
+        "reference_value": 32768,
+        "reference_version": "dynamic",
+        "samples": 20,
+        "statistic": "minimum",
+        "target_kind": "implementation",
+        "unit": "1",
+        "value": 32768,
+        "version": "dynamic"
+      },
+      {
+        "capture_id": "70fcbd49-d369-40da-a32b-d577e088e646",
+        "derivation": "minimum of recorded paired BenchmarkTools samples",
+        "metric": "julia.alloc.count",
+        "normalization_status": "ratio",
+        "ratio": 0.0,
+        "reference_value": 32768,
+        "reference_version": "dynamic",
+        "samples": 20,
+        "statistic": "minimum",
+        "target_kind": "implementation",
+        "unit": "1",
+        "value": 0,
+        "version": "typed"
+      }
+    ],
+    "description": "one warm operation on fresh prepared state; preparation and correctness verification excluded; 20 samples, evals=1, sequential implementations; two implementations on one local machine; not released package versions or a portable speed guarantee; minimum per recorded target / dynamic reference for each metric. Targets retain their recorded identity.",
+    "encoding": {
+      "color": "metric",
+      "x": "version",
+      "y": "ratio"
+    },
+    "id": "measurements",
+    "kind": "normalized_metrics",
+    "options": {
+      "collector": "BenchmarkTools (through PerfChecker)",
+      "metadata": {
+        "allocation_scope": "BenchmarkTools Trial.memory and Trial.allocs per-evaluation estimates; paired times and GC times are the actual native samples",
+        "capture_ids": [
+          "704f1795-1640-4773-b837-c8bea64edd74",
+          "70fcbd49-d369-40da-a32b-d577e088e646"
+        ],
+        "case_source_sha256": "5fa164e34f2a284e285a9ecd9a613bc6bad4b4288e179a5666634436ddda5d10",
+        "collector_versions": [
+          "1.7.0",
+          "1.7.0"
+        ],
+        "evidence_file": "normalized-source.json",
+        "expected_result": 129536,
+        "finished_at": "2026-10-13T06:02:39.130",
+        "manifest_sha256": "143e43074e9da1fefd48ec10d2e8ebbd7c0f012946f428b6fd8c39caeb170c07",
+        "measurement_entrypoint": "PerfChecker SharedScenarioRuntime.measure_benchmark(case, 20; raw=true)",
+        "measurement_runtime_sha256": "6f3e6aaa5dddb2be0b53361b7f354b608710224d51bb68d4dc3b541a2e8657eb",
+        "original_source_sha256": "c6d0568700487bb9553912666f0b65d513ed3071724738c6de683653ecd313c3",
+        "original_summary_sha256": "a63ecb4dade6550034e6faad2be413d0859fd13cf21fbbd44a63b5aaa14b810b",
+        "perfchecker_tree": "753e41cad1c984640a2337b314b70ad6932626ad",
+        "perfchecker_version": "1.1.0",
+        "project_sha256": "fdc5dbd143c6f0657210c4f982ef88cf5d60485f119e18c876977da40d338153",
+        "projection": "Recorded metric minima; reference=dynamic for each metric",
+        "rows": 4096,
+        "runner_sha256": "221687c9fd98a8f32c2157fd53efd694355ae223361e71f22e6ee571b02f34c1",
+        "runtime": {
+          "arch": "x86_64",
+          "language": "julia",
+          "os": "Linux",
+          "threads": 1,
+          "version": "1.13.1"
+        },
+        "scope": "one warm operation on fresh prepared state; preparation and correctness verification excluded; 20 samples, evals=1, sequential implementations; two implementations on one local machine; not released package versions or a portable speed guarantee",
+        "source_sha256": {
+          "normalized-source.json": "c0816e9b078fe34005ee520203c240e3cda33876a675d0556289ea9311dc4899",
+          "summary.json": "a63ecb4dade6550034e6faad2be413d0859fd13cf21fbbd44a63b5aaa14b810b"
+        },
+        "started_at": "2026-10-13T06:02:36.614",
+        "target_kind": "implementation",
+        "units": {
+          "allocs": "1",
+          "bytes": "By",
+          "gctime": "s",
+          "time": "s"
+        }
+      },
+      "reference_version": "dynamic",
+      "statistic": "minimum",
+      "target_label": "implementation",
+      "unit": "ratio",
+      "versions": [
+        "dynamic",
+        "typed"
+      ],
+      "xlabel": "Implementation",
+      "zero_reference_policy": "equal zeros = 1 (unchanged); nonzero / zero = unavailable"
+    },
+    "schema_version": "perfchecker-plot/1",
+    "title": "Same revenue calculation, different element types"
+  }
+}

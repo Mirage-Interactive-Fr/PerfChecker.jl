@@ -1,0 +1,85 @@
+{
+  "plot": {
+    "data": [
+      {
+        "label": "Recorded operation 1",
+        "panel": "lock_conflicts",
+        "series": "Observed lock conflicts",
+        "style": "scatterline",
+        "value": 0,
+        "x": 1
+      },
+      {
+        "label": "Recorded operation 2",
+        "panel": "lock_conflicts",
+        "series": "Observed lock conflicts",
+        "style": "scatterline",
+        "value": 0,
+        "x": 2
+      },
+      {
+        "label": "Recorded operation 3",
+        "panel": "lock_conflicts",
+        "series": "Observed lock conflicts",
+        "style": "scatterline",
+        "value": 0,
+        "x": 3
+      },
+      {
+        "label": "Recorded operation 4",
+        "panel": "lock_conflicts",
+        "series": "Observed lock conflicts",
+        "style": "scatterline",
+        "value": 0,
+        "x": 4
+      },
+      {
+        "label": "Recorded operation 5",
+        "panel": "lock_conflicts",
+        "series": "Observed lock conflicts",
+        "style": "scatterline",
+        "value": 0,
+        "x": 5
+      }
+    ],
+    "description": "",
+    "encoding": {
+      "color": "series",
+      "panel": "panel",
+      "x": "x",
+      "y": "value"
+    },
+    "id": "locks",
+    "kind": "observation_series",
+    "options": {
+      "collector_label": "Julia locks diagnostic",
+      "metadata": {
+        "correctness": "passed",
+        "runtime": {
+          "language": "julia",
+          "threads": 1,
+          "version": "1.13.0"
+        },
+        "source_sha256": {
+          "diagnosis.json": "ec446ba99269c49df0e6e83fa988779bb1daa8e1597947eb62784654459ff7b2"
+        },
+        "tool_version": null
+      },
+      "panels": [
+        {
+          "id": "lock_conflicts",
+          "title": "Observed lock conflicts",
+          "unit": "conflicts",
+          "xkind": "numeric",
+          "xlabel": "Diagnostic operation",
+          "xunit": "",
+          "ylabel": "Observed lock conflicts",
+          "yscale": "linear"
+        }
+      ],
+      "scope": "Recorded locks observations; this source report does not include analysis_scope"
+    },
+    "schema_version": "perfchecker-plot/1",
+    "title": "Recorded locks observations"
+  }
+}

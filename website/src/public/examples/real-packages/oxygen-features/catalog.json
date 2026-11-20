@@ -5083,14 +5083,18 @@
         {
           "json": "normalized-metrics-6811dfa7c05d4c5c-1.10.json",
           "label": "1.10 patches",
-          "svg": "normalized-metrics-6811dfa7c05d4c5c-1.10.svg"
+          "svg": "normalized-metrics-6811dfa7c05d4c5c-1.10.svg",
+          "html": "normalized-metrics-6811dfa7c05d4c5c-1.10.html",
+          "html_input_sha256": "08ab44c9eea895a88f898d05e64f20f9fe46055e8eec7aae62f4238d192d1a52"
         }
       ],
       "svg": "normalized-metrics-6811dfa7c05d4c5c.svg",
       "terminal": "normalized-metrics-6811dfa7c05d4c5c.txt",
       "title": "Oxygen · binary_benchmark · relative to minimum",
       "unit": "ratio",
-      "workload": "binary_http"
+      "workload": "binary_http",
+      "html": "normalized-metrics-6811dfa7c05d4c5c.html",
+      "html_input_sha256": "36b81cd2ed91e69005074ef806f9908f0f6c388201bae94c801849b6d566ad9c"
     },
     {
       "feature": "binary_benchmark",
@@ -5301,7 +5305,9 @@
         {
           "json": "normalized-metrics-ed5e8b7826e59b64-1.10.json",
           "label": "1.10 patches",
-          "svg": "normalized-metrics-ed5e8b7826e59b64-1.10.svg"
+          "svg": "normalized-metrics-ed5e8b7826e59b64-1.10.svg",
+          "html": "normalized-metrics-ed5e8b7826e59b64-1.10.html",
+          "html_input_sha256": "e101c2846ce42fd96a6c37c3cf3dd2ffb341bef84fee04063b6763f9667d828b"
         }
       ],
       "svg": "normalized-metrics-ed5e8b7826e59b64.svg",
@@ -5529,14 +5535,18 @@
         {
           "json": "normalized-metrics-7b86e4a7bf1795c5-1.10.json",
           "label": "1.10 patches",
-          "svg": "normalized-metrics-7b86e4a7bf1795c5-1.10.svg"
+          "svg": "normalized-metrics-7b86e4a7bf1795c5-1.10.svg",
+          "html": "normalized-metrics-7b86e4a7bf1795c5-1.10.html",
+          "html_input_sha256": "706da050e63c1b9a398f3e3813e4b63bf3d9edfe208dd1d67d0a4016e4c1b5d0"
         }
       ],
       "svg": "normalized-metrics-7b86e4a7bf1795c5.svg",
       "terminal": "normalized-metrics-7b86e4a7bf1795c5.txt",
       "title": "Oxygen · json_benchmark · relative to minimum",
       "unit": "ratio",
-      "workload": "json_http"
+      "workload": "json_http",
+      "html": "normalized-metrics-7b86e4a7bf1795c5.html",
+      "html_input_sha256": "c16582273a86852032fad994dc68143e0c47c52ac0f400eefb186d3c0b743e8e"
     },
     {
       "feature": "json_benchmark",
@@ -5747,14 +5757,18 @@
         {
           "json": "normalized-metrics-1f5231b3393e8c8d-1.10.json",
           "label": "1.10 patches",
-          "svg": "normalized-metrics-1f5231b3393e8c8d-1.10.svg"
+          "svg": "normalized-metrics-1f5231b3393e8c8d-1.10.svg",
+          "html": "normalized-metrics-1f5231b3393e8c8d-1.10.html",
+          "html_input_sha256": "6755683c32d6bdfc2132d4736ae6bd6ab65d9ebdc614b3b01bd97ad886258851"
         }
       ],
       "svg": "normalized-metrics-1f5231b3393e8c8d.svg",
       "terminal": "normalized-metrics-1f5231b3393e8c8d.txt",
       "title": "Oxygen · not_found_benchmark · relative to minimum",
       "unit": "ratio",
-      "workload": "not_found_http"
+      "workload": "not_found_http",
+      "html": "normalized-metrics-1f5231b3393e8c8d.html",
+      "html_input_sha256": "cf6d346368bf327fbc19e4195a1ff2ba55127293dba0f9a51b7f6a587c2d28be"
     },
     {
       "feature": "not_found_benchmark",
@@ -5965,14 +5979,18 @@
         {
           "json": "normalized-metrics-788986ad94d58c67-1.10.json",
           "label": "1.10 patches",
-          "svg": "normalized-metrics-788986ad94d58c67-1.10.svg"
+          "svg": "normalized-metrics-788986ad94d58c67-1.10.svg",
+          "html": "normalized-metrics-788986ad94d58c67-1.10.html",
+          "html_input_sha256": "349988cfd96a5cd5da6cc658cff5ca5ebc644f6f70d441465a7476cb2da25334"
         }
       ],
       "svg": "normalized-metrics-788986ad94d58c67.svg",
       "terminal": "normalized-metrics-788986ad94d58c67.txt",
       "title": "Oxygen · path_benchmark · relative to minimum",
       "unit": "ratio",
-      "workload": "path_http"
+      "workload": "path_http",
+      "html": "normalized-metrics-788986ad94d58c67.html",
+      "html_input_sha256": "e449145d3b9704311f9552c0c27a023b31d90e73b56fea52605d4051ae7849ad"
     },
     {
       "feature": "path_benchmark",
@@ -6183,14 +6201,18 @@
         {
           "json": "normalized-metrics-24034c4be099f2e2-1.10.json",
           "label": "1.10 patches",
-          "svg": "normalized-metrics-24034c4be099f2e2-1.10.svg"
+          "svg": "normalized-metrics-24034c4be099f2e2-1.10.svg",
+          "html": "normalized-metrics-24034c4be099f2e2-1.10.html",
+          "html_input_sha256": "379a5ae378e7693a35e84f009b969427e61d59a28d85b992752eacd5d04c5731"
         }
       ],
       "svg": "normalized-metrics-24034c4be099f2e2.svg",
       "terminal": "normalized-metrics-24034c4be099f2e2.txt",
       "title": "Oxygen · plain_benchmark · relative to minimum",
       "unit": "ratio",
-      "workload": "plain_http"
+      "workload": "plain_http",
+      "html": "normalized-metrics-24034c4be099f2e2.html",
+      "html_input_sha256": "0174fd1c2aa2aa123cc7f9aac170155f6b20cf1828e423d3e620f234f1884710"
     },
     {
       "feature": "plain_benchmark",
@@ -6401,14 +6423,18 @@
         {
           "json": "normalized-metrics-985b736d2cb7762e-1.10.json",
           "label": "1.10 patches",
-          "svg": "normalized-metrics-985b736d2cb7762e-1.10.svg"
+          "svg": "normalized-metrics-985b736d2cb7762e-1.10.svg",
+          "html": "normalized-metrics-985b736d2cb7762e-1.10.html",
+          "html_input_sha256": "f6919dacad5b1967c90920f93a9f894be95ce1e7b97e8b871f91c9bc276012de"
         }
       ],
       "svg": "normalized-metrics-985b736d2cb7762e.svg",
       "terminal": "normalized-metrics-985b736d2cb7762e.txt",
       "title": "Oxygen · query_benchmark · relative to minimum",
       "unit": "ratio",
-      "workload": "query_http"
+      "workload": "query_http",
+      "html": "normalized-metrics-985b736d2cb7762e.html",
+      "html_input_sha256": "62a06ce541bb03f7415e9d51c13b6125d8b590cccb45fd633e86fbdda4dea8ea"
     },
     {
       "feature": "query_benchmark",
@@ -6615,5 +6641,20 @@
     "renderer": "PerfChecker.performance_plot_html",
     "selected_views": 5,
     "selection": "guided_examples"
+  },
+  "documentation_interactive_export": {
+    "companion_version": "1.0.4",
+    "renderer": "PerfChecker.performance_plot_html",
+    "selected_views": 14,
+    "selection": "all_normalized_views_and_patch_windows",
+    "source_revision": "06b2b4d9b54c6c1c5c84ba346ff2317f896a20d9",
+    "working_tree_source_sha256": {
+      "examples/kitchen-sink/publish-evidence.jl": "ca037a55e07e5af269d08e1ff8429f03bbb008afc1eb565aa5b59f16f426e63a",
+      "examples/kitchen-sink/replay.jl": "38ea1ff24fecc064fdf30af471893842266f3f970a92b11b9b24bdda07dd3307",
+      "packages/PerfCheckerMakie/Project.toml": "bdfa81ec53cb083c1490e71ebbe4c69ea8b9381801dd6279ee1a4f744aaf8cdb",
+      "packages/PerfCheckerMakie/ext/WGLMakieExt.jl": "e24172b05c7f0a7f41d571c950d65226738cebc52d445aa33af57ba2437ef5cd",
+      "packages/PerfCheckerMakie/src/assets/normalized.html": "206252de88acf1d6d97534bda17705feadccc36c1db191b05f6ed8abf516b295",
+      "packages/PerfCheckerMakie/src/performance.jl": "21282e3db628f6944de523d956362e410e62611ce1b1d55ef35c280c563708e4"
+    }
   }
 }

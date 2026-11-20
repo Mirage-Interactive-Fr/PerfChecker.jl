@@ -1,0 +1,124 @@
+{
+  "allocation_profile": {
+    "bytes_measurement_evaluations": 1,
+    "count_measurement_evaluations": 1,
+    "message": "Allocation stacks were captured.",
+    "profile_evaluations": 1,
+    "retained_allocations": 23,
+    "retained_sampled_bytes": 2710,
+    "sample_rate": 1.0,
+    "sampled_allocations": 27,
+    "schema_version": "perfchecker-allocation-profile/1",
+    "source_allocations": 27,
+    "status": "complete",
+    "total_allocations": 23,
+    "total_bytes": 2976,
+    "total_measurement_evaluations": 2,
+    "total_semantics": "bytes and allocation count from two separate operation evaluations; not inferred from samples",
+    "weight_semantics": "independent whole-operation totals apportioned over retained stacks; estimates, not exact target totals"
+  },
+  "correctness": "not_checked",
+  "description": "Estimated allocated bytes by source site for Bibliography export, after575ec81 only; diagnostic evidence",
+  "exclusive_byte_observations": 19,
+  "exclusive_count_observations": 19,
+  "finished_at": "2026-10-13T06:19:32.288",
+  "input_manifest_sha256": "3962304633f3e5d65132bf5fb5851d1b1a0c1e0ca713ec86a9d20f8fc73a33c7",
+  "input_observations_sha256": "17d55add85f31215fdd8ea19192692983c02a6c3e82d25f2ac2483bf35754736",
+  "os": "Linux",
+  "performance": "not_compared",
+  "plot": {
+    "data": [
+      {
+        "bytes": 1247.5040590405906,
+        "file": "Bibliography/src/bibtex.jl",
+        "label": "Bibliography/src/bibtex.jl:143",
+        "line": 143,
+        "percentage": 41.91881918819189,
+        "version": "dev@0.4.0"
+      },
+      {
+        "bytes": 817.0273062730628,
+        "file": "Bibliography/src/bibtex.jl",
+        "label": "Bibliography/src/bibtex.jl:162",
+        "line": 162,
+        "percentage": 27.45387453874539,
+        "version": "dev@0.4.0"
+      },
+      {
+        "bytes": 439.2619926199262,
+        "file": "Bibliography/src/bibtex.jl",
+        "label": "Bibliography/src/bibtex.jl:142",
+        "line": 142,
+        "percentage": 14.760147601476016,
+        "version": "dev@0.4.0"
+      },
+      {
+        "bytes": 218.53284132841327,
+        "file": "Bibliography/src/bibtex.jl",
+        "label": "Bibliography/src/bibtex.jl:78",
+        "line": 78,
+        "percentage": 7.343173431734317,
+        "version": "dev@0.4.0"
+      },
+      {
+        "bytes": 253.6738007380074,
+        "file": "other",
+        "grouped_sites": 5,
+        "label": "Other allocation sites",
+        "line": 0,
+        "percentage": 8.523985239852399,
+        "version": "dev@0.4.0"
+      }
+    ],
+    "description": "Allocation share by line (%)",
+    "encoding": {
+      "color": "label",
+      "label": "percentage",
+      "theta": "bytes"
+    },
+    "id": "allocation-pie-d762bb72aad647ef",
+    "kind": "allocation_pie",
+    "options": {
+      "feature": "export_bibtex_allocations",
+      "measurement_definitions": [
+        "julia.alloc.bytes/profile-allocs-v1/fresh-state-evals1-v1"
+      ],
+      "min_percentage": 5.0,
+      "package": "Bibliography",
+      "selected_version": "dev@0.4.0",
+      "tags": [],
+      "top": 40,
+      "unit": "By",
+      "versions": [
+        "dev@0.4.0"
+      ]
+    },
+    "schema_version": "perfchecker-plot/1",
+    "title": "Bibliography · export_bibtex_allocations · allocations"
+  },
+  "raw_bundle": "examples/bibliography/recorded/allocation-after/bundles/run-ff0eea53-3bd7-4615-bed3-54789ad0c734",
+  "run_id": "ff0eea53-3bd7-4615-bed3-54789ad0c734",
+  "runtime": {
+    "language": "julia",
+    "threads": 1,
+    "version": "1.13.1"
+  },
+  "schema_version": "perfchecker-bibliography-allocation-capture/1",
+  "scope": "After575ec81 only on Linux; existing warmed fresh-state export fixture, same pinned dependencies as controlled streaming study; no before allocation profile or before/after source-site delta",
+  "source_semantics": "Complete exclusive source-site estimates scaled to independently measured whole-operation totals; retained sampling records are not every raw allocation event; inclusive flame weights are not summed",
+  "sources": {
+    "BibInternal": {
+      "revision": "792d8c709169505f998f7d70bfa092551dd4089f",
+      "url": "https://github.com/JuliaBibliographies/BibInternal.jl.git"
+    },
+    "BibParser": {
+      "revision": "cf1eb4446b986a23ed444963dcdb4c6ecc2da90f",
+      "url": "https://github.com/JuliaBibliographies/BibParser.jl.git"
+    },
+    "Bibliography": {
+      "revision": "575ec810042cc791fd47a2c025a80246ccf039b5",
+      "url": "https://github.com/JuliaBibliographies/Bibliography.jl.git"
+    }
+  },
+  "started_at": "2026-10-13T06:19:14.408"
+}

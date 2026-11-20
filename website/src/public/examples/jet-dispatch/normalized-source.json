@@ -1,0 +1,432 @@
+{
+  "allocation_scope": "BenchmarkTools Trial.memory and Trial.allocs per-evaluation estimates; paired times and GC times are the actual native samples",
+  "comparison_scope": "two implementations on one local machine; not released package versions or a portable speed guarantee",
+  "expected_result": 129536,
+  "finished_at": "2026-10-13T06:02:39.130",
+  "manifest_sha256": "143e43074e9da1fefd48ec10d2e8ebbd7c0f012946f428b6fd8c39caeb170c07",
+  "measurement_entrypoint": "PerfChecker SharedScenarioRuntime.measure_benchmark(case, 20; raw=true)",
+  "measurement_runtime_sha256": "6f3e6aaa5dddb2be0b53361b7f354b608710224d51bb68d4dc3b541a2e8657eb",
+  "measurement_scope": "one warm operation on fresh prepared state; preparation and correctness verification excluded; 20 samples, evals=1, sequential implementations",
+  "measurements": [
+    {
+      "capture_id": "704f1795-1640-4773-b837-c8bea64edd74",
+      "collector": "benchmark",
+      "collector_version": "1.7.0",
+      "correctness": "passed",
+      "implementation": "dynamic",
+      "medians": {
+        "allocs": 32768,
+        "bytes": 720896,
+        "gctime": 0,
+        "time": 0.0005247585
+      },
+      "minimums": {
+        "allocs": 32768,
+        "bytes": 720896,
+        "gctime": 0,
+        "time": 0.000502955
+      },
+      "raw_trial": {
+        "allocations": 32768,
+        "evals": 1,
+        "gctimes_ns": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "memory_bytes": 720896,
+        "samples_limit": 20,
+        "seconds_limit": 3600,
+        "times_ns": [
+          505602,
+          502955,
+          518850,
+          529768,
+          522404,
+          525940,
+          517202,
+          528476,
+          518997,
+          521761,
+          524549,
+          522844,
+          555583,
+          522430,
+          524968,
+          543506,
+          552917,
+          541767,
+          542420,
+          742648
+        ]
+      },
+      "samples": [
+        {
+          "allocs": 32768,
+          "bytes": 720896,
+          "gctime": 0,
+          "time": 0.000505602
+        },
+        {
+          "allocs": 32768,
+          "bytes": 720896,
+          "gctime": 0,
+          "time": 0.000502955
+        },
+        {
+          "allocs": 32768,
+          "bytes": 720896,
+          "gctime": 0,
+          "time": 0.00051885
+        },
+        {
+          "allocs": 32768,
+          "bytes": 720896,
+          "gctime": 0,
+          "time": 0.000529768
+        },
+        {
+          "allocs": 32768,
+          "bytes": 720896,
+          "gctime": 0,
+          "time": 0.000522404
+        },
+        {
+          "allocs": 32768,
+          "bytes": 720896,
+          "gctime": 0,
+          "time": 0.00052594
+        },
+        {
+          "allocs": 32768,
+          "bytes": 720896,
+          "gctime": 0,
+          "time": 0.000517202
+        },
+        {
+          "allocs": 32768,
+          "bytes": 720896,
+          "gctime": 0,
+          "time": 0.000528476
+        },
+        {
+          "allocs": 32768,
+          "bytes": 720896,
+          "gctime": 0,
+          "time": 0.000518997
+        },
+        {
+          "allocs": 32768,
+          "bytes": 720896,
+          "gctime": 0,
+          "time": 0.000521761
+        },
+        {
+          "allocs": 32768,
+          "bytes": 720896,
+          "gctime": 0,
+          "time": 0.000524549
+        },
+        {
+          "allocs": 32768,
+          "bytes": 720896,
+          "gctime": 0,
+          "time": 0.000522844
+        },
+        {
+          "allocs": 32768,
+          "bytes": 720896,
+          "gctime": 0,
+          "time": 0.000555583
+        },
+        {
+          "allocs": 32768,
+          "bytes": 720896,
+          "gctime": 0,
+          "time": 0.00052243
+        },
+        {
+          "allocs": 32768,
+          "bytes": 720896,
+          "gctime": 0,
+          "time": 0.000524968
+        },
+        {
+          "allocs": 32768,
+          "bytes": 720896,
+          "gctime": 0,
+          "time": 0.000543506
+        },
+        {
+          "allocs": 32768,
+          "bytes": 720896,
+          "gctime": 0,
+          "time": 0.000552917
+        },
+        {
+          "allocs": 32768,
+          "bytes": 720896,
+          "gctime": 0,
+          "time": 0.000541767
+        },
+        {
+          "allocs": 32768,
+          "bytes": 720896,
+          "gctime": 0,
+          "time": 0.00054242
+        },
+        {
+          "allocs": 32768,
+          "bytes": 720896,
+          "gctime": 0,
+          "time": 0.000742648
+        }
+      ],
+      "source_kind": "native BenchmarkTools Trial",
+      "status": "complete"
+    },
+    {
+      "capture_id": "70fcbd49-d369-40da-a32b-d577e088e646",
+      "collector": "benchmark",
+      "collector_version": "1.7.0",
+      "correctness": "passed",
+      "implementation": "typed",
+      "medians": {
+        "allocs": 0,
+        "bytes": 0,
+        "gctime": 0,
+        "time": 0.0000018555
+      },
+      "minimums": {
+        "allocs": 0,
+        "bytes": 0,
+        "gctime": 0,
+        "time": 0.000001844
+      },
+      "raw_trial": {
+        "allocations": 0,
+        "evals": 1,
+        "gctimes_ns": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "memory_bytes": 0,
+        "samples_limit": 20,
+        "seconds_limit": 3600,
+        "times_ns": [
+          2209,
+          1866,
+          1862,
+          1846,
+          1858,
+          1855,
+          1854,
+          1849,
+          1862,
+          1852,
+          1856,
+          1883,
+          1854,
+          1844,
+          1845,
+          1849,
+          1861,
+          1873,
+          1866,
+          1851
+        ]
+      },
+      "samples": [
+        {
+          "allocs": 0,
+          "bytes": 0,
+          "gctime": 0,
+          "time": 0.000002209
+        },
+        {
+          "allocs": 0,
+          "bytes": 0,
+          "gctime": 0,
+          "time": 0.000001866
+        },
+        {
+          "allocs": 0,
+          "bytes": 0,
+          "gctime": 0,
+          "time": 0.000001862
+        },
+        {
+          "allocs": 0,
+          "bytes": 0,
+          "gctime": 0,
+          "time": 0.000001846
+        },
+        {
+          "allocs": 0,
+          "bytes": 0,
+          "gctime": 0,
+          "time": 0.000001858
+        },
+        {
+          "allocs": 0,
+          "bytes": 0,
+          "gctime": 0,
+          "time": 0.000001855
+        },
+        {
+          "allocs": 0,
+          "bytes": 0,
+          "gctime": 0,
+          "time": 0.000001854
+        },
+        {
+          "allocs": 0,
+          "bytes": 0,
+          "gctime": 0,
+          "time": 0.000001849
+        },
+        {
+          "allocs": 0,
+          "bytes": 0,
+          "gctime": 0,
+          "time": 0.000001862
+        },
+        {
+          "allocs": 0,
+          "bytes": 0,
+          "gctime": 0,
+          "time": 0.000001852
+        },
+        {
+          "allocs": 0,
+          "bytes": 0,
+          "gctime": 0,
+          "time": 0.000001856
+        },
+        {
+          "allocs": 0,
+          "bytes": 0,
+          "gctime": 0,
+          "time": 0.000001883
+        },
+        {
+          "allocs": 0,
+          "bytes": 0,
+          "gctime": 0,
+          "time": 0.000001854
+        },
+        {
+          "allocs": 0,
+          "bytes": 0,
+          "gctime": 0,
+          "time": 0.000001844
+        },
+        {
+          "allocs": 0,
+          "bytes": 0,
+          "gctime": 0,
+          "time": 0.000001845
+        },
+        {
+          "allocs": 0,
+          "bytes": 0,
+          "gctime": 0,
+          "time": 0.000001849
+        },
+        {
+          "allocs": 0,
+          "bytes": 0,
+          "gctime": 0,
+          "time": 0.000001861
+        },
+        {
+          "allocs": 0,
+          "bytes": 0,
+          "gctime": 0,
+          "time": 0.000001873
+        },
+        {
+          "allocs": 0,
+          "bytes": 0,
+          "gctime": 0,
+          "time": 0.000001866
+        },
+        {
+          "allocs": 0,
+          "bytes": 0,
+          "gctime": 0,
+          "time": 0.000001851
+        }
+      ],
+      "source_kind": "native BenchmarkTools Trial",
+      "status": "complete"
+    }
+  ],
+  "original_source_sha256": "c6d0568700487bb9553912666f0b65d513ed3071724738c6de683653ecd313c3",
+  "original_summary_sha256": "a63ecb4dade6550034e6faad2be413d0859fd13cf21fbbd44a63b5aaa14b810b",
+  "perfchecker_tree": "753e41cad1c984640a2337b314b70ad6932626ad",
+  "perfchecker_version": "1.1.0",
+  "project_sha256": "fdc5dbd143c6f0657210c4f982ef88cf5d60485f119e18c876977da40d338153",
+  "reproduction": "julia --startup-file=no --threads=1 --project=. run.jl --normalized-only NEW_DIRECTORY",
+  "rows": 4096,
+  "runner_sha256": "221687c9fd98a8f32c2157fd53efd694355ae223361e71f22e6ee571b02f34c1",
+  "runtime": {
+    "arch": "x86_64",
+    "language": "julia",
+    "os": "Linux",
+    "threads": 1,
+    "version": "1.13.1"
+  },
+  "schema_version": "perfchecker-jet-normalized/1",
+  "source_sha256": "5fa164e34f2a284e285a9ecd9a613bc6bad4b4288e179a5666634436ddda5d10",
+  "started_at": "2026-10-13T06:02:36.614",
+  "units": {
+    "allocs": "1",
+    "bytes": "By",
+    "gctime": "s",
+    "time": "s"
+  },
+  "environment_files": {
+    "normalized-project.toml": {
+      "sha256": "fdc5dbd143c6f0657210c4f982ef88cf5d60485f119e18c876977da40d338153"
+    },
+    "normalized-manifest.toml": {
+      "sha256": "143e43074e9da1fefd48ec10d2e8ebbd7c0f012946f428b6fd8c39caeb170c07"
+    }
+  }
+}

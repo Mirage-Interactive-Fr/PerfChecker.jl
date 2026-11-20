@@ -9,7 +9,7 @@ using Makie
 using TypedTables
 using PerfChecker
 export performance_figure, suite_dashboard, checkres_to_boxplots, checkres_to_scatterlines,
-       checkres_to_pie, table_to_pie, checkres_figures, saveplot
+       checkres_to_pie, table_to_pie, checkres_figures, saveplot, observation_plot
 
 include("plotutils.jl")
 include("allocs.jl")
@@ -17,6 +17,7 @@ include("bench.jl")
 include("chair.jl")
 include("suite.jl")
 include("performance.jl")
+include("observations.jl")
 include("exports.jl")
 
 end

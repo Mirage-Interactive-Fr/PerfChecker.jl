@@ -18,27 +18,69 @@ end
 
 # ╔═╡ 58f7db29-c250-46b6-8ae6-3443f786600e
 begin
-    begin
-        import Pkg
-        bibliography_root = @__DIR__
-        controller_project = joinpath(bibliography_root, ".controller", "pluto")
-        isfile(joinpath(controller_project, "Project.toml")) ||
-            error("Save notebook.jl in examples/bibliography, then run julia --startup-file=no setup.jl pluto from that directory before opening it.")
-        Pkg.activate(controller_project; io = devnull)
-        using PerfChecker, PlutoUI, Markdown
+    import Pkg, TOML
+    # This downloaded notebook prepares its own explicit runtime, without a PerfChecker checkout.
+    bibliography_root = get(ENV, "PERFCHECKER_BIBLIOGRAPHY_NOTEBOOK_ROOT",
+        joinpath(@__DIR__, ".perfchecker-bibliography"))
+    controller_project = joinpath(bibliography_root, "controller")
+    Pkg.activate(controller_project; io = devnull)
+    @info "Notebook controller" controller_project
+    notebook_packages = ["PerfChecker", "PerfCheckerPluto", "PlutoUI",
+        "BenchmarkTools", "Chairmarks", "PerfCheckerMakie", "WGLMakie"]
+    controller_file = joinpath(controller_project, "Project.toml")
+    controller_dependencies = isfile(controller_file) ? get(TOML.parsefile(controller_file), "deps", Dict()) : Dict()
+    if any(name -> !haskey(controller_dependencies, name), notebook_packages)
+        Pkg.add(vcat([Pkg.PackageSpec(name = "PerfChecker", version = "1.1")],
+            [Pkg.PackageSpec(name = name) for name in notebook_packages[2:end]]))
+    end
+    using PerfChecker, PlutoUI, BenchmarkTools, Chairmarks, PerfCheckerMakie, WGLMakie
+    pkgversion(PerfChecker) >= v"1.1.0" || error("This notebook needs registered PerfChecker 1.1 or newer.")
+    # Keep these small suite definitions with the notebook so downloading the .jl is sufficient.
+    notebook_sources = [
+        "sources.toml" => "# Public revisions, shared by the runnable tutorial and its interface captures.\n[Bibliography]\nurl = \"https://github.com/JuliaBibliographies/Bibliography.jl.git\"\nrevision = \"575ec810042cc791fd47a2c025a80246ccf039b5\"\n\n[BibParser]\nurl = \"https://github.com/JuliaBibliographies/BibParser.jl.git\"\nrevision = \"cf1eb4446b986a23ed444963dcdb4c6ecc2da90f\"\n\n[BibInternal]\nurl = \"https://github.com/JuliaBibliographies/BibInternal.jl.git\"\nrevision = \"792d8c709169505f998f7d70bfa092551dd4089f\"\n",
+        "suite.jl" => "using PerfChecker, TOML\n\nconst EXAMPLE_SOURCES = joinpath(@__DIR__, \".sources\")\nfor (name, spec) in TOML.parsefile(joinpath(@__DIR__, \"sources.toml\"))\n    source = joinpath(EXAMPLE_SOURCES, name)\n    isdir(source) || error(\"Run examples/bibliography/setup.jl first\")\n    strip(read(`git -C \$source rev-parse HEAD`, String)) == spec[\"revision\"] ||\n        error(\"The \$name example revision changed\")\nend\n\n# Keep the upstream builder intact in its own namespace.\nmodule PinnedBibliographySuite\nconst SOURCES = joinpath(@__DIR__, \".sources\")\nwithenv(\"BIBINTERNAL_PATH\" => joinpath(SOURCES, \"BibInternal\"),\n    \"BIBPARSER_PATH\" => joinpath(SOURCES, \"BibParser\"),\n    \"BIBLIOGRAPHY_PATH\" => joinpath(SOURCES, \"Bibliography\")) do\n    include(joinpath(SOURCES, \"Bibliography/perf/suite.jl\"))\nend\nend\n\nfunction build_suite()\n    suite = PinnedBibliographySuite.build_suite()\n    for package in suite.packages, feature in package.features\n        if feature.backend in (:profile, :wall_profile)\n            # These seven workloads read their prepared inputs. A continuous\n            # sampling window avoids restarting the timer for microsecond calls.\n            # Timing/allocation collectors retain their fresh-state policy.\n            feature.options[:state_policy] = :reuse\n        end\n    end\n    return suite\nend\n",
+        "history-suite.jl" => "using PerfChecker, TOML\n\nconst HISTORY_VERSIONS = v\"0.1.0\", v\"0.2.0\", v\"0.2.5\", v\"0.2.10\", v\"0.2.15\",\nv\"0.2.20\", v\"0.3.0\", v\"0.3.1\", v\"0.4.0\"\n\nfunction history_sources()\n    sources = TOML.parsefile(joinpath(@__DIR__, \"sources.toml\"))\n    upstream = load_software_suite(joinpath(@__DIR__, \"suite.jl\"))\n    package = only(filter(package -> package.package == \"Bibliography\", upstream.packages))\n    function revision(name, version)\n        strip(read(\n            `git -C \$(joinpath(@__DIR__, \".sources\", name)) rev-parse \$(\"v\$(version)^{commit}\")`,\n            String))\n    end\n    records = Dict{String, Any}[]\n    for version in HISTORY_VERSIONS\n        # The upstream fixture pairs 0.2.10 with BibParser 0.1.9, whose\n        # DataStructures 0.17 constraint conflicts with Bibliography's 0.18.\n        # 0.1.10 is the next tagged parser and accepts DataStructures 0.18.\n        pins = version == v\"0.2.10\" ?\n               [(name = \"BibInternal\", version = v\"0.2.4\"),\n            (name = \"BibParser\", version = v\"0.1.10\")] : package.release_pins[version]\n        dependencies = [Dict(\"name\" => pin.name, \"version\" => string(pin.version),\n                            \"url\" => sources[pin.name][\"url\"], \"revision\" => revision(\n                                pin.name, pin.version))\n                        for pin in pins]\n        push!(records,\n            Dict(\"version\" => string(version), \"url\" => sources[\"Bibliography\"][\"url\"],\n                \"revision\" => revision(\"Bibliography\", version), \"dependencies\" => dependencies))\n    end\n    return package, records\nend\n\n\"\"\"\n    build_suite(; backends=(:benchmark,))\n\nBuild the nine pinned Bibliography revisions with BenchmarkTools or Chairmarks.\n`backends` accepts either backend symbol or a collection of `:benchmark` and\n`:chairmark`. Each selected feature keeps the upstream workload, state policy\nand dependency pins. This constructs a plan source; it does not measure code.\n\"\"\"\nfunction build_suite(; backends = (:benchmark,))\n    selected_backends = backends isa Symbol ? (backends,) : Tuple(backends)\n    !isempty(selected_backends) &&\n        all(backend -> backend in (:benchmark, :chairmark), selected_backends) ||\n        throw(ArgumentError(\"history backends must select :benchmark or :chairmark\"))\n    upstream, records = history_sources()\n    candidates = [SuiteCandidate(record[\"version\"], record[\"revision\"];\n                      source = upstream.source, compatibility_version = VersionNumber(record[\"version\"]),\n                      dependencies = [(name = dependency[\"name\"],\n                                          url = dependency[\"url\"],\n                                          rev = dependency[\"revision\"])\n                                      for dependency in record[\"dependencies\"]])\n                  for record in records]\n    features = filter(feature -> feature.backend in selected_backends, upstream.features)\n    package = PackageSuite(\"Bibliography\"; source = upstream.source,\n        worker_environment = worker_environment(upstream), versions = VersionNumber[],\n        include_dev = false, features, candidates)\n    comparisons = [ComparisonPolicy(\"history-\$(feature.id)\"; package = \"Bibliography\",\n                       feature = string(feature.id), baselines = [\"0.1.0\"],\n                       candidates = string.(collect(HISTORY_VERSIONS)[2:end]))\n                   for feature in features if feature.id != :read_and_filter]\n    return SoftwareSuite(:bibliography, [package]; comparisons,\n        description = \"Nine Git-tagged Bibliography versions with pinned dependency revisions\")\nend\n",
+    ]
+    mkpath(bibliography_root)
+    for (name, source) in notebook_sources
+        destination = joinpath(bibliography_root, name)
+        if isfile(destination)
+            read(destination, String) == source || error("Notebook runtime file was edited: " * destination * ". Preserve it and choose another PERFCHECKER_BIBLIOGRAPHY_NOTEBOOK_ROOT.")
+        else
+            write(destination, source)
+        end
+    end
+    source_specs = TOML.parsefile(joinpath(bibliography_root, "sources.toml"))
+    mkpath(joinpath(bibliography_root, ".sources"))
+    for name in sort!(collect(keys(source_specs)))
+        spec = source_specs[name]
+        destination = joinpath(bibliography_root, ".sources", name)
+        if !isdir(destination)
+            run(`git clone --no-checkout $(spec["url"]) $destination`)
+            run(`git -C $destination checkout --detach $(spec["revision"])`)
+        end
+        strip(read(`git -C $destination rev-parse HEAD`, String)) == spec["revision"] ||
+            error("Notebook source revision changed: " * destination)
+        isempty(strip(read(`git -C $destination status --porcelain`, String))) ||
+            error("Notebook source has local edits: " * destination)
     end
 end;
 
 # ╔═╡ dbf746e4-9e2f-4237-b414-b15e8094c34f
 md"""# Bibliography performance notebook
-Save this file as `examples/bibliography/notebook.jl` in a PerfChecker checkout.
-Run `julia --startup-file=no setup.jl pluto` from that folder once, then open
-the notebook with `julia --startup-file=no --project=.controller/pluto pluto.jl`.
+Open this downloaded file with **Open a notebook** in Pluto's browser UI.
+The first cell prepares registered PerfChecker 1.1, its plotting/Pluto companions
+and the pinned upstream sources in `.perfchecker-bibliography` beside this file.
+First opening needs Julia 1.12+, Git and internet access; preparation runs no measurements.
+The printed active project identifies the controller. Keep the runtime directory
+with the notebook to reuse installed dependencies and saved results.
 
-Choose the pinned development suite or nine tagged versions below. Preparation,
-input size and source revisions are described in the [Bibliography tutorial](https://perfchecker.mirageinteractive.fr/tutorials/bibliography.html).
+Compare nine tagged versions, or uncheck the history control for the pinned source.
+Select **Bibliography**, **export_bibtex**, and a collector; keep **All targets**
+for the release history. Review the plan, then press **Launch selected checks**.
+Changing controls never starts workers. Use **Refresh status**, then
+**Save completed reports**. [Read the example](https://perfchecker.mirageinteractive.fr/tutorials/bibliography.html)."""
 
-Filter the plan, then press **Launch selected checks**. Changing controls never starts workers. Use **Refresh status** while a job runs, then **Save completed reports**."""
 
 # ╔═╡ 3bcf7209-df02-42ee-9fe4-75176ce71481
 begin
@@ -68,7 +110,7 @@ begin
 end;
 
 # ╔═╡ 0c556d63-34d6-4e79-b1e4-5ec59a121a30
-md"""$(@bind historical CheckBox(default=false)) **Compare nine tagged versions (0.1.0–0.4.0)**
+md"""$(@bind historical CheckBox(default=true)) **Compare nine tagged versions (0.1.0–0.4.0)**
 
 Unchecked: seven workloads at pinned development revisions. Checked: the
 historical Bibliography suite, with unavailable workloads shown explicitly.
@@ -79,9 +121,14 @@ begin
     suite_path = joinpath(bibliography_root, historical ? "history-suite.jl" : "suite.jl")
     result_path = joinpath(bibliography_root, "results", "suite-result.json")
     reports_root = joinpath(bibliography_root, "results")
-    full_plan = suite_path === nothing ? nothing :
-                plan_suite(load_software_suite(suite_path; factory = :build_suite);
-        profile = historical ? :historical : :quick)
+    notebook_suite = if historical
+        history_module = Module(gensym(:NotebookHistory))
+        Base.include(history_module, suite_path)
+        Base.invokelatest(getfield(history_module, :build_suite); backends = (:benchmark, :chairmark))
+    else
+        load_software_suite(suite_path; factory = :build_suite)
+    end
+    full_plan = plan_suite(notebook_suite; profile = historical ? :historical : :quick)
     begin
         available_runs = full_plan === nothing ? [] : full_plan.runs
         package_names = sort!(unique([run.package_suite.package for run in available_runs]))
@@ -249,7 +296,7 @@ Markdown.parse("| Package | Workload | Target | Status |\n| --- | --- | --- | --
 md"""## Performance curves
 The combined view overlays all four collector measurements, normalized by each
 metric's minimum across versions. Individual absolute plots remain selectable.
-Run `setup.jl pluto` again if this environment predates the plotting packages.
+Version comparisons need at least two measured versions. Single-version runs show diagnostic profiles only.
 """
 
 # ╔═╡ 924b1935-c312-4c31-82b4-8bfd17782002
@@ -260,7 +307,15 @@ begin
             dirname(result_path), "bundles", "run-" * string(get(report, "run_id", "")))
         isdir(saved_bundle) ? read_run_bundle(saved_bundle) : nothing
     end
-    plot_entries = plot_bundle === nothing ? [] : plot_catalog(plot_bundle)
+    latest_diagnostic_kinds = Set(["cpu_flamegraph", "wall_flamegraph",
+        "allocation_flamegraph", "allocation_pie", "allocation_lines"])
+    plot_entries = plot_bundle === nothing ? [] : filter(plot_catalog(plot_bundle)) do entry
+        model = performance_plot(plot_bundle, entry["id"])
+        versions = unique([string(row["version"]) for row in model.data if haskey(row, "version")])
+        isempty(versions) && haskey(model.options, "selected_version") &&
+            push!(versions, string(model.options["selected_version"]))
+        length(versions) >= 2 || (length(versions) == 1 && entry["kind"] ∈ latest_diagnostic_kinds)
+    end
 end;
 
 # ╔═╡ 924b1935-c312-4c31-82b4-8bfd17782003

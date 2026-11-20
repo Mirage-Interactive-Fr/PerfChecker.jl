@@ -1,0 +1,2966 @@
+{
+  "allocation_scope": "Native BenchmarkTools Trial.memory and Trial.allocs per-evaluation estimates repeated in table rows; times and gctimes are paired native samples",
+  "collector": "BenchmarkTools",
+  "collector_version": "1.7.0",
+  "comparison_scope": "Two released versions and their separately resolved dependency stacks on Linux; no source-only attribution",
+  "controller_manifest_sha256": "8e74dc9879fb870181f9f8ccab7630450efacb26f3fd66e918136451e44a6936",
+  "controller_project_sha256": "1deea95b85495fcd1649daac139efdaf8934147d6753d56410bdb8b82a04814a",
+  "core_revision": "2cf431eb5a84f05e0af1098b7f6e5db84d479288",
+  "correctness": "not_checked",
+  "evals": 1,
+  "finished_at": "2026-10-13T06:23:13.880",
+  "measurement_runtime_sha256": "871fbf23e90654e3b5697efd536ff8e5e0f830e3f2c5e150e7ccf4fcc5762783",
+  "measurements": [
+    {
+      "capture_id": "0b8f7a89-b4d1-45ee-9a76-f7d422920384",
+      "qualification": {
+        "check_configuration": {
+          "config_hash": "6f4df365-8b13-5a1a-a904-f9e2e9b7474b",
+          "origins": {
+            "quiet": "default",
+            "repeat": "default",
+            "threads": "default"
+          },
+          "values": {
+            "quiet": false,
+            "repeat": true,
+            "threads": 1
+          }
+        },
+        "correctness": {
+          "message": "no correctness oracle was declared",
+          "status": "not_checked"
+        },
+        "measurement_state_policy": "reuse",
+        "performance": {
+          "message": "no baseline and policy were evaluated for this run",
+          "status": "not_compared"
+        },
+        "probes": [],
+        "schema_version": "perfchecker-run-qualification/1",
+        "verdict": "executed"
+      },
+      "samples": [
+        {
+          "allocs": 67,
+          "bytes_or_memory": 5952,
+          "gctimes": 0.0,
+          "memory": 5952,
+          "times": 56417.0
+        },
+        {
+          "allocs": 67,
+          "bytes_or_memory": 5952,
+          "gctimes": 0.0,
+          "memory": 5952,
+          "times": 29214.0
+        },
+        {
+          "allocs": 67,
+          "bytes_or_memory": 5952,
+          "gctimes": 0.0,
+          "memory": 5952,
+          "times": 3865.0
+        },
+        {
+          "allocs": 67,
+          "bytes_or_memory": 5952,
+          "gctimes": 0.0,
+          "memory": 5952,
+          "times": 3446.0
+        },
+        {
+          "allocs": 67,
+          "bytes_or_memory": 5952,
+          "gctimes": 0.0,
+          "memory": 5952,
+          "times": 3072.0
+        },
+        {
+          "allocs": 67,
+          "bytes_or_memory": 5952,
+          "gctimes": 0.0,
+          "memory": 5952,
+          "times": 2797.0
+        },
+        {
+          "allocs": 67,
+          "bytes_or_memory": 5952,
+          "gctimes": 0.0,
+          "memory": 5952,
+          "times": 3187.0
+        },
+        {
+          "allocs": 67,
+          "bytes_or_memory": 5952,
+          "gctimes": 0.0,
+          "memory": 5952,
+          "times": 3028.0
+        },
+        {
+          "allocs": 67,
+          "bytes_or_memory": 5952,
+          "gctimes": 0.0,
+          "memory": 5952,
+          "times": 3081.0
+        },
+        {
+          "allocs": 67,
+          "bytes_or_memory": 5952,
+          "gctimes": 0.0,
+          "memory": 5952,
+          "times": 3015.0
+        },
+        {
+          "allocs": 67,
+          "bytes_or_memory": 5952,
+          "gctimes": 0.0,
+          "memory": 5952,
+          "times": 2745.0
+        },
+        {
+          "allocs": 67,
+          "bytes_or_memory": 5952,
+          "gctimes": 0.0,
+          "memory": 5952,
+          "times": 3345.0
+        },
+        {
+          "allocs": 67,
+          "bytes_or_memory": 5952,
+          "gctimes": 0.0,
+          "memory": 5952,
+          "times": 2645.0
+        },
+        {
+          "allocs": 67,
+          "bytes_or_memory": 5952,
+          "gctimes": 0.0,
+          "memory": 5952,
+          "times": 3051.0
+        },
+        {
+          "allocs": 67,
+          "bytes_or_memory": 5952,
+          "gctimes": 0.0,
+          "memory": 5952,
+          "times": 2678.0
+        },
+        {
+          "allocs": 67,
+          "bytes_or_memory": 5952,
+          "gctimes": 0.0,
+          "memory": 5952,
+          "times": 3156.0
+        },
+        {
+          "allocs": 67,
+          "bytes_or_memory": 5952,
+          "gctimes": 0.0,
+          "memory": 5952,
+          "times": 2674.0
+        },
+        {
+          "allocs": 67,
+          "bytes_or_memory": 5952,
+          "gctimes": 0.0,
+          "memory": 5952,
+          "times": 3002.0
+        },
+        {
+          "allocs": 67,
+          "bytes_or_memory": 5952,
+          "gctimes": 0.0,
+          "memory": 5952,
+          "times": 3224.0
+        },
+        {
+          "allocs": 67,
+          "bytes_or_memory": 5952,
+          "gctimes": 0.0,
+          "memory": 5952,
+          "times": 2706.0
+        },
+        {
+          "allocs": 67,
+          "bytes_or_memory": 5952,
+          "gctimes": 0.0,
+          "memory": 5952,
+          "times": 2859.0
+        },
+        {
+          "allocs": 67,
+          "bytes_or_memory": 5952,
+          "gctimes": 0.0,
+          "memory": 5952,
+          "times": 2665.0
+        },
+        {
+          "allocs": 67,
+          "bytes_or_memory": 5952,
+          "gctimes": 0.0,
+          "memory": 5952,
+          "times": 2779.0
+        },
+        {
+          "allocs": 67,
+          "bytes_or_memory": 5952,
+          "gctimes": 0.0,
+          "memory": 5952,
+          "times": 2998.0
+        },
+        {
+          "allocs": 67,
+          "bytes_or_memory": 5952,
+          "gctimes": 0.0,
+          "memory": 5952,
+          "times": 3071.0
+        },
+        {
+          "allocs": 67,
+          "bytes_or_memory": 5952,
+          "gctimes": 0.0,
+          "memory": 5952,
+          "times": 2748.0
+        },
+        {
+          "allocs": 67,
+          "bytes_or_memory": 5952,
+          "gctimes": 0.0,
+          "memory": 5952,
+          "times": 2807.0
+        },
+        {
+          "allocs": 67,
+          "bytes_or_memory": 5952,
+          "gctimes": 0.0,
+          "memory": 5952,
+          "times": 2942.0
+        },
+        {
+          "allocs": 67,
+          "bytes_or_memory": 5952,
+          "gctimes": 0.0,
+          "memory": 5952,
+          "times": 2607.0
+        },
+        {
+          "allocs": 67,
+          "bytes_or_memory": 5952,
+          "gctimes": 0.0,
+          "memory": 5952,
+          "times": 3052.0
+        },
+        {
+          "allocs": 67,
+          "bytes_or_memory": 5952,
+          "gctimes": 0.0,
+          "memory": 5952,
+          "times": 2988.0
+        },
+        {
+          "allocs": 67,
+          "bytes_or_memory": 5952,
+          "gctimes": 0.0,
+          "memory": 5952,
+          "times": 2871.0
+        },
+        {
+          "allocs": 67,
+          "bytes_or_memory": 5952,
+          "gctimes": 0.0,
+          "memory": 5952,
+          "times": 2697.0
+        },
+        {
+          "allocs": 67,
+          "bytes_or_memory": 5952,
+          "gctimes": 0.0,
+          "memory": 5952,
+          "times": 2581.0
+        },
+        {
+          "allocs": 67,
+          "bytes_or_memory": 5952,
+          "gctimes": 0.0,
+          "memory": 5952,
+          "times": 2897.0
+        },
+        {
+          "allocs": 67,
+          "bytes_or_memory": 5952,
+          "gctimes": 0.0,
+          "memory": 5952,
+          "times": 2625.0
+        },
+        {
+          "allocs": 67,
+          "bytes_or_memory": 5952,
+          "gctimes": 0.0,
+          "memory": 5952,
+          "times": 2663.0
+        },
+        {
+          "allocs": 67,
+          "bytes_or_memory": 5952,
+          "gctimes": 0.0,
+          "memory": 5952,
+          "times": 2736.0
+        },
+        {
+          "allocs": 67,
+          "bytes_or_memory": 5952,
+          "gctimes": 0.0,
+          "memory": 5952,
+          "times": 3160.0
+        },
+        {
+          "allocs": 67,
+          "bytes_or_memory": 5952,
+          "gctimes": 0.0,
+          "memory": 5952,
+          "times": 2754.0
+        },
+        {
+          "allocs": 67,
+          "bytes_or_memory": 5952,
+          "gctimes": 0.0,
+          "memory": 5952,
+          "times": 2744.0
+        },
+        {
+          "allocs": 67,
+          "bytes_or_memory": 5952,
+          "gctimes": 0.0,
+          "memory": 5952,
+          "times": 2850.0
+        },
+        {
+          "allocs": 67,
+          "bytes_or_memory": 5952,
+          "gctimes": 0.0,
+          "memory": 5952,
+          "times": 3083.0
+        },
+        {
+          "allocs": 67,
+          "bytes_or_memory": 5952,
+          "gctimes": 0.0,
+          "memory": 5952,
+          "times": 2750.0
+        },
+        {
+          "allocs": 67,
+          "bytes_or_memory": 5952,
+          "gctimes": 0.0,
+          "memory": 5952,
+          "times": 2640.0
+        },
+        {
+          "allocs": 67,
+          "bytes_or_memory": 5952,
+          "gctimes": 0.0,
+          "memory": 5952,
+          "times": 2784.0
+        },
+        {
+          "allocs": 67,
+          "bytes_or_memory": 5952,
+          "gctimes": 0.0,
+          "memory": 5952,
+          "times": 2663.0
+        },
+        {
+          "allocs": 67,
+          "bytes_or_memory": 5952,
+          "gctimes": 0.0,
+          "memory": 5952,
+          "times": 2711.0
+        },
+        {
+          "allocs": 67,
+          "bytes_or_memory": 5952,
+          "gctimes": 0.0,
+          "memory": 5952,
+          "times": 3052.0
+        },
+        {
+          "allocs": 67,
+          "bytes_or_memory": 5952,
+          "gctimes": 0.0,
+          "memory": 5952,
+          "times": 2898.0
+        }
+      ],
+      "version": "0.3.1",
+      "worker_environment": {
+        "manifest_sha256": "72779cae25b91c8ddfabfa6b0b5b416261fefa7c0e6f761399a7a456be870025",
+        "project_sha256": "071494dcb21c51d301a57389fb52fb92b85071ef68ef8b125c5bfe7e78388a2a",
+        "resolved_packages": {
+          "Adapt": [
+            {
+              "deps": [
+                "LinearAlgebra"
+              ],
+              "extensions": {
+                "AdaptSparseArraysExt": "SparseArrays",
+                "AdaptStaticArraysExt": "StaticArrays"
+              },
+              "git-tree-sha1": "dee8388a9bec89c8713ad176f96960ae2f98598a",
+              "registries": "General",
+              "uuid": "79e6a3ab-5dfb-504d-930d-738a2a938a0e",
+              "version": "4.7.4",
+              "weakdeps": {
+                "SparseArrays": "2f01184e-e22b-5df5-ae63-d93ebab69eaf",
+                "StaticArrays": "90137ffa-7385-5640-81b9-e52037218182"
+              }
+            }
+          ],
+          "ArgTools": [
+            {
+              "uuid": "0dad84c5-d112-42e6-8d28-ef12dabb789f",
+              "version": "1.1.2"
+            }
+          ],
+          "Artifacts": [
+            {
+              "uuid": "56f22d72-fd6d-98f1-02f0-08ddc0907c33",
+              "version": "1.11.0"
+            }
+          ],
+          "Base64": [
+            {
+              "uuid": "2a0f44e3-6c83-55bd-87e4-b1978d98bd5f",
+              "version": "1.11.0"
+            }
+          ],
+          "BenchmarkTools": [
+            {
+              "deps": [
+                "Compat",
+                "JSON",
+                "Logging",
+                "Printf",
+                "Profile",
+                "Statistics",
+                "UUIDs"
+              ],
+              "git-tree-sha1": "6876e30dc02dc69f0613cb6ece242144f2ca9e56",
+              "registries": "General",
+              "uuid": "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf",
+              "version": "1.7.0"
+            }
+          ],
+          "BibInternal": [
+            {
+              "deps": [
+                "TestItems"
+              ],
+              "git-tree-sha1": "9bdbf50f7a887f765688cc91e69ca9640146f583",
+              "registries": "General",
+              "uuid": "2027ae74-3657-4b95-ae00-e2f7d55c3e64",
+              "version": "0.3.8"
+            }
+          ],
+          "BibParser": [
+            {
+              "deps": [
+                "BibInternal",
+                "DataStructures",
+                "Dates",
+                "JSONSchema",
+                "TestItems",
+                "YAML"
+              ],
+              "git-tree-sha1": "d08b6681c80305ad00688fc3d89e8fccd6360770",
+              "registries": "General",
+              "uuid": "13533e5b-e1c2-4e57-8cef-cac5e52f6474",
+              "version": "0.2.4"
+            }
+          ],
+          "Bibliography": [
+            {
+              "deps": [
+                "BibInternal",
+                "BibParser",
+                "DataStructures",
+                "Dates",
+                "FileIO",
+                "TestItems",
+                "YAML"
+              ],
+              "git-tree-sha1": "0b3e1837077d570bb0c231b9548093de4fa46629",
+              "registries": "General",
+              "uuid": "f1be7e48-bf82-45af-a471-ae754a193061",
+              "version": "0.3.1"
+            }
+          ],
+          "CSV": [
+            {
+              "deps": [
+                "CodecZlib",
+                "DataStrings",
+                "Dates",
+                "Downloads",
+                "Durations",
+                "Mmap",
+                "Parsers",
+                "PooledArrays",
+                "PrecompileTools",
+                "Printf",
+                "Tables",
+                "Unicode"
+              ],
+              "extensions": {
+                "CSVDataDecimalsExt": "DataDecimals",
+                "CSVFilePathsBaseExt": "FilePathsBase",
+                "CSVInlineStringsExt": "InlineStrings"
+              },
+              "git-tree-sha1": "ed05d41d96b1a815d52e9de1ef472971bc509832",
+              "registries": "General",
+              "uuid": "336ed68f-0bac-5ca0-87d4-7b16caf5d00b",
+              "version": "1.1.0",
+              "weakdeps": {
+                "DataDecimals": "3e2245cb-6932-498d-a7cf-39d39de8bde3",
+                "FilePathsBase": "48062228-2e41-5def-b9a4-89aafe57970f",
+                "InlineStrings": "842dd82b-1e85-43dc-bf29-5d0ee9dffc48"
+              }
+            }
+          ],
+          "CodecZlib": [
+            {
+              "deps": [
+                "TranscodingStreams",
+                "Zlib_jll"
+              ],
+              "git-tree-sha1": "970758a3d591a2a5c2a907c53f2e2f8c1b1d3537",
+              "registries": "General",
+              "uuid": "944b1d66-785c-5afd-91f1-9de20f533193",
+              "version": "0.7.9"
+            }
+          ],
+          "Compat": [
+            {
+              "deps": [
+                "TOML",
+                "UUIDs"
+              ],
+              "extensions": {
+                "CompatLinearAlgebraExt": "LinearAlgebra"
+              },
+              "git-tree-sha1": "9d8a54ce4b17aa5bdce0ea5c34bc5e7c340d16ad",
+              "registries": "General",
+              "uuid": "34da2185-b29b-5c13-b0c7-acf172513d20",
+              "version": "4.18.1",
+              "weakdeps": [
+                "Dates",
+                "LinearAlgebra"
+              ]
+            }
+          ],
+          "CompilerSupportLibraries_jll": [
+            {
+              "deps": [
+                "Artifacts",
+                "Libdl"
+              ],
+              "uuid": "e66e0078-7015-5450-92f7-15fbd957f2ae",
+              "version": "1.5.5+2"
+            }
+          ],
+          "CoverageTools": [
+            {
+              "deps": [
+                "JuliaSyntax",
+                "TOML"
+              ],
+              "git-tree-sha1": "6952d1820defc01a3b36408e52429fd7ae183b04",
+              "registries": "General",
+              "uuid": "c36e975a-824b-4404-a568-ef97ca766997",
+              "version": "1.4.2"
+            }
+          ],
+          "CpuId": [
+            {
+              "deps": [
+                "Markdown"
+              ],
+              "git-tree-sha1": "32d125af0fb8ec3f8935896122c5e345709909e5",
+              "registries": "General",
+              "uuid": "adafc99b-e345-5852-983c-f28acb93d879",
+              "version": "0.3.0"
+            }
+          ],
+          "DataAPI": [
+            {
+              "git-tree-sha1": "abe83f3a2f1b857aac70ef8b269080af17764bbe",
+              "registries": "General",
+              "uuid": "9a962f9c-6df0-11e9-0e5d-c546b8b5ee8a",
+              "version": "1.16.0"
+            }
+          ],
+          "DataStrings": [
+            {
+              "git-tree-sha1": "b8032263d364177a0b192ea15f277df4e6ab07e2",
+              "registries": "General",
+              "uuid": "48204bd6-5611-42ea-b167-fc1d713f9be2",
+              "version": "1.1.0"
+            }
+          ],
+          "DataStructures": [
+            {
+              "deps": [
+                "OrderedCollections"
+              ],
+              "git-tree-sha1": "b0bc6d2cad1fed8b7fd59a1551a991cb3d2809e6",
+              "registries": "General",
+              "uuid": "864edb3b-99cc-5e75-8d2d-829cb0a9cfe8",
+              "version": "0.19.6"
+            }
+          ],
+          "DataValueInterfaces": [
+            {
+              "git-tree-sha1": "bfc1187b79289637fa0ef6d4436ebdfe6905cbd6",
+              "registries": "General",
+              "uuid": "e2d170a0-9d28-54be-80f0-106bbe20a464",
+              "version": "1.0.0"
+            }
+          ],
+          "Dates": [
+            {
+              "deps": [
+                "Printf"
+              ],
+              "uuid": "ade2ca70-3891-5945-98fb-dc099432e06a",
+              "version": "1.11.0"
+            }
+          ],
+          "Dictionaries": [
+            {
+              "deps": [
+                "Indexing",
+                "Random",
+                "Serialization"
+              ],
+              "git-tree-sha1": "a55766a9c8f66cf19ffcdbdb1444e249bb4ace33",
+              "registries": "General",
+              "uuid": "85a47980-9c8c-11e8-2b9f-f7ca1fa99fb4",
+              "version": "0.4.6"
+            }
+          ],
+          "Distributed": [
+            {
+              "deps": [
+                "Random",
+                "Serialization",
+                "Sockets"
+              ],
+              "uuid": "8ba89e20-285c-5b6f-9357-94700520ee1b",
+              "version": "1.11.0"
+            }
+          ],
+          "Downloads": [
+            {
+              "deps": [
+                "ArgTools",
+                "FileWatching",
+                "LibCURL",
+                "NetworkOptions"
+              ],
+              "uuid": "f43a241f-c20a-4ad4-852c-f6b1247861c6",
+              "version": "1.7.0"
+            }
+          ],
+          "Durations": [
+            {
+              "deps": [
+                "Dates"
+              ],
+              "extensions": {
+                "DurationsArrowExt": "Arrow",
+                "DurationsTimeZonesExt": "TimeZones"
+              },
+              "git-tree-sha1": "407b209d76168dcc4355f9dcc4d3b3aaa60dfb3e",
+              "registries": "General",
+              "uuid": "41ac09f5-0a95-4810-aa18-c88bf48ee130",
+              "version": "1.4.1",
+              "weakdeps": {
+                "Arrow": "69666777-d1a9-59fb-9406-91d4454c9d45",
+                "TimeZones": "f269a46b-ccf7-5d73-abea-4c690281aa53"
+              }
+            }
+          ],
+          "FileIO": [
+            {
+              "deps": [
+                "Pkg",
+                "Requires",
+                "UUIDs"
+              ],
+              "extensions": {
+                "HTTPExt": "HTTP"
+              },
+              "git-tree-sha1": "6621fef488e496356c9c9625d0562c12a6070819",
+              "registries": "General",
+              "uuid": "5789e2e9-d7fb-5bc7-8068-2c6fae9b9549",
+              "version": "1.20.0",
+              "weakdeps": {
+                "HTTP": "cd3eb016-35fb-5094-929b-558a96fad6f3"
+              }
+            }
+          ],
+          "FileWatching": [
+            {
+              "uuid": "7b1f6079-737a-58dc-b8bc-7a2ca5c1b5ee",
+              "version": "1.11.0"
+            }
+          ],
+          "Future": [
+            {
+              "deps": [
+                "Random"
+              ],
+              "uuid": "9fa8497b-333b-5362-9e8d-4d0656e87820",
+              "version": "1.11.0"
+            }
+          ],
+          "Indexing": [
+            {
+              "git-tree-sha1": "ce1566720fd6b19ff3411404d4b977acd4814f9f",
+              "registries": "General",
+              "uuid": "313cdc1a-70c2-5d6a-ae34-0150d3930a38",
+              "version": "1.1.1"
+            }
+          ],
+          "IteratorInterfaceExtensions": [
+            {
+              "git-tree-sha1": "a3f24677c21f5bbe9d2a714f95dcd58337fb2856",
+              "registries": "General",
+              "uuid": "82899510-4779-5014-852e-03e436cf321d",
+              "version": "1.0.0"
+            }
+          ],
+          "JLLWrappers": [
+            {
+              "deps": [
+                "Artifacts",
+                "Preferences"
+              ],
+              "git-tree-sha1": "7204148362dafe5fe6a273f855b8ccbe4df8173e",
+              "registries": "General",
+              "uuid": "692b3bcd-3c85-4b1f-b108-f13ce0eb3210",
+              "version": "1.8.0"
+            }
+          ],
+          "JSON": [
+            {
+              "deps": [
+                "Dates",
+                "Logging",
+                "Parsers",
+                "PrecompileTools",
+                "StructUtils",
+                "UUIDs",
+                "Unicode"
+              ],
+              "extensions": {
+                "JSONArrowExt": [
+                  "ArrowTypes"
+                ]
+              },
+              "git-tree-sha1": "4657a834b01ce00f2b94546095c4350617b9af2c",
+              "registries": "General",
+              "uuid": "682c06a0-de6a-54ab-a142-c8b1cf79cde6",
+              "version": "1.10.0",
+              "weakdeps": {
+                "ArrowTypes": "31f734f8-188a-4ce0-8406-c8a06bd891cd"
+              }
+            }
+          ],
+          "JSONSchema": [
+            {
+              "deps": [
+                "Downloads",
+                "JSON",
+                "URIs"
+              ],
+              "extensions": {
+                "JSONSchemaJSON3Ext": "JSON3"
+              },
+              "git-tree-sha1": "d13f79c4242969874da7d00bda17d59bc7699aa7",
+              "registries": "General",
+              "uuid": "7d188eb4-7ad8-530c-ae41-71a32a6d4692",
+              "version": "1.5.0",
+              "weakdeps": {
+                "JSON3": "0f8b85d8-7281-11e9-16c2-39a750bddbf1"
+              }
+            }
+          ],
+          "JuliaSyntax": [
+            {
+              "git-tree-sha1": "0d4b3dab95018bcf3925204475693d9f09dc45b8",
+              "registries": "General",
+              "uuid": "70703baa-626e-46a2-a12c-08ffd08c73b4",
+              "version": "1.0.2"
+            }
+          ],
+          "JuliaSyntaxHighlighting": [
+            {
+              "deps": [
+                "StyledStrings"
+              ],
+              "uuid": "ac6e5ff7-fb65-4e79-a425-ec3bc9c03011",
+              "version": "1.12.0"
+            }
+          ],
+          "LibCURL": [
+            {
+              "deps": [
+                "LibCURL_jll",
+                "MozillaCACerts_jll"
+              ],
+              "uuid": "b27032c2-a3e7-50c8-80cd-2d36dbcbfd21",
+              "version": "1.0.0"
+            }
+          ],
+          "LibCURL_jll": [
+            {
+              "deps": [
+                "Artifacts",
+                "CompilerSupportLibraries_jll",
+                "LibSSH2_jll",
+                "Libdl",
+                "OpenSSL_jll",
+                "Zlib_jll",
+                "Zstd_jll",
+                "nghttp2_jll"
+              ],
+              "uuid": "deac9b47-8bc7-5906-a0fe-35ac56dc84c0",
+              "version": "8.18.0+1"
+            }
+          ],
+          "LibGit2": [
+            {
+              "deps": [
+                "LibGit2_jll",
+                "NetworkOptions",
+                "Printf",
+                "SHA"
+              ],
+              "uuid": "76f85450-5226-5b5a-8eaa-529ad045b433",
+              "version": "1.11.0"
+            }
+          ],
+          "LibGit2_jll": [
+            {
+              "deps": [
+                "Artifacts",
+                "CompilerSupportLibraries_jll",
+                "LibSSH2_jll",
+                "Libdl",
+                "OpenSSL_jll",
+                "PCRE2_jll",
+                "Zlib_jll"
+              ],
+              "uuid": "e37daf67-58a4-590a-8e99-b0245dd2ffc5",
+              "version": "1.9.1+0"
+            }
+          ],
+          "LibSSH2_jll": [
+            {
+              "deps": [
+                "Artifacts",
+                "CompilerSupportLibraries_jll",
+                "Libdl",
+                "OpenSSL_jll",
+                "Zlib_jll"
+              ],
+              "uuid": "29816b5a-b9ab-546f-933c-edad1886dfa8",
+              "version": "1.11.104+0"
+            }
+          ],
+          "Libdl": [
+            {
+              "uuid": "8f399da3-3557-5675-b5ff-fb832c97cbdb",
+              "version": "1.11.0"
+            }
+          ],
+          "Libiconv_jll": [
+            {
+              "deps": [
+                "Artifacts",
+                "JLLWrappers",
+                "Libdl"
+              ],
+              "git-tree-sha1": "be484f5c92fad0bd8acfef35fe017900b0b73809",
+              "registries": "General",
+              "uuid": "94ce4f54-9a6c-5748-9c1c-f9c7231a4531",
+              "version": "1.18.0+0"
+            }
+          ],
+          "LinearAlgebra": [
+            {
+              "deps": [
+                "Libdl",
+                "OpenBLAS_jll",
+                "libblastrampoline_jll"
+              ],
+              "uuid": "37e2e46d-f89d-539d-b4ee-838fcccc9c8e",
+              "version": "1.13.0"
+            }
+          ],
+          "Logging": [
+            {
+              "uuid": "56ddb016-857b-54e1-b83d-db4d58db5568",
+              "version": "1.11.0"
+            }
+          ],
+          "Malt": [
+            {
+              "deps": [
+                "Distributed",
+                "Logging",
+                "RelocatableFolders",
+                "Serialization",
+                "Sockets"
+              ],
+              "git-tree-sha1": "c2335b4e291f2422e2be8abf8936ccad58a98992",
+              "registries": "General",
+              "uuid": "36869731-bdee-424d-aa32-cab38c994e3b",
+              "version": "1.4.1"
+            }
+          ],
+          "Markdown": [
+            {
+              "deps": [
+                "Base64",
+                "JuliaSyntaxHighlighting",
+                "StyledStrings"
+              ],
+              "uuid": "d6f4376e-aef5-505a-96c1-9c027394607a",
+              "version": "1.11.0"
+            }
+          ],
+          "Mmap": [
+            {
+              "uuid": "a63ad114-7e13-5084-954f-fe012c677804",
+              "version": "1.11.0"
+            }
+          ],
+          "MozillaCACerts_jll": [
+            {
+              "uuid": "14a3606d-f60d-562e-9121-12d972cd8159",
+              "version": "2026.8.13"
+            }
+          ],
+          "NetworkOptions": [
+            {
+              "uuid": "ca575930-c2e3-43a9-ace4-1e988b2c1908",
+              "version": "1.3.0"
+            }
+          ],
+          "OpenBLAS_jll": [
+            {
+              "deps": [
+                "Artifacts",
+                "CompilerSupportLibraries_jll",
+                "Libdl"
+              ],
+              "uuid": "4536629a-c528-5b80-bd46-f80d51c5b363",
+              "version": "0.3.30+0"
+            }
+          ],
+          "OpenSSL_jll": [
+            {
+              "deps": [
+                "Artifacts",
+                "Libdl"
+              ],
+              "uuid": "458c3c95-2e84-50aa-8efc-19380b2a3a95",
+              "version": "3.5.6+0"
+            }
+          ],
+          "OrderedCollections": [
+            {
+              "git-tree-sha1": "f9b03759e9ef463718934fbed30820b39997511e",
+              "registries": "General",
+              "uuid": "bac558e1-5e72-5ebc-8fee-abe8a469f55d",
+              "version": "2.0.2"
+            }
+          ],
+          "PCRE2_jll": [
+            {
+              "deps": [
+                "Artifacts",
+                "Libdl"
+              ],
+              "uuid": "efcefdf7-47ab-520b-bdef-62a2eaa19f15",
+              "version": "10.46.0+0"
+            }
+          ],
+          "Parsers": [
+            {
+              "deps": [
+                "Dates",
+                "PrecompileTools"
+              ],
+              "git-tree-sha1": "663e8b48b789916221e0765393b289ca6c88f24e",
+              "registries": "General",
+              "uuid": "69de0a69-1ddd-5017-9359-2bf0b02dc9f0",
+              "version": "3.0.0"
+            }
+          ],
+          "PerfChecker": [
+            {
+              "deps": [
+                "Base64",
+                "CSV",
+                "CoverageTools",
+                "CpuId",
+                "Dates",
+                "Downloads",
+                "JSON",
+                "JuliaSyntax",
+                "Libdl",
+                "Malt",
+                "Pkg",
+                "Preferences",
+                "Profile",
+                "Random",
+                "SHA",
+                "TOML",
+                "TestItems",
+                "TypedTables",
+                "UUIDs",
+                "YAML"
+              ],
+              "extensions": {
+                "BenchmarkToolsExt": "BenchmarkTools",
+                "ChairmarksExt": "Chairmarks",
+                "DocumenterExt": "Documenter",
+                "DocumenterVitepressExt": [
+                  "Documenter",
+                  "DocumenterVitepress"
+                ],
+                "DrWatsonExt": "DrWatson",
+                "HTTPAdvisorExt": "HTTP",
+                "PProfExt": [
+                  "FlameGraphs",
+                  "PProf"
+                ],
+                "PropCheckExt": "PropCheck",
+                "SuppositionExt": "Supposition",
+                "TestItemRunnerExt": "TestItemRunner",
+                "UnicodePlotsExt": "UnicodePlots"
+              },
+              "path": "/home/azzaare/.julia/dev/PerfChecker-docs-interactive-20261012",
+              "uuid": "6309bf6b-a531-4b08-891e-8ee981e5c424",
+              "version": "1.1.0",
+              "weakdeps": {
+                "BenchmarkTools": "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf",
+                "Chairmarks": "0ca39b1e-fe0b-4e98-acfc-b1656634c4de",
+                "Documenter": "e30172f5-a6a5-5a46-863b-614d45cd2de4",
+                "DocumenterVitepress": "4710194d-e776-4893-9690-8d956a29c365",
+                "DrWatson": "634d3b9d-ee7a-5ddf-bec9-22491ea816e1",
+                "FlameGraphs": "08572546-2f56-4bcf-ba4e-bab62c3a3f89",
+                "HTTP": "cd3eb016-35fb-5094-929b-558a96fad6f3",
+                "PProf": "e4faabce-9ead-11e9-39d9-4379958e3056",
+                "PropCheck": "ca382230-33be-11e9-0059-d981d03070e4",
+                "Supposition": "5a0628fe-1738-4658-9b6d-0b7605a9755b",
+                "TestItemRunner": "f8b46487-2199-4994-9208-9a1283c18c0a",
+                "UnicodePlots": "b8865327-cd53-5732-bb35-84acbb429228"
+              }
+            }
+          ],
+          "Pkg": [
+            {
+              "deps": [
+                "Artifacts",
+                "Dates",
+                "Downloads",
+                "FileWatching",
+                "LibGit2",
+                "Libdl",
+                "Logging",
+                "Markdown",
+                "Printf",
+                "Random",
+                "SHA",
+                "TOML",
+                "Tar",
+                "UUIDs",
+                "Zstd_jll",
+                "p7zip_jll"
+              ],
+              "extensions": {
+                "REPLExt": "REPL"
+              },
+              "uuid": "44cfe95a-1eb2-52ea-b672-e2afdf69b78f",
+              "version": "1.13.0",
+              "weakdeps": {
+                "REPL": "3fa0cd96-eef1-5676-8a61-b3b8758bbffb"
+              }
+            }
+          ],
+          "PooledArrays": [
+            {
+              "deps": [
+                "DataAPI",
+                "Future"
+              ],
+              "git-tree-sha1": "36d8b4b899628fb92c2749eb488d884a926614d3",
+              "registries": "General",
+              "uuid": "2dfb63ee-cc39-5dd5-95bd-886bf059d720",
+              "version": "1.4.3"
+            }
+          ],
+          "PrecompileTools": [
+            {
+              "deps": [
+                "Preferences"
+              ],
+              "git-tree-sha1": "edbeefc7a4889f528644251bdb5fc9ab5348bc2c",
+              "registries": "General",
+              "uuid": "aea7be01-6a6a-4083-8856-8a6e6704d82a",
+              "version": "1.3.4"
+            }
+          ],
+          "Preferences": [
+            {
+              "deps": [
+                "TOML"
+              ],
+              "git-tree-sha1": "5005266de4bfe50e53ff44a5cb5c540b6e47a254",
+              "registries": "General",
+              "uuid": "21216c6a-2e73-6563-6e65-726566657250",
+              "version": "1.6.0"
+            }
+          ],
+          "Printf": [
+            {
+              "deps": [
+                "Unicode"
+              ],
+              "uuid": "de0858da-6303-5e67-8744-51eddeeeb8d7",
+              "version": "1.11.0"
+            }
+          ],
+          "Profile": [
+            {
+              "deps": [
+                "StyledStrings"
+              ],
+              "uuid": "9abbd945-dff8-562f-b5e8-e1ebf5ef1b79",
+              "version": "1.11.0"
+            }
+          ],
+          "Random": [
+            {
+              "deps": [
+                "SHA"
+              ],
+              "uuid": "9a3f8284-a2c9-5f02-9a11-845980a1fd5c",
+              "version": "1.11.0"
+            }
+          ],
+          "RelocatableFolders": [
+            {
+              "deps": [
+                "SHA",
+                "Scratch"
+              ],
+              "git-tree-sha1": "ffdaf70d81cf6ff22c2b6e733c900c3321cab864",
+              "registries": "General",
+              "uuid": "05181044-ff0b-4ac5-8273-598c1e38db00",
+              "version": "1.0.1"
+            }
+          ],
+          "Requires": [
+            {
+              "deps": [
+                "UUIDs"
+              ],
+              "git-tree-sha1": "62389eeff14780bfe55195b7204c0d8738436d64",
+              "registries": "General",
+              "uuid": "ae029012-a4dd-5104-9daa-d747884805df",
+              "version": "1.3.1"
+            }
+          ],
+          "SHA": [
+            {
+              "uuid": "ea8e919c-243c-51af-8825-aaa63cd721ce",
+              "version": "1.0.0"
+            }
+          ],
+          "Scratch": [
+            {
+              "deps": [
+                "Dates"
+              ],
+              "git-tree-sha1": "9b81b8393e50b7d4e6d0a9f14e192294d3b7c109",
+              "registries": "General",
+              "uuid": "6c6a2e73-6563-6170-7368-637461726353",
+              "version": "1.3.0"
+            }
+          ],
+          "Serialization": [
+            {
+              "uuid": "9e88b42a-f829-5b0c-bbe9-9e923198166b",
+              "version": "1.11.0"
+            }
+          ],
+          "Sockets": [
+            {
+              "uuid": "6462fe0b-24de-5631-8697-dd941f90decc",
+              "version": "1.11.0"
+            }
+          ],
+          "SplitApplyCombine": [
+            {
+              "deps": [
+                "Dictionaries",
+                "Indexing"
+              ],
+              "git-tree-sha1": "55db78e829cf726162fc4fc1b30d05f92092f3f6",
+              "registries": "General",
+              "uuid": "03a91e81-4c3e-53e1-a0a4-9c0c8f19dd66",
+              "version": "1.3.0"
+            }
+          ],
+          "Statistics": [
+            {
+              "deps": [
+                "LinearAlgebra"
+              ],
+              "extensions": {
+                "SparseArraysExt": [
+                  "SparseArrays"
+                ]
+              },
+              "git-tree-sha1": "e2b53ce13a53367e96601081e33d34746b571bad",
+              "registries": "General",
+              "uuid": "10745b16-79ce-11e8-11f9-7d13ad32a3b2",
+              "version": "1.11.5",
+              "weakdeps": {
+                "SparseArrays": "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
+              }
+            }
+          ],
+          "StringEncodings": [
+            {
+              "deps": [
+                "Libiconv_jll"
+              ],
+              "git-tree-sha1": "b765e46ba27ecf6b44faf70df40c57aa3a547dcb",
+              "registries": "General",
+              "uuid": "69024149-9ee7-55f6-a4c4-859efe599b68",
+              "version": "0.3.7"
+            }
+          ],
+          "StructUtils": [
+            {
+              "deps": [
+                "Dates",
+                "UUIDs"
+              ],
+              "extensions": {
+                "StructUtilsLazilyInitializedFieldsExt": [
+                  "LazilyInitializedFields"
+                ],
+                "StructUtilsMeasurementsExt": [
+                  "Measurements"
+                ],
+                "StructUtilsStaticArraysCoreExt": [
+                  "StaticArraysCore"
+                ],
+                "StructUtilsTablesExt": [
+                  "Tables"
+                ]
+              },
+              "git-tree-sha1": "b814d5005d6a529d740ffe06f8a86396f6501138",
+              "registries": "General",
+              "uuid": "ec057cc2-7a8d-4b58-b3b3-92acb9f63b42",
+              "version": "2.9.2",
+              "weakdeps": {
+                "LazilyInitializedFields": "0e77f7df-68c5-4e49-93ce-4cd80f5598bf",
+                "Measurements": "eff96d63-e80a-5855-80a2-b1b0885c5ab7",
+                "StaticArraysCore": "1e83bf80-4336-4d27-bf5d-d5a4f845583c",
+                "Tables": "bd369af6-aec1-5ad0-b16a-f7cc5008161c"
+              }
+            }
+          ],
+          "StyledStrings": [
+            {
+              "uuid": "f489334b-da3d-4c2e-b8f0-e476e12c162b",
+              "version": "1.11.0"
+            }
+          ],
+          "TOML": [
+            {
+              "deps": [
+                "Dates"
+              ],
+              "uuid": "fa267f1f-6049-4f14-aa54-33bafae1ed76",
+              "version": "1.0.3"
+            }
+          ],
+          "TableTraits": [
+            {
+              "deps": [
+                "IteratorInterfaceExtensions"
+              ],
+              "git-tree-sha1": "c06b2f539df1c6efa794486abfb6ed2022561a39",
+              "registries": "General",
+              "uuid": "3783bdb8-4a98-5b6b-af9a-565f29a5fe9c",
+              "version": "1.0.1"
+            }
+          ],
+          "Tables": [
+            {
+              "deps": [
+                "DataAPI",
+                "DataValueInterfaces",
+                "IteratorInterfaceExtensions",
+                "OrderedCollections",
+                "TableTraits"
+              ],
+              "git-tree-sha1": "a94d9bdda1b7bed0046cea645639ab3f62196fac",
+              "registries": "General",
+              "uuid": "bd369af6-aec1-5ad0-b16a-f7cc5008161c",
+              "version": "1.14.0"
+            }
+          ],
+          "Tar": [
+            {
+              "deps": [
+                "ArgTools",
+                "SHA"
+              ],
+              "uuid": "a4e569a6-e804-4fa4-b0f3-eef7a1d5b13e",
+              "version": "1.10.0"
+            }
+          ],
+          "TestItems": [
+            {
+              "git-tree-sha1": "a6dd904babc04670c784f81b67957a3545271610",
+              "registries": "General",
+              "uuid": "1c621080-faea-4a02-84b6-bbd5e436b8fe",
+              "version": "1.1.0"
+            }
+          ],
+          "TranscodingStreams": [
+            {
+              "git-tree-sha1": "0c45878dcfdcfa8480052b6ab162cdd138781742",
+              "registries": "General",
+              "uuid": "3bb67fe8-82b1-5028-8e26-92a6c54297fa",
+              "version": "0.11.3"
+            }
+          ],
+          "TypedTables": [
+            {
+              "deps": [
+                "Adapt",
+                "Dictionaries",
+                "Indexing",
+                "SplitApplyCombine",
+                "Tables",
+                "Unicode"
+              ],
+              "git-tree-sha1": "84fd7dadde577e01eb4323b7e7b9cb51c62c60d4",
+              "registries": "General",
+              "uuid": "9d95f2ec-7b3d-5a63-8d20-e2491e220bb9",
+              "version": "1.4.6"
+            }
+          ],
+          "URIs": [
+            {
+              "git-tree-sha1": "908fec9df6c5de98548ead82a468c95ccf6cd263",
+              "registries": "General",
+              "uuid": "5c2747f8-b7ea-4ff2-ba2e-563bfd36b1d4",
+              "version": "1.7.0"
+            }
+          ],
+          "UUIDs": [
+            {
+              "deps": [
+                "Random",
+                "SHA"
+              ],
+              "uuid": "cf7118a7-6976-5b1a-9a39-7adc72f591a4",
+              "version": "1.11.0"
+            }
+          ],
+          "Unicode": [
+            {
+              "uuid": "4ec0a83e-493e-50e2-b9ac-8f72acf5a8f5",
+              "version": "1.11.0"
+            }
+          ],
+          "YAML": [
+            {
+              "deps": [
+                "Base64",
+                "Dates",
+                "Printf",
+                "StringEncodings"
+              ],
+              "git-tree-sha1": "9c685a6e94e255019e2bf9486318147cd42fe34a",
+              "registries": "General",
+              "uuid": "ddb6d928-2868-570f-bddf-ab3f9cf99eb6",
+              "version": "0.4.17"
+            }
+          ],
+          "Zlib_jll": [
+            {
+              "deps": [
+                "Libdl"
+              ],
+              "uuid": "83775a58-1f1d-513f-b197-d71354ab007a",
+              "version": "1.3.1+2"
+            }
+          ],
+          "Zstd_jll": [
+            {
+              "deps": [
+                "CompilerSupportLibraries_jll",
+                "Libdl"
+              ],
+              "uuid": "3161d3a3-bdf6-5164-811a-617609db77b4",
+              "version": "1.5.7+1"
+            }
+          ],
+          "libblastrampoline_jll": [
+            {
+              "deps": [
+                "Artifacts",
+                "Libdl"
+              ],
+              "uuid": "8e850b90-86db-534c-a0d3-1478176c7d93",
+              "version": "5.15.0+0"
+            }
+          ],
+          "nghttp2_jll": [
+            {
+              "deps": [
+                "Artifacts",
+                "CompilerSupportLibraries_jll",
+                "Libdl"
+              ],
+              "uuid": "8e850ede-7688-5339-a07c-302acd2aaf8d",
+              "version": "1.67.1+0"
+            }
+          ],
+          "p7zip_jll": [
+            {
+              "deps": [
+                "Artifacts",
+                "CompilerSupportLibraries_jll",
+                "Libdl"
+              ],
+              "uuid": "3f19e933-33d8-53b3-aaab-bd5110c3b7a0",
+              "version": "17.8.2+0"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "capture_id": "8187bf98-3988-45de-a14a-b7ccb95bfead",
+      "qualification": {
+        "check_configuration": {
+          "config_hash": "6f4df365-8b13-5a1a-a904-f9e2e9b7474b",
+          "origins": {
+            "quiet": "default",
+            "repeat": "default",
+            "threads": "default"
+          },
+          "values": {
+            "quiet": false,
+            "repeat": true,
+            "threads": 1
+          }
+        },
+        "correctness": {
+          "message": "no correctness oracle was declared",
+          "status": "not_checked"
+        },
+        "measurement_state_policy": "reuse",
+        "performance": {
+          "message": "no baseline and policy were evaluated for this run",
+          "status": "not_compared"
+        },
+        "probes": [],
+        "schema_version": "perfchecker-run-qualification/1",
+        "verdict": "executed"
+      },
+      "samples": [
+        {
+          "allocs": 70,
+          "bytes_or_memory": 7456,
+          "gctimes": 0.0,
+          "memory": 7456,
+          "times": 24794.0
+        },
+        {
+          "allocs": 70,
+          "bytes_or_memory": 7456,
+          "gctimes": 0.0,
+          "memory": 7456,
+          "times": 21541.0
+        },
+        {
+          "allocs": 70,
+          "bytes_or_memory": 7456,
+          "gctimes": 0.0,
+          "memory": 7456,
+          "times": 3156.0
+        },
+        {
+          "allocs": 70,
+          "bytes_or_memory": 7456,
+          "gctimes": 0.0,
+          "memory": 7456,
+          "times": 2594.0
+        },
+        {
+          "allocs": 70,
+          "bytes_or_memory": 7456,
+          "gctimes": 0.0,
+          "memory": 7456,
+          "times": 2283.0
+        },
+        {
+          "allocs": 70,
+          "bytes_or_memory": 7456,
+          "gctimes": 0.0,
+          "memory": 7456,
+          "times": 2195.0
+        },
+        {
+          "allocs": 70,
+          "bytes_or_memory": 7456,
+          "gctimes": 0.0,
+          "memory": 7456,
+          "times": 2104.0
+        },
+        {
+          "allocs": 70,
+          "bytes_or_memory": 7456,
+          "gctimes": 0.0,
+          "memory": 7456,
+          "times": 2424.0
+        },
+        {
+          "allocs": 70,
+          "bytes_or_memory": 7456,
+          "gctimes": 0.0,
+          "memory": 7456,
+          "times": 1984.0
+        },
+        {
+          "allocs": 70,
+          "bytes_or_memory": 7456,
+          "gctimes": 0.0,
+          "memory": 7456,
+          "times": 2751.0
+        },
+        {
+          "allocs": 70,
+          "bytes_or_memory": 7456,
+          "gctimes": 0.0,
+          "memory": 7456,
+          "times": 2053.0
+        },
+        {
+          "allocs": 70,
+          "bytes_or_memory": 7456,
+          "gctimes": 0.0,
+          "memory": 7456,
+          "times": 2734.0
+        },
+        {
+          "allocs": 70,
+          "bytes_or_memory": 7456,
+          "gctimes": 0.0,
+          "memory": 7456,
+          "times": 2661.0
+        },
+        {
+          "allocs": 70,
+          "bytes_or_memory": 7456,
+          "gctimes": 0.0,
+          "memory": 7456,
+          "times": 2373.0
+        },
+        {
+          "allocs": 70,
+          "bytes_or_memory": 7456,
+          "gctimes": 0.0,
+          "memory": 7456,
+          "times": 2457.0
+        },
+        {
+          "allocs": 70,
+          "bytes_or_memory": 7456,
+          "gctimes": 0.0,
+          "memory": 7456,
+          "times": 2128.0
+        },
+        {
+          "allocs": 70,
+          "bytes_or_memory": 7456,
+          "gctimes": 0.0,
+          "memory": 7456,
+          "times": 2018.0
+        },
+        {
+          "allocs": 70,
+          "bytes_or_memory": 7456,
+          "gctimes": 0.0,
+          "memory": 7456,
+          "times": 2102.0
+        },
+        {
+          "allocs": 70,
+          "bytes_or_memory": 7456,
+          "gctimes": 0.0,
+          "memory": 7456,
+          "times": 2581.0
+        },
+        {
+          "allocs": 70,
+          "bytes_or_memory": 7456,
+          "gctimes": 0.0,
+          "memory": 7456,
+          "times": 2127.0
+        },
+        {
+          "allocs": 70,
+          "bytes_or_memory": 7456,
+          "gctimes": 0.0,
+          "memory": 7456,
+          "times": 2056.0
+        },
+        {
+          "allocs": 70,
+          "bytes_or_memory": 7456,
+          "gctimes": 0.0,
+          "memory": 7456,
+          "times": 1975.0
+        },
+        {
+          "allocs": 70,
+          "bytes_or_memory": 7456,
+          "gctimes": 0.0,
+          "memory": 7456,
+          "times": 2034.0
+        },
+        {
+          "allocs": 70,
+          "bytes_or_memory": 7456,
+          "gctimes": 0.0,
+          "memory": 7456,
+          "times": 2545.0
+        },
+        {
+          "allocs": 70,
+          "bytes_or_memory": 7456,
+          "gctimes": 0.0,
+          "memory": 7456,
+          "times": 2061.0
+        },
+        {
+          "allocs": 70,
+          "bytes_or_memory": 7456,
+          "gctimes": 0.0,
+          "memory": 7456,
+          "times": 2038.0
+        },
+        {
+          "allocs": 70,
+          "bytes_or_memory": 7456,
+          "gctimes": 0.0,
+          "memory": 7456,
+          "times": 2456.0
+        },
+        {
+          "allocs": 70,
+          "bytes_or_memory": 7456,
+          "gctimes": 0.0,
+          "memory": 7456,
+          "times": 2359.0
+        },
+        {
+          "allocs": 70,
+          "bytes_or_memory": 7456,
+          "gctimes": 0.0,
+          "memory": 7456,
+          "times": 1906.0
+        },
+        {
+          "allocs": 70,
+          "bytes_or_memory": 7456,
+          "gctimes": 0.0,
+          "memory": 7456,
+          "times": 2273.0
+        },
+        {
+          "allocs": 70,
+          "bytes_or_memory": 7456,
+          "gctimes": 0.0,
+          "memory": 7456,
+          "times": 2269.0
+        },
+        {
+          "allocs": 70,
+          "bytes_or_memory": 7456,
+          "gctimes": 0.0,
+          "memory": 7456,
+          "times": 1978.0
+        },
+        {
+          "allocs": 70,
+          "bytes_or_memory": 7456,
+          "gctimes": 0.0,
+          "memory": 7456,
+          "times": 2937.0
+        },
+        {
+          "allocs": 70,
+          "bytes_or_memory": 7456,
+          "gctimes": 0.0,
+          "memory": 7456,
+          "times": 2136.0
+        },
+        {
+          "allocs": 70,
+          "bytes_or_memory": 7456,
+          "gctimes": 0.0,
+          "memory": 7456,
+          "times": 2348.0
+        },
+        {
+          "allocs": 70,
+          "bytes_or_memory": 7456,
+          "gctimes": 0.0,
+          "memory": 7456,
+          "times": 2131.0
+        },
+        {
+          "allocs": 70,
+          "bytes_or_memory": 7456,
+          "gctimes": 0.0,
+          "memory": 7456,
+          "times": 2386.0
+        },
+        {
+          "allocs": 70,
+          "bytes_or_memory": 7456,
+          "gctimes": 0.0,
+          "memory": 7456,
+          "times": 2010.0
+        },
+        {
+          "allocs": 70,
+          "bytes_or_memory": 7456,
+          "gctimes": 0.0,
+          "memory": 7456,
+          "times": 2261.0
+        },
+        {
+          "allocs": 70,
+          "bytes_or_memory": 7456,
+          "gctimes": 0.0,
+          "memory": 7456,
+          "times": 2350.0
+        },
+        {
+          "allocs": 70,
+          "bytes_or_memory": 7456,
+          "gctimes": 0.0,
+          "memory": 7456,
+          "times": 2219.0
+        },
+        {
+          "allocs": 70,
+          "bytes_or_memory": 7456,
+          "gctimes": 0.0,
+          "memory": 7456,
+          "times": 2369.0
+        },
+        {
+          "allocs": 70,
+          "bytes_or_memory": 7456,
+          "gctimes": 0.0,
+          "memory": 7456,
+          "times": 2254.0
+        },
+        {
+          "allocs": 70,
+          "bytes_or_memory": 7456,
+          "gctimes": 0.0,
+          "memory": 7456,
+          "times": 2398.0
+        },
+        {
+          "allocs": 70,
+          "bytes_or_memory": 7456,
+          "gctimes": 0.0,
+          "memory": 7456,
+          "times": 2100.0
+        },
+        {
+          "allocs": 70,
+          "bytes_or_memory": 7456,
+          "gctimes": 0.0,
+          "memory": 7456,
+          "times": 2059.0
+        },
+        {
+          "allocs": 70,
+          "bytes_or_memory": 7456,
+          "gctimes": 0.0,
+          "memory": 7456,
+          "times": 2469.0
+        },
+        {
+          "allocs": 70,
+          "bytes_or_memory": 7456,
+          "gctimes": 0.0,
+          "memory": 7456,
+          "times": 2143.0
+        },
+        {
+          "allocs": 70,
+          "bytes_or_memory": 7456,
+          "gctimes": 0.0,
+          "memory": 7456,
+          "times": 2389.0
+        },
+        {
+          "allocs": 70,
+          "bytes_or_memory": 7456,
+          "gctimes": 0.0,
+          "memory": 7456,
+          "times": 2048.0
+        }
+      ],
+      "version": "0.4.0",
+      "worker_environment": {
+        "manifest_sha256": "c9dc0d58dc6e2f2a461c73a026497a6c00a399d8f6c31c24bd809a7cdcdde9f8",
+        "project_sha256": "071494dcb21c51d301a57389fb52fb92b85071ef68ef8b125c5bfe7e78388a2a",
+        "resolved_packages": {
+          "Adapt": [
+            {
+              "deps": [
+                "LinearAlgebra"
+              ],
+              "extensions": {
+                "AdaptSparseArraysExt": "SparseArrays",
+                "AdaptStaticArraysExt": "StaticArrays"
+              },
+              "git-tree-sha1": "dee8388a9bec89c8713ad176f96960ae2f98598a",
+              "registries": "General",
+              "uuid": "79e6a3ab-5dfb-504d-930d-738a2a938a0e",
+              "version": "4.7.4",
+              "weakdeps": {
+                "SparseArrays": "2f01184e-e22b-5df5-ae63-d93ebab69eaf",
+                "StaticArrays": "90137ffa-7385-5640-81b9-e52037218182"
+              }
+            }
+          ],
+          "ArgTools": [
+            {
+              "uuid": "0dad84c5-d112-42e6-8d28-ef12dabb789f",
+              "version": "1.1.2"
+            }
+          ],
+          "Artifacts": [
+            {
+              "uuid": "56f22d72-fd6d-98f1-02f0-08ddc0907c33",
+              "version": "1.11.0"
+            }
+          ],
+          "Base64": [
+            {
+              "uuid": "2a0f44e3-6c83-55bd-87e4-b1978d98bd5f",
+              "version": "1.11.0"
+            }
+          ],
+          "BenchmarkTools": [
+            {
+              "deps": [
+                "Compat",
+                "JSON",
+                "Logging",
+                "Printf",
+                "Profile",
+                "Statistics",
+                "UUIDs"
+              ],
+              "git-tree-sha1": "6876e30dc02dc69f0613cb6ece242144f2ca9e56",
+              "registries": "General",
+              "uuid": "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf",
+              "version": "1.7.0"
+            }
+          ],
+          "BibInternal": [
+            {
+              "deps": [
+                "TestItems"
+              ],
+              "git-tree-sha1": "ec1f1c78c1a6c917125abdee98518685fe653e64",
+              "registries": "General",
+              "uuid": "2027ae74-3657-4b95-ae00-e2f7d55c3e64",
+              "version": "0.4.0"
+            }
+          ],
+          "BibParser": [
+            {
+              "deps": [
+                "BibInternal",
+                "DataStructures",
+                "TestItems"
+              ],
+              "extensions": {
+                "BibParserCFFExt": [
+                  "Dates",
+                  "JSONSchema",
+                  "YAML"
+                ],
+                "BibParserCSLExt": "JSON3",
+                "BibParserXMLExt": "EzXML"
+              },
+              "git-tree-sha1": "5a6aeb593475157a5911cda3e0297f1552d45102",
+              "registries": "General",
+              "uuid": "13533e5b-e1c2-4e57-8cef-cac5e52f6474",
+              "version": "0.3.0",
+              "weakdeps": {
+                "Dates": "ade2ca70-3891-5945-98fb-dc099432e06a",
+                "EzXML": "8f5d6c58-4d21-5cfd-889c-e3ad7ee6a615",
+                "JSON3": "0f8b85d8-7281-11e9-16c2-39a750bddbf1",
+                "JSONSchema": "7d188eb4-7ad8-530c-ae41-71a32a6d4692",
+                "YAML": "ddb6d928-2868-570f-bddf-ab3f9cf99eb6"
+              }
+            }
+          ],
+          "Bibliography": [
+            {
+              "deps": [
+                "BibInternal",
+                "BibParser",
+                "DataStructures",
+                "Dates",
+                "FileIO",
+                "JSONSchema",
+                "TestItems",
+                "YAML"
+              ],
+              "extensions": {
+                "BibliographyCSLExt": "JSON3",
+                "BibliographyXMLExt": "EzXML"
+              },
+              "git-tree-sha1": "2246611f8da01251b73665fe0d57ed9d0e3b880b",
+              "registries": "General",
+              "uuid": "f1be7e48-bf82-45af-a471-ae754a193061",
+              "version": "0.4.0",
+              "weakdeps": {
+                "EzXML": "8f5d6c58-4d21-5cfd-889c-e3ad7ee6a615",
+                "JSON3": "0f8b85d8-7281-11e9-16c2-39a750bddbf1"
+              }
+            }
+          ],
+          "CSV": [
+            {
+              "deps": [
+                "CodecZlib",
+                "DataStrings",
+                "Dates",
+                "Downloads",
+                "Durations",
+                "Mmap",
+                "Parsers",
+                "PooledArrays",
+                "PrecompileTools",
+                "Printf",
+                "Tables",
+                "Unicode"
+              ],
+              "extensions": {
+                "CSVDataDecimalsExt": "DataDecimals",
+                "CSVFilePathsBaseExt": "FilePathsBase",
+                "CSVInlineStringsExt": "InlineStrings"
+              },
+              "git-tree-sha1": "ed05d41d96b1a815d52e9de1ef472971bc509832",
+              "registries": "General",
+              "uuid": "336ed68f-0bac-5ca0-87d4-7b16caf5d00b",
+              "version": "1.1.0",
+              "weakdeps": {
+                "DataDecimals": "3e2245cb-6932-498d-a7cf-39d39de8bde3",
+                "FilePathsBase": "48062228-2e41-5def-b9a4-89aafe57970f",
+                "InlineStrings": "842dd82b-1e85-43dc-bf29-5d0ee9dffc48"
+              }
+            }
+          ],
+          "CodecZlib": [
+            {
+              "deps": [
+                "TranscodingStreams",
+                "Zlib_jll"
+              ],
+              "git-tree-sha1": "970758a3d591a2a5c2a907c53f2e2f8c1b1d3537",
+              "registries": "General",
+              "uuid": "944b1d66-785c-5afd-91f1-9de20f533193",
+              "version": "0.7.9"
+            }
+          ],
+          "Compat": [
+            {
+              "deps": [
+                "TOML",
+                "UUIDs"
+              ],
+              "extensions": {
+                "CompatLinearAlgebraExt": "LinearAlgebra"
+              },
+              "git-tree-sha1": "9d8a54ce4b17aa5bdce0ea5c34bc5e7c340d16ad",
+              "registries": "General",
+              "uuid": "34da2185-b29b-5c13-b0c7-acf172513d20",
+              "version": "4.18.1",
+              "weakdeps": [
+                "Dates",
+                "LinearAlgebra"
+              ]
+            }
+          ],
+          "CompilerSupportLibraries_jll": [
+            {
+              "deps": [
+                "Artifacts",
+                "Libdl"
+              ],
+              "uuid": "e66e0078-7015-5450-92f7-15fbd957f2ae",
+              "version": "1.5.5+2"
+            }
+          ],
+          "CoverageTools": [
+            {
+              "deps": [
+                "JuliaSyntax",
+                "TOML"
+              ],
+              "git-tree-sha1": "6952d1820defc01a3b36408e52429fd7ae183b04",
+              "registries": "General",
+              "uuid": "c36e975a-824b-4404-a568-ef97ca766997",
+              "version": "1.4.2"
+            }
+          ],
+          "CpuId": [
+            {
+              "deps": [
+                "Markdown"
+              ],
+              "git-tree-sha1": "32d125af0fb8ec3f8935896122c5e345709909e5",
+              "registries": "General",
+              "uuid": "adafc99b-e345-5852-983c-f28acb93d879",
+              "version": "0.3.0"
+            }
+          ],
+          "DataAPI": [
+            {
+              "git-tree-sha1": "abe83f3a2f1b857aac70ef8b269080af17764bbe",
+              "registries": "General",
+              "uuid": "9a962f9c-6df0-11e9-0e5d-c546b8b5ee8a",
+              "version": "1.16.0"
+            }
+          ],
+          "DataStrings": [
+            {
+              "git-tree-sha1": "b8032263d364177a0b192ea15f277df4e6ab07e2",
+              "registries": "General",
+              "uuid": "48204bd6-5611-42ea-b167-fc1d713f9be2",
+              "version": "1.1.0"
+            }
+          ],
+          "DataStructures": [
+            {
+              "deps": [
+                "OrderedCollections"
+              ],
+              "git-tree-sha1": "b0bc6d2cad1fed8b7fd59a1551a991cb3d2809e6",
+              "registries": "General",
+              "uuid": "864edb3b-99cc-5e75-8d2d-829cb0a9cfe8",
+              "version": "0.19.6"
+            }
+          ],
+          "DataValueInterfaces": [
+            {
+              "git-tree-sha1": "bfc1187b79289637fa0ef6d4436ebdfe6905cbd6",
+              "registries": "General",
+              "uuid": "e2d170a0-9d28-54be-80f0-106bbe20a464",
+              "version": "1.0.0"
+            }
+          ],
+          "Dates": [
+            {
+              "deps": [
+                "Printf"
+              ],
+              "uuid": "ade2ca70-3891-5945-98fb-dc099432e06a",
+              "version": "1.11.0"
+            }
+          ],
+          "Dictionaries": [
+            {
+              "deps": [
+                "Indexing",
+                "Random",
+                "Serialization"
+              ],
+              "git-tree-sha1": "a55766a9c8f66cf19ffcdbdb1444e249bb4ace33",
+              "registries": "General",
+              "uuid": "85a47980-9c8c-11e8-2b9f-f7ca1fa99fb4",
+              "version": "0.4.6"
+            }
+          ],
+          "Distributed": [
+            {
+              "deps": [
+                "Random",
+                "Serialization",
+                "Sockets"
+              ],
+              "uuid": "8ba89e20-285c-5b6f-9357-94700520ee1b",
+              "version": "1.11.0"
+            }
+          ],
+          "Downloads": [
+            {
+              "deps": [
+                "ArgTools",
+                "FileWatching",
+                "LibCURL",
+                "NetworkOptions"
+              ],
+              "uuid": "f43a241f-c20a-4ad4-852c-f6b1247861c6",
+              "version": "1.7.0"
+            }
+          ],
+          "Durations": [
+            {
+              "deps": [
+                "Dates"
+              ],
+              "extensions": {
+                "DurationsArrowExt": "Arrow",
+                "DurationsTimeZonesExt": "TimeZones"
+              },
+              "git-tree-sha1": "407b209d76168dcc4355f9dcc4d3b3aaa60dfb3e",
+              "registries": "General",
+              "uuid": "41ac09f5-0a95-4810-aa18-c88bf48ee130",
+              "version": "1.4.1",
+              "weakdeps": {
+                "Arrow": "69666777-d1a9-59fb-9406-91d4454c9d45",
+                "TimeZones": "f269a46b-ccf7-5d73-abea-4c690281aa53"
+              }
+            }
+          ],
+          "FileIO": [
+            {
+              "deps": [
+                "Pkg",
+                "Requires",
+                "UUIDs"
+              ],
+              "extensions": {
+                "HTTPExt": "HTTP"
+              },
+              "git-tree-sha1": "6621fef488e496356c9c9625d0562c12a6070819",
+              "registries": "General",
+              "uuid": "5789e2e9-d7fb-5bc7-8068-2c6fae9b9549",
+              "version": "1.20.0",
+              "weakdeps": {
+                "HTTP": "cd3eb016-35fb-5094-929b-558a96fad6f3"
+              }
+            }
+          ],
+          "FileWatching": [
+            {
+              "uuid": "7b1f6079-737a-58dc-b8bc-7a2ca5c1b5ee",
+              "version": "1.11.0"
+            }
+          ],
+          "Future": [
+            {
+              "deps": [
+                "Random"
+              ],
+              "uuid": "9fa8497b-333b-5362-9e8d-4d0656e87820",
+              "version": "1.11.0"
+            }
+          ],
+          "Indexing": [
+            {
+              "git-tree-sha1": "ce1566720fd6b19ff3411404d4b977acd4814f9f",
+              "registries": "General",
+              "uuid": "313cdc1a-70c2-5d6a-ae34-0150d3930a38",
+              "version": "1.1.1"
+            }
+          ],
+          "IteratorInterfaceExtensions": [
+            {
+              "git-tree-sha1": "a3f24677c21f5bbe9d2a714f95dcd58337fb2856",
+              "registries": "General",
+              "uuid": "82899510-4779-5014-852e-03e436cf321d",
+              "version": "1.0.0"
+            }
+          ],
+          "JLLWrappers": [
+            {
+              "deps": [
+                "Artifacts",
+                "Preferences"
+              ],
+              "git-tree-sha1": "7204148362dafe5fe6a273f855b8ccbe4df8173e",
+              "registries": "General",
+              "uuid": "692b3bcd-3c85-4b1f-b108-f13ce0eb3210",
+              "version": "1.8.0"
+            }
+          ],
+          "JSON": [
+            {
+              "deps": [
+                "Dates",
+                "Logging",
+                "Parsers",
+                "PrecompileTools",
+                "StructUtils",
+                "UUIDs",
+                "Unicode"
+              ],
+              "extensions": {
+                "JSONArrowExt": [
+                  "ArrowTypes"
+                ]
+              },
+              "git-tree-sha1": "4657a834b01ce00f2b94546095c4350617b9af2c",
+              "registries": "General",
+              "uuid": "682c06a0-de6a-54ab-a142-c8b1cf79cde6",
+              "version": "1.10.0",
+              "weakdeps": {
+                "ArrowTypes": "31f734f8-188a-4ce0-8406-c8a06bd891cd"
+              }
+            }
+          ],
+          "JSONSchema": [
+            {
+              "deps": [
+                "Downloads",
+                "JSON",
+                "URIs"
+              ],
+              "extensions": {
+                "JSONSchemaJSON3Ext": "JSON3"
+              },
+              "git-tree-sha1": "d13f79c4242969874da7d00bda17d59bc7699aa7",
+              "registries": "General",
+              "uuid": "7d188eb4-7ad8-530c-ae41-71a32a6d4692",
+              "version": "1.5.0",
+              "weakdeps": {
+                "JSON3": "0f8b85d8-7281-11e9-16c2-39a750bddbf1"
+              }
+            }
+          ],
+          "JuliaSyntax": [
+            {
+              "git-tree-sha1": "0d4b3dab95018bcf3925204475693d9f09dc45b8",
+              "registries": "General",
+              "uuid": "70703baa-626e-46a2-a12c-08ffd08c73b4",
+              "version": "1.0.2"
+            }
+          ],
+          "JuliaSyntaxHighlighting": [
+            {
+              "deps": [
+                "StyledStrings"
+              ],
+              "uuid": "ac6e5ff7-fb65-4e79-a425-ec3bc9c03011",
+              "version": "1.12.0"
+            }
+          ],
+          "LibCURL": [
+            {
+              "deps": [
+                "LibCURL_jll",
+                "MozillaCACerts_jll"
+              ],
+              "uuid": "b27032c2-a3e7-50c8-80cd-2d36dbcbfd21",
+              "version": "1.0.0"
+            }
+          ],
+          "LibCURL_jll": [
+            {
+              "deps": [
+                "Artifacts",
+                "CompilerSupportLibraries_jll",
+                "LibSSH2_jll",
+                "Libdl",
+                "OpenSSL_jll",
+                "Zlib_jll",
+                "Zstd_jll",
+                "nghttp2_jll"
+              ],
+              "uuid": "deac9b47-8bc7-5906-a0fe-35ac56dc84c0",
+              "version": "8.18.0+1"
+            }
+          ],
+          "LibGit2": [
+            {
+              "deps": [
+                "LibGit2_jll",
+                "NetworkOptions",
+                "Printf",
+                "SHA"
+              ],
+              "uuid": "76f85450-5226-5b5a-8eaa-529ad045b433",
+              "version": "1.11.0"
+            }
+          ],
+          "LibGit2_jll": [
+            {
+              "deps": [
+                "Artifacts",
+                "CompilerSupportLibraries_jll",
+                "LibSSH2_jll",
+                "Libdl",
+                "OpenSSL_jll",
+                "PCRE2_jll",
+                "Zlib_jll"
+              ],
+              "uuid": "e37daf67-58a4-590a-8e99-b0245dd2ffc5",
+              "version": "1.9.1+0"
+            }
+          ],
+          "LibSSH2_jll": [
+            {
+              "deps": [
+                "Artifacts",
+                "CompilerSupportLibraries_jll",
+                "Libdl",
+                "OpenSSL_jll",
+                "Zlib_jll"
+              ],
+              "uuid": "29816b5a-b9ab-546f-933c-edad1886dfa8",
+              "version": "1.11.104+0"
+            }
+          ],
+          "Libdl": [
+            {
+              "uuid": "8f399da3-3557-5675-b5ff-fb832c97cbdb",
+              "version": "1.11.0"
+            }
+          ],
+          "Libiconv_jll": [
+            {
+              "deps": [
+                "Artifacts",
+                "JLLWrappers",
+                "Libdl"
+              ],
+              "git-tree-sha1": "be484f5c92fad0bd8acfef35fe017900b0b73809",
+              "registries": "General",
+              "uuid": "94ce4f54-9a6c-5748-9c1c-f9c7231a4531",
+              "version": "1.18.0+0"
+            }
+          ],
+          "LinearAlgebra": [
+            {
+              "deps": [
+                "Libdl",
+                "OpenBLAS_jll",
+                "libblastrampoline_jll"
+              ],
+              "uuid": "37e2e46d-f89d-539d-b4ee-838fcccc9c8e",
+              "version": "1.13.0"
+            }
+          ],
+          "Logging": [
+            {
+              "uuid": "56ddb016-857b-54e1-b83d-db4d58db5568",
+              "version": "1.11.0"
+            }
+          ],
+          "Malt": [
+            {
+              "deps": [
+                "Distributed",
+                "Logging",
+                "RelocatableFolders",
+                "Serialization",
+                "Sockets"
+              ],
+              "git-tree-sha1": "c2335b4e291f2422e2be8abf8936ccad58a98992",
+              "registries": "General",
+              "uuid": "36869731-bdee-424d-aa32-cab38c994e3b",
+              "version": "1.4.1"
+            }
+          ],
+          "Markdown": [
+            {
+              "deps": [
+                "Base64",
+                "JuliaSyntaxHighlighting",
+                "StyledStrings"
+              ],
+              "uuid": "d6f4376e-aef5-505a-96c1-9c027394607a",
+              "version": "1.11.0"
+            }
+          ],
+          "Mmap": [
+            {
+              "uuid": "a63ad114-7e13-5084-954f-fe012c677804",
+              "version": "1.11.0"
+            }
+          ],
+          "MozillaCACerts_jll": [
+            {
+              "uuid": "14a3606d-f60d-562e-9121-12d972cd8159",
+              "version": "2026.8.13"
+            }
+          ],
+          "NetworkOptions": [
+            {
+              "uuid": "ca575930-c2e3-43a9-ace4-1e988b2c1908",
+              "version": "1.3.0"
+            }
+          ],
+          "OpenBLAS_jll": [
+            {
+              "deps": [
+                "Artifacts",
+                "CompilerSupportLibraries_jll",
+                "Libdl"
+              ],
+              "uuid": "4536629a-c528-5b80-bd46-f80d51c5b363",
+              "version": "0.3.30+0"
+            }
+          ],
+          "OpenSSL_jll": [
+            {
+              "deps": [
+                "Artifacts",
+                "Libdl"
+              ],
+              "uuid": "458c3c95-2e84-50aa-8efc-19380b2a3a95",
+              "version": "3.5.6+0"
+            }
+          ],
+          "OrderedCollections": [
+            {
+              "git-tree-sha1": "f9b03759e9ef463718934fbed30820b39997511e",
+              "registries": "General",
+              "uuid": "bac558e1-5e72-5ebc-8fee-abe8a469f55d",
+              "version": "2.0.2"
+            }
+          ],
+          "PCRE2_jll": [
+            {
+              "deps": [
+                "Artifacts",
+                "Libdl"
+              ],
+              "uuid": "efcefdf7-47ab-520b-bdef-62a2eaa19f15",
+              "version": "10.46.0+0"
+            }
+          ],
+          "Parsers": [
+            {
+              "deps": [
+                "Dates",
+                "PrecompileTools"
+              ],
+              "git-tree-sha1": "663e8b48b789916221e0765393b289ca6c88f24e",
+              "registries": "General",
+              "uuid": "69de0a69-1ddd-5017-9359-2bf0b02dc9f0",
+              "version": "3.0.0"
+            }
+          ],
+          "PerfChecker": [
+            {
+              "deps": [
+                "Base64",
+                "CSV",
+                "CoverageTools",
+                "CpuId",
+                "Dates",
+                "Downloads",
+                "JSON",
+                "JuliaSyntax",
+                "Libdl",
+                "Malt",
+                "Pkg",
+                "Preferences",
+                "Profile",
+                "Random",
+                "SHA",
+                "TOML",
+                "TestItems",
+                "TypedTables",
+                "UUIDs",
+                "YAML"
+              ],
+              "extensions": {
+                "BenchmarkToolsExt": "BenchmarkTools",
+                "ChairmarksExt": "Chairmarks",
+                "DocumenterExt": "Documenter",
+                "DocumenterVitepressExt": [
+                  "Documenter",
+                  "DocumenterVitepress"
+                ],
+                "DrWatsonExt": "DrWatson",
+                "HTTPAdvisorExt": "HTTP",
+                "PProfExt": [
+                  "FlameGraphs",
+                  "PProf"
+                ],
+                "PropCheckExt": "PropCheck",
+                "SuppositionExt": "Supposition",
+                "TestItemRunnerExt": "TestItemRunner",
+                "UnicodePlotsExt": "UnicodePlots"
+              },
+              "path": "/home/azzaare/.julia/dev/PerfChecker-docs-interactive-20261012",
+              "uuid": "6309bf6b-a531-4b08-891e-8ee981e5c424",
+              "version": "1.1.0",
+              "weakdeps": {
+                "BenchmarkTools": "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf",
+                "Chairmarks": "0ca39b1e-fe0b-4e98-acfc-b1656634c4de",
+                "Documenter": "e30172f5-a6a5-5a46-863b-614d45cd2de4",
+                "DocumenterVitepress": "4710194d-e776-4893-9690-8d956a29c365",
+                "DrWatson": "634d3b9d-ee7a-5ddf-bec9-22491ea816e1",
+                "FlameGraphs": "08572546-2f56-4bcf-ba4e-bab62c3a3f89",
+                "HTTP": "cd3eb016-35fb-5094-929b-558a96fad6f3",
+                "PProf": "e4faabce-9ead-11e9-39d9-4379958e3056",
+                "PropCheck": "ca382230-33be-11e9-0059-d981d03070e4",
+                "Supposition": "5a0628fe-1738-4658-9b6d-0b7605a9755b",
+                "TestItemRunner": "f8b46487-2199-4994-9208-9a1283c18c0a",
+                "UnicodePlots": "b8865327-cd53-5732-bb35-84acbb429228"
+              }
+            }
+          ],
+          "Pkg": [
+            {
+              "deps": [
+                "Artifacts",
+                "Dates",
+                "Downloads",
+                "FileWatching",
+                "LibGit2",
+                "Libdl",
+                "Logging",
+                "Markdown",
+                "Printf",
+                "Random",
+                "SHA",
+                "TOML",
+                "Tar",
+                "UUIDs",
+                "Zstd_jll",
+                "p7zip_jll"
+              ],
+              "extensions": {
+                "REPLExt": "REPL"
+              },
+              "uuid": "44cfe95a-1eb2-52ea-b672-e2afdf69b78f",
+              "version": "1.13.0",
+              "weakdeps": {
+                "REPL": "3fa0cd96-eef1-5676-8a61-b3b8758bbffb"
+              }
+            }
+          ],
+          "PooledArrays": [
+            {
+              "deps": [
+                "DataAPI",
+                "Future"
+              ],
+              "git-tree-sha1": "36d8b4b899628fb92c2749eb488d884a926614d3",
+              "registries": "General",
+              "uuid": "2dfb63ee-cc39-5dd5-95bd-886bf059d720",
+              "version": "1.4.3"
+            }
+          ],
+          "PrecompileTools": [
+            {
+              "deps": [
+                "Preferences"
+              ],
+              "git-tree-sha1": "edbeefc7a4889f528644251bdb5fc9ab5348bc2c",
+              "registries": "General",
+              "uuid": "aea7be01-6a6a-4083-8856-8a6e6704d82a",
+              "version": "1.3.4"
+            }
+          ],
+          "Preferences": [
+            {
+              "deps": [
+                "TOML"
+              ],
+              "git-tree-sha1": "5005266de4bfe50e53ff44a5cb5c540b6e47a254",
+              "registries": "General",
+              "uuid": "21216c6a-2e73-6563-6e65-726566657250",
+              "version": "1.6.0"
+            }
+          ],
+          "Printf": [
+            {
+              "deps": [
+                "Unicode"
+              ],
+              "uuid": "de0858da-6303-5e67-8744-51eddeeeb8d7",
+              "version": "1.11.0"
+            }
+          ],
+          "Profile": [
+            {
+              "deps": [
+                "StyledStrings"
+              ],
+              "uuid": "9abbd945-dff8-562f-b5e8-e1ebf5ef1b79",
+              "version": "1.11.0"
+            }
+          ],
+          "Random": [
+            {
+              "deps": [
+                "SHA"
+              ],
+              "uuid": "9a3f8284-a2c9-5f02-9a11-845980a1fd5c",
+              "version": "1.11.0"
+            }
+          ],
+          "RelocatableFolders": [
+            {
+              "deps": [
+                "SHA",
+                "Scratch"
+              ],
+              "git-tree-sha1": "ffdaf70d81cf6ff22c2b6e733c900c3321cab864",
+              "registries": "General",
+              "uuid": "05181044-ff0b-4ac5-8273-598c1e38db00",
+              "version": "1.0.1"
+            }
+          ],
+          "Requires": [
+            {
+              "deps": [
+                "UUIDs"
+              ],
+              "git-tree-sha1": "62389eeff14780bfe55195b7204c0d8738436d64",
+              "registries": "General",
+              "uuid": "ae029012-a4dd-5104-9daa-d747884805df",
+              "version": "1.3.1"
+            }
+          ],
+          "SHA": [
+            {
+              "uuid": "ea8e919c-243c-51af-8825-aaa63cd721ce",
+              "version": "1.0.0"
+            }
+          ],
+          "Scratch": [
+            {
+              "deps": [
+                "Dates"
+              ],
+              "git-tree-sha1": "9b81b8393e50b7d4e6d0a9f14e192294d3b7c109",
+              "registries": "General",
+              "uuid": "6c6a2e73-6563-6170-7368-637461726353",
+              "version": "1.3.0"
+            }
+          ],
+          "Serialization": [
+            {
+              "uuid": "9e88b42a-f829-5b0c-bbe9-9e923198166b",
+              "version": "1.11.0"
+            }
+          ],
+          "Sockets": [
+            {
+              "uuid": "6462fe0b-24de-5631-8697-dd941f90decc",
+              "version": "1.11.0"
+            }
+          ],
+          "SplitApplyCombine": [
+            {
+              "deps": [
+                "Dictionaries",
+                "Indexing"
+              ],
+              "git-tree-sha1": "55db78e829cf726162fc4fc1b30d05f92092f3f6",
+              "registries": "General",
+              "uuid": "03a91e81-4c3e-53e1-a0a4-9c0c8f19dd66",
+              "version": "1.3.0"
+            }
+          ],
+          "Statistics": [
+            {
+              "deps": [
+                "LinearAlgebra"
+              ],
+              "extensions": {
+                "SparseArraysExt": [
+                  "SparseArrays"
+                ]
+              },
+              "git-tree-sha1": "e2b53ce13a53367e96601081e33d34746b571bad",
+              "registries": "General",
+              "uuid": "10745b16-79ce-11e8-11f9-7d13ad32a3b2",
+              "version": "1.11.5",
+              "weakdeps": {
+                "SparseArrays": "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
+              }
+            }
+          ],
+          "StringEncodings": [
+            {
+              "deps": [
+                "Libiconv_jll"
+              ],
+              "git-tree-sha1": "b765e46ba27ecf6b44faf70df40c57aa3a547dcb",
+              "registries": "General",
+              "uuid": "69024149-9ee7-55f6-a4c4-859efe599b68",
+              "version": "0.3.7"
+            }
+          ],
+          "StructUtils": [
+            {
+              "deps": [
+                "Dates",
+                "UUIDs"
+              ],
+              "extensions": {
+                "StructUtilsLazilyInitializedFieldsExt": [
+                  "LazilyInitializedFields"
+                ],
+                "StructUtilsMeasurementsExt": [
+                  "Measurements"
+                ],
+                "StructUtilsStaticArraysCoreExt": [
+                  "StaticArraysCore"
+                ],
+                "StructUtilsTablesExt": [
+                  "Tables"
+                ]
+              },
+              "git-tree-sha1": "b814d5005d6a529d740ffe06f8a86396f6501138",
+              "registries": "General",
+              "uuid": "ec057cc2-7a8d-4b58-b3b3-92acb9f63b42",
+              "version": "2.9.2",
+              "weakdeps": {
+                "LazilyInitializedFields": "0e77f7df-68c5-4e49-93ce-4cd80f5598bf",
+                "Measurements": "eff96d63-e80a-5855-80a2-b1b0885c5ab7",
+                "StaticArraysCore": "1e83bf80-4336-4d27-bf5d-d5a4f845583c",
+                "Tables": "bd369af6-aec1-5ad0-b16a-f7cc5008161c"
+              }
+            }
+          ],
+          "StyledStrings": [
+            {
+              "uuid": "f489334b-da3d-4c2e-b8f0-e476e12c162b",
+              "version": "1.11.0"
+            }
+          ],
+          "TOML": [
+            {
+              "deps": [
+                "Dates"
+              ],
+              "uuid": "fa267f1f-6049-4f14-aa54-33bafae1ed76",
+              "version": "1.0.3"
+            }
+          ],
+          "TableTraits": [
+            {
+              "deps": [
+                "IteratorInterfaceExtensions"
+              ],
+              "git-tree-sha1": "c06b2f539df1c6efa794486abfb6ed2022561a39",
+              "registries": "General",
+              "uuid": "3783bdb8-4a98-5b6b-af9a-565f29a5fe9c",
+              "version": "1.0.1"
+            }
+          ],
+          "Tables": [
+            {
+              "deps": [
+                "DataAPI",
+                "DataValueInterfaces",
+                "IteratorInterfaceExtensions",
+                "OrderedCollections",
+                "TableTraits"
+              ],
+              "git-tree-sha1": "a94d9bdda1b7bed0046cea645639ab3f62196fac",
+              "registries": "General",
+              "uuid": "bd369af6-aec1-5ad0-b16a-f7cc5008161c",
+              "version": "1.14.0"
+            }
+          ],
+          "Tar": [
+            {
+              "deps": [
+                "ArgTools",
+                "SHA"
+              ],
+              "uuid": "a4e569a6-e804-4fa4-b0f3-eef7a1d5b13e",
+              "version": "1.10.0"
+            }
+          ],
+          "TestItems": [
+            {
+              "git-tree-sha1": "a6dd904babc04670c784f81b67957a3545271610",
+              "registries": "General",
+              "uuid": "1c621080-faea-4a02-84b6-bbd5e436b8fe",
+              "version": "1.1.0"
+            }
+          ],
+          "TranscodingStreams": [
+            {
+              "git-tree-sha1": "0c45878dcfdcfa8480052b6ab162cdd138781742",
+              "registries": "General",
+              "uuid": "3bb67fe8-82b1-5028-8e26-92a6c54297fa",
+              "version": "0.11.3"
+            }
+          ],
+          "TypedTables": [
+            {
+              "deps": [
+                "Adapt",
+                "Dictionaries",
+                "Indexing",
+                "SplitApplyCombine",
+                "Tables",
+                "Unicode"
+              ],
+              "git-tree-sha1": "84fd7dadde577e01eb4323b7e7b9cb51c62c60d4",
+              "registries": "General",
+              "uuid": "9d95f2ec-7b3d-5a63-8d20-e2491e220bb9",
+              "version": "1.4.6"
+            }
+          ],
+          "URIs": [
+            {
+              "git-tree-sha1": "908fec9df6c5de98548ead82a468c95ccf6cd263",
+              "registries": "General",
+              "uuid": "5c2747f8-b7ea-4ff2-ba2e-563bfd36b1d4",
+              "version": "1.7.0"
+            }
+          ],
+          "UUIDs": [
+            {
+              "deps": [
+                "Random",
+                "SHA"
+              ],
+              "uuid": "cf7118a7-6976-5b1a-9a39-7adc72f591a4",
+              "version": "1.11.0"
+            }
+          ],
+          "Unicode": [
+            {
+              "uuid": "4ec0a83e-493e-50e2-b9ac-8f72acf5a8f5",
+              "version": "1.11.0"
+            }
+          ],
+          "YAML": [
+            {
+              "deps": [
+                "Base64",
+                "Dates",
+                "Printf",
+                "StringEncodings"
+              ],
+              "git-tree-sha1": "9c685a6e94e255019e2bf9486318147cd42fe34a",
+              "registries": "General",
+              "uuid": "ddb6d928-2868-570f-bddf-ab3f9cf99eb6",
+              "version": "0.4.17"
+            }
+          ],
+          "Zlib_jll": [
+            {
+              "deps": [
+                "Libdl"
+              ],
+              "uuid": "83775a58-1f1d-513f-b197-d71354ab007a",
+              "version": "1.3.1+2"
+            }
+          ],
+          "Zstd_jll": [
+            {
+              "deps": [
+                "CompilerSupportLibraries_jll",
+                "Libdl"
+              ],
+              "uuid": "3161d3a3-bdf6-5164-811a-617609db77b4",
+              "version": "1.5.7+1"
+            }
+          ],
+          "libblastrampoline_jll": [
+            {
+              "deps": [
+                "Artifacts",
+                "Libdl"
+              ],
+              "uuid": "8e850b90-86db-534c-a0d3-1478176c7d93",
+              "version": "5.15.0+0"
+            }
+          ],
+          "nghttp2_jll": [
+            {
+              "deps": [
+                "Artifacts",
+                "CompilerSupportLibraries_jll",
+                "Libdl"
+              ],
+              "uuid": "8e850ede-7688-5339-a07c-302acd2aaf8d",
+              "version": "1.67.1+0"
+            }
+          ],
+          "p7zip_jll": [
+            {
+              "deps": [
+                "Artifacts",
+                "CompilerSupportLibraries_jll",
+                "Libdl"
+              ],
+              "uuid": "3f19e933-33d8-53b3-aaab-bd5110c3b7a0",
+              "version": "17.8.2+0"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "perfchecker_version": "1.1.0",
+  "performance": "not_compared",
+  "runtime": {
+    "arch": "x86_64",
+    "cpu": "alderlake",
+    "language": "julia",
+    "os": "Linux",
+    "threads": 1,
+    "version": "1.13.1"
+  },
+  "samples_per_version": 50,
+  "schema_version": "perfchecker-legacy-first-comparison/1",
+  "seconds": 1.0,
+  "snapshot_errors": [],
+  "source_sha256": "fa36272d9c76868c53d640ffa5125071298f858240db40f65599ee000fbd35ce",
+  "started_at": "2026-10-13T06:22:48.775",
+  "state_policy": "fresh worker per released version; preparation once, read-only entries reused across evaluations",
+  "units": {
+    "allocs": "1",
+    "gctimes": "ns",
+    "memory": "By",
+    "times": "ns"
+  }
+}

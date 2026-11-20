@@ -1,291 +1,227 @@
 ```@raw html
-<a id="Bibliography:-run-the-complete-suite"></a>
+<a id="Bibliography:-run-the-complete-suite"></a><a id="Bibliography:-the-complete-suite"></a>
 ```
 
-# Bibliography: the complete suite
+# Bibliography: history, then an export investigation
 
-Bibliography imports, processes and exports bibliographic entries. Its parser and data model live in BibParser and BibInternal, so a slower export need not come from the parser.
-
-The scripts in `examples/bibliography/` load all three packages' suites. Use them to select one operation, compare releases, and inspect timings and profiles in each interface.
-
-New to profiling? Read [Understand the result](../guide/understanding-measurements.md) alongside this page.
-
-## Choose a task
-
-- `items.jl performance` — measure selected upstream tests as items.
-- `run.jl benchmark Bibliography export_bibtex` — time export only.
-- `history.jl run` — compare nine released stacks.
-- `compare-exports.jl run` — compare one source change with dependencies fixed.
-- VS Code, Oxygen, Pluto — the same selections through controls.
-
-```@raw html
-<a id="Prepare-the-example-once"></a>
-```
-
-## Prepare once
-
-From a PerfChecker checkout:
-
-```sh
-cd examples/bibliography
-julia --startup-file=no setup.jl
-```
-
-Preparation creates `sources.toml`, `suite.jl`, several launchers, `.sources/` (pinned checkouts), `.controller/` (controller environments) and `results/`.
-
-`sources.toml` pins:
-
-- BibInternal 0.4.0 — `792d8c7`
-- BibParser 0.3.0 — `cf1eb44`
-- Bibliography 0.4.0 — `575ec81`
-
-Preparation does not modify your existing checkouts. A later run checks the recorded revisions and refuses to replace local edits.
-
-```@raw html
-<a id="Inspect-the-full-suite"></a>
-```
-
-## Inspect the suite
-
-```sh
-julia --project=.controller/core run.jl plan
-```
-
-35 leaves: seven workloads, five collectors each.
-
-- BibInternal `construct_entry` — construct a normalized article entry.
-- BibInternal `validate_entry` — validate against canonical rules.
-- BibParser `parse_bibtex_file` — parse a BibTeX file.
-- Bibliography `import_bibtex` — import BibTeX into the public model.
-- Bibliography `export_bibtex` — export the model as BibTeX.
-- Bibliography `web_render` — convert to the web representation.
-- Bibliography `read_and_filter` — read a document and filter entries.
-
-- `benchmark` — BenchmarkTools timing and allocations.
-- `chairmark` — Chairmarks measurements.
-- `profile_alloc` — allocation samples, files and stacks.
-- `profile` — CPU samples and stacks.
-- `wall_profile` — task wall-time stacks (Julia 1.12+).
-
-Planning starts no worker. Check the status column before running.
-
-```@raw html
-<a id="Run-the-seven-timing-checks"></a>
-```
-
-## Select a package, workload and collector
-
-Choose either route to inspect the same five-collector export plan. Neither starts a measurement.
-
-::: code-group
-
-```sh [CLI]
-julia --startup-file=no --project=.controller/core run.jl plan Bibliography export_bibtex
-```
-
-```julia [Julia API]
-using PerfChecker
-suite = load_software_suite("suite.jl")
-plan = plan_suite(suite; profile = :quick)
-selected = filter_suite_plan(plan;
-    packages = "Bibliography", features = :export_bibtex)
-print_suite_plan(selected)
-```
-
-:::
-
-Start Julia with `--project=.controller/core` for the API route. The working directory is `examples/bibliography/` for both routes. `features = :export_bibtex` matches the logical workload across collectors; you do not need the technical leaf name. Omit the workload to select all workloads in a package; the CLI also accepts comma-separated names.
-
-```@raw html
-<a id="Why-the-sampling-profiles-reuse-their-inputs"></a>
-```
-
-### Why the sampling profiles reuse their input
-
-The CPU and wall-time profiles call the original workload repeatedly with one prepared input during a continuous sampling window. These workloads read their inputs, and `verify-reuse.jl` checks that two calls leave state and file bytes unchanged. Timing and allocation collectors keep fresh state.
-
-An empty profile is missing evidence, not proof the operation is free. Never copy this reuse policy to a workload that mutates its input.
-
-```@raw html
-<a id="Read-the-report-before-interpreting-the-graph"></a>
-```
-
-## Read the report before the graph
-
-Open `suite-report.md` first. The same run is available as `suite-result.json` and `suite-junit.xml`; `bundles/` holds the evidence plots consume.
-
-- The Markdown `Seconds` column covers the whole leaf, including orchestration — not the sample latency. Use `julia.wall.time` for workload timing.
-- A completed collector means the measurement ran. These upstream workloads have no oracle, so correctness is `not_checked`.
-- A quick run against one target has no baseline. It cannot show an improvement.
-- Preserve unavailable collectors and worker failures instead of filtering them into an apparent pass.
-
-```@raw html
-<a id="Open-the-same-suite-in-the-REPL"></a>
-<a id="Open-the-web-interface"></a>
-```
-
-```@raw html
-<a id="Open-the-interfaces"></a>
-<a id="Watch-one-export-check"></a>
-```
-
-## Run one export through your interface
-
-Each tab runs **Bibliography → export_bibtex → benchmark** from the same prepared suite. Keep one worker thread, 50 samples, `evals = 1` and 0.5 seconds. Inspect the one-row plan before launching and read its completed report before interpreting a figure. The recorded captures show this workload; they are examples, not a new run on your machine.
-
-```@raw html
-<a id="Open-the-web-studio"></a>
-<a id="Use-VS-Code"></a>
-```
-
-::: tabs
-
-== VS Code
-
-1. Open `examples/bibliography/` as the workspace and set **PerfChecker: Runner Project** to `.controller/core`.
-2. Open Studio, select `suite.jl`, package **Bibliography**, workload **export_bibtex** and collector **benchmark**.
-3. Inspect the one-row plan and the controls above, then explicitly launch it.
-4. Open the completed run and its saved report. A one-target execution has no comparison baseline.
-
-See [suite selection and results](../interfaces/vscode-workflows.md) for the editor controls. The native TestItems below use their separate `.controller/items` environment; they measure a different scope.
-
-== Pluto
-
-Prepare the optional environment, then launch the supplied notebook:
-
-```sh
-julia --startup-file=no setup.jl pluto
-julia --startup-file=no --project=.controller/pluto pluto.jl
-```
-
-1. Select **Bibliography**, **export_bibtex** and **benchmark**.
-2. Inspect the one-row plan and controls, then press **Launch selected checks**.
-3. Refresh the completed status and explicitly save the reports. Opening the notebook, changing a selector or reloading starts no measurement.
-
-```@raw html
-<p><a href="../examples/bibliography/pluto/notebook.jl" download="notebook.jl"><strong>Download the Bibliography notebook (.jl)</strong></a></p>
-<DocMedia src="/examples/bibliography/pluto/selection.png" alt="Recorded Pluto selection of the Bibliography export benchmark" caption="Recorded selection for this export workload. Launch and report saving are explicit notebook actions." />
-```
-
-== REPL / CLI
-
-From the same example directory, run just the benchmark collector:
-
-```sh
-julia --startup-file=no --project=.controller/core run.jl benchmark Bibliography export_bibtex
-```
-
-The command prints the selected plan, runs it with the controls above and prints its new report directory. Open `suite-report.md` there; `suite-result.json` preserves the same execution. For interactive selection, start `repl.jl` in the same controller and choose the same package, workload and collector.
-
-== Web (Oxygen)
-
-Prepare and start the optional Web controller:
-
-```sh
-julia --startup-file=no setup.jl web
-julia --startup-file=no --project=.controller/web web.jl
-```
-
-Open `http://127.0.0.1:8871/perfchecker/v1/` on the same machine while that server is running.
-
-1. Select package **Bibliography** and workload **export_bibtex**. Its five collector cards appear.
-2. Choose **benchmark**, then **Add visible**. Inspect the one-row plan and controls above.
-3. Launch explicitly and wait for **complete**.
-4. Open **Results**, choose `julia.wall.time` and view `distribution`.
-
-```@raw html
-<DocMedia src="/examples/bibliography/web/selection.png" alt="Recorded Web Studio selection of Bibliography export_bibtex" caption="The recorded export selection in Oxygen Studio. Choose benchmark to time this operation." />
-```
-
-See [Web controller configuration](../interfaces/web-studio.md) for binding, authentication and remote access.
-
-:::
-
-### Explore all nine versions in Oxygen
-
-After `history.jl run`, open **Results**, filter **Profile** to **historical**, and select the campaign. Choose feature `export_bibtex`, metric `julia.wall.time`, view `version_series`. Switch to `julia.alloc.bytes` for allocated bytes, `distribution` for all 900 timings, or `version_delta` for comparisons against 0.1.0.
-
-The run is `partially_executed`: eight planned workloads do not exist in earlier versions, so their points are absent. `inconclusive` means no acceptance threshold was configured.
-
-## Reuse the upstream tests as native items
-
-The pinned Bibliography revision uses `@testset` files, not `@testitem`. The example supplies two thin declarations in `testitems/items.jl`.
-
-```sh
-julia --startup-file=no setup.jl items
-julia --startup-file=no --project=.controller/items items.jl list
-julia --startup-file=no --project=.controller/items items.jl performance "Bibliography export workload"
-```
-
-- The listing runs nothing.
-- `performance` measures only the named item; without a name it measures both declarations.
-- `functional` runs the shared functional item only.
-
-In VS Code, set **PerfChecker: Runner Project** to `.controller/items`, then discover items. Each sample still runs in a fresh Julia process.
-
-## Open Pluto
-
-Use the **Pluto** tab above for the runnable notebook, optional environment and explicit launch/save steps. The [Pluto interface guide](../interfaces/repl-pluto.md) covers notebook configuration and shutdown.
+Bibliography imports and exports bibliographic entries; BibParser and BibInternal supply its parser and data model. Start by comparing BibTeX export across **nine releases**, then hold dependencies fixed to investigate the streaming-export change.
 
 ## Compare the package history
 
+The same export workload runs at **0.1.0, 0.2.0, 0.2.5, 0.2.10, 0.2.15, 0.2.20, 0.3.0, 0.3.1 and 0.4.0**. Each tab shows elapsed time, GC, allocated bytes and allocation count, normalized within that collector's nine-release capture. The BenchmarkTools and Chairmarks captures use different machines and define GC differently: compare versions within a tab. Inspect a point for its original value and unit; an all-zero metric appears at 1 by convention.
+
+::: tabs
+
+== BenchmarkTools
+
+```@raw html
+<NormalizedMeasurements source="/examples/bibliography/history/normalized.json" html="/examples/bibliography/history/normalized.html" package-name="Bibliography · nine-release BenchmarkTools history" />
+```
+
+Windows · Julia 1.13.0 · one worker thread · 100 samples per version. GC is elapsed GC time, recorded in ns. These saved measurements also appear on the home page.
+
+== Chairmarks
+
+```@raw html
+<NormalizedMeasurements source="/examples/bibliography/chairmarks-history/normalized.json" html="/examples/bibliography/chairmarks-history/normalized.html" package-name="Bibliography · nine-release Chairmarks history" />
+```
+
+Linux · Julia 1.13.1 · Chairmarks 1.3.1 · one worker thread · 100 samples per version. GC is a **fraction**, not GC seconds. This separate machine and session is not a controlled comparison of collector speed.
+
+:::
+
+The early releases allocate less than some later releases: a shorter elapsed time need not mean fewer bytes or allocations. These histories compare released **package stacks**; their BibInternal and BibParser pins evolve too. They do not isolate a Bibliography source change, and their upstream workload has no correctness oracle.
+
+```@raw html
+<a id="Choose-a-task"></a><a id="Prepare-once"></a><a id="Prepare-the-example-once"></a><a id="Inspect-the-full-suite"></a><a id="Inspect-the-suite"></a><a id="Select-a-package,-workload-and-collector"></a><a id="Read-the-report-before-the-graph"></a><a id="Read-the-report-before-interpreting-the-graph"></a>
+```
+
+### Create the comparison and its plot
+
+From `examples/bibliography/` in the matching PerfChecker source checkout, prepare the example once with `julia setup.jl core`. Then use the same code for either collector:
+
+```julia
+using PerfChecker, BenchmarkTools, Chairmarks
+include("history-suite.jl")
+backend = :benchmark                      # or :chairmark
+plan = plan_suite(build_suite(; backends = backend); profile = :historical)
+selected = filter_suite_plan(plan; packages = "Bibliography",
+    features = :export_bibtex, backends = backend)
+print_suite_plan(selected)                 # nine targets; no workers yet
+mkpath("results")
+reports = mktempdir(abspath("results"); prefix = "export-history-", cleanup = false)
+result = run_suite_repl(selected; reports, strict = false,
+    overrides = Dict{Symbol,Any}(:threads => 1, :samples => 100,
+        :evals => 1, :seconds => 1.0))
+```
+
+Run Julia with `julia --project=.controller/core`. The result and portable bundle are saved under the report directory. In the same Julia session, prepare the plotting packages and draw the four-metric overlay:
+
+```julia
+using Pkg
+Pkg.add(["PerfCheckerMakie", "WGLMakie"])
+using PerfCheckerMakie, WGLMakie
+bundle_path = only(filter(isdir, readdir(joinpath(reports, "bundles"); join = true)))
+bundle = read_run_bundle(bundle_path)
+view = only(filter(entry -> entry["kind"] == "normalized_metrics" &&
+    entry["workload"] == "export_bibtex", plot_catalog(bundle)))
+plot = performance_plot(bundle, view["id"])
+display(HTML(performance_plot_html(plot)))
+```
+
+```@raw html
+<details><summary>Preparation, full suite and reproducibility</summary>
+```
+
+Use the source checkout matching this documentation; the example scripts live under `examples/bibliography/`. Setup prepares private pinned upstream checkouts and a separate controller environment. It checks revisions and refuses to replace local edits. It does not start measurements.
+
+The full suite contains seven workloads (construct, validate, parse, import, export, web render and read/filter) with five collectors each. `julia --project=.controller/core run.jl plan` lists the 35 leaves. `history.jl run` measures the broader nine-release BenchmarkTools suite: 28 leaves execute and eight are unavailable because `read_and_filter` first appears in 0.4.0. Missing workloads remain absent. Bibliography 0.2.10 uses BibParser 0.1.10 to satisfy its DataStructures compatibility constraint.
+
+Use a quiet machine and run campaigns sequentially. `--startup-file=no` can be useful when reproducing a capture because it excludes personal Julia startup customizations; it is optional for ordinary use.
+
+```@raw html
+</details>
+```
+
+## Investigate the streaming-export change
+
+Compare parent **6a4cc90** with **575ec81**, holding BibInternal and BibParser fixed. This fixture differs from the release history above. The saved study has 100 BenchmarkTools samples per revision:
+
+| Measurement | Parent | Streaming export |
+| --- | ---: | ---: |
+| Median elapsed time | 7.6 µs | 6.8 µs |
+| Elapsed-time range | 5.9–12.7 µs | 5.3–12.6 µs |
+| Median allocated bytes | 3,904 B | 2,976 B |
+| Median allocation count | 27 | 23 |
+| Median GC time | 0 ns | 0 ns |
+
+Allocated bytes fall **23.77%** and allocation count **14.81%**. Median time falls 10.53%, but its ranges overlap: the recorded performance verdict is `inconclusive`. Correctness was not checked. Zero GC has no defined relative change.
+
 ```sh
-julia --project=.controller/core history.jl plan
-julia --project=.controller/core history.jl run
-```
-
-Nine tagged versions: **0.1.0, 0.2.0, 0.2.5, 0.2.10, 0.2.15, 0.2.20, 0.3.0, 0.3.1, 0.4.0**. 36 leaves: 28 measurable, eight unavailable because `read_and_filter` only exists in 0.4.0.
-
-For Bibliography 0.2.10 the example pins BibParser 0.1.10; its DataStructures constraint is compatible, BibParser 0.1.9 is not.
-
-Dependencies evolve with the package stack, so this history describes the stacks together.
-
-## Extend to historical comparisons
-
-To isolate one source change, hold dependencies fixed. The [two-revision comparison](comparisons.md) follows the streaming-export change with BibInternal and BibParser pinned.
-
-- `plan_suite(suite; profile = :ci)` selects representative releases and source checkouts.
-- `:historical` includes all declared releases.
-- An unavailable workload is not a regression.
-
-To locate the calls responsible for a cost, continue with [Investigating a change](../guide/investigate.md).
-
-## Recorded examples
-
-```@raw html
-<p>The <a href="../examples/bibliography/suite-runs.json">recorded run summary</a> lists each workload, collector, state policy, outcome and source report digest.</p>
+julia --project=.controller/core compare-exports.jl plan
+julia --project=.controller/core compare-exports.jl run
 ```
 
 ```@raw html
-<DocMedia video recording="bibliography-history" src="/examples/bibliography/history-web/bibliography-history.webm" poster="/examples/bibliography/history-web/history-time.png" subtitles="/examples/bibliography/history-web/walkthrough.vtt" alt="Oxygen walkthrough comparing nine Bibliography tags through time, allocation, distribution and delta views" caption="Actual exploration of the recorded historical campaign. The first wait is plot rendering; this video launches no measurement job. Captions explain the selected measures. No audio." />
-<DocMedia src="/examples/bibliography/history-web/history-memory.png" alt="Oxygen allocated-byte curve showing all nine Bibliography tags, from 4480 to 8352 bytes" caption="The same saved campaign viewed as Julia allocation bytes. The metric changes while the selected workload and source revisions remain the same." />
+<p><a href="../examples/bibliography/streaming-comparison.json" download>Download the controlled comparison</a> (summary statistics, not individual samples).</p>
 ```
 
 ```@raw html
-<DocMedia video recording="bibliography-web" src="/examples/bibliography/web/bibliography-web.webm" poster="/examples/bibliography/web/selection.png" subtitles="/examples/bibliography/web/walkthrough.vtt" alt="Recorded Bibliography export check in the Oxygen studio" caption="Windows, Julia 1.13.0, 12 September 2026. One export_bibtex check, from selection to its saved sample distribution. No audio." />
+<a id="Run-the-seven-timing-checks"></a><a id="Why-the-sampling-profiles-reuse-their-inputs"></a><a id="Run-one-export-through-your-interface"></a><a id="Watch-one-export-check"></a><a id="Extend-to-historical-comparisons"></a>
+```
+
+### Locate the remaining cost
+
+These diagnostic profiles sample **575ec81 alone**. They help choose source locations to inspect; without parent profiles they do not attribute the measured reduction to a particular call.
+
+::: tabs
+
+== CPU samples
+
+```sh
+julia --project=.controller/core run.jl profile Bibliography export_bibtex
 ```
 
 ```@raw html
-<DocMedia src="/examples/bibliography/web/collectors.png" alt="Five collectors available for the Bibliography export_bibtex workload" caption="The workload filter groups the five collectors under the same export_bibtex name." />
-<DocMedia src="/examples/bibliography/web/results.png" alt="Saved export timing distribution with sample 50 highlighted at 6200 nanoseconds" caption="A saved result reopened after the run. The executed verdict and inconclusive comparison remain visible above the distribution." />
+<InteractiveRecordedPlot source="/examples/bibliography/profiles/cpu.json" html="/examples/bibliography/profiles/cpu.html" title="Streaming export · CPU samples at 575ec81" kind="cpu_flamegraph" />
+```
+
+Windows · Julia 1.13.0 · **159 CPU samples**. The `_write_bibtex` branch at `bibtex.jl:162` contains 100 samples (62.9%), including 90 in `print` at `strings/io.jl:48`. Inspect that writing branch. These inclusive stack weights overlap; do not add them or interpret width as per-call duration.
+
+== Allocation sites
+
+```sh
+julia --project=.controller/core run.jl profile_alloc Bibliography export_bibtex
 ```
 
 ```@raw html
-<p><a href="../examples/bibliography/pluto/notebook.jl" download="notebook.jl"><strong>Download the Bibliography Pluto notebook (.jl)</strong></a></p>
+<InteractiveRecordedPlot source="/examples/bibliography/profiles/allocation-pie.json" html="/examples/bibliography/profiles/allocation-pie.html" title="Streaming export · estimated allocation share at 575ec81" kind="allocation_pie" />
+```
+
+A separate warmed Linux · Julia 1.13.1 capture uses fresh inputs. Exclusive retained event weights are scaled to an independently measured **2,976 B / 23 allocations**. Dictionary capacity reservation at `bibtex.jl:143` accounts for **41.9%** of estimated bytes; writing at line 162 accounts for **27.5%**. The retained 23 events weigh 2,710 sampled bytes out of 27 observed events; sampled bytes and the independent byte total are different quantities. Allocation activity does not measure resident memory.
+
+== Wall-time samples
+
+```sh
+julia --project=.controller/core run.jl wall_profile Bibliography export_bibtex
 ```
 
 ```@raw html
-<DocMedia src="/examples/bibliography/pluto/completed.png" alt="Pluto notebook showing one completed Bibliography export check and its saved reports" caption="The same export workload run through Pluto. Status, report saving and the result row are visible; no measurement starts when the notebook opens." />
+<InteractiveRecordedPlot source="/examples/bibliography/profiles/wall.json" html="/examples/bibliography/profiles/wall.html" title="Streaming export · wall-time task samples at 575ec81" kind="wall_flamegraph" />
+```
+
+Wall-time sampling includes waiting and requires Julia 1.12+. Inspect a frame's task-sample weight and source path. Its denominator differs from CPU samples and allocation bytes.
+
+:::
+
+The CPU and wall collectors repeat this read-only workload with one prepared input during a continuous sampling window; timing and allocation collectors keep fresh state. `verify-reuse.jl` checks the input-reuse assumption. After an edit, rerun correctness checks and compatible measurements with the same fixture and dependency pins. [Comparison configuration](../reference/comparisons.md) gives deeper candidate and acceptance-limit options.
+
+```@raw html
+<a id="Use-VS-Code"></a>
+```
+
+## Reuse the upstream tests as native items
+
+The pinned Bibliography source uses `@testset` files. Two thin declarations in `testitems/items.jl` make useful upstream checks discoverable as native items:
+
+```sh
+julia setup.jl items
+julia --project=.controller/items items.jl list
+julia --project=.controller/items items.jl performance "Bibliography export workload"
+```
+
+| Selected item | Execution | Whole-item wall duration |
+| --- | --- | ---: |
+| Bibliography export workload | Passed | 1,993.05 ms |
+
+This real VS Code TestItems receipt measures the **item scope**: imports, setup and assertions are included. It is not the export-only benchmark above. The separate format-API item was not selected. Listing runs nothing; omitting the item name measures both declarations. In VS Code, choose `.controller/items` as **PerfChecker: Runner Project**, discover items, then run the export item. Samples run in fresh Julia processes.
+
+```@raw html
+<p><a href="../examples/bibliography/vscode/capture.json" download>Download the selected native-item receipt</a>.</p>
 ```
 
 ```@raw html
-<DocMedia src="/examples/bibliography/vscode/native-items.png" alt="VS Code Testing view: the Bibliography export workload passed and the format API item remains unrun" caption="Actual VS Code 1.137.0 execution of one selected Bibliography item. The other discovered item remains unrun. The 26.4 seconds in the Testing summary include orchestration; this run's item measurement was 1.99 seconds, including its imports, setup and assertions." />
+<a id="Open-Pluto"></a><a id="Open-the-interfaces"></a><a id="Open-the-same-suite-in-the-REPL"></a>
 ```
 
+## Open the reactive Pluto notebook
+
 ```@raw html
-<figure class="doc-screenshot">
-<iframe class="doc-interactive" src="../examples/bibliography/history/export-time.html" title="Bibliography export medians across nine tagged versions" loading="lazy" sandbox="allow-scripts allow-same-origin allow-downloads"></iframe>
-<figcaption>Native interactive export of medians from 100 samples per tag. Windows · Julia 1.13.0 · one worker thread. Inputs match; dependency revisions follow each tag. Values are in nanoseconds (1,000 ns = 1 µs).</figcaption>
-</figure>
-<p><a href="../examples/bibliography/history/export-time.html">Open the interactive export</a> · <a href="../examples/bibliography/history/export-time.json" download>Download the serialized plot and source revisions</a></p>
+<p><a href="../examples/bibliography/pluto/notebook.jl" download="bibliography-notebook.jl"><strong>Download the Bibliography Pluto notebook (.jl)</strong></a>.</p>
+```
+
+Start a Pluto environment once:
+
+```sh
+julia --project=@perfchecker-pluto -e 'using Pkg; Pkg.add("Pluto"); using Pluto; Pluto.run()'
+```
+
+In the browser, use **Open a notebook** and select the downloaded file. Its first cell prepares registered Core 1.1 and Pluto/Makie companions (currently 1.0.1), plus pinned upstream sources in `.perfchecker-bibliography` beside the notebook. First opening needs Julia 1.12+, Git and internet access; no PerfChecker checkout is needed.
+
+Enable **Compare nine tagged versions**, choose **Bibliography → export_bibtex → benchmark** (or **chairmark**), and leave **All targets** selected for a history. Review the plan, then press **Launch selected checks**. **Refresh status** shows progress; **Save completed reports** preserves the bundle. Editing selectors prepares the reactive plan; it does not launch workers. The [Pluto guide](../interfaces/pluto.md) covers saved results and your own suites.
+
+```@raw html
+<a id="Open-the-web-interface"></a><a id="Open-the-web-studio"></a>
+```
+
+## Explore all nine versions in Oxygen
+
+To browse a completed historical campaign from this example, run `julia setup.jl web` in `examples/bibliography/`, then start Julia with `julia --project=.controller/web`. Open the saved-results viewer:
+
+```julia
+using PerfChecker, PerfCheckerWeb, PerfCheckerMakie, WGLMakie
+serve_suite("results"; host = "127.0.0.1", port = 8871)
+```
+
+Open `http://127.0.0.1:8871/perfchecker/v1/` while that Julia session stays running. In **Results**, set **Suite → bibliography** and **Profile → historical**, then select your completed campaign. Filter plots to **Package → Bibliography**, **Feature → export_bibtex** (BenchmarkTools) or **export_bibtex_chairmark** (Chairmarks), and **View → normalized_metrics**; choose the four-metric plot. It contains all nine versions. Hover or select its points to inspect original values and units. Version-specific profile views have a separate **Version** selector.
+
+```@raw html
+<DocMedia src="/examples/bibliography/web-history.jpg" alt="Actual Oxygen Studio Results page with the nine-release Chairmarks export plot, version range 0.1.0 to 0.4.0 and four metric controls" caption="Real read-only Web session: the saved Chairmarks history (run e3e64eef), four native metric curves, and the 0.1.0–0.4.0 range. Opening this result reruns no workload." />
+```
+
+Browsing saved runs does not measure again. An unavailable workload stays absent. These histories are `inconclusive` because no acceptance threshold was configured. [Web interface](../interfaces/web-studio.md) covers launching and cancellation.
+
+```@raw html
+<a id="Recorded-examples"></a>
+<p><a href="../examples/bibliography/suite-runs.json" download>Download the recorded collector summary</a>. Completed collection means the measurement ran; inspect correctness and comparison fields in the complete reports.</p>
 ```

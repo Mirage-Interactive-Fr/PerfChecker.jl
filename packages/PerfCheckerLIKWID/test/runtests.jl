@@ -128,6 +128,41 @@ end
           "failed"
 end
 
+@testset "Counter workers isolate controller instrumentation" begin
+    Pkg.develop(Pkg.PackageSpec(path = fixture))
+    mktempdir() do directory
+        options = joinpath(directory, "options.txt")
+        workload = joinpath(directory, "instrumentation.jl")
+        write(workload, """
+        function perf_setup()
+            open($(repr(options)), "w") do io
+                print(io, Base.JLOptions().code_coverage, ",", Base.JLOptions().malloc_log)
+            end
+        end
+        block_measurement(state) = false
+        perf_workload(state) = error("the blocking probe must prevent hardware access")
+        """)
+        controller = joinpath(directory, "controller.jl")
+        write(controller, """
+        using PerfChecker, PerfCheckerLIKWID
+        @assert Base.JLOptions().code_coverage != 0
+        @assert Base.JLOptions().malloc_log != 0
+        command = counter_command(:instrumentation;
+            source = $(repr(workload)), environment = $(repr(environment)),
+            package = "CounterFixture", target_kind = :dev,
+            target_version = v"1.2.3", target_source = $(repr(fixture)),
+            event_set = $(repr(event_set)), units = $(repr(units)), cpuids = $(repr(cpus)),
+            probes = [Dict("id" => "isolation", "function" => "block_measurement",
+                "blocking" => true, "category" => "environment")])
+        bundle = run_external_command(command)
+        @assert bundle.manifest["state"] == "blocked"
+        @assert isempty(bundle.observations)
+        """)
+        run(`$(Base.julia_cmd()) --startup-file=no --code-coverage=@$directory --track-allocation=@$directory --project=$environment $controller`)
+        @test read(options, String) == "0,0"
+    end
+end
+
 @testset "Declared plan and genuine isolated PerfChecker provider" begin
     Pkg.develop(Pkg.PackageSpec(path = fixture))
     feature = FeatureSpec(:counters; backend = :likwid, entrypoint = source,

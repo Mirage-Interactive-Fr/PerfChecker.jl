@@ -8,9 +8,9 @@ on:
   workflow_dispatch:
     inputs:
       publication:
-        description: Documentation to publish (stable refresh keeps the release archive unchanged)
+        description: Documentation to publish (recovery choices reuse only the reviewed retained export)
         type: choice
-        options: [dev, stable]
+        options: [dev, stable, recover-1.1.1, recover-1.1.1-after-3h]
         default: dev
         required: true
       stable_version:
@@ -20,6 +20,24 @@ on:
       docs_source_revision:
         description: Optional immutable documentation-only source commit (full 40-character SHA); requires stable_version
         type: string
+        required: false
+      reviewed_export_asset:
+        description: Optional release asset ID for a locally rendered stable export; publication only, no build or tests
+        type: string
+        required: false
+      reviewed_export_sha256:
+        description: Required SHA256 of that exact reviewed ZIP, supplied with reviewed_export_asset
+        type: string
+        required: false
+      reclaim_cancelled_lock:
+        description: Only for recover-1.1.1; allow removing its inspected empty lock from the cancelled original job
+        type: boolean
+        default: false
+        required: false
+      reclaim_3h_recovery_lock:
+        description: Only for recover-1.1.1-after-3h; allow removal of the inspected empty lock attributed to cancelled run 38571832707
+        type: boolean
+        default: false
         required: false
 
 permissions:
@@ -43,10 +61,10 @@ env:
 
 jobs:
   documentation:
-    if: github.event.deleted != true
+    if: github.event.deleted != true && !(github.event_name == 'workflow_dispatch' && (inputs.publication == 'recover-1.1.1' || inputs.publication == 'recover-1.1.1-after-3h' || inputs.reviewed_export_asset != ''))
     name: Build documentation exports and test SFTP publication
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    timeout-minutes: 180
     outputs:
       stable-version: ${{ steps.version.outputs.stable-version }}
       source-revision: ${{ steps.version.outputs.source-revision }}
@@ -121,7 +139,18 @@ jobs:
         run: |
           git -C stable-doc-source fetch --no-tags --depth=1 origin "refs/tags/$STABLE_VERSION:refs/tags/$STABLE_VERSION"
           julia --startup-file=no -e 'using TOML; @assert "v" * TOML.parsefile("stable-doc-source/Project.toml")["version"] == ENV["STABLE_VERSION"]'
-          node --input-type=module -e 'import {validateStableDocumentationSource} from "./website/deploy-sftp.mjs"; await validateStableDocumentationSource("stable-doc-source", process.env.STABLE_VERSION, process.env.SOURCE_REVISION);'
+          node --input-type=module <<'NODE'
+          import {appendFileSync} from 'node:fs';
+          import {fetchStableDocumentationCompanions, validateStableDocumentationSource} from './website/deploy-sftp.mjs';
+          await fetchStableDocumentationCompanions('stable-doc-source', process.env.STABLE_VERSION, process.env.SOURCE_REVISION);
+          await validateStableDocumentationSource('stable-doc-source', process.env.STABLE_VERSION, process.env.SOURCE_REVISION, {
+            onCompanionSource: source => {
+              console.log('Documentation companion source: ' + JSON.stringify(source));
+              for (const [key, value] of Object.entries(source))
+                appendFileSync(process.env.GITHUB_ENV, `PERFCHECKER_DOCS_RENDERER_${key.toUpperCase()}=${value}\n`);
+            }
+          });
+          NODE
       - name: Install documentation dependencies
         if: steps.version.outputs.explicit-source != 'true'
         run: julia --startup-file=no --project=website -e 'using Pkg; Pkg.develop(path="."); Pkg.instantiate()'
@@ -133,10 +162,20 @@ jobs:
           npm ci --prefix website --ignore-scripts --no-audit --no-fund
       - name: Verify stable documentation has the released package source
         if: github.event_name == 'workflow_dispatch' && inputs.publication == 'stable' && steps.version.outputs.explicit-source != 'true'
-        run: >-
-          node --input-type=module -e
-          'import {validateStableDocumentationSource} from "./website/deploy-sftp.mjs";
-          await validateStableDocumentationSource(process.cwd(), "v" + process.env.PERFCHECKER_DOCS_VERSION, process.env.GITHUB_SHA);'
+        run: |
+          node --input-type=module <<'NODE'
+          import {appendFileSync} from 'node:fs';
+          import {fetchStableDocumentationCompanions, validateStableDocumentationSource} from './website/deploy-sftp.mjs';
+          const version = 'v' + process.env.PERFCHECKER_DOCS_VERSION;
+          await fetchStableDocumentationCompanions(process.cwd(), version, process.env.GITHUB_SHA);
+          await validateStableDocumentationSource(process.cwd(), version, process.env.GITHUB_SHA, {
+            onCompanionSource: source => {
+              console.log('Documentation companion source: ' + JSON.stringify(source));
+              for (const [key, value] of Object.entries(source))
+                appendFileSync(process.env.GITHUB_ENV, `PERFCHECKER_DOCS_RENDERER_${key.toUpperCase()}=${value}\n`);
+            }
+          });
+          NODE
       - name: Test documentation writer compatibility before rendering
         working-directory: ${{ steps.version.outputs.explicit-source == 'true' && 'stable-doc-source' || '.' }}
         env:
@@ -222,6 +261,30 @@ jobs:
         if: steps.version.outputs.companion-apis == 'true'
         working-directory: ${{ steps.version.outputs.explicit-source == 'true' && 'stable-doc-source' || '.' }}
         run: julia --startup-file=no --project=website website/optional-api/test_assembly.jl
+      - name: Render every published plot from its saved native model
+        if: steps.version.outputs.companion-apis == 'true'
+        working-directory: ${{ steps.version.outputs.explicit-source == 'true' && 'stable-doc-source' || '.' }}
+        shell: bash
+        run: |
+          export PERFCHECKER_SOURCE="$PWD"
+          project="$RUNNER_TEMP/native-plot-project"
+          mkdir -p "$project"
+          cp website/optional-api/makie/Project.toml "$project/Project.toml"
+          export JULIA_DEPOT_PATH="$RUNNER_TEMP/optional-api/makie-depot"
+          julia --startup-file=no --project="$project" -e '
+            using Pkg
+            root = ENV["PERFCHECKER_SOURCE"]
+            Pkg.develop([Pkg.PackageSpec(path=root),
+              Pkg.PackageSpec(path=joinpath(root,"packages","PerfCheckerMakie"))])
+            Pkg.add(["CairoMakie", "UnicodePlots", "JSON", "Statistics"])
+            Pkg.instantiate()'
+          julia --startup-file=no --project="$project" examples/kitchen-sink/publish-evidence.jl --interactive
+          if [[ -f website/src/public/examples/jet-dispatch/render.jl ]]; then
+            jet_output="$RUNNER_TEMP/jet-native-plot"
+            julia --startup-file=no --project="$project" website/src/public/examples/jet-dispatch/render.jl \
+              website/src/public/examples/jet-dispatch/summary.json "$jet_output"
+            cp "$jet_output/measurements.json" "$jet_output/measurements.html" website/src/public/examples/jet-dispatch/
+          fi
       - name: Preserve companion API provenance and isolated environment pairs
         if: always() && steps.version.outputs.companion-apis == 'true'
         uses: actions/upload-artifact@v7
@@ -232,6 +295,8 @@ jobs:
             ${{ steps.version.outputs.explicit-source == 'true' && 'stable-doc-source/' || '' }}website/optional-api/build
             ${{ runner.temp }}/optional-api/*-project/Project.toml
             ${{ runner.temp }}/optional-api/*-project/Manifest.toml
+            ${{ runner.temp }}/native-plot-project/Project.toml
+            ${{ runner.temp }}/native-plot-project/Manifest.toml
           if-no-files-found: error
           retention-days: 14
       - name: Build the GitHub mirror
@@ -344,7 +409,9 @@ jobs:
       github.event_name != 'pull_request' &&
       (github.ref == 'refs/heads/main' || github.ref_type == 'tag')
     runs-on: ubuntu-latest
-    timeout-minutes: ${{ github.ref_type == 'tag' && 90 || 45 }}
+    # The earlier v1.1.1 root copy was incomplete at the three-hour job limit.
+    # Allow its automatic dev copy and explicit stable refresh bounded room.
+    timeout-minutes: ${{ github.ref == 'refs/heads/main' && needs.documentation.outputs['stable-version'] == 'v1.1.1' && (github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.publication == 'stable' && inputs.stable_version == 'v1.1.1')) && 360 || 120 }}
     environment: documentation-sftp
     # All refs share one publisher; the server-side lock also protects manual clients.
     concurrency:
@@ -365,12 +432,6 @@ jobs:
           ref: ${{ needs.documentation.outputs.source-revision }}
           path: stable-doc-source
           persist-credentials: false
-      - name: Read the immutable stable tag for an explicit documentation refresh
-        if: github.event_name == 'workflow_dispatch' && inputs.publication == 'stable'
-        env:
-          STABLE_VERSION: ${{ needs.documentation.outputs.stable-version }}
-          SOURCE_REPOSITORY: ${{ needs.documentation.outputs.explicit-source == 'true' && 'stable-doc-source' || '.' }}
-        run: git -C "$SOURCE_REPOSITORY" fetch --no-tags --depth=1 origin "refs/tags/$STABLE_VERSION:refs/tags/$STABLE_VERSION"
       - uses: actions/download-artifact@v8
         with:
           name: documentation-sftp-exports
@@ -378,6 +439,15 @@ jobs:
       - name: Install the pinned SFTP transport
         working-directory: website
         run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Fetch the immutable Core and renderer tags for a stable refresh
+        if: github.event_name == 'workflow_dispatch' && inputs.publication == 'stable'
+        env:
+          STABLE_VERSION: ${{ needs.documentation.outputs.stable-version }}
+          SOURCE_REVISION: ${{ needs.documentation.outputs.source-revision }}
+          SOURCE_REPOSITORY: ${{ needs.documentation.outputs.explicit-source == 'true' && 'stable-doc-source' || '.' }}
+        run: |
+          git -C "$SOURCE_REPOSITORY" fetch --no-tags --depth=1 origin "refs/tags/$STABLE_VERSION:refs/tags/$STABLE_VERSION"
+          node --input-type=module -e 'import {fetchStableDocumentationCompanions} from "./website/deploy-sftp.mjs"; await fetchStableDocumentationCompanions(process.env.SOURCE_REPOSITORY, process.env.STABLE_VERSION, process.env.SOURCE_REVISION);'
       - name: Publish the completed exports
         env:
           PERFCHECKER_DOCS_STABLE_REFRESH: ${{ github.event_name == 'workflow_dispatch' && inputs.publication == 'stable' }}
@@ -405,3 +475,181 @@ jobs:
             export PERFCHECKER_DOCS_SITE=website/build/sftp/dev/site
           fi
           node website/deploy-sftp.mjs
+
+  publish-reviewed:
+    name: Publish reviewed local export — no build or tests
+    if: >-
+      github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' &&
+      inputs.publication == 'stable' && inputs.reviewed_export_asset != '' &&
+      vars.PERFCHECKER_DOCS_SFTP_DEPLOY_V2 == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    environment: documentation-sftp
+    concurrency:
+      group: perfchecker-documentation-sftp
+      cancel-in-progress: false
+    env:
+      PERFCHECKER_DOCS_STABLE_REFRESH: 'true'
+      PERFCHECKER_DOCS_STABLE_VERSION: ${{ inputs.stable_version }}
+      PERFCHECKER_DOCS_SOURCE_VERSION: ${{ inputs.stable_version }}
+      PERFCHECKER_DOCS_SOURCE_REVISION: ${{ inputs.docs_source_revision }}
+      PERFCHECKER_DOCS_SOURCE_REPOSITORY: stable-doc-source
+      REVIEWED_EXPORT_ASSET: ${{ inputs.reviewed_export_asset }}
+      REVIEWED_EXPORT_SHA256: ${{ inputs.reviewed_export_sha256 }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+      - name: Install only the pinned publication transport
+        working-directory: website
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Validate the explicit stable publication inputs
+        run: |
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';
+          import {documentationSourceConfiguration} from './website/deploy-sftp.mjs';
+          assert(documentationSourceConfiguration(process.env).explicit);
+          assert(/^[1-9][0-9]*$/.test(process.env.REVIEWED_EXPORT_ASSET));
+          assert(/^[0-9a-f]{64}$/.test(process.env.REVIEWED_EXPORT_SHA256));
+          NODE
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ inputs.docs_source_revision }}
+          path: stable-doc-source
+          persist-credentials: false
+      - name: Verify the immutable Core and renderer sources
+        run: |
+          git -C stable-doc-source fetch --no-tags --depth=1 origin "refs/tags/$PERFCHECKER_DOCS_STABLE_VERSION:refs/tags/$PERFCHECKER_DOCS_STABLE_VERSION"
+          node --input-type=module <<'NODE'
+          import {fetchStableDocumentationCompanions, validateStableDocumentationSource} from './website/deploy-sftp.mjs';
+          const env = process.env;
+          await fetchStableDocumentationCompanions('stable-doc-source', env.PERFCHECKER_DOCS_STABLE_VERSION, env.PERFCHECKER_DOCS_SOURCE_REVISION);
+          await validateStableDocumentationSource('stable-doc-source', env.PERFCHECKER_DOCS_STABLE_VERSION, env.PERFCHECKER_DOCS_SOURCE_REVISION);
+          NODE
+      - name: Retrieve only the exact reviewed stable export
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';
+          import {execFileSync} from 'node:child_process';
+          import {createHash} from 'node:crypto';
+          import {createReadStream} from 'node:fs';
+          import {mkdir, stat} from 'node:fs/promises';
+          import {join} from 'node:path';
+          const env = process.env, revision = env.PERFCHECKER_DOCS_SOURCE_REVISION;
+          const version = env.PERFCHECKER_DOCS_STABLE_VERSION;
+          const name = `documentation-stable-${revision}.zip`;
+          const release = JSON.parse(execFileSync('gh', ['api', `repos/${env.GITHUB_REPOSITORY}/releases/tags/${version}`], {encoding: 'utf8'}));
+          assert.equal(release.tag_name, version); assert.equal(release.draft, false);
+          const asset = release.assets.find(asset => String(asset.id) === env.REVIEWED_EXPORT_ASSET);
+          assert(asset && asset.name === name && asset.size > 0 && asset.size < 2 * 1024 ** 3);
+          if (asset.digest) assert.equal(asset.digest, `sha256:${env.REVIEWED_EXPORT_SHA256}`);
+          const download = join(env.RUNNER_TEMP, 'reviewed-documentation');
+          await mkdir(download);
+          execFileSync('gh', ['release', 'download', version, '--repo', env.GITHUB_REPOSITORY, '--pattern', name, '--dir', download], {stdio: 'inherit', timeout: 1200000});
+          const archive = join(download, name), hash = createHash('sha256');
+          assert.equal((await stat(archive)).size, asset.size);
+          for await (const chunk of createReadStream(archive)) hash.update(chunk);
+          assert.equal(hash.digest('hex'), env.REVIEWED_EXPORT_SHA256);
+          const paths = execFileSync('unzip', ['-Z1', archive], {encoding: 'utf8', maxBuffer: 4 * 1024 ** 2}).trim().split('\n');
+          assert(paths.length > 0 && new Set(paths).size === paths.length);
+          assert(paths.every(path => path.startsWith('stable/site/') && !path.includes('\\') && !path.split('/').includes('..')));
+          await mkdir('website/build/sftp', {recursive: true});
+          execFileSync('unzip', ['-q', archive, '-d', 'website/build/sftp'], {stdio: 'inherit'});
+          console.log(`Reviewed export verified: asset=${asset.id}, bytes=${asset.size}, revision=${revision}, sha256=${env.REVIEWED_EXPORT_SHA256}`);
+          NODE
+      - name: Publish the reviewed stable export, preserving the version archive
+        env:
+          PERFCHECKER_DOCS_SITE: website/build/sftp/stable/site
+          PERFCHECKER_DOCS_SFTP_DEPLOY: ${{ vars.PERFCHECKER_DOCS_SFTP_DEPLOY_V2 }}
+          PERFCHECKER_DOCS_SFTP_HOST: ${{ vars.PERFCHECKER_DOCS_SFTP_HOST }}
+          PERFCHECKER_DOCS_SFTP_PORT: ${{ vars.PERFCHECKER_DOCS_SFTP_PORT }}
+          PERFCHECKER_DOCS_SFTP_USER: ${{ vars.PERFCHECKER_DOCS_SFTP_USER }}
+          PERFCHECKER_DOCS_SFTP_ROOT: ${{ vars.PERFCHECKER_DOCS_SFTP_ROOT }}
+          PERFCHECKER_DOCS_SFTP_PASSWORD: ${{ secrets.PERFCHECKER_DOCS_SFTP_PASSWORD }}
+          PERFCHECKER_DOCS_SFTP_KNOWN_HOSTS: ${{ secrets.PERFCHECKER_DOCS_SFTP_KNOWN_HOSTS }}
+          PERFCHECKER_DOCS_SFTP_SSH_KEY: ${{ secrets.PERFCHECKER_DOCS_SFTP_SSH_KEY }}
+        run: node website/deploy-sftp.mjs
+
+  recover-111:
+    name: Recover the retained v1.1.1 documentation exports
+    if: >-
+      github.event_name == 'workflow_dispatch' && (inputs.publication == 'recover-1.1.1' || inputs.publication == 'recover-1.1.1-after-3h') &&
+      github.ref == 'refs/heads/main' && vars.PERFCHECKER_DOCS_SFTP_DEPLOY_V2 == 'true'
+    runs-on: ubuntu-latest
+    # Keep the original route unchanged. Its one reviewed 3h cancellation needs
+    # a separate bounded budget; neither route repeats the version archive.
+    timeout-minutes: ${{ inputs.publication == 'recover-1.1.1-after-3h' && 360 || 180 }}
+    environment: documentation-sftp
+    permissions:
+      contents: read
+      actions: read
+      checks: read
+    concurrency:
+      group: perfchecker-documentation-sftp
+      cancel-in-progress: false
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PERFCHECKER_DOCS_RECOVERY: ${{ inputs.publication }}
+      PERFCHECKER_DOCS_SOURCE_VERSION: ${{ inputs.stable_version }}
+      PERFCHECKER_DOCS_SOURCE_REVISION: ${{ inputs.docs_source_revision }}
+      PERFCHECKER_RECOVERY_RECLAIM_LOCK: ${{ inputs.reclaim_cancelled_lock }}
+      PERFCHECKER_RECOVERY_RECLAIM_AFTER3H_LOCK: ${{ inputs.reclaim_3h_recovery_lock }}
+      PERFCHECKER_DOCS_SFTP_DEPLOY: ${{ vars.PERFCHECKER_DOCS_SFTP_DEPLOY_V2 }}
+      PERFCHECKER_DOCS_SFTP_HOST: ${{ vars.PERFCHECKER_DOCS_SFTP_HOST }}
+      PERFCHECKER_DOCS_SFTP_PORT: ${{ vars.PERFCHECKER_DOCS_SFTP_PORT }}
+      PERFCHECKER_DOCS_SFTP_USER: ${{ vars.PERFCHECKER_DOCS_SFTP_USER }}
+      PERFCHECKER_DOCS_SFTP_ROOT: ${{ vars.PERFCHECKER_DOCS_SFTP_ROOT }}
+      PERFCHECKER_DOCS_SFTP_PASSWORD: ${{ secrets.PERFCHECKER_DOCS_SFTP_PASSWORD }}
+      PERFCHECKER_DOCS_SFTP_KNOWN_HOSTS: ${{ secrets.PERFCHECKER_DOCS_SFTP_KNOWN_HOSTS }}
+      PERFCHECKER_DOCS_SFTP_SSH_KEY: ${{ secrets.PERFCHECKER_DOCS_SFTP_SSH_KEY }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+      - name: Install the pinned SFTP transport without building documentation
+        working-directory: website
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Verify original producer, cancelled publisher, tag and retained ZIP bytes
+        run: node website/deploy-sftp.mjs recovery-download
+      - name: Inspect the original archive marker and cancelled lock without remote writes
+        id: inspect
+        run: node website/deploy-sftp.mjs recovery-inspect
+      - name: Save verification and lock receipt before allowing any lock removal
+        id: receipt
+        uses: actions/upload-artifact@v7
+        with:
+          name: documentation-recovery-111-inspection
+          include-hidden-files: true
+          path: |
+            .recovery/verified-origin.json
+            .recovery/inspection.json
+          if-no-files-found: error
+          retention-days: 14
+      - name: Recheck the saved receipt and resume only the stable copy and final markers
+        env:
+          PERFCHECKER_RECOVERY_PLAN_SHA256: ${{ steps.inspect.outputs.plan-sha256 }}
+          PERFCHECKER_RECOVERY_PLAN_ARTIFACT: ${{ steps.receipt.outputs.artifact-id }}
+          PERFCHECKER_RECOVERY_PLAN_ARTIFACT_SHA256: ${{ steps.receipt.outputs.artifact-digest }}
+        run: node website/deploy-sftp.mjs recovery-apply
+      - name: Preserve recovery receipts even when a later transfer fails
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: documentation-recovery-111-result
+          include-hidden-files: true
+          path: |
+            .recovery/verified-origin.json
+            .recovery/inspection.json
+            .recovery/result.json
+          if-no-files-found: warn
+          retention-days: 14

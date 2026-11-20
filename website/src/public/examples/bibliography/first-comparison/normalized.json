@@ -1,0 +1,187 @@
+{
+  "plot": {
+    "data": [
+      {
+        "capture_id": "0b8f7a89-b4d1-45ee-9a76-f7d422920384",
+        "metric": "julia.wall.time",
+        "normalization_status": "ratio",
+        "ratio": 1.3541448058761805,
+        "reference_value": 1906.0,
+        "reference_version": "minimum",
+        "samples": 50,
+        "statistic": "minimum",
+        "target_kind": "release",
+        "unit": "ns",
+        "value": 2581.0,
+        "version": "0.3.1"
+      },
+      {
+        "capture_id": "8187bf98-3988-45de-a14a-b7ccb95bfead",
+        "metric": "julia.wall.time",
+        "normalization_status": "ratio",
+        "ratio": 1.0,
+        "reference_value": 1906.0,
+        "reference_version": "minimum",
+        "samples": 50,
+        "statistic": "minimum",
+        "target_kind": "release",
+        "unit": "ns",
+        "value": 1906.0,
+        "version": "0.4.0"
+      },
+      {
+        "capture_id": "0b8f7a89-b4d1-45ee-9a76-f7d422920384",
+        "metric": "julia.gc.time",
+        "normalization_status": "both_zero",
+        "ratio": 1.0,
+        "reference_value": 0.0,
+        "reference_version": "minimum",
+        "samples": 50,
+        "statistic": "minimum",
+        "target_kind": "release",
+        "unit": "ns",
+        "value": 0.0,
+        "version": "0.3.1"
+      },
+      {
+        "capture_id": "8187bf98-3988-45de-a14a-b7ccb95bfead",
+        "metric": "julia.gc.time",
+        "normalization_status": "both_zero",
+        "ratio": 1.0,
+        "reference_value": 0.0,
+        "reference_version": "minimum",
+        "samples": 50,
+        "statistic": "minimum",
+        "target_kind": "release",
+        "unit": "ns",
+        "value": 0.0,
+        "version": "0.4.0"
+      },
+      {
+        "capture_id": "0b8f7a89-b4d1-45ee-9a76-f7d422920384",
+        "metric": "julia.alloc.bytes",
+        "normalization_status": "ratio",
+        "ratio": 1.0,
+        "reference_value": 5952,
+        "reference_version": "minimum",
+        "samples": 50,
+        "statistic": "minimum",
+        "target_kind": "release",
+        "unit": "By",
+        "value": 5952,
+        "version": "0.3.1"
+      },
+      {
+        "capture_id": "8187bf98-3988-45de-a14a-b7ccb95bfead",
+        "metric": "julia.alloc.bytes",
+        "normalization_status": "ratio",
+        "ratio": 1.2526881720430108,
+        "reference_value": 5952,
+        "reference_version": "minimum",
+        "samples": 50,
+        "statistic": "minimum",
+        "target_kind": "release",
+        "unit": "By",
+        "value": 7456,
+        "version": "0.4.0"
+      },
+      {
+        "capture_id": "0b8f7a89-b4d1-45ee-9a76-f7d422920384",
+        "metric": "julia.alloc.count",
+        "normalization_status": "ratio",
+        "ratio": 1.0,
+        "reference_value": 67,
+        "reference_version": "minimum",
+        "samples": 50,
+        "statistic": "minimum",
+        "target_kind": "release",
+        "unit": "1",
+        "value": 67,
+        "version": "0.3.1"
+      },
+      {
+        "capture_id": "8187bf98-3988-45de-a14a-b7ccb95bfead",
+        "metric": "julia.alloc.count",
+        "normalization_status": "ratio",
+        "ratio": 1.044776119402985,
+        "reference_value": 67,
+        "reference_version": "minimum",
+        "samples": 50,
+        "statistic": "minimum",
+        "target_kind": "release",
+        "unit": "1",
+        "value": 70,
+        "version": "0.4.0"
+      }
+    ],
+    "description": "Two released versions and their separately resolved dependency stacks on Linux; no source-only attribution; fresh worker per released version; preparation once, read-only entries reused across evaluations; minimum per recorded target / minimum reference for each metric. Targets retain their recorded identity.",
+    "encoding": {
+      "color": "metric",
+      "x": "version",
+      "y": "ratio"
+    },
+    "id": "normalized",
+    "kind": "normalized_metrics",
+    "options": {
+      "collector": "BenchmarkTools",
+      "metadata": {
+        "allocation_scope": "Native BenchmarkTools Trial.memory and Trial.allocs per-evaluation estimates repeated in table rows; times and gctimes are paired native samples",
+        "capture_ids": [
+          "0b8f7a89-b4d1-45ee-9a76-f7d422920384",
+          "8187bf98-3988-45de-a14a-b7ccb95bfead"
+        ],
+        "case_source_sha256": "fa36272d9c76868c53d640ffa5125071298f858240db40f65599ee000fbd35ce",
+        "collector": "BenchmarkTools",
+        "collector_version": "1.7.0",
+        "comparison_scope": "Two released versions and their separately resolved dependency stacks on Linux; no source-only attribution",
+        "controller_manifest_sha256": "8e74dc9879fb870181f9f8ccab7630450efacb26f3fd66e918136451e44a6936",
+        "controller_project_sha256": "1deea95b85495fcd1649daac139efdaf8934147d6753d56410bdb8b82a04814a",
+        "core_revision": "2cf431eb5a84f05e0af1098b7f6e5db84d479288",
+        "correctness": "not_checked",
+        "evals": 1,
+        "finished_at": "2026-10-13T06:23:13.880",
+        "measurement_runtime_sha256": "871fbf23e90654e3b5697efd536ff8e5e0f830e3f2c5e150e7ccf4fcc5762783",
+        "perfchecker_version": "1.1.0",
+        "performance": "not_compared",
+        "projection": "Recorded metric minima; reference=minimum for each metric",
+        "runtime": {
+          "arch": "x86_64",
+          "cpu": "alderlake",
+          "language": "julia",
+          "os": "Linux",
+          "threads": 1,
+          "version": "1.13.1"
+        },
+        "samples_per_version": 50,
+        "schema_version": "perfchecker-legacy-first-comparison/1",
+        "scope": "Two released versions and their separately resolved dependency stacks on Linux; no source-only attribution; fresh worker per released version; preparation once, read-only entries reused across evaluations",
+        "seconds": 1.0,
+        "snapshot_errors": [],
+        "source_sha256": {
+          "check-source.jl": "fa36272d9c76868c53d640ffa5125071298f858240db40f65599ee000fbd35ce",
+          "source.json": "bb46d34d2b8196355865574f9baedd728a4fb9735ea0ce7d8a075f502df92e6a"
+        },
+        "started_at": "2026-10-13T06:22:48.775",
+        "state_policy": "fresh worker per released version; preparation once, read-only entries reused across evaluations",
+        "units": {
+          "allocs": "1",
+          "gctimes": "ns",
+          "memory": "By",
+          "times": "ns"
+        }
+      },
+      "reference_version": "minimum",
+      "statistic": "minimum",
+      "target_label": "version",
+      "unit": "ratio",
+      "versions": [
+        "0.3.1",
+        "0.4.0"
+      ],
+      "xlabel": "Package version",
+      "zero_reference_policy": "equal zeros = 1 (unchanged); nonzero / zero = unavailable"
+    },
+    "schema_version": "perfchecker-plot/1",
+    "title": "Bibliography export · first comparison"
+  }
+}

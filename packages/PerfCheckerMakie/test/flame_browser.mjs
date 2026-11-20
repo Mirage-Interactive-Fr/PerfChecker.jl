@@ -34,6 +34,41 @@ try{
  const inspect=async index=>{await input.fill(String(index+1));const text=await page.locator('#readout').innerText(),row=model.data[index];assert(text.includes(row.label)&&text.includes(String(row.value))&&text.includes((row.path||[]).join(' → ')));assert.equal(await frames.nth(index).getAttribute('class'),'flame-frame selected')};
  const thin=geometry.reduce((best,row,index)=>row.width<geometry[best].width?index:best,0),wide=geometry.reduce((best,row,index)=>row.width>geometry[best].width?index:best,0);
  await fit();const stableViewport=await page.locator('.flame-scroll').boundingBox();for(const index of [0,model.data.length-1]){await inspect(index);const current=await page.locator('.flame-scroll').boundingBox();assert.equal(current.y,stableViewport.y,'Changing short/long frame inspection keeps the click target stationary');assert.equal(current.height,stableViewport.height)}await inspect(thin);await input.fill('0');assert.equal(await input.getAttribute('aria-invalid'),'true');await inspect(model.data.length-1);
+ const assertKeyboardTooltip=async stage=>{
+  assert(await frames.nth(wide).evaluate(node=>node===document.activeElement),`${model.kind}: ${stage} retains actual frame focus`);
+  assert(await page.getByRole('tooltip').isVisible(),`${model.kind}: ${stage} retains the focused frame tooltip`);
+  const expected=await frames.nth(wide).getAttribute('aria-label');
+  assert.equal(await page.getByRole('tooltip').innerText(),expected,`${model.kind}: ${stage} retains exact frame details`);
+  assert.equal(await page.locator('#readout').innerText(),`Frame ${wide+1} of ${model.data.length}\n${expected}`);
+ };
+ await page.mouse.move(0,0);await frames.nth(wide).focus();await popup();
+ await frames.nth(wide).hover();await page.mouse.move(0,0);await assertKeyboardTooltip('pointer leave');
+ const originalViewport=page.viewportSize();await page.setViewportSize({width:originalViewport.width-1,height:originalViewport.height});
+ await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+ await assertKeyboardTooltip('window resize');await page.setViewportSize(originalViewport);
+ await page.locator('.flame-scroll').focus();assert.equal(await page.getByRole('tooltip').isVisible(),false,'Blur clears the keyboard tooltip');
+ await frames.nth(wide).hover();await popup();await page.mouse.move(0,0);
+ assert.equal(await page.getByRole('tooltip').isVisible(),false,'Pointer-only inspection clears when the pointer leaves');
+ if(model.kind==='cpu_flamegraph'){
+  const other=geometry.reduce((best,row,index)=>index!==wide&&(best<0||row.width>geometry[best].width)?index:best,-1);
+  if(other>=0){
+   await frames.nth(wide).focus();await frames.nth(other).hover();await assertKeyboardTooltip('hovering another frame');
+   await page.mouse.move(0,0);await page.locator('.flame-scroll').focus();
+   await frames.nth(other).hover();await popup();
+   assert.equal(await page.getByRole('tooltip').innerText(),await frames.nth(other).getAttribute('aria-label'),'After blur, pointer inspection uses the hovered frame');
+   await page.mouse.move(0,0);
+  }
+  await frames.nth(wide).focus();for(let index=0;index<7;index++)await page.keyboard.press('+');
+  await frames.nth(wide).evaluate(node=>node.scrollIntoView({block:'center',inline:'nearest'}));await popup();
+  const scroll=await page.locator('.flame-scroll').evaluate(node=>({left:node.scrollLeft,top:node.scrollTop}));
+  await page.locator('.flame-scroll').evaluate(node=>{node.scrollTop=node.scrollTop<(node.scrollHeight-node.clientHeight)/2?node.scrollHeight:0});
+  await page.waitForFunction(()=>getComputedStyle(document.querySelector('#tooltip')).display==='none');
+  assert(await frames.nth(wide).evaluate(node=>node===document.activeElement),'Scrolling a frame out of view retains its keyboard focus');
+  assert(await frames.nth(wide).evaluate(node=>{const box=node.getBoundingClientRect(),clip=document.querySelector('.flame-scroll').getBoundingClientRect();return box.bottom<=clip.top||box.top>=clip.bottom}),'The focused frame is actually outside the graph viewport');
+  await page.locator('.flame-scroll').evaluate((node,position)=>node.scrollTo(position.left,position.top),scroll);
+  await popup();await assertKeyboardTooltip('scrolling the focused frame back into view');
+  await page.locator('.flame-scroll').focus();await page.keyboard.press('0');await fit();
+ }
  await frames.nth(wide).click();await popup();assert((await page.getByRole('tooltip').innerText()).includes(model.data[wide].label));
  await page.locator('.flame-scroll').focus();await page.keyboard.press('+');const zoomed=await page.locator('#flame').boundingBox();await page.keyboard.press('+');assert((await page.locator('#flame').boundingBox()).width>zoomed.width*1.4);
  await frames.nth(wide).click();await popup();await page.locator('.flame-scroll').focus();await page.keyboard.press('ArrowRight');await page.waitForFunction(()=>document.querySelector('.flame-scroll').scrollLeft>0);assert.equal(await page.getByRole('tooltip').isVisible(),false);
@@ -47,7 +82,13 @@ try{
  if(process.argv[4])await page.screenshot({path:path.resolve(process.argv[4]),fullPage:true});
  await page.setViewportSize({width:390,height:844});await fit();assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
  if(process.argv[4])await page.screenshot({path:path.resolve(process.argv[4]).replace(/\.png$/,'-mobile-fit.png'),fullPage:true});
- await inspect(thin);await frames.nth(wide).focus();await popup();await page.getByRole('button',{name:'Zoom in',exact:true}).click();await frames.nth(wide).click();await popup();
+ await inspect(thin);await frames.nth(wide).focus();await popup();
+ if(model.kind==='cpu_flamegraph'){
+  await frames.nth(wide).hover();await page.mouse.move(0,0);await assertKeyboardTooltip('mobile pointer leave');
+  await page.setViewportSize({width:389,height:844});await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+  await assertKeyboardTooltip('mobile resize');await page.setViewportSize({width:390,height:844});
+ }
+ await page.getByRole('button',{name:'Zoom in',exact:true}).click();await frames.nth(wide).click();await popup();
  if(process.argv[4])await page.screenshot({path:path.resolve(process.argv[4]).replace(/\.png$/,'-mobile-inspection.png'),fullPage:true});
  assert.deepEqual(errors,[]);console.log(JSON.stringify({status:'passed',kind:model.kind,frames:model.data.length,thinIndex:thin+1,minimumWidth:geometry[thin].width,errors}));
 }finally{await browser.close()}

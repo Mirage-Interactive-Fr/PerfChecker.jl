@@ -1,4 +1,5 @@
-using JSON, CairoMakie
+using JSON
+include(joinpath(@__DIR__, "observation-export.jl"))
 length(ARGS) == 2 ||
     error("Pass an additional-diagnostics directory and an export directory")
 source, output = abspath.(ARGS)
@@ -48,13 +49,6 @@ if first(heap)["status"] == "complete"
             2),
         joinpath(output, "heap-types.json"),
         "w")
-    GC.gc()
-    top = first(summary, min(12, length(summary)))
-    fig = Figure(size = (1050, 650))
-    axis = Axis(fig[1, 1]; title = "Largest GC object categories in the worker",
-        xlabel = "shallow bytes (MiB)", yticks = (
-            1:length(top), [first(r["type"], 65) for r in top]), yreversed = true)
-    barplot!(axis, 1:length(top), [r["shallow_bytes"] / 2^20 for r in top]; direction = :x)
-    save(joinpath(output, "heap-types.svg"), fig)
+    export_heap_observations(output)
 end
 println("Published quality findings and heap-category observations")

@@ -1,0 +1,35 @@
+# Establish observed baselines before deciding any numerical merge gate.
+coverage:
+  status:
+    project:
+      default:
+        informational: true
+    patch:
+      default:
+        informational: true
+comment: false
+
+# Each upload contains only this component's tracked production sources.
+# Never present a carried-forward report as coverage of the current revision.
+flags:
+  core:
+    paths: [src/, ext/]
+    carryforward: false
+  linuxperf:
+    paths: [packages/PerfCheckerLinuxPerf/src/]
+    carryforward: false
+  likwid:
+    paths: [packages/PerfCheckerLIKWID/src/]
+    carryforward: false
+  makie:
+    paths: [packages/PerfCheckerMakie/src/, packages/PerfCheckerMakie/ext/]
+    carryforward: false
+  web:
+    paths: [packages/PerfCheckerWeb/src/]
+    carryforward: false
+  pluto:
+    paths: [packages/PerfCheckerPluto/src/]
+    carryforward: false
+  tachikoma:
+    paths: [packages/PerfCheckerTachikoma/src/, packages/PerfCheckerTachikoma/ext/]
+    carryforward: false

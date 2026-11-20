@@ -1,0 +1,16 @@
+[deps]
+BenchmarkTools = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
+BibInternal = "2027ae74-3657-4b95-ae00-e2f7d55c3e64"
+BibParser = "13533e5b-e1c2-4e57-8cef-cac5e52f6474"
+Bibliography = "f1be7e48-bf82-45af-a471-ae754a193061"
+Chairmarks = "0ca39b1e-fe0b-4e98-acfc-b1656634c4de"
+
+[sources]
+BibInternal = {rev = "430f726ebad73b790060bad22eb09afab5ea3cf1", url = "https://github.com/JuliaBibliographies/BibInternal.jl.git"}
+BibParser = {rev = "85a2545cbff8fae54fb3eceb1570d0ea9517b1a8", url = "https://github.com/JuliaBibliographies/BibParser.jl.git"}
+Bibliography = {rev = "73bae9d352d0326570d3ec3070ca2bb1c2996015", url = "/home/azzaare/.julia/dev/PerfChecker-docs-interactive-20261012/examples/bibliography/.sources/Bibliography"}
+
+[compat]
+BenchmarkTools = "1"
+Chairmarks = "1"
+julia = "1.10"

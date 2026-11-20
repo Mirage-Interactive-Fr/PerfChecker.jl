@@ -13,10 +13,12 @@ import MeasuredProfiles from './MeasuredProfiles.vue'
 import HomeMeasurements from './HomeMeasurements.vue'
 import MaintainerLink from './MaintainerLink.vue'
 import NormalizedMeasurements from './NormalizedMeasurements.vue'
+import InteractiveRecordedPlot from './InteractiveRecordedPlot.vue'
 import PackageGallery from './PackageGallery.vue'
 import WorkloadAtlas from './WorkloadAtlas.vue'
 import RecordedFigures from './RecordedFigures.vue'
 import DiagnosticReports from './DiagnosticReports.vue'
+import DocumentationRedirect from './DocumentationRedirect.vue'
 
 export default {
   extends: DefaultTheme,
@@ -57,9 +59,11 @@ export default {
     app.component('HomeMeasurements', HomeMeasurements)
     app.component('MaintainerLink', MaintainerLink)
     app.component('NormalizedMeasurements', NormalizedMeasurements)
+    app.component('InteractiveRecordedPlot', InteractiveRecordedPlot)
     app.component('PackageGallery', PackageGallery)
     app.component('WorkloadAtlas', WorkloadAtlas)
     app.component('RecordedFigures', RecordedFigures)
     app.component('DiagnosticReports', DiagnosticReports)
+    app.component('DocumentationRedirect', DocumentationRedirect)
   },
 } satisfies Theme

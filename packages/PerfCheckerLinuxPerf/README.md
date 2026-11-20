@@ -14,15 +14,29 @@ number and the native 112-byte version-5 `perf_event_attr` layout. Group reads
 use native unsigned 64-bit words for count, enabled/running times and values,
 independently of the architecture's C-long width. This boundary check is not a
 positive hardware qualification on all three architectures.
-The companion CI checks Julia 1.10/latest on x86_64 and latest on i686 with a
-required ABI assertion. aarch64 currently has source/guard review only, not an
-execution qualification. CI does not change permissions or the kernel; any
-native positive counters depend on the runner's existing access.
+The companion CI checks Julia 1.10/current stable on x86_64 and aarch64, and
+current stable on i686, with a required ABI assertion. Native aarch64 jobs test
+loading, ABI checks and unavailable-counter handling. CI does not change
+permissions or the kernel; positive counters require the runner's existing access.
 
-This companion is developed from the monorepo until separately registered. Use
-an explicit worker project with `Pkg.develop(path=...)` for the companion and
-the target source. LinuxPerf requires PrettyTables 2, so keep this worker project
-separate from the LIKWID worker project, which requires PrettyTables 3.
+## Installation
+
+PerfCheckerLinuxPerf 1.0.2 is registered in General. Prepare an explicit worker
+project; install your measured target in that same project separately.
+
+Counter workers explicitly disable coverage and allocation tracking.
+
+```julia
+using Pkg
+Pkg.activate("perf/linuxperf-worker")
+Pkg.add(["PerfChecker", "PerfCheckerLinuxPerf"])
+```
+
+LinuxPerf requires PrettyTables 2, so keep this worker project separate from the
+LIKWID worker project, which requires PrettyTables 3. On ARM, use
+[Core 1.1.1 or newer](../README.md#arm-compatibility).
+
+## Measure counters
 
 ```julia
 using PerfChecker, PerfCheckerLinuxPerf

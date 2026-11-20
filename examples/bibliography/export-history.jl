@@ -14,15 +14,7 @@ mkpath(output)
 views = Dict{String, Any}[]
 for (slug, feature, metric, kind, label) in (
     ("normalized", "export_bibtex", "benchmark metrics",
-        "normalized_metrics", "Export · four metrics / minimum"),
-    ("export-time", "export_bibtex", "julia.wall.time", "version_series", "Export · time"),
-    ("export-memory", "export_bibtex", "julia.alloc.bytes",
-        "version_series", "Export · allocated bytes"),
-    ("import-time", "import_bibtex", "julia.wall.time", "version_series", "Import · time"),
-    ("export-samples", "export_bibtex", "julia.wall.time",
-        "distribution", "Export · sample distribution"),
-    ("export-delta", "export_bibtex", "julia.wall.time",
-        "version_delta", "Export · change from 0.1.0"))
+    "normalized_metrics", "Export · four metrics / minimum"),)
     entry = only(filter(
         entry -> get(entry, "feature", "") == feature &&
                      get(entry, "metric", "") == metric && entry["kind"] == kind,

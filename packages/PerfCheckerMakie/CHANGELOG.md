@@ -1,0 +1,26 @@
+# Changelog
+
+## 1.0.4
+
+- Let normalized saved-evidence plots label their target axis and selectors
+  explicitly, including implementations and source revisions. Existing package
+  version labels and all numeric values retain their previous behavior.
+
+## 1.0.3
+
+- Keep the exact flame-frame tooltip visible while its frame retains keyboard
+  focus, including iframe resizing and pointer movement.
+- Reposition the tooltip after layout or scrolling, and hide it when the focused
+  frame leaves the visible viewport or loses focus.
+
+## 1.0.2
+
+- Add `observation_plot` for saved measurements with explicit axes, units,
+  collector, scope and provenance, including non-version comparisons.
+- Render these models with native Makie figures and standalone interactive HTML.
+  Inspect exact points, filter panels/series/recorded versions, navigate with the
+  keyboard, and download the full model or visible CSV data.
+- Preserve unavailable values and zeros, distinguish series and versions, dodge
+  grouped bars and retain readable axes in narrow embeds.
+
+This companion release does not change PerfChecker Core or the VS Code extension.

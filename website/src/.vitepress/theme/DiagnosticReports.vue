@@ -1,8 +1,12 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { withBase } from 'vitepress'
-const props = defineProps<{ source: string }>()
+const props = defineProps<{ source: string; tools?: string }>()
 const records = ref<any[]>([]), error = ref('')
+const selectedRecords = computed(() => {
+  const selected = props.tools?.split(',').map(tool => tool.trim()).filter(Boolean)
+  return selected?.length ? records.value.filter(record => selected.includes(record.tool)) : records.value
+})
 function findingGroups(record: any) {
   const groups = new Map<string, {rule: string; severity: string; count: number; locations: Set<string>}>()
   for (const finding of record.findings ?? []) {
@@ -29,11 +33,12 @@ onMounted(async () => {
   <section class="diagnostic-reports" aria-label="Diagnostic findings">
     <p v-if="error" role="alert">{{ error }}</p>
     <p v-else><a :href="withBase(source)" download>Download the full diagnostic records</a></p>
-    <article v-for="record in records" :key="record.tool">
+    <article v-for="record in selectedRecords" :key="record.tool">
       <h4>{{ record.tool }} <small>{{ record.tool_version }}</small></h4>
       <p>{{ record.analysis_scope || record.scope }}. Status: <strong>{{ record.status || record.availability }}</strong>;
         oracle: {{ record.correctness }}<template v-if="record.quality">; quality: {{ record.quality }}</template>.</p>
       <p v-if="record.summary">{{ record.summary.length > 280 ? record.summary.slice(0,280)+'…' : record.summary }}</p>
+      <p v-if="record.runtime">Runtime: {{ record.runtime.language || 'Julia' }} {{ record.runtime.version }}<template v-if="record.runtime.threads != null"> · {{ record.runtime.threads }} thread(s)</template>.</p>
       <details v-if="record.summary?.length > 280"><summary>Full summary</summary><pre>{{ record.summary }}</pre></details>
       <p v-if="record.instrumented_instructions != null">Instrumented instructions: {{ record.instrumented_instructions.toLocaleString() }}.</p>
       <template v-if="record.findings?.length">

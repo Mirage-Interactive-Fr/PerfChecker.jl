@@ -1,0 +1,134 @@
+{
+  "captured_at": "2026-10-13T10:49:26.874",
+  "julia": "1.13.1",
+  "os": "Linux",
+  "records": {
+    "documenter": {
+      "bytes": 408,
+      "documenter_extension": true,
+      "sha256": "c48150efcf1a8b28b7968d6a6d98f28611b19da0c42f1f1c3491485bd771ee57",
+      "source_run_id": "ff0eea53-3bd7-4615-bed3-54789ad0c734",
+      "status": "complete",
+      "vitepress_extension": true
+    },
+    "drwatson": {
+      "cache_basename": "recipe=cache_roundtrip_revision=1.jld2",
+      "cache_bytes": 6784,
+      "cache_reused": true,
+      "cache_sha256": "f017740f7babfed8db12076a129100871e1f168a4ff41087430363b87279dbd2",
+      "measurement_executed": false,
+      "producer_calls": 1,
+      "status": "complete"
+    },
+    "httpadvisor": {
+      "requests": [
+        "GET /v1/models"
+      ],
+      "result": {
+        "action": "probe",
+        "evidence_sent": false,
+        "generation_tested": false,
+        "message": "Model inventory connected. Generation and answer quality have not been tested.",
+        "models": [
+          {
+            "name": "controlled-local-fixture"
+          }
+        ],
+        "schema_version": "perfchecker-advisor-setup/1",
+        "selected_available": true,
+        "status": "complete",
+        "worker_elapsed_seconds": 8.114177942276001
+      },
+      "scope": "Controlled loopback model-list fixture; no model loaded or generation requested",
+      "status": "complete"
+    },
+    "machine_transfer": {
+      "ci_gate_eligible": false,
+      "estimate": null,
+      "external_validation": "not_performed",
+      "label": "local-recipe",
+      "limits_verified": false,
+      "profile_schema": "perfchecker-machine-profile/1",
+      "scope": "Real local profile, intentionally empty calibration/reference sets",
+      "spec_id_length": 64,
+      "status": "insufficient_evidence"
+    },
+    "pprof": {
+      "bytes": 2384,
+      "max_samples": 1000,
+      "metric": "julia.alloc.bytes",
+      "scope": "PProf adapter quantizes recorded allocation weights into at most approximately max_samples repetitions; not new measurements",
+      "sha256": "fde16d3ed21f1431854371f222e591d92e3b6cfa6d26443bc6d261f8bba8742e",
+      "source_manifest_sha256": "3962304633f3e5d65132bf5fb5851d1b1a0c1e0ca713ec86a9d20f8fc73a33c7",
+      "source_run_id": "ff0eea53-3bd7-4615-bed3-54789ad0c734",
+      "status": "complete",
+      "unredacted_export_sha256": "38e2f19649237c8405f3808b5e32b252d4cdafcce914bc28916cc8f804973ee9",
+      "redacted_stack_labels": 11,
+      "redaction": "PProf expands relative runtime filenames during export. Replaced only local runtime prefix with julia/ in decoded protobuf string_table. String indices, all other fields, samples and weights preserved; original bundle unchanged."
+    },
+    "property_corpora": {
+      "corpora": {
+        "propcheck": {
+          "cases": [
+            {
+              "value": -95
+            },
+            {
+              "value": 115
+            },
+            {
+              "value": 122
+            },
+            {
+              "value": -76
+            }
+          ],
+          "checks_passed": 4,
+          "producer": "PropCheck.jl",
+          "replay": [
+            -94,
+            116,
+            123,
+            -75
+          ],
+          "sha256": "fe8767e7cb91f288d8515f5da00e90b924f99b65690d1cb018653d878b3cd52e"
+        },
+        "supposition": {
+          "cases": [
+            {
+              "value": 7
+            },
+            {
+              "value": 7
+            },
+            {
+              "value": 1
+            },
+            {
+              "value": 6
+            }
+          ],
+          "checks_passed": 4,
+          "producer": "Supposition.jl",
+          "replay": [
+            8,
+            8,
+            2,
+            7
+          ],
+          "sha256": "a27120066b96b8bba9b03053809c812dc43d75cc4b1e080858b53d78a9c3ace7"
+        }
+      },
+      "scope": "Controlled integer increment/reversal oracle; no property search or package performance claim",
+      "status": "complete"
+    },
+    "tachikoma": {
+      "catalogue_views": 9,
+      "message": "Saved evidence; no measurement launched",
+      "scope": "Read-only model from actual saved Bibliography bundle; interactive terminal not launched",
+      "status": "complete",
+      "worker_started": false
+    }
+  },
+  "scope": "Small local API recipes; no package workload rerun"
+}

@@ -1,0 +1,20 @@
+{
+  "captured_at": "2026-10-13T10:50:04.735",
+  "julia": "1.13.1",
+  "records": {
+    "documenter": {
+      "html_bytes": 7050,
+      "html_pages": 1,
+      "scope": "Small local documentation build from existing allocation bundle; no package measurement or deployment",
+      "source_run_id": "ff0eea53-3bd7-4615-bed3-54789ad0c734",
+      "status": "complete"
+    },
+    "documentervitepress": {
+      "html_bytes": 14613,
+      "html_pages": 2,
+      "scope": "Small local documentation build from existing allocation bundle; no package measurement or deployment",
+      "source_run_id": "ff0eea53-3bd7-4615-bed3-54789ad0c734",
+      "status": "complete"
+    }
+  }
+}

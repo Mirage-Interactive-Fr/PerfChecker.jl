@@ -1,0 +1,7 @@
+[deps]
+BenchmarkTools = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
+JSON = "682c06a0-de6a-54ab-a142-c8b1cf79cde6"
+PerfChecker = "6309bf6b-a531-4b08-891e-8ee981e5c424"
+
+[sources]
+PerfChecker = {path = "/home/azzaare/.julia/dev/PerfChecker-docs-interactive-20261012"}

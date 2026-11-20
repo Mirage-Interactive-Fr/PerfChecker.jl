@@ -148,6 +148,9 @@ try
         execute("packages/PerfCheckerMakie/test/runtests.jl")
         html = joinpath(output, "normalized-browser.html")
         execute("packages/PerfCheckerMakie/test/normalized_browser.jl"; extra = [html])
+        observation_html = joinpath(output, "observation-browser.html")
+        execute("packages/PerfCheckerMakie/test/observation_browser.jl";
+            extra = [observation_html])
         mktempdir() do tooling
             # Match the existing qualification Playwright pin, without adding
             # browser tooling to a product or documentation environment.
@@ -177,6 +180,15 @@ try
                     [key => Dict("file" => basename(file), "sha256" => file_digest(file))
                      for (key, file) in (
                         ("html", html), ("screenshot", screenshot), ("result", result))]...))
+            observation_result = joinpath(output, "observation-browser-result.txt")
+            observation_command = `node $(joinpath(root, "packages/PerfCheckerMakie/test/observation_browser.mjs")) $observation_html`
+            write(observation_result,
+                read(addenv(observation_command, browser_environment...), String))
+            push!(receipt["environments"],
+                Dict("label" => "observation-browser",
+                    [key => Dict("file" => basename(file), "sha256" => file_digest(file))
+                     for (key, file) in (
+                        ("html", observation_html), ("result", observation_result))]...))
         end
     elseif suite == "tachikoma"
         prepare(; packages = ["Test", "CairoMakie", "Tachikoma"],

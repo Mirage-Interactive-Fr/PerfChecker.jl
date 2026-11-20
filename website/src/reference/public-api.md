@@ -1,8 +1,8 @@
 # Public API
 
 These entries are generated from the docstrings of PerfChecker's exported Julia
-bindings. The [Full API](api.md) is the canonical reference and also includes
-documented internal hooks. Julia's help mode uses these same source docstrings:
+bindings. The [Full API](api.md) adds documented internal hooks from **Core**;
+the six [companion APIs](optional-api.md) are documented separately. Julia's help mode uses these same source docstrings:
 type `?run_scenarios` or `?AdvisorConfig` after loading `PerfChecker`.
 
 Use a workflow guide when setting up your first experiment:

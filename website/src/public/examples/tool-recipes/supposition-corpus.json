@@ -1,0 +1,25 @@
+{
+  "cases": [
+    {
+      "value": 7
+    },
+    {
+      "value": 7
+    },
+    {
+      "value": 1
+    },
+    {
+      "value": 6
+    }
+  ],
+  "count": 4,
+  "created_at": "2026-10-13T10:48:30.962",
+  "metadata": {
+    "generator_type": "Supposition.Data.Integers{Int64, UInt64}",
+    "task_rng_seed": 42,
+    "tries_per_case": 100000
+  },
+  "producer": "Supposition.jl",
+  "schema_version": "perfchecker-property-corpus/1"
+}

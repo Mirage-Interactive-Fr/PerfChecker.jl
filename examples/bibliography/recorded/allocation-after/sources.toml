@@ -1,0 +1,12 @@
+# Public revisions, shared by the runnable tutorial and its interface captures.
+[Bibliography]
+url = "https://github.com/JuliaBibliographies/Bibliography.jl.git"
+revision = "575ec810042cc791fd47a2c025a80246ccf039b5"
+
+[BibParser]
+url = "https://github.com/JuliaBibliographies/BibParser.jl.git"
+revision = "cf1eb4446b986a23ed444963dcdb4c6ecc2da90f"
+
+[BibInternal]
+url = "https://github.com/JuliaBibliographies/BibInternal.jl.git"
+revision = "792d8c709169505f998f7d70bfa092551dd4089f"

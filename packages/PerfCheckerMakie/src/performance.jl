@@ -125,7 +125,7 @@ function _normalized_metrics_figure(plot; figure_kwargs = (;), plot_kwargs = (;)
     axis.xticks = (collect(eachindex(versions)), _version_tick_label.(versions))
     xlims!(axis, 0.5, length(versions) + 0.5)
     axis.xticklabelrotation = pi / 2
-    axis.xlabel = "package version"
+    axis.xlabel = get(plot.options, "xlabel", "package version")
     axis.ylabel = "ratio to $(plot.options["reference_version"]) (reference = 1)"
     Label(figure[2, 1:2],
         "$(plot.options["zero_reference_policy"]). Gaps indicate unavailable ratios.";
@@ -597,6 +597,9 @@ whose collector identity is absent. Collector names and tag lists are appended
 to customized subtitles while titles are preserved. Empty evidence returns a labeled figure.
 Allocation pies draw strictly positive weights; an all-zero recorded model returns
 a "No positive allocation weight" figure without dividing by a zero total.
+Normalized models can set `plot.options["xlabel"]` to label their target axis
+(default `"package version"`), for example `"Implementation"` for measured
+implementations. This changes presentation only, preserving ratios and values.
 """
 function PerfChecker.performance_figure(plot::PerfChecker.PerformancePlot;
         figure_kwargs = (;), axis_kwargs = (;), plot_kwargs = (;), tags = get(
@@ -608,7 +611,8 @@ function PerfChecker.performance_figure(plot::PerfChecker.PerformancePlot;
         :allocation_files => _allocation_files_figure, :allocation_lines => _allocation_lines_figure,
         :allocation_heatmap => _allocation_heatmap_figure,
         :allocation_flamegraph => _flamegraph_figure, :cpu_flamegraph => _flamegraph_figure,
-        :wall_flamegraph => _flamegraph_figure, :time_allocation_tradeoff => _tradeoff_figure)
+        :wall_flamegraph => _flamegraph_figure, :time_allocation_tradeoff => _tradeoff_figure,
+        :observation_series => _observation_series_figure)
     haskey(renderers, plot.kind) ||
         throw(ArgumentError("Makie does not support performance plot kind $(plot.kind)"))
     _attributes(axis_kwargs)

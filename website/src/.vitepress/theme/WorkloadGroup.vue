@@ -2,8 +2,10 @@
 import {computed, ref, useId} from 'vue'
 import {withBase} from 'vitepress'
 import NormalizedMeasurements from './NormalizedMeasurements.vue'
-const props=defineProps<{directory:string;group:any;observations:(id:string)=>string}>()
-const selected=ref(0), uid=useId()
+import LatestWorkload from './LatestWorkload.vue'
+const props=defineProps<{directory:string;group:any;observations:(id:string)=>string;
+ records:Record<string,any>;latest?:{rows:any[];source:string};profilesDirectory?:string;profileNote?:string;profileFeaturePrefix?:string}>()
+const selected=ref(0), mode=ref('history'), uid=useId()
 const operationNames:Record<string,string>={build:'Construction',lookup:'Lookup',drain:'Drain',traverse:'Traversal',connectivity:'Connectivity',prefixsum:'Prefix sums',http:'Request'}
 const options=computed(()=>props.group.cases.flatMap((view:any)=>{
  const op=view.workload.split('_').at(-1)
@@ -12,6 +14,7 @@ const options=computed(()=>props.group.cases.flatMap((view:any)=>{
  ...(view.patch_windows??[]).map((patch:any)=>({view,...patch,label:(props.group.cases.length>1?name+' · ':'')+patch.label,patch:true}))]
 }))
 const active=computed(()=>options.value[selected.value])
+const hasHistory=computed(()=>(active.value.view.recorded_versions?.length??0)>=2)
 const explanation=computed(()=>{
  const op=active.value.view.workload.split('_').at(-1)
  if(op==='build')return 'Measure construction from the prepared input. The resulting container is checked after timing.'
@@ -27,19 +30,37 @@ function key(event:KeyboardEvent,index:number){
  if(next===null)return;event.preventDefault();selected.value=next
  ;(event.currentTarget as HTMLElement).parentElement?.querySelectorAll<HTMLButtonElement>('button')[next]?.focus()
 }
+function evidenceKey(event:KeyboardEvent,current:string){
+ const choices=hasHistory.value?['history','latest']:['latest'],index=choices.indexOf(current)
+ const next=event.key==='Home'?0:event.key==='End'?choices.length-1:event.key==='ArrowRight'?(index+1)%choices.length:event.key==='ArrowLeft'?(index+choices.length-1)%choices.length:null
+ if(next===null)return
+ event.preventDefault();mode.value=choices[next]
+ ;(event.currentTarget as HTMLElement).parentElement?.querySelectorAll<HTMLButtonElement>('button')[next]?.focus()
+}
 </script>
 <template>
  <div class="workload-group">
-  <div v-if="options.length>1" role="tablist" :aria-label="group.name+' operations and release ranges'">
+  <div v-if="options.length>1" class="operation-tabs" role="tablist" :aria-label="group.name+' operations and release ranges'">
    <button v-for="(option,i) in options" :id="uid+'-tab-'+i" :key="option.json" role="tab" :aria-selected="selected===i" :aria-controls="uid+'-panel'" :tabindex="selected===i?0:-1" @click="selected=i" @keydown="key($event,i)">{{ option.label }}</button>
   </div>
   <div :id="uid+'-panel'" :role="options.length>1?'tabpanel':undefined" :aria-labelledby="options.length>1?uid+'-tab-'+selected:undefined">
    <h4>{{ active.view.workload.replaceAll('_',' ') }} · {{ active.view.collector?.startsWith('chairmarks')?'Chairmarks':'BenchmarkTools' }}</h4>
    <p>{{ explanation }}</p>
-   <p v-if="active.patch">This view focuses on {{ active.label }}. Ratios keep the reference minimum from the complete history.</p>
-   <NormalizedMeasurements compact :key="active.json" :source="directory+'/'+active.json" :figure="directory+'/'+active.svg" :html="active.html ? directory+'/'+active.html : undefined" :package-name="active.view.package" />
-   <p class="observation">{{ observations(active.view.id) }}{{ active.patch?' This observation refers to the full history.':'' }}</p>
-   <a :href="withBase(directory+'/'+active.view.terminal)">Unicode plot of the complete history</a>
+   <div class="evidence-tabs" role="tablist" :aria-label="active.view.workload+' evidence'">
+    <button v-if="hasHistory" :id="uid+'-history'" role="tab" :aria-selected="mode==='history'" :aria-controls="uid+'-history-panel'" :tabindex="mode==='history'?0:-1" @click="mode='history'" @keydown="evidenceKey($event,'history')">History</button>
+    <button :id="uid+'-latest'" role="tab" :aria-selected="mode==='latest'||!hasHistory" :aria-controls="uid+'-latest-panel'" :tabindex="mode==='latest'||!hasHistory?0:-1" @click="mode='latest'" @keydown="evidenceKey($event,'latest')">Latest version</button>
+   </div>
+   <div v-if="hasHistory&&mode==='history'" :id="uid+'-history-panel'" role="tabpanel" :aria-labelledby="uid+'-history'" class="history-evidence">
+    <p v-if="active.patch">This view focuses on {{ active.label }}. Ratios keep the reference minimum from the complete history.</p>
+    <NormalizedMeasurements compact :key="active.json" :source="directory+'/'+active.json" :figure="directory+'/'+active.svg" :html="active.html ? directory+'/'+active.html : undefined" :package-name="active.view.package" />
+    <p class="observation">{{ observations(active.view.id) }}{{ active.patch?' This observation refers to the full history.':'' }}</p>
+    <a :href="withBase(directory+'/'+active.view.terminal)">Unicode plot of the complete history</a>
+   </div>
+   <div v-else :id="uid+'-latest-panel'" role="tabpanel" :aria-labelledby="uid+'-latest'" class="latest-evidence">
+    <LatestWorkload :view="active.view" :record="records[active.view.id]"
+      :latest-rows="latest?.rows" :latest-source="latest?.source"
+      :profiles-directory="profilesDirectory" :profile-note="profileNote" :profile-feature-prefix="profileFeaturePrefix" />
+   </div>
   </div>
  </div>
 </template>

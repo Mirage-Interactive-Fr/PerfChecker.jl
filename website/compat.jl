@@ -1,9 +1,10 @@
-# The inventory writers in these two verified versions omit the .html suffix
+# The inventory writers in these verified versions omit the .html suffix
 # required by this site's routes. Keep this process-local compatibility guard
 # explicit; do not change installed packages or rewrite historical inventories.
 # https://github.com/LuxDL/DocumenterVitepress.jl/blob/v0.3.5/src/writer.jl#L1487
 # https://github.com/LuxDL/DocumenterVitepress.jl/blob/v0.3.7/src/writer.jl#L1487
-if pkgversion(DocumenterVitepress) in (v"0.3.5", v"0.3.7")
+# https://github.com/LuxDL/DocumenterVitepress.jl/blob/v0.3.8/src/writer.jl#L1487
+if pkgversion(DocumenterVitepress) in (v"0.3.5", v"0.3.7", v"0.3.8")
     @eval DocumenterVitepress function _get_inventory_uri(doc, page, anchor_id)
         filename = relpath(page.build, doc.user.build)
         page_url = splitext(filename)[1] * ".html"

@@ -1,0 +1,1904 @@
+{
+  "environment_files": {
+    "counter-allocation-manifest.toml": "775f826af20baaed9da7dbce0347f5b9b4c2320f6541b568aa38ec2ce8cd652b",
+    "counter-allocation-project.toml": "31b3af9fb3ede35da7887d8fd5dd4b46c136e3c299352b1f3aa96b20ae1a218d"
+  },
+  "exclusive_observations": [
+    {
+      "attributes": {
+        "feature": "counter_32768_profile_alloc",
+        "package": "DataStructures",
+        "source_file": "./dict.jl",
+        "source_line": 80,
+        "stack": [
+          "count_events (kitchen-sink/src/PerfCheckerKitchenSink.jl:42)",
+          "counter (DataStructures/src/accumulator.jl:34)",
+          "counter (DataStructures/src/accumulator.jl:25)",
+          "Accumulator (DataStructures/src/accumulator.jl:15)",
+          "Dict (dict.jl:80)"
+        ],
+        "target_kind": "release",
+        "version": "0.19.6"
+      },
+      "case_id": "counter_32768_profile_alloc",
+      "measurement_definition": "julia.alloc.bytes/profile-allocs-v1",
+      "metric": "julia.alloc.bytes",
+      "sample_index": 1,
+      "scope": "exclusive_native_leaf",
+      "target_id": "0.19.6",
+      "unit": "By",
+      "value": 80
+    },
+    {
+      "attributes": {
+        "feature": "counter_32768_profile_alloc",
+        "package": "DataStructures",
+        "source_file": "./dict.jl",
+        "source_line": 80,
+        "stack": [
+          "count_events (kitchen-sink/src/PerfCheckerKitchenSink.jl:42)",
+          "counter (DataStructures/src/accumulator.jl:34)",
+          "counter (DataStructures/src/accumulator.jl:25)",
+          "Accumulator (DataStructures/src/accumulator.jl:15)",
+          "Dict (dict.jl:80)"
+        ],
+        "target_kind": "release",
+        "version": "0.19.6"
+      },
+      "case_id": "counter_32768_profile_alloc",
+      "measurement_definition": "julia.alloc.count/profile-allocs-v1",
+      "metric": "julia.alloc.count",
+      "sample_index": 1,
+      "scope": "exclusive_native_leaf",
+      "target_id": "0.19.6",
+      "unit": "1",
+      "value": 1
+    },
+    {
+      "attributes": {
+        "feature": "counter_32768_profile_alloc",
+        "package": "DataStructures",
+        "source_file": "./boot.jl",
+        "source_line": 588,
+        "stack": [
+          "count_events (kitchen-sink/src/PerfCheckerKitchenSink.jl:42)",
+          "counter (DataStructures/src/accumulator.jl:36)",
+          "inc! (DataStructures/src/accumulator.jl:80)",
+          "inc! (DataStructures/src/accumulator.jl:79)",
+          "setindex! (DataStructures/src/accumulator.jl:59)",
+          "setindex! (dict.jl:358)",
+          "ht_keyindex2_shorthash! (dict.jl:270)",
+          "rehash! (dict.jl:148)",
+          "GenericMemory (boot.jl:588)"
+        ],
+        "target_kind": "release",
+        "version": "0.19.6"
+      },
+      "case_id": "counter_32768_profile_alloc",
+      "measurement_definition": "julia.alloc.bytes/profile-allocs-v1",
+      "metric": "julia.alloc.bytes",
+      "sample_index": 2,
+      "scope": "exclusive_native_leaf",
+      "target_id": "0.19.6",
+      "unit": "By",
+      "value": 32
+    },
+    {
+      "attributes": {
+        "feature": "counter_32768_profile_alloc",
+        "package": "DataStructures",
+        "source_file": "./boot.jl",
+        "source_line": 588,
+        "stack": [
+          "count_events (kitchen-sink/src/PerfCheckerKitchenSink.jl:42)",
+          "counter (DataStructures/src/accumulator.jl:36)",
+          "inc! (DataStructures/src/accumulator.jl:80)",
+          "inc! (DataStructures/src/accumulator.jl:79)",
+          "setindex! (DataStructures/src/accumulator.jl:59)",
+          "setindex! (dict.jl:358)",
+          "ht_keyindex2_shorthash! (dict.jl:270)",
+          "rehash! (dict.jl:148)",
+          "GenericMemory (boot.jl:588)"
+        ],
+        "target_kind": "release",
+        "version": "0.19.6"
+      },
+      "case_id": "counter_32768_profile_alloc",
+      "measurement_definition": "julia.alloc.count/profile-allocs-v1",
+      "metric": "julia.alloc.count",
+      "sample_index": 2,
+      "scope": "exclusive_native_leaf",
+      "target_id": "0.19.6",
+      "unit": "1",
+      "value": 1
+    },
+    {
+      "attributes": {
+        "feature": "counter_32768_profile_alloc",
+        "package": "DataStructures",
+        "source_file": "./boot.jl",
+        "source_line": 588,
+        "stack": [
+          "count_events (kitchen-sink/src/PerfCheckerKitchenSink.jl:42)",
+          "counter (DataStructures/src/accumulator.jl:36)",
+          "inc! (DataStructures/src/accumulator.jl:80)",
+          "inc! (DataStructures/src/accumulator.jl:79)",
+          "setindex! (DataStructures/src/accumulator.jl:59)",
+          "setindex! (dict.jl:358)",
+          "ht_keyindex2_shorthash! (dict.jl:270)",
+          "rehash! (dict.jl:150)",
+          "GenericMemory (boot.jl:588)"
+        ],
+        "target_kind": "release",
+        "version": "0.19.6"
+      },
+      "case_id": "counter_32768_profile_alloc",
+      "measurement_definition": "julia.alloc.bytes/profile-allocs-v1",
+      "metric": "julia.alloc.bytes",
+      "sample_index": 3,
+      "scope": "exclusive_native_leaf",
+      "target_id": "0.19.6",
+      "unit": "By",
+      "value": 144
+    },
+    {
+      "attributes": {
+        "feature": "counter_32768_profile_alloc",
+        "package": "DataStructures",
+        "source_file": "./boot.jl",
+        "source_line": 588,
+        "stack": [
+          "count_events (kitchen-sink/src/PerfCheckerKitchenSink.jl:42)",
+          "counter (DataStructures/src/accumulator.jl:36)",
+          "inc! (DataStructures/src/accumulator.jl:80)",
+          "inc! (DataStructures/src/accumulator.jl:79)",
+          "setindex! (DataStructures/src/accumulator.jl:59)",
+          "setindex! (dict.jl:358)",
+          "ht_keyindex2_shorthash! (dict.jl:270)",
+          "rehash! (dict.jl:150)",
+          "GenericMemory (boot.jl:588)"
+        ],
+        "target_kind": "release",
+        "version": "0.19.6"
+      },
+      "case_id": "counter_32768_profile_alloc",
+      "measurement_definition": "julia.alloc.count/profile-allocs-v1",
+      "metric": "julia.alloc.count",
+      "sample_index": 3,
+      "scope": "exclusive_native_leaf",
+      "target_id": "0.19.6",
+      "unit": "1",
+      "value": 1
+    },
+    {
+      "attributes": {
+        "feature": "counter_32768_profile_alloc",
+        "package": "DataStructures",
+        "source_file": "./boot.jl",
+        "source_line": 588,
+        "stack": [
+          "count_events (kitchen-sink/src/PerfCheckerKitchenSink.jl:42)",
+          "counter (DataStructures/src/accumulator.jl:36)",
+          "inc! (DataStructures/src/accumulator.jl:80)",
+          "inc! (DataStructures/src/accumulator.jl:79)",
+          "setindex! (DataStructures/src/accumulator.jl:59)",
+          "setindex! (dict.jl:358)",
+          "ht_keyindex2_shorthash! (dict.jl:270)",
+          "rehash! (dict.jl:151)",
+          "GenericMemory (boot.jl:588)"
+        ],
+        "target_kind": "release",
+        "version": "0.19.6"
+      },
+      "case_id": "counter_32768_profile_alloc",
+      "measurement_definition": "julia.alloc.bytes/profile-allocs-v1",
+      "metric": "julia.alloc.bytes",
+      "sample_index": 4,
+      "scope": "exclusive_native_leaf",
+      "target_id": "0.19.6",
+      "unit": "By",
+      "value": 144
+    },
+    {
+      "attributes": {
+        "feature": "counter_32768_profile_alloc",
+        "package": "DataStructures",
+        "source_file": "./boot.jl",
+        "source_line": 588,
+        "stack": [
+          "count_events (kitchen-sink/src/PerfCheckerKitchenSink.jl:42)",
+          "counter (DataStructures/src/accumulator.jl:36)",
+          "inc! (DataStructures/src/accumulator.jl:80)",
+          "inc! (DataStructures/src/accumulator.jl:79)",
+          "setindex! (DataStructures/src/accumulator.jl:59)",
+          "setindex! (dict.jl:358)",
+          "ht_keyindex2_shorthash! (dict.jl:270)",
+          "rehash! (dict.jl:151)",
+          "GenericMemory (boot.jl:588)"
+        ],
+        "target_kind": "release",
+        "version": "0.19.6"
+      },
+      "case_id": "counter_32768_profile_alloc",
+      "measurement_definition": "julia.alloc.count/profile-allocs-v1",
+      "metric": "julia.alloc.count",
+      "sample_index": 4,
+      "scope": "exclusive_native_leaf",
+      "target_id": "0.19.6",
+      "unit": "1",
+      "value": 1
+    },
+    {
+      "attributes": {
+        "feature": "counter_32768_profile_alloc",
+        "package": "DataStructures",
+        "source_file": "./boot.jl",
+        "source_line": 588,
+        "stack": [
+          "count_events (kitchen-sink/src/PerfCheckerKitchenSink.jl:42)",
+          "counter (DataStructures/src/accumulator.jl:36)",
+          "inc! (DataStructures/src/accumulator.jl:80)",
+          "inc! (DataStructures/src/accumulator.jl:79)",
+          "setindex! (DataStructures/src/accumulator.jl:59)",
+          "setindex! (dict.jl:365)",
+          "_setindex! (dict.jl:339)",
+          "rehash! (dict.jl:157)",
+          "GenericMemory (boot.jl:588)"
+        ],
+        "target_kind": "release",
+        "version": "0.19.6"
+      },
+      "case_id": "counter_32768_profile_alloc",
+      "measurement_definition": "julia.alloc.bytes/profile-allocs-v1",
+      "metric": "julia.alloc.bytes",
+      "sample_index": 5,
+      "scope": "exclusive_native_leaf",
+      "target_id": "0.19.6",
+      "unit": "By",
+      "value": 80
+    },
+    {
+      "attributes": {
+        "feature": "counter_32768_profile_alloc",
+        "package": "DataStructures",
+        "source_file": "./boot.jl",
+        "source_line": 588,
+        "stack": [
+          "count_events (kitchen-sink/src/PerfCheckerKitchenSink.jl:42)",
+          "counter (DataStructures/src/accumulator.jl:36)",
+          "inc! (DataStructures/src/accumulator.jl:80)",
+          "inc! (DataStructures/src/accumulator.jl:79)",
+          "setindex! (DataStructures/src/accumulator.jl:59)",
+          "setindex! (dict.jl:365)",
+          "_setindex! (dict.jl:339)",
+          "rehash! (dict.jl:157)",
+          "GenericMemory (boot.jl:588)"
+        ],
+        "target_kind": "release",
+        "version": "0.19.6"
+      },
+      "case_id": "counter_32768_profile_alloc",
+      "measurement_definition": "julia.alloc.count/profile-allocs-v1",
+      "metric": "julia.alloc.count",
+      "sample_index": 5,
+      "scope": "exclusive_native_leaf",
+      "target_id": "0.19.6",
+      "unit": "1",
+      "value": 1
+    },
+    {
+      "attributes": {
+        "feature": "counter_32768_profile_alloc",
+        "package": "DataStructures",
+        "source_file": "./boot.jl",
+        "source_line": 588,
+        "stack": [
+          "count_events (kitchen-sink/src/PerfCheckerKitchenSink.jl:42)",
+          "counter (DataStructures/src/accumulator.jl:36)",
+          "inc! (DataStructures/src/accumulator.jl:80)",
+          "inc! (DataStructures/src/accumulator.jl:79)",
+          "setindex! (DataStructures/src/accumulator.jl:59)",
+          "setindex! (dict.jl:365)",
+          "_setindex! (dict.jl:339)",
+          "rehash! (dict.jl:159)",
+          "GenericMemory (boot.jl:588)"
+        ],
+        "target_kind": "release",
+        "version": "0.19.6"
+      },
+      "case_id": "counter_32768_profile_alloc",
+      "measurement_definition": "julia.alloc.bytes/profile-allocs-v1",
+      "metric": "julia.alloc.bytes",
+      "sample_index": 6,
+      "scope": "exclusive_native_leaf",
+      "target_id": "0.19.6",
+      "unit": "By",
+      "value": 528
+    },
+    {
+      "attributes": {
+        "feature": "counter_32768_profile_alloc",
+        "package": "DataStructures",
+        "source_file": "./boot.jl",
+        "source_line": 588,
+        "stack": [
+          "count_events (kitchen-sink/src/PerfCheckerKitchenSink.jl:42)",
+          "counter (DataStructures/src/accumulator.jl:36)",
+          "inc! (DataStructures/src/accumulator.jl:80)",
+          "inc! (DataStructures/src/accumulator.jl:79)",
+          "setindex! (DataStructures/src/accumulator.jl:59)",
+          "setindex! (dict.jl:365)",
+          "_setindex! (dict.jl:339)",
+          "rehash! (dict.jl:159)",
+          "GenericMemory (boot.jl:588)"
+        ],
+        "target_kind": "release",
+        "version": "0.19.6"
+      },
+      "case_id": "counter_32768_profile_alloc",
+      "measurement_definition": "julia.alloc.count/profile-allocs-v1",
+      "metric": "julia.alloc.count",
+      "sample_index": 6,
+      "scope": "exclusive_native_leaf",
+      "target_id": "0.19.6",
+      "unit": "1",
+      "value": 1
+    },
+    {
+      "attributes": {
+        "feature": "counter_32768_profile_alloc",
+        "package": "DataStructures",
+        "source_file": "./boot.jl",
+        "source_line": 588,
+        "stack": [
+          "count_events (kitchen-sink/src/PerfCheckerKitchenSink.jl:42)",
+          "counter (DataStructures/src/accumulator.jl:36)",
+          "inc! (DataStructures/src/accumulator.jl:80)",
+          "inc! (DataStructures/src/accumulator.jl:79)",
+          "setindex! (DataStructures/src/accumulator.jl:59)",
+          "setindex! (dict.jl:365)",
+          "_setindex! (dict.jl:339)",
+          "rehash! (dict.jl:160)",
+          "GenericMemory (boot.jl:588)"
+        ],
+        "target_kind": "release",
+        "version": "0.19.6"
+      },
+      "case_id": "counter_32768_profile_alloc",
+      "measurement_definition": "julia.alloc.bytes/profile-allocs-v1",
+      "metric": "julia.alloc.bytes",
+      "sample_index": 7,
+      "scope": "exclusive_native_leaf",
+      "target_id": "0.19.6",
+      "unit": "By",
+      "value": 528
+    },
+    {
+      "attributes": {
+        "feature": "counter_32768_profile_alloc",
+        "package": "DataStructures",
+        "source_file": "./boot.jl",
+        "source_line": 588,
+        "stack": [
+          "count_events (kitchen-sink/src/PerfCheckerKitchenSink.jl:42)",
+          "counter (DataStructures/src/accumulator.jl:36)",
+          "inc! (DataStructures/src/accumulator.jl:80)",
+          "inc! (DataStructures/src/accumulator.jl:79)",
+          "setindex! (DataStructures/src/accumulator.jl:59)",
+          "setindex! (dict.jl:365)",
+          "_setindex! (dict.jl:339)",
+          "rehash! (dict.jl:160)",
+          "GenericMemory (boot.jl:588)"
+        ],
+        "target_kind": "release",
+        "version": "0.19.6"
+      },
+      "case_id": "counter_32768_profile_alloc",
+      "measurement_definition": "julia.alloc.count/profile-allocs-v1",
+      "metric": "julia.alloc.count",
+      "sample_index": 7,
+      "scope": "exclusive_native_leaf",
+      "target_id": "0.19.6",
+      "unit": "1",
+      "value": 1
+    },
+    {
+      "attributes": {
+        "feature": "counter_32768_profile_alloc",
+        "package": "DataStructures",
+        "source_file": "./dict.jl",
+        "source_line": 80,
+        "stack": [
+          "count_events (kitchen-sink/src/PerfCheckerKitchenSink.jl:42)",
+          "Dict (dict.jl:117)",
+          "dict_with_eltype (abstractdict.jl:637)",
+          "Dict (dict.jl:91)",
+          "Dict (dict.jl:80)"
+        ],
+        "target_kind": "release",
+        "version": "0.19.6"
+      },
+      "case_id": "counter_32768_profile_alloc",
+      "measurement_definition": "julia.alloc.bytes/profile-allocs-v1",
+      "metric": "julia.alloc.bytes",
+      "sample_index": 8,
+      "scope": "exclusive_native_leaf",
+      "target_id": "0.19.6",
+      "unit": "By",
+      "value": 80
+    },
+    {
+      "attributes": {
+        "feature": "counter_32768_profile_alloc",
+        "package": "DataStructures",
+        "source_file": "./dict.jl",
+        "source_line": 80,
+        "stack": [
+          "count_events (kitchen-sink/src/PerfCheckerKitchenSink.jl:42)",
+          "Dict (dict.jl:117)",
+          "dict_with_eltype (abstractdict.jl:637)",
+          "Dict (dict.jl:91)",
+          "Dict (dict.jl:80)"
+        ],
+        "target_kind": "release",
+        "version": "0.19.6"
+      },
+      "case_id": "counter_32768_profile_alloc",
+      "measurement_definition": "julia.alloc.count/profile-allocs-v1",
+      "metric": "julia.alloc.count",
+      "sample_index": 8,
+      "scope": "exclusive_native_leaf",
+      "target_id": "0.19.6",
+      "unit": "1",
+      "value": 1
+    },
+    {
+      "attributes": {
+        "feature": "counter_32768_profile_alloc",
+        "package": "DataStructures",
+        "source_file": "./boot.jl",
+        "source_line": 588,
+        "stack": [
+          "count_events (kitchen-sink/src/PerfCheckerKitchenSink.jl:42)",
+          "Dict (dict.jl:117)",
+          "dict_with_eltype (abstractdict.jl:637)",
+          "Dict (dict.jl:92)",
+          "sizehint! (dict.jl:194)",
+          "#sizehint!#304 (dict.jl:201)",
+          "rehash! (dict.jl:148)",
+          "GenericMemory (boot.jl:588)"
+        ],
+        "target_kind": "release",
+        "version": "0.19.6"
+      },
+      "case_id": "counter_32768_profile_alloc",
+      "measurement_definition": "julia.alloc.bytes/profile-allocs-v1",
+      "metric": "julia.alloc.bytes",
+      "sample_index": 9,
+      "scope": "exclusive_native_leaf",
+      "target_id": "0.19.6",
+      "unit": "By",
+      "value": 48
+    },
+    {
+      "attributes": {
+        "feature": "counter_32768_profile_alloc",
+        "package": "DataStructures",
+        "source_file": "./boot.jl",
+        "source_line": 588,
+        "stack": [
+          "count_events (kitchen-sink/src/PerfCheckerKitchenSink.jl:42)",
+          "Dict (dict.jl:117)",
+          "dict_with_eltype (abstractdict.jl:637)",
+          "Dict (dict.jl:92)",
+          "sizehint! (dict.jl:194)",
+          "#sizehint!#304 (dict.jl:201)",
+          "rehash! (dict.jl:148)",
+          "GenericMemory (boot.jl:588)"
+        ],
+        "target_kind": "release",
+        "version": "0.19.6"
+      },
+      "case_id": "counter_32768_profile_alloc",
+      "measurement_definition": "julia.alloc.count/profile-allocs-v1",
+      "metric": "julia.alloc.count",
+      "sample_index": 9,
+      "scope": "exclusive_native_leaf",
+      "target_id": "0.19.6",
+      "unit": "1",
+      "value": 1
+    },
+    {
+      "attributes": {
+        "feature": "counter_32768_profile_alloc",
+        "package": "DataStructures",
+        "source_file": "./boot.jl",
+        "source_line": 588,
+        "stack": [
+          "count_events (kitchen-sink/src/PerfCheckerKitchenSink.jl:42)",
+          "Dict (dict.jl:117)",
+          "dict_with_eltype (abstractdict.jl:637)",
+          "Dict (dict.jl:92)",
+          "sizehint! (dict.jl:194)",
+          "#sizehint!#304 (dict.jl:201)",
+          "rehash! (dict.jl:150)",
+          "GenericMemory (boot.jl:588)"
+        ],
+        "target_kind": "release",
+        "version": "0.19.6"
+      },
+      "case_id": "counter_32768_profile_alloc",
+      "measurement_definition": "julia.alloc.bytes/profile-allocs-v1",
+      "metric": "julia.alloc.bytes",
+      "sample_index": 10,
+      "scope": "exclusive_native_leaf",
+      "target_id": "0.19.6",
+      "unit": "By",
+      "value": 272
+    },
+    {
+      "attributes": {
+        "feature": "counter_32768_profile_alloc",
+        "package": "DataStructures",
+        "source_file": "./boot.jl",
+        "source_line": 588,
+        "stack": [
+          "count_events (kitchen-sink/src/PerfCheckerKitchenSink.jl:42)",
+          "Dict (dict.jl:117)",
+          "dict_with_eltype (abstractdict.jl:637)",
+          "Dict (dict.jl:92)",
+          "sizehint! (dict.jl:194)",
+          "#sizehint!#304 (dict.jl:201)",
+          "rehash! (dict.jl:150)",
+          "GenericMemory (boot.jl:588)"
+        ],
+        "target_kind": "release",
+        "version": "0.19.6"
+      },
+      "case_id": "counter_32768_profile_alloc",
+      "measurement_definition": "julia.alloc.count/profile-allocs-v1",
+      "metric": "julia.alloc.count",
+      "sample_index": 10,
+      "scope": "exclusive_native_leaf",
+      "target_id": "0.19.6",
+      "unit": "1",
+      "value": 1
+    },
+    {
+      "attributes": {
+        "feature": "counter_32768_profile_alloc",
+        "package": "DataStructures",
+        "source_file": "./boot.jl",
+        "source_line": 588,
+        "stack": [
+          "count_events (kitchen-sink/src/PerfCheckerKitchenSink.jl:42)",
+          "Dict (dict.jl:117)",
+          "dict_with_eltype (abstractdict.jl:637)",
+          "Dict (dict.jl:92)",
+          "sizehint! (dict.jl:194)",
+          "#sizehint!#304 (dict.jl:201)",
+          "rehash! (dict.jl:151)",
+          "GenericMemory (boot.jl:588)"
+        ],
+        "target_kind": "release",
+        "version": "0.19.6"
+      },
+      "case_id": "counter_32768_profile_alloc",
+      "measurement_definition": "julia.alloc.bytes/profile-allocs-v1",
+      "metric": "julia.alloc.bytes",
+      "sample_index": 11,
+      "scope": "exclusive_native_leaf",
+      "target_id": "0.19.6",
+      "unit": "By",
+      "value": 272
+    },
+    {
+      "attributes": {
+        "feature": "counter_32768_profile_alloc",
+        "package": "DataStructures",
+        "source_file": "./boot.jl",
+        "source_line": 588,
+        "stack": [
+          "count_events (kitchen-sink/src/PerfCheckerKitchenSink.jl:42)",
+          "Dict (dict.jl:117)",
+          "dict_with_eltype (abstractdict.jl:637)",
+          "Dict (dict.jl:92)",
+          "sizehint! (dict.jl:194)",
+          "#sizehint!#304 (dict.jl:201)",
+          "rehash! (dict.jl:151)",
+          "GenericMemory (boot.jl:588)"
+        ],
+        "target_kind": "release",
+        "version": "0.19.6"
+      },
+      "case_id": "counter_32768_profile_alloc",
+      "measurement_definition": "julia.alloc.count/profile-allocs-v1",
+      "metric": "julia.alloc.count",
+      "sample_index": 11,
+      "scope": "exclusive_native_leaf",
+      "target_id": "0.19.6",
+      "unit": "1",
+      "value": 1
+    }
+  ],
+  "input_fingerprints": {
+    "/home/azzaare/.julia/dev/PerfChecker-docs-interactive-20261012/examples/kitchen-sink/src/PerfCheckerKitchenSink.jl": "bf64efaabbb273971dfd245748d60c489ea8154fdbba319e2e240a3c1a461330",
+    "/home/azzaare/.julia/dev/PerfChecker-docs-interactive-20261012/examples/kitchen-sink/suite.jl": "fd7e75ab7d71a9c95d73e8a56f13163f250b6f1075026839574b0ac6b6d14586",
+    "/home/azzaare/.julia/dev/PerfChecker-docs-interactive-20261012/examples/kitchen-sink/workloads/counter_32768.jl": "22484d9c07145815afa73c3d49964ad063a3198d9d4dc7c9849f9d9794746653",
+    "/home/azzaare/.julia/dev/PerfChecker-docs-interactive-20261012/src/profile_runtime.jl": "d2899de0fbf5d773f79ec00fc06532614f3718ae0d75608f40702e4e6b971a34",
+    "/home/azzaare/.julia/dev/PerfChecker-docs-interactive-20261012/src/scenario_runtime.jl": "6f3e6aaa5dddb2be0b53361b7f354b608710224d51bb68d4dc3b541a2e8657eb"
+  },
+  "projection_source_sha256": "8f18acd065790a394da2393e8d9a2d7b9f8dbaeb7ebcb7531ff58d137b8ec1fc",
+  "raw_manifest_sha256": "83f9ec4d62e52a2940110171b3a54c1fd464ae28b019587a866425e5ed10742e",
+  "run_id": "94cf6884-2e97-4623-b29a-c8fb727355ff",
+  "scenario": {
+    "collectors": [
+      "profile_alloc"
+    ],
+    "factory": "PerfCheckerKitchenSink.event_case",
+    "fixtures": [
+      "/home/azzaare/.julia/dev/PerfChecker-docs-interactive-20261012/examples/kitchen-sink/suite.jl",
+      "/home/azzaare/.julia/dev/PerfChecker-docs-interactive-20261012/examples/kitchen-sink/workloads/counter_32768.jl",
+      "/home/azzaare/.julia/dev/PerfChecker-docs-interactive-20261012/src/scenario_runtime.jl",
+      "/home/azzaare/.julia/dev/PerfChecker-docs-interactive-20261012/src/profile_runtime.jl"
+    ],
+    "id": "counter_32768_profile_alloc",
+    "implementation": "DataStructures-0.19.6",
+    "parameters": {
+      "kind": "counter",
+      "n": 32768,
+      "seed": 42
+    },
+    "repeatable": true,
+    "requirements": [
+      "DataStructures",
+      "Random"
+    ],
+    "source": "/home/azzaare/.julia/dev/PerfChecker-docs-interactive-20261012/examples/kitchen-sink/src/PerfCheckerKitchenSink.jl"
+  },
+  "scenario_evidence": {
+    "allocation_profile": {
+      "bytes_measurement_evaluations": 1,
+      "count_measurement_evaluations": 1,
+      "message": "Allocation stacks were captured.",
+      "profile_evaluations": 1,
+      "retained_allocations": 11,
+      "retained_sampled_bytes": 2208,
+      "sample_rate": 1.0,
+      "sampled_allocations": 11,
+      "schema_version": "perfchecker-allocation-profile/1",
+      "source_allocations": 11,
+      "status": "complete",
+      "total_allocations": 11,
+      "total_bytes": 2352,
+      "total_measurement_evaluations": 2,
+      "total_semantics": "bytes and allocation count from two separate operation evaluations; not inferred from samples",
+      "weight_semantics": "raw sampled bytes and events across all profile evaluations"
+    },
+    "allocation_sites": [
+      {
+        "bytes": 80,
+        "file": "./dict.jl",
+        "line": 80,
+        "stack": [
+          {
+            "file": "./dict.jl",
+            "function": "Dict",
+            "line": 80
+          },
+          {
+            "file": "/home/azzaare/.julia/packages/DataStructures/IwRP2/src/accumulator.jl",
+            "function": "Accumulator",
+            "line": 15
+          },
+          {
+            "file": "/home/azzaare/.julia/packages/DataStructures/IwRP2/src/accumulator.jl",
+            "function": "counter",
+            "line": 25
+          },
+          {
+            "file": "/home/azzaare/.julia/packages/DataStructures/IwRP2/src/accumulator.jl",
+            "function": "counter",
+            "line": 34
+          },
+          {
+            "file": "/home/azzaare/.julia/dev/PerfChecker-docs-interactive-20261012/examples/kitchen-sink/src/PerfCheckerKitchenSink.jl",
+            "function": "count_events",
+            "line": 42
+          },
+          {
+            "file": "/home/azzaare/.julia/dev/PerfChecker-docs-interactive-20261012/src/scenario_runtime.jl",
+            "function": "callback",
+            "line": 22
+          },
+          {
+            "file": "/home/azzaare/.julia/dev/PerfChecker-docs-interactive-20261012/src/scenario_runtime.jl",
+            "function": "operation!",
+            "line": 78
+          },
+          {
+            "file": "/home/azzaare/.julia/juliaup/julia-1.13.1+0.x64.linux.gnu/share/julia/stdlib/v1.13/Profile/src/Allocs.jl",
+            "function": "macro expansion",
+            "line": 82
+          },
+          {
+            "file": "/home/azzaare/.julia/dev/PerfChecker-docs-interactive-20261012/src/scenario_runtime.jl",
+            "function": "profile_case",
+            "line": 171
+          },
+          {
+            "file": "/home/azzaare/.julia/dev/PerfChecker-docs-interactive-20261012/src/scenario_runtime.jl",
+            "function": "execute_loaded",
+            "line": 254
+          },
+          {
+            "file": "/home/azzaare/.julia/dev/PerfChecker-docs-interactive-20261012/src/scenario_runtime.jl",
+            "function": "execute",
+            "line": 240
+          },
+          {
+            "file": "./boot.jl",
+            "function": "eval",
+            "line": 489
+          },
+          {
+            "file": "./loading.jl",
+            "function": "include_string",
+            "line": 3033
+          },
+          {
+            "file": "./loading.jl",
+            "function": "_include",
+            "line": 3093
+          },
+          {
+            "file": "./Base.jl",
+            "function": "include",
+            "line": 309
+          },
+          {
+            "file": "./client.jl",
+            "function": "exec_options",
+            "line": 344
+          },
+          {
+            "file": "./client.jl",
+            "function": "_start",
+            "line": 577
+          }
+        ]
+      },
+      {
+        "bytes": 32,
+        "file": "./boot.jl",
+        "line": 588,
+        "stack": [
+          {
+            "file": "./boot.jl",
+            "function": "GenericMemory",
+            "line": 588
+          },
+          {
+            "file": "./dict.jl",
+            "function": "rehash!",
+            "line": 148
+          },
+          {
+            "file": "./dict.jl",
+            "function": "ht_keyindex2_shorthash!",
+            "line": 270
+          },
+          {
+            "file": "./dict.jl",
+            "function": "setindex!",
+            "line": 358
+          },
+          {
+            "file": "/home/azzaare/.julia/packages/DataStructures/IwRP2/src/accumulator.jl",
+            "function": "setindex!",
+            "line": 59
+          },
+          {
+            "file": "/home/azzaare/.julia/packages/DataStructures/IwRP2/src/accumulator.jl",
+            "function": "inc!",
+            "line": 79
+          },
+          {
+            "file": "/home/azzaare/.julia/packages/DataStructures/IwRP2/src/accumulator.jl",
+            "function": "inc!",
+            "line": 80
+          },
+          {
+            "file": "/home/azzaare/.julia/packages/DataStructures/IwRP2/src/accumulator.jl",
+            "function": "counter",
+            "line": 36
+          },
+          {
+            "file": "/home/azzaare/.julia/dev/PerfChecker-docs-interactive-20261012/examples/kitchen-sink/src/PerfCheckerKitchenSink.jl",
+            "function": "count_events",
+            "line": 42
+          },
+          {
+            "file": "/home/azzaare/.julia/dev/PerfChecker-docs-interactive-20261012/src/scenario_runtime.jl",
+            "function": "callback",
+            "line": 22
+          },
+          {
+            "file": "/home/azzaare/.julia/dev/PerfChecker-docs-interactive-20261012/src/scenario_runtime.jl",
+            "function": "operation!",
+            "line": 78
+          },
+          {
+            "file": "/home/azzaare/.julia/juliaup/julia-1.13.1+0.x64.linux.gnu/share/julia/stdlib/v1.13/Profile/src/Allocs.jl",
+            "function": "macro expansion",
+            "line": 82
+          },
+          {
+            "file": "/home/azzaare/.julia/dev/PerfChecker-docs-interactive-20261012/src/scenario_runtime.jl",
+            "function": "profile_case",
+            "line": 171
+          },
+          {
+            "file": "/home/azzaare/.julia/dev/PerfChecker-docs-interactive-20261012/src/scenario_runtime.jl",
+            "function": "execute_loaded",
+            "line": 254
+          },
+          {
+            "file": "/home/azzaare/.julia/dev/PerfChecker-docs-interactive-20261012/src/scenario_runtime.jl",
+            "function": "execute",
+            "line": 240
+          },
+          {
+            "file": "./boot.jl",
+            "function": "eval",
+            "line": 489
+          },
+          {
+            "file": "./loading.jl",
+            "function": "include_string",
+            "line": 3033
+          },
+          {
+            "file": "./loading.jl",
+            "function": "_include",
+            "line": 3093
+          },
+          {
+            "file": "./Base.jl",
+            "function": "include",
+            "line": 309
+          },
+          {
+            "file": "./client.jl",
+            "function": "exec_options",
+            "line": 344
+          },
+          {
+            "file": "./client.jl",
+            "function": "_start",
+            "line": 577
+          }
+        ]
+      },
+      {
+        "bytes": 144,
+        "file": "./boot.jl",
+        "line": 588,
+        "stack": [
+          {
+            "file": "./boot.jl",
+            "function": "GenericMemory",
+            "line": 588
+          },
+          {
+            "file": "./dict.jl",
+            "function": "rehash!",
+            "line": 150
+          },
+          {
+            "file": "./dict.jl",
+            "function": "ht_keyindex2_shorthash!",
+            "line": 270
+          },
+          {
+            "file": "./dict.jl",
+            "function": "setindex!",
+            "line": 358
+          },
+          {
+            "file": "/home/azzaare/.julia/packages/DataStructures/IwRP2/src/accumulator.jl",
+            "function": "setindex!",
+            "line": 59
+          },
+          {
+            "file": "/home/azzaare/.julia/packages/DataStructures/IwRP2/src/accumulator.jl",
+            "function": "inc!",
+            "line": 79
+          },
+          {
+            "file": "/home/azzaare/.julia/packages/DataStructures/IwRP2/src/accumulator.jl",
+            "function": "inc!",
+            "line": 80
+          },
+          {
+            "file": "/home/azzaare/.julia/packages/DataStructures/IwRP2/src/accumulator.jl",
+            "function": "counter",
+            "line": 36
+          },
+          {
+            "file": "/home/azzaare/.julia/dev/PerfChecker-docs-interactive-20261012/examples/kitchen-sink/src/PerfCheckerKitchenSink.jl",
+            "function": "count_events",
+            "line": 42
+          },
+          {
+            "file": "/home/azzaare/.julia/dev/PerfChecker-docs-interactive-20261012/src/scenario_runtime.jl",
+            "function": "callback",
+            "line": 22
+          },
+          {
+            "file": "/home/azzaare/.julia/dev/PerfChecker-docs-interactive-20261012/src/scenario_runtime.jl",
+            "function": "operation!",
+            "line": 78
+          },
+          {
+            "file": "/home/azzaare/.julia/juliaup/julia-1.13.1+0.x64.linux.gnu/share/julia/stdlib/v1.13/Profile/src/Allocs.jl",
+            "function": "macro expansion",
+            "line": 82
+          },
+          {
+            "file": "/home/azzaare/.julia/dev/PerfChecker-docs-interactive-20261012/src/scenario_runtime.jl",
+            "function": "profile_case",
+            "line": 171
+          },
+          {
+            "file": "/home/azzaare/.julia/dev/PerfChecker-docs-interactive-20261012/src/scenario_runtime.jl",
+            "function": "execute_loaded",
+            "line": 254
+          },
+          {
+            "file": "/home/azzaare/.julia/dev/PerfChecker-docs-interactive-20261012/src/scenario_runtime.jl",
+            "function": "execute",
+            "line": 240
+          },
+          {
+            "file": "./boot.jl",
+            "function": "eval",
+            "line": 489
+          },
+          {
+            "file": "./loading.jl",
+            "function": "include_string",
+            "line": 3033
+          },
+          {
+            "file": "./loading.jl",
+            "function": "_include",
+            "line": 3093
+          },
+          {
+            "file": "./Base.jl",
+            "function": "include",
+            "line": 309
+          },
+          {
+            "file": "./client.jl",
+            "function": "exec_options",
+            "line": 344
+          },
+          {
+            "file": "./client.jl",
+            "function": "_start",
+            "line": 577
+          }
+        ]
+      },
+      {
+        "bytes": 144,
+        "file": "./boot.jl",
+        "line": 588,
+        "stack": [
+          {
+            "file": "./boot.jl",
+            "function": "GenericMemory",
+            "line": 588
+          },
+          {
+            "file": "./dict.jl",
+            "function": "rehash!",
+            "line": 151
+          },
+          {
+            "file": "./dict.jl",
+            "function": "ht_keyindex2_shorthash!",
+            "line": 270
+          },
+          {
+            "file": "./dict.jl",
+            "function": "setindex!",
+            "line": 358
+          },
+          {
+            "file": "/home/azzaare/.julia/packages/DataStructures/IwRP2/src/accumulator.jl",
+            "function": "setindex!",
+            "line": 59
+          },
+          {
+            "file": "/home/azzaare/.julia/packages/DataStructures/IwRP2/src/accumulator.jl",
+            "function": "inc!",
+            "line": 79
+          },
+          {
+            "file": "/home/azzaare/.julia/packages/DataStructures/IwRP2/src/accumulator.jl",
+            "function": "inc!",
+            "line": 80
+          },
+          {
+            "file": "/home/azzaare/.julia/packages/DataStructures/IwRP2/src/accumulator.jl",
+            "function": "counter",
+            "line": 36
+          },
+          {
+            "file": "/home/azzaare/.julia/dev/PerfChecker-docs-interactive-20261012/examples/kitchen-sink/src/PerfCheckerKitchenSink.jl",
+            "function": "count_events",
+            "line": 42
+          },
+          {
+            "file": "/home/azzaare/.julia/dev/PerfChecker-docs-interactive-20261012/src/scenario_runtime.jl",
+            "function": "callback",
+            "line": 22
+          },
+          {
+            "file": "/home/azzaare/.julia/dev/PerfChecker-docs-interactive-20261012/src/scenario_runtime.jl",
+            "function": "operation!",
+            "line": 78
+          },
+          {
+            "file": "/home/azzaare/.julia/juliaup/julia-1.13.1+0.x64.linux.gnu/share/julia/stdlib/v1.13/Profile/src/Allocs.jl",
+            "function": "macro expansion",
+            "line": 82
+          },
+          {
+            "file": "/home/azzaare/.julia/dev/PerfChecker-docs-interactive-20261012/src/scenario_runtime.jl",
+            "function": "profile_case",
+            "line": 171
+          },
+          {
+            "file": "/home/azzaare/.julia/dev/PerfChecker-docs-interactive-20261012/src/scenario_runtime.jl",
+            "function": "execute_loaded",
+            "line": 254
+          },
+          {
+            "file": "/home/azzaare/.julia/dev/PerfChecker-docs-interactive-20261012/src/scenario_runtime.jl",
+            "function": "execute",
+            "line": 240
+          },
+          {
+            "file": "./boot.jl",
+            "function": "eval",
+            "line": 489
+          },
+          {
+            "file": "./loading.jl",
+            "function": "include_string",
+            "line": 3033
+          },
+          {
+            "file": "./loading.jl",
+            "function": "_include",
+            "line": 3093
+          },
+          {
+            "file": "./Base.jl",
+            "function": "include",
+            "line": 309
+          },
+          {
+            "file": "./client.jl",
+            "function": "exec_options",
+            "line": 344
+          },
+          {
+            "file": "./client.jl",
+            "function": "_start",
+            "line": 577
+          }
+        ]
+      },
+      {
+        "bytes": 80,
+        "file": "./boot.jl",
+        "line": 588,
+        "stack": [
+          {
+            "file": "./boot.jl",
+            "function": "GenericMemory",
+            "line": 588
+          },
+          {
+            "file": "./dict.jl",
+            "function": "rehash!",
+            "line": 157
+          },
+          {
+            "file": "./dict.jl",
+            "function": "_setindex!",
+            "line": 339
+          },
+          {
+            "file": "./dict.jl",
+            "function": "setindex!",
+            "line": 365
+          },
+          {
+            "file": "/home/azzaare/.julia/packages/DataStructures/IwRP2/src/accumulator.jl",
+            "function": "setindex!",
+            "line": 59
+          },
+          {
+            "file": "/home/azzaare/.julia/packages/DataStructures/IwRP2/src/accumulator.jl",
+            "function": "inc!",
+            "line": 79
+          },
+          {
+            "file": "/home/azzaare/.julia/packages/DataStructures/IwRP2/src/accumulator.jl",
+            "function": "inc!",
+            "line": 80
+          },
+          {
+            "file": "/home/azzaare/.julia/packages/DataStructures/IwRP2/src/accumulator.jl",
+            "function": "counter",
+            "line": 36
+          },
+          {
+            "file": "/home/azzaare/.julia/dev/PerfChecker-docs-interactive-20261012/examples/kitchen-sink/src/PerfCheckerKitchenSink.jl",
+            "function": "count_events",
+            "line": 42
+          },
+          {
+            "file": "/home/azzaare/.julia/dev/PerfChecker-docs-interactive-20261012/src/scenario_runtime.jl",
+            "function": "callback",
+            "line": 22
+          },
+          {
+            "file": "/home/azzaare/.julia/dev/PerfChecker-docs-interactive-20261012/src/scenario_runtime.jl",
+            "function": "operation!",
+            "line": 78
+          },
+          {
+            "file": "/home/azzaare/.julia/juliaup/julia-1.13.1+0.x64.linux.gnu/share/julia/stdlib/v1.13/Profile/src/Allocs.jl",
+            "function": "macro expansion",
+            "line": 82
+          },
+          {
+            "file": "/home/azzaare/.julia/dev/PerfChecker-docs-interactive-20261012/src/scenario_runtime.jl",
+            "function": "profile_case",
+            "line": 171
+          },
+          {
+            "file": "/home/azzaare/.julia/dev/PerfChecker-docs-interactive-20261012/src/scenario_runtime.jl",
+            "function": "execute_loaded",
+            "line": 254
+          },
+          {
+            "file": "/home/azzaare/.julia/dev/PerfChecker-docs-interactive-20261012/src/scenario_runtime.jl",
+            "function": "execute",
+            "line": 240
+          },
+          {
+            "file": "./boot.jl",
+            "function": "eval",
+            "line": 489
+          },
+          {
+            "file": "./loading.jl",
+            "function": "include_string",
+            "line": 3033
+          },
+          {
+            "file": "./loading.jl",
+            "function": "_include",
+            "line": 3093
+          },
+          {
+            "file": "./Base.jl",
+            "function": "include",
+            "line": 309
+          },
+          {
+            "file": "./client.jl",
+            "function": "exec_options",
+            "line": 344
+          },
+          {
+            "file": "./client.jl",
+            "function": "_start",
+            "line": 577
+          }
+        ]
+      },
+      {
+        "bytes": 528,
+        "file": "./boot.jl",
+        "line": 588,
+        "stack": [
+          {
+            "file": "./boot.jl",
+            "function": "GenericMemory",
+            "line": 588
+          },
+          {
+            "file": "./dict.jl",
+            "function": "rehash!",
+            "line": 159
+          },
+          {
+            "file": "./dict.jl",
+            "function": "_setindex!",
+            "line": 339
+          },
+          {
+            "file": "./dict.jl",
+            "function": "setindex!",
+            "line": 365
+          },
+          {
+            "file": "/home/azzaare/.julia/packages/DataStructures/IwRP2/src/accumulator.jl",
+            "function": "setindex!",
+            "line": 59
+          },
+          {
+            "file": "/home/azzaare/.julia/packages/DataStructures/IwRP2/src/accumulator.jl",
+            "function": "inc!",
+            "line": 79
+          },
+          {
+            "file": "/home/azzaare/.julia/packages/DataStructures/IwRP2/src/accumulator.jl",
+            "function": "inc!",
+            "line": 80
+          },
+          {
+            "file": "/home/azzaare/.julia/packages/DataStructures/IwRP2/src/accumulator.jl",
+            "function": "counter",
+            "line": 36
+          },
+          {
+            "file": "/home/azzaare/.julia/dev/PerfChecker-docs-interactive-20261012/examples/kitchen-sink/src/PerfCheckerKitchenSink.jl",
+            "function": "count_events",
+            "line": 42
+          },
+          {
+            "file": "/home/azzaare/.julia/dev/PerfChecker-docs-interactive-20261012/src/scenario_runtime.jl",
+            "function": "callback",
+            "line": 22
+          },
+          {
+            "file": "/home/azzaare/.julia/dev/PerfChecker-docs-interactive-20261012/src/scenario_runtime.jl",
+            "function": "operation!",
+            "line": 78
+          },
+          {
+            "file": "/home/azzaare/.julia/juliaup/julia-1.13.1+0.x64.linux.gnu/share/julia/stdlib/v1.13/Profile/src/Allocs.jl",
+            "function": "macro expansion",
+            "line": 82
+          },
+          {
+            "file": "/home/azzaare/.julia/dev/PerfChecker-docs-interactive-20261012/src/scenario_runtime.jl",
+            "function": "profile_case",
+            "line": 171
+          },
+          {
+            "file": "/home/azzaare/.julia/dev/PerfChecker-docs-interactive-20261012/src/scenario_runtime.jl",
+            "function": "execute_loaded",
+            "line": 254
+          },
+          {
+            "file": "/home/azzaare/.julia/dev/PerfChecker-docs-interactive-20261012/src/scenario_runtime.jl",
+            "function": "execute",
+            "line": 240
+          },
+          {
+            "file": "./boot.jl",
+            "function": "eval",
+            "line": 489
+          },
+          {
+            "file": "./loading.jl",
+            "function": "include_string",
+            "line": 3033
+          },
+          {
+            "file": "./loading.jl",
+            "function": "_include",
+            "line": 3093
+          },
+          {
+            "file": "./Base.jl",
+            "function": "include",
+            "line": 309
+          },
+          {
+            "file": "./client.jl",
+            "function": "exec_options",
+            "line": 344
+          },
+          {
+            "file": "./client.jl",
+            "function": "_start",
+            "line": 577
+          }
+        ]
+      },
+      {
+        "bytes": 528,
+        "file": "./boot.jl",
+        "line": 588,
+        "stack": [
+          {
+            "file": "./boot.jl",
+            "function": "GenericMemory",
+            "line": 588
+          },
+          {
+            "file": "./dict.jl",
+            "function": "rehash!",
+            "line": 160
+          },
+          {
+            "file": "./dict.jl",
+            "function": "_setindex!",
+            "line": 339
+          },
+          {
+            "file": "./dict.jl",
+            "function": "setindex!",
+            "line": 365
+          },
+          {
+            "file": "/home/azzaare/.julia/packages/DataStructures/IwRP2/src/accumulator.jl",
+            "function": "setindex!",
+            "line": 59
+          },
+          {
+            "file": "/home/azzaare/.julia/packages/DataStructures/IwRP2/src/accumulator.jl",
+            "function": "inc!",
+            "line": 79
+          },
+          {
+            "file": "/home/azzaare/.julia/packages/DataStructures/IwRP2/src/accumulator.jl",
+            "function": "inc!",
+            "line": 80
+          },
+          {
+            "file": "/home/azzaare/.julia/packages/DataStructures/IwRP2/src/accumulator.jl",
+            "function": "counter",
+            "line": 36
+          },
+          {
+            "file": "/home/azzaare/.julia/dev/PerfChecker-docs-interactive-20261012/examples/kitchen-sink/src/PerfCheckerKitchenSink.jl",
+            "function": "count_events",
+            "line": 42
+          },
+          {
+            "file": "/home/azzaare/.julia/dev/PerfChecker-docs-interactive-20261012/src/scenario_runtime.jl",
+            "function": "callback",
+            "line": 22
+          },
+          {
+            "file": "/home/azzaare/.julia/dev/PerfChecker-docs-interactive-20261012/src/scenario_runtime.jl",
+            "function": "operation!",
+            "line": 78
+          },
+          {
+            "file": "/home/azzaare/.julia/juliaup/julia-1.13.1+0.x64.linux.gnu/share/julia/stdlib/v1.13/Profile/src/Allocs.jl",
+            "function": "macro expansion",
+            "line": 82
+          },
+          {
+            "file": "/home/azzaare/.julia/dev/PerfChecker-docs-interactive-20261012/src/scenario_runtime.jl",
+            "function": "profile_case",
+            "line": 171
+          },
+          {
+            "file": "/home/azzaare/.julia/dev/PerfChecker-docs-interactive-20261012/src/scenario_runtime.jl",
+            "function": "execute_loaded",
+            "line": 254
+          },
+          {
+            "file": "/home/azzaare/.julia/dev/PerfChecker-docs-interactive-20261012/src/scenario_runtime.jl",
+            "function": "execute",
+            "line": 240
+          },
+          {
+            "file": "./boot.jl",
+            "function": "eval",
+            "line": 489
+          },
+          {
+            "file": "./loading.jl",
+            "function": "include_string",
+            "line": 3033
+          },
+          {
+            "file": "./loading.jl",
+            "function": "_include",
+            "line": 3093
+          },
+          {
+            "file": "./Base.jl",
+            "function": "include",
+            "line": 309
+          },
+          {
+            "file": "./client.jl",
+            "function": "exec_options",
+            "line": 344
+          },
+          {
+            "file": "./client.jl",
+            "function": "_start",
+            "line": 577
+          }
+        ]
+      },
+      {
+        "bytes": 80,
+        "file": "./dict.jl",
+        "line": 80,
+        "stack": [
+          {
+            "file": "./dict.jl",
+            "function": "Dict",
+            "line": 80
+          },
+          {
+            "file": "./dict.jl",
+            "function": "Dict",
+            "line": 91
+          },
+          {
+            "file": "./abstractdict.jl",
+            "function": "dict_with_eltype",
+            "line": 637
+          },
+          {
+            "file": "./dict.jl",
+            "function": "Dict",
+            "line": 117
+          },
+          {
+            "file": "/home/azzaare/.julia/dev/PerfChecker-docs-interactive-20261012/examples/kitchen-sink/src/PerfCheckerKitchenSink.jl",
+            "function": "count_events",
+            "line": 42
+          },
+          {
+            "file": "/home/azzaare/.julia/dev/PerfChecker-docs-interactive-20261012/src/scenario_runtime.jl",
+            "function": "callback",
+            "line": 22
+          },
+          {
+            "file": "/home/azzaare/.julia/dev/PerfChecker-docs-interactive-20261012/src/scenario_runtime.jl",
+            "function": "operation!",
+            "line": 78
+          },
+          {
+            "file": "/home/azzaare/.julia/juliaup/julia-1.13.1+0.x64.linux.gnu/share/julia/stdlib/v1.13/Profile/src/Allocs.jl",
+            "function": "macro expansion",
+            "line": 82
+          },
+          {
+            "file": "/home/azzaare/.julia/dev/PerfChecker-docs-interactive-20261012/src/scenario_runtime.jl",
+            "function": "profile_case",
+            "line": 171
+          },
+          {
+            "file": "/home/azzaare/.julia/dev/PerfChecker-docs-interactive-20261012/src/scenario_runtime.jl",
+            "function": "execute_loaded",
+            "line": 254
+          },
+          {
+            "file": "/home/azzaare/.julia/dev/PerfChecker-docs-interactive-20261012/src/scenario_runtime.jl",
+            "function": "execute",
+            "line": 240
+          },
+          {
+            "file": "./boot.jl",
+            "function": "eval",
+            "line": 489
+          },
+          {
+            "file": "./loading.jl",
+            "function": "include_string",
+            "line": 3033
+          },
+          {
+            "file": "./loading.jl",
+            "function": "_include",
+            "line": 3093
+          },
+          {
+            "file": "./Base.jl",
+            "function": "include",
+            "line": 309
+          },
+          {
+            "file": "./client.jl",
+            "function": "exec_options",
+            "line": 344
+          },
+          {
+            "file": "./client.jl",
+            "function": "_start",
+            "line": 577
+          }
+        ]
+      },
+      {
+        "bytes": 48,
+        "file": "./boot.jl",
+        "line": 588,
+        "stack": [
+          {
+            "file": "./boot.jl",
+            "function": "GenericMemory",
+            "line": 588
+          },
+          {
+            "file": "./dict.jl",
+            "function": "rehash!",
+            "line": 148
+          },
+          {
+            "file": "./dict.jl",
+            "function": "#sizehint!#304",
+            "line": 201
+          },
+          {
+            "file": "./dict.jl",
+            "function": "sizehint!",
+            "line": 194
+          },
+          {
+            "file": "./dict.jl",
+            "function": "Dict",
+            "line": 92
+          },
+          {
+            "file": "./abstractdict.jl",
+            "function": "dict_with_eltype",
+            "line": 637
+          },
+          {
+            "file": "./dict.jl",
+            "function": "Dict",
+            "line": 117
+          },
+          {
+            "file": "/home/azzaare/.julia/dev/PerfChecker-docs-interactive-20261012/examples/kitchen-sink/src/PerfCheckerKitchenSink.jl",
+            "function": "count_events",
+            "line": 42
+          },
+          {
+            "file": "/home/azzaare/.julia/dev/PerfChecker-docs-interactive-20261012/src/scenario_runtime.jl",
+            "function": "callback",
+            "line": 22
+          },
+          {
+            "file": "/home/azzaare/.julia/dev/PerfChecker-docs-interactive-20261012/src/scenario_runtime.jl",
+            "function": "operation!",
+            "line": 78
+          },
+          {
+            "file": "/home/azzaare/.julia/juliaup/julia-1.13.1+0.x64.linux.gnu/share/julia/stdlib/v1.13/Profile/src/Allocs.jl",
+            "function": "macro expansion",
+            "line": 82
+          },
+          {
+            "file": "/home/azzaare/.julia/dev/PerfChecker-docs-interactive-20261012/src/scenario_runtime.jl",
+            "function": "profile_case",
+            "line": 171
+          },
+          {
+            "file": "/home/azzaare/.julia/dev/PerfChecker-docs-interactive-20261012/src/scenario_runtime.jl",
+            "function": "execute_loaded",
+            "line": 254
+          },
+          {
+            "file": "/home/azzaare/.julia/dev/PerfChecker-docs-interactive-20261012/src/scenario_runtime.jl",
+            "function": "execute",
+            "line": 240
+          },
+          {
+            "file": "./boot.jl",
+            "function": "eval",
+            "line": 489
+          },
+          {
+            "file": "./loading.jl",
+            "function": "include_string",
+            "line": 3033
+          },
+          {
+            "file": "./loading.jl",
+            "function": "_include",
+            "line": 3093
+          },
+          {
+            "file": "./Base.jl",
+            "function": "include",
+            "line": 309
+          },
+          {
+            "file": "./client.jl",
+            "function": "exec_options",
+            "line": 344
+          },
+          {
+            "file": "./client.jl",
+            "function": "_start",
+            "line": 577
+          }
+        ]
+      },
+      {
+        "bytes": 272,
+        "file": "./boot.jl",
+        "line": 588,
+        "stack": [
+          {
+            "file": "./boot.jl",
+            "function": "GenericMemory",
+            "line": 588
+          },
+          {
+            "file": "./dict.jl",
+            "function": "rehash!",
+            "line": 150
+          },
+          {
+            "file": "./dict.jl",
+            "function": "#sizehint!#304",
+            "line": 201
+          },
+          {
+            "file": "./dict.jl",
+            "function": "sizehint!",
+            "line": 194
+          },
+          {
+            "file": "./dict.jl",
+            "function": "Dict",
+            "line": 92
+          },
+          {
+            "file": "./abstractdict.jl",
+            "function": "dict_with_eltype",
+            "line": 637
+          },
+          {
+            "file": "./dict.jl",
+            "function": "Dict",
+            "line": 117
+          },
+          {
+            "file": "/home/azzaare/.julia/dev/PerfChecker-docs-interactive-20261012/examples/kitchen-sink/src/PerfCheckerKitchenSink.jl",
+            "function": "count_events",
+            "line": 42
+          },
+          {
+            "file": "/home/azzaare/.julia/dev/PerfChecker-docs-interactive-20261012/src/scenario_runtime.jl",
+            "function": "callback",
+            "line": 22
+          },
+          {
+            "file": "/home/azzaare/.julia/dev/PerfChecker-docs-interactive-20261012/src/scenario_runtime.jl",
+            "function": "operation!",
+            "line": 78
+          },
+          {
+            "file": "/home/azzaare/.julia/juliaup/julia-1.13.1+0.x64.linux.gnu/share/julia/stdlib/v1.13/Profile/src/Allocs.jl",
+            "function": "macro expansion",
+            "line": 82
+          },
+          {
+            "file": "/home/azzaare/.julia/dev/PerfChecker-docs-interactive-20261012/src/scenario_runtime.jl",
+            "function": "profile_case",
+            "line": 171
+          },
+          {
+            "file": "/home/azzaare/.julia/dev/PerfChecker-docs-interactive-20261012/src/scenario_runtime.jl",
+            "function": "execute_loaded",
+            "line": 254
+          },
+          {
+            "file": "/home/azzaare/.julia/dev/PerfChecker-docs-interactive-20261012/src/scenario_runtime.jl",
+            "function": "execute",
+            "line": 240
+          },
+          {
+            "file": "./boot.jl",
+            "function": "eval",
+            "line": 489
+          },
+          {
+            "file": "./loading.jl",
+            "function": "include_string",
+            "line": 3033
+          },
+          {
+            "file": "./loading.jl",
+            "function": "_include",
+            "line": 3093
+          },
+          {
+            "file": "./Base.jl",
+            "function": "include",
+            "line": 309
+          },
+          {
+            "file": "./client.jl",
+            "function": "exec_options",
+            "line": 344
+          },
+          {
+            "file": "./client.jl",
+            "function": "_start",
+            "line": 577
+          }
+        ]
+      },
+      {
+        "bytes": 272,
+        "file": "./boot.jl",
+        "line": 588,
+        "stack": [
+          {
+            "file": "./boot.jl",
+            "function": "GenericMemory",
+            "line": 588
+          },
+          {
+            "file": "./dict.jl",
+            "function": "rehash!",
+            "line": 151
+          },
+          {
+            "file": "./dict.jl",
+            "function": "#sizehint!#304",
+            "line": 201
+          },
+          {
+            "file": "./dict.jl",
+            "function": "sizehint!",
+            "line": 194
+          },
+          {
+            "file": "./dict.jl",
+            "function": "Dict",
+            "line": 92
+          },
+          {
+            "file": "./abstractdict.jl",
+            "function": "dict_with_eltype",
+            "line": 637
+          },
+          {
+            "file": "./dict.jl",
+            "function": "Dict",
+            "line": 117
+          },
+          {
+            "file": "/home/azzaare/.julia/dev/PerfChecker-docs-interactive-20261012/examples/kitchen-sink/src/PerfCheckerKitchenSink.jl",
+            "function": "count_events",
+            "line": 42
+          },
+          {
+            "file": "/home/azzaare/.julia/dev/PerfChecker-docs-interactive-20261012/src/scenario_runtime.jl",
+            "function": "callback",
+            "line": 22
+          },
+          {
+            "file": "/home/azzaare/.julia/dev/PerfChecker-docs-interactive-20261012/src/scenario_runtime.jl",
+            "function": "operation!",
+            "line": 78
+          },
+          {
+            "file": "/home/azzaare/.julia/juliaup/julia-1.13.1+0.x64.linux.gnu/share/julia/stdlib/v1.13/Profile/src/Allocs.jl",
+            "function": "macro expansion",
+            "line": 82
+          },
+          {
+            "file": "/home/azzaare/.julia/dev/PerfChecker-docs-interactive-20261012/src/scenario_runtime.jl",
+            "function": "profile_case",
+            "line": 171
+          },
+          {
+            "file": "/home/azzaare/.julia/dev/PerfChecker-docs-interactive-20261012/src/scenario_runtime.jl",
+            "function": "execute_loaded",
+            "line": 254
+          },
+          {
+            "file": "/home/azzaare/.julia/dev/PerfChecker-docs-interactive-20261012/src/scenario_runtime.jl",
+            "function": "execute",
+            "line": 240
+          },
+          {
+            "file": "./boot.jl",
+            "function": "eval",
+            "line": 489
+          },
+          {
+            "file": "./loading.jl",
+            "function": "include_string",
+            "line": 3033
+          },
+          {
+            "file": "./loading.jl",
+            "function": "_include",
+            "line": 3093
+          },
+          {
+            "file": "./Base.jl",
+            "function": "include",
+            "line": 309
+          },
+          {
+            "file": "./client.jl",
+            "function": "exec_options",
+            "line": 344
+          },
+          {
+            "file": "./client.jl",
+            "function": "_start",
+            "line": 577
+          }
+        ]
+      }
+    ],
+    "collector": "profile_alloc",
+    "correctness": "passed",
+    "environment_provenance": {
+      "development_sources": [],
+      "manifest_file": "Manifest.toml",
+      "manifest_sha256": "775f826af20baaed9da7dbce0347f5b9b4c2320f6541b568aa38ec2ce8cd652b",
+      "path": "/home/azzaare/.julia/dev/PerfChecker-docs-interactive-20261012/examples/kitchen-sink/recorded/counter-32768-allocation/worker",
+      "preferences_sha256": null,
+      "project_sha256": "31b3af9fb3ede35da7887d8fd5dd4b46c136e3c299352b1f3aa96b20ae1a218d",
+      "resolved_packages": [
+        {
+          "git-tree-sha1": "b0bc6d2cad1fed8b7fd59a1551a991cb3d2809e6",
+          "name": "DataStructures",
+          "uuid": "864edb3b-99cc-5e75-8d2d-829cb0a9cfe8",
+          "version": "0.19.6"
+        },
+        {
+          "git-tree-sha1": "f9b03759e9ef463718934fbed30820b39997511e",
+          "name": "OrderedCollections",
+          "uuid": "bac558e1-5e72-5ebc-8fee-abe8a469f55d",
+          "version": "2.0.2"
+        },
+        {
+          "name": "Random",
+          "uuid": "9a3f8284-a2c9-5f02-9a11-845980a1fd5c",
+          "version": "1.11.0"
+        },
+        {
+          "name": "SHA",
+          "uuid": "ea8e919c-243c-51af-8825-aaa63cd721ce",
+          "version": "1.0.0"
+        }
+      ]
+    },
+    "profile_samples": 11,
+    "runtime": {
+      "language": "julia",
+      "threads": 1,
+      "version": "1.13.1"
+    },
+    "sampling_rate": 1.0,
+    "status": "complete",
+    "worker_elapsed_seconds": 2.7191598415374756
+  },
+  "warmup_operations": 1,
+  "weight_semantics": "raw sampled bytes at native leaf sites; not scaled to independently measured operation totals",
+  "worker_budget_seconds": 120
+}

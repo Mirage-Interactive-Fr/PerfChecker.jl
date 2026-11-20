@@ -22,10 +22,36 @@ try {
   await page.goto(pathToFileURL(path.resolve(process.argv[2])).href);
   const initialSvg=await page.locator('svg').boundingBox(),initialViewport=await page.locator('.plot-scroll').boundingBox();
   assert(initialSvg.y+initialSvg.height<=initialViewport.y+initialViewport.height+1,'Initial fit includes the entire vertical axis and version labels');
+  const targetLabel=await page.evaluate(()=>plot.options.target_label??'version');
+  const axisLabel=await page.evaluate(()=>plot.options.xlabel??'Package version');
+  assert.equal(await page.locator('svg text').last().textContent(),axisLabel);
+  assert.equal(await page.locator('#target-heading').textContent(),targetLabel.charAt(0).toUpperCase()+targetLabel.slice(1));
   const toggles = page.locator('#controls input');
-  assert.equal(await toggles.count(), 2, 'The regression fixture needs exactly two metrics');
+  assert.equal(await toggles.count(), 4, 'The regression fixture retains all four timing metrics');
   const points = page.locator('circle');
   const originalCount = await points.count();
+  assert.equal(await page.locator('#version-to option').count(),14,
+    'The responsive fixture retains fourteen recorded versions');
+  const assertFit = async expectedCount => {
+    await page.getByRole('button',{name:'Fit',exact:true}).click();
+    await page.waitForFunction(() => {
+      const viewport=document.querySelector('.plot-scroll'),svg=viewport.querySelector('svg');
+      return svg.getBoundingClientRect().width<=viewport.clientWidth+1;
+    });
+    const fit=await page.evaluate(()=>{
+      const viewport=document.querySelector('.plot-scroll'),bounds=viewport.getBoundingClientRect();
+      const marks=[...viewport.querySelectorAll('circle')];
+      const labels=[...viewport.querySelectorAll('text')];
+      const inside=node=>{const box=node.getBoundingClientRect();return box.left>=bounds.left-1&&box.right<=bounds.right+1&&box.top>=bounds.top-1&&box.bottom<=bounds.bottom+1};
+      return {points:marks.length,marksInside:marks.every(inside),labelsInside:labels.every(inside),
+        fonts:labels.map(node=>{const matrix=node.getScreenCTM();return parseFloat(getComputedStyle(node).fontSize)*Math.hypot(matrix.a,matrix.b)}),
+        scroll:viewport.scrollLeft,overflow:document.documentElement.scrollWidth>innerWidth+1};
+    });
+    assert.equal(fit.points,expectedCount);
+    assert(fit.marksInside&&fit.labelsInside,JSON.stringify(fit));
+    assert(fit.fonts.every(size=>size>=11.9),'Fit preserves twelve-pixel axis labels');
+    assert.equal(fit.scroll,0);assert.equal(fit.overflow,false);
+  };
   const longOption=(await page.locator('#version-to option').allTextContents()).find(label=>label.length>=40);
   assert(longOption,'The fixture includes a complete commit label');
   const longTick=page.locator('svg text[aria-label]').filter({has:page.locator('title',{hasText:longOption})});
@@ -49,21 +75,22 @@ try {
   const visible = await page.evaluate(() => document.activeElement.getAttribute('aria-label'));
   assert.notEqual(visible, selected);
   assert.equal(await page.locator('#readout').innerText(), visible);
-  await toggles.last().uncheck();
+  for(const toggle of (await toggles.all()).slice(1))await toggle.uncheck();
   assert.equal(await page.locator('#readout').innerText(),
     'Hover or focus a visible point to read its value.');
   await toggles.first().check();
   await points.first().focus();
   assert.equal(await page.locator('#readout').innerText(), selected);
-  await toggles.last().check();
+  for(const toggle of (await toggles.all()).slice(1))await toggle.check();
   const originalLabels = await points.evaluateAll(nodes=>nodes.map(node=>node.getAttribute('aria-label')));
-  await page.getByRole('combobox',{name:'First recorded version',exact:true}).selectOption('1');
+  await page.getByRole('combobox',{name:'First recorded '+targetLabel,exact:true}).selectOption('1');
   assert((await points.count())<originalCount);
   assert((await points.evaluateAll(nodes=>nodes.map(node=>node.getAttribute('aria-label'))))
     .every(label=>originalLabels.includes(label)), 'Selecting versions must not recompute ratios');
-  await page.getByRole('combobox',{name:'Last recorded version',exact:true}).selectOption('1');
+  await page.getByRole('combobox',{name:'Last recorded '+targetLabel,exact:true}).selectOption('1');
   const positions=await points.evaluateAll(nodes=>nodes.map(node=>Number(node.getAttribute('cx'))));
-  assert(positions.every(x=>x===465), 'A single recorded version is centered');
+  const center=await page.locator('svg line').first().evaluate(node=>(node.x1.baseVal.value+node.x2.baseVal.value)/2);
+  assert(positions.every(x=>x===center), 'A single recorded version is centered on its visible axis');
   const fitted = await page.locator('svg').boundingBox();
   await page.getByRole('button',{name:'Zoom in',exact:true}).click();
   assert((await page.locator('svg').boundingBox()).width>fitted.width*1.4);
@@ -79,7 +106,7 @@ try {
   assert((await viewport.evaluate(node=>node.scrollLeft))>beforePan+60,'Mouse drag pans the real viewport');
   await viewport.focus();await page.keyboard.press('0');
   assert(Math.abs((await page.locator('svg').boundingBox()).width-fitted.width)<2);
-  assert.equal(await page.getByRole('combobox',{name:'First recorded version',exact:true}).inputValue(),'1','Zero resets zoom, preserving the selected versions');
+  assert.equal(await page.getByRole('combobox',{name:'First recorded '+targetLabel,exact:true}).inputValue(),'1','Zero resets zoom, preserving the selected versions');
   await page.getByRole('button',{name:'Reset view',exact:true}).click();
   assert.equal(await points.count(),originalCount);
   assert(Math.abs((await page.locator('svg').boundingBox()).width-fitted.width)<2);
@@ -96,7 +123,7 @@ try {
       await exported.setContent(content);
       assert.equal(await exported.locator('svg > title').textContent(),longTitle);
       assert(await exported.locator('svg > text').count()>1,'Long export titles wrap');
-      assert(await exported.locator('svg > text').evaluateAll(nodes=>nodes.every(node=>node.getBBox().x+node.getBBox().width<=870)), 'Export title stays inside the SVG');
+      assert(await exported.locator('svg > text').evaluateAll(nodes=>nodes.every(node=>node.getBBox().x+node.getBBox().width<=node.ownerSVGElement.viewBox.baseVal.width-19)), 'Export title stays inside the responsive SVG');
       assert.equal(await exported.locator('circle').count(),originalCount);
       if(process.argv[3])await download.saveAs(path.join(path.dirname(path.resolve(process.argv[3])),path.parse(process.argv[3]).name+'-export.svg'));
       await exported.close();
@@ -104,8 +131,16 @@ try {
   }
   await page.locator('#title').evaluate((node,title)=>node.textContent=title,originalTitle);
   if(process.argv[3])await page.screenshot({path:path.join(path.dirname(path.resolve(process.argv[3])),path.parse(process.argv[3]).name+'-desktop.png')});
-  for(const mobile of [{width:390,height:844},{width:360,height:640}]){
+  for(const mobile of [{width:576,height:844},{width:390,height:844},{width:260,height:844},{width:360,height:640}]){
   await page.setViewportSize(mobile);
+  await page.getByRole('button',{name:'Reset view',exact:true}).click();
+  await assertFit(originalCount);
+  assert.deepEqual(await points.evaluateAll(nodes=>nodes.map(node=>node.getAttribute('aria-label'))),originalLabels,
+    'Fourteen-version Fit preserves every recorded value, unit and ratio');
+  await page.getByRole('combobox',{name:'First recorded '+targetLabel,exact:true}).selectOption('12');
+  await assertFit(8);
+  assert((await points.evaluateAll(nodes=>nodes.map(node=>node.getAttribute('aria-label'))))
+    .every(label=>originalLabels.includes(label)), 'Two-version Fit preserves the original comparison');
   if(process.argv[3])await page.screenshot({path:path.join(path.dirname(path.resolve(process.argv[3])),path.parse(process.argv[3]).name+`-mobile-${mobile.width}-controls.png`)});
   const mobileLayout=await page.evaluate(()=>({width:innerWidth,document:document.documentElement.scrollWidth,
     controls:[...document.querySelectorAll('.toolbar label,.toolbar select')].map(node=>{
@@ -113,18 +148,19 @@ try {
   assert(mobileLayout.document<=mobileLayout.width+1,JSON.stringify(mobileLayout));
   assert(mobileLayout.controls.every(box=>box.left>=0&&box.right<=mobileLayout.width),
     'Long commit selectors remain inside the phone page');
-  for(const name of ['First recorded version','Last recorded version']){
+  for(const name of ['First recorded '+targetLabel,'Last recorded '+targetLabel]){
     const select=page.getByRole('combobox',{name,exact:true});
     await select.selectOption({label:longOption});
     assert.equal(await select.locator('option:checked').textContent(),longOption,
       'The complete commit identity remains selectable on a phone');
   }
-  assert((await page.locator('svg').boundingBox()).width>=900,
-    'The normalized chart retains its pannable viewport');
+  await assertFit(4);
   assert((await points.evaluateAll(nodes=>nodes.map(node=>node.getAttribute('aria-label'))))
     .every(label=>label.includes(longOption)),'The phone selection retains the complete commit identity');
   await viewport.evaluate(node=>node.scrollLeft=0);
   assert.equal(await viewport.evaluate(node=>node.scrollLeft),0);
+  await page.getByRole('button',{name:'Zoom in',exact:true}).click();
+  await page.getByRole('button',{name:'Zoom in',exact:true}).click();
   await points.last().focus();
   assert.equal(await page.locator('#readout').innerText(),await points.last().getAttribute('aria-label'));
   assert((await viewport.evaluate(node=>node.scrollLeft))>0,

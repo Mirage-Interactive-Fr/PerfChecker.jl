@@ -1,0 +1,108 @@
+name: Preserve component coverage
+description: Collect repository-owned source coverage with exact source and environment provenance
+inputs:
+  lane:
+    description: Unique tested lane identifier
+    required: true
+  components:
+    description: Comma-separated component names (core or actual companion package names)
+    required: true
+  environment:
+    description: Resolved Project/Manifest directory (Core CI copies the package project, not the Pkg.test sandbox or its extras)
+    default: '.'
+  environment-scope:
+    description: Which resolved environment the copied Project and Manifest describe
+    default: resolved functional-test environment
+  environment-prefix:
+    description: Prefix used for captured qualification environment files
+    default: ''
+runs:
+  using: composite
+  steps:
+    - uses: julia-actions/julia-processcoverage@v1
+      with:
+        directories: src,ext,packages
+    - name: Keep tracked production sources and emit one report per component
+      shell: julia --startup-file=no {0}
+      env:
+        COVERAGE_LANE: ${{ inputs.lane }}
+        COVERAGE_COMPONENTS: ${{ inputs.components }}
+        COVERAGE_ENVIRONMENT: ${{ inputs.environment }}
+        COVERAGE_ENVIRONMENT_SCOPE: ${{ inputs.environment-scope }}
+        COVERAGE_ENVIRONMENT_PREFIX: ${{ inputs.environment-prefix }}
+      run: |
+        using TOML, SHA
+        root = pwd()
+        revision = strip(read(`git rev-parse HEAD`, String))
+        revision == ENV["GITHUB_SHA"] || error("Coverage source differs from the tested revision")
+        tracked = Set(split(replace(read(`git ls-files -z`, String), '\\' => '/'), '\0'))
+        records = Dict{String,Vector{String}}()
+        for block in split(read("lcov.info", String), "end_of_record")
+            lines = filter(!isempty, split(block, '\n'))
+            source = findfirst(line -> startswith(line, "SF:"), lines)
+            source === nothing && continue
+            file = replace(relpath(abspath(lines[source][4:end]), root), '\\' => '/')
+            file in tracked || continue
+            lines[source] = "SF:" * file
+            records[file] = [lines; "end_of_record"]
+        end
+        destination = joinpath(ENV["RUNNER_TEMP"], "coverage", ENV["COVERAGE_LANE"])
+        mkpath(destination)
+        provenance = Dict{String,Any}(
+            "schema" => "perfchecker-component-coverage/1",
+            "revision" => revision, "lane" => ENV["COVERAGE_LANE"],
+            "working_tree_dirty" => !isempty(strip(read(`git status --porcelain --untracked-files=normal`, String))),
+            "tracked_files_dirty" => !isempty(strip(read(`git status --porcelain --untracked-files=no`, String))),
+            "dirty_scope" => "working_tree_dirty includes untracked outputs such as lcov.info; tracked_files_dirty checks all tracked files; source_sha256 records the exact reported source bytes",
+            "julia" => string(VERSION), "os" => string(Sys.KERNEL), "arch" => string(Sys.ARCH),
+            "run_id" => ENV["GITHUB_RUN_ID"], "run_attempt" => ENV["GITHUB_RUN_ATTEMPT"],
+            "workflow" => ENV["GITHUB_WORKFLOW"], "remote_upload" => "not performed by collection",
+            "environment_scope" => get(ENV, "COVERAGE_ENVIRONMENT_SCOPE", "resolved functional-test environment"),
+            "scope" => "tracked src/ext only; measured workers explicitly disable instrumentation",
+            "components" => Dict{String,Any}())
+        environment = ENV["COVERAGE_ENVIRONMENT"]
+        for file in ("Project.toml", "Manifest.toml")
+            source = joinpath(environment, ENV["COVERAGE_ENVIRONMENT_PREFIX"] * file)
+            isfile(source) || error("Missing resolved coverage environment file: $source")
+            cp(source, joinpath(destination, file); force=true)
+            provenance[file * "_sha256"] = bytes2hex(sha256(read(source)))
+        end
+        for component in split(ENV["COVERAGE_COMPONENTS"], ',')
+            prefixes = component == "core" ? ("src/", "ext/") :
+                ("packages/$component/src/", "packages/$component/ext/")
+            files = sort(filter(file -> any(prefix -> startswith(file, prefix), prefixes), collect(keys(records))))
+            isempty(files) && error("No tracked coverage sources for $component")
+            flag = component == "core" ? "core" : lowercase(replace(component, "PerfChecker" => ""))
+            report = joinpath(destination, flag * ".info")
+            found = 0
+            hit = 0
+            open(report, "w") do io
+                for file in files
+                    for line in records[file]
+                        println(io, line)
+                        if startswith(line, "DA:")
+                            count = parse(Int, split(line[4:end], ',')[2])
+                            found += 1
+                            hit += count > 0
+                        end
+                    end
+                end
+            end
+            found > 0 && hit > 0 || error("Missing executed source coverage for $component")
+            provenance["components"][component] = Dict(
+                "flag" => flag, "report" => basename(report), "files" => length(files),
+                "lines_found" => found, "lines_hit" => hit, "line_percent" => 100 * hit / found,
+                "source_sha256" => Dict(file => bytes2hex(sha256(read(file))) for file in files),
+                "sha256" => bytes2hex(sha256(read(report))))
+            open(ENV["GITHUB_STEP_SUMMARY"], "a") do io
+                println(io, "- $component: $hit/$found source lines ($(round(100 * hit / found; digits=2))%); flag `$flag`; artifact only, external upload is a separate step.")
+            end
+        end
+        open(joinpath(destination, "provenance.toml"), "w") do io
+            TOML.print(io, provenance; sorted=true)
+        end
+    - uses: actions/upload-artifact@v7
+      with:
+        name: coverage-${{ inputs.lane }}
+        path: ${{ runner.temp }}/coverage/${{ inputs.lane }}
+        if-no-files-found: error

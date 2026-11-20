@@ -1,5 +1,28 @@
 # Release notes
 
+## Unreleased
+
+### PerfChecker 1.1.1
+
+- Load Windows Job Object implementations only on Windows and keep POSIX owned
+  processes typed as `Base.Process`. Prevent cancellation/cleanup compilation
+  from reaching Windows `stdcall` calls on AArch64, which LLVM 15 cannot lower.
+- Remove the unconditional CpuId dependency, which cannot precompile on ARM.
+  Use Julia's native CPU identity and Hwloc's portable physical/logical topology,
+  including on Linux 32-bit. Preserve exact counts on hybrid CPUs; zero threads
+  per core denotes heterogeneous or unknown SMT, without averaging. If querying
+  topology fails, retain the OS logical CPU count and mark physical cores/SMT
+  unknown. SIMD width remains explicitly unknown (zero). Fresh hardware identity
+  and cache keys can change, including on x86. Historical snapshots retain their
+  recorded metadata; specification similarity omits unknown capabilities.
+
+### PerfCheckerLinuxPerf 1.0.2 and PerfCheckerLIKWID 1.0.2
+
+- Explicitly disable code coverage and allocation tracking in native counter
+  workers, including when their controller is instrumented for qualification.
+  Keep counter windows free of instrumentation without changing native permissions
+  or treating unavailable counters as measurements.
+
 ## 1.1.0
 
 - Read registered versions through Pkg metadata across directory, compressed and

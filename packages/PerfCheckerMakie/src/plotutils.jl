@@ -93,6 +93,7 @@ function _collector_label(definition)
 end
 
 function _model_collector(plot)
+    plot.kind === :observation_series && return plot.options["collector_label"]
     haskey(plot.options, "collector") && return _collector_label(plot.options["collector"])
     definitions = get(plot.options, "measurement_definitions", String[])
     isempty(definitions) && return "Collector: unspecified"
