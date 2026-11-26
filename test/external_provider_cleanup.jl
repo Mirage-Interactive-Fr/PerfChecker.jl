@@ -406,9 +406,7 @@ end
     :unit, :protocol] begin
     using PerfChecker
 
-    if Sys.iswindows() || ccall(:geteuid, Cuint, ()) == 0
-        @test_skip false # Directory unlink permissions need a non-root POSIX host.
-    else
+    if !Sys.iswindows() && ccall(:geteuid, Cuint, ()) != 0
         mktempdir() do root
             temporary = joinpath(root, "readonly-results")
             mkpath(temporary)
