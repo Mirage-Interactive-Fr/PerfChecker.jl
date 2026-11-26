@@ -10,7 +10,9 @@
             features=[FeatureSpec(:example; entrypoint=joinpath(@__DIR__, "workload.jl"))])
         """
         definition = joinpath(root, "suite.jl")
-        write(definition, prelude * "build_suite() = SoftwareSuite(:factory, [package])\n")
+        write(joinpath(root, "factory.jl"),
+            "eval(:(build_suite() = SoftwareSuite(:factory, [package])))\n")
+        write(definition, prelude * "include(\"factory.jl\")\n")
         @test load_software_suite(definition).id == :factory
         write(definition, prelude * "suite = SoftwareSuite(:binding, [package])\n")
         @test load_software_suite(definition).id == :binding

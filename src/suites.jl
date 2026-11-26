@@ -1439,8 +1439,11 @@ function load_software_suite(path::AbstractString; factory::Symbol = :build_suit
     isfile(definition) ||
         throw(ArgumentError("suite definition does not exist: $definition"))
     owner = Module(gensym(:PerfCheckerSuiteDefinition), true, true)
-    Core.eval(owner, :(eval(expression) = Core.eval($owner, expression)))
-    Core.eval(owner, :(include(source) = Base.include($owner, source)))
+    # Julia 1.14 supplies these bindings when constructing a standard module.
+    isdefined(owner, :eval) ||
+        Core.eval(owner, :(eval(expression) = Core.eval($owner, expression)))
+    isdefined(owner, :include) ||
+        Core.eval(owner, :(include(source) = Base.include($owner, source)))
     Base.include(owner, definition)
     value = Base.invokelatest() do
         # On Julia 1.13 the binding-existence check is world-age sensitive too.
