@@ -6,6 +6,7 @@
 
 - Support Julia 1.14 when loading suites and resolving defaults for automatically
   loaded collectors.
+- Keep suite loading and native test-item accounting compatible with Julia 1.10.
 - Keep profiling active across fresh evaluations and retain source traces for
   declared workloads. Respect explicitly selected source roots.
 - Allow workers to select an interactive thread count independently of their

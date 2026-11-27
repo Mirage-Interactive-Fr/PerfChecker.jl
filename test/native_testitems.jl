@@ -83,8 +83,14 @@ end
             end
         end
         counts = Test.get_test_counts(fixture)
-        @test counts.cumulative_broken == 1
-        @test counts.cumulative_fails == counts.cumulative_errors == 0
+        # Julia 1.10 returns a tuple with cumulative counts in slots 5–8.
+        fails, errors, broken = if counts isa Tuple
+            counts[6], counts[7], counts[8]
+        else
+            counts.cumulative_fails, counts.cumulative_errors, counts.cumulative_broken
+        end
+        @test broken == 1
+        @test fails == errors == 0
         @test !isfile(check_marker)
         check_id = only(filter(i -> i["name"] == "check", found["items"]))["id"]
         @test run_testitems(root; ids = [check_id], timeout = 90)["passed"]
