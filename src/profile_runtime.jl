@@ -3,6 +3,15 @@ module PerfCheckerProfileRuntime
 
 const ALLOCATION_PROFILE_SCHEMA = "perfchecker-allocation-profile/1"
 
+# Keep a distinct stack boundary while sampling fresh operations. The sampling
+# timer stays active across setup, verification and teardown of successive cases.
+Base.@noinline profile_fresh_operation!(operation, evaluation) = operation(evaluation)
+
+function fresh_operation_boundary(frame)
+    return frame.func === :profile_fresh_operation! && !frame.from_c &&
+        normalize_source(String(frame.file)) == normalize_source(@__FILE__)
+end
+
 function normalize_source(path)
     Sys.iswindows() ? lowercase(normpath(abspath(path))) :
     normpath(abspath(path))
@@ -25,6 +34,26 @@ end
 function source_in_roots(source, roots)
     usable_source(source) &&
         any(root -> within_root(source, root), roots)
+end
+
+"""
+    profile_target_roots(loaded, target_names, workload_source)
+
+Select the directories that can contribute source frames. A suite workload can
+contribute frames from its own files when the caller leaves module targets open.
+Explicit module targets retain their package-only scope.
+"""
+function profile_target_roots(loaded, target_names, workload_source)
+    roots = String[]
+    for module_value in loaded
+        (isempty(target_names) || nameof(module_value) in target_names) || continue
+        source = pathof(module_value)
+        source === nothing || push!(roots, dirname(abspath(source)))
+    end
+    if isempty(target_names) && workload_source !== nothing
+        push!(roots, dirname(abspath(workload_source)))
+    end
+    return roots
 end
 
 function allocation_source_positions(stack, roots)

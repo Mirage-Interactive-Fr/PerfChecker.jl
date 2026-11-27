@@ -61,6 +61,44 @@ version = "0.1.0"
     end
 end
 
+@testitem "Allocation suites retain and clean the declared workload trace" tags=[
+    :integration, :allocation_cleanup] begin
+    using PerfChecker
+
+    mktempdir() do directory
+        environment = mkpath(joinpath(directory, "worker"))
+        source = mkpath(joinpath(directory, "package"))
+        sources = mkpath(joinpath(source, "src"))
+        workloads = mkpath(joinpath(directory, "workloads"))
+        write(joinpath(environment, "Project.toml"), "[deps]\n")
+        write(joinpath(source, "Project.toml"), """
+name = "AllocationEntrypointFixture"
+uuid = "412f9fbc-b61b-4bd0-a023-a97ac72cca75"
+version = "0.1.0"
+""")
+        write(joinpath(sources, "AllocationEntrypointFixture.jl"),
+            "module AllocationEntrypointFixture\nend\n")
+        entrypoint = joinpath(workloads, "scenario.jl")
+        write(entrypoint, """
+perf_setup() = Ref(Int[])
+function perf_workload(holder)
+    holder[] = fill(7, 32)
+    return holder[]
+end
+perf_oracle(holder) = sum(perf_workload(holder)) == 224
+""")
+        feature = FeatureSpec(:included_workload; backend = :alloc, entrypoint,
+            state_policy = :reuse, oracle = OracleSpec())
+        package = PackageSuite("AllocationEntrypointFixture"; source,
+            worker_environment = environment, versions = VersionNumber[], features = [feature])
+        result = run_suite(SoftwareSuite(:allocation_entrypoint, [package]))
+        @test suite_verdict(result) === :validated
+        table = only(only(result.runs).result.tables)
+        @test any(row -> occursin("scenario.jl", row.filename) && row.bytes > 0, table)
+        @test readdir(workloads) == ["scenario.jl"]
+    end
+end
+
 @testitem "Allocation cleanup owns only its worker traces" tags=[
     :integration, :allocation_cleanup] begin
     using PerfChecker

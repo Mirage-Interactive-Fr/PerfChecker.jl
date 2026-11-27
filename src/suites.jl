@@ -197,6 +197,9 @@ it across collectors lets reports and interfaces identify one business workload.
 `backend` selects the checker, for example `:benchmark`, `:chairmark`, `:profile`,
 `:wall_profile`, `:profile_alloc` or `:alloc`. Availability and required backend
 packages are checked when planning/executing, not installed by this constructor.
+Source profiles and allocation tracking include the declared workload source
+when `:targets` is empty. Explicit targets restrict attribution to those
+loaded packages.
 `options` has symbol keys. Execution merges feature options, variant options,
 then call-site overrides in that order.
 
@@ -1015,6 +1018,11 @@ function _run_config(planned::PlannedFeatureRun, overrides::AbstractDict;
         options[:feature_oracle_required] = planned.feature.oracle === nothing ? false :
                                             planned.feature.oracle.required
     end
+    if planned.feature.backend === :alloc
+        options[:allocation_workload_source] = (planned.variant::FeatureVariant).entrypoint
+    elseif planned.feature.backend in (:profile, :wall_profile, :profile_alloc)
+        options[:profile_workload_source] = (planned.variant::FeatureVariant).entrypoint
+    end
     options[:path] = worker_environment(planned.package_suite)
     options[:tags] = unique!(vcat(
         normalize_symbols(get(options, :tags, Symbol[]), :tags),
@@ -1146,7 +1154,8 @@ function _execute_suite_plan(plan::SuitePlan; executor = _default_suite_executor
             config = nothing
             environment_key = nothing
             try
-                config = _run_config(planned, overrides;
+                # The suite may have just loaded a collector extension with its defaults.
+                config = Base.invokelatest(_run_config, planned, overrides;
                     resolve_preferences = executor === _default_suite_executor,
                     preferences)
                 if executor === _default_suite_executor
@@ -1439,8 +1448,11 @@ function load_software_suite(path::AbstractString; factory::Symbol = :build_suit
     isfile(definition) ||
         throw(ArgumentError("suite definition does not exist: $definition"))
     owner = Module(gensym(:PerfCheckerSuiteDefinition), true, true)
-    Core.eval(owner, :(eval(expression) = Core.eval($owner, expression)))
-    Core.eval(owner, :(include(source) = Base.include($owner, source)))
+    # Julia 1.14 supplies these bindings when constructing a standard module.
+    isdefined(owner, :eval) ||
+        Core.eval(owner, :(eval(expression) = Core.eval($owner, expression)))
+    isdefined(owner, :include) ||
+        Core.eval(owner, :(include(source) = Base.include($owner, source)))
     Base.include(owner, definition)
     value = Base.invokelatest() do
         # On Julia 1.13 the binding-existence check is world-age sensitive too.

@@ -350,6 +350,12 @@ include("testitems.jl")
 include("discovery.jl")
 include("diagnostics.jl")
 using .SharedScenarioRuntime: PendingScenarioCleanup
+@doc """
+    PendingScenarioCleanup
+
+Retains resources from an incomplete scenario cleanup. Call `close(error)` to
+retry cleanup and use `isopen(error)` to check for remaining owned resources.
+""" PendingScenarioCleanup
 include("live_scenarios.jl")
 include("advice.jl")
 include("tool_catalog.jl")

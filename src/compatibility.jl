@@ -43,7 +43,7 @@ function _default_preflight_probe_runner(planned::PlannedFeatureRun,
     worker = nothing
     try
         normalized = normalize_config(config)
-        worker = Worker(; exeflags = ["-t $(normalized.threads)",
+        worker = Worker(; exeflags = [_worker_thread_flag(normalized),
             "--project=$environment"])
         remote_eval_wait(Main, worker, initpkgs(planned.feature.backend))
         setup, _, _ = _feature_blocks(planned)

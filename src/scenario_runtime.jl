@@ -178,6 +178,10 @@ mutable struct EvaluationCleanupOwner{E} <: Exception
     primary::Union{Nothing, CapturedException}
     cleanup::Union{Nothing, CapturedException}
     dependency::Any
+
+    function EvaluationCleanupOwner{E}(evaluation, primary, cleanup, dependency) where {E}
+        return new{E}(evaluation, primary, cleanup, dependency)
+    end
 end
 Base.isopen(owner::EvaluationCleanupOwner) = owner.evaluation !== nothing
 function Base.showerror(io::IO, owner::EvaluationCleanupOwner)
