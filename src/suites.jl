@@ -197,6 +197,8 @@ it across collectors lets reports and interfaces identify one business workload.
 `backend` selects the checker, for example `:benchmark`, `:chairmark`, `:profile`,
 `:wall_profile`, `:profile_alloc` or `:alloc`. Availability and required backend
 packages are checked when planning/executing, not installed by this constructor.
+Source allocation tracking includes the declared workload file when `:targets`
+is empty. Explicit targets restrict it to those loaded packages.
 `options` has symbol keys. Execution merges feature options, variant options,
 then call-site overrides in that order.
 
@@ -1014,6 +1016,9 @@ function _run_config(planned::PlannedFeatureRun, overrides::AbstractDict;
                                    string(planned.feature.oracle.function_name)
         options[:feature_oracle_required] = planned.feature.oracle === nothing ? false :
                                             planned.feature.oracle.required
+    end
+    if planned.feature.backend === :alloc
+        options[:allocation_workload_source] = (planned.variant::FeatureVariant).entrypoint
     end
     options[:path] = worker_environment(planned.package_suite)
     options[:tags] = unique!(vcat(

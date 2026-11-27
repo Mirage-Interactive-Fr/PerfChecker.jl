@@ -54,6 +54,9 @@ function _allocation_roots(options, environments)
     roots = String[@__DIR__, Sys.STDLIB]
     append!(roots, abspath.(String.(environments)))
     haskey(options, :path) && push!(roots, abspath(String(options[:path])))
+    if haskey(options, :allocation_workload_source)
+        push!(roots, dirname(abspath(String(options[:allocation_workload_source]))))
+    end
     for depot in DEPOT_PATH, directory in ("packages", "dev")
         push!(roots, joinpath(depot, directory))
     end
@@ -255,6 +258,15 @@ function post(d::Dict, ::Val{:alloc})
     artifacts = d[:allocation_artifacts]
     _allocation_journal!(artifacts)
     files = _allocation_files(result[1], artifacts.pid)
+    # Suite entry points run through include, so pathof(Main) cannot supply
+    # their traces even when default tracking includes all loaded sources.
+    if isempty(d[:targets]) && haskey(d, :allocation_workload_source)
+        trace = string(d[:allocation_workload_source], '.', artifacts.pid, ".mem")
+        if isfile(trace) && !islink(trace)
+            push!(files, _allocation_path(trace))
+            unique!(files)
+        end
+    end
     # A reused PID can overwrite an old trace with this run's valid measurement.
     # Analyse the new bytes now, then restore the old bytes during cleanup.
     filter!(files) do file
