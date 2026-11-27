@@ -3,6 +3,15 @@ module PerfCheckerProfileRuntime
 
 const ALLOCATION_PROFILE_SCHEMA = "perfchecker-allocation-profile/1"
 
+# Keep a distinct stack boundary while sampling fresh operations. The sampling
+# timer stays active across setup, verification and teardown of successive cases.
+Base.@noinline profile_fresh_operation!(operation, evaluation) = operation(evaluation)
+
+function fresh_operation_boundary(frame)
+    return frame.func === :profile_fresh_operation! && !frame.from_c &&
+        normalize_source(String(frame.file)) == normalize_source(@__FILE__)
+end
+
 function normalize_source(path)
     Sys.iswindows() ? lowercase(normpath(abspath(path))) :
     normpath(abspath(path))

@@ -33,25 +33,13 @@ function check(d::Dict, block::Expr, ::Val{:profile})
     max_stacks > 1 || throw(ArgumentError(":max_profile_stacks must be greater than one"))
     target_names = String.(get(d, :targets, String[]))
     runtime = joinpath(@__DIR__, "profile_runtime.jl")
-    profiled = fresh ?
-               _fresh_profile_evaluation(:(Profile.@profile SharedScenarioRuntime.operation!(_perfchecker_evaluation))) :
-               nothing
-    collection = if fresh
-        quote
-            deadline = time_ns() + round(UInt64, $seconds * 1.0e9)
-            while time_ns() < deadline
-                $profiled
-            end
-        end
+    operation = if fresh
+        _fresh_profile_evaluation(quote
+            PerfCheckerProfileRuntime.profile_fresh_operation!(
+                SharedScenarioRuntime.operation!, _perfchecker_evaluation)
+        end)
     else
-        quote
-            Profile.@profile begin
-                deadline = time_ns() + round(UInt64, $seconds * 1.0e9)
-                while time_ns() < deadline
-                    $block
-                end
-            end
-        end
+        block
     end
     return quote
         isdefined(Main, :PerfCheckerProfileRuntime) || include($runtime)
@@ -110,7 +98,12 @@ function check(d::Dict, block::Expr, ::Val{:profile})
 
         Profile.clear()
         Profile.init(n = $buffer, delay = $delay)
-        $collection
+        Profile.@profile begin
+            deadline = time_ns() + round(UInt64, $seconds * 1.0e9)
+            while time_ns() < deadline
+                $operation
+            end
+        end
         profile_data, line_info = Profile.retrieve(include_meta = false)
         grouped = Dict{Any, Int}()
         sample_ips = UInt[]
@@ -122,6 +115,11 @@ function check(d::Dict, block::Expr, ::Val{:profile})
                 frames === nothing && continue
                 frames isa AbstractVector ? append!(expanded, frames) :
                 push!(expanded, frames)
+            end
+            if $fresh
+                boundary = findfirst(PerfCheckerProfileRuntime.fresh_operation_boundary, expanded)
+                boundary === nothing && return
+                resize!(expanded, boundary - 1)
             end
             julia_indices = findall(
                 candidate -> candidate.line > 0 &&

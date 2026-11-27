@@ -1,6 +1,8 @@
 @testitem "Exact profile source boundaries and virtual sources" tags=[:profile_contract] begin
     using PerfChecker
     const Runtime = PerfChecker.PerfCheckerProfileRuntime
+    frames = Runtime.profile_fresh_operation!(_ -> stacktrace(), nothing)
+    @test count(Runtime.fresh_operation_boundary, frames) == 1
     mktempdir() do directory
         root = joinpath(directory, "Package", "src")
         @test Runtime.source_in_roots(joinpath(root, "child", "work.jl"), [root])
@@ -16,6 +18,8 @@
         frames = [(file = Symbol(root * "-extra/work.jl"), line = 9, from_c = false)]
         positions = Runtime.allocation_source_positions(frames, [root])
         @test isempty(positions)
+        @test !Runtime.fresh_operation_boundary((;
+            func=:profile_fresh_operation!, file=only(frames).file, from_c=false))
         # An actual allocation capture outside the exact target scope retains its
         # measured whole-operation totals but produces no invented target site.
         summary = Runtime.allocation_summary(total_bytes = 64, total_allocations = 1,
