@@ -9,7 +9,7 @@ Base.@noinline profile_fresh_operation!(operation, evaluation) = operation(evalu
 
 function fresh_operation_boundary(frame)
     return frame.func === :profile_fresh_operation! && !frame.from_c &&
-        normalize_source(String(frame.file)) == normalize_source(@__FILE__)
+           normalize_source(String(frame.file)) == normalize_source(@__FILE__)
 end
 
 function normalize_source(path)

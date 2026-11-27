@@ -84,8 +84,10 @@ perf_reuse_oracle(x) = x == [1, 2, 3]
 
         for (id, probes, oracle) in (
             (:oracle_error, ProbeSpec[], OracleSpec(function_name = :perf_oracle_throws)),
-            (:probe_error, [ProbeSpec(:throws; function_name = :perf_probe_throws)], OracleSpec()),
-            (:missing_probe, [ProbeSpec(:missing; function_name = :perf_missing_probe)], OracleSpec()),
+            (:probe_error, [ProbeSpec(:throws; function_name = :perf_probe_throws)],
+                OracleSpec()),
+            (:missing_probe,
+                [ProbeSpec(:missing; function_name = :perf_missing_probe)], OracleSpec())
         )
             candidate = FeatureSpec(id; entrypoint = source, probes, oracle)
             candidate_package = PackageSuite("SharedScenarioDemo";
@@ -106,7 +108,8 @@ perf_reuse_oracle(x) = x == [1, 2, 3]
             if id == :oracle_error
                 @test failure["correctness"]["status"] == "failed"
             else
-                @test only(failure["probes"])["status"] == (id == :missing_probe ? "unavailable" : "failed")
+                @test only(failure["probes"])["status"] ==
+                      (id == :missing_probe ? "unavailable" : "failed")
             end
         end
 

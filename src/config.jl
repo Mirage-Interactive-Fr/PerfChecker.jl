@@ -332,8 +332,8 @@ function normalize_config(backend::Symbol, config::Dict;
         interactive = Int(options[:interactive_threads])
         options[:interactive_threads] = interactive
         check_configuration["values"]["interactive_threads"] = interactive
-        check_configuration["origins"]["interactive_threads"] =
-            haskey(config, :interactive_threads) ? "explicit" : "default"
+        check_configuration["origins"]["interactive_threads"] = haskey(
+            config, :interactive_threads) ? "explicit" : "default"
     end
 
     haskey(options, :path) ||
@@ -382,7 +382,8 @@ normalize_config(config::CheckConfig) = config
 """Keep Julia's default worker topology unless both pool sizes were configured."""
 function _worker_thread_flag(config::CheckConfig)
     interactive = get(config.options, :interactive_threads, nothing)
-    return interactive === nothing ? "-t $(config.threads)" : "-t $(config.threads),$interactive"
+    return interactive === nothing ? "-t $(config.threads)" :
+           "-t $(config.threads),$interactive"
 end
 
 function normalize_config(backend::Symbol, config::CheckConfig)
@@ -444,7 +445,8 @@ end
     @test PerfChecker._worker_thread_flag(cfg) == "-t 1"
     for count in (0, 2)
         explicit = PerfChecker.normalize_config(:benchmark,
-            Dict(:path => @__DIR__, :tags => [:unit], :threads => 1, :interactive_threads => count))
+            Dict(:path => @__DIR__, :tags => [:unit],
+                :threads => 1, :interactive_threads => count))
         @test PerfChecker._worker_thread_flag(explicit) == "-t 1,$count"
         @test explicit.config_hash != cfg.config_hash
         @test explicit.check_configuration["values"]["interactive_threads"] == count

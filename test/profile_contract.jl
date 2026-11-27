@@ -14,7 +14,8 @@
         open_roots = Runtime.profile_target_roots([PerfChecker], Set{Symbol}(), workload)
         @test Runtime.source_in_roots(workload, open_roots)
         @test Runtime.source_in_roots(helper, open_roots)
-        restricted = Runtime.profile_target_roots([PerfChecker], Set([:PerfChecker]), workload)
+        restricted = Runtime.profile_target_roots(
+            [PerfChecker], Set([:PerfChecker]), workload)
         @test Runtime.source_in_roots(pathof(PerfChecker), restricted)
         @test !Runtime.source_in_roots(workload, restricted)
         @test !Runtime.source_in_roots(helper, restricted)
@@ -28,7 +29,7 @@
         positions = Runtime.allocation_source_positions(frames, [root])
         @test isempty(positions)
         @test !Runtime.fresh_operation_boundary((;
-            func=:profile_fresh_operation!, file=only(frames).file, from_c=false))
+            func = :profile_fresh_operation!, file = only(frames).file, from_c = false))
         # An actual allocation capture outside the exact target scope retains its
         # measured whole-operation totals but produces no invented target site.
         summary = Runtime.allocation_summary(total_bytes = 64, total_allocations = 1,

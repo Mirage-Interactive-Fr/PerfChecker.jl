@@ -1,4 +1,5 @@
-@testitem "Fresh qualification releases its closed owner before measurement" tags = [:unit, :lifecycle, :qualification_owner] begin
+@testitem "Fresh qualification releases its closed owner before measurement" tags=[
+    :unit, :lifecycle, :qualification_owner] begin
     using PerfChecker
     # Main callback entrypoints require their own process. This is the existing
     # intrinsic legacy-collector regression suite, not a generated helper file.

@@ -445,7 +445,8 @@ function _scenario_bundle(catalog, spec, collector, raw, fingerprints)
         raw, fingerprints, definition_context)
 end
 
-function _scenario_bundle_from_context(root, scenario, collector, raw, fingerprints, definition_context;
+function _scenario_bundle_from_context(
+        root, scenario, collector, raw, fingerprints, definition_context;
         suite = "shared-scenarios")
     status = get(raw, "status", "error")
     fingerprint = _content_digest(definition_context)

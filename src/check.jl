@@ -470,8 +470,9 @@ function _prepare_check_environment(config::Union{PerfConfig, CheckConfig})
     _drop_incompatible_manifest!(environment)
     worker = nothing
     try
-        worker = Worker(; exeflags = [_worker_thread_flag(normalized),
-            "--project=$environment"])
+        worker = Worker(;
+            exeflags = [_worker_thread_flag(normalized),
+                "--project=$environment"])
         quiet = get(options, :quiet, false)
         remote_eval_wait(Main, worker,
             quote

@@ -112,7 +112,8 @@ function check(d::Dict, block::Expr, ::Val{:profile})
                 push!(expanded, frames)
             end
             if $fresh
-                boundary = findfirst(PerfCheckerProfileRuntime.fresh_operation_boundary, expanded)
+                boundary = findfirst(
+                    PerfCheckerProfileRuntime.fresh_operation_boundary, expanded)
                 boundary === nothing && return
                 resize!(expanded, boundary - 1)
             end

@@ -41,7 +41,8 @@ function _owner_isopen(owner)
 end
 Base.isopen(error::PendingScenarioCleanup) = any(_owner_isopen, error.owners)
 function Base.showerror(io::IO, error::PendingScenarioCleanup)
-    print(io, isopen(error) ? "scenario cleanup remains pending; close(error) retries: " :
+    print(io,
+        isopen(error) ? "scenario cleanup remains pending; close(error) retries: " :
         "scenario cleanup recovered; original failure: ")
     showerror(io, error.original)
     for failure in (error.failures..., error.retry_failures...)
@@ -113,7 +114,8 @@ function recover_exception!(error)
     isempty(result.pending) || throw(PendingScenarioCleanup(error, result.pending,
         result.failures, CapturedException[]))
     return (; attempted = result.attempted, released = result.released, pending = 0,
-        cleanup_errors = Tuple(sprint(showerror, failure.ex) for failure in result.failures))
+        cleanup_errors = Tuple(sprint(showerror, failure.ex)
+        for failure in result.failures))
 end
 
 function callback(phase, f, args...)
@@ -221,7 +223,8 @@ function Base.close(owner::EvaluationCleanupOwner)
     return nothing
 end
 function _pending_evaluation!(evaluation, primary, cleanup, dependency)
-    owner = EvaluationCleanupOwner{typeof(evaluation)}(evaluation, primary, cleanup, dependency)
+    owner = EvaluationCleanupOwner{typeof(evaluation)}(
+        evaluation, primary, cleanup, dependency)
     failures = cleanup === nothing ? CapturedException[] : CapturedException[cleanup]
     pending = PendingScenarioCleanup(owner, Any[owner], failures, CapturedException[])
     evaluation.pending_cleanup = pending
@@ -233,7 +236,8 @@ function cleanup!(evaluation)
     try
         _cleanup_raw!(evaluation)
     catch cleanup
-        _pending_evaluation!(evaluation, nothing, CapturedException(cleanup, catch_backtrace()), nothing)
+        _pending_evaluation!(
+            evaluation, nothing, CapturedException(cleanup, catch_backtrace()), nothing)
     end
     return nothing
 end
@@ -246,13 +250,15 @@ function _cleanup_after_failure!(evaluation, primary, trace)
         if dependency isa PendingScenarioCleanup
             _pending_evaluation!(evaluation, captured, nothing, dependency)
         else
-            _pending_evaluation!(evaluation, captured, CapturedException(dependency, catch_backtrace()), nothing)
+            _pending_evaluation!(evaluation, captured,
+                CapturedException(dependency, catch_backtrace()), nothing)
         end
     end
     try
         _cleanup_raw!(evaluation)
     catch cleanup
-        _pending_evaluation!(evaluation, captured, CapturedException(cleanup, catch_backtrace()), nothing)
+        _pending_evaluation!(
+            evaluation, captured, CapturedException(cleanup, catch_backtrace()), nothing)
     end
     return nothing
 end

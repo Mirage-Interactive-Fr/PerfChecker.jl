@@ -69,7 +69,9 @@ end
         for i in discover_testitems(root; tags = [:check_only])["items"]) ==
               Set(["perf", "check"])
         fixture = Test.DefaultTestSet("Skipped synthetic check")
-        run_fixture() = TestItemRunner.run_tests(root; filter = item -> item.name == "check")
+        function run_fixture()
+            TestItemRunner.run_tests(root; filter = item -> item.name == "check")
+        end
         @static if isdefined(Test, Symbol("@with_testset"))
             Test.@with_testset fixture run_fixture()
         else

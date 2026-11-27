@@ -865,8 +865,9 @@ function _feature_blocks(planned::PlannedFeatureRun)
             # to this scope, not to the global setup constant: after cleanup,
             # closed payloads can be reclaimed before fresh evaluations run.
             let $state_name = $fresh ?
-                    (isdefined(Main, :perf_setup) ? Base.invokelatest(Main.perf_setup) : nothing) :
-                    $state_name
+                              (isdefined(Main, :perf_setup) ?
+                               Base.invokelatest(Main.perf_setup) : nothing) :
+                              $state_name
                 try
                     $qualification
                 finally

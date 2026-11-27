@@ -30,12 +30,14 @@ end
         source = mkpath(joinpath(root, "SuiteDefaultsFixture", "src"))
         write(joinpath(dirname(source), "Project.toml"),
             "name = \"SuiteDefaultsFixture\"\nuuid = \"37f9eae5-7188-47c8-b5dd-47743a5062a1\"\nversion = \"0.1.0\"\n")
-        write(joinpath(source, "SuiteDefaultsFixture.jl"), "module SuiteDefaultsFixture\nend\n")
+        write(joinpath(source, "SuiteDefaultsFixture.jl"),
+            "module SuiteDefaultsFixture\nend\n")
         worker = mkpath(joinpath(root, "worker"))
         write(joinpath(worker, "Project.toml"),
             "[deps]\nBenchmarkTools = \"6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf\"\n")
         entrypoint = joinpath(root, "workload.jl")
-        write(entrypoint, "perf_setup() = [41]\nperf_workload(state) = only(state) + 1\nperf_oracle(state) = perf_workload(state) == 42\n")
+        write(entrypoint,
+            "perf_setup() = [41]\nperf_workload(state) = only(state) + 1\nperf_oracle(state) = perf_workload(state) == 42\n")
         code = """
         using PerfChecker
         @assert Base.get_extension(PerfChecker, :BenchmarkToolsExt) === nothing

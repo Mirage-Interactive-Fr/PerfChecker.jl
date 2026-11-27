@@ -29,13 +29,15 @@ function _live_callback_sources(case, source_files)
             available = isfile(file)
             available && push!(files, abspath(file))
             found |= available
-            push!(definitions, Dict("callback" => string(name), "signature" => string(method.sig),
-                "file" => file, "line" => Int(method.line), "source_available" => available))
+            push!(definitions,
+                Dict("callback" => string(name), "signature" => string(method.sig),
+                    "file" => file, "line" => Int(method.line), "source_available" => available))
         end
         found || push!(missing, string(name))
     end
     for file in source_files
-        file isa AbstractString && isfile(file) || throw(ArgumentError("declared callback source does not exist"))
+        file isa AbstractString && isfile(file) ||
+            throw(ArgumentError("declared callback source does not exist"))
         push!(files, abspath(file))
     end
     return sort!(collect(files)), missing, definitions
@@ -81,21 +83,23 @@ measurement, a correctness proof beyond the supplied oracle, or a preferred
 backend. Nothing is persisted by this function.
 """
 function run_scenario(case::NamedTuple; id::AbstractString,
-    implementation::AbstractString = "default", collectors = (:benchmark,),
-    samples::Integer = 10,
-    project::AbstractString = something(Base.active_project(), pwd()),
-    source_files = (), qualification = Dict(),
-    qualification_limits::AbstractString = "", exclusive_profiles::Bool = false)
+        implementation::AbstractString = "default", collectors = (:benchmark,),
+        samples::Integer = 10,
+        project::AbstractString = something(Base.active_project(), pwd()),
+        source_files = (), qualification = Dict(),
+        qualification_limits::AbstractString = "", exclusive_profiles::Bool = false)
     isempty(id) && throw(ArgumentError("scenario id must not be empty"))
     isempty(implementation) && throw(ArgumentError("implementation must not be empty"))
     !(samples isa Bool) && samples > 0 || throw(ArgumentError("samples must be positive"))
     all(name -> hasproperty(case, name), (:prepare, :operation, :verify)) ||
         throw(ArgumentError("callback scenario requires prepare, operation and verify"))
     selected = unique(Symbol.(collect(collectors)))
-    !isempty(selected) && all(c -> c in (:benchmark, :chairmark, :profile, :profile_alloc), selected) ||
+    !isempty(selected) &&
+        all(c -> c in (:benchmark, :chairmark, :profile, :profile_alloc), selected) ||
         throw(ArgumentError("unsupported or empty collectors"))
     profiling = any(c -> c in (:profile, :profile_alloc), selected)
-    profiling && !exclusive_profiles && throw(ArgumentError("in-process profiles require exclusive_profiles=true"))
+    profiling && !exclusive_profiles &&
+        throw(ArgumentError("in-process profiles require exclusive_profiles=true"))
     root = isfile(project) ? dirname(abspath(project)) : abspath(project)
     isdir(root) || throw(ArgumentError("scenario project directory does not exist"))
     files, missing, definitions = _live_callback_sources(case, source_files)
@@ -121,13 +125,17 @@ function run_scenario(case::NamedTuple; id::AbstractString,
                     available isa NamedTuple && hasproperty(available, :available) &&
                         hasproperty(available, :reason) && available.available isa Bool ||
                         throw(ArgumentError("availability requires available::Bool and reason"))
-                    available.available || throw(SharedScenarioRuntime.ScenarioUnavailable(string(available.reason)))
+                    available.available ||
+                        throw(SharedScenarioRuntime.ScenarioUnavailable(string(available.reason)))
                 end
-                Base.invokelatest(SharedScenarioRuntime.execute_loaded, case, string(collector), Int(samples))
+                Base.invokelatest(SharedScenarioRuntime.execute_loaded,
+                    case, string(collector), Int(samples))
             catch error
                 error isa InterruptException && rethrow()
                 recovery = recover_scenario_exception!(error)
-                failure = Dict{String, Any}("status" => error isa SharedScenarioRuntime.ScenarioUnavailable ? "unavailable" : "error",
+                failure = Dict{String, Any}(
+                    "status" => error isa SharedScenarioRuntime.ScenarioUnavailable ?
+                                "unavailable" : "error",
                     "correctness" => "not_passed", "collector" => string(collector),
                     "message" => sprint(showerror, error),
                     "runtime" => Dict("language" => "julia", "version" => string(VERSION),
@@ -140,7 +148,7 @@ function run_scenario(case::NamedTuple; id::AbstractString,
             after = _live_fingerprints(files)
             environment_after = _environment_provenance(root)
             if before != after || environment_before != environment_after ||
-                _content_digest(qualification) != qualification_digest
+               _content_digest(qualification) != qualification_digest
                 raw["status"] = "invalid"
                 raw["message"] = "callback source, caller qualification or environment changed during execution"
                 raw["source_after"] = after
@@ -152,13 +160,16 @@ function run_scenario(case::NamedTuple; id::AbstractString,
                 "source_fingerprints" => before, "definitions" => definitions,
                 "qualification" => frozen_qualification, "qualification_limits" => string(qualification_limits),
                 "isolation" => "none;caller-process", "parameters" => Dict())
-            scenario = Dict{String, Any}("id" => String(id), "implementation" => String(implementation),
+            scenario = Dict{String, Any}(
+                "id" => String(id), "implementation" => String(implementation),
                 "execution" => "live-callbacks", "collectors" => string.(selected),
                 "parameters" => Dict(), "source_files" => files)
-            bundle = _scenario_bundle_from_context(root, scenario, collector, raw, before, context;
+            bundle = _scenario_bundle_from_context(
+                root, scenario, collector, raw, before, context;
                 suite = "live-scenarios")
             bundle.manifest["environment_provenance"] = [environment_before]
-            bundle.manifest["live_qualification"] = Dict("scope" => "in-process;not-isolated",
+            bundle.manifest["live_qualification"] = Dict(
+                "scope" => "in-process;not-isolated",
                 "limits" => string(qualification_limits), "undiscoverable_callbacks" => missing,
                 "exclusive_profiles" => exclusive_profiles, "caller" => frozen_qualification)
             push!(bundles, bundle)
