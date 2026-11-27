@@ -197,8 +197,9 @@ it across collectors lets reports and interfaces identify one business workload.
 `backend` selects the checker, for example `:benchmark`, `:chairmark`, `:profile`,
 `:wall_profile`, `:profile_alloc` or `:alloc`. Availability and required backend
 packages are checked when planning/executing, not installed by this constructor.
-Source allocation tracking includes the declared workload file when `:targets`
-is empty. Explicit targets restrict it to those loaded packages.
+Source profiles and allocation tracking include the declared workload source
+when `:targets` is empty. Explicit targets restrict attribution to those
+loaded packages.
 `options` has symbol keys. Execution merges feature options, variant options,
 then call-site overrides in that order.
 
@@ -1019,6 +1020,8 @@ function _run_config(planned::PlannedFeatureRun, overrides::AbstractDict;
     end
     if planned.feature.backend === :alloc
         options[:allocation_workload_source] = (planned.variant::FeatureVariant).entrypoint
+    elseif planned.feature.backend in (:profile, :wall_profile, :profile_alloc)
+        options[:profile_workload_source] = (planned.variant::FeatureVariant).entrypoint
     end
     options[:path] = worker_environment(planned.package_suite)
     options[:tags] = unique!(vcat(
@@ -1151,7 +1154,8 @@ function _execute_suite_plan(plan::SuitePlan; executor = _default_suite_executor
             config = nothing
             environment_key = nothing
             try
-                config = _run_config(planned, overrides;
+                # The suite may have just loaded a collector extension with its defaults.
+                config = Base.invokelatest(_run_config, planned, overrides;
                     resolve_preferences = executor === _default_suite_executor,
                     preferences)
                 if executor === _default_suite_executor

@@ -32,6 +32,7 @@ function check(d::Dict, block::Expr, ::Val{:profile})
     max_stacks = Int(get(d, :max_profile_stacks, 50_000))
     max_stacks > 1 || throw(ArgumentError(":max_profile_stacks must be greater than one"))
     target_names = String.(get(d, :targets, String[]))
+    workload_source = get(d, :profile_workload_source, nothing)
     runtime = joinpath(@__DIR__, "profile_runtime.jl")
     operation = if fresh
         _fresh_profile_evaluation(quote
@@ -45,14 +46,8 @@ function check(d::Dict, block::Expr, ::Val{:profile})
         isdefined(Main, :PerfCheckerProfileRuntime) || include($runtime)
         $warmup
         target_names = Set(Symbol.($target_names))
-        loaded = Base.loaded_modules_array()
-        targets = isempty(target_names) ? loaded :
-                  filter(module_value -> nameof(module_value) in target_names, loaded)
-        target_roots = String[]
-        for module_value in targets
-            source = pathof(module_value)
-            source === nothing || push!(target_roots, dirname(abspath(source)))
-        end
+        target_roots = PerfCheckerProfileRuntime.profile_target_roots(
+            Base.loaded_modules_array(), target_names, $workload_source)
         isempty(target_roots) &&
             error("No loaded profiling target found in $(collect(target_names))")
         function in_target(candidate)

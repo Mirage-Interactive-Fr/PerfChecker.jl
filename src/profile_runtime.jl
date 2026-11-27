@@ -36,6 +36,26 @@ function source_in_roots(source, roots)
         any(root -> within_root(source, root), roots)
 end
 
+"""
+    profile_target_roots(loaded, target_names, workload_source)
+
+Select the directories that can contribute source frames. A suite workload can
+contribute frames from its own files when the caller leaves module targets open.
+Explicit module targets retain their package-only scope.
+"""
+function profile_target_roots(loaded, target_names, workload_source)
+    roots = String[]
+    for module_value in loaded
+        (isempty(target_names) || nameof(module_value) in target_names) || continue
+        source = pathof(module_value)
+        source === nothing || push!(roots, dirname(abspath(source)))
+    end
+    if isempty(target_names) && workload_source !== nothing
+        push!(roots, dirname(abspath(workload_source)))
+    end
+    return roots
+end
+
 function allocation_source_positions(stack, roots)
     findall(stack) do frame
         !frame.from_c && frame.line > 0 && source_in_roots(String(frame.file), roots)
