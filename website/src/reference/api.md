@@ -116,3 +116,8 @@ Public = true
 Private = true
 Order = [:module, :constant, :type, :macro, :function]
 ```
+
+```@docs
+PerfChecker.PerfCheckerProfileRuntime.profile_target_roots
+PerfChecker.SharedScenarioRuntime.PerfCheckerProfileRuntime.profile_target_roots
+```
