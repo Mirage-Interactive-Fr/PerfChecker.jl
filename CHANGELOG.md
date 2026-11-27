@@ -2,7 +2,16 @@
 
 ## Unreleased
 
-### PerfChecker 1.1.1
+## 1.1.2
+
+- Support Julia 1.14 when loading suites and resolving defaults for automatically
+  loaded collectors.
+- Keep profiling active across fresh evaluations and retain source traces for
+  declared workloads. Respect explicitly selected source roots.
+- Allow workers to select an interactive thread count independently of their
+  default thread pool.
+
+## 1.1.1
 
 - Load Windows Job Object implementations only on Windows and keep POSIX owned
   processes typed as `Base.Process`. Prevent cancellation/cleanup compilation
