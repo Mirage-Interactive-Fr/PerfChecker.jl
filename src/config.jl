@@ -8,6 +8,11 @@ function _validate_check_settings(options)
         threads isa Integer && !(threads isa Bool) && 0 < threads <= typemax(Int) ||
             throw(ArgumentError(":threads must be a positive integer representable as Int"))
     end
+    if haskey(options, :interactive_threads)
+        threads = options[:interactive_threads]
+        threads isa Integer && !(threads isa Bool) && 0 <= threads <= typemax(Int) ||
+            throw(ArgumentError(":interactive_threads must be a nonnegative integer representable as Int"))
+    end
     for key in (:repeat, :quiet)
         haskey(options, key) && !(options[key] isa Bool) &&
             throw(ArgumentError("$key must be Bool"))
@@ -305,8 +310,10 @@ Required shared option:
 
 - `:path`: environment directory copied for each worker.
 
-Common optional options include `:tags`, `:threads`, `:track`, `:pkgs`,
-`:devops`, `:extra_pkgs`, `:targets`, and `:repeat`.
+Common optional options include `:tags`, `:threads`, `:interactive_threads`,
+`:track`, `:pkgs`, `:devops`, `:extra_pkgs`, `:targets`, and `:repeat`.
+`:threads` controls the default worker pool. When omitted, `:interactive_threads`
+leaves the size of the interactive worker pool to Julia. Explicit zero disables it.
 """
 function normalize_config(backend::Symbol, config::Dict;
         preferences = check_preferences(), defaults = Dict{Symbol, Any}())
@@ -321,6 +328,13 @@ function normalize_config(backend::Symbol, config::Dict;
                                          haskey(preferences, key) ? "preferences" :
                                          "default"
         for key in CHECK_PREFERENCE_KEYS))
+    if haskey(options, :interactive_threads)
+        interactive = Int(options[:interactive_threads])
+        options[:interactive_threads] = interactive
+        check_configuration["values"]["interactive_threads"] = interactive
+        check_configuration["origins"]["interactive_threads"] = haskey(
+            config, :interactive_threads) ? "explicit" : "default"
+    end
 
     haskey(options, :path) ||
         throw(ArgumentError("missing required :path option for @check $backend"))
@@ -364,6 +378,13 @@ function normalize_config(config::PerfConfig; kwargs...)
 end
 
 normalize_config(config::CheckConfig) = config
+
+"""Keep Julia's default worker topology unless both pool sizes were configured."""
+function _worker_thread_flag(config::CheckConfig)
+    interactive = get(config.options, :interactive_threads, nothing)
+    return interactive === nothing ? "-t $(config.threads)" :
+           "-t $(config.threads),$interactive"
+end
 
 function normalize_config(backend::Symbol, config::CheckConfig)
     backend == config.backend || throw(ArgumentError(
@@ -421,4 +442,17 @@ end
         Dict(:path => @__DIR__, :tags => [:unit], :threads => 1,
             :prepared_environment => "internal-cache-path"))
     @test prepared_cfg.config_hash == cfg.config_hash
+    @test PerfChecker._worker_thread_flag(cfg) == "-t 1"
+    for count in (0, 2)
+        explicit = PerfChecker.normalize_config(:benchmark,
+            Dict(:path => @__DIR__, :tags => [:unit],
+                :threads => 1, :interactive_threads => count))
+        @test PerfChecker._worker_thread_flag(explicit) == "-t 1,$count"
+        @test explicit.config_hash != cfg.config_hash
+        @test explicit.check_configuration["values"]["interactive_threads"] == count
+    end
+    for invalid in (-1, true, "2", 1.5)
+        @test_throws ArgumentError PerfChecker.normalize_config(:benchmark,
+            Dict(:path => @__DIR__, :interactive_threads => invalid))
+    end
 end

@@ -32,39 +32,22 @@ function check(d::Dict, block::Expr, ::Val{:profile})
     max_stacks = Int(get(d, :max_profile_stacks, 50_000))
     max_stacks > 1 || throw(ArgumentError(":max_profile_stacks must be greater than one"))
     target_names = String.(get(d, :targets, String[]))
+    workload_source = get(d, :profile_workload_source, nothing)
     runtime = joinpath(@__DIR__, "profile_runtime.jl")
-    profiled = fresh ?
-               _fresh_profile_evaluation(:(Profile.@profile SharedScenarioRuntime.operation!(_perfchecker_evaluation))) :
-               nothing
-    collection = if fresh
-        quote
-            deadline = time_ns() + round(UInt64, $seconds * 1.0e9)
-            while time_ns() < deadline
-                $profiled
-            end
-        end
+    operation = if fresh
+        _fresh_profile_evaluation(quote
+            PerfCheckerProfileRuntime.profile_fresh_operation!(
+                SharedScenarioRuntime.operation!, _perfchecker_evaluation)
+        end)
     else
-        quote
-            Profile.@profile begin
-                deadline = time_ns() + round(UInt64, $seconds * 1.0e9)
-                while time_ns() < deadline
-                    $block
-                end
-            end
-        end
+        block
     end
     return quote
         isdefined(Main, :PerfCheckerProfileRuntime) || include($runtime)
         $warmup
         target_names = Set(Symbol.($target_names))
-        loaded = Base.loaded_modules_array()
-        targets = isempty(target_names) ? loaded :
-                  filter(module_value -> nameof(module_value) in target_names, loaded)
-        target_roots = String[]
-        for module_value in targets
-            source = pathof(module_value)
-            source === nothing || push!(target_roots, dirname(abspath(source)))
-        end
+        target_roots = PerfCheckerProfileRuntime.profile_target_roots(
+            Base.loaded_modules_array(), target_names, $workload_source)
         isempty(target_roots) &&
             error("No loaded profiling target found in $(collect(target_names))")
         function in_target(candidate)
@@ -110,7 +93,12 @@ function check(d::Dict, block::Expr, ::Val{:profile})
 
         Profile.clear()
         Profile.init(n = $buffer, delay = $delay)
-        $collection
+        Profile.@profile begin
+            deadline = time_ns() + round(UInt64, $seconds * 1.0e9)
+            while time_ns() < deadline
+                $operation
+            end
+        end
         profile_data, line_info = Profile.retrieve(include_meta = false)
         grouped = Dict{Any, Int}()
         sample_ips = UInt[]
@@ -122,6 +110,12 @@ function check(d::Dict, block::Expr, ::Val{:profile})
                 frames === nothing && continue
                 frames isa AbstractVector ? append!(expanded, frames) :
                 push!(expanded, frames)
+            end
+            if $fresh
+                boundary = findfirst(
+                    PerfCheckerProfileRuntime.fresh_operation_boundary, expanded)
+                boundary === nothing && return
+                resize!(expanded, boundary - 1)
             end
             julia_indices = findall(
                 candidate -> candidate.line > 0 &&

@@ -125,13 +125,16 @@ end
                           "Vérifiez l'oracle, puis remesurez les allocations.")])
         reply(body["id"], result)
     end
+    # Covered CI workers can spend over 120 seconds loading dependencies and
+    # the HTTP provider before making their first request.
+    cold_worker_timeout = 240
     config(version = "2026-07-28", tool = "advise";
     mcp_arguments = Dict("options" => Dict("empty_array" => Any[],
     "empty_object" => Dict{String, Any}(),
     "nested" => [Dict("empty_array" => Any[], "empty_object" => Dict{String, Any}())])),
     kwargs...) = AdvisorConfig(
         protocol = :mcp_http, endpoint = "http://127.0.0.1:$port/mcp", mcp_tool = tool,
-        mcp_prompt_argument = "question", mcp_version = version, timeout = 120;
+        mcp_prompt_argument = "question", mcp_version = version, timeout = cold_worker_timeout;
         mcp_arguments, kwargs...)
     message(role, content) = Dict("role" => role, "content" => content)
     messages = [message("user", "Pourquoi ces allocations ?"),
@@ -160,12 +163,10 @@ end
         # Compile JSON parsing and every MCP handler before an isolated worker's
         # deadline starts. GET readiness does not exercise these POST branches.
         # Fresh workers still compile their own provider within the deadline.
-        # On macOS CI, HTTP readiness took 50 seconds and a valid response took
-        # 70 seconds. Allow 120 seconds for successful cold-worker fixtures;
-        # cancellation and the explicit short-deadline case below remain real.
+        # Cancellation and the explicit short-deadline case below use their own limits.
         for version in ("2026-07-28", "2025-11-25")
             warmup = Base.invokelatest(PerfChecker.advisor_transport, Val(:mcp_http),
-                config(version; timeout = 120),
+                config(version),
                 Dict("messages" => [Dict("content" => "mock readiness")]))
             @test occursin("Vérifiez", warmup["external_review"])
         end

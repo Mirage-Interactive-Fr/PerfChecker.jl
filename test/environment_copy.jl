@@ -239,7 +239,7 @@ end
                 filemode(preparation_project))
             config = PerfConfig(:network; path = preparation_seed, include_current = false,
                 devops = Pkg.PackageSpec(path = dependency, name = "ReadonlyDependency"),
-                quiet = true, threads = 1)
+                extra_pkgs = Pkg.PackageSpec[], quiet = true, threads = 1)
             prepared_root, environment = PerfChecker._prepare_check_environment(config)
             @test TOML.parsefile(joinpath(environment, "Project.toml"))["deps"][
                 "ReadonlyDependency"] == "fa635044-6c9b-4c82-94a4-9aa6ef3a1a43"

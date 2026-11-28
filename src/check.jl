@@ -295,7 +295,7 @@ function _install_target!(worker, target::RunTarget, options::Dict{Symbol, Any})
                 extras = extras isa AbstractVector ? extras : [extras]
                 specs = [spec isa NamedTuple ? Pkg.PackageSpec(; spec...) : spec
                          for spec in extras]
-                Pkg.add(specs; io = pkg_io)
+                isempty(specs) || Pkg.add(specs; io = pkg_io)
             end
             !is_dev && haskey(d, :extra_devops) &&
                 Pkg.develop(d[:extra_devops]; io = pkg_io)
@@ -470,8 +470,9 @@ function _prepare_check_environment(config::Union{PerfConfig, CheckConfig})
     _drop_incompatible_manifest!(environment)
     worker = nothing
     try
-        worker = Worker(; exeflags = ["-t $(normalized.threads)",
-            "--project=$environment"])
+        worker = Worker(;
+            exeflags = [_worker_thread_flag(normalized),
+                "--project=$environment"])
         quiet = get(options, :quiet, false)
         remote_eval_wait(Main, worker,
             quote
@@ -564,7 +565,7 @@ function check_function(x::Symbol, config::CheckConfig, block1, block2;
                 @async begin
                     procs[i] = Worker(;
                         exeflags = ["--track-allocation=$(config.track)",
-                            "-t $(config.threads)", "--project=$(worker_envs[i])"])
+                            _worker_thread_flag(config), "--project=$(worker_envs[i])"])
                     if config.track != "none"
                         artifacts = _allocation_artifacts(procs[i],
                             joinpath(temp_roots[i], "allocation-artifacts"))

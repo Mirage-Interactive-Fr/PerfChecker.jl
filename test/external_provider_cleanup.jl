@@ -98,7 +98,8 @@ timedwait(() -> isfile($(repr(resisting_ready))), 60; pollint=0.01) == :ok || er
         output = get(ENV, "PERFCHECKER_OUTPUT", $(repr(joinpath(directory, "runtime-output.json"))))
         write(output, $(repr("{\"incomplete\":true}")))
         write($(repr(output_file)), output)
-        write($(repr(pid_file)), string(getpid()))
+        write($(repr(pid_file * ".tmp")), string(getpid()))
+        mv($(repr(pid_file * ".tmp")), $(repr(pid_file)))
         $(mode === :invalid_result || inherited_output ? "exit(0)" : "")
         sleep(120)
         write($(repr(late_file)), "must not execute")
@@ -406,9 +407,7 @@ end
     :unit, :protocol] begin
     using PerfChecker
 
-    if Sys.iswindows() || ccall(:geteuid, Cuint, ()) == 0
-        @test_skip false # Directory unlink permissions need a non-root POSIX host.
-    else
+    if !Sys.iswindows() && ccall(:geteuid, Cuint, ()) != 0
         mktempdir() do root
             temporary = joinpath(root, "readonly-results")
             mkpath(temporary)

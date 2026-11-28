@@ -23,7 +23,7 @@ end
 
 @testitem "Native TestItemRunner items are measured without duplicate workloads" tags=[
     :v1, :integration] begin
-    using PerfChecker, TestItemRunner
+    using PerfChecker, Test, TestItemRunner
     mktempdir() do root
         marker = joinpath(root, "executed.txt")
         check_marker = joinpath(root, "check-executed.txt")
@@ -68,7 +68,29 @@ end
         @test Set(i["name"]
         for i in discover_testitems(root; tags = [:check_only])["items"]) ==
               Set(["perf", "check"])
-        TestItemRunner.run_tests(root; filter = item -> item.name == "check")
+        fixture = Test.DefaultTestSet("Skipped synthetic check")
+        function run_fixture()
+            TestItemRunner.run_tests(root; filter = item -> item.name == "check")
+        end
+        @static if isdefined(Test, Symbol("@with_testset"))
+            Test.@with_testset fixture run_fixture()
+        else
+            Test.push_testset(fixture)
+            try
+                run_fixture()
+            finally
+                Test.pop_testset()
+            end
+        end
+        counts = Test.get_test_counts(fixture)
+        # Julia 1.10 returns a tuple with cumulative counts in slots 5–8.
+        fails, errors, broken = if counts isa Tuple
+            counts[6], counts[7], counts[8]
+        else
+            counts.cumulative_fails, counts.cumulative_errors, counts.cumulative_broken
+        end
+        @test broken == 1
+        @test fails == errors == 0
         @test !isfile(check_marker)
         check_id = only(filter(i -> i["name"] == "check", found["items"]))["id"]
         @test run_testitems(root; ids = [check_id], timeout = 90)["passed"]

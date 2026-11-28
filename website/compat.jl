@@ -4,7 +4,8 @@
 # https://github.com/LuxDL/DocumenterVitepress.jl/blob/v0.3.5/src/writer.jl#L1487
 # https://github.com/LuxDL/DocumenterVitepress.jl/blob/v0.3.7/src/writer.jl#L1487
 # https://github.com/LuxDL/DocumenterVitepress.jl/blob/v0.3.8/src/writer.jl#L1487
-if pkgversion(DocumenterVitepress) in (v"0.3.5", v"0.3.7", v"0.3.8")
+# https://github.com/LuxDL/DocumenterVitepress.jl/blob/v0.3.10/src/writer.jl#L1495
+if pkgversion(DocumenterVitepress) in (v"0.3.5", v"0.3.7", v"0.3.8", v"0.3.10")
     @eval DocumenterVitepress function _get_inventory_uri(doc, page, anchor_id)
         filename = relpath(page.build, doc.user.build)
         page_url = splitext(filename)[1] * ".html"
